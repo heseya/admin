@@ -13,7 +13,7 @@
     </top-nav>
 
     <div class="products-list">
-      <product v-for="product in products" :key="product.id" :product="product"></product>
+      <product v-for="product in products" :key="product.slug" :product="product"></product>
     </div>
   </div>
 </template>
@@ -23,23 +23,32 @@ import TopNav from '@/layout/TopNav.vue'
 import Product from '@/components/Product.vue'
 
 export default {
-  data () {
-    return {
-      products: [
-        { id: 1, name: 'Ankh', price: '200 zł', img: 'https://source.unsplash.com/collection/5042880/400x400?1' },
-        { id: 2, name: 'Doberman', price: '190 zł', img: 'https://source.unsplash.com/collection/5042880/400x400?2' },
-        { id: 3, name: 'Tribal', price: '150 zł', img: 'https://source.unsplash.com/collection/5042880/400x400?3' },
-        { id: 4, name: 'Tribal', price: '150 zł', img: 'https://source.unsplash.com/collection/5042880/400x400?4' },
-        { id: 5, name: 'Tribal', price: '150 zł', img: 'https://source.unsplash.com/collection/5042880/400x400?5' },
-        { id: 6, name: 'Tribal', price: '150 zł', img: 'https://source.unsplash.com/collection/5042880/400x400?6' },
-        { id: 7, name: 'Tribal', price: '150 zł', img: 'https://source.unsplash.com/collection/5042880/400x400?7' },
-        { id: 8, name: 'Tribal', price: '150 zł', img: 'https://source.unsplash.com/collection/5042880/400x400?8' }
-      ]
-    }
-  },
   components: {
     TopNav,
     Product
+  },
+  data () {
+    return {
+      loading: false
+    }
+  },
+  computed: {
+    products () {
+      return this.$store.state.products.products
+    }
+  },
+  methods: {
+    async getProducts () {
+      this.loading = true
+
+      await this.$store.dispatch('products/index')
+
+      this.loading = false
+      console.log(this.products)
+    }
+  },
+  created () {
+    this.getProducts()
   }
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
   <router-link to="/products/view" class="product-box">
     <div class="product-box__img">
-      <img :src="product.img" />
+      <img :src="product.cover.url" />
     </div>
     <div class="flex">
       <div class="name">

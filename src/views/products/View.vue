@@ -152,7 +152,7 @@ export default {
   .product {
     display: grid;
     grid-template-columns: 4fr 2fr;
-    column-gap: 40px;
+    column-gap: 35px;
 
     &__info {
       display: grid;

@@ -31,12 +31,12 @@ export default {
 }
 
 body {
-  font-family: 'Tw Cen MT';
-  background: #fff;
+  font-family: 'BlinkMacSystemFont', 'Roboto', sans-serif;
+  background: #f4f7f8;
   margin: 0;
 }
 
-main {
+.main {
   max-width: 940px;
   padding: 0 20px;
   margin: 0 auto;

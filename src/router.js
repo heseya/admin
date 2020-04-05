@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Orders from './views/Orders.vue'
-import Products from './views/Products.vue'
 
 Vue.use(VueRouter)
 
@@ -17,7 +16,12 @@ const router = new VueRouter({
     {
       path: '/products',
       name: 'Products',
-      component: Products
+      component: () => import('./views/products/Index.vue')
+    },
+    {
+      path: '/products/view',
+      name: 'ProductsForm',
+      component: () => import('./views/products/View.vue')
     }
   ]
 })

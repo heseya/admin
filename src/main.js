@@ -6,7 +6,6 @@ import router from './router'
 import store from './store'
 
 import 'vuesax/dist/vuesax.css'
-import 'boxicons'
 
 Vue.config.productionTip = false
 

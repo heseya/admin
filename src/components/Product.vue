@@ -1,6 +1,6 @@
 <template>
-  <route-link to="/products/${product.id}" class="product">
-    <div class="product__img">
+  <router-link to="/products/view" class="product-box">
+    <div class="product-box__img">
       <img :src="product.img" />
     </div>
     <div class="flex">
@@ -9,7 +9,7 @@
         <small>{{ product.price }}</small>
       </div>
     </div>
-  </route-link>
+  </router-link>
 </template>
 
 <script>
@@ -21,26 +21,31 @@ export default {
 </script>
 
 <style lang="scss">
-.product {
+.product-box {
+  color: #000;
+  text-decoration: none;
 
   &__img {
     position: relative;
     width: 100%;
     padding-top: 100%;
     border-radius: 20px;
-    background-color: $grey-light;
+    background-color: #fff;
     overflow: hidden;
     margin-bottom: 4px;
     box-shadow: 0 2px 10px 0 rgba(0,0,0,0.1);
 
     img {
       position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
     }
   }
 
   .name {
+    font-family: $font-sec;
     padding: 5px;
     padding-bottom: 2px;
   }

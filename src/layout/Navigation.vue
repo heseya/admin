@@ -38,7 +38,7 @@
   height: 60px;
   width: calc(100% - 30px);
   padding: 0 15px;
-  background: $white;
+  background: #fff;
   box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.2);
   border-top-left-radius: 26px;
   border-top-right-radius: 26px;
@@ -63,6 +63,7 @@
     }
 
     .label {
+      font-family: $font-sec;
       display: none;
       font-size: 20px;
       padding: 17px 10px;

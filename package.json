@@ -12,6 +12,7 @@
     "core-js": "^3.6.4",
     "register-service-worker": "^1.7.1",
     "vue": "^2.6.11",
+    "vue-axios": "^2.1.5",
     "vue-router": "^3.1.6",
     "vuesax": "^4.0.1-alpha.16",
     "vuex": "^3.1.3"

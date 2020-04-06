@@ -20,6 +20,7 @@
             <vs-input v-model="slug" label="Link"/>
             <br><br>
             <vs-input v-model="price" type="number" step="0.01" label="Cena"/>
+            <br>
           </div>
 
           <div>

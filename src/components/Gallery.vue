@@ -1,8 +1,8 @@
 <template>
   <div class="gallery">
     <template v-for="image in images">
-      <div class="gallery__img" :key="image">
-        <img :src="image">
+      <div class="gallery__img" :key="image.url">
+        <img :src="image.url">
       </div>
     </template>
     <div class="gallery__img add">

@@ -1,5 +1,5 @@
 <template>
-  <router-link to="/products/view" class="product-box">
+  <router-link :to="`products/${product.slug}`" class="product-box">
     <div class="product-box__img">
       <img :src="product.cover.url" />
     </div>

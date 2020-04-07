@@ -35,7 +35,7 @@ const router = new VueRouter({
       }
     },
     {
-      path: '/products/view',
+      path: '/products/:slug',
       name: 'ProductsForm',
       component: () => import('./views/products/View.vue'),
       meta: {

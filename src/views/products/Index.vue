@@ -27,11 +27,6 @@ export default {
     TopNav,
     Product
   },
-  data () {
-    return {
-      loading: false
-    }
-  },
   computed: {
     products () {
       return this.$store.state.products.products
@@ -39,12 +34,7 @@ export default {
   },
   methods: {
     async getProducts () {
-      this.loading = true
-
       await this.$store.dispatch('products/index')
-
-      this.loading = false
-      console.log(this.products)
     }
   },
   created () {
@@ -59,6 +49,7 @@ export default {
   grid-template-columns: 1fr 1fr;
   grid-gap: 22px;
   margin: 40px 0;
+  min-height: 100px;
 }
 
 @media (min-width: $break) {

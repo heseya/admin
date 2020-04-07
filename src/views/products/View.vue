@@ -1,6 +1,6 @@
 <template>
 <div>
-  <top-nav :title="name">
+  <top-nav :title="product.name">
      <vs-button color="dark" icon @click="deleteConfirm=!deleteConfirm">
         <i class='bx bx-trash' ></i>
       </vs-button>
@@ -8,23 +8,23 @@
 
   <div class="product">
     <div>
-      <gallery :images="gallery"></gallery>
+      <gallery :images="product.gallery"></gallery>
 
       <card style="margin-top: 30px">
         <div class="product__info">
 
           <div>
             <br>
-            <vs-input v-model="name" label="Nazwa"/>
+            <vs-input v-model="product.name" label="Nazwa"/>
             <br><br>
-            <vs-input v-model="slug" label="Link"/>
+            <vs-input v-model="product.slug" label="Link"/>
             <br><br>
-            <vs-input v-model="price" type="number" step="0.01" label="Cena"/>
+            <vs-input v-model="product.price" type="number" step="0.01" label="Cena"/>
             <br>
           </div>
 
           <div>
-            <br><vs-select v-model="brand" filter label="Marka">
+            <br><vs-select v-model="product.brand.id" filter label="Marka">
               <vs-option label="Depth" value="1">
                 Depth
               </vs-option>
@@ -33,7 +33,7 @@
               </vs-option>
             </vs-select>
             <br><br>
-            <vs-select v-model="category" filter label="Kategoria">
+            <vs-select v-model="product.category.id" filter label="Kategoria">
               <vs-option label="Naszyjniki" value="1">
                 Naszyjniki
               </vs-option>
@@ -56,7 +56,7 @@
       <card>
         <flex-input>
           <label class="title">Widoczność produktu</label>
-          <vs-switch success>
+          <vs-switch success v-model="product.public">
             <template #off>
               <i class='bx bx-x' ></i>
             </template>
@@ -101,18 +101,12 @@ import FlexInput from '@/components/FlexInput.vue'
 export default {
   data () {
     return {
-      name: 'Tribal Pearl',
-      slug: 'tribal-pearl',
-      price: 179,
-      brand: 1,
-      category: 1,
-      deleteConfirm: false,
-      gallery: [
-        'https://source.unsplash.com/collection/5042880/400x400?10',
-        'https://source.unsplash.com/collection/5042880/400x400?20',
-        'https://source.unsplash.com/collection/5042880/400x400?40',
-        'https://source.unsplash.com/collection/5042880/400x400?30'
-      ]
+      deleteConfirm: false
+    }
+  },
+  computed: {
+    product () {
+      return this.$store.state.products.selectedProduct
     }
   },
   methods: {
@@ -123,6 +117,9 @@ export default {
         title: 'Produkt został zaktualizowany.'
       })
     }
+  },
+  async created () {
+    await this.$store.dispatch('products/view', this.$route.params.slug)
   },
   components: {
     TopNav,

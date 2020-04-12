@@ -119,7 +119,13 @@ export default {
     }
   },
   async created () {
-    await this.$store.dispatch('products/view', this.$route.params.slug)
+    const loading = this.$vs.loading({
+      color: '#000'
+    })
+
+    await this.$store.dispatch('products/view', this.$route.params.id)
+
+    loading.close()
   },
   components: {
     TopNav,

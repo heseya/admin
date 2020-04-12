@@ -11,7 +11,7 @@
       <span class="label animated faster fadeInLeft">Zamówienia</span>
     </router-link>
 
-    <router-link class="nav__link" to="/chat">
+    <router-link class="nav__link" to="/chats">
       <img class="icon" src="/img/icons/chat.svg">
       <span class="label animated faster fadeInLeft">Konwersajce</span>
     </router-link>
@@ -31,7 +31,7 @@
 
 <style lang="scss">
 .nav {
-  z-index: 10;
+  z-index: 1000000;
   position: fixed;
   bottom: 0;
   left: 0;
@@ -74,7 +74,6 @@
 
 @media (min-width: $break) {
   .nav {
-    z-index: 10;
     position: fixed;
     top: 0;
     left: 0;

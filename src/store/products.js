@@ -22,10 +22,10 @@ export const products = {
 
       commit('setProducts', response.data.data)
     },
-    async view ({ commit, state }, slug = '') {
-      const response = await api.get(`/products/${slug}`)
+    async view ({ commit, state }, id) {
+      const response = await api.get(`/products/id:${id}`)
 
-      commit('setSelectedProduct', response.data)
+      commit('setSelectedProduct', response.data.data)
     }
   }
 }

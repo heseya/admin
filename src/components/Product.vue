@@ -1,7 +1,7 @@
 <template>
-  <router-link :to="`products/${product.slug}`" class="product-box">
+  <router-link :to="`products/${product.id}`" class="product-box">
     <div class="product-box__img">
-      <img :src="product.cover.url" />
+      <img v-if="product.cover !== null" :src="product.cover.url" />
     </div>
     <div class="flex">
       <div class="name">

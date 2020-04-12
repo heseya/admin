@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Orders from './views/Orders.vue'
 
 Vue.use(VueRouter)
 
@@ -19,14 +18,6 @@ const router = new VueRouter({
       }
     },
     {
-      path: '/orders',
-      name: 'Orders',
-      component: Orders,
-      meta: {
-        requiresAuth: true
-      }
-    },
-    {
       path: '/products',
       name: 'Products',
       component: () => import('./views/products/Index.vue'),
@@ -35,9 +26,41 @@ const router = new VueRouter({
       }
     },
     {
-      path: '/products/:slug',
+      path: '/products/:id',
       name: 'ProductsForm',
       component: () => import('./views/products/View.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/orders',
+      name: 'Orders',
+      component: () => import('./views/orders/Index.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/chats',
+      name: 'Chats',
+      component: () => import('./views/chats/Index.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/pages',
+      name: 'Pages',
+      component: () => import('./views/pages/Index.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/settings',
+      name: 'Settings',
+      component: () => import('./views/Settings.vue'),
       meta: {
         requiresAuth: true
       }

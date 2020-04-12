@@ -34,7 +34,13 @@ export default {
   },
   methods: {
     async getProducts () {
+      const loading = this.$vs.loading({
+        color: '#000'
+      })
+
       await this.$store.dispatch('products/index')
+
+      loading.close()
     }
   },
   created () {

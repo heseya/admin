@@ -4,7 +4,7 @@ const DEBUG = process.env.NODE_ENV === 'development'
 
 const API_URLS = {
   production: 'https://depth.space',
-  local: 'http://depth.test'
+  local: 'https://depth.space'
 }
 
 const baseURL = DEBUG ? API_URLS.local : API_URLS.production

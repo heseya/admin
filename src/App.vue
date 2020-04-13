@@ -23,7 +23,7 @@ export default {
 </script>
 
 <style lang="scss">
-@font-face{
+@font-face {
   font-family:'Tw Cen MT';
   font-style: normal;
   font-weight: 400;

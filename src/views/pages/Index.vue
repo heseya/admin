@@ -49,13 +49,15 @@ export default {
   },
   methods: {
     async getPages () {
-      const loading = this.$vs.loading({
-        color: '#000'
-      })
+      const loading = this.$vs.loading({ color: '#000' })
 
-      await this.$store.dispatch('pages/index')
-
-      loading.close()
+      try {
+        await this.$store.dispatch('pages/index')
+      } catch (e) {
+        console.log(e)
+      } finally {
+        loading.close()
+      }
     }
   },
   created () {
@@ -75,6 +77,10 @@ export default {
     display: flex;
     text-decoration: none;
     color: black;
+
+    &:hover {
+      background-color: $grey-light;
+    }
 
     &:last-of-type {
       border-bottom: none;

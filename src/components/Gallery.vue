@@ -33,7 +33,7 @@ export default {
     background-color: #fff;
     overflow: hidden;
     margin-bottom: 4px;
-    box-shadow: 0 2px 10px 0 rgba(0,0,0,0.1);
+    box-shadow: $shadow;
 
     &:first-child {
       grid-column: 1/3;

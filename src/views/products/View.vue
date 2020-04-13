@@ -1,9 +1,24 @@
 <template>
 <div>
   <top-nav :title="product.name">
-     <vs-button color="dark" icon @click="deleteConfirm=!deleteConfirm">
-        <i class='bx bx-trash' ></i>
+    <vs-tooltip bottom shadow not-hover v-model="deleteConfirm">
+      <vs-button dark icon @click="deleteConfirm =! deleteConfirm">
+        <i class="bx bx-trash"></i>
       </vs-button>
+      <template #tooltip>
+        <div class="content-tooltip">
+          <p>Czy na pewno chcesz usunąć ten produkt?</p>
+          <footer>
+            <vs-button @click="deleteConfirm = false" danger block>
+              Usuń
+            </vs-button>
+            <vs-button @click="deleteConfirm = false" transparent dark block>
+              Anuluj
+            </vs-button>
+          </footer>
+        </div>
+      </template>
+    </vs-tooltip>
   </top-nav>
 
   <div class="product">
@@ -56,7 +71,7 @@
       <card>
         <flex-input>
           <label class="title">Widoczność produktu</label>
-          <vs-switch success v-model="product.public">
+          <vs-switch @click="changePublic" success v-model="product.public" :loading="activeLoading">
             <template #off>
               <i class='bx bx-x' ></i>
             </template>
@@ -74,21 +89,6 @@
     </div>
   </div>
 
-  <vs-dialog width="550px" not-center v-model="deleteConfirm">
-    <h4 class="not-margin">
-      Czy na pewno chcesz usunąć ten produkt?
-    </h4>
-
-    <div>
-      <vs-button danger @click="openNotification(null, 'danger')">
-        Usuń
-      </vs-button>
-      <vs-button dark @click="deleteConfirm = false">
-        Wróć
-      </vs-button>
-    </div>
-  </vs-dialog>
-
 </div>
 </template>
 
@@ -101,7 +101,8 @@ import FlexInput from '@/components/FlexInput.vue'
 export default {
   data () {
     return {
-      deleteConfirm: false
+      deleteConfirm: false,
+      activeLoading: false
     }
   },
   computed: {
@@ -116,6 +117,13 @@ export default {
         position,
         title: 'Produkt został zaktualizowany.'
       })
+    },
+    changePublic () {
+      this.activeLoading = true
+
+      setTimeout(() => {
+        this.activeLoading = false
+      }, 3000)
     }
   },
   async created () {
@@ -138,7 +146,6 @@ export default {
 
 <style lang="scss">
 .product {
-  margin: 40px 0;
 
   &__info {
 
@@ -149,6 +156,14 @@ export default {
     .vs-select-content {
       max-width: none;
     }
+  }
+}
+
+.content-tooltip {
+  footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 

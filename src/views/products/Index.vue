@@ -3,17 +3,17 @@
     <top-nav title="Asortyment">
 
       <vs-button to="/items" color="dark" icon>
-        <i class='bx bxs-package'></i>
+        <i class="bx bxs-package"></i>
       </vs-button>
 
       <vs-button to="/products/create" color="dark" icon>
-        <i class='bx bx-plus'></i>
+        <i class="bx bx-plus"></i>
       </vs-button>
 
     </top-nav>
 
     <div class="products-list">
-      <product v-for="product in products" :key="product.slug" :product="product"></product>
+      <product v-for="product in products" :key="product.id" :product="product"></product>
     </div>
   </div>
 </template>
@@ -54,7 +54,6 @@ export default {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 22px;
-  margin: 40px 0;
   min-height: 100px;
 }
 

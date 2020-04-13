@@ -6,8 +6,7 @@ export const products = {
     products: [],
     selectedProduct: {}
   },
-  getters: {
-  },
+  getters: {},
   mutations: {
     setProducts (state, payload = []) {
       state.products = payload
@@ -22,7 +21,7 @@ export const products = {
 
       commit('setProducts', response.data.data)
     },
-    async view ({ commit, state }, id) {
+    async view ({ commit }, id) {
       const response = await api.get(`/products/id:${id}`)
 
       commit('setSelectedProduct', response.data.data)

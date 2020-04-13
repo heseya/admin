@@ -11,10 +11,10 @@
       <span class="label animated faster fadeInLeft">Zamówienia</span>
     </router-link>
 
-    <router-link class="nav__link" to="/chats">
+    <!-- <router-link class="nav__link" to="/chats">
       <img class="icon" src="/img/icons/chat.svg">
       <span class="label animated faster fadeInLeft">Konwersajce</span>
-    </router-link>
+    </router-link> -->
 
     <router-link class="nav__link" to="/pages">
       <img class="icon" src="/img/icons/copy.svg">
@@ -39,7 +39,7 @@
   width: calc(100% - 30px);
   padding: 0 15px;
   background: #fff;
-  box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: $shadow;
   border-top-left-radius: 26px;
   border-top-right-radius: 26px;
   display: flex;
@@ -90,7 +90,7 @@
     transition: 0.15s;
     transition-timing-function: ease-out;
 
-    .nav__link {
+    &__link {
       border-radius: 12px;
 
       &:hover {
@@ -118,6 +118,12 @@
       animation-duration: .5s;
       animation-fill-mode: both;
     }
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .nav__link:hover {
+    background-color: none;
   }
 }
 

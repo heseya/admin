@@ -13,7 +13,7 @@
         <template v-for="page in pages">
           <router-link :to="`/pages/${page.id}`" class="list__item" :key="page.id">
             <div class="list__item__avatar">
-              <vs-avatar>
+              <vs-avatar dark>
                 <template #text>
                   {{ page.name }}
                 </template>
@@ -70,8 +70,8 @@ export default {
 .list {
 
   &__item {
-    border-bottom: 1px solid #ddd;
-    padding: 13px 9px;
+    border-radius: 20px;
+    padding: 15px 10px;
     font-family: $font-sec;
     font-size: 17px;
     display: flex;
@@ -82,24 +82,25 @@ export default {
       background-color: $grey-light;
     }
 
-    &:last-of-type {
-      border-bottom: none;
-    }
-
     small {
       color: #aaa;
     }
 
     &__avatar {
       margin-right: 13px;
-      display: none;
     }
   }
 }
 
 @media (min-width: $break) {
   .list {
-    padding: 10px 32px;
+    padding: 10px 24px;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .list__item:hover {
+    background-color: none;
   }
 }
 </style>

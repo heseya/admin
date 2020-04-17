@@ -27,7 +27,7 @@ const router = new VueRouter({
     },
     {
       path: '/products/:id',
-      name: 'ProductsForm',
+      name: 'ProductsView',
       component: () => import('./views/products/View.vue'),
       meta: {
         requiresAuth: true
@@ -53,6 +53,14 @@ const router = new VueRouter({
       path: '/pages',
       name: 'Pages',
       component: () => import('./views/pages/Index.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/pages/:id',
+      name: 'PagesView',
+      component: () => import('./views/pages/View.vue'),
       meta: {
         requiresAuth: true
       }

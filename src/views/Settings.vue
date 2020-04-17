@@ -5,12 +5,21 @@
     <card>
       <list>
         <list-item url="/settings/brands">
+          <template v-slot:avatar>
+            <i class='bx bx-star'></i>
+          </template>
           Marki
         </list-item>
         <list-item url="/settings/categories">
+          <template v-slot:avatar>
+            <i class='bx bx-list-ul'></i>
+          </template>
           Kategorie
         </list-item>
         <list-item url="/settings/shipping-methods">
+          <template v-slot:avatar>
+            <i class='bx bxs-truck'></i>
+          </template>
           Opcje dostawy
         </list-item>
       </list>

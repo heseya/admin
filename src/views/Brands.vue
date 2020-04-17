@@ -8,10 +8,10 @@
           v-for="brand in brands"
           :key="brand.id"
           url="#"
-          :subtitle="'/' + brand.slug"
           :hidden="!brand.public"
         >
           {{ brand.name }}
+          <small>/{{ brand.slug }}</small>
         </list-item>
       </list>
     </card>

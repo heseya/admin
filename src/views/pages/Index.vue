@@ -14,10 +14,10 @@
           v-for="page in pages"
           :key="page.id"
           :url="'/pages/' + page.id"
-          :subtitle="'/' + page.slug"
           :hidden="!page.public"
         >
           {{ page.name }}
+          <small>/{{ page.slug }}</small>
         </list-item>
       </list>
     </card>

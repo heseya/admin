@@ -1,18 +1,13 @@
 <template>
   <router-link :to="url" class="list__item">
-    <div class="list__item__avatar">
+    <div v-if="!!$slots.avatar" class="list__item__avatar">
       <vs-avatar dark>
-        <template #text>
-          <slot></slot>
-        </template>
+        <slot name="avatar"></slot>
       </vs-avatar>
     </div>
     <div>
-      <div>
-        <i v-if="hidden" class="bx bx-lock-alt"></i>
-        <slot></slot>
-      </div>
-      <small v-if="subtitle !== undefined">{{ subtitle }}</small>
+      <i v-if="hidden" class="bx bx-lock-alt"></i>
+      <slot></slot>
     </div>
   </router-link>
 </template>
@@ -21,7 +16,6 @@
 export default {
   props: {
     url: String,
-    subtitle: String,
     hidden: Boolean
   }
 }
@@ -30,7 +24,8 @@ export default {
 <style lang="scss">
 .list__item {
   border-radius: 20px;
-  padding: 15px 10px;
+  padding: 15px 20px;
+  min-height: 44px;
   font-family: $font-sec;
   font-size: 17px;
   display: flex;
@@ -43,6 +38,7 @@ export default {
   }
 
   small {
+    display: block;
     color: #aaa;
   }
 

@@ -8,10 +8,10 @@
           v-for="category in categories"
           :key="category.id"
           url="#"
-          :subtitle="'/' + category.slug"
           :hidden="!category.public"
         >
           {{ category.name }}
+          <small>/{{ category.slug }}</small>
         </list-item>
       </list>
     </card>

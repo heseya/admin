@@ -8,10 +8,10 @@
           v-for="shippingMethod in shippingMethods"
           :key="shippingMethod.id"
           url="#"
-          :subtitle="shippingMethod.price + 'zł'"
           :hidden="!shippingMethod.public"
         >
           {{ shippingMethod.name }}
+          <small>{{ shippingMethod.price }} zł</small>
         </list-item>
       </list>
     </card>

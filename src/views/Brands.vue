@@ -1,23 +1,17 @@
 <template>
   <div>
-    <top-nav title="Strony">
-
-      <vs-button to="/pages/create" color="dark" icon>
-        <i class="bx bx-plus"></i>
-      </vs-button>
-
-    </top-nav>
+    <top-nav title="Marki"></top-nav>
 
     <card>
       <list>
         <list-item
-          v-for="page in pages"
-          :key="page.id"
-          :url="'/pages/' + page.id"
-          :subtitle="'/' + page.slug"
-          :hidden="!page.public"
+          v-for="brand in brands"
+          :key="brand.id"
+          url="#"
+          :subtitle="'/' + brand.slug"
+          :hidden="!brand.public"
         >
-          {{ page.name }}
+          {{ brand.name }}
         </list-item>
       </list>
     </card>
@@ -38,16 +32,16 @@ export default {
     ListItem
   },
   computed: {
-    pages () {
-      return this.$store.state.pages.pages
+    brands () {
+      return this.$store.state.brands.brands
     }
   },
   methods: {
-    async getPages () {
+    async getBrands () {
       const loading = this.$vs.loading({ color: '#000' })
 
       try {
-        await this.$store.dispatch('pages/index')
+        await this.$store.dispatch('brands/index')
       } catch (e) {
         console.log(e)
       } finally {
@@ -56,7 +50,7 @@ export default {
     }
   },
   created () {
-    this.getPages()
+    this.getBrands()
   }
 }
 </script>

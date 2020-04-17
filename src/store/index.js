@@ -3,6 +3,9 @@ import Vuex from 'vuex'
 
 import { products } from './products'
 import { pages } from './pages'
+import { brands } from './brands'
+import { categories } from './categories'
+import { shippingMethods } from './shippingMethods'
 
 Vue.use(Vuex)
 
@@ -12,6 +15,9 @@ export default new Vuex.Store({
   actions: {},
   modules: {
     products,
-    pages
+    pages,
+    brands,
+    categories,
+    shippingMethods
   }
 })

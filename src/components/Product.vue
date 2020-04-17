@@ -6,7 +6,7 @@
     <div class="flex">
       <div class="name">
         {{ product.name }}<br/>
-        <small>{{ product.price }}</small>
+        <small>{{ product.price }} zł</small>
       </div>
     </div>
   </router-link>

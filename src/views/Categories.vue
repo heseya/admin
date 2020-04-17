@@ -1,23 +1,17 @@
 <template>
   <div>
-    <top-nav title="Strony">
-
-      <vs-button to="/pages/create" color="dark" icon>
-        <i class="bx bx-plus"></i>
-      </vs-button>
-
-    </top-nav>
+    <top-nav title="Kategorie"></top-nav>
 
     <card>
       <list>
         <list-item
-          v-for="page in pages"
-          :key="page.id"
-          :url="'/pages/' + page.id"
-          :subtitle="'/' + page.slug"
-          :hidden="!page.public"
+          v-for="category in categories"
+          :key="category.id"
+          url="#"
+          :subtitle="'/' + category.slug"
+          :hidden="!category.public"
         >
-          {{ page.name }}
+          {{ category.name }}
         </list-item>
       </list>
     </card>
@@ -38,16 +32,16 @@ export default {
     ListItem
   },
   computed: {
-    pages () {
-      return this.$store.state.pages.pages
+    categories () {
+      return this.$store.state.categories.categories
     }
   },
   methods: {
-    async getPages () {
+    async getCategories () {
       const loading = this.$vs.loading({ color: '#000' })
 
       try {
-        await this.$store.dispatch('pages/index')
+        await this.$store.dispatch('categories/index')
       } catch (e) {
         console.log(e)
       } finally {
@@ -56,7 +50,7 @@ export default {
     }
   },
   created () {
-    this.getPages()
+    this.getCategories()
   }
 }
 </script>

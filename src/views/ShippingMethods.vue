@@ -1,23 +1,17 @@
 <template>
   <div>
-    <top-nav title="Strony">
-
-      <vs-button to="/pages/create" color="dark" icon>
-        <i class="bx bx-plus"></i>
-      </vs-button>
-
-    </top-nav>
+    <top-nav title="Opcje Dostawy"></top-nav>
 
     <card>
       <list>
         <list-item
-          v-for="page in pages"
-          :key="page.id"
-          :url="'/pages/' + page.id"
-          :subtitle="'/' + page.slug"
-          :hidden="!page.public"
+          v-for="shippingMethod in shippingMethods"
+          :key="shippingMethod.id"
+          url="#"
+          :subtitle="shippingMethod.price + 'zł'"
+          :hidden="!shippingMethod.public"
         >
-          {{ page.name }}
+          {{ shippingMethod.name }}
         </list-item>
       </list>
     </card>
@@ -38,16 +32,16 @@ export default {
     ListItem
   },
   computed: {
-    pages () {
-      return this.$store.state.pages.pages
+    shippingMethods () {
+      return this.$store.state.shippingMethods.shippingMethods
     }
   },
   methods: {
-    async getPages () {
+    async getShippingMethods () {
       const loading = this.$vs.loading({ color: '#000' })
 
       try {
-        await this.$store.dispatch('pages/index')
+        await this.$store.dispatch('shippingMethods/index')
       } catch (e) {
         console.log(e)
       } finally {
@@ -56,7 +50,7 @@ export default {
     }
   },
   created () {
-    this.getPages()
+    this.getShippingMethods()
   }
 }
 </script>

@@ -28,12 +28,28 @@ export default {
       password: ''
     }
   },
+  computed: {
+    loginError () {
+      return this.$store.state.user.error
+    }
+  },
+  watch: {
+    loginError (error) {
+      if (error) {
+        this.$vs.notification({
+          color: 'danger',
+          title: 'Błąd logowania',
+          text: 'Popraw email lub haslo'
+        })
+      }
+    }
+  },
   methods: {
     async login () {
       const loading = this.$vs.loading()
       await this.$store.dispatch('user/login', {
         username: this.email,
-        password: this.pass
+        password: this.password
       })
       loading.close()
     }

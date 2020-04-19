@@ -2,9 +2,9 @@
   <div>
     <top-nav title="Zamówienia">
 
-      <vs-button to="/orders/create" color="dark" icon>
+      <!-- <vs-button to="/orders/create" color="dark" icon>
         <i class="bx bx-plus"></i>
-      </vs-button>
+      </vs-button> -->
 
     </top-nav>
 

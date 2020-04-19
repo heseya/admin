@@ -107,7 +107,7 @@ export default {
   },
   computed: {
     product () {
-      return this.$store.state.products.selected
+      return this.$store.getters['products/getSelected']
     }
   },
   methods: {
@@ -128,14 +128,8 @@ export default {
   },
   async created () {
     const loading = this.$vs.loading({ color: '#000' })
-
-    try {
-      await this.$store.dispatch('products/get', this.$route.params.id)
-    } catch (e) {
-      console.log(e)
-    } finally {
-      loading.close()
-    }
+    await this.$store.dispatch('products/get', this.$route.params.id)
+    loading.close()
   },
   components: {
     TopNav,

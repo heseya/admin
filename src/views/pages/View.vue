@@ -83,7 +83,7 @@ export default {
   },
   computed: {
     page () {
-      return this.$store.state.pages.selected
+      return this.$store.getters['pages/getSelected']
     }
   },
   methods: {

@@ -39,7 +39,7 @@ export default {
   },
   computed: {
     pages () {
-      return this.$store.state.pages.data
+      return this.$store.getters['pages/getData']
     }
   },
   methods: {

@@ -33,20 +33,14 @@ export default {
   },
   computed: {
     shippingMethods () {
-      return this.$store.state.shippingMethods.data
+      return this.$store.getters['shippingMethods/getData']
     }
   },
   methods: {
     async getShippingMethods () {
       const loading = this.$vs.loading({ color: '#000' })
-
-      try {
-        await this.$store.dispatch('shippingMethods/fetch')
-      } catch (e) {
-        console.log(e)
-      } finally {
-        loading.close()
-      }
+      await this.$store.dispatch('shippingMethods/fetch')
+      loading.close()
     }
   },
   created () {

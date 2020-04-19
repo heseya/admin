@@ -29,20 +29,14 @@ export default {
   },
   computed: {
     products () {
-      return this.$store.state.products.data
+      return this.$store.getters['products/getData']
     }
   },
   methods: {
     async getProducts () {
       const loading = this.$vs.loading({ color: '#000' })
-
-      try {
-        await this.$store.dispatch('products/fetch')
-      } catch (e) {
-        console.log(e)
-      } finally {
-        loading.close()
-      }
+      await this.$store.dispatch('products/fetch')
+      loading.close()
     }
   },
   created () {

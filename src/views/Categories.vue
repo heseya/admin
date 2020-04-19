@@ -33,20 +33,14 @@ export default {
   },
   computed: {
     categories () {
-      return this.$store.state.categories.data
+      return this.$store.getters['categories/getData']
     }
   },
   methods: {
     async getCategories () {
       const loading = this.$vs.loading({ color: '#000' })
-
-      try {
-        await this.$store.dispatch('categories/fetch')
-      } catch (e) {
-        console.log(e)
-      } finally {
-        loading.close()
-      }
+      await this.$store.dispatch('categories/fetch')
+      loading.close()
     }
   },
   created () {

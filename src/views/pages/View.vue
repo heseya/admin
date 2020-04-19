@@ -83,7 +83,7 @@ export default {
   },
   computed: {
     page () {
-      return this.$store.state.pages.selectedPage
+      return this.$store.state.pages.selected
     }
   },
   methods: {
@@ -106,7 +106,7 @@ export default {
     const loading = this.$vs.loading({ color: '#000' })
 
     try {
-      await this.$store.dispatch('pages/view', this.$route.params.id)
+      await this.$store.dispatch('pages/get', this.$route.params.id)
     } catch (e) {
       console.log(e)
     } finally {

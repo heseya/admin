@@ -107,7 +107,7 @@ export default {
   },
   computed: {
     product () {
-      return this.$store.state.products.selectedProduct
+      return this.$store.state.products.selected
     }
   },
   methods: {
@@ -130,7 +130,7 @@ export default {
     const loading = this.$vs.loading({ color: '#000' })
 
     try {
-      await this.$store.dispatch('products/view', this.$route.params.id)
+      await this.$store.dispatch('products/get', this.$route.params.id)
     } catch (e) {
       console.log(e)
     } finally {

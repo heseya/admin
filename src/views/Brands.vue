@@ -33,7 +33,7 @@ export default {
   },
   computed: {
     brands () {
-      return this.$store.state.brands.brands
+      return this.$store.state.brands.data
     }
   },
   methods: {
@@ -41,7 +41,7 @@ export default {
       const loading = this.$vs.loading({ color: '#000' })
 
       try {
-        await this.$store.dispatch('brands/index')
+        await this.$store.dispatch('brands/fetch')
       } catch (e) {
         console.log(e)
       } finally {

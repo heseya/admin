@@ -33,7 +33,7 @@ export default {
   },
   computed: {
     shippingMethods () {
-      return this.$store.state.shippingMethods.shippingMethods
+      return this.$store.state.shippingMethods.data
     }
   },
   methods: {
@@ -41,7 +41,7 @@ export default {
       const loading = this.$vs.loading({ color: '#000' })
 
       try {
-        await this.$store.dispatch('shippingMethods/index')
+        await this.$store.dispatch('shippingMethods/fetch')
       } catch (e) {
         console.log(e)
       } finally {

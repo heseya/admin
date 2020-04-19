@@ -29,7 +29,7 @@ export default {
   },
   computed: {
     products () {
-      return this.$store.state.products.products
+      return this.$store.state.products.data
     }
   },
   methods: {
@@ -37,7 +37,7 @@ export default {
       const loading = this.$vs.loading({ color: '#000' })
 
       try {
-        await this.$store.dispatch('products/index')
+        await this.$store.dispatch('products/fetch')
       } catch (e) {
         console.log(e)
       } finally {

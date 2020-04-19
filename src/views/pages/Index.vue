@@ -39,7 +39,7 @@ export default {
   },
   computed: {
     pages () {
-      return this.$store.state.pages.pages
+      return this.$store.state.pages.data
     }
   },
   methods: {
@@ -47,7 +47,7 @@ export default {
       const loading = this.$vs.loading({ color: '#000' })
 
       try {
-        await this.$store.dispatch('pages/index')
+        await this.$store.dispatch('pages/fetch')
       } catch (e) {
         console.log(e)
       } finally {

@@ -29,11 +29,13 @@ export default {
     }
   },
   methods: {
-    login () {
+    async login () {
       const loading = this.$vs.loading()
-      setTimeout(() => {
-        loading.close()
-      }, 3000)
+      await this.$store.dispatch('user/login', {
+        username: this.email,
+        password: this.pass
+      })
+      loading.close()
     }
   }
 }

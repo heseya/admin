@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+import { user } from './user'
 import { products } from './products'
 import { pages } from './pages'
 import { brands } from './brands'
@@ -14,6 +15,7 @@ export default new Vuex.Store({
   mutations: {},
   actions: {},
   modules: {
+    user,
     products,
     pages,
     brands,

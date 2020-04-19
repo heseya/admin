@@ -61,6 +61,7 @@ export const createStore = (name, endpoint, custom) => {
     actions: {
       ...(custom?.actions || {}),
       async fetch ({ commit }, query) {
+        commit(mutations.SET_ERROR, null)
         try {
           const stringQuery = queryString.stringify(query)
           const { data } = await api.get(`/${endpoint}?${stringQuery}`)
@@ -70,6 +71,7 @@ export const createStore = (name, endpoint, custom) => {
         }
       },
       async get ({ commit }, id) {
+        commit(mutations.SET_ERROR, null)
         try {
           const { data: responseData } = await api.get(`/${endpoint}/id:${id}}`)
           commit(mutations.SET_SELECTED, responseData.data)
@@ -78,6 +80,7 @@ export const createStore = (name, endpoint, custom) => {
         }
       },
       async add ({ commit }, item) {
+        commit(mutations.SET_ERROR, null)
         try {
           const { data } = await api.post(`/${endpoint}`, item)
           commit(mutations.ADD_DATA, data.data)
@@ -86,6 +89,7 @@ export const createStore = (name, endpoint, custom) => {
         }
       },
       async edit ({ commit }, { id, item }) {
+        commit(mutations.SET_ERROR, null)
         try {
           const { data } = await api.put(`/${endpoint}/id:${id}`, item)
           commit(mutations.EDIT_DATA, data.data)
@@ -94,6 +98,7 @@ export const createStore = (name, endpoint, custom) => {
         }
       },
       async update ({ commit }, { id, item }) {
+        commit(mutations.SET_ERROR, null)
         try {
           const { data } = await api.patch(`/${endpoint}/id:${id}`, item)
           commit(mutations.EDIT_DATA, data.data)
@@ -102,6 +107,7 @@ export const createStore = (name, endpoint, custom) => {
         }
       },
       async remove ({ commit }, id) {
+        commit(mutations.SET_ERROR, null)
         try {
           await api.delete(`/${endpoint}/id:${id}`)
           commit(mutations.REMOVE_DATA, id)

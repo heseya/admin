@@ -35,9 +35,10 @@
         </div>
       </modal-form>
       <template #footer>
-        <vs-button color="dark" @click="saveModal">
-          Zapisz
-        </vs-button>
+        <div class="row">
+          <vs-button color="dark" @click="saveModal">Zapisz</vs-button>
+          <vs-button v-if="editedItem.id" color="danger" @click="deleteItem">Usuń</vs-button>
+        </div>
       </template>
     </vs-dialog>
   </div>
@@ -69,6 +70,20 @@ export default {
   computed: {
     shippingMethods () {
       return this.$store.getters['shippingMethods/getData']
+    },
+    error () {
+      return this.$store.getters['shippingMethods/getError']
+    }
+  },
+  watch: {
+    error (error) {
+      if (error) {
+        this.$vs.notification({
+          color: 'danger',
+          title: error.message,
+          text: error?.response?.data?.message
+        })
+      }
     }
   },
   methods: {
@@ -98,6 +113,12 @@ export default {
       }
       loading.close()
       this.isModalActive = false
+    },
+    async deleteItem () {
+      const loading = this.$vs.loading({ color: '#000' })
+      await this.$store.dispatch('shippingMethods/remove', this.editedItem.id)
+      loading.close()
+      this.isModalActive = false
     }
   },
   created () {
@@ -105,3 +126,10 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.row {
+  display: flex;
+  justify-content: space-between;
+}
+</style>

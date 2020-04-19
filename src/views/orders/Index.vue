@@ -15,6 +15,9 @@
           :key="order.id"
           :url="`/orders/${order.id}`"
         >
+          <template #avatar>
+            <i class='bx bx-check-circle'></i>
+          </template>
           {{ order.code }}
           <small>500 PLN</small>
           <template #action>

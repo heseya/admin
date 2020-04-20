@@ -37,7 +37,15 @@
       <template #footer>
         <div class="row">
           <vs-button color="dark" @click="saveModal">Zapisz</vs-button>
-          <vs-button v-if="editedItem.id" color="danger" @click="deleteItem">Usuń</vs-button>
+          <pop-confirm
+            title="Czy na pewno chcesz usunąć tą metode dostawy?"
+            okText="Usuń"
+            cancelText="Anuluj"
+            @confirm="deleteItem"
+            v-model="isDeleteConfirm"
+          >
+            <vs-button v-if="editedItem.id" color="danger" @click="isDeleteConfirm = !isDeleteConfirm">Usuń</vs-button>
+          </pop-confirm>
         </div>
       </template>
     </vs-dialog>
@@ -50,6 +58,7 @@ import Card from '@/components/Card.vue'
 import List from '@/components/List.vue'
 import ModalForm from '@/components/ModalForm.vue'
 import ListItem from '@/components/ListItem.vue'
+import PopConfirm from '@/components/PopConfirm.vue'
 
 export default {
   components: {
@@ -57,10 +66,12 @@ export default {
     Card,
     List,
     ListItem,
-    ModalForm
+    ModalForm,
+    PopConfirm
   },
   data: () => ({
     isModalActive: false,
+    isDeleteConfirm: false,
     editedItem: {
       name: '',
       price: 0,

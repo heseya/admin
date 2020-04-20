@@ -21,7 +21,7 @@
 export default {
   name: 'PopConfirm',
   props: {
-    value: {
+    value: { // Is popConfirm visible?
       type: Boolean,
       default: false
     },

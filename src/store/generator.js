@@ -44,8 +44,8 @@ export const createStore = (name, endpoint, custom) => {
       getData (state) {
         return state.data
       },
-      getFromListById (state, searchedId) {
-        return state.data.find(({ id }) => id === searchedId)
+      getFromListById (state) {
+        return (searchedId) => ({ ...state.data.find(({ id }) => id === searchedId) })
       }
     },
     mutations: {

@@ -1,24 +1,17 @@
 <template>
 <div>
   <top-nav :title="page.name">
-    <vs-tooltip bottom shadow not-hover v-model="deleteConfirm">
-      <vs-button dark icon @click="deleteConfirm =! deleteConfirm">
+    <pop-confirm
+      title="Czy na pewno chcesz usunąć tą stronę?"
+      okText="Usuń"
+      cancelText="Anuluj"
+      @confirm="() => {}"
+      v-model="isDeleteConfirm"
+    >
+      <vs-button dark icon @click="isDeleteConfirm = !isDeleteConfirm">
         <i class="bx bx-trash"></i>
       </vs-button>
-      <template #tooltip>
-        <div class="content-tooltip">
-          <p>Czy na pewno chcesz usunąć tą stronę?</p>
-          <footer>
-            <vs-button @click="deleteConfirm = false" danger block>
-              Usuń
-            </vs-button>
-            <vs-button @click="deleteConfirm = false" transparent dark block>
-              Anuluj
-            </vs-button>
-          </footer>
-        </div>
-      </template>
-    </vs-tooltip>
+    </pop-confirm>
   </top-nav>
 
   <div class="page">
@@ -64,17 +57,19 @@ import { Editor } from '@toast-ui/vue-editor'
 import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/Card.vue'
 import FlexInput from '@/components/FlexInput.vue'
+import PopConfirm from '@/components/PopConfirm.vue'
 
 export default {
   components: {
     TopNav,
     Card,
     FlexInput,
-    Editor
+    Editor,
+    PopConfirm
   },
   data () {
     return {
-      deleteConfirm: false,
+      isDeleteConfirm: false,
       activeLoading: false,
       editorOptions: {
         language: 'pl-PL'
@@ -131,14 +126,6 @@ export default {
 
   .vs-select-content {
     max-width: none;
-  }
-}
-
-.content-tooltip {
-  footer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 }
 

@@ -1,6 +1,6 @@
 <template>
-  <component :is="component" :to="url" class="list__item" @click="click">
-    <div v-if="!!$slots.avatar" class="list__item__avatar">
+  <component :is="component" :to="url" class="list-item" @click="click">
+    <div v-if="!!$slots.avatar" class="list-item__avatar">
       <vs-avatar dark>
         <slot name="avatar"></slot>
       </vs-avatar>
@@ -8,6 +8,9 @@
     <div>
       <i v-if="hidden" class="bx bx-lock-alt"></i>
       <slot></slot>
+    </div>
+    <div class="list-item__action">
+      <slot name="action"></slot>
     </div>
   </component>
 </template>
@@ -33,7 +36,7 @@ export default {
 </script>
 
 <style lang="scss">
-.list__item {
+.list-item {
   all: unset;
   font-family: $font-main;
   width: 100%;
@@ -60,6 +63,10 @@ export default {
 
   &__avatar {
     margin-right: 13px;
+  }
+
+  &__action {
+    margin-left: auto;
   }
 }
 

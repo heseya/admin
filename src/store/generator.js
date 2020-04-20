@@ -80,6 +80,7 @@ export const createStore = (name, endpoint, custom) => {
         try {
           const stringQuery = queryString.stringify(query)
           const { data } = await api.get(`/${endpoint}?${stringQuery}`)
+          commit(mutations.SET_META, data.meta)
           commit(mutations.SET_DATA, data.data)
         } catch (error) {
           commit(mutations.SET_ERROR, error)

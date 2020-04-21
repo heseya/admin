@@ -1,13 +1,17 @@
 <template>
   <div>
-    <top-nav title="Marki"></top-nav>
+    <top-nav title="Marki">
+      <vs-button @click="openModal()" color="dark" icon>
+        <i class="bx bx-plus"></i>
+      </vs-button>
+    </top-nav>
 
     <card>
       <list>
         <list-item
           v-for="brand in brands"
           :key="brand.id"
-          url="#"
+          @click="openModal(brand.id)"
           :hidden="!brand.public"
         >
           {{ brand.name }}
@@ -15,6 +19,41 @@
         </list-item>
       </list>
     </card>
+
+    <vs-dialog width="550px" not-center v-model="isModalActive">
+      <template #header>
+        <h4>{{ editedItem.id ? 'Edycja' : 'Dodawanie' }} marki</h4>
+      </template>
+      <modal-form>
+        <vs-input v-model="editedItem.name" label="Nazwa" />
+        <vs-input v-model="editedItem.slug" label="Slug" />
+        <div class="center">
+          <vs-switch v-model="editedItem.public">
+            <template #off>Ukryta</template>
+            <template #on>Widoczna</template>
+          </vs-switch>
+        </div>
+      </modal-form>
+      <template #footer>
+        <div class="row">
+          <vs-button color="dark" @click="saveModal">Zapisz</vs-button>
+          <pop-confirm
+            title="Czy na pewno chcesz usunąć tę markę?"
+            okText="Usuń"
+            cancelText="Anuluj"
+            @confirm="deleteItem"
+            v-model="isDeleteConfirm"
+          >
+            <vs-button
+              v-if="editedItem.id"
+              color="danger"
+              @click="isDeleteConfirm = !isDeleteConfirm"
+              >Usuń</vs-button
+            >
+          </pop-confirm>
+        </div>
+      </template>
+    </vs-dialog>
   </div>
 </template>
 
@@ -22,28 +61,86 @@
 import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/Card.vue'
 import List from '@/components/List.vue'
+import ModalForm from '@/components/ModalForm.vue'
 import ListItem from '@/components/ListItem.vue'
+import PopConfirm from '@/components/PopConfirm.vue'
 
 export default {
   components: {
     TopNav,
     Card,
     List,
-    ListItem
+    ListItem,
+    ModalForm,
+    PopConfirm
   },
+  data: () => ({
+    isModalActive: false,
+    isDeleteConfirm: false,
+    editedItem: {
+      name: '',
+      slug: '',
+      public: true
+    }
+  }),
   computed: {
-    brands () {
+    brands() {
       return this.$store.getters['brands/getData']
+    },
+    error() {
+      return this.$store.getters['brands/getError']
+    }
+  },
+  watch: {
+    error(error) {
+      if (error) {
+        this.$vs.notification({
+          color: 'danger',
+          title: error.message,
+          text: error?.response?.data?.message
+        })
+      }
     }
   },
   methods: {
-    async getBrands () {
+    async getBrands() {
       const loading = this.$vs.loading({ color: '#000' })
       await this.$store.dispatch('brands/fetch')
       loading.close()
+    },
+    openModal(id) {
+      this.isModalActive = true
+      if (id) {
+        this.editedItem = this.$store.getters['brands/getFromListById'](id)
+      } else {
+        this.editedItem = {
+          name: '',
+          slug: '',
+          public: true
+        }
+      }
+    },
+    async saveModal() {
+      const loading = this.$vs.loading({ color: '#000' })
+      if (this.editedItem.id) {
+        await this.$store.dispatch('brands/edit', {
+          id: this.editedItem.id,
+          item: this.editedItem
+        })
+      } else {
+        await this.$store.dispatch('brands/add', this.editedItem)
+      }
+      loading.close()
+      this.isModalActive = false
+    },
+    async deleteItem() {
+      const loading = this.$vs.loading({ color: '#000' })
+      await this.$store.dispatch('brands/remove', this.editedItem.id)
+      loading.close()
+      this.isModalActive = false
     }
   },
-  created () {
+  created() {
     this.getBrands()
   }
 }

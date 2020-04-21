@@ -22,15 +22,15 @@
 
     <vs-dialog width="550px" not-center v-model="isModalActive">
       <template #header>
-        <h4>{{editedItem.id ? 'Edycja' : 'Dodawanie'}} opcji dostawy</h4>
+        <h4>{{ editedItem.id ? 'Edycja' : 'Dodawanie' }} opcji dostawy</h4>
       </template>
       <modal-form>
         <vs-input v-model="editedItem.name" label="Nazwa" />
         <vs-input v-model="editedItem.price" label="Cena" type="number" />
         <div class="center">
           <vs-switch v-model="editedItem.public">
-            <template #off>Ukryty</template>
-            <template #on>Widoczny</template>
+            <template #off>Ukryta</template>
+            <template #on>Widoczna</template>
           </vs-switch>
         </div>
       </modal-form>
@@ -44,7 +44,12 @@
             @confirm="deleteItem"
             v-model="isDeleteConfirm"
           >
-            <vs-button v-if="editedItem.id" color="danger" @click="isDeleteConfirm = !isDeleteConfirm">Usuń</vs-button>
+            <vs-button
+              v-if="editedItem.id"
+              color="danger"
+              @click="isDeleteConfirm = !isDeleteConfirm"
+              >Usuń</vs-button
+            >
           </pop-confirm>
         </div>
       </template>
@@ -79,15 +84,15 @@ export default {
     }
   }),
   computed: {
-    shippingMethods () {
+    shippingMethods() {
       return this.$store.getters['shippingMethods/getData']
     },
-    error () {
+    error() {
       return this.$store.getters['shippingMethods/getError']
     }
   },
   watch: {
-    error (error) {
+    error(error) {
       if (error) {
         this.$vs.notification({
           color: 'danger',
@@ -98,12 +103,12 @@ export default {
     }
   },
   methods: {
-    async getShippingMethods () {
+    async getShippingMethods() {
       const loading = this.$vs.loading({ color: '#000' })
       await this.$store.dispatch('shippingMethods/fetch')
       loading.close()
     },
-    openModal (id) {
+    openModal(id) {
       this.isModalActive = true
       if (id) {
         this.editedItem = this.$store.getters['shippingMethods/getFromListById'](id)
@@ -115,24 +120,27 @@ export default {
         }
       }
     },
-    async saveModal () {
+    async saveModal() {
       const loading = this.$vs.loading({ color: '#000' })
       if (this.editedItem.id) {
-        await this.$store.dispatch('shippingMethods/edit', { id: this.editedItem.id, item: this.editedItem })
+        await this.$store.dispatch('shippingMethods/edit', {
+          id: this.editedItem.id,
+          item: this.editedItem
+        })
       } else {
         await this.$store.dispatch('shippingMethods/add', this.editedItem)
       }
       loading.close()
       this.isModalActive = false
     },
-    async deleteItem () {
+    async deleteItem() {
       const loading = this.$vs.loading({ color: '#000' })
       await this.$store.dispatch('shippingMethods/remove', this.editedItem.id)
       loading.close()
       this.isModalActive = false
     }
   },
-  created () {
+  created() {
     this.getShippingMethods()
   }
 }

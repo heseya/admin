@@ -1,59 +1,49 @@
 <template>
-<div>
-  <top-nav :title="page.name">
-    <pop-confirm
-      title="Czy na pewno chcesz usunąć tą stronę?"
-      okText="Usuń"
-      cancelText="Anuluj"
-      @confirm="() => {}"
-      v-model="isDeleteConfirm"
-    >
-      <vs-button dark icon @click="isDeleteConfirm = !isDeleteConfirm">
-        <i class="bx bx-trash"></i>
-      </vs-button>
-    </pop-confirm>
-  </top-nav>
+  <div>
+    <top-nav :title="!isNew ? page.name : 'Nowa strona'">
+      <pop-confirm
+        v-if="!isNew"
+        title="Czy na pewno chcesz usunąć tą stronę?"
+        okText="Usuń"
+        cancelText="Anuluj"
+        @confirm="deletePage"
+        v-model="isDeleteConfirm"
+      >
+        <vs-button dark icon @click="isDeleteConfirm = !isDeleteConfirm">
+          <i class="bx bx-trash"></i>
+        </vs-button>
+      </pop-confirm>
+    </top-nav>
 
-  <div class="page">
-
-    <card>
-      <div class="page__info">
-        <vs-input v-model="page.name" label="Nazwa"/>
-        <vs-input v-model="page.slug" label="Link"/>
-        <flex-input>
-          <label class="title">Widoczność strony</label>
-          <vs-switch @click="changePublic" success v-model="page.public" :loading="activeLoading">
-            <template #off>
-              <i class='bx bx-x' ></i>
-            </template>
-            <template #on>
-              <i class='bx bx-check' ></i>
-            </template>
-          </vs-switch>
-        </flex-input>
-      </div>
-      <br>
-      <editor
-        height="500px"
-        :options="editorOptions"
-        initialEditType="wysiwyg"
-        :initialValue="page.content"
-      />
-      <br>
-      <vs-button color="dark" size="large" @click="openNotification(null, 'success')">
-        Zapisz
-      </vs-button>
-    </card>
-
+    <div class="page">
+      <card>
+        <div class="page__info">
+          <vs-input v-model="form.name" label="Nazwa" />
+          <vs-input v-model="form.slug" label="Link" />
+          <flex-input>
+            <label class="title">Widoczność strony</label>
+            <vs-switch success v-model="form.public">
+              <template #off>
+                <i class="bx bx-x"></i>
+              </template>
+              <template #on>
+                <i class="bx bx-check"></i>
+              </template>
+            </vs-switch>
+          </flex-input>
+        </div>
+        <br />
+        <wysiwyg v-model="form.content" />
+        <br />
+        <vs-button color="dark" size="large" @click="save">
+          Zapisz
+        </vs-button>
+      </card>
+    </div>
   </div>
-
-</div>
 </template>
 
 <script>
-import 'codemirror/lib/codemirror.css'
-import '@toast-ui/editor/dist/toastui-editor.css'
-import { Editor } from '@toast-ui/vue-editor'
 import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/Card.vue'
 import FlexInput from '@/components/FlexInput.vue'
@@ -64,47 +54,93 @@ export default {
     TopNav,
     Card,
     FlexInput,
-    Editor,
     PopConfirm
   },
-  data () {
+  data() {
     return {
       isDeleteConfirm: false,
-      activeLoading: false,
-      editorOptions: {
-        language: 'pl-PL'
+      form: {
+        name: '',
+        slug: '',
+        content: '',
+        public: true
       }
     }
   },
   computed: {
-    page () {
+    id() {
+      return this.$route.params.id
+    },
+    isNew() {
+      return this.id === 'create'
+    },
+    page() {
       return this.$store.getters['pages/getSelected']
+    },
+    error() {
+      return this.$store.getters['pages/getError']
+    }
+  },
+  watch: {
+    page(page) {
+      if (!this.isNew) {
+        this.form = { ...page }
+      }
+    },
+    error(error) {
+      if (error) {
+        this.$vs.notification({
+          color: 'danger',
+          title: error.message,
+          text: error?.response?.data?.message
+        })
+      }
     }
   },
   methods: {
-    openNotification (position = null, color) {
-      return this.$vs.notification({
-        color,
-        position,
-        title: 'Produkt został zaktualizowany.'
-      })
-    },
-    changePublic () {
-      this.activeLoading = true
+    async save() {
+      const loading = this.$vs.loading({ color: '#000' })
+      if (this.isNew) {
+        const newID = await this.$store.dispatch('pages/add', this.form)
+        if (newID) {
+          this.$vs.notification({
+            color: 'success',
+            title: 'Strona została utworzona.'
+          })
+          this.$router.push(`/pages/${newID}`)
+        }
+      } else {
+        const success = await this.$store.dispatch('pages/update', {
+          id: this.id,
+          item: this.form
+        })
+        if (success) {
+          this.$vs.notification({
+            color: 'success',
+            title: 'Strona została zaktualizowana.'
+          })
+        }
+      }
 
-      setTimeout(() => {
-        this.activeLoading = false
-      }, 3000)
+      loading.close()
+    },
+    async deletePage() {
+      const loading = this.$vs.loading({ color: '#000' })
+      const success = await this.$store.dispatch('pages/remove', this.id)
+      if (success) {
+        this.$vs.notification({
+          color: 'success',
+          title: 'Strona została usunięta.'
+        })
+        this.$router.push('/pages')
+      }
+      loading.close()
     }
   },
-  async created () {
-    const loading = this.$vs.loading({ color: '#000' })
-
-    try {
-      await this.$store.dispatch('pages/get', this.$route.params.id)
-    } catch (e) {
-      console.log(e)
-    } finally {
+  async created() {
+    if (!this.isNew) {
+      const loading = this.$vs.loading({ color: '#000' })
+      await this.$store.dispatch('pages/get', this.id)
       loading.close()
     }
   }
@@ -113,12 +149,12 @@ export default {
 
 <style lang="scss">
 .page__info {
-    width: 100%;
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: 30px 30px 20px;
-    row-gap: 20px;
-    margin-top: 15px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 30px 30px 20px;
+  row-gap: 20px;
+  margin-top: 15px;
 
   input {
     width: 100%;

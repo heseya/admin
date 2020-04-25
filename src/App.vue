@@ -21,6 +21,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import '~vue-wysiwyg/dist/vueWysiwyg.css';
+
 @font-face {
   font-family: 'Tw Cen MT';
   font-style: normal;

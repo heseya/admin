@@ -1,9 +1,10 @@
 <template>
   <div
     class="media-uploader"
-    @drop.prevent="addFile"
+    @click="selectFiles"
+    @drop.prevent="dropFiles"
+    @dragover.prevent="() => {}"
     @dragenter.prevent="changeDrag(true)"
-    @dragover.prevent
     @dragleave.prevent="changeDrag(false)"
   >
     <slot />
@@ -11,22 +12,63 @@
 </template>
 
 <script>
+import { api } from '@/api'
+import { getLastElement } from '@/utils/utils'
+
 export default {
   name: 'MediaUploader',
   data: () => ({
-    rawFiles: []
+    file: []
   }),
+  props: {
+    extensions: {
+      type: Array,
+      default: () => ['jpg', 'png', 'gif', 'bmp']
+    }
+  },
   methods: {
-    addFile(e) {
-      this.rawFiles = [...e.dataTransfer.files]
-      this.$emit('drop', this.rawFiles)
+    selectFiles() {
+      const input = document.createElement('input')
+      input.type = 'file'
+
+      input.onchange = (e) => {
+        this.file = e.target.files[0]
+        this.$emit('drop', this.file)
+        this.upload()
+      }
+
+      input.click()
+    },
+    dropFiles(e) {
+      this.file = e.dataTransfer.files[0]
       this.changeDrag(false)
+      this.$emit('drop', this.file)
       this.upload()
     },
     async upload() {
-      // TODO
-      console.log('files', this.rawFiles)
-      this.$emit('upload', [1, 2])
+      if (!this.isFileValid()) {
+        this.$vs.notification({
+          color: 'danger',
+          title: 'Złe rozszerzenie pliku',
+          text: `Obsługiwane są tylko pliki z rozszerzeniami: ${this.extensions.join(', ')}`
+        })
+        return
+      }
+
+      try {
+        const form = new FormData()
+        form.append('file', this.file)
+
+        const { data } = await api.post('/media', form)
+        this.$emit('upload', data.data)
+      } catch (error) {
+        this.$emit('error', error)
+      }
+    },
+    isFileValid() {
+      if (!this.file) return false
+      const extension = getLastElement(this.file.name.split('.'))
+      return this.extensions.some((ext) => ext === extension)
     },
     changeDrag(isDrag) {
       this.$emit('dragChange', isDrag)
@@ -37,5 +79,21 @@ export default {
 
 <style lang="scss">
 .media-uploader {
+  cursor: pointer;
+
+  // hack to force whole child element area to behave as a dropzone
+  > * {
+    position: relative;
+
+    &::before {
+      content: '';
+      z-index: 10;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+  }
 }
 </style>

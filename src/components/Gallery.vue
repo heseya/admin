@@ -5,7 +5,7 @@
         <img :src="image.url" />
       </div>
     </template>
-    <app-media-uploader @dragChange="dragChange">
+    <app-media-uploader @dragChange="dragChange" @upload="galleryImageUpload">
       <div class="gallery__img add" :class="{ 'add--drag': isDrag }">
         <img src="/img/icons/plus.svg" />
       </div>
@@ -29,6 +29,14 @@ export default {
   methods: {
     dragChange(isDrag) {
       this.isDrag = isDrag
+    },
+    galleryImageUpload(file) {
+      // TODO
+      console.log('galleryImageUpload -> file', file)
+      this.$vs.notification({
+        color: 'success',
+        title: 'Plip poprawnie wysłany'
+      })
     }
   }
 }
@@ -84,6 +92,7 @@ export default {
       transition: 0.3s;
     }
 
+    &:hover,
     &--drag {
       img {
         transform: scale(1.5);

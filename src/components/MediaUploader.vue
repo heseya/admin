@@ -1,6 +1,7 @@
 <template>
   <div
     class="media-uploader"
+    :class="{ 'media-uploader--drag': isDrag }"
     @click="selectFiles"
     @drop.prevent="dropFiles"
     @dragover.prevent="() => {}"
@@ -18,7 +19,8 @@ import { getLastElement } from '@/utils/utils'
 export default {
   name: 'MediaUploader',
   data: () => ({
-    file: []
+    isDrag: false,
+    file: null
   }),
   props: {
     extensions: {
@@ -61,6 +63,7 @@ export default {
 
         const { data } = await api.post('/media', form)
         this.$emit('upload', data.data)
+        this.file = null
       } catch (error) {
         this.$emit('error', error)
       }
@@ -71,6 +74,7 @@ export default {
       return this.extensions.some((ext) => ext === extension)
     },
     changeDrag(isDrag) {
+      this.isDrag = isDrag
       this.$emit('dragChange', isDrag)
     }
   }

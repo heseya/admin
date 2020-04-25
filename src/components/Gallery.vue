@@ -2,19 +2,42 @@
   <div class="gallery">
     <template v-for="image in images">
       <div class="gallery__img" :key="image.url">
-        <img :src="image.url">
+        <img :src="image.url" />
       </div>
     </template>
-    <div class="gallery__img add">
-      <img src="/img/icons/plus.svg">
-    </div>
+    <app-media-uploader @dragChange="dragChange" @upload="galleryImageUpload">
+      <div class="gallery__img add" :class="{ 'add--drag': isDrag }">
+        <img src="/img/icons/plus.svg" />
+      </div>
+    </app-media-uploader>
   </div>
 </template>
 
 <script>
+import MediaUploader from '@/components/MediaUploader'
+
 export default {
+  components: {
+    appMediaUploader: MediaUploader
+  },
   props: {
     images: Array
+  },
+  data: () => ({
+    isDrag: false
+  }),
+  methods: {
+    dragChange(isDrag) {
+      this.isDrag = isDrag
+    },
+    galleryImageUpload(file) {
+      // TODO
+      console.log('galleryImageUpload -> file', file)
+      this.$vs.notification({
+        color: 'success',
+        title: 'Plip poprawnie wysłany'
+      })
+    }
   }
 }
 </script>
@@ -24,6 +47,11 @@ export default {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-gap: 10px;
+
+  *:first-child {
+    grid-column: 1/3;
+    grid-row: 1/3;
+  }
 
   &__img {
     position: relative;
@@ -35,14 +63,10 @@ export default {
     margin-bottom: 4px;
     box-shadow: $shadow;
 
-    &:first-child {
-      grid-column: 1/3;
-      grid-row: 1/3;
-    }
-
     img {
       position: absolute;
-      top: 0; left: 0;
+      top: 0;
+      left: 0;
       height: 100%;
     }
 
@@ -62,8 +86,17 @@ export default {
 
   .add {
     img {
-      top: 40%; left: 40%;
+      top: 40%;
+      left: 40%;
       height: 20%;
+      transition: 0.3s;
+    }
+
+    &:hover,
+    &--drag {
+      img {
+        transform: scale(1.5);
+      }
     }
   }
 
@@ -88,7 +121,7 @@ export default {
 
     img {
       filter: blur(4px);
-      transform: scale(1.1)
+      transform: scale(1.1);
     }
   }
 

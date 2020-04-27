@@ -123,7 +123,7 @@ export default {
     async saveModal() {
       const loading = this.$vs.loading({ color: '#000' })
       if (this.editedItem.id) {
-        await this.$store.dispatch('brands/edit', {
+        await this.$store.dispatch('brands/update', {
           id: this.editedItem.id,
           item: this.editedItem
         })

@@ -1,15 +1,15 @@
 <template>
-  <vs-tooltip bottom shadow not-hover :value="value" @input="setValue">
-    <slot></slot>
+  <vs-tooltip bottom shadow not-hover :value="visible" @input="setVisible">
+    <slot :open="open" :close="close" :toggle="toggle"></slot>
     <template #tooltip>
       <div class="content-tooltip">
-        <p>{{title}}</p>
+        <p>{{ title }}</p>
         <footer>
           <vs-button @click="confirm" danger block>
-            {{okText}}
+            {{ okText }}
           </vs-button>
           <vs-button @click="cancel" transparent dark block>
-            {{cancelText}}
+            {{ cancelText }}
           </vs-button>
         </footer>
       </div>
@@ -20,8 +20,13 @@
 <script>
 export default {
   name: 'PopConfirm',
+  data: () => ({
+    visible: false
+  }),
   props: {
-    value: { // Is popConfirm visible?
+    value: {
+      // ! DEPRECATED
+      // Is popConfirm visible?
       type: Boolean,
       default: false
     },
@@ -39,16 +44,33 @@ export default {
     }
   },
   methods: {
-    setValue (newValue) {
-      this.$emit('input', !!newValue)
+    setVisible(newValue) {
+      this.$emit('input', !!newValue) // ! DEPRECATED
+      this.visible = !!newValue
     },
-    confirm () {
+    open() {
+      this.setVisible(true)
+    },
+    close() {
+      this.setVisible(false)
+    },
+    toggle() {
+      this.setVisible(!this.visible)
+    },
+    confirm() {
       this.$emit('confirm')
-      this.setValue(false)
+      this.close()
     },
-    cancel () {
+    cancel() {
       this.$emit('cancel')
-      this.setValue(false)
+      this.close()
+    }
+  },
+  watch: {
+    value(v) {
+      // ! DEPRECATED
+      // Added for compatibility support only
+      this.visible = v
     }
   }
 }

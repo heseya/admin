@@ -4,13 +4,13 @@
       <div class="gallery__img" :key="image.url">
         <img :src="image.url" />
         <div class="remove">
-          <vs-button icon color="danger" @click="galleryImageDelete(image.id)">
+          <vs-button icon color="danger" @click="onImageDelete(image.id)">
             <i class="bx bx-trash"></i>
           </vs-button>
         </div>
       </div>
     </template>
-    <app-media-uploader @dragChange="dragChange" @upload="galleryImageUpload">
+    <app-media-uploader @dragChange="dragChange" @upload="onImageUpload" @error="onUploadError">
       <div class="gallery__img add" :class="{ 'add--drag': isDrag }">
         <img src="/img/icons/plus.svg" />
       </div>
@@ -35,14 +35,17 @@ export default {
     dragChange(isDrag) {
       this.isDrag = isDrag
     },
-    galleryImageDelete(deletedId) {
+    onImageDelete(deletedId) {
       this.$emit('delete', deletedId)
     },
-    galleryImageUpload(file) {
+    onImageUpload(file) {
       this.$emit('new', file)
+    },
+    onUploadError(error) {
       this.$vs.notification({
-        color: 'success',
-        title: 'Plik poprawnie wysłany'
+        color: 'danger',
+        title: 'Coś poszło nie tak z wysyłaniem pliku',
+        text: error.message
       })
     }
   }

@@ -20,49 +20,70 @@
         <gallery :images="form.gallery" @new="onNewMedia" @delete="onDeleteMedia"></gallery>
 
         <card style="margin-top: 30px">
-          <div class="product__info">
-            <div>
-              <br />
-              <vs-input v-model="form.name" label="Nazwa" />
-              <br /><br />
-              <vs-input v-model="form.slug" label="Link" />
-              <br /><br />
-              <vs-input v-model="form.price" type="number" step="0.01" label="Cena" />
-              <br /><br />
-              <vs-input v-model="form.description" label="Opis" />
-              <br />
-            </div>
+          <validation-observer v-slot="{ handleSubmit }">
+            <form @submit.prevent="handleSubmit(saveProduct)" class="product__info">
+              <div>
+                <br />
+                <validation-provider rules="required" v-slot="{ errors }">
+                  <vs-input v-model="form.name" label="Nazwa">
+                    <template #message-danger>{{ errors[0] }}</template>
+                  </vs-input>
+                </validation-provider>
+                <br /><br />
+                <validation-provider rules="required" v-slot="{ errors }">
+                  <vs-input v-model="form.slug" label="Link">
+                    <template #message-danger>{{ errors[0] }}</template>
+                  </vs-input>
+                </validation-provider>
+                <br /><br />
+                <validation-provider rules="required" v-slot="{ errors }">
+                  <vs-input v-model="form.price" type="number" step="0.01" label="Cena">
+                    <template #message-danger>{{ errors[0] }}</template>
+                  </vs-input>
+                </validation-provider>
+                <br />
+              </div>
 
-            <div>
-              <br /><vs-select v-model="form.brand_id" filter label="Marka">
-                <vs-option label="Wybierz markę" :value="0">Wybierz markę</vs-option>
-                <vs-option
-                  v-for="brand in brands"
-                  :key="brand.id"
-                  :label="brand.name"
-                  :value="brand.id"
-                >
-                  {{ brand.name }}
-                </vs-option>
-              </vs-select>
-              <br /><br />
-              <vs-select v-model="form.category_id" filter label="Kategoria">
-                <vs-option label="Wybierz kategorię" :value="0">Wybierz kategorię</vs-option>
-                <vs-option
-                  v-for="category in categories"
-                  :key="category.id"
-                  :label="category.name"
-                  :value="category.id"
-                >
-                  {{ category.name }}
-                </vs-option>
-              </vs-select>
-            </div>
-          </div>
-          <br />
-          <vs-button color="dark" size="large" @click="saveProduct">
-            Zapisz
-          </vs-button>
+              <div>
+                <br />
+                <validation-provider rules="id-required" v-slot="{ errors }">
+                  <vs-select v-model="form.brand_id" filter label="Marka">
+                    <vs-option label="Wybierz markę" :value="0">Wybierz markę</vs-option>
+                    <vs-option
+                      v-for="brand in brands"
+                      :key="brand.id"
+                      :label="brand.name"
+                      :value="brand.id"
+                    >
+                      {{ brand.name }}
+                    </vs-option>
+                    <template #message-danger>{{ errors[0] }}</template>
+                  </vs-select>
+                </validation-provider>
+                <br /><br />
+                <validation-provider rules="id-required" v-slot="{ errors }">
+                  <vs-select v-model="form.category_id" filter label="Kategoria">
+                    <vs-option label="Wybierz kategorię" :value="0">Wybierz kategorię</vs-option>
+                    <vs-option
+                      v-for="category in categories"
+                      :key="category.id"
+                      :label="category.name"
+                      :value="category.id"
+                    >
+                      {{ category.name }}
+                    </vs-option>
+                    <template #message-danger>{{ errors[0] }}</template>
+                  </vs-select>
+                </validation-provider>
+              </div>
+
+              <div class="wide">
+                <vs-input v-model="form.description" label="Opis" />
+                <br />
+                <vs-button color="dark" size="large">Zapisz</vs-button>
+              </div>
+            </form>
+          </validation-observer>
         </card>
       </div>
 
@@ -83,6 +104,12 @@
 
         <card>
           <div class="title">Magazyn</div>
+          <small>Już wkrótce</small>
+        </card>
+
+        <card>
+          <div class="title">Schematy</div>
+          <small>Już wkrótce</small>
         </card>
       </div>
     </div>
@@ -90,11 +117,33 @@
 </template>
 
 <script>
+import { ValidationProvider, ValidationObserver, extend } from 'vee-validate'
+import { required } from 'vee-validate/dist/rules'
+
 import TopNav from '@/layout/TopNav.vue'
 import Gallery from '@/components/Gallery.vue'
 import Card from '@/components/Card.vue'
 import FlexInput from '@/components/FlexInput.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
+
+extend('required', {
+  ...required,
+  message: 'To pole jest wymagane'
+})
+
+extend('positive', {
+  message: 'To pole musi być większe od zera',
+  validate: (value) => {
+    return value > 0
+  }
+})
+
+extend('id-required', {
+  message: 'To pole jest wymagane',
+  validate: (value) => {
+    return value !== 0
+  }
+})
 
 const EMPTY_SCHEMA = {
   id: 1,
@@ -238,7 +287,9 @@ export default {
     Gallery,
     Card,
     FlexInput,
-    PopConfirm
+    PopConfirm,
+    ValidationProvider,
+    ValidationObserver
   }
 }
 </script>
@@ -268,12 +319,20 @@ export default {
   .product {
     display: grid;
     grid-template-columns: 4fr 2fr;
-    column-gap: 35px;
+    gap: 35px;
+
+    small {
+      color: #aaa;
+    }
 
     &__info {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      column-gap: 20px;
+      gap: 20px;
+
+      .wide {
+        grid-column: 1/-1;
+      }
     }
   }
 }

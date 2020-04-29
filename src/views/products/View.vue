@@ -231,7 +231,7 @@ export default {
       const payload = this.isNew ? this.form : { id: this.id, item: this.form }
 
       const newID = await this.$store.dispatch(
-        this.isNew ? 'products/add' : 'products/edit',
+        this.isNew ? 'products/add' : 'products/update',
         payload
       )
 

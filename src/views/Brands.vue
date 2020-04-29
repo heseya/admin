@@ -42,14 +42,9 @@
             okText="Usuń"
             cancelText="Anuluj"
             @confirm="deleteItem"
-            v-model="isDeleteConfirm"
+            v-slot="{ open }"
           >
-            <vs-button
-              v-if="editedItem.id"
-              color="danger"
-              @click="isDeleteConfirm = !isDeleteConfirm"
-              >Usuń</vs-button
-            >
+            <vs-button v-if="editedItem.id" color="danger" @click="open">Usuń</vs-button>
           </pop-confirm>
         </div>
       </template>
@@ -76,7 +71,6 @@ export default {
   },
   data: () => ({
     isModalActive: false,
-    isDeleteConfirm: false,
     editedItem: {
       name: '',
       slug: '',

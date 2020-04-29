@@ -121,7 +121,6 @@ export default {
           })
         }
       }
-
       loading.close()
     },
     async deletePage() {

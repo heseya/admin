@@ -25,7 +25,7 @@ export default {
   props: {
     extensions: {
       type: Array,
-      default: () => ['jpg', 'png', 'gif', 'bmp']
+      default: () => ['jpg', 'jpeg', 'png', 'gif', 'bmp']
     }
   },
   methods: {
@@ -57,6 +57,7 @@ export default {
         return
       }
 
+      const loading = this.$vs.loading({ color: '#000' })
       try {
         const form = new FormData()
         form.append('file', this.file)
@@ -67,6 +68,7 @@ export default {
       } catch (error) {
         this.$emit('error', error)
       }
+      loading.close()
     },
     isFileValid() {
       if (!this.file) return false

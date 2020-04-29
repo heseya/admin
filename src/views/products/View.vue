@@ -1,6 +1,6 @@
 <template>
   <div>
-    <top-nav :title="product.name">
+    <top-nav :title="!isNew ? product.name : 'Nowy produkt'">
       <pop-confirm
         v-if="!isNew"
         title="Czy na pewno chcesz usunąć ten produkt?"
@@ -17,7 +17,7 @@
 
     <div class="product">
       <div>
-        <gallery :images="product.gallery"></gallery>
+        <gallery :images="form.gallery" @new="onNewMedia" @delete="onDeleteMedia"></gallery>
 
         <card style="margin-top: 30px">
           <div class="product__info">
@@ -123,6 +123,7 @@ export default {
         public: true,
         brand_id: 0,
         category_id: 0,
+        gallery: [],
         media: []
       }
     }
@@ -148,6 +149,14 @@ export default {
     }
   },
   methods: {
+    onNewMedia(file) {
+      this.form.gallery.push(file)
+      this.form.media.push(file.id)
+    },
+    onDeleteMedia(deletedId) {
+      this.form.gallery = this.form.gallery.filter(({ id }) => deletedId !== id)
+      this.form.media = this.form.media.filter((id) => deletedId !== id)
+    },
     async fetch() {
       return this.$store.dispatch('products/get', this.$route.params.id)
     },

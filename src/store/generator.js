@@ -64,7 +64,7 @@ export const createStore = (name, endpoint, custom) => {
       },
       [mutations.EDIT_DATA](state, editedItem) {
         const index = state.data.findIndex(({ id }) => id === editedItem.id)
-        state.data[index] = editedItem
+        if (index > 0) state.data[index] = editedItem
       },
       [mutations.REMOVE_DATA](state, removedID) {
         state.data = state.data.filter(({ id }) => id !== removedID)
@@ -104,7 +104,7 @@ export const createStore = (name, endpoint, custom) => {
         try {
           const { data } = await api.post(`/${endpoint}`, item)
           commit(mutations.ADD_DATA, data.data)
-          return data.id
+          return data.data.id
         } catch (error) {
           commit(mutations.SET_ERROR, error)
           return false
@@ -115,7 +115,7 @@ export const createStore = (name, endpoint, custom) => {
         try {
           const { data } = await api.put(`/${endpoint}/id:${id}`, item)
           commit(mutations.EDIT_DATA, data.data)
-          return true
+          return data.data.id
         } catch (error) {
           commit(mutations.SET_ERROR, error)
           return false
@@ -126,7 +126,7 @@ export const createStore = (name, endpoint, custom) => {
         try {
           const { data } = await api.patch(`/${endpoint}/id:${id}`, item)
           commit(mutations.EDIT_DATA, data.data)
-          return true
+          return data.data.id
         } catch (error) {
           commit(mutations.SET_ERROR, error)
           return false

@@ -1,7 +1,6 @@
 <template>
   <div>
     <top-nav title="Asortyment">
-
       <vs-button to="/items" color="dark" icon>
         <i class="bx bxs-package"></i>
       </vs-button>
@@ -9,7 +8,6 @@
       <vs-button to="/products/create" color="dark" icon>
         <i class="bx bx-plus"></i>
       </vs-button>
-
     </top-nav>
 
     <div class="products-list">
@@ -32,28 +30,27 @@ export default {
     page: 1
   }),
   computed: {
-    products () {
+    products() {
       return this.$store.getters['products/getData']
     },
-    meta () {
+    meta() {
       return this.$store.getters['products/getMeta']
     }
   },
   watch: {
-    page (page) {
-      console.log('page -> page', page)
+    page(page) {
       if (this.meta.current_page !== page) this.getProducts(page)
     }
   },
   methods: {
-    async getProducts (page) {
+    async getProducts(page) {
       const loading = this.$vs.loading({ color: '#000' })
       this.page = page
       await this.$store.dispatch('products/fetch', { page })
       loading.close()
     }
   },
-  created () {
+  created() {
     this.getProducts(1)
   }
 }

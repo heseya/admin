@@ -3,9 +3,14 @@
     <template v-for="image in images">
       <div class="gallery__img" :key="image.url">
         <img :src="image.url" />
+        <div class="remove">
+          <vs-button icon color="danger" @click="onImageDelete(image.id)">
+            <i class="bx bx-trash"></i>
+          </vs-button>
+        </div>
       </div>
     </template>
-    <app-media-uploader @dragChange="dragChange" @upload="galleryImageUpload">
+    <app-media-uploader @dragChange="dragChange" @upload="onImageUpload" @error="onUploadError">
       <div class="gallery__img add" :class="{ 'add--drag': isDrag }">
         <img src="/img/icons/plus.svg" />
       </div>
@@ -30,12 +35,17 @@ export default {
     dragChange(isDrag) {
       this.isDrag = isDrag
     },
-    galleryImageUpload(file) {
-      // TODO
-      console.log('galleryImageUpload -> file', file)
+    onImageDelete(deletedId) {
+      this.$emit('delete', deletedId)
+    },
+    onImageUpload(file) {
+      this.$emit('new', file)
+    },
+    onUploadError(error) {
       this.$vs.notification({
-        color: 'success',
-        title: 'Plip poprawnie wysłany'
+        color: 'danger',
+        title: 'Coś poszło nie tak z wysyłaniem pliku',
+        text: error.message
       })
     }
   }
@@ -57,10 +67,9 @@ export default {
     position: relative;
     width: 100%;
     padding-top: 100%;
-    border-radius: 20px;
-    background-color: #fff;
-    overflow: hidden;
     margin-bottom: 4px;
+    background-color: #fff;
+    border-radius: 20px;
     box-shadow: $shadow;
 
     img {
@@ -68,19 +77,25 @@ export default {
       top: 0;
       left: 0;
       height: 100%;
+      width: 100%;
+      object-fit: cover;
+      background-color: #fff;
+      border-radius: 20px;
     }
 
     .remove {
-      cursor: pointer;
       position: absolute;
-      top: 0;
-      right: 0;
-      width: 12px;
-      height: 12px;
-      padding: 4px;
-      border-bottom-left-radius: 6px;
-      background: url(/img/icons/cancel.svg) no-repeat scroll right center #000;
-      background-origin: content-box;
+      top: -15px;
+      right: -10px;
+      transition: 0.3s;
+      visibility: hidden;
+      opacity: 0;
+    }
+
+    &:hover .remove {
+      top: -10px;
+      visibility: visible;
+      opacity: 1;
     }
   }
 
@@ -89,6 +104,7 @@ export default {
       top: 40%;
       left: 40%;
       height: 20%;
+      width: 20%;
       transition: 0.3s;
     }
 

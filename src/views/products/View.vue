@@ -7,9 +7,9 @@
         okText="Usuń"
         cancelText="Anuluj"
         @confirm="deleteProduct"
-        v-model="isDeleteConfirm"
+        v-slot="{ open }"
       >
-        <vs-button dark icon @click="isDeleteConfirm = !isDeleteConfirm">
+        <vs-button dark icon @click="open">
           <i class="bx bx-trash"></i>
         </vs-button>
       </pop-confirm>
@@ -162,7 +162,6 @@ const EMPTY_SCHEMA = {
 export default {
   data() {
     return {
-      isDeleteConfirm: false,
       form: {
         name: '',
         slug: '',

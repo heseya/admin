@@ -24,12 +24,6 @@ export default {
     visible: false
   }),
   props: {
-    value: {
-      // ! DEPRECATED
-      // Is popConfirm visible?
-      type: Boolean,
-      default: false
-    },
     title: {
       type: String,
       default: 'Jesteś pewny?'
@@ -45,7 +39,6 @@ export default {
   },
   methods: {
     setVisible(newValue) {
-      this.$emit('input', !!newValue) // ! DEPRECATED
       this.visible = !!newValue
     },
     open() {
@@ -64,13 +57,6 @@ export default {
     cancel() {
       this.$emit('cancel')
       this.close()
-    }
-  },
-  watch: {
-    value(v) {
-      // ! DEPRECATED
-      // Added for compatibility support only
-      this.visible = v
     }
   }
 }

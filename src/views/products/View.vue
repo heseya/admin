@@ -17,7 +17,7 @@
 
     <div class="product">
       <div>
-        <gallery :images="form.gallery" @new="onNewMedia" @delete="onDeleteMedia"></gallery>
+        <gallery v-model="form.gallery" />
 
         <card style="margin-top: 30px">
           <validation-observer v-slot="{ handleSubmit }">
@@ -198,14 +198,6 @@ export default {
     }
   },
   methods: {
-    onNewMedia(file) {
-      this.form.gallery.push(file)
-      this.form.media.push(file.id)
-    },
-    onDeleteMedia(deletedId) {
-      this.form.gallery = this.form.gallery.filter(({ id }) => deletedId !== id)
-      this.form.media = this.form.media.filter((id) => deletedId !== id)
-    },
     async fetch() {
       return this.$store.dispatch('products/get', this.$route.params.id)
     },
@@ -222,6 +214,7 @@ export default {
       loading.close()
     },
     async saveProduct() {
+      this.form.media = this.form.gallery.map(({ id }) => id)
       const loading = this.$vs.loading({ color: '#000' })
 
       const successMessage = this.isNew
@@ -254,7 +247,7 @@ export default {
           brand_id: product.brand.id,
           category_id: product.category.id,
           schemas: [EMPTY_SCHEMA],
-          media: product.gallery.map(({ id }) => id)
+          media: []
         }
       }
     },

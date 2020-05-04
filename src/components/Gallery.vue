@@ -1,7 +1,7 @@
 <template>
   <div class="gallery">
-    <template v-for="image in images">
-      <div class="gallery__img" :key="image.url">
+    <draggable class="gallery__images" v-model="images">
+      <div class="gallery__img" v-for="image in images" :key="image.url">
         <img :src="image.url" />
         <div class="remove">
           <vs-button icon color="danger" @click="onImageDelete(image.id)">
@@ -9,9 +9,12 @@
           </vs-button>
         </div>
       </div>
-    </template>
+    </draggable>
     <app-media-uploader @dragChange="dragChange" @upload="onImageUpload" @error="onUploadError">
-      <div class="gallery__img add" :class="{ 'add--drag': isDrag }">
+      <div
+        class="gallery__img add"
+        :class="{ 'add--drag': isDrag, 'add--big': images.length === 0 }"
+      >
         <img src="/img/icons/plus.svg" />
       </div>
     </app-media-uploader>
@@ -19,14 +22,26 @@
 </template>
 
 <script>
+import Draggable from 'vuedraggable'
 import MediaUploader from '@/components/MediaUploader'
 
 export default {
   components: {
-    appMediaUploader: MediaUploader
+    appMediaUploader: MediaUploader,
+    Draggable
   },
   props: {
-    images: Array
+    value: Array
+  },
+  computed: {
+    images: {
+      get() {
+        return this.value
+      },
+      set(val) {
+        this.$emit('input', val)
+      }
+    }
   },
   data: () => ({
     isDrag: false
@@ -36,10 +51,10 @@ export default {
       this.isDrag = isDrag
     },
     onImageDelete(deletedId) {
-      this.$emit('delete', deletedId)
+      this.images = this.images.filter(({ id }) => deletedId !== id)
     },
     onImageUpload(file) {
-      this.$emit('new', file)
+      this.images = [...this.images, file]
     },
     onUploadError(error) {
       this.$vs.notification({
@@ -54,13 +69,15 @@ export default {
 
 <style lang="scss">
 .gallery {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  grid-gap: 10px;
+  &__images {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-gap: 10px;
 
-  *:first-child {
-    grid-column: 1/3;
-    grid-row: 1/3;
+    *:first-child {
+      grid-column: 1/3;
+      grid-row: 1/3;
+    }
   }
 
   &__img {
@@ -100,6 +117,16 @@ export default {
   }
 
   .add {
+    width: 25%;
+    padding-top: 25%;
+    margin-top: 10px;
+
+    &--big {
+      width: 50%;
+      padding-top: 50%;
+      margin-top: 0;
+    }
+
     img {
       top: 40%;
       left: 40%;

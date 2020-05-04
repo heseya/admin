@@ -16,9 +16,35 @@
     </top-nav>
 
     <div class="product">
-      <div>
-        <gallery :images="form.gallery" @new="onNewMedia" @delete="onDeleteMedia"></gallery>
+      <gallery :images="form.gallery" @new="onNewMedia" @delete="onDeleteMedia"></gallery>
 
+      <div>
+        <card>
+          <flex-input>
+            <label class="title">Widoczność produktu</label>
+            <vs-switch success v-model="form.public">
+              <template #off>
+                <i class="bx bx-x"></i>
+              </template>
+              <template #on>
+                <i class="bx bx-check"></i>
+              </template>
+            </vs-switch>
+          </flex-input>
+        </card>
+
+        <!-- <card>
+          <div class="title">Magazyn</div>
+          <small>Już wkrótce</small>
+        </card> -->
+
+        <!-- <card>
+          <div class="title">Schematy</div>
+          <small>Już wkrótce</small>
+        </card> -->
+      </div>
+
+      <div class="product__details">
         <card style="margin-top: 30px">
           <validation-observer v-slot="{ handleSubmit }">
             <form @submit.prevent="handleSubmit(saveProduct)" class="product__info">
@@ -78,38 +104,13 @@
               </div>
 
               <div class="wide">
-                <vs-input v-model="form.description" label="Opis" />
+                <small class="label">Opis</small>
+                <md-editor v-model="form.description_md" height="200px" />
                 <br />
                 <vs-button color="dark" size="large">Zapisz</vs-button>
               </div>
             </form>
           </validation-observer>
-        </card>
-      </div>
-
-      <div>
-        <card>
-          <flex-input>
-            <label class="title">Widoczność produktu</label>
-            <vs-switch success v-model="form.public">
-              <template #off>
-                <i class="bx bx-x"></i>
-              </template>
-              <template #on>
-                <i class="bx bx-check"></i>
-              </template>
-            </vs-switch>
-          </flex-input>
-        </card>
-
-        <card>
-          <div class="title">Magazyn</div>
-          <small>Już wkrótce</small>
-        </card>
-
-        <card>
-          <div class="title">Schematy</div>
-          <small>Już wkrótce</small>
         </card>
       </div>
     </div>
@@ -125,6 +126,7 @@ import Gallery from '@/components/Gallery.vue'
 import Card from '@/components/Card.vue'
 import FlexInput from '@/components/FlexInput.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
+import MdEditor from '@/components/MdEditor.vue'
 
 extend('required', {
   ...required,
@@ -288,7 +290,8 @@ export default {
     FlexInput,
     PopConfirm,
     ValidationProvider,
-    ValidationObserver
+    ValidationObserver,
+    MdEditor
   }
 }
 </script>
@@ -303,6 +306,10 @@ export default {
     .vs-select-content {
       max-width: none;
     }
+  }
+
+  &__details {
+    grid-column: 1/-1;
   }
 }
 
@@ -334,5 +341,14 @@ export default {
       }
     }
   }
+}
+
+.label {
+  display: block;
+  margin-left: 5px;
+  margin-bottom: 3px;
+  color: #000 !important;
+  font-size: 0.75rem;
+  font-weight: 500;
 }
 </style>

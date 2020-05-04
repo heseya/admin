@@ -33,7 +33,7 @@
           </flex-input>
         </div>
         <br />
-        <wysiwyg v-model="form.content" />
+        <md-editor v-model="form.content_md" />
         <br />
         <vs-button color="dark" size="large" @click="save">
           Zapisz
@@ -48,20 +48,22 @@ import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/Card.vue'
 import FlexInput from '@/components/FlexInput.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
+import MdEditor from '@/components/MdEditor.vue'
 
 export default {
   components: {
     TopNav,
     Card,
     FlexInput,
-    PopConfirm
+    PopConfirm,
+    MdEditor
   },
   data() {
     return {
       form: {
         name: '',
         slug: '',
-        content: '',
+        content_md: '',
         public: true
       }
     }

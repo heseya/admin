@@ -40,6 +40,7 @@ export default {
   watch: {
     page(page) {
       if (this.meta.current_page !== page) this.getProducts(page)
+      window.scrollTo(0, 0)
     }
   },
   methods: {

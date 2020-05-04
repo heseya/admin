@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuesax from 'vuesax'
-import wysiwyg from 'vue-wysiwyg'
 
 import App from './App.vue'
 import router from './router'
@@ -19,4 +18,3 @@ new Vue({
 }).$mount('#app')
 
 Vue.use(Vuesax)
-Vue.use(wysiwyg)

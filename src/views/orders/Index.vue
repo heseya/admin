@@ -1,27 +1,21 @@
 <template>
   <div>
     <top-nav title="Zamówienia">
-
       <!-- <vs-button to="/orders/create" color="dark" icon>
         <i class="bx bx-plus"></i>
       </vs-button> -->
-
     </top-nav>
 
     <card>
       <list>
-        <list-item
-          v-for="order in orders"
-          :key="order.id"
-          :url="`/orders/${order.id}`"
-        >
+        <list-item v-for="order in orders" :key="order.id" :url="`/orders/${order.id}`">
           <template #avatar>
-            <i class='bx bx-check-circle'></i>
+            <i class="bx bx-check-circle"></i>
           </template>
           {{ order.code }}
-          <small>500 PLN</small>
+          <small>{{ order.summary }} PLN</small>
           <template #action>
-            Data
+            {{ getRelativeDate(order.created_at) }}
           </template>
         </list-item>
       </list>
@@ -34,6 +28,7 @@ import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/Card.vue'
 import List from '@/components/List.vue'
 import ListItem from '@/components/ListItem.vue'
+import { getRelativeDate } from '@/utils/utils'
 
 export default {
   components: {
@@ -43,12 +38,15 @@ export default {
     ListItem
   },
   computed: {
-    orders () {
+    orders() {
       return this.$store.getters['orders/getData']
     }
   },
   methods: {
-    async getOrders () {
+    getRelativeDate(date) {
+      return getRelativeDate(date)
+    },
+    async getOrders() {
       const loading = this.$vs.loading({ color: '#000' })
 
       try {
@@ -60,7 +58,7 @@ export default {
       }
     }
   },
-  created () {
+  created() {
     this.getOrders()
   }
 }

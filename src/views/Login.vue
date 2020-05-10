@@ -23,8 +23,9 @@ export default {
   },
   data() {
     return {
-      email: '',
-      password: ''
+      // TODO: clear this in the future
+      email: '***REMOVED***',
+      password: '***REMOVED***'
     }
   },
   computed: {
@@ -47,7 +48,7 @@ export default {
     async login() {
       const loading = this.$vs.loading()
       await this.$store.dispatch('auth/login', {
-        username: this.email,
+        email: this.email,
         password: this.password
       })
       loading.close()

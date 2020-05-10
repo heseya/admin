@@ -9,6 +9,15 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes: [
     {
+      path: '/',
+      name: 'Index',
+      props: true,
+      component: () => import('./views/Index.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
       path: '/login',
       name: 'Login',
       props: true,

@@ -28,10 +28,10 @@ export const auth = {
     }
   },
   actions: {
-    async login({ commit }, { username, password }) {
+    async login({ commit }, { email, password }) {
       commit('SET_ERROR', null)
       try {
-        const { data } = await api.post('/login', { username, password })
+        const { data } = await api.post('/login', { email, password })
         commit('SET_USER', data.data.user)
         commit('SET_TOKEN', data.data.token)
       } catch (e) {

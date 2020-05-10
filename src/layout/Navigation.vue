@@ -54,10 +54,10 @@ export default {
   display: flex;
   justify-content: space-around;
   align-items: center;
+  transition: 0.3s;
 
   &--hidden {
-    transform: translateX(-100px);
-    transition: 0.3s;
+    transform: translateY(60px);
   }
 
   .nav__link {
@@ -103,6 +103,10 @@ export default {
     align-items: flex-start;
     transition: 0.15s;
     transition-timing-function: ease-out;
+
+    &--hidden {
+      transform: translateX(-100px);
+    }
 
     &__link {
       border-radius: 12px;

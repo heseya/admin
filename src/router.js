@@ -11,8 +11,7 @@ const router = new VueRouter({
     {
       path: '/',
       name: 'Index',
-      props: true,
-      component: () => import('./views/Index.vue'),
+      redirect: { name: 'Orders' },
       meta: {
         requiresAuth: true
       }

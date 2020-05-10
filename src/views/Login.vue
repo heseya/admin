@@ -52,7 +52,7 @@ export default {
         password: this.password
       })
       loading.close()
-      this.$router.push('/')
+      this.$router.push({ name: 'Index' })
     }
   }
 }

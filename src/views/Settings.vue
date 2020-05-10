@@ -3,7 +3,10 @@
     <top-nav title="Ustawienia">
       <div class="profile">
         <span class="profile__name">{{ user.name }}</span>
-        <img class="profile__avatar" :src="user.avatar" />
+        <vs-avatar>
+          <img v-if="user.avatar" :src="user.avatar" />
+          <i class="bx bx-user" v-else></i>
+        </vs-avatar>
       </div>
     </top-nav>
 

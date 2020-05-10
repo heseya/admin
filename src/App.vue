@@ -3,11 +3,9 @@
     <navigation></navigation>
 
     <main class="main">
-
       <transition name="fade">
-        <router-view/>
+        <router-view />
       </transition>
-
     </main>
   </div>
 </template>
@@ -24,7 +22,7 @@ export default {
 
 <style lang="scss">
 @font-face {
-  font-family:'Tw Cen MT';
+  font-family: 'Tw Cen MT';
   font-style: normal;
   font-weight: 400;
   src: local('Tw Cen MT'), url(/fonts/TwCenMT.woff) format('woff');
@@ -43,18 +41,23 @@ body {
   margin-bottom: 80px;
 }
 
+.row {
+  display: flex;
+  justify-content: space-between;
+}
+
 .fade-enter-active,
 .fade-leave-active {
   transition-property: opacity;
-  transition-duration: .25s;
+  transition-duration: 0.25s;
 }
 
 .fade-enter-active {
-  transition-delay: .25s;
+  transition-delay: 0.25s;
 }
 
 .fade-enter,
 .fade-leave-active {
-  opacity: 0
+  opacity: 0;
 }
 </style>

@@ -1,7 +1,6 @@
 <template>
   <div>
     <top-nav title="Asortyment">
-
       <vs-button to="/items" color="dark" icon>
         <i class="bx bxs-package"></i>
       </vs-button>
@@ -9,12 +8,12 @@
       <vs-button to="/products/create" color="dark" icon>
         <i class="bx bx-plus"></i>
       </vs-button>
-
     </top-nav>
 
     <div class="products-list">
       <product v-for="product in products" :key="product.id" :product="product"></product>
     </div>
+    <vs-pagination color="dark" v-if="meta.last_page" v-model="page" :length="meta.last_page" />
   </div>
 </template>
 
@@ -27,26 +26,33 @@ export default {
     TopNav,
     Product
   },
+  data: () => ({
+    page: 1
+  }),
   computed: {
-    products () {
-      return this.$store.state.products.data
+    products() {
+      return this.$store.getters['products/getData']
+    },
+    meta() {
+      return this.$store.getters['products/getMeta']
+    }
+  },
+  watch: {
+    page(page) {
+      if (this.meta.current_page !== page) this.getProducts(page)
+      window.scrollTo(0, 0)
     }
   },
   methods: {
-    async getProducts () {
+    async getProducts(page) {
       const loading = this.$vs.loading({ color: '#000' })
-
-      try {
-        await this.$store.dispatch('products/fetch')
-      } catch (e) {
-        console.log(e)
-      } finally {
-        loading.close()
-      }
+      this.page = page
+      await this.$store.dispatch('products/fetch', { page })
+      loading.close()
     }
   },
-  created () {
-    this.getProducts()
+  created() {
+    this.getProducts(1)
   }
 }
 </script>
@@ -57,6 +63,7 @@ export default {
   grid-template-columns: 1fr 1fr;
   grid-gap: 22px;
   min-height: 100px;
+  margin-bottom: 12px;
 }
 
 @media (min-width: $break) {

@@ -1,6 +1,6 @@
 <template>
-  <router-link :to="url" class="list__item">
-    <div v-if="!!$slots.avatar" class="list__item__avatar">
+  <component :is="component" :to="url" class="list-item" @click="click">
+    <div v-if="!!$slots.avatar" class="list-item__avatar">
       <vs-avatar dark>
         <slot name="avatar"></slot>
       </vs-avatar>
@@ -9,7 +9,10 @@
       <i v-if="hidden" class="bx bx-lock-alt"></i>
       <slot></slot>
     </div>
-  </router-link>
+    <div class="list-item__action">
+      <slot name="action"></slot>
+    </div>
+  </component>
 </template>
 
 <script>
@@ -17,12 +20,28 @@ export default {
   props: {
     url: String,
     hidden: Boolean
+  },
+  computed: {
+    component () {
+      if (this.url) return 'router-link'
+      else return 'button'
+    }
+  },
+  methods: {
+    click () {
+      this.$emit('click')
+    }
   }
 }
 </script>
 
 <style lang="scss">
-.list__item {
+.list-item {
+  all: unset;
+  font-family: $font-main;
+  width: 100%;
+  box-sizing: border-box;
+  cursor: pointer;
   border-radius: 20px;
   padding: 15px 20px;
   min-height: 44px;
@@ -44,6 +63,10 @@ export default {
 
   &__avatar {
     margin-right: 13px;
+  }
+
+  &__action {
+    margin-left: auto;
   }
 }
 

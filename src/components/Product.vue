@@ -5,7 +5,7 @@
     </div>
     <div class="flex">
       <div class="name">
-        {{ product.name }}<br/>
+        {{ product.name }}<br />
         <small>{{ product.price }} zł</small>
       </div>
     </div>
@@ -39,6 +39,7 @@ export default {
       position: absolute;
       top: 0;
       left: 0;
+      object-fit: cover;
       width: 100%;
       height: 100%;
     }

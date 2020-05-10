@@ -1,115 +1,146 @@
 <template>
-<div>
-  <top-nav :title="page.name">
-    <vs-tooltip bottom shadow not-hover v-model="deleteConfirm">
-      <vs-button dark icon @click="deleteConfirm =! deleteConfirm">
-        <i class="bx bx-trash"></i>
-      </vs-button>
-      <template #tooltip>
-        <div class="content-tooltip">
-          <p>Czy na pewno chcesz usunąć tą stronę?</p>
-          <footer>
-            <vs-button @click="deleteConfirm = false" danger block>
-              Usuń
-            </vs-button>
-            <vs-button @click="deleteConfirm = false" transparent dark block>
-              Anuluj
-            </vs-button>
-          </footer>
+  <div>
+    <top-nav :title="!isNew ? page.name : 'Nowa strona'">
+      <pop-confirm
+        v-if="!isNew"
+        title="Czy na pewno chcesz usunąć tą stronę?"
+        okText="Usuń"
+        cancelText="Anuluj"
+        @confirm="deletePage"
+        v-slot="{ open }"
+      >
+        <vs-button dark icon @click="open">
+          <i class="bx bx-trash"></i>
+        </vs-button>
+      </pop-confirm>
+    </top-nav>
+
+    <div class="page">
+      <card>
+        <div class="page__info">
+          <vs-input v-model="form.name" label="Nazwa" />
+          <vs-input v-model="form.slug" label="Link" />
+          <flex-input>
+            <label class="title">Widoczność strony</label>
+            <vs-switch success v-model="form.public">
+              <template #off>
+                <i class="bx bx-x"></i>
+              </template>
+              <template #on>
+                <i class="bx bx-check"></i>
+              </template>
+            </vs-switch>
+          </flex-input>
         </div>
-      </template>
-    </vs-tooltip>
-  </top-nav>
-
-  <div class="page">
-
-    <card>
-      <div class="page__info">
-        <vs-input v-model="page.name" label="Nazwa"/>
-        <vs-input v-model="page.slug" label="Link"/>
-        <flex-input>
-          <label class="title">Widoczność strony</label>
-          <vs-switch @click="changePublic" success v-model="page.public" :loading="activeLoading">
-            <template #off>
-              <i class='bx bx-x' ></i>
-            </template>
-            <template #on>
-              <i class='bx bx-check' ></i>
-            </template>
-          </vs-switch>
-        </flex-input>
-      </div>
-      <br>
-      <editor
-        height="500px"
-        :options="editorOptions"
-        initialEditType="wysiwyg"
-        :initialValue="page.content"
-      />
-      <br>
-      <vs-button color="dark" size="large" @click="openNotification(null, 'success')">
-        Zapisz
-      </vs-button>
-    </card>
-
+        <br />
+        <md-editor v-model="form.content_md" />
+        <br />
+        <vs-button color="dark" size="large" @click="save">
+          Zapisz
+        </vs-button>
+      </card>
+    </div>
   </div>
-
-</div>
 </template>
 
 <script>
-import 'codemirror/lib/codemirror.css'
-import '@toast-ui/editor/dist/toastui-editor.css'
-import { Editor } from '@toast-ui/vue-editor'
 import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/Card.vue'
 import FlexInput from '@/components/FlexInput.vue'
+import PopConfirm from '@/components/PopConfirm.vue'
+import MdEditor from '@/components/MdEditor.vue'
 
 export default {
   components: {
     TopNav,
     Card,
     FlexInput,
-    Editor
+    PopConfirm,
+    MdEditor
   },
-  data () {
+  data() {
     return {
-      deleteConfirm: false,
-      activeLoading: false,
-      editorOptions: {
-        language: 'pl-PL'
+      form: {
+        name: '',
+        slug: '',
+        content_md: '',
+        public: true
       }
     }
   },
   computed: {
-    page () {
-      return this.$store.state.pages.selected
+    id() {
+      return this.$route.params.id
+    },
+    isNew() {
+      return this.id === 'create'
+    },
+    page() {
+      return this.$store.getters['pages/getSelected']
+    },
+    error() {
+      return this.$store.getters['pages/getError']
+    }
+  },
+  watch: {
+    page(page) {
+      if (!this.isNew) {
+        this.form = { ...page }
+      }
+    },
+    error(error) {
+      if (error) {
+        this.$vs.notification({
+          color: 'danger',
+          title: error.message,
+          text: error?.response?.data?.message
+        })
+      }
     }
   },
   methods: {
-    openNotification (position = null, color) {
-      return this.$vs.notification({
-        color,
-        position,
-        title: 'Produkt został zaktualizowany.'
-      })
+    async save() {
+      const loading = this.$vs.loading({ color: '#000' })
+      if (this.isNew) {
+        const newID = await this.$store.dispatch('pages/add', this.form)
+        if (newID) {
+          this.$vs.notification({
+            color: 'success',
+            title: 'Strona została utworzona.'
+          })
+          this.$router.push(`/pages/${newID}`)
+        }
+      } else {
+        const success = await this.$store.dispatch('pages/update', {
+          id: this.id,
+          item: this.form
+        })
+        if (success) {
+          this.$vs.notification({
+            color: 'success',
+            title: 'Strona została zaktualizowana.'
+          })
+        }
+      }
+      loading.close()
     },
-    changePublic () {
-      this.activeLoading = true
-
-      setTimeout(() => {
-        this.activeLoading = false
-      }, 3000)
+    async deletePage() {
+      const loading = this.$vs.loading({ color: '#000' })
+      const success = await this.$store.dispatch('pages/remove', this.id)
+      if (success) {
+        this.$vs.notification({
+          color: 'success',
+          title: 'Strona została usunięta.'
+        })
+        this.$router.push('/pages')
+      }
+      loading.close()
     }
   },
-  async created () {
-    const loading = this.$vs.loading({ color: '#000' })
-
-    try {
-      await this.$store.dispatch('pages/get', this.$route.params.id)
-    } catch (e) {
-      console.log(e)
-    } finally {
+  async created() {
+    if (!this.isNew) {
+      const loading = this.$vs.loading({ color: '#000' })
+      await this.$store.dispatch('pages/get', this.id)
       loading.close()
     }
   }
@@ -118,12 +149,12 @@ export default {
 
 <style lang="scss">
 .page__info {
-    width: 100%;
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: 30px 30px 20px;
-    row-gap: 20px;
-    margin-top: 15px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 30px 30px 20px;
+  row-gap: 20px;
+  margin-top: 15px;
 
   input {
     width: 100%;
@@ -131,14 +162,6 @@ export default {
 
   .vs-select-content {
     max-width: none;
-  }
-}
-
-.content-tooltip {
-  footer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 }
 

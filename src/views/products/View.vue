@@ -1,156 +1,297 @@
 <template>
-<div>
-  <top-nav :title="product.name">
-    <vs-tooltip bottom shadow not-hover v-model="deleteConfirm">
-      <vs-button dark icon @click="deleteConfirm =! deleteConfirm">
-        <i class="bx bx-trash"></i>
-      </vs-button>
-      <template #tooltip>
-        <div class="content-tooltip">
-          <p>Czy na pewno chcesz usunąć ten produkt?</p>
-          <footer>
-            <vs-button @click="deleteConfirm = false" danger block>
-              Usuń
-            </vs-button>
-            <vs-button @click="deleteConfirm = false" transparent dark block>
-              Anuluj
-            </vs-button>
-          </footer>
-        </div>
-      </template>
-    </vs-tooltip>
-  </top-nav>
-
-  <div class="product">
-    <div>
-      <gallery :images="product.gallery"></gallery>
-
-      <card style="margin-top: 30px">
-        <div class="product__info">
-
-          <div>
-            <br>
-            <vs-input v-model="product.name" label="Nazwa"/>
-            <br><br>
-            <vs-input v-model="product.slug" label="Link"/>
-            <br><br>
-            <vs-input v-model="product.price" type="number" step="0.01" label="Cena"/>
-            <br>
-          </div>
-
-          <div>
-            <br><vs-select v-model="product.brand.id" filter label="Marka">
-              <vs-option label="Depth" value="1">
-                Depth
-              </vs-option>
-              <vs-option label="Depth Steel" value="2">
-                Depth Steel
-              </vs-option>
-            </vs-select>
-            <br><br>
-            <vs-select v-model="product.category.id" filter label="Kategoria">
-              <vs-option label="Naszyjniki" value="1">
-                Naszyjniki
-              </vs-option>
-              <vs-option label="Sygnety" value="2">
-                Sygnety
-              </vs-option>
-            </vs-select>
-          </div>
-
-        </div>
-        <br>
-        <vs-button color="dark" size="large" @click="openNotification(null, 'success')">
-          Zapisz
+  <div>
+    <top-nav :title="!isNew ? product.name : 'Nowy produkt'">
+      <pop-confirm
+        v-if="!isNew"
+        title="Czy na pewno chcesz usunąć ten produkt?"
+        okText="Usuń"
+        cancelText="Anuluj"
+        @confirm="deleteProduct"
+        v-slot="{ open }"
+      >
+        <vs-button dark icon @click="open">
+          <i class="bx bx-trash"></i>
         </vs-button>
-      </card>
-    </div>
+      </pop-confirm>
+    </top-nav>
 
-    <div>
+    <div class="product">
+      <gallery v-model="form.gallery" />
 
-      <card>
-        <flex-input>
-          <label class="title">Widoczność produktu</label>
-          <vs-switch @click="changePublic" success v-model="product.public" :loading="activeLoading">
-            <template #off>
-              <i class='bx bx-x' ></i>
-            </template>
-            <template #on>
-              <i class='bx bx-check' ></i>
-            </template>
-          </vs-switch>
-        </flex-input>
-      </card>
+      <div>
+        <card>
+          <flex-input>
+            <label class="title">Widoczność produktu</label>
+            <vs-switch success v-model="form.public">
+              <template #off>
+                <i class="bx bx-x"></i>
+              </template>
+              <template #on>
+                <i class="bx bx-check"></i>
+              </template>
+            </vs-switch>
+          </flex-input>
+        </card>
 
-      <card>
-        <div class="title">Magazyn</div>
-      </card>
+        <!-- <card>
+          <div class="title">Magazyn</div>
+          <small>Już wkrótce</small>
+        </card> -->
 
+        <!-- <card>
+          <div class="title">Schematy</div>
+          <small>Już wkrótce</small>
+        </card> -->
+      </div>
+
+      <div class="product__details">
+        <card style="margin-top: 30px">
+          <validation-observer v-slot="{ handleSubmit }">
+            <form @submit.prevent="handleSubmit(saveProduct)" class="product__info">
+              <div>
+                <br />
+                <validation-provider rules="required" v-slot="{ errors }">
+                  <vs-input v-model="form.name" label="Nazwa">
+                    <template #message-danger>{{ errors[0] }}</template>
+                  </vs-input>
+                </validation-provider>
+                <br /><br />
+                <validation-provider rules="required" v-slot="{ errors }">
+                  <vs-input v-model="form.slug" label="Link">
+                    <template #message-danger>{{ errors[0] }}</template>
+                  </vs-input>
+                </validation-provider>
+                <br /><br />
+                <validation-provider rules="required" v-slot="{ errors }">
+                  <vs-input v-model="form.price" type="number" step="0.01" label="Cena">
+                    <template #message-danger>{{ errors[0] }}</template>
+                  </vs-input>
+                </validation-provider>
+                <br />
+              </div>
+
+              <div>
+                <br />
+                <validation-provider rules="id-required" v-slot="{ errors }">
+                  <vs-select v-model="form.brand_id" filter label="Marka">
+                    <vs-option label="Wybierz markę" :value="0">Wybierz markę</vs-option>
+                    <vs-option
+                      v-for="brand in brands"
+                      :key="brand.id"
+                      :label="brand.name"
+                      :value="brand.id"
+                    >
+                      {{ brand.name }}
+                    </vs-option>
+                    <template #message-danger>{{ errors[0] }}</template>
+                  </vs-select>
+                </validation-provider>
+                <br /><br />
+                <validation-provider rules="id-required" v-slot="{ errors }">
+                  <vs-select v-model="form.category_id" filter label="Kategoria">
+                    <vs-option label="Wybierz kategorię" :value="0">Wybierz kategorię</vs-option>
+                    <vs-option
+                      v-for="category in categories"
+                      :key="category.id"
+                      :label="category.name"
+                      :value="category.id"
+                    >
+                      {{ category.name }}
+                    </vs-option>
+                    <template #message-danger>{{ errors[0] }}</template>
+                  </vs-select>
+                </validation-provider>
+              </div>
+
+              <div class="wide">
+                <small class="label">Opis</small>
+                <md-editor v-model="form.description_md" height="200px" />
+                <br />
+                <vs-button color="dark" size="large">Zapisz</vs-button>
+              </div>
+            </form>
+          </validation-observer>
+        </card>
+      </div>
     </div>
   </div>
-
-</div>
 </template>
 
 <script>
+import { ValidationProvider, ValidationObserver, extend } from 'vee-validate'
+import { required } from 'vee-validate/dist/rules'
+
 import TopNav from '@/layout/TopNav.vue'
 import Gallery from '@/components/Gallery.vue'
 import Card from '@/components/Card.vue'
 import FlexInput from '@/components/FlexInput.vue'
+import PopConfirm from '@/components/PopConfirm.vue'
+import MdEditor from '@/components/MdEditor.vue'
+
+extend('required', {
+  ...required,
+  message: 'To pole jest wymagane'
+})
+
+extend('positive', {
+  message: 'To pole musi być większe od zera',
+  validate: (value) => {
+    return value > 0
+  }
+})
+
+extend('id-required', {
+  message: 'To pole jest wymagane',
+  validate: (value) => {
+    return value !== 0
+  }
+})
+
+const EMPTY_SCHEMA = {
+  id: 1,
+  name: null,
+  type: 0,
+  required: true,
+  items: [
+    {
+      item_id: 1,
+      value: null,
+      extra_price: 0
+    }
+  ]
+}
 
 export default {
-  data () {
+  data() {
     return {
-      deleteConfirm: false,
-      activeLoading: false
+      form: {
+        name: '',
+        slug: '',
+        price: 0,
+        description: '',
+        digital: false,
+        public: true,
+        brand_id: 0,
+        category_id: 0,
+        gallery: [],
+        media: []
+      }
     }
   },
   computed: {
-    product () {
-      return this.$store.state.products.selected
+    id() {
+      return this.$route.params.id
+    },
+    isNew() {
+      return this.id === 'create'
+    },
+    product() {
+      return this.$store.getters['products/getSelected']
+    },
+    brands() {
+      return this.$store.getters['brands/getData']
+    },
+    categories() {
+      return this.$store.getters['categories/getData']
+    },
+    error() {
+      return this.$store.getters['products/getError']
     }
   },
   methods: {
-    openNotification (position = null, color) {
-      return this.$vs.notification({
-        color,
-        position,
-        title: 'Produkt został zaktualizowany.'
-      })
+    async fetch() {
+      return this.$store.dispatch('products/get', this.$route.params.id)
     },
-    changePublic () {
-      this.activeLoading = true
+    async deleteProduct() {
+      const loading = this.$vs.loading({ color: '#000' })
+      const success = await this.$store.dispatch('products/remove', this.id)
+      if (success) {
+        this.$vs.notification({
+          color: 'success',
+          title: 'Produkt został usunięty.'
+        })
+        this.$router.push('/products')
+      }
+      loading.close()
+    },
+    async saveProduct() {
+      this.form.media = this.form.gallery.map(({ id }) => id)
+      const loading = this.$vs.loading({ color: '#000' })
 
-      setTimeout(() => {
-        this.activeLoading = false
-      }, 3000)
-    }
-  },
-  async created () {
-    const loading = this.$vs.loading({ color: '#000' })
+      const successMessage = this.isNew
+        ? 'Produkt został utworzony'
+        : 'Produkt został zaktualizowany'
 
-    try {
-      await this.$store.dispatch('products/get', this.$route.params.id)
-    } catch (e) {
-      console.log(e)
-    } finally {
+      const payload = this.isNew ? this.form : { id: this.id, item: this.form }
+
+      const newID = await this.$store.dispatch(
+        this.isNew ? 'products/add' : 'products/update',
+        payload
+      )
+
+      if (newID) {
+        this.$vs.notification({
+          color: 'success',
+          title: successMessage
+        })
+        this.$router.push(`/products/${newID}`)
+      }
+
       loading.close()
     }
+  },
+  watch: {
+    product(product) {
+      if (!this.isNew) {
+        this.form = {
+          ...product,
+          brand_id: product.brand.id,
+          category_id: product.category.id,
+          schemas: [EMPTY_SCHEMA],
+          media: []
+        }
+      }
+    },
+    error(error) {
+      if (error) {
+        this.$vs.notification({
+          color: 'danger',
+          title: error.message,
+          text: error?.response?.data?.message
+        })
+      }
+    },
+    async '$route.params.id'() {
+      const loading = this.$vs.loading({ color: '#000' })
+      await this.fetch()
+      loading.close()
+    }
+  },
+  async created() {
+    const loading = this.$vs.loading({ color: '#000' })
+    await Promise.all([
+      this.$store.dispatch('categories/fetch'),
+      this.$store.dispatch('brands/fetch')
+    ])
+    if (!this.isNew) await this.fetch()
+    loading.close()
   },
   components: {
     TopNav,
     Gallery,
     Card,
-    FlexInput
+    FlexInput,
+    PopConfirm,
+    ValidationProvider,
+    ValidationObserver,
+    MdEditor
   }
 }
 </script>
 
 <style lang="scss">
 .product {
-
   &__info {
-
     input {
       width: 100%;
     }
@@ -158,6 +299,10 @@ export default {
     .vs-select-content {
       max-width: none;
     }
+  }
+
+  &__details {
+    grid-column: 1/-1;
   }
 }
 
@@ -173,13 +318,30 @@ export default {
   .product {
     display: grid;
     grid-template-columns: 4fr 2fr;
-    column-gap: 35px;
+    gap: 35px;
+
+    small {
+      color: #aaa;
+    }
 
     &__info {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      column-gap: 20px;
+      gap: 20px;
+
+      .wide {
+        grid-column: 1/-1;
+      }
     }
   }
+}
+
+.label {
+  display: block;
+  margin-left: 5px;
+  margin-bottom: 3px;
+  color: #000 !important;
+  font-size: 0.75rem;
+  font-weight: 500;
 }
 </style>

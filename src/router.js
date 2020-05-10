@@ -43,6 +43,14 @@ const router = new VueRouter({
       }
     },
     {
+      path: '/orders/:id',
+      name: 'OrdersView',
+      component: () => import('./views/orders/view.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
       path: '/chats',
       name: 'Chats',
       component: () => import('./views/chats/Index.vue'),

@@ -52,6 +52,7 @@ export default {
         password: this.password
       })
       loading.close()
+      this.$router.push('/')
     }
   }
 }

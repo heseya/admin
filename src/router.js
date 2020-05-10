@@ -110,8 +110,8 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.matched.some(rec => rec.meta.requiresAuth)) {
-    if (!store.getters['user/isLogged']) {
+  if (to.matched.some((rec) => rec.meta.requiresAuth)) {
+    if (!store.getters['auth/isLogged']) {
       // User is not logged
       next({
         name: 'Login',

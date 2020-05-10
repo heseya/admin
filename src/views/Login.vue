@@ -1,13 +1,12 @@
 <template>
   <div class="login">
-
     <card class="login__card">
       <h1 class="title">Logowanie</h1>
-      <br><br>
-      <vs-input v-model="email" label="E-mail" type="email"/>
-      <br><br>
-      <vs-input v-model="password" label="Hasło" type="password"/>
-      <br>
+      <br /><br />
+      <vs-input v-model="email" label="E-mail" type="email" />
+      <br /><br />
+      <vs-input v-model="password" label="Hasło" type="password" />
+      <br />
       <vs-button color="dark" @click="login">
         Zaloguj
       </vs-button>
@@ -22,19 +21,19 @@ export default {
   components: {
     Card
   },
-  data () {
+  data() {
     return {
       email: '',
       password: ''
     }
   },
   computed: {
-    loginError () {
-      return this.$store.state.user.error
+    loginError() {
+      return this.$store.state.auth.error
     }
   },
   watch: {
-    loginError (error) {
+    loginError(error) {
       if (error) {
         this.$vs.notification({
           color: 'danger',
@@ -45,9 +44,9 @@ export default {
     }
   },
   methods: {
-    async login () {
+    async login() {
       const loading = this.$vs.loading()
-      await this.$store.dispatch('user/login', {
+      await this.$store.dispatch('auth/login', {
         username: this.email,
         password: this.password
       })

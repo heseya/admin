@@ -1,6 +1,6 @@
 import { api } from '../api'
 
-export const user = {
+export const auth = {
   namespaced: true,
   state: {
     error: null,
@@ -8,28 +8,27 @@ export const user = {
     token: null
   },
   getters: {
-    getToken (state) {
+    getToken(state) {
       return state.token
     },
-    isLogged (state) {
-      return true
-      // TODO: replace when auth connected
-      // return !!state.user
+    isLogged(state) {
+      console.log('!!state.user', !!state.user)
+      return !!state.user
     }
   },
   mutations: {
-    SET_TOKEN (state, newToken) {
+    SET_TOKEN(state, newToken) {
       state.token = newToken
     },
-    SET_USER (state, newUser) {
+    SET_USER(state, newUser) {
       state.user = newUser
     },
-    SET_ERROR (state, newError) {
+    SET_ERROR(state, newError) {
       state.error = newError
     }
   },
   actions: {
-    async login ({ commit }, { username, password }) {
+    async login({ commit }, { username, password }) {
       commit('SET_ERROR', null)
       try {
         const { data } = await api.post('/login', { username, password })
@@ -39,7 +38,7 @@ export const user = {
         commit('SET_ERROR', e)
       }
     },
-    logout ({ commit }) {
+    logout({ commit }) {
       commit('SET_ERROR', null)
       commit('SET_USER', null)
       commit('SET_TOKEN', null)

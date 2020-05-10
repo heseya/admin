@@ -12,7 +12,6 @@ export const auth = {
       return state.token
     },
     isLogged(state) {
-      console.log('!!state.user', !!state.user)
       return !!state.user
     }
   },

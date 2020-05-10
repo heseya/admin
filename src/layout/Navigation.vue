@@ -1,13 +1,12 @@
 <template>
-  <nav class="nav">
-
+  <nav class="nav" :class="{ 'nav--hidden': isVisible }">
     <router-link class="nav__link" to="/products">
-      <img class="icon" src="/img/icons/products.svg">
+      <img class="icon" src="/img/icons/products.svg" />
       <span class="label animated faster fadeInLeft">Asortyment</span>
     </router-link>
 
     <router-link class="nav__link" to="/orders">
-      <img class="icon" src="/img/icons/orders.svg">
+      <img class="icon" src="/img/icons/orders.svg" />
       <span class="label animated faster fadeInLeft">Zamówienia</span>
     </router-link>
 
@@ -17,17 +16,27 @@
     </router-link> -->
 
     <router-link class="nav__link" to="/pages">
-      <img class="icon" src="/img/icons/copy.svg">
+      <img class="icon" src="/img/icons/copy.svg" />
       <span class="label animated faster fadeInLeft">Strony</span>
     </router-link>
 
     <router-link class="nav__link" to="/settings">
-      <img class="icon" src="/img/icons/settings.svg">
+      <img class="icon" src="/img/icons/settings.svg" />
       <span class="label animated faster fadeInLeft">Ustawienia</span>
     </router-link>
-
   </nav>
 </template>
+
+<script>
+export default {
+  name: 'Navigation',
+  computed: {
+    isVisible() {
+      return this.$route.meta.hiddenNav
+    }
+  }
+}
+</script>
 
 <style lang="scss">
 .nav {
@@ -45,6 +54,11 @@
   display: flex;
   justify-content: space-around;
   align-items: center;
+
+  &--hidden {
+    transform: translateX(-100px);
+    transition: 0.3s;
+  }
 
   .nav__link {
     text-decoration: none;
@@ -115,7 +129,7 @@
     .label {
       display: inline-block;
       animation-name: fadeInRight;
-      animation-duration: .5s;
+      animation-duration: 0.5s;
       animation-fill-mode: both;
     }
   }

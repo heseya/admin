@@ -74,8 +74,4 @@ export default {
     }
   }
 }
-
-.nav {
-  display: none;
-}
 </style>

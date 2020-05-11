@@ -28,10 +28,17 @@
         <vs-input v-model="editedItem.name" label="Nazwa" />
         <vs-input v-model="editedItem.price" label="Cena" type="number" />
         <div class="center">
-          <vs-switch v-model="editedItem.public">
-            <template #off>Ukryta</template>
-            <template #on>Widoczna</template>
-          </vs-switch>
+         <flex-input>
+            <label class="title">Widoczność produktu</label>
+            <vs-switch success v-model="editedItem.public">
+              <template #off>
+                <i class="bx bx-x"></i>
+              </template>
+              <template #on>
+                <i class="bx bx-check"></i>
+              </template>
+            </vs-switch>
+          </flex-input>
         </div>
       </modal-form>
       <template #footer>
@@ -57,6 +64,7 @@ import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/Card.vue'
 import List from '@/components/List.vue'
 import ModalForm from '@/components/ModalForm.vue'
+import FlexInput from '@/components/FlexInput.vue'
 import ListItem from '@/components/ListItem.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
 
@@ -67,7 +75,8 @@ export default {
     List,
     ListItem,
     ModalForm,
-    PopConfirm
+    PopConfirm,
+    FlexInput
   },
   data: () => ({
     isModalActive: false,

@@ -1,5 +1,8 @@
 <template>
   <router-link :to="`products/${product.id}`" class="product-box">
+    <vs-avatar size="30" class="product-box__icon" color="#000" v-if="!product.visible">
+      <i class="bx bx-lock-alt"></i>
+    </vs-avatar>
     <div class="product-box__img">
       <img v-if="product.cover !== null" :src="product.cover.url" />
     </div>
@@ -24,6 +27,13 @@ export default {
 .product-box {
   color: #000;
   text-decoration: none;
+  position: relative;
+
+  &__icon {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+  }
 
   &__img {
     position: relative;

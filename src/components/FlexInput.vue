@@ -9,5 +9,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  label {
+    margin-right: 10px !important;
+  }
 }
 </style>

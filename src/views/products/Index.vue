@@ -1,9 +1,9 @@
 <template>
   <div>
     <top-nav title="Asortyment">
-      <vs-button to="/items" color="dark" icon>
+      <!-- <vs-button to="/items" color="dark" icon>
         <i class="bx bxs-package"></i>
-      </vs-button>
+      </vs-button> -->
 
       <vs-button to="/products/create" color="dark" icon>
         <i class="bx bx-plus"></i>

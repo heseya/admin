@@ -31,6 +31,14 @@
               </template>
             </vs-switch>
           </flex-input>
+          <template v-if="!product.visible && product.public">
+            <br />
+            <vs-alert color="warn">
+              <template #title>Produkt wciąż jest ukryty</template>
+              Produkt jest ukryty ponieważ jego marka lub kategoria jest ukryta. Odkryj je by
+              produkt był widoczny w sklepie
+            </vs-alert>
+          </template>
         </card>
 
         <!-- <card>
@@ -81,7 +89,7 @@
                       :label="brand.name"
                       :value="brand.id"
                     >
-                      {{ brand.name }}
+                      <i class="bx bx-lock" v-if="!brand.public"></i> {{ brand.name }}
                     </vs-option>
                     <template #message-danger>{{ errors[0] }}</template>
                   </vs-select>
@@ -96,7 +104,7 @@
                       :label="category.name"
                       :value="category.id"
                     >
-                      {{ category.name }}
+                      <i class="bx bx-lock" v-if="!category.public"></i> {{ category.name }}
                     </vs-option>
                     <template #message-danger>{{ errors[0] }}</template>
                   </vs-select>

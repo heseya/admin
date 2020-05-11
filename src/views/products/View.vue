@@ -41,10 +41,12 @@
           </template>
         </card>
 
-        <!-- <card>
+        <card>
           <div class="title">Magazyn</div>
-          <small>Już wkrótce</small>
-        </card> -->
+          <div class="quantity-input">
+            <vs-input v-model="deposit.quantity" type="number" label="Ilość produktów" />
+          </div>
+        </card>
 
         <!-- <card>
           <div class="title">Schematy</div>
@@ -172,6 +174,11 @@ const EMPTY_SCHEMA = {
 export default {
   data() {
     return {
+      deposit: {
+        id: 0,
+        quantity: 0,
+        originalQuantity: 0
+      },
       form: {
         name: '',
         slug: '',
@@ -203,7 +210,7 @@ export default {
       return this.$store.getters['categories/getData']
     },
     error() {
-      return this.$store.getters['products/getError']
+      return this.$store.getters['products/getError'] || this.$store.getters['products/getDepositError']
     }
   },
   methods: {
@@ -237,6 +244,11 @@ export default {
         payload
       )
 
+      await this.$store.dispatch('products/updateQuantity', {
+        id: this.deposit.id,
+        quantity: this.deposit.quantity - this.deposit.originalQuantity
+      })
+
       if (newID) {
         this.$vs.notification({
           color: 'success',
@@ -257,6 +269,14 @@ export default {
           category_id: product.category.id,
           schemas: [EMPTY_SCHEMA],
           media: []
+        }
+
+        const item = product.schemas[0].schema_items[0].item
+
+        this.deposit = {
+          id: item.id,
+          quantity: item.quantity,
+          originalQuantity: item.quantity
         }
       }
     },
@@ -342,6 +362,11 @@ export default {
       }
     }
   }
+}
+
+.quantity-input {
+  margin-top: 24px;
+  width: 100%;
 }
 
 .label {

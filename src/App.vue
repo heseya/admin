@@ -34,6 +34,10 @@ body {
   margin: 0;
 }
 
+input {
+  width: 100% !important;
+}
+
 .main {
   max-width: 940px;
   padding: 0 20px;

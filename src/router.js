@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from './store'
 
 Vue.use(VueRouter)
 
@@ -7,6 +8,14 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
+    {
+      path: '/',
+      name: 'Index',
+      redirect: { name: 'Orders' },
+      meta: {
+        requiresAuth: true
+      }
+    },
     {
       path: '/login',
       name: 'Login',
@@ -109,14 +118,21 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  // if (to.matched.some(rec => rec.meta.requiresAuth)) {
-  //   return next({
-  //     name: 'Login',
-  //     params: { nextURL: to.fullPath }
-  //   })
-  // }
-
-  return next()
+  if (to.matched.some((rec) => rec.meta.requiresAuth)) {
+    if (!store.getters['auth/isLogged']) {
+      // User is not logged
+      next({
+        name: 'Login',
+        params: { nextURL: to.fullPath }
+      })
+    } else {
+      // User is logged
+      next()
+    }
+  } else {
+    // Path does not requires auth
+    next()
+  }
 })
 
 export default router

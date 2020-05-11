@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import VuexPersistence from 'vuex-persist'
 
+import { auth } from './auth'
 import { products } from './products'
 import { pages } from './pages'
 import { brands } from './brands'
@@ -15,11 +17,13 @@ export default new Vuex.Store({
   mutations: {},
   actions: {},
   modules: {
+    auth,
     products,
     pages,
     brands,
     categories,
     orders,
     shippingMethods
-  }
+  },
+  plugins: [new VuexPersistence({ modules: ['auth'] }).plugin]
 })

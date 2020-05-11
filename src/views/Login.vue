@@ -1,13 +1,12 @@
 <template>
   <div class="login">
-
     <card class="login__card">
       <h1 class="title">Logowanie</h1>
-      <br><br>
-      <vs-input v-model="email" label="E-mail" type="email"/>
-      <br><br>
-      <vs-input v-model="password" label="Hasło" type="password"/>
-      <br>
+      <br /><br />
+      <vs-input v-model="email" label="E-mail" type="email" />
+      <br /><br />
+      <vs-input v-model="password" label="Hasło" type="password" />
+      <br />
       <vs-button color="dark" @click="login">
         Zaloguj
       </vs-button>
@@ -22,18 +21,38 @@ export default {
   components: {
     Card
   },
-  data () {
+  data() {
     return {
-      email: '',
-      password: ''
+      // TODO: clear this in the future
+      email: '***REMOVED***',
+      password: '***REMOVED***'
+    }
+  },
+  computed: {
+    loginError() {
+      return this.$store.state.auth.error
+    }
+  },
+  watch: {
+    loginError(error) {
+      if (error) {
+        this.$vs.notification({
+          color: 'danger',
+          title: 'Błąd logowania',
+          text: 'Popraw email lub haslo'
+        })
+      }
     }
   },
   methods: {
-    login () {
+    async login() {
       const loading = this.$vs.loading()
-      setTimeout(() => {
-        loading.close()
-      }, 3000)
+      await this.$store.dispatch('auth/login', {
+        email: this.email,
+        password: this.password
+      })
+      loading.close()
+      this.$router.push({ name: 'Index' })
     }
   }
 }
@@ -54,9 +73,5 @@ export default {
       width: 100%;
     }
   }
-}
-
-.nav {
-  display: none;
 }
 </style>

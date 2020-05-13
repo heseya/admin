@@ -5,8 +5,8 @@ import router from './router'
 const DEBUG = process.env.NODE_ENV === 'development'
 
 const API_URLS = {
-  production: 'https://depth.space',
-  local: 'https://depth.space'
+  production: 'https://dev.***REMOVED***',
+  local: 'https://dev.***REMOVED***/'
 }
 
 const baseURL = DEBUG ? API_URLS.local : API_URLS.production
@@ -30,5 +30,5 @@ api.interceptors.response.use(null, (error) => {
     store.dispatch('auth/logout')
     router.push('/login')
   }
-  return error
+  throw error
 })

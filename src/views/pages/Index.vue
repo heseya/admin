@@ -1,11 +1,9 @@
 <template>
   <div>
     <top-nav title="Strony">
-
       <vs-button to="/pages/create" color="dark" icon>
         <i class="bx bx-plus"></i>
       </vs-button>
-
     </top-nav>
 
     <card>
@@ -21,6 +19,8 @@
         </list-item>
       </list>
     </card>
+
+    <vs-pagination color="dark" v-if="meta.last_page" v-model="page" :length="meta.last_page" />
   </div>
 </template>
 
@@ -37,25 +37,31 @@ export default {
     List,
     ListItem
   },
+  data: () => ({
+    page: 1
+  }),
   computed: {
-    pages () {
+    pages() {
       return this.$store.getters['pages/getData']
+    },
+    meta() {
+      return this.$store.getters['pages/getMeta']
+    }
+  },
+  watch: {
+    page(page) {
+      if (this.meta.current_page !== page) this.getOrders(page)
+      window.scrollTo(0, 0)
     }
   },
   methods: {
-    async getPages () {
+    async getPages(page = 1) {
       const loading = this.$vs.loading({ color: '#000' })
-
-      try {
-        await this.$store.dispatch('pages/fetch')
-      } catch (e) {
-        console.log(e)
-      } finally {
-        loading.close()
-      }
+      await this.$store.dispatch('pages/fetch', { page })
+      loading.close()
     }
   },
-  created () {
+  created() {
     this.getPages()
   }
 }

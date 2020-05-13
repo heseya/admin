@@ -33,6 +33,12 @@
         </list-item>
 
         <h2 class="section-title">Inne</h2>
+        <list-item @click="isChangePasswordModal = true">
+          <template v-slot:avatar>
+            <i class="bx bx-lock"></i>
+          </template>
+          Zmień hasło
+        </list-item>
         <list-item @click="logout">
           <template v-slot:avatar>
             <i class="bx bx-log-out-circle"></i>
@@ -41,6 +47,13 @@
         </list-item>
       </list>
     </card>
+
+    <vs-dialog width="350px" not-center v-model="isChangePasswordModal">
+      <template #header>
+        <h4>Zmiana hasła</h4>
+      </template>
+      <app-change-password @close="isChangePasswordModal = false" />
+    </vs-dialog>
   </div>
 </template>
 
@@ -49,14 +62,19 @@ import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/Card.vue'
 import List from '@/components/List.vue'
 import ListItem from '@/components/ListItem.vue'
+import ChangePassword from '@/components/ChangePassword.vue'
 
 export default {
   components: {
     TopNav,
     Card,
     List,
-    ListItem
+    ListItem,
+    appChangePassword: ChangePassword
   },
+  data: () => ({
+    isChangePasswordModal: false
+  }),
   computed: {
     user() {
       return this.$store.state.auth.user || {}

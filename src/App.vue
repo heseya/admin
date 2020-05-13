@@ -50,6 +50,12 @@ input {
   justify-content: space-between;
 }
 
+.flex-column {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
 .fade-enter-active,
 .fade-leave-active {
   transition-property: opacity;

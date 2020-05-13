@@ -15,7 +15,7 @@
           :hidden="!shippingMethod.public"
         >
           {{ shippingMethod.name }}
-          <small>{{ shippingMethod.price }} zł</small>
+          <small>{{ shippingMethod.price }} {{ currency }}</small>
         </list-item>
       </list>
     </card>
@@ -28,7 +28,7 @@
         <vs-input v-model="editedItem.name" label="Nazwa" />
         <vs-input v-model="editedItem.price" label="Cena" type="number" />
         <div class="center">
-         <flex-input>
+          <flex-input>
             <label class="title">Widoczność produktu</label>
             <vs-switch success v-model="editedItem.public">
               <template #off>
@@ -92,6 +92,9 @@ export default {
     },
     error() {
       return this.$store.getters['shippingMethods/getError']
+    },
+    currency() {
+      return this.$store.state.currency
     }
   },
   watch: {

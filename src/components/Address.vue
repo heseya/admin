@@ -2,10 +2,15 @@
   <div class="address">
     <span class="address__name">{{ address.name }}</span>
     <span class="address__field">{{ address.address }}</span>
-    <span class="address__field">{{ address.zip }} {{ address.city }}</span>
-    <span class="address__field">{{ address.country }}</span>
-    <span class="address__field" v-if="address.vat">VAT: {{ address.vat }}</span>
-    <span class="address__field" v-if="address.phone">Tel: {{ address.phone }}</span>
+    <span class="address__field">{{ address.zip }}, {{ address.city }}, {{ address.country }}</span>
+    <template v-if="address.vat">
+      <span class="address__subtitle">VAT:</span>
+      <span class="address__field">{{ address.vat }}</span>
+    </template>
+    <template v-if="address.phone">
+      <span class="address__subtitle">Telefon:</span>
+      <span class="address__field">{{ address.phone }}</span>
+    </template>
   </div>
 </template>
 
@@ -26,16 +31,22 @@ export default {
   display: flex;
   flex-direction: column;
   margin-top: 8px;
-  color: #444;
+  color: #666;
 
-  span {
+  &__field {
     display: block;
   }
 
   &__name {
     font-size: 1.1em;
     margin-bottom: 3px;
-    color: #111;
+    color: #000;
+  }
+
+  &__subtitle {
+    font-family: $font-sec;
+    color: #000;
+    margin-top: 4px;
   }
 }
 </style>

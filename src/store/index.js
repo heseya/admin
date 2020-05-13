@@ -13,7 +13,9 @@ import { shippingMethods } from './shippingMethods'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  state: {},
+  state: {
+    currency: 'zł'
+  },
   mutations: {},
   actions: {},
   modules: {

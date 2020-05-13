@@ -13,13 +13,15 @@
             <i class="bx bx-check-circle"></i>
           </template>
           {{ order.code }}
-          <small>{{ order.summary }} PLN</small>
+          <small>{{ order.summary }} {{ currency }}</small>
           <template #action>
             {{ getRelativeDate(order.created_at) }}
           </template>
         </list-item>
       </list>
     </card>
+
+    <vs-pagination color="dark" v-if="meta.last_page" v-model="page" :length="meta.last_page" />
   </div>
 </template>
 
@@ -37,29 +39,38 @@ export default {
     List,
     ListItem
   },
+  data: () => ({
+    page: 1
+  }),
   computed: {
     orders() {
       return this.$store.getters['orders/getData']
+    },
+    meta() {
+      return this.$store.getters['orders/getMeta']
+    },
+    currency() {
+      return this.$store.state.currency
+    }
+  },
+  watch: {
+    page(page) {
+      if (this.meta.current_page !== page) this.getOrders(page)
+      window.scrollTo(0, 0)
     }
   },
   methods: {
     getRelativeDate(date) {
       return getRelativeDate(date)
     },
-    async getOrders() {
+    async getOrders(page) {
       const loading = this.$vs.loading({ color: '#000' })
-
-      try {
-        await this.$store.dispatch('orders/fetch')
-      } catch (e) {
-        console.log(e)
-      } finally {
-        loading.close()
-      }
+      await this.$store.dispatch('orders/fetch', { page })
+      loading.close()
     }
   },
   created() {
-    this.getOrders()
+    this.getOrders(1)
   }
 }
 </script>

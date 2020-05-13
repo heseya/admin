@@ -17,15 +17,16 @@
 <script>
 import Card from '@/components/Card.vue'
 
+const DEBUG = process.env.NODE_ENV === 'development'
+
 export default {
   components: {
     Card
   },
   data() {
     return {
-      // TODO: clear this in the future
-      email: '***REMOVED***',
-      password: '***REMOVED***'
+      email: DEBUG ? '***REMOVED***' : '',
+      password: DEBUG ? '***REMOVED***' : ''
     }
   },
   computed: {

@@ -2,17 +2,17 @@ import axios from 'axios'
 import store from './store/index'
 import router from './router'
 
-const DEBUG = process.env.NODE_ENV === 'development'
-
-const API_URLS = {
-  production: 'https://dev.***REMOVED***',
-  local: 'https://dev.***REMOVED***/'
+const getApiURL = () => {
+  switch (window.location.host) {
+    case 'admin.trafika.bydgoszcz.pl':
+      return 'https://trafika.***REMOVED***'
+    default:
+      return 'https://dev.***REMOVED***'
+  }
 }
 
-const baseURL = DEBUG ? API_URLS.local : API_URLS.production
-
 export const api = axios.create({
-  baseURL
+  baseURL: getApiURL()
 })
 
 api.interceptors.request.use((config) => {

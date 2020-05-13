@@ -40,7 +40,7 @@ export default {
 
 <style lang="scss">
 .nav {
-  z-index: 1000000;
+  z-index: 1000;
   position: fixed;
   bottom: 0;
   left: 0;

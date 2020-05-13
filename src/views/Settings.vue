@@ -85,6 +85,14 @@ export default {
       this.$store.dispatch('auth/logout')
       this.$router.push('/login')
     }
+  },
+  beforeRouteLeave(to, from, next) {
+    if (this.isChangePasswordModal) {
+      this.isChangePasswordModal = false
+      next(false)
+    } else {
+      next()
+    }
   }
 }
 </script>

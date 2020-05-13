@@ -8,7 +8,7 @@
           <h2 class="section-title">Koszyk</h2>
           <app-cart-item v-for="item in order.items" :key="item.id" :item="item" />
           <div class="cart-total">
-            Suma zamówienia: <b>{{ total }} {{ currency }}</b>
+            Suma zamówienia: <b>{{ order.summary }} {{ currency }}</b>
           </div>
         </div>
       </card>
@@ -60,12 +60,6 @@ export default {
     },
     order() {
       return this.$store.getters['orders/getSelected']
-    },
-    total() {
-      return (
-        this.order.items.reduce((sum, item) => sum + item.price, 0) +
-        this.order.shipping_method.price
-      )
     },
     relativeOrderedDate() {
       return getRelativeDate(this.order.created_at)

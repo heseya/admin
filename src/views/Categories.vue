@@ -29,7 +29,7 @@
         <vs-input v-model="editedItem.slug" label="Slug" />
         <div class="center">
           <flex-input>
-            <label class="title">Widoczność produktu</label>
+            <label class="title">Widoczność kategorii</label>
             <vs-switch success v-model="editedItem.public">
               <template #off>
                 <i class="bx bx-x"></i>
@@ -142,6 +142,14 @@ export default {
   },
   created() {
     this.getCategories()
+  },
+  beforeRouteLeave(to, from, next) {
+    if (this.isModalActive) {
+      this.isModalActive = false
+      next(false)
+    } else {
+      next()
+    }
   }
 }
 </script>

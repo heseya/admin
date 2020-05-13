@@ -29,7 +29,7 @@
         <vs-input v-model="editedItem.price" label="Cena" type="number" />
         <div class="center">
           <flex-input>
-            <label class="title">Widoczność produktu</label>
+            <label class="title">Widoczność metody płatności</label>
             <vs-switch success v-model="editedItem.public">
               <template #off>
                 <i class="bx bx-x"></i>
@@ -148,6 +148,14 @@ export default {
   },
   created() {
     this.getShippingMethods()
+  },
+  beforeRouteLeave(to, from, next) {
+    if (this.isModalActive) {
+      this.isModalActive = false
+      next(false)
+    } else {
+      next()
+    }
   }
 }
 </script>

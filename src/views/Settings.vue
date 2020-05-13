@@ -65,9 +65,7 @@ export default {
   methods: {
     logout() {
       this.$store.dispatch('auth/logout')
-      setTimeout(() => {
-        this.$router.push('/login')
-      }, 100)
+      this.$router.push('/login')
     }
   }
 }

@@ -1,5 +1,6 @@
 import axios from 'axios'
 import store from './store/index'
+import router from './router'
 
 const DEBUG = process.env.NODE_ENV === 'development'
 
@@ -22,4 +23,12 @@ api.interceptors.request.use((config) => {
   }
 
   return config
+})
+
+api.interceptors.response.use(null, (error) => {
+  if (error.response.status === 401) {
+    store.dispatch('auth/logout')
+    router.push('/login')
+  }
+  return error
 })

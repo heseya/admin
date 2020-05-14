@@ -7,7 +7,7 @@
     </top-nav>
 
     <card>
-      <app-empty v-if="!shippingMethods.length">Nie ma żadnej metody dostawy</app-empty>
+      <app-empty v-if="!shippingMethods.length">Nie ma żadnej opcji dostawy</app-empty>
       <list>
         <list-item
           v-for="shippingMethod in shippingMethods"
@@ -30,7 +30,7 @@
         <vs-input v-model="editedItem.price" label="Cena" type="number" />
         <div class="center">
           <flex-input>
-            <label class="title">Widoczność metody płatności</label>
+            <label class="title">Widoczność opcji dostawy</label>
             <vs-switch success v-model="editedItem.public">
               <template #off>
                 <i class="bx bx-x"></i>

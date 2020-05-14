@@ -16,34 +16,46 @@
     </top-nav>
 
     <div class="page">
-      <card>
-        <div class="page__info">
-          <vs-input v-model="form.name" label="Nazwa" />
-          <vs-input v-model="form.slug" label="Link" />
-          <flex-input>
-            <label class="title">Widoczność strony</label>
-            <vs-switch success v-model="form.public">
-              <template #off>
-                <i class="bx bx-x"></i>
-              </template>
-              <template #on>
-                <i class="bx bx-check"></i>
-              </template>
-            </vs-switch>
-          </flex-input>
-        </div>
-        <br />
-        <md-editor v-model="form.content_md" />
-        <br />
-        <vs-button color="dark" size="large" @click="save">
-          Zapisz
-        </vs-button>
-      </card>
+      <validation-observer v-slot="{ handleSubmit }">
+        <card>
+          <div class="page__info">
+            <validation-provider rules="required" v-slot="{ errors }">
+              <vs-input v-model="form.name" @input="editSlug" label="Nazwa">
+                <template #message-danger>{{ errors[0] }}</template>
+              </vs-input>
+            </validation-provider>
+            <validation-provider rules="required|slug" v-slot="{ errors }">
+              <vs-input v-model="form.slug" label="Link">
+                <template #message-danger>{{ errors[0] }}</template>
+              </vs-input>
+            </validation-provider>
+            <flex-input>
+              <label class="title">Widoczność strony</label>
+              <vs-switch success v-model="form.public">
+                <template #off>
+                  <i class="bx bx-x"></i>
+                </template>
+                <template #on>
+                  <i class="bx bx-check"></i>
+                </template>
+              </vs-switch>
+            </flex-input>
+          </div>
+          <br />
+          <md-editor v-model="form.content_md" />
+          <br />
+          <vs-button color="dark" size="large" @click="handleSubmit(save)">
+            Zapisz
+          </vs-button>
+        </card>
+      </validation-observer>
     </div>
   </div>
 </template>
 
 <script>
+import slugify from 'slugify'
+import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/Card.vue'
 import FlexInput from '@/components/FlexInput.vue'
@@ -56,7 +68,9 @@ export default {
     Card,
     FlexInput,
     PopConfirm,
-    MdEditor
+    MdEditor,
+    ValidationProvider,
+    ValidationObserver
   },
   data() {
     return {
@@ -99,6 +113,9 @@ export default {
     }
   },
   methods: {
+    editSlug() {
+      this.form.slug = slugify(this.form.name, { lower: true })
+    },
     async save() {
       const loading = this.$vs.loading({ color: '#000' })
       if (this.isNew) {

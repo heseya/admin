@@ -30,18 +30,8 @@
 </template>
 
 <script>
-import { ValidationProvider, ValidationObserver, extend } from 'vee-validate'
-import { required } from 'vee-validate/dist/rules'
+import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import { api } from '../api'
-
-extend('required', { ...required, message: 'To pole jest wymagane' })
-extend('password', {
-  params: ['target'],
-  validate(password, { target }) {
-    return password === target
-  },
-  message: 'Powtórzone hasło różni się od nowego hasła'
-})
 
 export default {
   components: {

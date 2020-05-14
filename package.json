@@ -13,6 +13,7 @@
     "core-js": "^3.6.5",
     "query-string": "^6.12.1",
     "register-service-worker": "^1.7.1",
+    "slugify": "^1.4.0",
     "vee-validate": "^3.3.0",
     "vue": "^2.6.11",
     "vue-axios": "^2.1.5",

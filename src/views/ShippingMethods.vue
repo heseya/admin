@@ -21,46 +21,53 @@
       </list>
     </card>
 
-    <vs-dialog width="550px" not-center v-model="isModalActive">
-      <template #header>
-        <h4>{{ editedItem.id ? 'Edycja' : 'Dodawanie' }} opcji dostawy</h4>
-      </template>
-      <modal-form>
-        <vs-input v-model="editedItem.name" label="Nazwa" />
-        <vs-input v-model="editedItem.price" label="Cena" type="number" />
-        <div class="center">
-          <flex-input>
-            <label class="title">Widoczność opcji dostawy</label>
-            <vs-switch success v-model="editedItem.public">
-              <template #off>
-                <i class="bx bx-x"></i>
-              </template>
-              <template #on>
-                <i class="bx bx-check"></i>
-              </template>
-            </vs-switch>
-          </flex-input>
-        </div>
-      </modal-form>
-      <template #footer>
-        <div class="row">
-          <vs-button color="dark" @click="saveModal">Zapisz</vs-button>
-          <pop-confirm
-            title="Czy na pewno chcesz usunąć tą metode dostawy?"
-            okText="Usuń"
-            cancelText="Anuluj"
-            @confirm="deleteItem"
-            v-slot="{ open }"
-          >
-            <vs-button v-if="editedItem.id" color="danger" @click="open">Usuń</vs-button>
-          </pop-confirm>
-        </div>
-      </template>
-    </vs-dialog>
+    <validation-observer v-slot="{ handleSubmit }">
+      <vs-dialog width="550px" not-center v-model="isModalActive">
+        <template #header>
+          <h4>{{ editedItem.id ? 'Edycja' : 'Dodawanie' }} opcji dostawy</h4>
+        </template>
+        <modal-form>
+          <validation-provider rules="required" v-slot="{ errors }">
+            <vs-input v-model="editedItem.name" label="Nazwa">
+              <template #message-danger>{{ errors[0] }}</template>
+            </vs-input>
+          </validation-provider>
+          <vs-input v-model="editedItem.price" label="Cena" type="number" />
+          <div class="center">
+            <flex-input>
+              <label class="title">Widoczność opcji dostawy</label>
+              <vs-switch success v-model="editedItem.public">
+                <template #off>
+                  <i class="bx bx-x"></i>
+                </template>
+                <template #on>
+                  <i class="bx bx-check"></i>
+                </template>
+              </vs-switch>
+            </flex-input>
+          </div>
+        </modal-form>
+        <template #footer>
+          <div class="row">
+            <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
+            <pop-confirm
+              title="Czy na pewno chcesz usunąć tą metode dostawy?"
+              okText="Usuń"
+              cancelText="Anuluj"
+              @confirm="deleteItem"
+              v-slot="{ open }"
+            >
+              <vs-button v-if="editedItem.id" color="danger" @click="open">Usuń</vs-button>
+            </pop-confirm>
+          </div>
+        </template>
+      </vs-dialog>
+    </validation-observer>
   </div>
 </template>
 
 <script>
+import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/Card.vue'
 import List from '@/components/List.vue'
@@ -79,7 +86,9 @@ export default {
     ModalForm,
     PopConfirm,
     FlexInput,
-    appEmpty: Empty
+    appEmpty: Empty,
+    ValidationProvider,
+    ValidationObserver
   },
   data: () => ({
     isModalActive: false,

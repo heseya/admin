@@ -61,12 +61,12 @@
               <div>
                 <br />
                 <validation-provider rules="required" v-slot="{ errors }">
-                  <vs-input v-model="form.name" label="Nazwa">
+                  <vs-input v-model="form.name" @input="editSlug" label="Nazwa">
                     <template #message-danger>{{ errors[0] }}</template>
                   </vs-input>
                 </validation-provider>
                 <br /><br />
-                <validation-provider rules="required" v-slot="{ errors }">
+                <validation-provider rules="required|slug" v-slot="{ errors }">
                   <vs-input v-model="form.slug" label="Link">
                     <template #message-danger>{{ errors[0] }}</template>
                   </vs-input>
@@ -128,8 +128,8 @@
 </template>
 
 <script>
-import { ValidationProvider, ValidationObserver, extend } from 'vee-validate'
-import { required } from 'vee-validate/dist/rules'
+import slugify from 'slugify'
+import { ValidationProvider, ValidationObserver } from 'vee-validate'
 
 import TopNav from '@/layout/TopNav.vue'
 import Gallery from '@/components/Gallery.vue'
@@ -137,25 +137,6 @@ import Card from '@/components/Card.vue'
 import FlexInput from '@/components/FlexInput.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
 import MdEditor from '@/components/MdEditor.vue'
-
-extend('required', {
-  ...required,
-  message: 'To pole jest wymagane'
-})
-
-extend('positive', {
-  message: 'To pole musi być większe od zera',
-  validate: (value) => {
-    return value > 0
-  }
-})
-
-extend('id-required', {
-  message: 'To pole jest wymagane',
-  validate: (value) => {
-    return value !== 0
-  }
-})
 
 const EMPTY_SCHEMA = {
   id: 1,
@@ -210,12 +191,17 @@ export default {
       return this.$store.getters['categories/getData']
     },
     error() {
-      return this.$store.getters['products/getError'] || this.$store.getters['products/getDepositError']
+      return (
+        this.$store.getters['products/getError'] || this.$store.getters['products/getDepositError']
+      )
     }
   },
   methods: {
     async fetch() {
       return this.$store.dispatch('products/get', this.$route.params.id)
+    },
+    editSlug() {
+      this.form.slug = slugify(this.form.name, { lower: true })
     },
     async deleteProduct() {
       const loading = this.$vs.loading({ color: '#000' })

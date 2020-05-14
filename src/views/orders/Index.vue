@@ -7,6 +7,7 @@
     </top-nav>
 
     <card>
+      <app-empty v-if="!orders.length">Nie ma żadnego zamówienia</app-empty>
       <list>
         <list-item v-for="order in orders" :key="order.id" :url="`/orders/${order.id}`">
           <template #avatar>
@@ -30,6 +31,7 @@ import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/Card.vue'
 import List from '@/components/List.vue'
 import ListItem from '@/components/ListItem.vue'
+import Empty from '@/components/Empty.vue'
 import { getRelativeDate } from '@/utils/utils'
 
 export default {
@@ -37,7 +39,8 @@ export default {
     TopNav,
     Card,
     List,
-    ListItem
+    ListItem,
+    appEmpty: Empty
   },
   data: () => ({
     page: 1

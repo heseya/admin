@@ -7,6 +7,7 @@
     </top-nav>
 
     <card>
+      <app-empty v-if="!pages.length">Nie ma żadnej strony</app-empty>
       <list>
         <list-item
           v-for="page in pages"
@@ -29,13 +30,15 @@ import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/Card.vue'
 import List from '@/components/List.vue'
 import ListItem from '@/components/ListItem.vue'
+import Empty from '@/components/Empty.vue'
 
 export default {
   components: {
     TopNav,
     Card,
     List,
-    ListItem
+    ListItem,
+    appEmpty: Empty
   },
   data: () => ({
     page: 1

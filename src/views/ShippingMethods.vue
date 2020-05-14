@@ -7,6 +7,7 @@
     </top-nav>
 
     <card>
+      <app-empty v-if="!shippingMethods.length">Nie ma żadnej metody dostawy</app-empty>
       <list>
         <list-item
           v-for="shippingMethod in shippingMethods"
@@ -66,6 +67,7 @@ import List from '@/components/List.vue'
 import ModalForm from '@/components/ModalForm.vue'
 import FlexInput from '@/components/FlexInput.vue'
 import ListItem from '@/components/ListItem.vue'
+import Empty from '@/components/Empty.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
 
 export default {
@@ -76,7 +78,8 @@ export default {
     ListItem,
     ModalForm,
     PopConfirm,
-    FlexInput
+    FlexInput,
+    appEmpty: Empty
   },
   data: () => ({
     isModalActive: false,

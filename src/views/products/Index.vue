@@ -10,6 +10,7 @@
       </vs-button>
     </top-nav>
 
+    <app-empty v-if="!products.length">Nie ma żadnego produktu</app-empty>
     <div class="products-list">
       <product v-for="product in products" :key="product.id" :product="product"></product>
     </div>
@@ -20,11 +21,13 @@
 <script>
 import TopNav from '@/layout/TopNav.vue'
 import Product from '@/components/Product.vue'
+import Empty from '@/components/Empty.vue'
 
 export default {
   components: {
     TopNav,
-    Product
+    Product,
+    appEmpty: Empty
   },
   data: () => ({
     page: 1

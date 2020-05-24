@@ -6,6 +6,8 @@ const getApiURL = () => {
   switch (window.location.host) {
     case 'admin.trafika.bydgoszcz.pl':
       return 'https://trafika.***REMOVED***'
+    case 'admin.depth.store':
+      return '***REMOVED***'
     default:
       return 'https://dev.***REMOVED***'
   }

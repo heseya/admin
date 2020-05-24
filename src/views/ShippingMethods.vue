@@ -32,7 +32,7 @@
               <template #message-danger>{{ errors[0] }}</template>
             </vs-input>
           </validation-provider>
-          <vs-input v-model="editedItem.price" label="Cena" type="number" />
+          <vs-input v-model="editedItem.price" label="Cena" type="number" step="0.01" />
           <div class="center">
             <flex-input>
               <label class="title">Widoczność opcji dostawy</label>

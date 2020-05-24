@@ -8,7 +8,7 @@
           <h2 class="section-title">Koszyk</h2>
           <app-cart-item v-for="item in order.items" :key="item.id" :item="item" />
           <div class="cart-total">
-            Suma zamówienia: <b>{{ order.summary }} {{ currency }}</b>
+            Łącznie: <b>{{ order.summary }} {{ currency }}</b>
           </div>
         </div>
       </card>

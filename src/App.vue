@@ -1,32 +1,73 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+    <navigation></navigation>
+
+    <main class="main">
+      <transition name="fade">
+        <router-view />
+      </transition>
+    </main>
   </div>
 </template>
 
+<script>
+import Navigation from './layout/Navigation.vue'
+
+export default {
+  components: {
+    Navigation
+  }
+}
+</script>
+
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+@font-face {
+  font-family: 'Tw Cen MT';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Tw Cen MT'), url(/fonts/TwCenMT.woff) format('woff');
 }
 
-#nav {
-  padding: 30px;
+body {
+  font-family: 'BlinkMacSystemFont', 'Roboto', sans-serif;
+  background: #f4f7f8;
+  margin: 0;
+}
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
+input {
+  width: 100% !important;
+}
 
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+.main {
+  max-width: 940px;
+  padding: 0 20px;
+  margin: 0 auto;
+  margin-bottom: 80px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.flex-column {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition-property: opacity;
+  transition-duration: 0.25s;
+}
+
+.fade-enter-active {
+  transition-delay: 0.25s;
+}
+
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
 }
 </style>

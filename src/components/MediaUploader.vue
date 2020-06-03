@@ -72,7 +72,7 @@ export default {
     },
     isFileValid() {
       if (!this.file) return false
-      const extension = getLastElement(this.file.name.split('.'))
+      const extension = getLastElement(this.file.name.split('.')).toLowerCase()
       return this.extensions.some((ext) => ext === extension)
     },
     changeDrag(isDrag) {

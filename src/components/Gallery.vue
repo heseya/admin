@@ -2,7 +2,7 @@
   <div class="gallery">
     <draggable class="gallery__images" v-model="images">
       <div class="gallery__img" v-for="image in images" :key="image.url">
-        <img :src="image.url" />
+        <img :src="`${image.url}?w=350&h=350`" />
         <div class="remove">
           <vs-button icon color="danger" @click="onImageDelete(image.id)">
             <i class="bx bx-trash"></i>

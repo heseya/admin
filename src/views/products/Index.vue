@@ -4,6 +4,17 @@
       <!-- <vs-button to="/items" color="dark" icon>
         <i class="bx bxs-package"></i>
       </vs-button> -->
+      <vs-input
+        state="dark"
+        type="search"
+        v-model="search"
+        @keydown.enter="makeSearch"
+        placeholder="Wyszukiwanie"
+      />
+
+      <vs-button @click="makeSearch" color="dark" icon>
+        <i class="bx bx-search"></i>
+      </vs-button>
 
       <vs-button to="/products/create" color="dark" icon>
         <i class="bx bx-plus"></i>
@@ -14,7 +25,13 @@
     <div class="products-list">
       <product v-for="product in products" :key="product.id" :product="product"></product>
     </div>
-    <vs-pagination color="dark" v-if="meta.last_page" v-model="page" :length="meta.last_page" />
+    <vs-pagination
+      color="dark"
+      v-if="meta.last_page"
+      :value="page"
+      @input="changePage"
+      :length="meta.last_page"
+    />
   </div>
 </template>
 
@@ -30,7 +47,8 @@ export default {
     appEmpty: Empty
   },
   data: () => ({
-    page: 1
+    page: 1,
+    search: ''
   }),
   computed: {
     products() {
@@ -41,21 +59,41 @@ export default {
     }
   },
   watch: {
-    page(page) {
-      if (this.meta.current_page !== page) this.getProducts(page)
-      window.scrollTo(0, 0)
+    '$route.query'({ page, search }) {
+      this.page = page || 1
+      if (this.meta.current_page !== page) {
+        this.getProducts()
+        window.scrollTo(0, 0)
+      }
     }
   },
   methods: {
-    async getProducts(page) {
+    changePage(page) {
+      if (this.page !== page) {
+        this.$router.push({ path: 'products', query: { page, search: this.$route.query.search } })
+      }
+    },
+    makeSearch() {
+      if (this.search !== this.$route.query.search) {
+        this.$router.push({
+          path: 'products',
+          query: { page: undefined, search: this.search || undefined }
+        })
+      }
+    },
+    async getProducts() {
       const loading = this.$vs.loading({ color: '#000' })
-      this.page = page
-      await this.$store.dispatch('products/fetch', { page })
+      await this.$store.dispatch('products/fetch', {
+        page: this.page,
+        search: this.$route.query.search
+      })
       loading.close()
     }
   },
   created() {
-    this.getProducts(1)
+    this.page = this.$route.query.page || 1
+    this.search = this.$route.query.search || ''
+    this.getProducts()
   }
 }
 </script>

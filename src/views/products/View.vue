@@ -115,7 +115,7 @@
 
               <div class="wide">
                 <small class="label">Opis</small>
-                <md-editor v-model="form.description_md" height="200px" />
+                <Textarea v-model="form.description_md" />
                 <br />
                 <vs-button color="dark" size="large">Zapisz</vs-button>
               </div>
@@ -136,7 +136,7 @@ import Gallery from '@/components/Gallery.vue'
 import Card from '@/components/Card.vue'
 import FlexInput from '@/components/FlexInput.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
-import MdEditor from '@/components/MdEditor.vue'
+import Textarea from '@/components/Textarea.vue'
 
 const EMPTY_SCHEMA = {
   id: 1,
@@ -298,7 +298,7 @@ export default {
     PopConfirm,
     ValidationProvider,
     ValidationObserver,
-    MdEditor
+    Textarea
   }
 }
 </script>

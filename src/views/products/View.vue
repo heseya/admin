@@ -201,7 +201,7 @@ export default {
       return this.$store.dispatch('products/get', this.$route.params.id)
     },
     editSlug() {
-      this.form.slug = slugify(this.form.name, { lower: true })
+      this.form.slug = slugify(this.form.name, { lower: true, remove: /[.]/g })
     },
     async deleteProduct() {
       const loading = this.$vs.loading({ color: '#000' })

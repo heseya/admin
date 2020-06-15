@@ -8840,10 +8840,10 @@ vuedraggable@^2.23.2:
   dependencies:
     sortablejs "^1.10.1"
 
-vuesax@^4.0.1-alpha.16:
-  version "4.0.1-alpha.16"
-  resolved "https://registry.yarnpkg.com/vuesax/-/vuesax-4.0.1-alpha.16.tgz#e37f1c7a7ca50fcf3eee7cd273ad19075c14c747"
-  integrity sha512-qm/0BBS7ULk/Sk4lr/xPGzUuj0hX5U3JN+L7ShmSFyt70L3zHzhQxNDNw7yD8EJa2GxdgyXReKzwfvcyH2uM/A==
+vuesax@^4.0.1-alpha.20:
+  version "4.0.1-alpha.20"
+  resolved "https://registry.yarnpkg.com/vuesax/-/vuesax-4.0.1-alpha.20.tgz#11632623082231c8f70310985eba77f171476cf2"
+  integrity sha512-LkXrSpDgk/WQUkPKgflrt7zaZYh5KQ12Y37H6IMVs9lBal2fVeb2ltIK8beZG5MMnPbW69H7V7yTwEnlcffhyQ==
 
 vuex-persist@^2.2.0:
   version "2.2.0"

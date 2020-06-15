@@ -225,13 +225,13 @@ export default {
 
       const payload = this.isNew ? this.form : { id: this.id, item: this.form }
 
-      const newID = await this.$store.dispatch(
+      const { id: newID, schemas } = await this.$store.dispatch(
         this.isNew ? 'products/add' : 'products/update',
         payload
       )
 
       await this.$store.dispatch('products/updateQuantity', {
-        id: this.deposit.id,
+        id: schemas[0].schema_items[0].item.id,
         quantity: this.deposit.quantity - this.deposit.originalQuantity
       })
 
@@ -261,8 +261,8 @@ export default {
 
         this.deposit = {
           id: item.id,
-          quantity: item.quantity,
-          originalQuantity: item.quantity
+          quantity: item.quantity || 0,
+          originalQuantity: item.quantity || 0
         }
       }
     },

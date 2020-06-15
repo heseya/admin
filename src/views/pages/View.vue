@@ -119,7 +119,7 @@ export default {
     async save() {
       const loading = this.$vs.loading({ color: '#000' })
       if (this.isNew) {
-        const newID = await this.$store.dispatch('pages/add', this.form)
+        const { id: newID } = await this.$store.dispatch('pages/add', this.form)
         if (newID) {
           this.$vs.notification({
             color: 'success',

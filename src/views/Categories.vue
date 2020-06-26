@@ -126,7 +126,7 @@ export default {
       loading.close()
     },
     editSlug() {
-      this.editedItem.slug = slugify(this.editedItem.name, { lower: true })
+      this.editedItem.slug = slugify(this.editedItem.name, { lower: true, remove: /[.]/g })
     },
     openModal(id) {
       this.isModalActive = true

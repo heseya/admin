@@ -42,7 +42,8 @@
             </flex-input>
           </div>
           <br />
-          <md-editor v-model="form.content_md" />
+          <small class="label">Treść</small>
+          <Textarea v-model="form.content_md" />
           <br />
           <vs-button color="dark" size="large" @click="handleSubmit(save)">
             Zapisz
@@ -60,7 +61,7 @@ import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/Card.vue'
 import FlexInput from '@/components/FlexInput.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
-import MdEditor from '@/components/MdEditor.vue'
+import Textarea from '@/components/Textarea.vue'
 
 export default {
   components: {
@@ -68,7 +69,7 @@ export default {
     Card,
     FlexInput,
     PopConfirm,
-    MdEditor,
+    Textarea,
     ValidationProvider,
     ValidationObserver
   },
@@ -114,12 +115,12 @@ export default {
   },
   methods: {
     editSlug() {
-      this.form.slug = slugify(this.form.name, { lower: true })
+      this.form.slug = slugify(this.form.name, { lower: true, remove: /[.]/g })
     },
     async save() {
       const loading = this.$vs.loading({ color: '#000' })
       if (this.isNew) {
-        const newID = await this.$store.dispatch('pages/add', this.form)
+        const { id: newID } = await this.$store.dispatch('pages/add', this.form)
         if (newID) {
           this.$vs.notification({
             color: 'success',

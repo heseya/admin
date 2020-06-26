@@ -201,7 +201,7 @@ export default {
       return this.$store.dispatch('products/get', this.$route.params.id)
     },
     editSlug() {
-      this.form.slug = slugify(this.form.name, { lower: true })
+      this.form.slug = slugify(this.form.name, { lower: true, remove: /[.]/g })
     },
     async deleteProduct() {
       const loading = this.$vs.loading({ color: '#000' })
@@ -225,13 +225,13 @@ export default {
 
       const payload = this.isNew ? this.form : { id: this.id, item: this.form }
 
-      const newID = await this.$store.dispatch(
+      const { id: newID, schemas } = await this.$store.dispatch(
         this.isNew ? 'products/add' : 'products/update',
         payload
       )
 
       await this.$store.dispatch('products/updateQuantity', {
-        id: this.deposit.id,
+        id: schemas[0].schema_items[0].item.id,
         quantity: this.deposit.quantity - this.deposit.originalQuantity
       })
 
@@ -261,8 +261,8 @@ export default {
 
         this.deposit = {
           id: item.id,
-          quantity: item.quantity,
-          originalQuantity: item.quantity
+          quantity: item.quantity || 0,
+          originalQuantity: item.quantity || 0
         }
       }
     },
@@ -353,14 +353,5 @@ export default {
 .quantity-input {
   margin-top: 24px;
   width: 100%;
-}
-
-.label {
-  display: block;
-  margin-left: 5px;
-  margin-bottom: 3px;
-  color: #000 !important;
-  font-size: 0.75rem;
-  font-weight: 500;
 }
 </style>

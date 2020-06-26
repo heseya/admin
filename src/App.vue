@@ -70,4 +70,13 @@ input {
 .fade-leave-active {
   opacity: 0;
 }
+
+.label {
+  display: block;
+  margin-left: 5px;
+  margin-bottom: 3px;
+  color: #000 !important;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
 </style>

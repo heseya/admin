@@ -14,6 +14,17 @@
       </card>
 
       <card>
+        <br />
+        <template v-if="order.status">
+          <vs-select label="Status" v-model="status">
+            <vs-option :label="order.status.name" :value="order.status.id">{{ order.status.name }}</vs-option>
+          </vs-select>
+        </template>
+        <br />
+        <h2 class="section-title">Płatność</h2>
+        TODO
+        <br />
+        <br />
         <h2 class="section-title">Adres dostawy</h2>
         <app-address :address="order.delivery_address" />
         <br />
@@ -23,14 +34,14 @@
         </template>
         <br />
         <h2 class="section-title">Przesyłka</h2>
-        <div class="shipping">
-          <span class="shipping__name">{{ order.shipping_method.name }}</span>
-          <small class="shipping__price">{{ order.shipping_method.price }} {{ currency }}</small>
+        <div class="shipping" v-if="order.shopping_method">
+          <span class="shipping__name">{{ order.shopping_method.name }}</span>
+          <small class="shipping__price">{{ order.shopping_method.price }} {{ currency }}</small>
         </div>
         <br />
-        <template v-if="comment">
+        <template v-if="order.comment">
           <h2 class="section-title">Komentarz do zamówienia</h2>
-          <p>{{ comment }}</p>
+          <p>{{ order.comment }}</p>
         </template>
         <br />
         <h2 class="section-title">Złożone</h2>
@@ -54,6 +65,9 @@ export default {
     appAddress: Address,
     appCartItem: CartItem
   },
+  data: () => ({
+    status: 0
+  }),
   computed: {
     currency() {
       return this.$store.state.currency
@@ -63,6 +77,11 @@ export default {
     },
     relativeOrderedDate() {
       return getRelativeDate(this.order.created_at)
+    }
+  },
+  watch: {
+    order(order) {
+      this.status = order.status.id
     }
   },
   async created() {

@@ -1,15 +1,22 @@
 <template>
   <div class="address">
-    <span class="address__name">{{ address.name }}</span>
-    <span class="address__field">{{ address.address }}</span>
-    <span class="address__field">{{ address.zip }}, {{ address.city }}, {{ address.country }}</span>
-    <template v-if="address.vat">
-      <span class="address__subtitle">VAT:</span>
-      <span class="address__field">{{ address.vat }}</span>
+    <template v-if="address">
+      <span class="address__name">{{ address.name }}</span>
+      <span class="address__field">{{ address.address }}</span>
+      <span class="address__field">
+        {{ address.zip }}, {{ address.city }}, {{ address.country }}
+      </span>
+      <template v-if="address.vat">
+        <span class="address__subtitle">VAT:</span>
+        <span class="address__field">{{ address.vat }}</span>
+      </template>
+      <template v-if="address.phone">
+        <span class="address__subtitle">Telefon:</span>
+        <span class="address__field">{{ address.phone }}</span>
+      </template>
     </template>
-    <template v-if="address.phone">
-      <span class="address__subtitle">Telefon:</span>
-      <span class="address__field">{{ address.phone }}</span>
+    <template v-else>
+      <span class="address__error">Address is not provided!</span>
     </template>
   </div>
 </template>
@@ -47,6 +54,11 @@ export default {
     font-family: $font-sec;
     color: #000;
     margin-top: 4px;
+  }
+
+  &__error {
+    counter-reset: #ccc;
+    font-weight: 300;
   }
 }
 </style>

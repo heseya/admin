@@ -21,8 +21,19 @@
           </vs-select>
         </template>
         <br />
-        <h2 class="section-title">Płatność</h2>
-        TODO
+        <h2 class="section-title">Próby płatności</h2>
+        <div v-for="payment in order.payments" :key="payment.id" class="payment-method">
+          <vs-tooltip>
+            <i class='bx bxs-check-circle payment-method__success' v-if="payment.payed"></i>
+            <template #tooltip>Sukces</template>
+          </vs-tooltip>
+          <vs-tooltip>
+            <i class='bx bxs-x-circle payment-method__failed' v-if="!payment.payed"></i>
+            <template #tooltip>Porażka</template>
+          </vs-tooltip>
+          <span class="payment-method__name">{{ payment.method }}</span>
+          <span class="payment-method__amount">({{ payment.amount }} {{ currency }})</span>
+        </div>
         <br />
         <br />
         <h2 class="section-title">Adres dostawy</h2>
@@ -81,7 +92,7 @@ export default {
   },
   watch: {
     order(order) {
-      this.status = order.status.id
+      this.status = order?.status?.id
     }
   },
   async created() {
@@ -137,6 +148,37 @@ export default {
 
   .card {
     margin-bottom: 0;
+  }
+}
+
+.payment-method {
+  display: flex;
+  align-items: center;
+  margin: 3px 0;
+
+  &__name {
+    font-family: $font-main;
+    margin-left: 10px;
+    margin-right: 4px;
+    text-transform: capitalize;
+  }
+
+  &__amount {
+    font-size: 0.7em;
+    line-height: 1rem;
+  }
+
+  .bx {
+    font-size: 1.3em;
+    margin-top: 1px;
+  }
+
+  &__failed {
+    color: #FC4757;
+  }
+
+  &__success {
+    color: #46CA3A;
   }
 }
 </style>

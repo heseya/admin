@@ -95,7 +95,7 @@ export const createStore = (name, endpoint, custom) => {
       async get({ commit }, id) {
         commit(mutations.SET_ERROR, null)
         try {
-          const { data: responseData } = await api.get(`/${endpoint}/id:${id}}`)
+          const { data: responseData } = await api.get(`/${endpoint}/id:${id}`)
           commit(mutations.SET_SELECTED, responseData.data)
           return true
         } catch (error) {

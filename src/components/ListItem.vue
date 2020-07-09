@@ -67,6 +67,7 @@ export default {
 
   &__action {
     margin-left: auto;
+    text-align: right;
   }
 }
 

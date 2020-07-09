@@ -16,7 +16,8 @@
           {{ order.code }}
           <small>{{ order.summary }} {{ currency }}</small>
           <template #action>
-            {{ getRelativeDate(order.created_at) }}
+            <div :style="{color: `#${order.status.color}`}">{{ order.status.name }}</div>
+            <div>{{ getRelativeDate(order.created_at) }}</div>
           </template>
         </list-item>
       </list>

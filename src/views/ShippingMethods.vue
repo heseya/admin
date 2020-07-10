@@ -34,6 +34,14 @@
           </validation-provider>
           <vs-input v-model="editedItem.price" label="Cena" type="number" step="0.01" />
           <div class="center">
+            <vs-select v-model="editedItem.payment_methods" multiple filter collapse-chips label="Metody płatności">
+              <vs-option v-for="method in paymentMethods" :key="method.id" :value="method.id" :label="method.name">
+                {{ method.name }}
+              </vs-option>
+            </vs-select>
+          </div>
+          <br />
+          <div class="center">
             <flex-input>
               <label class="title">Widoczność opcji dostawy</label>
               <vs-switch success v-model="editedItem.public">
@@ -95,10 +103,14 @@ export default {
     editedItem: {
       name: '',
       price: 0,
+      payment_methods: [],
       public: true
     }
   }),
   computed: {
+    paymentMethods() {
+      return this.$store.getters['paymentMethods/getData']
+    },
     shippingMethods() {
       return this.$store.getters['shippingMethods/getData']
     },
@@ -121,15 +133,11 @@ export default {
     }
   },
   methods: {
-    async getShippingMethods() {
-      const loading = this.$vs.loading({ color: '#000' })
-      await this.$store.dispatch('shippingMethods/fetch')
-      loading.close()
-    },
     openModal(id) {
       this.isModalActive = true
       if (id) {
-        this.editedItem = this.$store.getters['shippingMethods/getFromListById'](id)
+        const item = this.$store.getters['shippingMethods/getFromListById'](id)
+        this.editedItem = { ...item, payment_methods: item.payment_methods.map(({ id }) => id) }
       } else {
         this.editedItem = {
           name: '',
@@ -158,8 +166,13 @@ export default {
       this.isModalActive = false
     }
   },
-  created() {
-    this.getShippingMethods()
+  async created() {
+    const loading = this.$vs.loading({ color: '#000' })
+    await Promise.all([
+      this.$store.dispatch('shippingMethods/fetch'),
+      this.$store.dispatch('paymentMethods/fetch')
+    ])
+    loading.close()
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {
@@ -177,4 +190,5 @@ export default {
   display: flex;
   justify-content: space-between;
 }
+
 </style>

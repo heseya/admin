@@ -9,6 +9,7 @@ import { brands } from './brands'
 import { categories } from './categories'
 import { orders } from './orders'
 import { shippingMethods } from './shippingMethods'
+import { paymentMethods } from './paymentMethods'
 
 Vue.use(Vuex)
 
@@ -25,7 +26,8 @@ export default new Vuex.Store({
     brands,
     categories,
     orders,
-    shippingMethods
+    shippingMethods,
+    paymentMethods
   },
   plugins: [new VuexPersistence({ modules: ['auth'] }).plugin]
 })

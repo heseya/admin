@@ -42,6 +42,8 @@ export default {
     height: 48px;
     object-fit: cover;
     border-radius: 12px;
+    background-color: #eee;
+    text-indent: -10000px
   }
 
   &__content {

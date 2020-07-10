@@ -16,21 +16,17 @@
       <card>
         <br />
         <template v-if="order.status">
-          <vs-select label="Status" v-model="status">
-            <vs-option :label="order.status.name" :value="order.status.id">{{ order.status.name }}</vs-option>
+          <vs-select label="Status" v-model="status" :loading="isLoading">
+            <vs-option v-for="status in statuses" :label="status.name" :value="status.id" :key="status.id">
+              {{ status.name }}
+            </vs-option>
           </vs-select>
         </template>
         <br />
         <h2 class="section-title">Próby płatności</h2>
         <div v-for="payment in order.payments" :key="payment.id" class="payment-method">
-          <vs-tooltip>
-            <i class='bx bxs-check-circle payment-method__success' v-if="payment.payed"></i>
-            <template #tooltip>Sukces</template>
-          </vs-tooltip>
-          <vs-tooltip>
-            <i class='bx bxs-x-circle payment-method__failed' v-if="!payment.payed"></i>
-            <template #tooltip>Porażka</template>
-          </vs-tooltip>
+          <i class='bx bxs-check-circle payment-method__success' v-if="payment.payed"></i>
+          <i class='bx bxs-x-circle payment-method__failed' v-if="!payment.payed"></i>
           <span class="payment-method__name">{{ payment.method }}</span>
           <span class="payment-method__amount">({{ payment.amount }} {{ currency }})</span>
         </div>
@@ -77,7 +73,8 @@ export default {
     appCartItem: CartItem
   },
   data: () => ({
-    status: 0
+    status: '',
+    isLoading: false
   }),
   computed: {
     currency() {
@@ -86,6 +83,9 @@ export default {
     order() {
       return this.$store.getters['orders/getSelected']
     },
+    statuses() {
+      return this.$store.getters['statuses/getData']
+    },
     relativeOrderedDate() {
       return getRelativeDate(this.order.created_at)
     }
@@ -93,11 +93,29 @@ export default {
   watch: {
     order(order) {
       this.status = order?.status?.id
+    },
+    status(status, prevStatus) {
+      if (prevStatus === '') return
+      this.setStatus(status)
+    }
+  },
+  methods: {
+    async setStatus(newStatus) {
+      this.isLoading = true
+      const success = await this.$store.dispatch('orders/changeStatus', { orderId: this.order.id, statusId: newStatus })
+      if (success) {
+        this.$vs.notification({
+          color: 'success',
+          title: 'Status zamówienia został zmieniony'
+        })
+      }
+      this.isLoading = false
     }
   },
   async created() {
     const loading = this.$vs.loading({ color: '#000' })
     await this.$store.dispatch('orders/get', this.$route.params.id)
+    await this.$store.dispatch('statuses/fetch')
     loading.close()
   }
 }

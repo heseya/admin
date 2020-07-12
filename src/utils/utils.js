@@ -7,12 +7,12 @@ export const getLastElement = (array) => array[array.length - 1]
 
 const getDaysDiff = (d1, d2) => {
   const diff = new Date(+d2).setHours(12) - new Date(+d1).setHours(12)
-  return Math.round(diff / 8.64e7)
+  return Math.round(diff / 8.64e7) || 0
 }
 
 const getMinutesDiff = (d1, d2) => {
   const diff = new Date(d2).getTime() - new Date(+d1).getTime()
-  return Math.round(diff / 1000 / 60)
+  return Math.round(diff / 1000 / 60) || 0
 }
 
 export const getRelativeDate = (date, lang = 'pl') => {

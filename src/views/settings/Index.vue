@@ -14,33 +14,39 @@
       <list>
         <h2 class="section-title">Sklep</h2>
         <list-item url="/settings/brands">
-          <template v-slot:avatar>
+          <template #avatar>
             <i class="bx bx-star"></i>
           </template>
           Marki
         </list-item>
         <list-item url="/settings/categories">
-          <template v-slot:avatar>
+          <template #avatar>
             <i class="bx bx-list-ul"></i>
           </template>
           Kategorie
         </list-item>
         <list-item url="/settings/shipping-methods">
-          <template v-slot:avatar>
+          <template #avatar>
             <i class="bx bxs-truck"></i>
           </template>
           Opcje dostawy
         </list-item>
+        <list-item url="/settings/statuses">
+          <template #avatar>
+            <i class='bx bx-check-circle' ></i>
+          </template>
+          Statusy zamówień
+        </list-item>
 
         <h2 class="section-title">Inne</h2>
         <list-item @click="isChangePasswordModal = true">
-          <template v-slot:avatar>
+          <template #avatar>
             <i class="bx bx-lock"></i>
           </template>
           Zmień hasło
         </list-item>
         <list-item @click="logout">
-          <template v-slot:avatar>
+          <template #avatar>
             <i class="bx bx-log-out-circle"></i>
           </template>
           Wyloguj

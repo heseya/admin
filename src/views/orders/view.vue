@@ -14,6 +14,24 @@
       </card>
 
       <card>
+        <br />
+        <template v-if="order.status">
+          <vs-select label="Status" v-model="status" :loading="isLoading">
+            <vs-option v-for="status in statuses" :label="status.name" :value="status.id" :key="status.id">
+              {{ status.name }}
+            </vs-option>
+          </vs-select>
+        </template>
+        <br />
+        <h2 class="section-title">Próby płatności</h2>
+        <div v-for="payment in order.payments" :key="payment.id" class="payment-method">
+          <i class='bx bxs-check-circle payment-method__success' v-if="payment.payed"></i>
+          <i class='bx bxs-x-circle payment-method__failed' v-if="!payment.payed"></i>
+          <span class="payment-method__name">{{ payment.method }}</span>
+          <span class="payment-method__amount">({{ payment.amount }} {{ currency }})</span>
+        </div>
+        <br />
+        <br />
         <h2 class="section-title">Adres dostawy</h2>
         <app-address :address="order.delivery_address" />
         <br />
@@ -23,14 +41,14 @@
         </template>
         <br />
         <h2 class="section-title">Przesyłka</h2>
-        <div class="shipping">
-          <span class="shipping__name">{{ order.shipping_method.name }}</span>
-          <small class="shipping__price">{{ order.shipping_method.price }} {{ currency }}</small>
+        <div class="shipping" v-if="order.shopping_method">
+          <span class="shipping__name">{{ order.shopping_method.name }}</span>
+          <small class="shipping__price">{{ order.shopping_method.price }} {{ currency }}</small>
         </div>
         <br />
-        <template v-if="comment">
+        <template v-if="order.comment">
           <h2 class="section-title">Komentarz do zamówienia</h2>
-          <p>{{ comment }}</p>
+          <p>{{ order.comment }}</p>
         </template>
         <br />
         <h2 class="section-title">Złożone</h2>
@@ -54,6 +72,10 @@ export default {
     appAddress: Address,
     appCartItem: CartItem
   },
+  data: () => ({
+    status: '',
+    isLoading: false
+  }),
   computed: {
     currency() {
       return this.$store.state.currency
@@ -61,13 +83,39 @@ export default {
     order() {
       return this.$store.getters['orders/getSelected']
     },
+    statuses() {
+      return this.$store.getters['statuses/getData']
+    },
     relativeOrderedDate() {
       return getRelativeDate(this.order.created_at)
+    }
+  },
+  watch: {
+    order(order) {
+      this.status = order?.status?.id
+    },
+    status(status, prevStatus) {
+      if (prevStatus === '') return
+      this.setStatus(status)
+    }
+  },
+  methods: {
+    async setStatus(newStatus) {
+      this.isLoading = true
+      const success = await this.$store.dispatch('orders/changeStatus', { orderId: this.order.id, statusId: newStatus })
+      if (success) {
+        this.$vs.notification({
+          color: 'success',
+          title: 'Status zamówienia został zmieniony'
+        })
+      }
+      this.isLoading = false
     }
   },
   async created() {
     const loading = this.$vs.loading({ color: '#000' })
     await this.$store.dispatch('orders/get', this.$route.params.id)
+    await this.$store.dispatch('statuses/fetch')
     loading.close()
   }
 }
@@ -118,6 +166,37 @@ export default {
 
   .card {
     margin-bottom: 0;
+  }
+}
+
+.payment-method {
+  display: flex;
+  align-items: center;
+  margin: 3px 0;
+
+  &__name {
+    font-family: $font-main;
+    margin-left: 10px;
+    margin-right: 4px;
+    text-transform: capitalize;
+  }
+
+  &__amount {
+    font-size: 0.7em;
+    line-height: 1rem;
+  }
+
+  .bx {
+    font-size: 1.3em;
+    margin-top: 1px;
+  }
+
+  &__failed {
+    color: #FC4757;
+  }
+
+  &__success {
+    color: #46CA3A;
   }
 }
 </style>

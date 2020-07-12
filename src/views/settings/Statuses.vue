@@ -1,22 +1,21 @@
 <template>
   <div>
-    <top-nav title="Opcje Dostawy">
+    <top-nav title="Statusy zamówień">
       <vs-button @click="openModal()" color="dark" icon>
         <i class="bx bx-plus"></i>
       </vs-button>
     </top-nav>
 
     <card>
-      <app-empty v-if="!shippingMethods.length">Nie ma żadnej opcji dostawy</app-empty>
+      <app-empty v-if="!statuses.length">Nie ma żadnych statusów</app-empty>
       <list>
         <list-item
-          v-for="shippingMethod in shippingMethods"
-          :key="shippingMethod.id"
-          @click="openModal(shippingMethod.id)"
-          :hidden="!shippingMethod.public"
+          v-for="status in statuses"
+          :key="status.id"
+          @click="openModal(status.id)"
         >
-          {{ shippingMethod.name }}
-          <small>{{ shippingMethod.price }} {{ currency }}</small>
+          {{ status.name }}
+          <small>{{ status.description }}</small>
         </list-item>
       </list>
     </card>
@@ -24,7 +23,7 @@
     <validation-observer v-slot="{ handleSubmit }">
       <vs-dialog width="550px" not-center v-model="isModalActive">
         <template #header>
-          <h4>{{ editedItem.id ? 'Edycja' : 'Dodawanie' }} opcji dostawy</h4>
+          <h4>{{ editedItem.id ? 'Edycja' : 'Dodawanie' }} statusu zamówienia</h4>
         </template>
         <modal-form>
           <validation-provider rules="required" v-slot="{ errors }">
@@ -32,26 +31,22 @@
               <template #message-danger>{{ errors[0] }}</template>
             </vs-input>
           </validation-provider>
-          <vs-input v-model="editedItem.price" label="Cena" type="number" step="0.01" />
-          <div class="center">
-            <flex-input>
-              <label class="title">Widoczność opcji dostawy</label>
-              <vs-switch success v-model="editedItem.public">
-                <template #off>
-                  <i class="bx bx-x"></i>
-                </template>
-                <template #on>
-                  <i class="bx bx-check"></i>
-                </template>
-              </vs-switch>
-            </flex-input>
-          </div>
+          <validation-provider rules="required" v-slot="{ errors }">
+            <vs-input v-model="editedItem.description" label="Opis">
+              <template #message-danger>{{ errors[0] }}</template>
+            </vs-input>
+          </validation-provider>
+          <validation-provider rules="required" v-slot="{ errors }">
+            <vs-input :value="`#${editedItem.color}`" label="Kolor statusu" @input="setColor" type="color">
+              <template #message-danger>{{ errors[0] }}</template>
+            </vs-input>
+          </validation-provider>
         </modal-form>
         <template #footer>
           <div class="row">
             <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
             <pop-confirm
-              title="Czy na pewno chcesz usunąć tą metode dostawy?"
+              title="Czy na pewno chcesz usunąć ten status?"
               okText="Usuń"
               cancelText="Anuluj"
               @confirm="deleteItem"
@@ -72,7 +67,6 @@ import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/Card.vue'
 import List from '@/components/List.vue'
 import ModalForm from '@/components/ModalForm.vue'
-import FlexInput from '@/components/FlexInput.vue'
 import ListItem from '@/components/ListItem.vue'
 import Empty from '@/components/Empty.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
@@ -85,7 +79,6 @@ export default {
     ListItem,
     ModalForm,
     PopConfirm,
-    FlexInput,
     appEmpty: Empty,
     ValidationProvider,
     ValidationObserver
@@ -94,19 +87,13 @@ export default {
     isModalActive: false,
     editedItem: {
       name: '',
-      price: 0,
-      public: true
+      description: '',
+      color: ''
     }
   }),
   computed: {
-    shippingMethods() {
-      return this.$store.getters['shippingMethods/getData']
-    },
-    error() {
-      return this.$store.getters['shippingMethods/getError']
-    },
-    currency() {
-      return this.$store.state.currency
+    statuses() {
+      return this.$store.getters['statuses/getData']
     }
   },
   watch: {
@@ -121,45 +108,49 @@ export default {
     }
   },
   methods: {
-    async getShippingMethods() {
+    setColor(color) {
+      this.editedItem.color = color.split('#')[1] ?? color
+    },
+    async getStatuses() {
       const loading = this.$vs.loading({ color: '#000' })
-      await this.$store.dispatch('shippingMethods/fetch')
+      await this.$store.dispatch('statuses/fetch')
       loading.close()
     },
     openModal(id) {
       this.isModalActive = true
       if (id) {
-        this.editedItem = this.$store.getters['shippingMethods/getFromListById'](id)
+        this.editedItem = this.$store.getters['statuses/getFromListById'](id)
+        this.setColor(this.editedItem.color)
       } else {
         this.editedItem = {
           name: '',
-          price: 0,
-          public: true
+          description: '',
+          color: '000000'
         }
       }
     },
     async saveModal() {
       const loading = this.$vs.loading({ color: '#000' })
       if (this.editedItem.id) {
-        await this.$store.dispatch('shippingMethods/update', {
+        await this.$store.dispatch('statuses/update', {
           id: this.editedItem.id,
           item: this.editedItem
         })
       } else {
-        await this.$store.dispatch('shippingMethods/add', this.editedItem)
+        await this.$store.dispatch('statuses/add', this.editedItem)
       }
       loading.close()
       this.isModalActive = false
     },
     async deleteItem() {
       const loading = this.$vs.loading({ color: '#000' })
-      await this.$store.dispatch('shippingMethods/remove', this.editedItem.id)
+      await this.$store.dispatch('statuses/remove', this.editedItem.id)
       loading.close()
       this.isModalActive = false
     }
   },
   created() {
-    this.getShippingMethods()
+    this.getStatuses()
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {
@@ -172,9 +163,8 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-.row {
-  display: flex;
-  justify-content: space-between;
+<style lang="scss">
+input[type="color"] {
+  height: 30px !important;
 }
 </style>

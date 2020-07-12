@@ -26,6 +26,17 @@ export default {
     width: 100%;
   }
 
+  .vs-select-content,
+  .vs-select {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .vs-select__chips {
+    display: flex;
+    align-items: center;
+  }
+
   .center {
     display: flex;
     justify-content: center;

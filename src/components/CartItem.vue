@@ -1,6 +1,6 @@
 <template>
   <div class="cart-item">
-    <img class="cart-item__cover" :src="item.product.cover.url" />
+    <img class="cart-item__cover" :src="coverUrl" />
     <div class="cart-item__content">
       <span>
         {{ item.product.name }}&nbsp;<small>(x{{ item.quantity }})</small>
@@ -19,6 +19,9 @@ export default {
     }
   },
   computed: {
+    coverUrl() {
+      return this.item?.product?.cover?.url
+    },
     currency() {
       return this.$store.state.currency
     }
@@ -39,6 +42,8 @@ export default {
     height: 48px;
     object-fit: cover;
     border-radius: 12px;
+    background-color: #eee;
+    text-indent: -10000px
   }
 
   &__content {

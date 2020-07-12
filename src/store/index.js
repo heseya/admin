@@ -11,6 +11,7 @@ import { orders } from './orders'
 import { statuses } from './statuses'
 import { shippingMethods } from './shippingMethods'
 import { paymentMethods } from './paymentMethods'
+import { packageTemplates } from './packageTemplates'
 
 Vue.use(Vuex)
 
@@ -29,7 +30,8 @@ export default new Vuex.Store({
     orders,
     shippingMethods,
     statuses,
-    paymentMethods
+    paymentMethods,
+    packageTemplates
   },
   plugins: [new VuexPersistence({ modules: ['auth'] }).plugin]
 })

@@ -54,6 +54,21 @@
         <h2 class="section-title">Złożone</h2>
         <small>{{ relativeOrderedDate }}</small>
       </card>
+
+      <card>
+        <div class="flex-column send-package">
+          <h2 class="section-title">Wyślij przesyłkę</h2>
+          <br />
+          <div class="flex">
+            <vs-select label="Szablon przesyłki" placeholder="-- Wybierz szablon --" v-model="packageTemplate">
+              <vs-option v-for="template in packageTemplates" :label="template.name" :value="template.id" :key="template.id">
+                {{ template.name }}
+              </vs-option>
+            </vs-select>
+            <vs-button color="dark" @click="createPackage">Utwórz&nbsp;przesyłkę</vs-button>
+          </div>
+        </div>
+      </card>
     </div>
   </div>
 </template>
@@ -74,6 +89,7 @@ export default {
   },
   data: () => ({
     status: '',
+    packageTemplate: '',
     isLoading: false
   }),
   computed: {
@@ -85,6 +101,9 @@ export default {
     },
     statuses() {
       return this.$store.getters['statuses/getData']
+    },
+    packageTemplates() {
+      return this.$store.getters['packageTemplates/getData']
     },
     relativeOrderedDate() {
       return getRelativeDate(this.order.created_at)
@@ -110,18 +129,36 @@ export default {
         })
       }
       this.isLoading = false
+    },
+    async createPackage() {
+      if (!this.packageTemplate) return
+      const loading = this.$vs.loading({ color: '#000' })
+      // TODO
+      console.log('create package')
+      setTimeout(() => {
+        loading.close()
+      }, 1000)
     }
   },
   async created() {
     const loading = this.$vs.loading({ color: '#000' })
-    await this.$store.dispatch('orders/get', this.$route.params.id)
-    await this.$store.dispatch('statuses/fetch')
+    await Promise.all([
+      this.$store.dispatch('orders/get', this.$route.params.id),
+      this.$store.dispatch('statuses/fetch'),
+      this.$store.dispatch('packageTemplates/fetch')
+    ])
     loading.close()
   }
 }
 </script>
 
 <style lang="scss" scoped>
+.vs-select,
+.vs-select-content {
+  max-width: 100%;
+  width: 100%;
+}
+
 .section-title {
   font-family: $font-sec;
   font-weight: 300;
@@ -197,6 +234,13 @@ export default {
 
   &__success {
     color: #46CA3A;
+  }
+}
+
+.send-package {
+  .vs-button {
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 }
 </style>

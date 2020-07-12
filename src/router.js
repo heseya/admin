@@ -85,7 +85,7 @@ const router = new VueRouter({
     {
       path: '/settings',
       name: 'Settings',
-      component: () => import('./views/Settings.vue'),
+      component: () => import('./views/settings/Index.vue'),
       meta: {
         requiresAuth: true
       }
@@ -93,7 +93,7 @@ const router = new VueRouter({
     {
       path: '/settings/brands',
       name: 'Brands',
-      component: () => import('./views/Brands.vue'),
+      component: () => import('./views/settings/Brands.vue'),
       meta: {
         requiresAuth: true
       }
@@ -101,7 +101,7 @@ const router = new VueRouter({
     {
       path: '/settings/categories',
       name: 'Categories',
-      component: () => import('./views/Categories.vue'),
+      component: () => import('./views/settings/Categories.vue'),
       meta: {
         requiresAuth: true
       }
@@ -109,7 +109,15 @@ const router = new VueRouter({
     {
       path: '/settings/shipping-methods',
       name: 'ShippingMethods',
-      component: () => import('./views/ShippingMethods.vue'),
+      component: () => import('./views/settings/ShippingMethods.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/settings/statuses',
+      name: 'Statuses',
+      component: () => import('./views/settings/Statuses.vue'),
       meta: {
         requiresAuth: true
       }

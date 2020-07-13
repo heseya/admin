@@ -41,9 +41,9 @@
         </template>
         <br />
         <h2 class="section-title">Przesyłka</h2>
-        <div class="shipping" v-if="order.shopping_method">
-          <span class="shipping__name">{{ order.shopping_method.name }}</span>
-          <small class="shipping__price">{{ order.shopping_method.price }} {{ currency }}</small>
+        <div class="shipping" v-if="order.shipping_method">
+          <span class="shipping__name">{{ order.shipping_method.name }}</span>
+          <small class="shipping__price">{{ order.shipping_method.price }} {{ currency }}</small>
         </div>
         <br />
         <template v-if="order.comment">
@@ -53,6 +53,24 @@
         <br />
         <h2 class="section-title">Złożone</h2>
         <small>{{ relativeOrderedDate }}</small>
+      </card>
+
+      <card>
+        <div class="flex-column send-package">
+          <h2 class="section-title">Wyślij przesyłkę</h2>
+          <br />
+          <div class="flex" v-if="!shippingNumber">
+            <vs-select label="Szablon przesyłki" placeholder="-- Wybierz szablon --" v-model="packageTemplateId">
+              <vs-option v-for="template in packageTemplates" :label="template.name" :value="template.id" :key="template.id">
+                {{ template.name }}
+              </vs-option>
+            </vs-select>
+            <vs-button color="dark" @click="createPackage">Utwórz&nbsp;przesyłkę</vs-button>
+          </div>
+          <small v-else>
+            <i class='bx bxs-check-circle'></i> Przesyłka została już zamówiona (Numer śledzenia: {{ shippingNumber}})
+          </small>
+        </div>
       </card>
     </div>
   </div>
@@ -64,6 +82,7 @@ import Card from '@/components/Card.vue'
 import Address from '@/components/Address.vue'
 import CartItem from '@/components/CartItem.vue'
 import { getRelativeDate } from '@/utils/utils'
+import { createPackage } from '@/services/createPackage'
 
 export default {
   components: {
@@ -74,6 +93,8 @@ export default {
   },
   data: () => ({
     status: '',
+    packageTemplateId: '',
+    shippingNumber: '',
     isLoading: false
   }),
   computed: {
@@ -86,6 +107,9 @@ export default {
     statuses() {
       return this.$store.getters['statuses/getData']
     },
+    packageTemplates() {
+      return this.$store.getters['packageTemplates/getData']
+    },
     relativeOrderedDate() {
       return getRelativeDate(this.order.created_at)
     }
@@ -93,6 +117,7 @@ export default {
   watch: {
     order(order) {
       this.status = order?.status?.id
+      this.shippingNumber = order.shipping_number
     },
     status(status, prevStatus) {
       if (prevStatus === '') return
@@ -110,18 +135,48 @@ export default {
         })
       }
       this.isLoading = false
+    },
+    async createPackage() {
+      if (!this.packageTemplateId) return
+      const loading = this.$vs.loading({ color: '#000' })
+      const { success, shippingNumber, error } = await createPackage(this.order.id, this.packageTemplateId)
+
+      if (success) {
+        this.shippingNumber = shippingNumber
+        this.$vs.notification({
+          color: 'success',
+          title: 'Przesyłka utworzona poprawnie'
+        })
+      } else {
+        this.$vs.notification({
+          color: 'danger',
+          title: 'Nie udało się utworzyć przesyłki',
+          text: error.message
+        })
+      }
+
+      loading.close()
     }
   },
   async created() {
     const loading = this.$vs.loading({ color: '#000' })
-    await this.$store.dispatch('orders/get', this.$route.params.id)
-    await this.$store.dispatch('statuses/fetch')
+    await Promise.all([
+      this.$store.dispatch('orders/get', this.$route.params.id),
+      this.$store.dispatch('statuses/fetch'),
+      this.$store.dispatch('packageTemplates/fetch')
+    ])
     loading.close()
   }
 }
 </script>
 
 <style lang="scss" scoped>
+.vs-select,
+.vs-select-content {
+  max-width: 100%;
+  width: 100%;
+}
+
 .section-title {
   font-family: $font-sec;
   font-weight: 300;
@@ -197,6 +252,13 @@ export default {
 
   &__success {
     color: #46CA3A;
+  }
+}
+
+.send-package {
+  .vs-button {
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 }
 </style>

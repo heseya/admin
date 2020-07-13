@@ -79,4 +79,8 @@ input {
   font-size: 0.75rem;
   font-weight: 500;
 }
+
+.flex {
+  display: flex;
+}
 </style>

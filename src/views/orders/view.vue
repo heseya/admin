@@ -41,9 +41,9 @@
         </template>
         <br />
         <h2 class="section-title">Przesyłka</h2>
-        <div class="shipping" v-if="order.shopping_method">
-          <span class="shipping__name">{{ order.shopping_method.name }}</span>
-          <small class="shipping__price">{{ order.shopping_method.price }} {{ currency }}</small>
+        <div class="shipping" v-if="order.shipping_method">
+          <span class="shipping__name">{{ order.shipping_method.name }}</span>
+          <small class="shipping__price">{{ order.shipping_method.price }} {{ currency }}</small>
         </div>
         <br />
         <template v-if="order.comment">
@@ -59,7 +59,7 @@
         <div class="flex-column send-package">
           <h2 class="section-title">Wyślij przesyłkę</h2>
           <br />
-          <div class="flex" v-if="!orderedPackage">
+          <div class="flex" v-if="!shippingNumber">
             <vs-select label="Szablon przesyłki" placeholder="-- Wybierz szablon --" v-model="packageTemplateId">
               <vs-option v-for="template in packageTemplates" :label="template.name" :value="template.id" :key="template.id">
                 {{ template.name }}
@@ -68,7 +68,7 @@
             <vs-button color="dark" @click="createPackage">Utwórz&nbsp;przesyłkę</vs-button>
           </div>
           <small v-else>
-            <i class='bx bxs-check-circle'></i> Przesyłka została już zamówiona ({{ orderedPackage.name}})
+            <i class='bx bxs-check-circle'></i> Przesyłka została już zamówiona (Numer śledzenia: {{ shippingNumber}})
           </small>
         </div>
       </card>
@@ -94,7 +94,7 @@ export default {
   data: () => ({
     status: '',
     packageTemplateId: '',
-    orderedPackage: null,
+    shippingNumber: '',
     isLoading: false
   }),
   computed: {
@@ -117,7 +117,7 @@ export default {
   watch: {
     order(order) {
       this.status = order?.status?.id
-      this.orderedPackage = order.ordered_package
+      this.shippingNumber = order.shipping_number
     },
     status(status, prevStatus) {
       if (prevStatus === '') return
@@ -139,19 +139,19 @@ export default {
     async createPackage() {
       if (!this.packageTemplateId) return
       const loading = this.$vs.loading({ color: '#000' })
-      const error = await createPackage(this.order.id, this.packageTemplateId)
+      const { success, shippingNumber, error } = await createPackage(this.order.id, this.packageTemplateId)
 
-      if (error) {
+      if (success) {
+        this.shippingNumber = shippingNumber
+        this.$vs.notification({
+          color: 'success',
+          title: 'Przesyłka utworzona poprawnie'
+        })
+      } else {
         this.$vs.notification({
           color: 'danger',
           title: 'Nie udało się utworzyć przesyłki',
           text: error.message
-        })
-      } else {
-        this.orderedPackage = this.packageTemplates.find(({ id }) => id === this.packageTemplateId)
-        this.$vs.notification({
-          color: 'success',
-          title: 'Przesyłka utworzona poprawnie'
         })
       }
 

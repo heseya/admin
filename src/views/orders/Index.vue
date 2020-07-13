@@ -11,7 +11,9 @@
       <list>
         <list-item v-for="order in orders" :key="order.id" :url="`/orders/${order.id}`">
           <template #avatar>
-            <i class="bx bx-check-circle"></i>
+            <vs-avatar :success="order.payed" :danger="!order.payed">
+              <i class='bx bx-dollar'></i>
+            </vs-avatar>
           </template>
           {{ order.code }}
           <small>{{ order.summary }} {{ currency }}</small>

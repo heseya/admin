@@ -1,9 +1,7 @@
 <template>
   <component :is="component" :to="url" class="list-item" @click="click">
     <div v-if="!!$slots.avatar" class="list-item__avatar">
-      <vs-avatar dark>
-        <slot name="avatar"></slot>
-      </vs-avatar>
+      <slot name="avatar"></slot>
     </div>
     <div>
       <i v-if="hidden" class="bx bx-lock-alt"></i>

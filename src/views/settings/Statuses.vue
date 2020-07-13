@@ -14,6 +14,9 @@
           :key="status.id"
           @click="openModal(status.id)"
         >
+          <template #avatar>
+            <vs-avatar :color="`#${status.color}`" />
+          </template>
           {{ status.name }}
           <small>{{ status.description }}</small>
         </list-item>

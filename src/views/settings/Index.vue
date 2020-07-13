@@ -15,25 +15,33 @@
         <h2 class="section-title">Sklep</h2>
         <list-item url="/settings/brands">
           <template #avatar>
-            <i class="bx bx-star"></i>
+            <vs-avatar dark>
+              <i class="bx bx-star"></i>
+            </vs-avatar>
           </template>
           Marki
         </list-item>
         <list-item url="/settings/categories">
           <template #avatar>
-            <i class="bx bx-list-ul"></i>
+            <vs-avatar dark>
+              <i class="bx bx-list-ul"></i>
+            </vs-avatar>
           </template>
           Kategorie
         </list-item>
         <list-item url="/settings/shipping-methods">
           <template #avatar>
-            <i class="bx bxs-truck"></i>
+            <vs-avatar dark>
+              <i class="bx bxs-truck"></i>
+            </vs-avatar>
           </template>
           Opcje dostawy
         </list-item>
         <list-item url="/settings/statuses">
           <template #avatar>
-            <i class='bx bx-check-circle' ></i>
+            <vs-avatar dark>
+              <i class='bx bx-check-circle' ></i>
+            </vs-avatar>
           </template>
           Statusy zamówień
         </list-item>
@@ -41,13 +49,17 @@
         <h2 class="section-title">Inne</h2>
         <list-item @click="isChangePasswordModal = true">
           <template #avatar>
-            <i class="bx bx-lock"></i>
+            <vs-avatar dark>
+              <i class="bx bx-lock"></i>
+            </vs-avatar>
           </template>
           Zmień hasło
         </list-item>
         <list-item @click="logout">
           <template #avatar>
-            <i class="bx bx-log-out-circle"></i>
+            <vs-avatar dark>
+              <i class="bx bx-log-out-circle"></i>
+            </vs-avatar>
           </template>
           Wyloguj
         </list-item>

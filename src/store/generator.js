@@ -64,7 +64,7 @@ export const createStore = (name, endpoint, custom) => {
       },
       [mutations.EDIT_DATA](state, editedItem) {
         const index = state.data.findIndex(({ id }) => id === editedItem.id)
-        if (index > 0) {
+        if (index >= 0) {
           const copy = [...state.data]
           copy[index] = editedItem
           state.data = copy

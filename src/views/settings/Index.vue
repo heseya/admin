@@ -45,6 +45,14 @@
           </template>
           Statusy zamówień
         </list-item>
+        <list-item url="/settings/package-templates">
+          <template #avatar>
+            <vs-avatar dark>
+              <i class='bx bx-box' ></i>
+            </vs-avatar>
+          </template>
+          Szablony przesyłek
+        </list-item>
 
         <h2 class="section-title">Inne</h2>
         <list-item @click="isChangePasswordModal = true">

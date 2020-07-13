@@ -117,7 +117,7 @@ export default {
         this.$vs.notification({
           color: 'danger',
           title: error.message,
-          text: error?.response?.data?.message
+          text: error.response.data?.error?.message
         })
       }
     }

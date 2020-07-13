@@ -3,9 +3,9 @@
     <card class="login__card">
       <h1 class="title">Logowanie</h1>
       <br /><br />
-      <vs-input v-model="email" label="E-mail" type="email" />
+      <vs-input v-model="email" label="E-mail" type="email" @keydown.enter="login" />
       <br /><br />
-      <vs-input v-model="password" label="Hasło" type="password" />
+      <vs-input v-model="password" label="Hasło" type="password" @keydown.enter="login" />
       <br />
       <vs-button color="dark" @click="login">
         Zaloguj

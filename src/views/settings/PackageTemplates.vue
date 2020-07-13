@@ -1,22 +1,26 @@
 <template>
   <div>
-    <top-nav title="Kategorie">
+    <top-nav title="Opcje Dostawy">
       <vs-button @click="openModal()" color="dark" icon>
         <i class="bx bx-plus"></i>
       </vs-button>
     </top-nav>
 
     <card>
-      <app-empty v-if="!categories.length">Nie ma żadnej kategorii</app-empty>
+      <app-empty v-if="!packageTemplates.length">Nie ma żadnego szablonu przesyłki</app-empty>
       <list>
         <list-item
-          v-for="category in categories"
-          :key="category.id"
-          @click="openModal(category.id)"
-          :hidden="!category.public"
+          v-for="packageTemplate in packageTemplates"
+          :key="packageTemplate.id"
+          @click="openModal(packageTemplate.id)"
         >
-          {{ category.name }}
-          <small>/{{ category.slug }}</small>
+          {{ packageTemplate.name }}
+          <small>
+            waga: <b>{{ packageTemplate.weight }}kg</b>,
+            wysokość: <b>{{ packageTemplate.height }}cm</b>,
+            szerokość: <b>{{ packageTemplate.width }}cm</b>,
+            głębokość: <b>{{ packageTemplate.depth }}cm</b>
+          </small>
         </list-item>
       </list>
     </card>
@@ -24,38 +28,41 @@
     <validation-observer v-slot="{ handleSubmit }">
       <vs-dialog width="550px" not-center v-model="isModalActive">
         <template #header>
-          <h4>{{ editedItem.id ? 'Edycja' : 'Dodawanie' }} kategorii</h4>
+          <h4>{{ editedItem.id ? 'Edycja' : 'Dodawanie' }} szablonu przesyłki</h4>
         </template>
         <modal-form>
           <validation-provider rules="required" v-slot="{ errors }">
-            <vs-input v-model="editedItem.name" @input="editSlug" label="Nazwa">
+            <vs-input v-model="editedItem.name" label="Nazwa">
               <template #message-danger>{{ errors[0] }}</template>
             </vs-input>
           </validation-provider>
-          <validation-provider rules="required|slug" v-slot="{ errors }">
-            <vs-input v-model="editedItem.slug" label="Link">
+          <validation-provider rules="required|positive" v-slot="{ errors }">
+            <vs-input v-model="editedItem.weight" type="number" label="Waga (kg)">
               <template #message-danger>{{ errors[0] }}</template>
             </vs-input>
           </validation-provider>
-          <div class="center">
-            <flex-input>
-              <label class="title">Widoczność kategorii</label>
-              <vs-switch success v-model="editedItem.public">
-                <template #off>
-                  <i class="bx bx-x"></i>
-                </template>
-                <template #on>
-                  <i class="bx bx-check"></i>
-                </template>
-              </vs-switch>
-            </flex-input>
-          </div>
+          <validation-provider rules="required|positive" v-slot="{ errors }">
+            <vs-input v-model="editedItem.width" type="number" label="Szerokość (cm)">
+              <template #message-danger>{{ errors[0] }}</template>
+            </vs-input>
+          </validation-provider>
+          <validation-provider rules="required|positive" v-slot="{ errors }">
+            <vs-input v-model="editedItem.height" type="number" label="Wysokość (cm)">
+              <template #message-danger>{{ errors[0] }}</template>
+            </vs-input>
+          </validation-provider>
+          <validation-provider rules="required|positive" v-slot="{ errors }">
+            <vs-input v-model="editedItem.depth" type="number" label="Głębokość (cm)">
+              <template #message-danger>{{ errors[0] }}</template>
+            </vs-input>
+          </validation-provider>
+
         </modal-form>
         <template #footer>
           <div class="row">
             <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
             <pop-confirm
-              title="Czy na pewno chcesz usunąć tę kategorię?"
+              title="Czy na pewno chcesz usunąć ten szablon dostawy?"
               okText="Usuń"
               cancelText="Anuluj"
               @confirm="deleteItem"
@@ -71,14 +78,12 @@
 </template>
 
 <script>
-import slugify from 'slugify'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/Card.vue'
 import List from '@/components/List.vue'
 import ModalForm from '@/components/ModalForm.vue'
 import ListItem from '@/components/ListItem.vue'
-import FlexInput from '@/components/FlexInput.vue'
 import Empty from '@/components/Empty.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
 
@@ -90,7 +95,6 @@ export default {
     ListItem,
     ModalForm,
     PopConfirm,
-    FlexInput,
     appEmpty: Empty,
     ValidationProvider,
     ValidationObserver
@@ -99,13 +103,18 @@ export default {
     isModalActive: false,
     editedItem: {
       name: '',
-      slug: '',
-      public: true
+      width: 0,
+      height: 0,
+      depth: 0,
+      weight: 0
     }
   }),
   computed: {
-    categories() {
-      return this.$store.getters['categories/getData']
+    packageTemplates() {
+      return this.$store.getters['packageTemplates/getData']
+    },
+    error() {
+      return this.$store.getters['packageTemplates/getError']
     }
   },
   watch: {
@@ -120,48 +129,45 @@ export default {
     }
   },
   methods: {
-    async getCategories() {
-      const loading = this.$vs.loading({ color: '#000' })
-      await this.$store.dispatch('categories/fetch')
-      loading.close()
-    },
-    editSlug() {
-      this.editedItem.slug = slugify(this.editedItem.name, { lower: true, remove: /[.]/g })
-    },
     openModal(id) {
       this.isModalActive = true
       if (id) {
-        this.editedItem = this.$store.getters['categories/getFromListById'](id)
+        const item = this.$store.getters['packageTemplates/getFromListById'](id)
+        this.editedItem = { ...item }
       } else {
         this.editedItem = {
           name: '',
-          slug: '',
-          public: true
+          width: 0,
+          height: 0,
+          depth: 0,
+          weight: 0
         }
       }
     },
     async saveModal() {
       const loading = this.$vs.loading({ color: '#000' })
       if (this.editedItem.id) {
-        await this.$store.dispatch('categories/update', {
+        await this.$store.dispatch('packageTemplates/update', {
           id: this.editedItem.id,
           item: this.editedItem
         })
       } else {
-        await this.$store.dispatch('categories/add', this.editedItem)
+        await this.$store.dispatch('packageTemplates/add', this.editedItem)
       }
       loading.close()
       this.isModalActive = false
     },
     async deleteItem() {
       const loading = this.$vs.loading({ color: '#000' })
-      await this.$store.dispatch('categories/remove', this.editedItem.id)
+      await this.$store.dispatch('packageTemplates/remove', this.editedItem.id)
       loading.close()
       this.isModalActive = false
     }
   },
-  created() {
-    this.getCategories()
+  async created() {
+    const loading = this.$vs.loading({ color: '#000' })
+    await this.$store.dispatch('packageTemplates/fetch')
+    loading.close()
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {
@@ -173,3 +179,11 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.row {
+  display: flex;
+  justify-content: space-between;
+}
+
+</style>

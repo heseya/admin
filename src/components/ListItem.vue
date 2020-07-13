@@ -57,6 +57,10 @@ export default {
   small {
     display: block;
     color: #aaa;
+
+    b {
+      color: #666;
+    }
   }
 
   &__avatar {

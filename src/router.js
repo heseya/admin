@@ -121,6 +121,14 @@ const router = new VueRouter({
       meta: {
         requiresAuth: true
       }
+    },
+    {
+      path: '/settings/package-templates',
+      name: 'PackageTemplates',
+      component: () => import('./views/settings/PackageTemplates.vue'),
+      meta: {
+        requiresAuth: true
+      }
     }
   ]
 })

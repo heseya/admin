@@ -59,14 +59,17 @@
         <div class="flex-column send-package">
           <h2 class="section-title">Wyślij przesyłkę</h2>
           <br />
-          <div class="flex">
-            <vs-select label="Szablon przesyłki" placeholder="-- Wybierz szablon --" v-model="packageTemplate">
+          <div class="flex" v-if="!orderedPackage">
+            <vs-select label="Szablon przesyłki" placeholder="-- Wybierz szablon --" v-model="packageTemplateId">
               <vs-option v-for="template in packageTemplates" :label="template.name" :value="template.id" :key="template.id">
                 {{ template.name }}
               </vs-option>
             </vs-select>
             <vs-button color="dark" @click="createPackage">Utwórz&nbsp;przesyłkę</vs-button>
           </div>
+          <small v-else>
+            <i class='bx bxs-check-circle'></i> Przesyłka została już zamówiona ({{ orderedPackage.name}})
+          </small>
         </div>
       </card>
     </div>
@@ -79,6 +82,7 @@ import Card from '@/components/Card.vue'
 import Address from '@/components/Address.vue'
 import CartItem from '@/components/CartItem.vue'
 import { getRelativeDate } from '@/utils/utils'
+import { createPackage } from '@/services/createPackage'
 
 export default {
   components: {
@@ -89,7 +93,8 @@ export default {
   },
   data: () => ({
     status: '',
-    packageTemplate: '',
+    packageTemplateId: '',
+    orderedPackage: null,
     isLoading: false
   }),
   computed: {
@@ -112,6 +117,7 @@ export default {
   watch: {
     order(order) {
       this.status = order?.status?.id
+      this.orderedPackage = order.ordered_package
     },
     status(status, prevStatus) {
       if (prevStatus === '') return
@@ -131,13 +137,25 @@ export default {
       this.isLoading = false
     },
     async createPackage() {
-      if (!this.packageTemplate) return
+      if (!this.packageTemplateId) return
       const loading = this.$vs.loading({ color: '#000' })
-      // TODO
-      console.log('create package')
-      setTimeout(() => {
-        loading.close()
-      }, 1000)
+      const error = await createPackage(this.order.id, this.packageTemplateId)
+
+      if (error) {
+        this.$vs.notification({
+          color: 'danger',
+          title: 'Nie udało się utworzyć przesyłki',
+          text: error.message
+        })
+      } else {
+        this.orderedPackage = this.packageTemplates.find(({ id }) => id === this.packageTemplateId)
+        this.$vs.notification({
+          color: 'success',
+          title: 'Przesyłka utworzona poprawnie'
+        })
+      }
+
+      loading.close()
     }
   },
   async created() {

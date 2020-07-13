@@ -58,7 +58,6 @@
       <card>
         <div class="flex-column send-package">
           <h2 class="section-title">Wyślij przesyłkę</h2>
-          <br />
           <div class="flex" v-if="!shippingNumber">
             <vs-select label="Szablon przesyłki" placeholder="-- Wybierz szablon --" v-model="packageTemplateId">
               <vs-option v-for="template in packageTemplates" :label="template.name" :value="template.id" :key="template.id">
@@ -256,6 +255,10 @@ export default {
 }
 
 .send-package {
+  .section-title {
+    margin-bottom: 24px;
+  }
+
   .vs-button {
     white-space: nowrap;
     flex-shrink: 0;

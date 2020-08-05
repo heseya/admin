@@ -8,6 +8,8 @@ const getApiURL = () => {
       return 'https://trafika.***REMOVED***'
     case 'admin.depth.store':
       return '***REMOVED***'
+    case 'admin.heseya.com':
+      return '***REMOVED***'
     default:
       return 'https://dev.***REMOVED***'
   }

@@ -12,7 +12,8 @@
 
     <card>
       <list>
-        <h2 class="section-title">Sklep</h2>
+
+        <h2 class="section-title">Produkty</h2>
         <list-item url="/settings/brands">
           <template #avatar>
             <vs-avatar dark>
@@ -29,14 +30,8 @@
           </template>
           Kategorie
         </list-item>
-        <list-item url="/settings/shipping-methods">
-          <template #avatar>
-            <vs-avatar dark>
-              <i class="bx bxs-truck"></i>
-            </vs-avatar>
-          </template>
-          Opcje dostawy
-        </list-item>
+
+        <h2 class="section-title">Zamówienia</h2>
         <list-item url="/settings/statuses">
           <template #avatar>
             <vs-avatar dark>
@@ -44,6 +39,16 @@
             </vs-avatar>
           </template>
           Statusy zamówień
+        </list-item>
+
+        <h2 class="section-title">Dostawa</h2>
+        <list-item url="/settings/shipping-methods">
+          <template #avatar>
+            <vs-avatar dark>
+              <i class="bx bxs-truck"></i>
+            </vs-avatar>
+          </template>
+          Opcje dostawy
         </list-item>
         <list-item url="/settings/package-templates">
           <template #avatar>
@@ -54,7 +59,7 @@
           Szablony przesyłek
         </list-item>
 
-        <h2 class="section-title">Inne</h2>
+        <h2 class="section-title">Konto</h2>
         <list-item @click="isChangePasswordModal = true">
           <template #avatar>
             <vs-avatar dark>

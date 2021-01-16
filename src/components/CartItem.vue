@@ -29,7 +29,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .cart-item {
   margin: 8px 0;
   padding: 12px;
@@ -51,10 +51,6 @@ export default {
     flex-direction: column;
     justify-content: center;
     margin-left: 12px;
-  }
-
-  &:hover {
-    background-color: #fafafa;
   }
 }
 </style>

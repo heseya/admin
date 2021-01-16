@@ -40,7 +40,7 @@ export default {
         this.$vs.notification({
           color: 'danger',
           title: 'Błąd logowania',
-          text: 'Popraw email lub haslo'
+          text: 'Zły email lub hasło.'
         })
       }
     }

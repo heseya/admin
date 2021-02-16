@@ -1,6 +1,6 @@
 <template>
   <div class="gallery">
-    <draggable class="gallery__images" v-model="images">
+    <draggable class="gallery__images" v-model="images" :options="{ filter: '.undragabble' }">
       <div class="gallery__img" v-for="image in images" :key="image.url">
         <img :src="`${image.url}?w=350&h=350`" />
         <div class="remove">
@@ -9,15 +9,16 @@
           </vs-button>
         </div>
       </div>
-    </draggable>
-    <app-media-uploader @dragChange="dragChange" @upload="onImageUpload" @error="onUploadError">
-      <div
-        class="gallery__img add"
+      <app-media-uploader
+        @dragChange="dragChange"
+        @upload="onImageUpload"
+        @error="onUploadError"
+        class="gallery__img add undragabble"
         :class="{ 'add--drag': isDrag, 'add--big': images.length === 0 }"
       >
         <img src="/img/icons/plus.svg" />
-      </div>
-    </app-media-uploader>
+      </app-media-uploader>
+    </draggable>
   </div>
 </template>
 
@@ -117,9 +118,9 @@ export default {
   }
 
   .add {
-    width: 25%;
-    padding-top: 25%;
-    margin-top: 10px;
+    // width: 25%;
+    // padding-top: 25%;
+    // margin-top: 10px;
 
     &--big {
       width: 50%;

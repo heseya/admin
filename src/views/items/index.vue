@@ -52,7 +52,7 @@
             </vs-input>
           </validation-provider>
           <validation-provider v-slot="{ errors }">
-            <vs-input type="number" v-model="editedQuantity" label="Ilość w magazynie">
+            <vs-input type="number" v-model="editedItem.quantity" label="Ilość w magazynie">
               <template #message-danger>{{ errors[0] }}</template>
             </vs-input>
           </validation-provider>
@@ -106,8 +106,7 @@ export default {
       name: '',
       sku: ''
     },
-    editedOriginalQuantity: 0,
-    editedQuantity: 0
+    editedOriginalQuantity: 0
   }),
   computed: {
     items() {
@@ -177,12 +176,11 @@ export default {
       loading.close()
     },
 
-    async openModal(id) {
+    openModal(id) {
       this.isModalActive = true
       if (id) {
         this.editedItem = this.$store.getters['items/getFromListById'](id)
-        this.editedQuantity = await this.$store.dispatch('items/getQuantity', id)
-        this.editedOriginalQuantity = this.editedQuantity
+        this.editedOriginalQuantity = this.editedItem.quantity || 0
       } else {
         this.editedItem = {
           name: '',
@@ -194,18 +192,18 @@ export default {
       const loading = this.$vs.loading({ color: '#000' })
       let success = false
       if (this.editedItem.id) {
-        success = await this.$store.dispatch('items/update', {
-          id: this.editedItem.id,
-          item: this.editedItem
-        })
-
-        const quantityDiff = this.editedQuantity - this.editedOriginalQuantity
+        const quantityDiff = this.editedItem.quantity - this.editedOriginalQuantity
         if (quantityDiff) {
           success = await this.$store.dispatch('items/updateQuantity', {
             id: this.editedItem.id,
             quantity: quantityDiff
           })
         }
+
+        success = await this.$store.dispatch('items/update', {
+          id: this.editedItem.id,
+          item: this.editedItem
+        })
       } else {
         success = await this.$store.dispatch('items/add', this.editedItem)
       }

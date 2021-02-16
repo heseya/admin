@@ -59,7 +59,7 @@ export default {
     }
   },
   watch: {
-    '$route.query'({ page, search }) {
+    '$route.query'({ page }) {
       this.page = page || 1
       if (this.meta.current_page !== page) {
         this.getProducts()

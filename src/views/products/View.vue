@@ -83,7 +83,7 @@
               <div>
                 <br />
                 <validation-provider rules="id-required" v-slot="{ errors }">
-                  <vs-select v-model="form.brand_id" filter label="Marka">
+                  <vs-select v-model="form.brand_id" :key="brands.length" filter label="Marka">
                     <vs-option label="Wybierz markę" :value="0">Wybierz markę</vs-option>
                     <vs-option
                       v-for="brand in brands"
@@ -98,7 +98,12 @@
                 </validation-provider>
                 <br /><br />
                 <validation-provider rules="id-required" v-slot="{ errors }">
-                  <vs-select v-model="form.category_id" filter label="Kategoria">
+                  <vs-select
+                    v-model="form.category_id"
+                    :key="categories.length"
+                    filter
+                    label="Kategoria"
+                  >
                     <vs-option label="Wybierz kategorię" :value="0">Wybierz kategorię</vs-option>
                     <vs-option
                       v-for="category in categories"

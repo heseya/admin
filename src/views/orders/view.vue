@@ -25,15 +25,26 @@
           <div class="flex-column send-package">
             <h2 class="section-title">Wyślij przesyłkę</h2>
             <div class="flex" v-if="!shippingNumber">
-              <vs-select label="Szablon przesyłki" placeholder="-- Wybierz szablon --" v-model="packageTemplateId">
-                <vs-option v-for="template in packageTemplates" :label="template.name" :value="template.id" :key="template.id">
+              <vs-select
+                label="Szablon przesyłki"
+                placeholder="-- Wybierz szablon --"
+                :key="packageTemplates.length"
+                v-model="packageTemplateId"
+              >
+                <vs-option
+                  v-for="template in packageTemplates"
+                  :label="template.name"
+                  :value="template.id"
+                  :key="template.id"
+                >
                   {{ template.name }}
                 </vs-option>
               </vs-select>
               <vs-button color="dark" @click="createPackage">Utwórz&nbsp;przesyłkę</vs-button>
             </div>
             <small v-else>
-              <i class='bx bxs-check-circle'></i> Przesyłka została już zamówiona (Numer śledzenia: {{ shippingNumber}})
+              <i class="bx bxs-check-circle"></i> Przesyłka została już zamówiona (Numer śledzenia:
+              {{ shippingNumber }})
             </small>
           </div>
         </card>
@@ -43,8 +54,13 @@
         <card>
           <br />
           <template v-if="order.status">
-            <vs-select label="Status" v-model="status" :loading="isLoading">
-              <vs-option v-for="status in statuses" :label="status.name" :value="status.id" :key="status.id">
+            <vs-select label="Status" v-model="status" :key="statuses.length" :loading="isLoading">
+              <vs-option
+                v-for="status in statuses"
+                :label="status.name"
+                :value="status.id"
+                :key="status.id"
+              >
                 {{ status.name }}
               </vs-option>
             </vs-select>
@@ -52,8 +68,8 @@
           <br />
           <h2 class="section-title">Próby płatności</h2>
           <div v-for="payment in order.payments" :key="payment.id" class="payment-method">
-            <i class='bx bxs-check-circle payment-method__success' v-if="payment.payed"></i>
-            <i class='bx bxs-x-circle payment-method__failed' v-if="!payment.payed"></i>
+            <i class="bx bxs-check-circle payment-method__success" v-if="payment.payed"></i>
+            <i class="bx bxs-x-circle payment-method__failed" v-if="!payment.payed"></i>
             <span class="payment-method__name">{{ payment.method }}</span>
             <span class="payment-method__amount">({{ payment.amount }} {{ currency }})</span>
           </div>
@@ -66,7 +82,7 @@
           <div class="shipping">
             <span class="shipping__name">{{ order.email }}</span>
           </div>
-          <br/>
+          <br />
           <h2 class="section-title">Adres dostawy</h2>
           <app-address :address="order.delivery_address" />
           <br />
@@ -136,7 +152,10 @@ export default {
   methods: {
     async setStatus(newStatus) {
       this.isLoading = true
-      const success = await this.$store.dispatch('orders/changeStatus', { orderId: this.order.id, statusId: newStatus })
+      const success = await this.$store.dispatch('orders/changeStatus', {
+        orderId: this.order.id,
+        statusId: newStatus
+      })
       if (success) {
         this.$vs.notification({
           color: 'success',
@@ -148,7 +167,10 @@ export default {
     async createPackage() {
       if (!this.packageTemplateId) return
       const loading = this.$vs.loading({ color: '#000' })
-      const { success, shippingNumber, error } = await createPackage(this.order.id, this.packageTemplateId)
+      const { success, shippingNumber, error } = await createPackage(
+        this.order.id,
+        this.packageTemplateId
+      )
 
       if (success) {
         this.shippingNumber = shippingNumber
@@ -252,11 +274,11 @@ export default {
   }
 
   &__failed {
-    color: #FC4757;
+    color: #fc4757;
   }
 
   &__success {
-    color: #46CA3A;
+    color: #46ca3a;
   }
 }
 

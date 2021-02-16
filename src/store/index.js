@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import VuexPersistence from 'vuex-persist'
 
 import { auth } from './auth'
+import { items } from './items'
 import { products } from './products'
 import { pages } from './pages'
 import { brands } from './brands'
@@ -23,6 +24,7 @@ export default new Vuex.Store({
   actions: {},
   modules: {
     auth,
+    items,
     products,
     pages,
     brands,

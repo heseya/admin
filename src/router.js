@@ -27,6 +27,14 @@ const router = new VueRouter({
       }
     },
     {
+      path: '/items',
+      name: 'Items',
+      component: () => import('./views/items/index.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
       path: '/products',
       name: 'Products',
       component: () => import('./views/products/Index.vue'),

@@ -34,8 +34,20 @@
           </validation-provider>
           <vs-input v-model="editedItem.price" label="Cena" type="number" step="0.01" />
           <div class="center">
-            <vs-select v-model="editedItem.payment_methods" multiple filter collapse-chips label="Metody płatności">
-              <vs-option v-for="method in paymentMethods" :key="method.id" :value="method.id" :label="method.name">
+            <vs-select
+              v-model="editedItem.payment_methods"
+              :key="paymentMethods.length"
+              multiple
+              filter
+              collapse-chips
+              label="Metody płatności"
+            >
+              <vs-option
+                v-for="method in paymentMethods"
+                :key="method.id"
+                :value="method.id"
+                :label="method.name"
+              >
                 {{ method.name }}
               </vs-option>
             </vs-select>
@@ -190,5 +202,4 @@ export default {
   display: flex;
   justify-content: space-between;
 }
-
 </style>

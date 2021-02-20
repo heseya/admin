@@ -19,6 +19,7 @@ export const createStore = (name, endpoint, custom) => {
     EDIT_DATA: `${upperCaseName}_EDIT_DATA`,
     REMOVE_DATA: `${upperCaseName}_REMOVE_DATA`,
     SET_SELECTED: `${upperCaseName}_SET_SELECTED`,
+    SET_LOADING: `${upperCaseName}_SET_LOADING`,
   }
 
   return {
@@ -26,6 +27,7 @@ export const createStore = (name, endpoint, custom) => {
     state: {
       ...(custom?.state || {}),
       error: null,
+      isLoading: false,
       meta: {},
       data: [],
       selected: {},
@@ -34,6 +36,9 @@ export const createStore = (name, endpoint, custom) => {
       ...(custom?.getters || {}),
       getError(state) {
         return state.error
+      },
+      getIsLoading(state) {
+        return state.isLoading
       },
       getMeta(state) {
         return state.meta
@@ -52,6 +57,9 @@ export const createStore = (name, endpoint, custom) => {
       ...(custom?.mutations || {}),
       [mutations.SET_ERROR](state, newError) {
         state.error = newError
+      },
+      [mutations.SET_LOADING](state, isLoading) {
+        state.isLoading = isLoading
       },
       [mutations.SET_META](state, newMeta) {
         state.meta = newMeta
@@ -83,69 +91,87 @@ export const createStore = (name, endpoint, custom) => {
       ...(custom?.actions || {}),
       async fetch({ commit }, query) {
         commit(mutations.SET_ERROR, null)
+        commit(mutations.SET_LOADING, true)
         try {
           const stringQuery = queryString.stringify(query)
           const { data } = await api.get(`/${endpoint}?${stringQuery}`)
           commit(mutations.SET_META, data.meta)
           commit(mutations.SET_DATA, data.data)
+          commit(mutations.SET_LOADING, false)
           return true
         } catch (error) {
           commit(mutations.SET_ERROR, error)
+          commit(mutations.SET_LOADING, false)
           return false
         }
       },
       async get({ commit }, id) {
         commit(mutations.SET_ERROR, null)
+        commit(mutations.SET_LOADING, true)
         try {
           const { data: responseData } = await api.get(`/${endpoint}/id:${id}`)
           commit(mutations.SET_SELECTED, responseData.data)
+          commit(mutations.SET_LOADING, false)
           return true
         } catch (error) {
           commit(mutations.SET_ERROR, error)
+          commit(mutations.SET_LOADING, false)
           return false
         }
       },
       async add({ commit }, item) {
         commit(mutations.SET_ERROR, null)
+        commit(mutations.SET_LOADING, true)
         try {
           const { data } = await api.post(`/${endpoint}`, item)
           commit(mutations.ADD_DATA, data.data)
+          commit(mutations.SET_LOADING, false)
           return data.data
         } catch (error) {
           commit(mutations.SET_ERROR, error)
+          commit(mutations.SET_LOADING, false)
           return false
         }
       },
       async edit({ commit }, { id, item }) {
+        commit(mutations.SET_LOADING, true)
         commit(mutations.SET_ERROR, null)
         try {
           const { data } = await api.put(`/${endpoint}/id:${id}`, item)
           commit(mutations.EDIT_DATA, data.data)
+          commit(mutations.SET_LOADING, false)
           return data.data
         } catch (error) {
           commit(mutations.SET_ERROR, error)
+          commit(mutations.SET_LOADING, false)
           return false
         }
       },
       async update({ commit }, { id, item }) {
+        commit(mutations.SET_LOADING, true)
         commit(mutations.SET_ERROR, null)
         try {
           const { data } = await api.patch(`/${endpoint}/id:${id}`, item)
           commit(mutations.EDIT_DATA, data.data)
+          commit(mutations.SET_LOADING, false)
           return data.data
         } catch (error) {
           commit(mutations.SET_ERROR, error)
+          commit(mutations.SET_LOADING, false)
           return false
         }
       },
       async remove({ commit }, id) {
+        commit(mutations.SET_LOADING, true)
         commit(mutations.SET_ERROR, null)
         try {
           await api.delete(`/${endpoint}/id:${id}`)
           commit(mutations.REMOVE_DATA, id)
+          commit(mutations.SET_LOADING, false)
           return true
         } catch (error) {
           commit(mutations.SET_ERROR, error)
+          commit(mutations.SET_LOADING, false)
           return false
         }
       },

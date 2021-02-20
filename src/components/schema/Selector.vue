@@ -4,7 +4,7 @@
 
     <empty v-if="query !== '' && schemas.length === 0">Nie znaleziono żadnego schematu</empty>
 
-    <list class="schema-selector__schemas">
+    <list class="schema-selector__schemas" v-if="!isLoading">
       <list-item
         class="schema-selector__schema"
         v-for="schema in schemas"
@@ -49,6 +49,9 @@ export default {
       return this.$store.getters['schemas/getData']
         .filter((x) => !this.existing.find((y) => x.id === y.id))
         .slice(0, 5)
+    },
+    isLoading() {
+      return this.$store.getters['schemas/getIsLoading']
     },
   },
   watch: {

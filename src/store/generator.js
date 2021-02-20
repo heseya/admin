@@ -18,7 +18,7 @@ export const createStore = (name, endpoint, custom) => {
     ADD_DATA: `${upperCaseName}_ADD_DATA`,
     EDIT_DATA: `${upperCaseName}_EDIT_DATA`,
     REMOVE_DATA: `${upperCaseName}_REMOVE_DATA`,
-    SET_SELECTED: `${upperCaseName}_SET_SELECTED`
+    SET_SELECTED: `${upperCaseName}_SET_SELECTED`,
   }
 
   return {
@@ -28,7 +28,7 @@ export const createStore = (name, endpoint, custom) => {
       error: null,
       meta: {},
       data: [],
-      selected: {}
+      selected: {},
     },
     getters: {
       ...(custom?.getters || {}),
@@ -46,7 +46,7 @@ export const createStore = (name, endpoint, custom) => {
       },
       getFromListById(state) {
         return (searchedId) => ({ ...state.data.find(({ id }) => id === searchedId) })
-      }
+      },
     },
     mutations: {
       ...(custom?.mutations || {}),
@@ -68,6 +68,8 @@ export const createStore = (name, endpoint, custom) => {
           const copy = [...state.data]
           copy[index] = editedItem
           state.data = copy
+        } else {
+          state.data = [...state.data, editedItem]
         }
       },
       [mutations.REMOVE_DATA](state, removedID) {
@@ -75,7 +77,7 @@ export const createStore = (name, endpoint, custom) => {
       },
       [mutations.SET_SELECTED](state, newSelected) {
         state.selected = newSelected
-      }
+      },
     },
     actions: {
       ...(custom?.actions || {}),
@@ -146,11 +148,11 @@ export const createStore = (name, endpoint, custom) => {
           commit(mutations.SET_ERROR, error)
           return false
         }
-      }
-    }
+      },
+    },
   }
 }
 
 export default {
-  createStore
+  createStore,
 }

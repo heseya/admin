@@ -24,7 +24,6 @@
 </template>
 
 <script>
-import slugify from 'slugify'
 import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/Card.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
@@ -66,11 +65,10 @@ export default {
     },
   },
   methods: {
-    editSlug() {
-      this.form.slug = slugify(this.form.name, { lower: true, remove: /[.]/g })
-    },
-    async save() {
-      // co tu robić?
+    save(schema) {
+      if (!this.schema.id) {
+        this.$router.push(`/schemas/${schema.id}`)
+      }
     },
     async deleteSchema() {
       const loading = this.$vs.loading({ color: '#000' })

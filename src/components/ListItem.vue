@@ -1,5 +1,11 @@
 <template>
-  <component :is="component" :to="url" class="list-item" @click="click">
+  <component
+    :is="component"
+    :to="url"
+    class="list-item"
+    :class="{ 'list-item--no-hover': noHover }"
+    @click="click"
+  >
     <div v-if="!!$slots.avatar" class="list-item__avatar">
       <slot name="avatar"></slot>
     </div>
@@ -17,19 +23,20 @@
 export default {
   props: {
     url: String,
-    hidden: Boolean
+    hidden: Boolean,
+    noHover: Boolean,
   },
   computed: {
-    component () {
+    component() {
       if (this.url) return 'router-link'
       else return 'button'
-    }
+    },
   },
   methods: {
-    click () {
+    click() {
       this.$emit('click')
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -54,6 +61,11 @@ export default {
     background-color: $grey-light;
   }
 
+  &--no-hover:hover {
+    background-color: #fff0;
+    cursor: default;
+  }
+
   small {
     display: block;
     color: #aaa;
@@ -75,7 +87,7 @@ export default {
 
 @media (hover: hover) and (pointer: fine) {
   .list__item:hover {
-    background-color: none;
+    background-color: #fff0;
   }
 }
 </style>

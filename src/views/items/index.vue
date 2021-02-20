@@ -88,6 +88,7 @@ import ModalForm from '@/components/ModalForm.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
 import ListItem from '@/components/ListItem.vue'
 import Empty from '@/components/Empty.vue'
+import { formatApiError } from '@/utils/errors'
 
 export default {
   components: {
@@ -99,7 +100,7 @@ export default {
     appEmpty: Empty,
     PopConfirm,
     ValidationProvider,
-    ValidationObserver
+    ValidationObserver,
   },
   data: () => ({
     page: 1,
@@ -107,9 +108,9 @@ export default {
     isModalActive: false,
     editedItem: {
       name: '',
-      sku: ''
+      sku: '',
     },
-    editedOriginalQuantity: 0
+    editedOriginalQuantity: 0,
   }),
   computed: {
     items() {
@@ -126,7 +127,7 @@ export default {
     },
     currency() {
       return this.$store.state.currency
-    }
+    },
   },
   watch: {
     '$route.query'({ page }) {
@@ -140,8 +141,7 @@ export default {
       if (error) {
         this.$vs.notification({
           color: 'danger',
-          title: error.response.data?.message || error.message,
-          text: Object.values(error.response.data?.errors || {})[0] || ''
+          ...formatApiError(error),
         })
       }
     },
@@ -151,10 +151,10 @@ export default {
         console.log('depositsError', depositsError)
         this.$vs.notification({
           color: 'danger',
-          title: depositsError.message
+          title: depositsError.message,
         })
       }
-    }
+    },
   },
   methods: {
     changePage(page) {
@@ -166,7 +166,7 @@ export default {
       if (this.search !== this.$route.query.search) {
         this.$router.push({
           path: 'items',
-          query: { page: undefined, search: this.search || undefined }
+          query: { page: undefined, search: this.search || undefined },
         })
       }
     },
@@ -174,7 +174,7 @@ export default {
       const loading = this.$vs.loading({ color: '#000' })
       await this.$store.dispatch('items/fetch', {
         page: this.page,
-        search: this.$route.query.search
+        search: this.$route.query.search,
       })
       loading.close()
     },
@@ -187,7 +187,7 @@ export default {
       } else {
         this.editedItem = {
           name: '',
-          sku: ''
+          sku: '',
         }
       }
     },
@@ -199,13 +199,13 @@ export default {
         if (quantityDiff) {
           success = await this.$store.dispatch('items/updateQuantity', {
             id: this.editedItem.id,
-            quantity: quantityDiff
+            quantity: quantityDiff,
           })
         }
 
         success = await this.$store.dispatch('items/update', {
           id: this.editedItem.id,
-          item: this.editedItem
+          item: this.editedItem,
         })
       } else {
         success = await this.$store.dispatch('items/add', this.editedItem)
@@ -221,7 +221,7 @@ export default {
       await this.$store.dispatch('items/remove', this.editedItem.id)
       loading.close()
       this.isModalActive = false
-    }
+    },
   },
   created() {
     this.page = this.$route.query.page || 1
@@ -235,6 +235,6 @@ export default {
     } else {
       next()
     }
-  }
+  },
 }
 </script>

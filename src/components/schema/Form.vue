@@ -14,12 +14,12 @@
       <validation-provider rules="id-required" v-slot="{ errors }">
         <vs-select v-model="form.type" filter label="Typ schematu">
           <vs-option
-            v-for="type in Object.values(TYPE)"
-            :key="type"
-            :label="TYPE_LABEL[type]"
-            :value="type"
+            v-for="{ value, label } in SchemaTypesOptions"
+            :key="value"
+            :label="label"
+            :value="value"
           >
-            {{ TYPE_LABEL[type] }}
+            {{ label }}
           </vs-option>
           <template #message-danger>{{ errors[0] }}</template>
         </vs-select>
@@ -54,13 +54,13 @@
         </vs-switch>
       </SwitchInput>
     </div>
-    <div class="flex" v-if="form.type === TYPE.numeric || form.type === TYPE.string">
+    <div class="flex" v-if="form.type === SchemaType.numeric || form.type === SchemaType.string">
       <validation-provider v-slot="{ errors }">
         <vs-input
           v-model="form.min"
           default="0"
           type="number"
-          :label="form.type === TYPE.numeric ? 'Minimalna wartość' : 'Minimalna długość'"
+          :label="form.type === SchemaType.numeric ? 'Minimalna wartość' : 'Minimalna długość'"
         >
           <template #message-danger>{{ errors[0] }}</template>
         </vs-input>
@@ -69,18 +69,18 @@
         <vs-input
           v-model="form.max"
           type="number"
-          :label="form.type === TYPE.numeric ? 'Maksymalna wartość' : 'Maksymalna długość'"
+          :label="form.type === SchemaType.numeric ? 'Maksymalna wartość' : 'Maksymalna długość'"
         >
           <template #message-danger>{{ errors[0] }}</template>
         </vs-input>
       </validation-provider>
-      <validation-provider v-slot="{ errors }" v-if="form.type === TYPE.numeric">
+      <validation-provider v-slot="{ errors }" v-if="form.type === SchemaType.numeric">
         <vs-input v-model="form.step" type="number" label="Krok">
           <template #message-danger>{{ errors[0] }}</template>
         </vs-input>
       </validation-provider>
     </div>
-    <validation-provider v-slot="{ errors }" v-if="form.type !== TYPE.select">
+    <validation-provider v-slot="{ errors }" v-if="form.type !== SchemaType.select">
       <vs-input v-model="form.default" type="number" label="Wartość domyślna">
         <template #message-danger>{{ errors[0] }}</template>
       </vs-input>
@@ -114,6 +114,22 @@ import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import SwitchInput from '@/components/SwitchInput.vue'
 import { SchemaType, SchemaTypeLabel } from '@/interfaces/SchemaType'
 
+const CLEAR_FORM = {
+  name: '',
+  type: SchemaType.string,
+  description: '',
+  price: 0,
+  hidden: false,
+  required: false,
+  min: 0,
+  max: 0,
+  step: 0.1,
+  default: '',
+  pattern: '',
+  validation: '',
+  options: [],
+}
+
 export default {
   components: {
     ValidationProvider,
@@ -121,23 +137,12 @@ export default {
     SwitchInput,
   },
   data: () => ({
-    form: {
-      name: '',
-      type: SchemaType.string,
-      description: '',
-      price: 0,
-      hidden: false,
-      required: false,
-      min: 0,
-      max: 0,
-      step: 1,
-      default: '',
-      pattern: '',
-      validation: '',
-      options: [],
-    },
-    TYPE: Object.freeze(SchemaType),
-    TYPE_LABEL: Object.freeze(SchemaTypeLabel),
+    form: { ...CLEAR_FORM },
+    SchemaTypesOptions: Object.values(SchemaType).map((t) => ({
+      value: t,
+      label: SchemaTypeLabel[t],
+    })),
+    SchemaType: SchemaType,
   }),
   props: {
     schema: {
@@ -145,14 +150,11 @@ export default {
       required: true,
     },
   },
-  watch: {
-    schema(s) {
-      this.form = clone(s)
-    },
-  },
   methods: {
     async submit() {
       const loading = this.$vs.loading({ color: '#000' })
+      let id = null
+
       if (!this.form?.id) {
         const { id: newID } = await this.$store.dispatch('schemas/add', this.form)
         if (newID) {
@@ -160,7 +162,7 @@ export default {
             color: 'success',
             title: 'Schemat został utworzony.',
           })
-          this.$router.push(`/schemas/${newID}`)
+          id = newID
         }
       } else {
         const success = await this.$store.dispatch('schemas/update', {
@@ -168,6 +170,7 @@ export default {
           item: this.form,
         })
         if (success) {
+          id = this.form.id
           this.$vs.notification({
             color: 'success',
             title: 'Schemat został zaktualizowany.',
@@ -175,15 +178,19 @@ export default {
         }
       }
       loading.close()
-      this.$emit('submit')
+      this.$emit('submit', this.$store.getters['schemas/getFromListById'](id))
     },
+  },
+  mounted() {
+    this.form = this.schema.type ? clone(this.schema) : { ...CLEAR_FORM }
   },
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .vs-input-parent {
   margin-top: 24px;
+  margin-bottom: 0 !important;
 }
 
 .vs-select-content {

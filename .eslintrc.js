@@ -1,15 +1,16 @@
 module.exports = {
   root: true,
   env: {
-    node: true
+    node: true,
   },
   extends: ['plugin:vue/essential', '@vue/standard'],
   parserOptions: {
-    parser: 'babel-eslint'
+    parser: 'babel-eslint',
   },
   rules: {
     'no-console': 'warn',
     'no-debugger': 'warn',
-    'space-before-function-paren': 'off'
-  }
+    'space-before-function-paren': 'off',
+    'comma-dangle': 'off',
+  },
 }

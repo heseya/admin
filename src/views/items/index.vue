@@ -23,6 +23,9 @@
         <list-item v-for="item in items" :key="item.id" @click="openModal(item.id)">
           {{ item.name }}
           <small>{{ item.sku }}</small>
+          <template #action>
+            <small>{{ item.quantity }} sztuk</small>
+          </template>
         </list-item>
       </list>
     </card>

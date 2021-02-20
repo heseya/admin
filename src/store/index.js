@@ -5,6 +5,7 @@ import VuexPersistence from 'vuex-persist'
 import { auth } from './auth'
 import { items } from './items'
 import { products } from './products'
+import { schemas } from './schemas'
 import { pages } from './pages'
 import { brands } from './brands'
 import { categories } from './categories'
@@ -25,6 +26,7 @@ export default new Vuex.Store({
   modules: {
     auth,
     items,
+    schemas,
     products,
     pages,
     brands,

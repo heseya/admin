@@ -35,6 +35,22 @@ const router = new VueRouter({
       }
     },
     {
+      path: '/schemas',
+      name: 'Schemas',
+      component: () => import('./views/schemas/index.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/schemas/:id',
+      name: 'SchemaCiew',
+      component: () => import('./views/schemas/view.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
       path: '/products',
       name: 'Products',
       component: () => import('./views/products/Index.vue'),

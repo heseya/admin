@@ -58,6 +58,7 @@ export default {
   },
   methods: {
     getSchemas: debounce(function(search) {
+      if (search === '') return
       this.$store.dispatch('schemas/fetch', {
         search: search,
       })

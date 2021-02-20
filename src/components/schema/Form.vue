@@ -1,5 +1,5 @@
 <template>
-  <validation-observer v-slot="{ handleSubmit }">
+  <validation-observer v-slot="{ handleSubmit }" class="schema-form">
     <validation-provider rules="required" v-slot="{ errors }">
       <vs-input v-model="form.name" label="Nazwa">
         <template #message-danger>{{ errors[0] }}</template>
@@ -86,10 +86,8 @@
       </vs-input>
     </validation-provider>
     <br />
-    <vs-alert color="warn" shadow>
-      <template #title>
-        Opcje zaawansowane
-      </template>
+    <div class="danger-zone">
+      <span class="danger-zone__title">Opcje zaawansowane</span>
       <validation-provider v-slot="{ errors }">
         <vs-input v-model="form.pattern" label="Wzór Regex">
           <template #message-danger>{{ errors[0] }}</template>
@@ -100,7 +98,7 @@
           <template #message-danger>{{ errors[0] }}</template>
         </vs-input>
       </validation-provider>
-    </vs-alert>
+    </div>
     <br />
     <vs-button color="dark" size="large" @click="handleSubmit(submit)">
       Zapisz
@@ -188,31 +186,44 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.vs-input-parent {
-  margin-top: 24px;
-  margin-bottom: 0 !important;
-}
+.schema-form {
+  .danger-zone {
+    &__title {
+      font-family: $font-sec;
+      color: #f54758;
+    }
 
-.vs-select-content {
-  width: 100%;
-  margin-top: 20px;
-  max-width: 1000px;
-}
+    padding: 12px;
+    border-radius: 12px;
+    border: solid 1px #f54758;
+  }
 
-.flex {
-  display: flex;
+  .vs-input-parent {
+    margin-top: 24px;
+    margin-bottom: 0 !important;
+  }
 
-  > * {
+  .vs-select-content {
     width: 100%;
-    margin-right: 8px;
+    margin-top: 20px;
+    max-width: 1000px;
+  }
 
-    &:last-child {
-      margin-right: 0;
+  .flex {
+    display: flex;
+
+    > * {
+      width: 100%;
+      margin-right: 8px;
+
+      &:last-child {
+        margin-right: 0;
+      }
     }
   }
-}
 
-.vs-select__label {
-  padding-left: 8px;
+  .vs-select__label {
+    padding-left: 8px;
+  }
 }
 </style>

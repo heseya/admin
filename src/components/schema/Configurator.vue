@@ -11,7 +11,7 @@
         <small>{{ schema.description }}</small>
         <template #action>
           <div class="flex">
-            <vs-button dark icon @click="editSchema(schema)"><i class="bx bx-pen"></i></vs-button>
+            <vs-button dark icon @click="editSchema(schema)"><i class="bx bx-edit"></i></vs-button>
             <vs-button danger icon @click="removeSchema(schema.id)">
               <i class="bx bx-trash"></i>
             </vs-button>
@@ -22,7 +22,7 @@
 
     <vs-dialog width="800px" not-center v-model="isFormModalActive">
       <template #header>
-        <h4>{{ editedSchema.id ? 'Edycja' : 'Dodawanie' }} schematu</h4>
+        <h4 style="margin-bottom: 0">{{ editedSchema.id ? 'Edycja' : 'Dodawanie' }} schematu</h4>
       </template>
       <modal-form>
         <SchemaForm :schema="editedSchema" @submit="updateSchema" />
@@ -142,6 +142,7 @@ export default {
   // justify-content: center;
   align-items: center;
   margin-top: 0;
+  margin-bottom: 0;
 
   .vs-button {
     font-weight: 700;

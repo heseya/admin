@@ -12,7 +12,7 @@
     </validation-provider>
     <div class="flex">
       <validation-provider rules="id-required" v-slot="{ errors }">
-        <vs-select v-model="form.type" filter label="Typ schematu">
+        <vs-select v-model="form.type" label="Typ schematu">
           <vs-option
             v-for="{ value, label } in SchemaTypesOptions"
             :key="value"
@@ -31,27 +31,11 @@
       </validation-provider>
     </div>
     <div class="flex">
-      <SwitchInput>
+      <SwitchInput v-model="form.hidden">
         <template #title>Ukryty</template>
-        <vs-switch success v-model="form.hidden">
-          <template #off>
-            <i class="bx bx-x"></i>
-          </template>
-          <template #on>
-            <i class="bx bx-check"></i>
-          </template>
-        </vs-switch>
       </SwitchInput>
-      <SwitchInput>
+      <SwitchInput v-model="form.required">
         <template #title>Wymagany</template>
-        <vs-switch success v-model="form.required">
-          <template #off>
-            <i class="bx bx-x"></i>
-          </template>
-          <template #on>
-            <i class="bx bx-check"></i>
-          </template>
-        </vs-switch>
       </SwitchInput>
     </div>
     <div class="flex" v-if="form.type === SchemaType.numeric || form.type === SchemaType.string">
@@ -80,14 +64,49 @@
         </vs-input>
       </validation-provider>
     </div>
-    <validation-provider v-slot="{ errors }" v-if="form.type !== SchemaType.select">
-      <vs-input v-model="form.default" type="number" label="Wartość domyślna">
+    <validation-provider
+      v-slot="{ errors }"
+      v-if="form.type === SchemaType.numeric || form.type === SchemaType.string"
+    >
+      <vs-input
+        v-model="form.default"
+        :type="form.type === SchemaType.numeric ? 'number' : 'text'"
+        label="Wartość domyślna"
+      >
         <template #message-danger>{{ errors[0] }}</template>
       </vs-input>
     </validation-provider>
+    <SwitchInput v-if="form.type === SchemaType.boolean" v-model="form.default">
+      <template #title>Wartość domyślna</template>
+    </SwitchInput>
+
     <br />
-    <div class="danger-zone">
-      <span class="danger-zone__title">Opcje zaawansowane</span>
+    <Zone v-if="form.type === SchemaType.select">
+      <template #title>
+        Opcje do wyboru
+        <vs-button size="small" transparent @click="addOption">Dodaj</vs-button>
+      </template>
+
+      <div class="schema-form__option" v-for="(option, i) in form.options" :key="option + i">
+        <validation-provider v-slot="{ errors }" rules="required">
+          <vs-input v-model="option.name" label="Nazwa">
+            <template #message-danger>{{ errors[0] }}</template>
+          </vs-input>
+        </validation-provider>
+        <Autocomplete type="products" label="Przedmioty z magazynu" v-model="option.items" />
+        <SwitchInput v-model="option.disabled">
+          <template #title>Disabled</template>
+        </SwitchInput>
+        <vs-radio v-model="defaultOption" :val="i" dark>
+          Domyślny
+        </vs-radio>
+        <vs-button size="small" danger transparent @click="removeOption(i)">Usuń</vs-button>
+      </div>
+    </Zone>
+
+    <br />
+
+    <Zone title="Opcje zaawansowane" type="danger">
       <validation-provider v-slot="{ errors }">
         <vs-input v-model="form.pattern" label="Wzór Regex">
           <template #message-danger>{{ errors[0] }}</template>
@@ -98,7 +117,7 @@
           <template #message-danger>{{ errors[0] }}</template>
         </vs-input>
       </validation-provider>
-    </div>
+    </Zone>
     <br />
     <vs-button color="dark" size="large" @click="handleSubmit(submit)">
       Zapisz
@@ -110,6 +129,8 @@
 import clone from 'lodash/clone'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import SwitchInput from '@/components/SwitchInput.vue'
+import Autocomplete from '@/components/Autocomplete.vue'
+import Zone from '@/components/Zone.vue'
 import { SchemaType, SchemaTypeLabel } from '@/interfaces/SchemaType'
 
 const CLEAR_FORM = {
@@ -128,14 +149,25 @@ const CLEAR_FORM = {
   options: [],
 }
 
+const CLEAR_OPTION = {
+  name: '',
+  default: false,
+  disabled: false,
+  price: 0,
+  items: [],
+}
+
 export default {
   components: {
     ValidationProvider,
     ValidationObserver,
     SwitchInput,
+    Autocomplete,
+    Zone,
   },
   data: () => ({
     form: { ...CLEAR_FORM },
+    defaultOption: 0,
     SchemaTypesOptions: Object.values(SchemaType).map((t) => ({
       value: t,
       label: SchemaTypeLabel[t],
@@ -148,10 +180,27 @@ export default {
       required: true,
     },
   },
+  watch: {
+    defaultOption(defaultOption) {
+      this.form.options = this.form.options.map((v) => ({ ...v, default: false }))
+      this.form.options[defaultOption].default = true
+    },
+  },
   methods: {
+    addOption() {
+      this.form.options.push({ ...CLEAR_OPTION })
+    },
+    removeOption(index) {
+      this.form.options = this.form.options.filter((_, i) => i !== index)
+    },
     async submit() {
       const loading = this.$vs.loading({ color: '#000' })
       let id = null
+
+      this.form.options = this.form.options.map((opt) => ({
+        ...opt,
+        items: opt.items.map((item) => item.id),
+      }))
 
       if (!this.form?.id) {
         const { id: newID } = await this.$store.dispatch('schemas/add', this.form)
@@ -185,19 +234,8 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .schema-form {
-  .danger-zone {
-    &__title {
-      font-family: $font-sec;
-      color: #f54758;
-    }
-
-    padding: 12px;
-    border-radius: 12px;
-    border: solid 1px #f54758;
-  }
-
   .vs-input-parent {
     margin-top: 24px;
     margin-bottom: 0 !important;
@@ -207,6 +245,12 @@ export default {
     width: 100%;
     margin-top: 20px;
     max-width: 1000px;
+  }
+
+  &__option {
+    display: grid;
+    grid-gap: 8px;
+    grid-template-columns: 1fr 1fr 64px 80px 64px;
   }
 
   .flex {
@@ -220,6 +264,10 @@ export default {
         margin-right: 0;
       }
     }
+  }
+
+  .vs-radio__label {
+    font-size: 0.6em;
   }
 
   .vs-select__label {

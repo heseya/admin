@@ -20,7 +20,7 @@
       </list-item>
     </list>
 
-    <vs-dialog width="800px" not-center v-model="isFormModalActive">
+    <vs-dialog width="1000px" not-center v-model="isFormModalActive">
       <template #header>
         <h4 style="margin-bottom: 0">{{ editedSchema.id ? 'Edycja' : 'Dodawanie' }} schematu</h4>
       </template>
@@ -45,7 +45,7 @@
         </h4>
       </template>
       <modal-form>
-        <SchemasSelector @select="addSchema" :existing="value" />
+        <Selector @select="addSchema" type="schemas" :existing="value" />
       </modal-form>
     </vs-dialog>
   </div>
@@ -57,7 +57,7 @@ import ListItem from '@/components/ListItem.vue'
 import Empty from '@/components/Empty.vue'
 import ModalForm from '@/components/ModalForm.vue'
 import SchemaForm from '@/components/schema/Form.vue'
-import SchemasSelector from '@/components/schema/Selector.vue'
+import Selector from '@/components/Selector.vue'
 
 import { SchemaTypeLabel } from '@/interfaces/SchemaType'
 
@@ -116,7 +116,7 @@ export default {
     Empty,
     ModalForm,
     SchemaForm,
-    SchemasSelector,
+    Selector,
   },
 }
 </script>

@@ -1,21 +1,16 @@
 <template>
   <div class="schema-selector">
-    <vs-input v-model="query" label="Wyszukaj schemat"></vs-input>
+    <vs-input v-model="query" :label="`Wyszukaj ${typeName}`"></vs-input>
 
-    <empty v-if="query !== '' && schemas.length === 0">Nie znaleziono żadnego schematu</empty>
+    <empty v-if="query !== '' && list.length === 0">Nic nie znaleziono</empty>
 
     <list class="schema-selector__schemas" v-if="!isLoading">
-      <list-item
-        class="schema-selector__schema"
-        v-for="schema in schemas"
-        :key="schema.id"
-        no-hover
-      >
-        {{ schema.name }}
-        <small>{{ schema.description }}</small>
+      <list-item class="schema-selector__schema" v-for="item in list" :key="item.id" no-hover>
+        {{ item.name }}
+        <small>{{ item.description }}</small>
         <template #action>
           <div class="flex">
-            <vs-button success icon @click="onSelect(schema)">
+            <vs-button success icon @click="onSelect(item)">
               Dodaj
             </vs-button>
           </div>
@@ -33,36 +28,44 @@ import Empty from '@/components/Empty.vue'
 import ListItem from '@/components/ListItem.vue'
 
 export default {
-  name: 'SchemasSelector',
+  name: 'Selector',
   data: () => ({
     query: '',
   }),
   props: {
+    type: {
+      type: String,
+      default: 'schemas',
+    },
+    typeName: {
+      type: String,
+      default: 'schemat',
+    },
     existing: {
       type: Array,
       default: () => [],
     },
   },
   computed: {
-    schemas() {
+    list() {
       if (this.query === '') return []
-      return this.$store.getters['schemas/getData']
+      return this.$store.getters[`${this.type}/getData`]
         .filter((x) => !this.existing.find((y) => x.id === y.id))
         .slice(0, 5)
     },
     isLoading() {
-      return this.$store.getters['schemas/getIsLoading']
+      return this.$store.getters[`${this.type}/getIsLoading`]
     },
   },
   watch: {
     query(search) {
-      this.getSchemas(search)
+      this.getItems(search)
     },
   },
   methods: {
-    getSchemas: debounce(function(search) {
+    getItems: debounce(function(search) {
       if (search === '') return
-      this.$store.dispatch('schemas/fetch', {
+      this.$store.dispatch(`${this.type}/fetch`, {
         search: search,
       })
     }, 300),

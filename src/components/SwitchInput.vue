@@ -3,9 +3,32 @@
     <label class="switch-input__label">
       <slot name="title"></slot>
     </label>
-    <slot></slot>
+    <vs-switch success :value="value" @input="onInput">
+      <template #off>
+        <i class="bx bx-x"></i>
+      </template>
+      <template #on>
+        <i class="bx bx-check"></i>
+      </template>
+    </vs-switch>
   </div>
 </template>
+
+<script>
+export default {
+  props: {
+    value: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  methods: {
+    onInput(v) {
+      this.$emit('input', v)
+    },
+  },
+}
+</script>
 
 <style lang="scss" scoped>
 .switch-input {

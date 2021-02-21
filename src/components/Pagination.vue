@@ -1,12 +1,16 @@
 <template>
   <div class="pagination">
-    <vs-pagination @input="onInput" :color="color" :value="value" :length="length">
-      <vs-select :value="value" @input="onInput">
-        <vs-option v-for="page in length" :label="page" :value="page" :key="page">
-          {{ page }}
-        </vs-option>
-      </vs-select>
-    </vs-pagination>
+    <vs-button @click="prev" :disabled="page === 1" icon dark>
+      <i class="bx bxs-chevron-left"></i>
+    </vs-button>
+    <vs-select :value="page" @input="onInput">
+      <vs-option v-for="page in length" :label="page" :value="page" :key="page">
+        {{ page }}
+      </vs-option>
+    </vs-select>
+    <vs-button @click="next" :disabled="page === length" icon dark>
+      <i class="bx bxs-chevron-right"></i>
+    </vs-button>
   </div>
 </template>
 
@@ -15,7 +19,7 @@ export default {
   name: 'Pagination',
   props: {
     value: {
-      type: Number,
+      type: [Number, String],
       default: 1,
     },
     length: {
@@ -27,9 +31,20 @@ export default {
       default: 'dark',
     },
   },
+  computed: {
+    page() {
+      return Number(this.value)
+    },
+  },
   methods: {
     onInput(v) {
       this.$emit('input', v)
+    },
+    next() {
+      if (this.page < this.length) this.onInput(this.page + 1)
+    },
+    prev() {
+      if (this.page > 1) this.onInput(this.page - 1)
     },
   },
 }
@@ -37,8 +52,13 @@ export default {
 
 <style lang="scss">
 .pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #334656 !important;
+
   .vs-select-content {
-    max-width: 60px;
+    max-width: 80px;
     margin: 0px 4px;
   }
 

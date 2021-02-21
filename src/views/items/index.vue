@@ -30,13 +30,7 @@
       </list>
     </card>
 
-    <vs-pagination
-      @input="changePage"
-      color="dark"
-      v-if="meta.last_page"
-      :value="page"
-      :length="meta.last_page"
-    />
+    <pagination @input="changePage" v-if="meta.last_page" :value="page" :length="meta.last_page" />
 
     <validation-observer v-slot="{ handleSubmit }">
       <vs-dialog width="550px" not-center v-model="isModalActive">
@@ -89,6 +83,7 @@ import PopConfirm from '@/components/PopConfirm.vue'
 import ListItem from '@/components/ListItem.vue'
 import Empty from '@/components/Empty.vue'
 import { formatApiError } from '@/utils/errors'
+import Pagination from '../../components/Pagination.vue'
 
 export default {
   components: {
@@ -101,6 +96,7 @@ export default {
     PopConfirm,
     ValidationProvider,
     ValidationObserver,
+    Pagination,
   },
   data: () => ({
     page: 1,

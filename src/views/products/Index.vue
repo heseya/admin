@@ -25,13 +25,7 @@
     <div class="products-list">
       <product v-for="product in products" :key="product.id" :product="product"></product>
     </div>
-    <vs-pagination
-      color="dark"
-      v-if="meta.last_page"
-      :value="page"
-      @input="changePage"
-      :length="meta.last_page"
-    />
+    <pagination v-if="meta.last_page" :value="page" @input="changePage" :length="meta.last_page" />
   </div>
 </template>
 
@@ -39,16 +33,18 @@
 import TopNav from '@/layout/TopNav.vue'
 import Product from '@/components/Product.vue'
 import Empty from '@/components/Empty.vue'
+import Pagination from '../../components/Pagination.vue'
 
 export default {
   components: {
     TopNav,
     Product,
-    appEmpty: Empty
+    appEmpty: Empty,
+    Pagination,
   },
   data: () => ({
     page: 1,
-    search: ''
+    search: '',
   }),
   computed: {
     products() {
@@ -56,7 +52,7 @@ export default {
     },
     meta() {
       return this.$store.getters['products/getMeta']
-    }
+    },
   },
   watch: {
     '$route.query'({ page }) {
@@ -65,7 +61,7 @@ export default {
         this.getProducts()
         window.scrollTo(0, 0)
       }
-    }
+    },
   },
   methods: {
     changePage(page) {
@@ -77,7 +73,7 @@ export default {
       if (this.search !== this.$route.query.search) {
         this.$router.push({
           path: 'products',
-          query: { page: undefined, search: this.search || undefined }
+          query: { page: undefined, search: this.search || undefined },
         })
       }
     },
@@ -85,16 +81,16 @@ export default {
       const loading = this.$vs.loading({ color: '#000' })
       await this.$store.dispatch('products/fetch', {
         page: this.page,
-        search: this.$route.query.search
+        search: this.$route.query.search,
       })
       loading.close()
-    }
+    },
   },
   created() {
     this.page = this.$route.query.page || 1
     this.search = this.$route.query.search || ''
     this.getProducts()
-  }
+  },
 }
 </script>
 

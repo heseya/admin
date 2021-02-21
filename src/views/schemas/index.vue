@@ -30,13 +30,7 @@
       </list>
     </card>
 
-    <vs-pagination
-      @input="changePage"
-      color="dark"
-      v-if="meta.last_page"
-      :value="page"
-      :length="meta.last_page"
-    />
+    <pagination @input="changePage" v-if="meta.last_page" :value="page" :length="meta.last_page" />
   </div>
 </template>
 
@@ -47,6 +41,7 @@ import List from '@/components/List.vue'
 import ListItem from '@/components/ListItem.vue'
 import Empty from '@/components/Empty.vue'
 import { SchemaTypeLabel } from '@/interfaces/SchemaType'
+import Pagination from '../../components/Pagination.vue'
 
 export default {
   components: {
@@ -55,6 +50,7 @@ export default {
     List,
     ListItem,
     appEmpty: Empty,
+    Pagination,
   },
   data: () => ({
     page: 1,

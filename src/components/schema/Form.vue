@@ -84,23 +84,30 @@
     <Zone v-if="form.type === SchemaType.select">
       <template #title>
         Opcje do wyboru
-        <vs-button size="small" transparent @click="addOption">Dodaj</vs-button>
+        <vs-button size="small" transparent @click.stop="addOption">Dodaj</vs-button>
       </template>
 
       <div class="schema-form__option" v-for="(option, i) in form.options" :key="option + i">
-        <validation-provider v-slot="{ errors }" rules="required">
+        <validation-provider class="input" v-slot="{ errors }" rules="required">
           <vs-input v-model="option.name" label="Nazwa">
             <template #message-danger>{{ errors[0] }}</template>
           </vs-input>
         </validation-provider>
-        <Autocomplete type="products" label="Przedmioty z magazynu" v-model="option.items" />
+        <Autocomplete
+          class="input"
+          type="products"
+          label="Przedmioty z magazynu"
+          v-model="form.options[i].items"
+        />
         <SwitchInput v-model="option.disabled">
           <template #title>Disabled</template>
         </SwitchInput>
         <vs-radio v-model="defaultOption" :val="i" dark>
           Domyślny
         </vs-radio>
-        <vs-button size="small" danger transparent @click="removeOption(i)">Usuń</vs-button>
+        <vs-button size="small" danger icon @click.stop="removeOption(i)"
+          ><i class="bx bx-trash"></i
+        ></vs-button>
       </div>
     </Zone>
 
@@ -119,7 +126,7 @@
       </validation-provider>
     </Zone>
     <br />
-    <vs-button color="dark" size="large" @click="handleSubmit(submit)">
+    <vs-button color="dark" size="large" @click.stop="handleSubmit(submit)">
       Zapisz
     </vs-button>
   </validation-observer>
@@ -250,7 +257,17 @@ export default {
   &__option {
     display: grid;
     grid-gap: 8px;
-    grid-template-columns: 1fr 1fr 64px 80px 64px;
+    grid-template-columns: 1fr 1fr 64px 64px 64px;
+    align-items: center;
+    justify-items: center;
+
+    .input {
+      width: 100%;
+    }
+
+    .vs-radio-content {
+      flex-direction: column;
+    }
   }
 
   .flex {

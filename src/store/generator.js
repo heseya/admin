@@ -70,8 +70,8 @@ export const createStore = (name, endpoint, custom) => {
       [mutations.ADD_DATA](state, newItem) {
         state.data = [...state.data, newItem]
       },
-      [mutations.EDIT_DATA](state, editedItem) {
-        const index = state.data.findIndex(({ id }) => id === editedItem.id)
+      [mutations.EDIT_DATA](state, { key, value, item: editedItem }) {
+        const index = state.data.findIndex((item) => item[key] === value)
         if (index >= 0) {
           const copy = [...state.data]
           copy[index] = editedItem
@@ -80,8 +80,8 @@ export const createStore = (name, endpoint, custom) => {
           state.data = [...state.data, editedItem]
         }
       },
-      [mutations.REMOVE_DATA](state, removedID) {
-        state.data = state.data.filter(({ id }) => id !== removedID)
+      [mutations.REMOVE_DATA](state, { key, value }) {
+        state.data = state.data.filter((item) => item[key] !== value)
       },
       [mutations.SET_SELECTED](state, newSelected) {
         state.selected = newSelected
@@ -138,7 +138,7 @@ export const createStore = (name, endpoint, custom) => {
         commit(mutations.SET_ERROR, null)
         try {
           const { data } = await api.put(`/${endpoint}/id:${id}`, item)
-          commit(mutations.EDIT_DATA, data.data)
+          commit(mutations.EDIT_DATA, { key: 'id', value: id, item: data.data })
           commit(mutations.SET_LOADING, false)
           return data.data
         } catch (error) {
@@ -152,7 +152,21 @@ export const createStore = (name, endpoint, custom) => {
         commit(mutations.SET_ERROR, null)
         try {
           const { data } = await api.patch(`/${endpoint}/id:${id}`, item)
-          commit(mutations.EDIT_DATA, data.data)
+          commit(mutations.EDIT_DATA, { key: 'id', value: id, item: data.data })
+          commit(mutations.SET_LOADING, false)
+          return data.data
+        } catch (error) {
+          commit(mutations.SET_ERROR, error)
+          commit(mutations.SET_LOADING, false)
+          return false
+        }
+      },
+      async updateByKey({ commit }, { key, value, item }) {
+        commit(mutations.SET_LOADING, true)
+        commit(mutations.SET_ERROR, null)
+        try {
+          const { data } = await api.patch(`/${endpoint}/${value}`, item)
+          commit(mutations.EDIT_DATA, { key, value, item: data.data })
           commit(mutations.SET_LOADING, false)
           return data.data
         } catch (error) {
@@ -166,7 +180,21 @@ export const createStore = (name, endpoint, custom) => {
         commit(mutations.SET_ERROR, null)
         try {
           await api.delete(`/${endpoint}/id:${id}`)
-          commit(mutations.REMOVE_DATA, id)
+          commit(mutations.REMOVE_DATA, { key: 'id', value: id })
+          commit(mutations.SET_LOADING, false)
+          return true
+        } catch (error) {
+          commit(mutations.SET_ERROR, error)
+          commit(mutations.SET_LOADING, false)
+          return false
+        }
+      },
+      async removeByKey({ commit }, { key, value }) {
+        commit(mutations.SET_LOADING, true)
+        commit(mutations.SET_ERROR, null)
+        try {
+          await api.delete(`/${endpoint}/${value}`)
+          commit(mutations.REMOVE_DATA, { key, value })
           commit(mutations.SET_LOADING, false)
           return true
         } catch (error) {

@@ -9,8 +9,8 @@
     <card>
       <app-empty v-if="!settings.length">Nie ma żadnych ustawień</app-empty>
       <list>
-        <list-item v-for="setting in settings" :key="setting.id" @click="openModal(setting.id)">
-          {{ setting.key }}: {{ setting.value }}
+        <list-item v-for="setting in settings" :key="setting.name" @click="openModal(setting)">
+          {{ setting.name }}: {{ setting.value }}
         </list-item>
       </list>
     </card>
@@ -22,7 +22,7 @@
         </template>
         <modal-form>
           <validation-provider rules="required" v-slot="{ errors }">
-            <vs-input v-model="editedItem.key" label="Klucz">
+            <vs-input v-model="editedItem.name" label="Klucz" :disabled="editedItem.permanent">
               <template #message-danger>{{ errors[0] }}</template>
             </vs-input>
           </validation-provider>
@@ -36,14 +36,19 @@
           <div class="row">
             <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
             <pop-confirm
-              v-if="editedItem.deletable"
               title="Czy na pewno chcesz usunąć to ustawienie?"
               okText="Usuń"
               cancelText="Anuluj"
               @confirm="deleteItem"
               v-slot="{ open }"
             >
-              <vs-button v-if="editedItem.id" color="danger" @click="open">Usuń</vs-button>
+              <vs-button
+                v-if="editedItem.id"
+                color="danger"
+                :disabled="editedItem.permanent"
+                @click="open"
+                >Usuń</vs-button
+              >
             </pop-confirm>
           </div>
         </template>
@@ -53,6 +58,7 @@
 </template>
 
 <script>
+import clone from 'lodash/clone'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/Card.vue'
@@ -77,9 +83,10 @@ export default {
   data: () => ({
     isModalActive: false,
     editedItem: {
-      key: '',
+      name: '',
       value: '',
-      deletable: true,
+      permanent: false,
+      public: true,
     },
   }),
   computed: {
@@ -107,23 +114,25 @@ export default {
       await this.$store.dispatch('settings/fetch')
       loading.close()
     },
-    openModal(id) {
+    openModal(item) {
       this.isModalActive = true
-      if (id) {
-        this.editedItem = this.$store.getters['settings/getFromListById'](id)
+      if (item) {
+        this.editedItem = { id: item.name, ...clone(item) }
       } else {
         this.editedItem = {
-          key: '',
+          name: '',
           value: '',
-          deletable: true,
+          permanent: false,
+          public: true,
         }
       }
     },
     async saveModal() {
       const loading = this.$vs.loading({ color: '#000' })
       if (this.editedItem.id) {
-        await this.$store.dispatch('settings/update', {
-          id: this.editedItem.id,
+        await this.$store.dispatch('settings/updateByKey', {
+          key: 'name',
+          value: this.editedItem.id,
           item: this.editedItem,
         })
       } else {
@@ -134,7 +143,7 @@ export default {
     },
     async deleteItem() {
       const loading = this.$vs.loading({ color: '#000' })
-      await this.$store.dispatch('settings/remove', this.editedItem.id)
+      await this.$store.dispatch('settings/removeByKey', { key: 'name', value: this.editedItem.id })
       loading.close()
       this.isModalActive = false
     },

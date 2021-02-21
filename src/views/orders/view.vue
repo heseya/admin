@@ -1,6 +1,6 @@
 <template>
   <div>
-    <top-nav :title="`Zamówienie nr ${order.code}`"> </top-nav>
+    <top-nav :title="`Zamówienie ${order.code}`"> </top-nav>
 
     <div class="order">
       <div>

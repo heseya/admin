@@ -1,6 +1,6 @@
 <template>
   <div>
-    <top-nav title="Opcje Dostawy">
+    <top-nav title="Szablony przesyłek">
       <vs-button @click="openModal()" color="dark" icon>
         <i class="bx bx-plus"></i>
       </vs-button>
@@ -28,7 +28,7 @@
     <validation-observer v-slot="{ handleSubmit }">
       <vs-dialog width="550px" not-center v-model="isModalActive">
         <template #header>
-          <h4>{{ editedItem.id ? 'Edycja' : 'Dodawanie' }} szablonu przesyłki</h4>
+          <h4>{{ editedItem.id ? 'Edycja szablony' : 'Nowy szablon' }}</h4>
         </template>
         <modal-form>
           <validation-provider rules="required" v-slot="{ errors }">

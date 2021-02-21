@@ -37,7 +37,7 @@
             </vs-input>
           </validation-provider>
           <validation-provider rules="required|positive" v-slot="{ errors }">
-            <vs-input v-model="editedItem.weight" type="number" label="Waga (kg)">
+            <vs-input v-model="editedItem.weight" type="number" step="0.01" label="Waga (kg)">
               <template #message-danger>{{ errors[0] }}</template>
             </vs-input>
           </validation-provider>

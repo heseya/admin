@@ -6,8 +6,8 @@
     </router-link>
 
     <router-link class="nav__link" to="/items">
-      <img class="icon" src="/img/icons/products.svg" />
-      <span class="label animated faster fadeInLeft">Półprodukty</span>
+      <img class="icon" src="/img/icons/box.svg" />
+      <span class="label animated faster fadeInLeft">Magazyn</span>
     </router-link>
 
     <router-link class="nav__link" to="/orders">

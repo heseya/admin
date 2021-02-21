@@ -1,6 +1,6 @@
 <template>
   <div>
-    <top-nav title="Półprodukty">
+    <top-nav title="Magazyn">
       <vs-input
         state="dark"
         type="search"
@@ -18,7 +18,7 @@
     </top-nav>
 
     <card>
-      <app-empty v-if="!items.length">Nie ma żadnego zamówienia</app-empty>
+      <app-empty v-if="!items.length">Magazyn jest pusty</app-empty>
       <list>
         <list-item v-for="item in items" :key="item.id" @click="openModal(item.id)">
           {{ item.name }}
@@ -41,7 +41,7 @@
     <validation-observer v-slot="{ handleSubmit }">
       <vs-dialog width="550px" not-center v-model="isModalActive">
         <template #header>
-          <h4>{{ editedItem.id ? 'Edycja' : 'Dodawanie' }} półproduktu</h4>
+          <h4>{{ editedItem.id ? 'Edycja' : 'Nowy' }} przedmiot</h4>
         </template>
         <modal-form>
           <validation-provider rules="required" v-slot="{ errors }">
@@ -64,7 +64,7 @@
           <div class="row">
             <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
             <pop-confirm
-              title="Czy na pewno chcesz usunąć ten półprodukt?"
+              title="Czy na pewno chcesz usunąć ten przedmiot?"
               okText="Usuń"
               cancelText="Anuluj"
               @confirm="deleteItem"

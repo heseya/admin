@@ -35,8 +35,7 @@
             <br />
             <vs-alert color="warn">
               <template #title>Produkt wciąż jest ukryty</template>
-              Produkt jest ukryty ponieważ jego marka lub kategoria jest ukryta. Odkryj je by
-              produkt był widoczny w sklepie
+              Produkt jest niewidoczny ponieważ jego marka lub kategoria jest ukryta.
             </vs-alert>
           </template>
         </card>

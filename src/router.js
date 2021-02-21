@@ -13,8 +13,8 @@ const router = new VueRouter({
       name: 'Index',
       redirect: { name: 'Orders' },
       meta: {
-        requiresAuth: true
-      }
+        requiresAuth: true,
+      },
     },
     {
       path: '/login',
@@ -23,138 +23,146 @@ const router = new VueRouter({
       component: () => import('./views/Login.vue'),
       meta: {
         hiddenNav: true,
-        recaptchaAlert: true
-      }
+        recaptchaAlert: true,
+      },
     },
     {
       path: '/items',
       name: 'Items',
       component: () => import('./views/items/index.vue'),
       meta: {
-        requiresAuth: true
-      }
+        requiresAuth: true,
+      },
     },
     {
       path: '/schemas',
       name: 'Schemas',
       component: () => import('./views/schemas/index.vue'),
       meta: {
-        requiresAuth: true
-      }
+        requiresAuth: true,
+      },
     },
     {
       path: '/schemas/:id',
       name: 'SchemaCiew',
       component: () => import('./views/schemas/view.vue'),
       meta: {
-        requiresAuth: true
-      }
+        requiresAuth: true,
+      },
     },
     {
       path: '/products',
       name: 'Products',
       component: () => import('./views/products/Index.vue'),
       meta: {
-        requiresAuth: true
-      }
+        requiresAuth: true,
+      },
     },
     {
       path: '/products/:id',
       name: 'ProductsView',
       component: () => import('./views/products/View.vue'),
       meta: {
-        requiresAuth: true
-      }
+        requiresAuth: true,
+      },
     },
     {
       path: '/orders',
       name: 'Orders',
       component: () => import('./views/orders/Index.vue'),
       meta: {
-        requiresAuth: true
-      }
+        requiresAuth: true,
+      },
     },
     {
       path: '/orders/:id',
       name: 'OrdersView',
       component: () => import('./views/orders/view.vue'),
       meta: {
-        requiresAuth: true
-      }
+        requiresAuth: true,
+      },
     },
     {
       path: '/chats',
       name: 'Chats',
       component: () => import('./views/chats/Index.vue'),
       meta: {
-        requiresAuth: true
-      }
+        requiresAuth: true,
+      },
     },
     {
       path: '/pages',
       name: 'Pages',
       component: () => import('./views/pages/Index.vue'),
       meta: {
-        requiresAuth: true
-      }
+        requiresAuth: true,
+      },
     },
     {
       path: '/pages/:id',
       name: 'PagesView',
       component: () => import('./views/pages/View.vue'),
       meta: {
-        requiresAuth: true
-      }
+        requiresAuth: true,
+      },
     },
     {
       path: '/settings',
       name: 'Settings',
       component: () => import('./views/settings/Index.vue'),
       meta: {
-        requiresAuth: true
-      }
+        requiresAuth: true,
+      },
     },
     {
       path: '/settings/brands',
       name: 'Brands',
       component: () => import('./views/settings/Brands.vue'),
       meta: {
-        requiresAuth: true
-      }
+        requiresAuth: true,
+      },
     },
     {
       path: '/settings/categories',
       name: 'Categories',
       component: () => import('./views/settings/Categories.vue'),
       meta: {
-        requiresAuth: true
-      }
+        requiresAuth: true,
+      },
     },
     {
       path: '/settings/shipping-methods',
       name: 'ShippingMethods',
       component: () => import('./views/settings/ShippingMethods.vue'),
       meta: {
-        requiresAuth: true
-      }
+        requiresAuth: true,
+      },
     },
     {
       path: '/settings/statuses',
       name: 'Statuses',
       component: () => import('./views/settings/Statuses.vue'),
       meta: {
-        requiresAuth: true
-      }
+        requiresAuth: true,
+      },
     },
     {
       path: '/settings/package-templates',
       name: 'PackageTemplates',
       component: () => import('./views/settings/PackageTemplates.vue'),
       meta: {
-        requiresAuth: true
-      }
-    }
-  ]
+        requiresAuth: true,
+      },
+    },
+    {
+      path: '/settings/page-settings',
+      name: 'PageSettings',
+      component: () => import('./views/settings/Settings.vue'),
+      meta: {
+        requiresAuth: true,
+      },
+    },
+  ],
 })
 
 router.beforeEach((to, from, next) => {
@@ -163,7 +171,7 @@ router.beforeEach((to, from, next) => {
       // User is not logged
       next({
         name: 'Login',
-        params: { nextURL: to.fullPath }
+        params: { nextURL: to.fullPath },
       })
     } else {
       // User is logged

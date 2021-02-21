@@ -12,7 +12,6 @@
 
     <card>
       <list>
-
         <h2 class="section-title">Produkty</h2>
         <list-item url="/settings/brands">
           <template #avatar>
@@ -35,10 +34,20 @@
         <list-item url="/settings/statuses">
           <template #avatar>
             <vs-avatar dark>
-              <i class='bx bx-check-circle' ></i>
+              <i class="bx bx-check-circle"></i>
             </vs-avatar>
           </template>
           Statusy zamówień
+        </list-item>
+
+        <h2 class="section-title">Witryna sklepu</h2>
+        <list-item url="/settings/page-settings">
+          <template #avatar>
+            <vs-avatar dark>
+              <i class="bx bxs-cog"></i>
+            </vs-avatar>
+          </template>
+          Ustawienia strony
         </list-item>
 
         <h2 class="section-title">Dostawa</h2>
@@ -53,7 +62,7 @@
         <list-item url="/settings/package-templates">
           <template #avatar>
             <vs-avatar dark>
-              <i class='bx bx-box' ></i>
+              <i class="bx bx-box"></i>
             </vs-avatar>
           </template>
           Szablony przesyłek
@@ -101,21 +110,21 @@ export default {
     Card,
     List,
     ListItem,
-    appChangePassword: ChangePassword
+    appChangePassword: ChangePassword,
   },
   data: () => ({
-    isChangePasswordModal: false
+    isChangePasswordModal: false,
   }),
   computed: {
     user() {
       return this.$store.state.auth.user || {}
-    }
+    },
   },
   methods: {
     logout() {
       this.$store.dispatch('auth/logout')
       this.$router.push('/login')
-    }
+    },
   },
   beforeRouteLeave(to, from, next) {
     if (this.isChangePasswordModal) {
@@ -124,7 +133,7 @@ export default {
     } else {
       next()
     }
-  }
+  },
 }
 </script>
 

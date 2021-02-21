@@ -14,12 +14,13 @@ import { statuses } from './statuses'
 import { shippingMethods } from './shippingMethods'
 import { paymentMethods } from './paymentMethods'
 import { packageTemplates } from './packageTemplates'
+import { settings } from './settings'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    currency: 'zł'
+    currency: 'zł',
   },
   mutations: {},
   actions: {},
@@ -35,7 +36,8 @@ export default new Vuex.Store({
     shippingMethods,
     statuses,
     paymentMethods,
-    packageTemplates
+    packageTemplates,
+    settings,
   },
-  plugins: [new VuexPersistence({ modules: ['auth'] }).plugin]
+  plugins: [new VuexPersistence({ modules: ['auth'] }).plugin],
 })

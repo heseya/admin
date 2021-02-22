@@ -7,7 +7,7 @@
     <list class="schema-selector__schemas" v-if="!isLoading">
       <list-item class="schema-selector__schema" v-for="item in list" :key="item.id" no-hover>
         {{ item.name }}
-        <small>{{ item.description }}</small>
+        <small>{{ getSubText(item) }}</small>
         <template #action>
           <div class="flex">
             <vs-button success icon @click="onSelect(item)">
@@ -71,6 +71,11 @@ export default {
     }, 300),
     onSelect(schema) {
       this.$emit('select', schema)
+    },
+    getSubText(item) {
+      if (this.type === 'schemas') return item.description
+      if (this.type === 'items') return `SKU: ${item.sku}`
+      return ''
     },
   },
   components: {

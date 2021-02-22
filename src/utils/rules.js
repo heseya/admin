@@ -40,3 +40,10 @@ extend('slug', {
     return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value)
   },
 })
+
+extend('letters-only', {
+  message: 'Wartość może składać się tylko z liter i podkreślników (_)',
+  validate: (value) => {
+    return /^[a-zA-Z_]+(?:[a-zA-Z]+)*$/.test(value)
+  },
+})

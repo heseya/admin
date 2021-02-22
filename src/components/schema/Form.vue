@@ -5,7 +5,7 @@
         <template #message-danger>{{ errors[0] }}</template>
       </vs-input>
     </validation-provider>
-    <validation-provider rules="required" v-slot="{ errors }">
+    <validation-provider v-slot="{ errors }">
       <vs-input v-model="form.description" label="Opis">
         <template #message-danger>{{ errors[0] }}</template>
       </vs-input>
@@ -105,7 +105,12 @@
         <vs-radio v-model="defaultOption" :val="i" dark>
           Domyślny
         </vs-radio>
-        <vs-button size="small" danger icon @click.stop="removeOption(i)"
+        <vs-button
+          size="small"
+          danger
+          icon
+          @click.stop="removeOption(i)"
+          :disabled="form.options.length === 1"
           ><i class="bx bx-trash"></i
         ></vs-button>
       </div>
@@ -191,6 +196,10 @@ export default {
     defaultOption(defaultOption) {
       this.form.options = this.form.options.map((v) => ({ ...v, default: false }))
       this.form.options[defaultOption].default = true
+    },
+    'form.type'(type) {
+      if (type === SchemaType.select) this.form.options = [{ ...CLEAR_OPTION }]
+      else this.form.options = []
     },
   },
   methods: {

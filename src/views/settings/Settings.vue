@@ -10,7 +10,14 @@
       <app-empty v-if="!settings.length">Nie ma żadnych ustawień</app-empty>
       <list>
         <list-item v-for="setting in settings" :key="setting.name" @click="openModal(setting)">
-          {{ setting.name }}: {{ setting.value }}
+          {{ setting.name }}
+          <small>{{ setting.value }}</small>
+          <template #action>
+            <vs-avatar :success="setting.public" size="30" :danger="!setting.public">
+              <i class="bx bx-show" v-if="setting.public"></i>
+              <i class="bx bx-hide" v-else></i>
+            </vs-avatar>
+          </template>
         </list-item>
       </list>
     </card>
@@ -18,10 +25,10 @@
     <validation-observer v-slot="{ handleSubmit }">
       <vs-dialog width="550px" not-center v-model="isModalActive">
         <template #header>
-          <h4>{{ editedItem.id ? 'Edycja ustawienia' : 'Nowe ustawienie' }}</h4>
+          <h4>{{ editedItem.id ? 'Edycja ustawienie' : 'Nowe ustawienie' }}</h4>
         </template>
         <modal-form>
-          <validation-provider rules="required" v-slot="{ errors }">
+          <validation-provider rules="required|letters-only" v-slot="{ errors }">
             <vs-input v-model="editedItem.name" label="Klucz" :disabled="editedItem.permanent">
               <template #message-danger>{{ errors[0] }}</template>
             </vs-input>
@@ -31,6 +38,9 @@
               <template #message-danger>{{ errors[0] }}</template>
             </vs-input>
           </validation-provider>
+          <SwitchInput v-model="editedItem.public">
+            <template #title>Wartość publiczna</template>
+          </SwitchInput>
         </modal-form>
         <template #footer>
           <div class="row">
@@ -66,6 +76,7 @@ import List from '@/components/List.vue'
 import ModalForm from '@/components/ModalForm.vue'
 import ListItem from '@/components/ListItem.vue'
 import Empty from '@/components/Empty.vue'
+import SwitchInput from '@/components/SwitchInput.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
 
 export default {
@@ -79,6 +90,7 @@ export default {
     appEmpty: Empty,
     ValidationProvider,
     ValidationObserver,
+    SwitchInput,
   },
   data: () => ({
     isModalActive: false,

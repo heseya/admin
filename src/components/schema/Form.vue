@@ -93,6 +93,7 @@
             <template #message-danger>{{ errors[0] }}</template>
           </vs-input>
         </validation-provider>
+        <vs-input v-model="option.price" label="Cena"></vs-input>
         <Autocomplete
           class="input"
           type="products"
@@ -120,12 +121,12 @@
 
     <Zone title="Opcje zaawansowane" type="danger">
       <validation-provider v-slot="{ errors }">
-        <vs-input v-model="form.pattern" label="Wzór Regex">
+        <vs-input v-model="form.pattern" label="Wyrażenie regularne">
           <template #message-danger>{{ errors[0] }}</template>
         </vs-input>
       </validation-provider>
       <validation-provider v-slot="{ errors }">
-        <vs-input v-model="form.validation" label="Zaawansowana walidacja">
+        <vs-input v-model="form.validation" label="Walidacja">
           <template #message-danger>{{ errors[0] }}</template>
         </vs-input>
       </validation-provider>
@@ -266,7 +267,7 @@ export default {
   &__option {
     display: grid;
     grid-gap: 8px;
-    grid-template-columns: 1fr 1fr 64px 64px 64px;
+    grid-template-columns: 1fr 100px 1fr 64px 64px 64px;
     align-items: center;
     justify-items: center;
 

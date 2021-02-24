@@ -9,15 +9,14 @@
     <card>
       <app-empty v-if="!settings.length">Nie ma żadnych ustawień</app-empty>
       <list>
-        <list-item v-for="setting in settings" :key="setting.name" @click="openModal(setting)">
+        <list-item
+          v-for="setting in settings"
+          :key="setting.name"
+          @click="openModal(setting)"
+          :hidden="!setting.public"
+        >
           {{ setting.name }}
           <small>{{ setting.value }}</small>
-          <template #action>
-            <vs-avatar :success="setting.public" size="30" :danger="!setting.public">
-              <i class="bx bx-show" v-if="setting.public"></i>
-              <i class="bx bx-hide" v-else></i>
-            </vs-avatar>
-          </template>
         </list-item>
       </list>
     </card>

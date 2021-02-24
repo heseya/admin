@@ -148,7 +148,7 @@ import { SchemaType, SchemaTypeLabel } from '@/interfaces/SchemaType'
 
 const CLEAR_FORM = {
   name: '',
-  type: SchemaType.string,
+  type: SchemaType.select,
   description: '',
   price: 0,
   hidden: false,

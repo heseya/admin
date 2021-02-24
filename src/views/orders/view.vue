@@ -7,7 +7,7 @@
         <card>
           <div class="flex-column">
             <h2 class="section-title">Koszyk</h2>
-            <app-cart-item v-for="item in order.items" :key="item.id" :item="item" />
+            <app-cart-item v-for="item in order.products" :key="item.id" :item="item" />
             <div class="cart-item">
               <img class="cart-item__cover" src="/img/delivery.svg" />
               <div class="cart-item__content">
@@ -114,13 +114,13 @@ export default {
     TopNav,
     Card,
     appAddress: Address,
-    appCartItem: CartItem
+    appCartItem: CartItem,
   },
   data: () => ({
     status: '',
     packageTemplateId: '',
     shippingNumber: '',
-    isLoading: false
+    isLoading: false,
   }),
   computed: {
     currency() {
@@ -137,29 +137,30 @@ export default {
     },
     relativeOrderedDate() {
       return getRelativeDate(this.order.created_at)
-    }
+    },
   },
   watch: {
     order(order) {
+      console.log('🚀 ~ file: view.vue ~ line 144 ~ order ~ order', order)
       this.status = order?.status?.id
       this.shippingNumber = order.shipping_number
     },
     status(status, prevStatus) {
       if (prevStatus === '') return
       this.setStatus(status)
-    }
+    },
   },
   methods: {
     async setStatus(newStatus) {
       this.isLoading = true
       const success = await this.$store.dispatch('orders/changeStatus', {
         orderId: this.order.id,
-        statusId: newStatus
+        statusId: newStatus,
       })
       if (success) {
         this.$vs.notification({
           color: 'success',
-          title: 'Status zamówienia został zmieniony'
+          title: 'Status zamówienia został zmieniony',
         })
       }
       this.isLoading = false
@@ -169,35 +170,35 @@ export default {
       const loading = this.$vs.loading({ color: '#000' })
       const { success, shippingNumber, error } = await createPackage(
         this.order.id,
-        this.packageTemplateId
+        this.packageTemplateId,
       )
 
       if (success) {
         this.shippingNumber = shippingNumber
         this.$vs.notification({
           color: 'success',
-          title: 'Przesyłka utworzona poprawnie'
+          title: 'Przesyłka utworzona poprawnie',
         })
       } else {
         this.$vs.notification({
           color: 'danger',
           title: 'Nie udało się utworzyć przesyłki',
-          text: error.message
+          text: error.message,
         })
       }
 
       loading.close()
-    }
+    },
   },
   async created() {
     const loading = this.$vs.loading({ color: '#000' })
     await Promise.all([
       this.$store.dispatch('orders/get', this.$route.params.id),
       this.$store.dispatch('statuses/fetch'),
-      this.$store.dispatch('packageTemplates/fetch')
+      this.$store.dispatch('packageTemplates/fetch'),
     ])
     loading.close()
-  }
+  },
 }
 </script>
 

@@ -5,8 +5,12 @@
       <span>
         {{ item.product.name }}&nbsp;<small>(x{{ item.quantity }})</small>
       </span>
-      <small>{{ item.price }} {{ currency }}</small>
+      <small v-for="schema in item.schemas" :key="schema.id">
+        <span>{{ schema.name }}:</span> {{ schema.value }}
+        <small>(+ {{ schema.price }} {{ currency }})</small>
+      </small>
     </div>
+    <span class="cart-item__price">{{ item.price }} {{ currency }}</span>
   </div>
 </template>
 
@@ -15,8 +19,8 @@ export default {
   props: {
     item: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   computed: {
     coverUrl() {
@@ -24,8 +28,8 @@ export default {
     },
     currency() {
       return this.$store.state.currency
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -43,7 +47,7 @@ export default {
     object-fit: cover;
     border-radius: 12px;
     background-color: #eee;
-    text-indent: -10000px
+    text-indent: -10000px;
   }
 
   &__content {
@@ -51,6 +55,26 @@ export default {
     flex-direction: column;
     justify-content: center;
     margin-left: 12px;
+
+    small {
+      color: #aaa;
+
+      span {
+        color: #333;
+      }
+
+      small {
+        color: #ccc;
+      }
+    }
+  }
+
+  &__price {
+    display: flex;
+    justify-content: center;
+    // align-items: center;
+    margin-left: auto;
+    font-family: $font-sec;
   }
 }
 </style>

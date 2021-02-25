@@ -84,7 +84,9 @@
     <Zone v-if="form.type === SchemaType.select">
       <template #title>
         Opcje do wyboru
-        <vs-button size="small" transparent @click.stop="addOption">Dodaj</vs-button>
+        <vs-button size="small" transparent @click.stop="addOption">
+          <i class="bx bx-plus"></i> Dodaj
+        </vs-button>
       </template>
 
       <div class="schema-form__option" v-for="(option, i) in form.options" :key="option + i">
@@ -112,9 +114,13 @@
           icon
           @click.stop="removeOption(i)"
           :disabled="form.options.length === 1"
-          ><i class="bx bx-trash"></i
-        ></vs-button>
+        >
+          <i class="bx bx-trash"></i>
+        </vs-button>
       </div>
+      <vs-button size="small" transparent @click.stop="addOption">
+        <i class="bx bx-plus"></i> Dodaj
+      </vs-button>
     </Zone>
 
     <br />
@@ -146,6 +152,14 @@ import Autocomplete from '@/components/Autocomplete.vue'
 import Zone from '@/components/Zone.vue'
 import { SchemaType, SchemaTypeLabel } from '@/interfaces/SchemaType'
 
+const CLEAR_OPTION = {
+  name: '',
+  default: false,
+  disabled: false,
+  price: 0,
+  items: [],
+}
+
 const CLEAR_FORM = {
   name: '',
   type: SchemaType.select,
@@ -159,15 +173,7 @@ const CLEAR_FORM = {
   default: '',
   pattern: '',
   validation: '',
-  options: [],
-}
-
-const CLEAR_OPTION = {
-  name: '',
-  default: false,
-  disabled: false,
-  price: 0,
-  items: [],
+  options: [clone(CLEAR_OPTION)],
 }
 
 export default {

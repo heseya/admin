@@ -1,3 +1,8 @@
 import slugify from 'slugify'
 
-slugify.extend({ '/': '-' })
+slugify.extend({
+  '/': '-',
+  '(': '-',
+  ')': '-',
+  ',': '-',
+})

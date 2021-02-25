@@ -13,7 +13,7 @@
         no-hover
         :hidden="schema.hidden"
       >
-        {{ schema.name }}
+        {{ schema.name }} <small class="optional">{{ !schema.required ? '(opcjonalny)' : '' }}</small>
         <small>{{ schema.description }}</small>
         <template #action>
           <div class="flex">
@@ -154,5 +154,9 @@ export default {
     font-weight: 700;
     // font-size: 1em;
   }
+}
+
+.optional {
+  display: inline;
 }
 </style>

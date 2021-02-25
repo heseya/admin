@@ -12,8 +12,8 @@
               <img class="cart-item__cover" src="/img/delivery.svg" />
               <div class="cart-item__content">
                 <span>Dostawa {{ order.shipping_method.name }}</span>
-                <small>{{ order.shipping_method.price }} {{ currency }}</small>
               </div>
+              <span class="cart-item__price">{{ order.shipping_method.price }} {{ currency }}</span>
             </div>
             <div class="cart-total">
               Łącznie: <b>{{ order.summary }} {{ currency }}</b>

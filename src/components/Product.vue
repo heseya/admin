@@ -4,7 +4,7 @@
       <i class="bx bx-lock-alt"></i>
     </vs-avatar>
     <div class="product-box__img">
-      <img v-if="product.cover" :src="`${product.cover.url}?w=250&h=100`" :style="{ objectFit }" />
+      <img v-if="product.cover" :src="`${product.cover.url}?w=350&h=350`" :style="{ objectFit }" />
       <i v-else class="product-box__img-icon bx bx-image"></i>
     </div>
     <div class="flex">

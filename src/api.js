@@ -18,7 +18,7 @@ const getApiURL = () => {
 }
 
 export const api = axios.create({
-  baseURL: getApiURL()
+  baseURL: getApiURL(),
 })
 
 api.interceptors.request.use((config) => {

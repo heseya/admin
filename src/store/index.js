@@ -2,6 +2,8 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import VuexPersistence from 'vuex-persist'
 
+import { api } from '../api'
+
 import { auth } from './auth'
 import { items } from './items'
 import { products } from './products'
@@ -21,9 +23,21 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     currency: 'zł',
+    env: {},
   },
-  mutations: {},
-  actions: {},
+  mutations: {
+    SET_ENV(state, newEnv) {
+      state.env = newEnv
+    },
+  },
+  actions: {
+    async fetchEnv({ commit }) {
+      const response = await api.get('/settings')
+      const settingsArray = response.data.data
+      const settings = Object.fromEntries(settingsArray.map(({ name, value }) => [name, value]))
+      commit('SET_ENV', settings)
+    },
+  },
   modules: {
     auth,
     items,

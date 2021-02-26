@@ -4,7 +4,7 @@
       <i class="bx bx-lock-alt"></i>
     </vs-avatar>
     <div class="product-box__img">
-      <img v-if="product.cover" :src="`${product.cover.url}?w=250&h=250`" />
+      <img v-if="product.cover" :src="`${product.cover.url}?w=250&h=100`" :style="{ objectFit }" />
       <i v-else class="product-box__img-icon bx bx-image"></i>
     </div>
     <div class="flex">
@@ -19,13 +19,16 @@
 <script>
 export default {
   props: {
-    product: Object
+    product: Object,
   },
   computed: {
     currency() {
       return this.$store.state.currency
-    }
-  }
+    },
+    objectFit() {
+      return this.$store.state.env.DASHBOARD_PRODUCTS_CONTAIN ? 'contain' : 'cover'
+    },
+  },
 }
 </script>
 

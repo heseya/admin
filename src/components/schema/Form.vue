@@ -166,7 +166,7 @@ const CLEAR_FORM = {
   description: '',
   price: 0,
   hidden: false,
-  required: false,
+  required: true,
   min: 0,
   max: 0,
   step: 0.1,

@@ -3,7 +3,7 @@
     <img class="cart-item__cover" :src="coverUrl" />
     <div class="cart-item__content">
       <span>
-        {{ item.product.name }}&nbsp;<small v-if="item.quantity !== 1">(x{{ item.quantity }})</small>
+        {{ item.product.brand.name }} {{ item.product.name }}&nbsp;<small v-if="item.quantity !== 1">(x{{ item.quantity }})</small>
       </span>
       <small v-for="schema in item.schemas" :key="schema.id">
         <span>{{ schema.name }}:</span> {{ schema.value }}

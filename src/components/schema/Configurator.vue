@@ -13,7 +13,8 @@
         no-hover
         :hidden="schema.hidden"
       >
-        {{ schema.name }} <small class="optional">{{ !schema.required ? '(opcjonalny)' : '' }}</small>
+        {{ schema.name }}
+        <small class="optional">{{ !schema.required ? '(opcjonalny)' : '' }}</small>
         <small>{{ schema.description }}</small>
         <template #action>
           <div class="flex">
@@ -30,7 +31,7 @@
       <template #header>
         <h4 style="margin-bottom: 0">{{ editedSchema.id ? 'Edycja schematu' : 'Nowy schemat' }}</h4>
       </template>
-      <modal-form>
+      <modal-form v-if="isFormModalActive">
         <SchemaForm :schema="editedSchema" @submit="updateSchema" />
       </modal-form>
     </vs-dialog>

@@ -1,5 +1,5 @@
 <template>
-  <router-link :to="`products/${product.id}`" class="product-box">
+  <button @click="onClick" class="product-box">
     <vs-avatar size="30" class="product-box__icon" color="#000" v-if="!product.visible">
       <i class="bx bx-lock-alt"></i>
     </vs-avatar>
@@ -13,7 +13,7 @@
         <small>{{ product.price }} {{ currency }}</small>
       </div>
     </div>
-  </router-link>
+  </button>
 </template>
 
 <script>
@@ -29,14 +29,36 @@ export default {
       return this.$store.state.env.DASHBOARD_PRODUCTS_CONTAIN ? 'contain' : 'cover'
     },
   },
+  methods: {
+    onClick() {
+      if (window.copyIdMode === true) {
+        this.copyId()
+        return
+      }
+
+      this.$router.push(`products/${this.product.id}`)
+    },
+    async copyId() {
+      await navigator.clipboard.writeText(this.product.id)
+      this.$vs.notification({
+        color: 'success',
+        title: 'Skopiowano id',
+      })
+    },
+  },
+  mounted() {
+    navigator.permissions.query({ name: 'clipboard-write' })
+  },
 }
 </script>
 
 <style lang="scss">
 .product-box {
+  all: unset;
   color: #000;
   text-decoration: none;
   position: relative;
+  cursor: pointer;
 
   &__icon {
     position: absolute;
@@ -61,7 +83,12 @@ export default {
       object-fit: cover;
       width: 100%;
       height: 100%;
+      transition: transform 0.3s;
     }
+  }
+
+  &:hover &__img img {
+    transform: scale(1.05);
   }
 
   &__img-icon {

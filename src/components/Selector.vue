@@ -2,7 +2,7 @@
   <div class="schema-selector">
     <vs-input v-model="query" :label="`Wyszukaj ${typeName}`"></vs-input>
 
-    <div ref="content">
+    <div ref="content" class="schema-selector__content">
       <empty v-if="query !== '' && list.length === 0">Nic nie znaleziono</empty>
 
       <list class="schema-selector__schemas">
@@ -96,10 +96,14 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .schema-selector {
   .vs-input-parent {
     margin-bottom: 0;
+  }
+
+  &__content {
+    position: relative;
   }
 }
 </style>

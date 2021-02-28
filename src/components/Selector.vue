@@ -35,7 +35,7 @@ export default {
   name: 'Selector',
   data: () => ({
     query: '',
-    list: [],
+    data: [],
   }),
   props: {
     type: {
@@ -51,6 +51,11 @@ export default {
       default: () => [],
     },
   },
+  computed: {
+    list() {
+      return this.data.filter((x) => !this.existing.find((y) => x.id === y.id)).slice(0, 5)
+    },
+  },
   watch: {
     query(search) {
       this.getItems(search)
@@ -59,20 +64,19 @@ export default {
   methods: {
     getItems: debounce(async function(search) {
       if (search === '') {
-        this.list = []
+        this.data = []
         return
       }
 
       const loading = this.$vs.loading({
         target: this.$refs.content,
-        color: 'dark',
       })
       try {
         const query = queryString.stringify({
           search: search,
         })
         const { data } = await api.get(`/${this.type}?${query}`)
-        this.list = data.data.filter((x) => !this.existing.find((y) => x.id === y.id)).slice(0, 5)
+        this.data = data.data
         loading.close()
       } catch (error) {
         console.error(error)

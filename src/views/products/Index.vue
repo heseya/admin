@@ -36,7 +36,10 @@ import TopNav from '@/layout/TopNav.vue'
 import Product from '@/components/Product.vue'
 import Empty from '@/components/Empty.vue'
 import Pagination from '../../components/Pagination.vue'
-import ProductsFilter from '../../components/ProductsFilter.vue'
+import ProductsFilter, {
+  ALL_FILTER_VALUE,
+  EMPTY_PRODUCT_FILTERS,
+} from '../../components/ProductsFilter.vue'
 import ModalForm from '../../components/ModalForm.vue'
 
 export default {
@@ -50,11 +53,7 @@ export default {
   },
   data: () => ({
     page: 1,
-    filters: {
-      search: '',
-      category: 0,
-      brand: 0,
-    },
+    filters: { ...EMPTY_PRODUCT_FILTERS },
     areFiltersOpen: false,
   }),
   computed: {
@@ -80,19 +79,27 @@ export default {
         this.$router.push({ path: 'products', query: { page, search: this.$route.query.search } })
       }
     },
+    formatFilters(filters) {
+      return Object.fromEntries(
+        Object.entries(filters).filter(([, v]) => v !== ALL_FILTER_VALUE && v !== ''),
+      )
+    },
     makeSearch(filters) {
       this.filters = filters
 
+      const queryFilters = this.formatFilters(filters)
+
       this.$router.push({
         path: 'products',
-        query: { page: undefined, ...this.filters },
+        query: { page: undefined, ...queryFilters },
       })
     },
     async getProducts() {
       const loading = this.$vs.loading({ color: '#000' })
+      const queryFilters = this.formatFilters(this.filters)
       await this.$store.dispatch('products/fetch', {
         page: this.page,
-        ...this.filters,
+        ...queryFilters,
       })
       loading.close()
     },
@@ -100,8 +107,8 @@ export default {
   created() {
     this.page = this.$route.query.page || 1
     this.filters.search = this.$route.query.search || ''
-    this.filters.category = this.$route.query.category || ''
-    this.filters.brand = this.$route.query.brand || ''
+    this.filters.category = this.$route.query.category || ALL_FILTER_VALUE
+    this.filters.brand = this.$route.query.brand || ALL_FILTER_VALUE
     this.getProducts()
   },
 }

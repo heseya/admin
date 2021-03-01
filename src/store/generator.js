@@ -93,7 +93,11 @@ export const createStore = (name, endpoint, custom) => {
         commit(mutations.SET_ERROR, null)
         commit(mutations.SET_LOADING, true)
         try {
-          const stringQuery = queryString.stringify(query)
+          const filteredQuery = query
+            ? Object.fromEntries(Object.entries(query).filter(([key, value]) => !!value))
+            : {}
+          const stringQuery = queryString.stringify(filteredQuery)
+
           const { data } = await api.get(`/${endpoint}?${stringQuery}`)
           commit(mutations.SET_META, data.meta)
           commit(mutations.SET_DATA, data.data)

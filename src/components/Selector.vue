@@ -5,8 +5,8 @@
     <div ref="content" class="schema-selector__content">
       <empty v-if="query !== '' && list.length === 0">Nic nie znaleziono</empty>
 
-      <list class="schema-selector__schemas">
-        <list-item class="schema-selector__schema" v-for="item in list" :key="item.id" no-hover>
+      <list class="schema-selector__items">
+        <list-item class="schema-selector__item" v-for="item in list" :key="item.id" no-hover>
           {{ item.name }}
           <small>{{ getSubText(item) }}</small>
           <template #action>
@@ -53,7 +53,7 @@ export default {
   },
   computed: {
     list() {
-      return this.data.filter((x) => !this.existing.find((y) => x.id === y.id)).slice(0, 5)
+      return this.data.filter((x) => !this.existing.find((y) => x.id === y.id))
     },
   },
   watch: {
@@ -108,6 +108,11 @@ export default {
 
   &__content {
     position: relative;
+  }
+
+  &__items {
+    max-height: 350px;
+    overflow: auto;
   }
 }
 </style>

@@ -25,7 +25,7 @@ export default {
   props: {
     extensions: {
       type: Array,
-      default: () => ['jpg', 'jpeg', 'png', 'gif', 'bmp']
+      default: () => ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg']
     }
   },
   methods: {

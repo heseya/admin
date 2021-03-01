@@ -5,7 +5,7 @@
         <template #message-danger>{{ errors[0] }}</template>
       </vs-input>
     </validation-provider>
-    <validation-provider rules="required" v-slot="{ errors }">
+    <validation-provider v-slot="{ errors }">
       <vs-input v-model="form.description" label="Opis">
         <template #message-danger>{{ errors[0] }}</template>
       </vs-input>
@@ -84,7 +84,9 @@
     <Zone v-if="form.type === SchemaType.select">
       <template #title>
         Opcje do wyboru
-        <vs-button size="small" transparent @click.stop="addOption">Dodaj</vs-button>
+        <vs-button size="small" transparent @click.stop="addOption">
+          <i class="bx bx-plus"></i> Dodaj
+        </vs-button>
       </template>
 
       <div class="schema-form__option" v-for="(option, i) in form.options" :key="option + i">
@@ -93,6 +95,7 @@
             <template #message-danger>{{ errors[0] }}</template>
           </vs-input>
         </validation-provider>
+        <vs-input v-model="option.price" label="Cena"></vs-input>
         <Autocomplete
           class="input"
           type="products"
@@ -105,22 +108,31 @@
         <vs-radio v-model="defaultOption" :val="i" dark>
           Domyślny
         </vs-radio>
-        <vs-button size="small" danger icon @click.stop="removeOption(i)"
-          ><i class="bx bx-trash"></i
-        ></vs-button>
+        <vs-button
+          size="small"
+          danger
+          icon
+          @click.stop="removeOption(i)"
+          :disabled="form.options.length === 1"
+        >
+          <i class="bx bx-trash"></i>
+        </vs-button>
       </div>
+      <vs-button size="small" transparent @click.stop="addOption">
+        <i class="bx bx-plus"></i> Dodaj
+      </vs-button>
     </Zone>
 
     <br />
 
     <Zone title="Opcje zaawansowane" type="danger">
       <validation-provider v-slot="{ errors }">
-        <vs-input v-model="form.pattern" label="Wzór Regex">
+        <vs-input v-model="form.pattern" label="Wyrażenie regularne">
           <template #message-danger>{{ errors[0] }}</template>
         </vs-input>
       </validation-provider>
       <validation-provider v-slot="{ errors }">
-        <vs-input v-model="form.validation" label="Zaawansowana walidacja">
+        <vs-input v-model="form.validation" label="Walidacja">
           <template #message-danger>{{ errors[0] }}</template>
         </vs-input>
       </validation-provider>
@@ -133,28 +145,12 @@
 </template>
 
 <script>
-import clone from 'lodash/clone'
+import cloneDeep from 'lodash/cloneDeep'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import SwitchInput from '@/components/SwitchInput.vue'
 import Autocomplete from '@/components/Autocomplete.vue'
 import Zone from '@/components/Zone.vue'
 import { SchemaType, SchemaTypeLabel } from '@/interfaces/SchemaType'
-
-const CLEAR_FORM = {
-  name: '',
-  type: SchemaType.string,
-  description: '',
-  price: 0,
-  hidden: false,
-  required: false,
-  min: 0,
-  max: 0,
-  step: 0.1,
-  default: '',
-  pattern: '',
-  validation: '',
-  options: [],
-}
 
 const CLEAR_OPTION = {
   name: '',
@@ -162,6 +158,22 @@ const CLEAR_OPTION = {
   disabled: false,
   price: 0,
   items: [],
+}
+
+const CLEAR_FORM = {
+  name: '',
+  type: SchemaType.select,
+  description: '',
+  price: 0,
+  hidden: false,
+  required: true,
+  min: 0,
+  max: 0,
+  step: 0.1,
+  default: '',
+  pattern: '',
+  validation: '',
+  options: [cloneDeep(CLEAR_OPTION)],
 }
 
 export default {
@@ -173,7 +185,7 @@ export default {
     Zone,
   },
   data: () => ({
-    form: { ...CLEAR_FORM },
+    form: cloneDeep(CLEAR_FORM),
     defaultOption: 0,
     SchemaTypesOptions: Object.values(SchemaType).map((t) => ({
       value: t,
@@ -192,10 +204,14 @@ export default {
       this.form.options = this.form.options.map((v) => ({ ...v, default: false }))
       this.form.options[defaultOption].default = true
     },
+    'form.type'(type) {
+      if (type === SchemaType.select) this.form.options = [cloneDeep(CLEAR_OPTION)]
+      else this.form.options = []
+    },
   },
   methods: {
     addOption() {
-      this.form.options.push({ ...CLEAR_OPTION })
+      this.form.options.push(cloneDeep(CLEAR_OPTION))
     },
     removeOption(index) {
       this.form.options = this.form.options.filter((_, i) => i !== index)
@@ -204,7 +220,7 @@ export default {
       const loading = this.$vs.loading({ color: '#000' })
       let id = null
 
-      this.form.options = this.form.options.map((opt) => ({
+      const options = this.form.options.map((opt) => ({
         ...opt,
         items: opt.items.map((item) => item.id),
       }))
@@ -221,7 +237,7 @@ export default {
       } else {
         const success = await this.$store.dispatch('schemas/update', {
           id: this.form.id,
-          item: this.form,
+          item: { ...this.form, options },
         })
         if (success) {
           id = this.form.id
@@ -235,8 +251,8 @@ export default {
       this.$emit('submit', this.$store.getters['schemas/getFromListById'](id))
     },
   },
-  mounted() {
-    this.form = this.schema.type ? clone(this.schema) : { ...CLEAR_FORM }
+  created() {
+    this.form = this.schema.type ? cloneDeep(this.schema) : cloneDeep(CLEAR_FORM)
   },
 }
 </script>
@@ -257,7 +273,7 @@ export default {
   &__option {
     display: grid;
     grid-gap: 8px;
-    grid-template-columns: 1fr 1fr 64px 64px 64px;
+    grid-template-columns: 1fr 100px 1fr 64px 64px 64px;
     align-items: center;
     justify-items: center;
 

@@ -6,8 +6,15 @@
     </div>
     <empty v-if="value.length === 0">Ten produkt nie ma jeszcze żadnego schematu</empty>
     <list class="configurator__schemas">
-      <list-item class="configurator__schema" v-for="schema in value" :key="schema.id" no-hover>
+      <list-item
+        class="configurator__schema"
+        v-for="schema in value"
+        :key="schema.id"
+        no-hover
+        :hidden="schema.hidden"
+      >
         {{ schema.name }}
+        <small class="optional">{{ !schema.required ? '(opcjonalny)' : '' }}</small>
         <small>{{ schema.description }}</small>
         <template #action>
           <div class="flex">
@@ -22,9 +29,9 @@
 
     <vs-dialog width="1000px" not-center v-model="isFormModalActive">
       <template #header>
-        <h4 style="margin-bottom: 0">{{ editedSchema.id ? 'Edycja' : 'Dodawanie' }} schematu</h4>
+        <h4 style="margin-bottom: 0">{{ editedSchema.id ? 'Edycja schematu' : 'Nowy schemat' }}</h4>
       </template>
-      <modal-form>
+      <modal-form v-if="isFormModalActive">
         <SchemaForm :schema="editedSchema" @submit="updateSchema" />
       </modal-form>
     </vs-dialog>
@@ -148,5 +155,9 @@ export default {
     font-weight: 700;
     // font-size: 1em;
   }
+}
+
+.optional {
+  display: inline;
 }
 </style>

@@ -15,8 +15,11 @@ import Navigation from './layout/Navigation.vue'
 
 export default {
   components: {
-    Navigation
-  }
+    Navigation,
+  },
+  created() {
+    this.$store.dispatch('fetchEnv')
+  },
 }
 </script>
 

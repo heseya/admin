@@ -9,8 +9,14 @@
     <card>
       <app-empty v-if="!settings.length">Nie ma żadnych ustawień</app-empty>
       <list>
-        <list-item v-for="setting in settings" :key="setting.id" @click="openModal(setting.id)">
-          {{ setting.key }}: {{ setting.value }}
+        <list-item
+          v-for="setting in settings"
+          :key="setting.name"
+          @click="openModal(setting)"
+          :hidden="!setting.public"
+        >
+          {{ setting.name }}
+          <small>{{ setting.value }}</small>
         </list-item>
       </list>
     </card>
@@ -18,11 +24,11 @@
     <validation-observer v-slot="{ handleSubmit }">
       <vs-dialog width="550px" not-center v-model="isModalActive">
         <template #header>
-          <h4>{{ editedItem.id ? 'Edycja ustawienia' : 'Nowe ustawienie' }}</h4>
+          <h4>{{ editedItem.id ? 'Edycja ustawienie' : 'Nowe ustawienie' }}</h4>
         </template>
         <modal-form>
-          <validation-provider rules="required" v-slot="{ errors }">
-            <vs-input v-model="editedItem.key" label="Klucz">
+          <validation-provider rules="required|letters-only" v-slot="{ errors }">
+            <vs-input v-model="editedItem.name" label="Klucz" :disabled="editedItem.permanent">
               <template #message-danger>{{ errors[0] }}</template>
             </vs-input>
           </validation-provider>
@@ -31,19 +37,27 @@
               <template #message-danger>{{ errors[0] }}</template>
             </vs-input>
           </validation-provider>
+          <SwitchInput v-model="editedItem.public">
+            <template #title>Wartość publiczna</template>
+          </SwitchInput>
         </modal-form>
         <template #footer>
           <div class="row">
             <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
             <pop-confirm
-              v-if="editedItem.deletable"
               title="Czy na pewno chcesz usunąć to ustawienie?"
               okText="Usuń"
               cancelText="Anuluj"
               @confirm="deleteItem"
               v-slot="{ open }"
             >
-              <vs-button v-if="editedItem.id" color="danger" @click="open">Usuń</vs-button>
+              <vs-button
+                v-if="editedItem.id"
+                color="danger"
+                :disabled="editedItem.permanent"
+                @click="open"
+                >Usuń</vs-button
+              >
             </pop-confirm>
           </div>
         </template>
@@ -53,6 +67,7 @@
 </template>
 
 <script>
+import clone from 'lodash/clone'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/Card.vue'
@@ -60,6 +75,7 @@ import List from '@/components/List.vue'
 import ModalForm from '@/components/ModalForm.vue'
 import ListItem from '@/components/ListItem.vue'
 import Empty from '@/components/Empty.vue'
+import SwitchInput from '@/components/SwitchInput.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
 
 export default {
@@ -73,13 +89,15 @@ export default {
     appEmpty: Empty,
     ValidationProvider,
     ValidationObserver,
+    SwitchInput,
   },
   data: () => ({
     isModalActive: false,
     editedItem: {
-      key: '',
+      name: '',
       value: '',
-      deletable: true,
+      permanent: false,
+      public: true,
     },
   }),
   computed: {
@@ -107,23 +125,25 @@ export default {
       await this.$store.dispatch('settings/fetch')
       loading.close()
     },
-    openModal(id) {
+    openModal(item) {
       this.isModalActive = true
-      if (id) {
-        this.editedItem = this.$store.getters['settings/getFromListById'](id)
+      if (item) {
+        this.editedItem = { id: item.name, ...clone(item) }
       } else {
         this.editedItem = {
-          key: '',
+          name: '',
           value: '',
-          deletable: true,
+          permanent: false,
+          public: true,
         }
       }
     },
     async saveModal() {
       const loading = this.$vs.loading({ color: '#000' })
       if (this.editedItem.id) {
-        await this.$store.dispatch('settings/update', {
-          id: this.editedItem.id,
+        await this.$store.dispatch('settings/updateByKey', {
+          key: 'name',
+          value: this.editedItem.id,
           item: this.editedItem,
         })
       } else {
@@ -134,7 +154,7 @@ export default {
     },
     async deleteItem() {
       const loading = this.$vs.loading({ color: '#000' })
-      await this.$store.dispatch('settings/remove', this.editedItem.id)
+      await this.$store.dispatch('settings/removeByKey', { key: 'name', value: this.editedItem.id })
       loading.close()
       this.isModalActive = false
     },

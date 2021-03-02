@@ -95,7 +95,7 @@
             <template #message-danger>{{ errors[0] }}</template>
           </vs-input>
         </validation-provider>
-        <vs-input v-model="option.price" label="Cena"></vs-input>
+        <vs-input v-model="option.price" type="number" label="Cena"></vs-input>
         <Autocomplete
           class="input"
           type="products"

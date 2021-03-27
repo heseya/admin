@@ -226,7 +226,9 @@ export default {
           color: 'success',
           title: successMessage,
         })
-        this.$router.push(`/products/${newID}`)
+        if (newID !== this.product.id) {
+          this.$router.push(`/products/${newID}`)
+        }
       }
 
       loading.close()

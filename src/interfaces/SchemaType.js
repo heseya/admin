@@ -3,8 +3,10 @@ export const SchemaType = {
   select: 'select',
   numeric: 'numeric',
   boolean: 'boolean',
-  // date: 'date',
-  // file: 'file',
+  multiply: 'multiply',
+  // multiplySchema: 'multiply_schema',
+  date: 'date',
+  file: 'file',
 }
 
 export const SchemaTypeLabel = {
@@ -12,6 +14,8 @@ export const SchemaTypeLabel = {
   [SchemaType.select]: 'Wybór spośród kilku opcji',
   [SchemaType.numeric]: 'Wartość numeryczna',
   [SchemaType.boolean]: 'Wartość typu prawda/fałsz',
+  [SchemaType.multiply]: 'Mnożona wartość numeryczna',
+  // [SchemaType.multiplySchema]: 'Mnożenie schematów',
   // [SchemaType.date]: 'Data',
   // [SchemaType.file]: 'Plik',
 }

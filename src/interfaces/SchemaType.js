@@ -4,7 +4,7 @@ export const SchemaType = {
   numeric: 'numeric',
   boolean: 'boolean',
   multiply: 'multiply',
-  // multiplySchema: 'multiply_schema',
+  multiplySchema: 'multiply_schema',
   date: 'date',
   file: 'file',
 }
@@ -15,7 +15,7 @@ export const SchemaTypeLabel = {
   [SchemaType.numeric]: 'Wartość numeryczna',
   [SchemaType.boolean]: 'Wartość typu prawda/fałsz',
   [SchemaType.multiply]: 'Mnożona wartość numeryczna',
-  // [SchemaType.multiplySchema]: 'Mnożenie schematów',
+  [SchemaType.multiplySchema]: 'Mnożenie schematów',
   // [SchemaType.date]: 'Data',
   // [SchemaType.file]: 'Plik',
 }

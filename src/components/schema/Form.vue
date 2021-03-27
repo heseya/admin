@@ -26,6 +26,7 @@
       </validation-provider>
       <validation-provider rules="required|not-negative" v-slot="{ errors }">
         <vs-input
+          v-if="form.type !== SchemaType.multiplySchema"
           v-model="form.price"
           :label="form.type === SchemaType.multiply ? 'Cena za sztukę' : 'Dodatkowa cena'"
         >
@@ -41,24 +42,13 @@
         <template #title>Wymagany</template>
       </SwitchInput>
     </div>
-    <div
-      class="flex"
-      v-if="
-        form.type === SchemaType.numeric ||
-          form.type === SchemaType.string ||
-          form.type === SchemaType.multiply
-      "
-    >
+    <div class="flex" v-if="isKindOfNumeric(form.type) || form.type === SchemaType.string">
       <validation-provider v-slot="{ errors }">
         <vs-input
           v-model="form.min"
           default="0"
           type="number"
-          :label="
-            form.type === SchemaType.numeric || form.type === SchemaType.multiply
-              ? 'Minimalna wartość'
-              : 'Minimalna długość'
-          "
+          :label="isKindOfNumeric(form.type) ? 'Minimalna wartość' : 'Minimalna długość'"
         >
           <template #message-danger>{{ errors[0] }}</template>
         </vs-input>
@@ -67,19 +57,12 @@
         <vs-input
           v-model="form.max"
           type="number"
-          :label="
-            form.type === SchemaType.numeric || form.type === SchemaType.multiply
-              ? 'Maksymalna wartość'
-              : 'Maksymalna długość'
-          "
+          :label="isKindOfNumeric(form.type) ? 'Maksymalna wartość' : 'Maksymalna długość'"
         >
           <template #message-danger>{{ errors[0] }}</template>
         </vs-input>
       </validation-provider>
-      <validation-provider
-        v-slot="{ errors }"
-        v-if="form.type === SchemaType.numeric || form.type === SchemaType.multiply"
-      >
+      <validation-provider v-slot="{ errors }" v-if="isKindOfNumeric(form.type)">
         <vs-input v-model="form.step" type="number" label="Krok">
           <template #message-danger>{{ errors[0] }}</template>
         </vs-input>
@@ -87,17 +70,11 @@
     </div>
     <validation-provider
       v-slot="{ errors }"
-      v-if="
-        form.type === SchemaType.numeric ||
-          form.type === SchemaType.multiply ||
-          form.type === SchemaType.string
-      "
+      v-if="isKindOfNumeric(form.type) || form.type === SchemaType.string"
     >
       <vs-input
         v-model="form.default"
-        :type="
-          form.type === SchemaType.numeric || form.type === SchemaType.multiply ? 'number' : 'text'
-        "
+        :type="isKindOfNumeric(form.type) ? 'number' : 'text'"
         label="Wartość domyślna"
       >
         <template #message-danger>{{ errors[0] }}</template>
@@ -115,6 +92,32 @@
       @setDefault="(v) => (defaultOption = v)"
       v-if="form.type === SchemaType.select"
     />
+
+    <Zone v-if="form.type === SchemaType.multiplySchema">
+      <div class="used-schema">
+        <div>
+          <small>Mnożony schemat</small><br />
+          <b>{{ usedSchemaName || '-- wybierz --' }}</b>
+        </div>
+        <vs-button @click="isUsedSchemaModalActive = true">Zmień</vs-button>
+      </div>
+
+      <vs-dialog width="800px" not-center v-model="isUsedSchemaModalActive">
+        <template #header>
+          <h4 class="flex schema-selector-title">
+            Wybierz istniejący schemat
+          </h4>
+        </template>
+        <modal-form>
+          <selector
+            @select="selectUsedSchema"
+            type="schemas"
+            add-text="Wybierz"
+            :existing="[form]"
+          />
+        </modal-form>
+      </vs-dialog>
+    </Zone>
 
     <br />
 
@@ -145,6 +148,8 @@ import Zone from '@/components/Zone.vue'
 import { SchemaType, SchemaTypeLabel } from '@/interfaces/SchemaType'
 import { CLEAR_FORM, CLEAR_OPTION } from '@/consts/schemaConsts'
 import SelectSchemaOptions from './SelectSchemaOptions.vue'
+import ModalForm from '../ModalForm.vue'
+import Selector from '../Selector.vue'
 
 export default {
   components: {
@@ -153,10 +158,14 @@ export default {
     SwitchInput,
     Zone,
     SelectSchemaOptions,
+    ModalForm,
+    Selector,
   },
   data: () => ({
     form: cloneDeep(CLEAR_FORM),
     defaultOption: 0,
+    isUsedSchemaModalActive: false,
+    usedSchemaName: '',
     SchemaTypesOptions: Object.values(SchemaType).map((t) => ({
       value: t,
       label: SchemaTypeLabel[t],
@@ -167,6 +176,15 @@ export default {
     schema: {
       type: Object,
       required: true,
+    },
+    currentProductSchemas: {
+      type: Array,
+      required: true,
+    },
+  },
+  computed: {
+    selectableSchemas() {
+      return this.currentProductSchemas.filter(({ id }) => id !== this.form.id)
     },
   },
   watch: {
@@ -180,9 +198,37 @@ export default {
       if (type === SchemaType.select) this.form.options = [cloneDeep(CLEAR_OPTION)]
       else this.form.options = []
     },
+    'form.used_schemas.0'(schema) {
+      // ! This is buggy, and somehow works only on init
+      const newName =
+        [...this.currentProductSchemas, ...this.$store.state.schemas.data].find(
+          ({ id }) => id === schema,
+        )?.name || schema
+      this.usedSchemaName = newName
+    },
   },
   methods: {
+    isKindOfNumeric(type) {
+      return (
+        type === SchemaType.numeric ||
+        type === SchemaType.multiply ||
+        type === SchemaType.multiplySchema
+      )
+    },
+    selectUsedSchema(schema) {
+      this.form.used_schemas[0] = schema.id
+      this.usedSchemaName = schema.name
+      this.isUsedSchemaModalActive = false
+    },
     async submit() {
+      if (this.form.type === SchemaType.multiplySchema && !this.form.used_schemas[0]) {
+        this.$vs.notification({
+          color: 'warning',
+          title: 'Wybierz mnożony schemat',
+        })
+        return
+      }
+
       const loading = this.$vs.loading({ color: '#000' })
       let id = null
 
@@ -250,6 +296,11 @@ export default {
         margin-right: 0;
       }
     }
+  }
+
+  .used-schema {
+    display: flex;
+    justify-content: space-between;
   }
 
   .vs-radio__label {

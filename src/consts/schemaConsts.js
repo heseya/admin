@@ -22,5 +22,6 @@ export const CLEAR_FORM = {
   default: '',
   pattern: '',
   validation: '',
+  used_schemas: [],
   options: [cloneDeep(CLEAR_OPTION)],
 }

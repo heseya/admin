@@ -15,14 +15,9 @@
       <span class="label animated faster fadeInLeft">Zamówienia</span>
     </router-link>
 
-    <!-- <router-link class="nav__link" to="/chats">
-      <img class="icon" src="/img/icons/chat.svg">
-      <span class="label animated faster fadeInLeft">Konwersajce</span>
-    </router-link> -->
-
-    <router-link class="nav__link" to="/pages">
-      <img class="icon" src="/img/icons/copy.svg" />
-      <span class="label animated faster fadeInLeft">Strony</span>
+    <router-link class="nav__link" to="/discounts">
+      <img class="icon" src="/img/icons/coupon.svg" />
+      <span class="label animated faster fadeInLeft">Kody rabatowe</span>
     </router-link>
 
     <router-link class="nav__link" to="/settings">

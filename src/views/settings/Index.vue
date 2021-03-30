@@ -12,6 +12,16 @@
 
     <card>
       <list>
+        <h2 class="section-title">Sklep</h2>
+        <list-item url="/pages">
+          <template #avatar>
+            <vs-avatar dark>
+              <i class="bx bx-copy-alt"></i>
+            </vs-avatar>
+          </template>
+          Strony
+        </list-item>
+
         <h2 class="section-title">Produkty</h2>
         <list-item url="/settings/brands">
           <template #avatar>
@@ -40,16 +50,6 @@
           Statusy zamówień
         </list-item>
 
-        <h2 class="section-title">Witryna sklepu</h2>
-        <list-item url="/settings/page-settings">
-          <template #avatar>
-            <vs-avatar dark>
-              <i class="bx bxs-cog"></i>
-            </vs-avatar>
-          </template>
-          Ustawienia strony
-        </list-item>
-
         <h2 class="section-title">Dostawa</h2>
         <list-item url="/settings/shipping-methods">
           <template #avatar>
@@ -66,6 +66,16 @@
             </vs-avatar>
           </template>
           Szablony przesyłek
+        </list-item>
+
+        <h2 class="section-title">Inne</h2>
+        <list-item url="/settings/page-settings">
+          <template #avatar>
+            <vs-avatar dark>
+              <i class="bx bxs-cog"></i>
+            </vs-avatar>
+          </template>
+          Ustawienia zaawansowane
         </list-item>
 
         <h2 class="section-title">Konto</h2>

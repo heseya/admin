@@ -17,6 +17,7 @@ import { shippingMethods } from './shippingMethods'
 import { paymentMethods } from './paymentMethods'
 import { packageTemplates } from './packageTemplates'
 import { settings } from './settings'
+import { discounts } from '@/store/discounts'
 
 Vue.use(Vuex)
 
@@ -52,6 +53,7 @@ export default new Vuex.Store({
     paymentMethods,
     packageTemplates,
     settings,
+    discounts,
   },
   plugins: [new VuexPersistence({ modules: ['auth'] }).plugin],
 })

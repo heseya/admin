@@ -76,7 +76,7 @@ export default {
   methods: {
     changePage(page) {
       if (this.page !== page) {
-        this.$router.push({ path: 'products', query: { page, search: this.$route.query.search } })
+        this.$router.push({ path: 'products', query: { ...this.$route.query, page } })
       }
     },
     formatFilters(filters) {

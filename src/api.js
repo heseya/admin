@@ -8,15 +8,17 @@ const getApiURL = () => {
       return 'https://trafika.***REMOVED***'
     case 'admin.depth.store':
       return '***REMOVED***'
-    case 'admin.heseya.com':
-      return '***REMOVED***'
+    case '***REMOVED***-admin.heseya.com':
+      return 'https://***REMOVED***.***REMOVED***'
+    case 'admin.***REMOVED***.pl':
+      return 'https://***REMOVED***.***REMOVED***'
     default:
       return 'https://dev.***REMOVED***'
   }
 }
 
 export const api = axios.create({
-  baseURL: getApiURL()
+  baseURL: getApiURL(),
 })
 
 api.interceptors.request.use((config) => {

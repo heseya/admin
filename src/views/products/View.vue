@@ -35,27 +35,20 @@
             <br />
             <vs-alert color="warn">
               <template #title>Produkt wciąż jest ukryty</template>
-              Produkt jest ukryty ponieważ jego marka lub kategoria jest ukryta. Odkryj je by
-              produkt był widoczny w sklepie
+              Produkt jest niewidoczny ponieważ jego marka lub kategoria jest ukryta.
             </vs-alert>
           </template>
         </card>
+      </div>
 
+      <div class="product__schemas">
         <card>
-          <div class="title">Magazyn</div>
-          <div class="quantity-input">
-            <vs-input v-model="deposit.quantity" type="number" label="Ilość produktów" />
-          </div>
+          <SchemaConfigurator v-model="form.schemas" />
         </card>
-
-        <!-- <card>
-          <div class="title">Schematy</div>
-          <small>Już wkrótce</small>
-        </card> -->
       </div>
 
       <div class="product__details">
-        <card style="margin-top: 30px">
+        <card>
           <validation-observer v-slot="{ handleSubmit }">
             <form @submit.prevent="handleSubmit(saveProduct)" class="product__info">
               <div>
@@ -83,8 +76,13 @@
               <div>
                 <br />
                 <validation-provider rules="id-required" v-slot="{ errors }">
-                  <vs-select v-model="form.brand_id" filter label="Marka">
-                    <vs-option label="Wybierz markę" :value="0">Wybierz markę</vs-option>
+                  <vs-select
+                    v-model="form.brand_id"
+                    placeholder="Wybierz markę"
+                    :key="brands.length"
+                    filter
+                    label="Marka"
+                  >
                     <vs-option
                       v-for="brand in brands"
                       :key="brand.id"
@@ -98,8 +96,13 @@
                 </validation-provider>
                 <br /><br />
                 <validation-provider rules="id-required" v-slot="{ errors }">
-                  <vs-select v-model="form.category_id" filter label="Kategoria">
-                    <vs-option label="Wybierz kategorię" :value="0">Wybierz kategorię</vs-option>
+                  <vs-select
+                    v-model="form.category_id"
+                    :key="categories.length"
+                    filter
+                    placeholder="Wybierz kategorię"
+                    label="Kategoria"
+                  >
                     <vs-option
                       v-for="category in categories"
                       :key="category.id"
@@ -137,29 +140,12 @@ import Card from '@/components/Card.vue'
 import FlexInput from '@/components/FlexInput.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
 import Textarea from '@/components/Textarea.vue'
-
-const EMPTY_SCHEMA = {
-  id: 1,
-  name: null,
-  type: 0,
-  required: true,
-  items: [
-    {
-      item_id: 1,
-      value: null,
-      extra_price: 0
-    }
-  ]
-}
+import SchemaConfigurator from '@/components/schema/Configurator.vue'
+import { formatApiError } from '@/utils/errors'
 
 export default {
   data() {
     return {
-      deposit: {
-        id: 0,
-        quantity: 0,
-        originalQuantity: 0
-      },
       form: {
         name: '',
         slug: '',
@@ -169,9 +155,10 @@ export default {
         public: true,
         brand_id: 0,
         category_id: 0,
+        schemas: [],
         gallery: [],
-        media: []
-      }
+        media: [],
+      },
     }
   },
   computed: {
@@ -194,7 +181,7 @@ export default {
       return (
         this.$store.getters['products/getError'] || this.$store.getters['products/getDepositError']
       )
-    }
+    },
   },
   methods: {
     async fetch() {
@@ -209,42 +196,41 @@ export default {
       if (success) {
         this.$vs.notification({
           color: 'success',
-          title: 'Produkt został usunięty.'
+          title: 'Produkt został usunięty.',
         })
         this.$router.push('/products')
       }
       loading.close()
     },
     async saveProduct() {
-      this.form.media = this.form.gallery.map(({ id }) => id)
+      const apiPayload = {
+        ...this.form,
+        media: this.form.gallery.map(({ id }) => id),
+        schemas: this.form.schemas.map(({ id }) => id),
+      }
       const loading = this.$vs.loading({ color: '#000' })
 
       const successMessage = this.isNew
         ? 'Produkt został utworzony'
         : 'Produkt został zaktualizowany'
 
-      const payload = this.isNew ? this.form : { id: this.id, item: this.form }
+      const actionPayload = this.isNew ? apiPayload : { id: this.id, item: apiPayload }
 
-      const { id: newID, schemas } = await this.$store.dispatch(
+      const { id: newID } = await this.$store.dispatch(
         this.isNew ? 'products/add' : 'products/update',
-        payload
+        actionPayload,
       )
-
-      await this.$store.dispatch('products/updateQuantity', {
-        id: schemas[0].schema_items[0].item.id,
-        quantity: this.deposit.quantity - this.deposit.originalQuantity
-      })
 
       if (newID) {
         this.$vs.notification({
           color: 'success',
-          title: successMessage
+          title: successMessage,
         })
         this.$router.push(`/products/${newID}`)
       }
 
       loading.close()
-    }
+    },
   },
   watch: {
     product(product) {
@@ -253,16 +239,7 @@ export default {
           ...product,
           brand_id: product.brand.id,
           category_id: product.category.id,
-          schemas: [EMPTY_SCHEMA],
-          media: []
-        }
-
-        const item = product.schemas[0].schema_items[0].item
-
-        this.deposit = {
-          id: item.id,
-          quantity: item.quantity || 0,
-          originalQuantity: item.quantity || 0
+          media: [],
         }
       }
     },
@@ -270,8 +247,7 @@ export default {
       if (error) {
         this.$vs.notification({
           color: 'danger',
-          title: error.message,
-          text: error?.response?.data?.message
+          ...formatApiError(error),
         })
       }
     },
@@ -279,13 +255,13 @@ export default {
       const loading = this.$vs.loading({ color: '#000' })
       await this.fetch()
       loading.close()
-    }
+    },
   },
   async created() {
     const loading = this.$vs.loading({ color: '#000' })
     await Promise.all([
       this.$store.dispatch('categories/fetch'),
-      this.$store.dispatch('brands/fetch')
+      this.$store.dispatch('brands/fetch'),
     ])
     if (!this.isNew) await this.fetch()
     loading.close()
@@ -298,8 +274,9 @@ export default {
     PopConfirm,
     ValidationProvider,
     ValidationObserver,
-    Textarea
-  }
+    Textarea,
+    SchemaConfigurator,
+  },
 }
 </script>
 
@@ -315,8 +292,13 @@ export default {
     }
   }
 
-  &__details {
+  &__details,
+  &__schemas {
     grid-column: 1/-1;
+  }
+
+  .card {
+    margin: 0;
   }
 }
 

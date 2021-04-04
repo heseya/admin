@@ -24,7 +24,7 @@
     <validation-observer v-slot="{ handleSubmit }">
       <vs-dialog width="550px" not-center v-model="isModalActive">
         <template #header>
-          <h4>{{ editedItem.id ? 'Edycja' : 'Dodawanie' }} marki</h4>
+          <h4>{{ editedItem.id ? 'Edycja marki' : 'Nowa marka' }}</h4>
         </template>
         <modal-form>
           <validation-provider rules="required" v-slot="{ errors }">

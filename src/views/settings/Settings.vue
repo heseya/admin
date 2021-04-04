@@ -1,22 +1,22 @@
 <template>
   <div>
-    <top-nav title="Kategorie">
+    <top-nav title="Ustawienia strony">
       <vs-button @click="openModal()" color="dark" icon>
         <i class="bx bx-plus"></i>
       </vs-button>
     </top-nav>
 
     <card>
-      <app-empty v-if="!categories.length">Nie ma żadnej kategorii</app-empty>
+      <app-empty v-if="!settings.length">Nie ma żadnych ustawień</app-empty>
       <list>
         <list-item
-          v-for="category in categories"
-          :key="category.id"
-          @click="openModal(category.id)"
-          :hidden="!category.public"
+          v-for="setting in settings"
+          :key="setting.name"
+          @click="openModal(setting)"
+          :hidden="!setting.public"
         >
-          {{ category.name }}
-          <small>/{{ category.slug }}</small>
+          {{ setting.name }}
+          <small>{{ setting.value }}</small>
         </list-item>
       </list>
     </card>
@@ -24,44 +24,40 @@
     <validation-observer v-slot="{ handleSubmit }">
       <vs-dialog width="550px" not-center v-model="isModalActive">
         <template #header>
-          <h4>{{ editedItem.id ? 'Edycja kategorii' : 'Nowa kategoria' }}</h4>
+          <h4>{{ editedItem.id ? 'Edycja ustawienie' : 'Nowe ustawienie' }}</h4>
         </template>
         <modal-form>
+          <validation-provider rules="required|letters-only" v-slot="{ errors }">
+            <vs-input v-model="editedItem.name" label="Klucz" :disabled="editedItem.permanent">
+              <template #message-danger>{{ errors[0] }}</template>
+            </vs-input>
+          </validation-provider>
           <validation-provider rules="required" v-slot="{ errors }">
-            <vs-input v-model="editedItem.name" @input="editSlug" label="Nazwa">
+            <vs-input v-model="editedItem.value" label="Wartość">
               <template #message-danger>{{ errors[0] }}</template>
             </vs-input>
           </validation-provider>
-          <validation-provider rules="required|slug" v-slot="{ errors }">
-            <vs-input v-model="editedItem.slug" label="Link">
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
-          <div class="center">
-            <flex-input>
-              <label class="title">Widoczność kategorii</label>
-              <vs-switch success v-model="editedItem.public">
-                <template #off>
-                  <i class="bx bx-x"></i>
-                </template>
-                <template #on>
-                  <i class="bx bx-check"></i>
-                </template>
-              </vs-switch>
-            </flex-input>
-          </div>
+          <SwitchInput v-model="editedItem.public">
+            <template #title>Wartość publiczna</template>
+          </SwitchInput>
         </modal-form>
         <template #footer>
           <div class="row">
             <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
             <pop-confirm
-              title="Czy na pewno chcesz usunąć tę kategorię?"
+              title="Czy na pewno chcesz usunąć to ustawienie?"
               okText="Usuń"
               cancelText="Anuluj"
               @confirm="deleteItem"
               v-slot="{ open }"
             >
-              <vs-button v-if="editedItem.id" color="danger" @click="open">Usuń</vs-button>
+              <vs-button
+                v-if="editedItem.id"
+                color="danger"
+                :disabled="editedItem.permanent"
+                @click="open"
+                >Usuń</vs-button
+              >
             </pop-confirm>
           </div>
         </template>
@@ -71,15 +67,15 @@
 </template>
 
 <script>
-import slugify from 'slugify'
+import clone from 'lodash/clone'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/Card.vue'
 import List from '@/components/List.vue'
 import ModalForm from '@/components/ModalForm.vue'
 import ListItem from '@/components/ListItem.vue'
-import FlexInput from '@/components/FlexInput.vue'
 import Empty from '@/components/Empty.vue'
+import SwitchInput from '@/components/SwitchInput.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
 
 export default {
@@ -90,23 +86,27 @@ export default {
     ListItem,
     ModalForm,
     PopConfirm,
-    FlexInput,
     appEmpty: Empty,
     ValidationProvider,
-    ValidationObserver
+    ValidationObserver,
+    SwitchInput,
   },
   data: () => ({
     isModalActive: false,
     editedItem: {
       name: '',
-      slug: '',
-      public: true
-    }
+      value: '',
+      permanent: false,
+      public: true,
+    },
   }),
   computed: {
-    categories() {
-      return this.$store.getters['categories/getData']
-    }
+    settings() {
+      return this.$store.getters['settings/getData']
+    },
+    error() {
+      return this.$store.getters['settings/getError']
+    },
   },
   watch: {
     error(error) {
@@ -114,54 +114,53 @@ export default {
         this.$vs.notification({
           color: 'danger',
           title: error.message,
-          text: error.response.data?.error?.message
+          text: error.response.data?.error?.message,
         })
       }
-    }
+    },
   },
   methods: {
-    async getCategories() {
+    async getSettings() {
       const loading = this.$vs.loading({ color: '#000' })
-      await this.$store.dispatch('categories/fetch')
+      await this.$store.dispatch('settings/fetch')
       loading.close()
     },
-    editSlug() {
-      this.editedItem.slug = slugify(this.editedItem.name, { lower: true, remove: /[.]/g })
-    },
-    openModal(id) {
+    openModal(item) {
       this.isModalActive = true
-      if (id) {
-        this.editedItem = this.$store.getters['categories/getFromListById'](id)
+      if (item) {
+        this.editedItem = { id: item.name, ...clone(item) }
       } else {
         this.editedItem = {
           name: '',
-          slug: '',
-          public: true
+          value: '',
+          permanent: false,
+          public: true,
         }
       }
     },
     async saveModal() {
       const loading = this.$vs.loading({ color: '#000' })
       if (this.editedItem.id) {
-        await this.$store.dispatch('categories/update', {
-          id: this.editedItem.id,
-          item: this.editedItem
+        await this.$store.dispatch('settings/updateByKey', {
+          key: 'name',
+          value: this.editedItem.id,
+          item: this.editedItem,
         })
       } else {
-        await this.$store.dispatch('categories/add', this.editedItem)
+        await this.$store.dispatch('settings/add', this.editedItem)
       }
       loading.close()
       this.isModalActive = false
     },
     async deleteItem() {
       const loading = this.$vs.loading({ color: '#000' })
-      await this.$store.dispatch('categories/remove', this.editedItem.id)
+      await this.$store.dispatch('settings/removeByKey', { key: 'name', value: this.editedItem.id })
       loading.close()
       this.isModalActive = false
-    }
+    },
   },
   created() {
-    this.getCategories()
+    this.getSettings()
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {
@@ -170,6 +169,6 @@ export default {
     } else {
       next()
     }
-  }
+  },
 }
 </script>

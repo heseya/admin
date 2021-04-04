@@ -162,6 +162,14 @@ const router = new VueRouter({
         requiresAuth: true,
       },
     },
+    {
+      path: '/settings/login-history',
+      name: 'PageSettings',
+      component: () => import('./views/settings/LoginHistory.vue'),
+      meta: {
+        requiresAuth: true,
+      },
+    },
   ],
 })
 

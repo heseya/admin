@@ -13,7 +13,7 @@ const getApiURL = () => {
     case 'admin.***REMOVED***.pl':
       return 'https://***REMOVED***.***REMOVED***'
     default:
-      return 'https://dev.***REMOVED***'
+      return 'http://store-api.test'
   }
 }
 

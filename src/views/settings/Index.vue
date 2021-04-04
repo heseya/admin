@@ -77,6 +77,14 @@
           </template>
           Zmień hasło
         </list-item>
+        <list-item url="/settings/login-history">
+          <template #avatar>
+            <vs-avatar dark>
+              <i class="bx bx-history"></i>
+            </vs-avatar>
+          </template>
+          Historia logowania
+        </list-item>
         <list-item @click="logout">
           <template #avatar>
             <vs-avatar dark>

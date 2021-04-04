@@ -37,10 +37,15 @@ export const auth = {
         commit('SET_ERROR', e)
       }
     },
-    logout({ commit }) {
-      commit('SET_ERROR', null)
-      commit('SET_USER', null)
-      commit('SET_TOKEN', null)
+    async logout({ commit }) {
+      try {
+        await api.post('/auth/logout')
+        commit('SET_ERROR', null)
+        commit('SET_USER', null)
+        commit('SET_TOKEN', null)
+      } catch (e) {
+        commit('SET_ERROR', e)
+      }
     }
   }
 }

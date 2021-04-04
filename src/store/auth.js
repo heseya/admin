@@ -37,10 +37,10 @@ export const auth = {
         commit('SET_ERROR', e)
       }
     },
-    async logout({ commit }) {
+    async logout({ commit, dispatch }) {
       try {
         await api.post('/auth/logout')
-        this.clearAuth(commit)
+        dispatch('clearAuth')
       } catch (e) {
         commit('SET_ERROR', e)
       }

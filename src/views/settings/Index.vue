@@ -77,6 +77,14 @@
           </template>
           Zmień hasło
         </list-item>
+        <list-item url="/settings/login-history">
+          <template #avatar>
+            <vs-avatar dark>
+              <i class="bx bx-history"></i>
+            </vs-avatar>
+          </template>
+          Historia logowania
+        </list-item>
         <list-item @click="logout">
           <template #avatar>
             <vs-avatar dark>
@@ -121,8 +129,10 @@ export default {
     },
   },
   methods: {
-    logout() {
-      this.$store.dispatch('auth/logout')
+    async logout() {
+      const loading = this.$vs.loading({ color: '#000' })
+      await this.$store.dispatch('auth/logout')
+      loading.close()
       this.$router.push('/login')
     },
   },

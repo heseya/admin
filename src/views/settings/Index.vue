@@ -129,8 +129,10 @@ export default {
     },
   },
   methods: {
-    logout() {
-      this.$store.dispatch('auth/logout')
+    async logout() {
+      const loading = this.$vs.loading({ color: '#000' })
+      await this.$store.dispatch('auth/logout')
+      loading.close()
       this.$router.push('/login')
     },
   },

@@ -17,7 +17,7 @@ import { shippingMethods } from './shippingMethods'
 import { paymentMethods } from './paymentMethods'
 import { packageTemplates } from './packageTemplates'
 import { settings } from './settings'
-import { loginHistory } from '@/store/loginHistory'
+import { loginHistory } from './loginHistory'
 
 Vue.use(Vuex)
 

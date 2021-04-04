@@ -7,16 +7,18 @@
       <list>
         <list-item
           v-for="login in history"
-          :key="login.id"
+          :key="login.created_at"
           class="login-item"
         >
           <template #avatar>
             <vs-avatar dark>
-              <i :class="`bx bxl-` + login.browser.toLowerCase()"></i>
+              <i :class="getBrowserIcon(login.browser)"></i>
             </vs-avatar>
           </template>
-          {{ login.device }} {{ login.platform }} {{ login.browser }}
-          <small class="green">{{ login.revoked ? '' : 'Sesja aktywna' }}</small>
+          <span v-if="login.platform">{{ login.platform + ' ' + login.browser + ' ' + login.browser_ver }}</span>
+          <span v-else>Nieznane urządzenie</span>
+          <small v-if="login.ip" class="inline"> ({{ login.ip }})</small>
+          <small v-if="!login.revoked" class="green">Sesja aktywna</small>
           <small>{{ login.created_at }}</small>
         </list-item>
       </list>
@@ -68,6 +70,14 @@ export default {
         this.$router.push({ path: 'login-history', query: { ...this.$route.query, page } })
       }
     },
+    getBrowserIcon(browser) {
+      switch (browser) {
+        case null: return 'bx bx-question-mark'
+        case 'Safari': return 'bx bxl-apple'
+        case 'IE': return 'bx bxl-internet-explorer'
+        default: return 'bx bxl-' + browser.toLowerCase()
+      }
+    },
     async getHistory() {
       const loading = this.$vs.loading({ color: '#000' })
       await this.$store.dispatch('loginHistory/fetch', {
@@ -86,6 +96,10 @@ export default {
 <style lang="scss" scoped>
 .green {
   color: green;
+}
+
+.inline {
+  display: inline;
 }
 
 .login-item {

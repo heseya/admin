@@ -33,7 +33,7 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(null, (error) => {
   if (error.response.status === 401) {
-    store.dispatch('auth/logout')
+    store.dispatch('auth/clearAuth')
     router.push('/login')
   }
   throw error

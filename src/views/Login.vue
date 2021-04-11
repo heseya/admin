@@ -47,7 +47,7 @@ export default {
   },
   methods: {
     async login() {
-      const loading = this.$vs.loading()
+      const loading = this.$vs.loading({ color: '#000' })
       await this.$store.dispatch('auth/login', {
         email: this.email,
         password: this.password

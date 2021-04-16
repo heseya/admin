@@ -15,7 +15,7 @@
               <i class="bx bx-dollar"></i>
             </vs-avatar>
           </template>
-          {{ order.code }}
+          {{ order.code }} <span v-if="order.delivery_address"> - {{ order.delivery_address.name }}</span>
           <small>{{ order.summary }} {{ currency }}</small>
           <template #action>
             <div :style="{ color: `#${order.status.color}` }">{{ order.status.name }}</div>

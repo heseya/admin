@@ -60,7 +60,7 @@ export default {
     onUploadError(error) {
       this.$vs.notification({
         color: 'danger',
-        title: 'Coś poszło nie tak z wysyłaniem pliku',
+        title: 'Nie udało się przesłać zdjęcia',
         text: error.message
       })
     }

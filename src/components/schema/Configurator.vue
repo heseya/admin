@@ -4,27 +4,29 @@
       <div class="configurator__title">Schematy</div>
       <vs-button dark icon @click="isModalActive = true"><i class="bx bx-plus"></i></vs-button>
     </div>
-    <empty v-if="value.length === 0">Ten produkt nie ma jeszcze żadnego schematu</empty>
+    <empty v-if="schemas.length === 0">Ten produkt nie ma jeszcze żadnego schematu</empty>
     <list class="configurator__schemas">
-      <list-item
-        class="configurator__schema"
-        v-for="schema in value"
-        :key="schema.id"
-        no-hover
-        :hidden="schema.hidden"
-      >
-        {{ schema.name }}
-        <small class="optional">{{ !schema.required ? '(opcjonalny)' : '' }}</small>
-        <small>{{ schema.description }}</small>
-        <template #action>
-          <div class="flex">
-            <vs-button dark icon @click="editSchema(schema)"><i class="bx bx-edit"></i></vs-button>
-            <vs-button danger icon @click="removeSchema(schema.id)">
-              <i class="bx bx-trash"></i>
-            </vs-button>
-          </div>
-        </template>
-      </list-item>
+      <draggable v-model="schemas">
+        <list-item
+          class="configurator__schema"
+          v-for="schema in schemas"
+          :key="schema.id"
+          no-hover
+          :hidden="schema.hidden"
+        >
+          {{ schema.name }}
+          <small class="optional">{{ !schema.required ? '(opcjonalny)' : '' }}</small>
+          <small>{{ schema.description }}</small>
+          <template #action>
+            <div class="flex">
+              <vs-button dark icon @click="editSchema(schema)"><i class="bx bx-edit"></i></vs-button>
+              <vs-button danger icon @click="removeSchema(schema.id)">
+                <i class="bx bx-trash"></i>
+              </vs-button>
+            </div>
+          </template>
+        </list-item>
+      </draggable>
     </list>
 
     <vs-dialog width="1000px" not-center v-model="isFormModalActive">
@@ -65,8 +67,8 @@ import Empty from '@/components/Empty.vue'
 import ModalForm from '@/components/ModalForm.vue'
 import SchemaForm from '@/components/schema/Form.vue'
 import Selector from '@/components/Selector.vue'
-
 import { SchemaTypeLabel } from '@/interfaces/SchemaType'
+import Draggable from 'vuedraggable'
 
 export default {
   name: 'SchemaConfigurator',
@@ -88,6 +90,16 @@ export default {
         this.editedSchema = {}
       }
     },
+  },
+  computed: {
+    schemas: {
+      get() {
+        return this.value
+      },
+      set(val) {
+        this.$emit('input', val)
+      }
+    }
   },
   methods: {
     editSchema(schema) {
@@ -124,6 +136,7 @@ export default {
     ModalForm,
     SchemaForm,
     Selector,
+    Draggable,
   },
 }
 </script>

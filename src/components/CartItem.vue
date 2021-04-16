@@ -1,6 +1,6 @@
 <template>
   <div class="cart-item">
-    <img class="cart-item__cover" :src="coverUrl" />
+    <img class="cart-item__cover" :src="coverUrl + `?w=60&h=60`" />
     <div class="cart-item__content">
       <span>
         {{ item.product.brand.name }} {{ item.product.name }}&nbsp;<small v-if="item.quantity !== 1">(x{{ item.quantity }})</small>

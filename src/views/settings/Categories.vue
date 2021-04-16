@@ -9,15 +9,17 @@
     <card>
       <app-empty v-if="!categories.length">Nie ma żadnej kategorii</app-empty>
       <list>
-        <list-item
-          v-for="category in categories"
-          :key="category.id"
-          @click="openModal(category.id)"
-          :hidden="!category.public"
-        >
-          {{ category.name }}
-          <small>/{{ category.slug }}</small>
-        </list-item>
+        <draggable v-model="categories">
+          <list-item
+            v-for="category in categories"
+            :key="category.id"
+            @click="openModal(category.id)"
+            :hidden="!category.public"
+          >
+            {{ category.name }}
+            <small>/{{ category.slug }}</small>
+          </list-item>
+        </draggable>
       </list>
     </card>
 
@@ -81,6 +83,7 @@ import ListItem from '@/components/ListItem.vue'
 import FlexInput from '@/components/FlexInput.vue'
 import Empty from '@/components/Empty.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
+import Draggable from 'vuedraggable'
 
 export default {
   components: {
@@ -93,7 +96,8 @@ export default {
     FlexInput,
     appEmpty: Empty,
     ValidationProvider,
-    ValidationObserver
+    ValidationObserver,
+    Draggable,
   },
   data: () => ({
     isModalActive: false,
@@ -104,8 +108,16 @@ export default {
     }
   }),
   computed: {
-    categories() {
-      return this.$store.getters['categories/getData']
+    categories: {
+      get() {
+        return this.$store.getters['categories/getData']
+      },
+      async set(val) {
+        const loading = this.$vs.loading({ color: '#000' })
+        await this.$store.dispatch('categories/setOrder', val.map((brand) => brand.id))
+        await this.$store.dispatch('categories/fetch')
+        loading.close()
+      }
     }
   },
   watch: {

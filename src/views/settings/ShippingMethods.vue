@@ -9,15 +9,17 @@
     <card>
       <app-empty v-if="!shippingMethods.length">Nie ma żadnej opcji dostawy</app-empty>
       <list>
-        <list-item
-          v-for="shippingMethod in shippingMethods"
-          :key="shippingMethod.id"
-          @click="openModal(shippingMethod.id)"
-          :hidden="!shippingMethod.public"
-        >
-          {{ shippingMethod.name }}
-          <small>{{ shippingMethod.price }} {{ currency }}</small>
-        </list-item>
+        <draggable v-model="shippingMethods">
+          <list-item
+            v-for="shippingMethod in shippingMethods"
+            :key="shippingMethod.id"
+            @click="openModal(shippingMethod.id)"
+            :hidden="!shippingMethod.public"
+          >
+            {{ shippingMethod.name }}
+            <small>{{ shippingMethod.price }} {{ currency }}</small>
+          </list-item>
+        </draggable>
       </list>
     </card>
 
@@ -96,6 +98,7 @@ import FlexInput from '@/components/FlexInput.vue'
 import ListItem from '@/components/ListItem.vue'
 import Empty from '@/components/Empty.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
+import Draggable from 'vuedraggable'
 
 export default {
   components: {
@@ -108,7 +111,8 @@ export default {
     FlexInput,
     appEmpty: Empty,
     ValidationProvider,
-    ValidationObserver
+    ValidationObserver,
+    Draggable,
   },
   data: () => ({
     isModalActive: false,
@@ -123,8 +127,16 @@ export default {
     paymentMethods() {
       return this.$store.getters['paymentMethods/getData']
     },
-    shippingMethods() {
-      return this.$store.getters['shippingMethods/getData']
+    shippingMethods: {
+      get() {
+        return this.$store.getters['shippingMethods/getData']
+      },
+      async set(val) {
+        const loading = this.$vs.loading({ color: '#000' })
+        await this.$store.dispatch('shippingMethods/setOrder', val.map((method) => method.id))
+        await this.$store.dispatch('shippingMethods/fetch')
+        loading.close()
+      }
     },
     error() {
       return this.$store.getters['shippingMethods/getError']

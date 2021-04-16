@@ -9,15 +9,17 @@
     <card>
       <app-empty v-if="!brands.length">Nie ma żadnej marki</app-empty>
       <list>
-        <list-item
-          v-for="brand in brands"
-          :key="brand.id"
-          @click="openModal(brand.id)"
-          :hidden="!brand.public"
-        >
-          {{ brand.name }}
-          <small>/{{ brand.slug }}</small>
-        </list-item>
+        <draggable v-model="brands">
+          <list-item
+            v-for="brand in brands"
+            :key="brand.id"
+            @click="openModal(brand.id)"
+            :hidden="!brand.public"
+          >
+            {{ brand.name }}
+            <small>/{{ brand.slug }}</small>
+          </list-item>
+        </draggable>
       </list>
     </card>
 
@@ -81,6 +83,7 @@ import ListItem from '@/components/ListItem.vue'
 import FlexInput from '@/components/FlexInput.vue'
 import Empty from '@/components/Empty.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
+import Draggable from 'vuedraggable'
 
 export default {
   components: {
@@ -93,7 +96,8 @@ export default {
     FlexInput,
     appEmpty: Empty,
     ValidationProvider,
-    ValidationObserver
+    ValidationObserver,
+    Draggable,
   },
   data: () => ({
     isModalActive: false,
@@ -104,8 +108,16 @@ export default {
     }
   }),
   computed: {
-    brands() {
-      return this.$store.getters['brands/getData']
+    brands: {
+      get() {
+        return this.$store.getters['brands/getData']
+      },
+      async set(val) {
+        const loading = this.$vs.loading({ color: '#000' })
+        await this.$store.dispatch('brands/setOrder', val.map((brand) => brand.id))
+        await this.$store.dispatch('brands/fetch')
+        loading.close()
+      }
     },
     error() {
       return this.$store.getters['brands/getError']

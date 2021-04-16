@@ -1,10 +1,6 @@
 <template>
   <div>
     <top-nav title="Asortyment">
-      <vs-button to="/items" color="dark" icon>
-        <i class="bx bxs-package"></i>
-      </vs-button>
-
       <vs-button color="dark" @click="areFiltersOpen = true" icon>
         <i class="bx bx-filter-alt"></i>
       </vs-button>
@@ -35,12 +31,12 @@
 import TopNav from '@/layout/TopNav.vue'
 import Product from '@/components/Product.vue'
 import Empty from '@/components/Empty.vue'
-import Pagination from '../../components/Pagination.vue'
+import Pagination from '@/components/Pagination.vue'
 import ProductsFilter, {
   ALL_FILTER_VALUE,
   EMPTY_PRODUCT_FILTERS,
-} from '../../components/ProductsFilter.vue'
-import ModalForm from '../../components/ModalForm.vue'
+} from '@/components/ProductsFilter.vue'
+import ModalForm from '@/components/ModalForm.vue'
 
 export default {
   components: {

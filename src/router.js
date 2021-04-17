@@ -9,14 +9,6 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: '/',
-      name: 'Index',
-      redirect: { name: 'Orders' },
-      meta: {
-        requiresAuth: true,
-      },
-    },
-    {
       path: '/login',
       name: 'Login',
       props: true,
@@ -24,6 +16,14 @@ const router = new VueRouter({
       meta: {
         hiddenNav: true,
         recaptchaAlert: true,
+      },
+    },
+    {
+      path: '/',
+      name: 'Home',
+      component: () => import('./views/Home.vue'),
+      meta: {
+        requiresAuth: true,
       },
     },
     {

@@ -39,7 +39,7 @@
               <template #message-danger>{{ errors[0] }}</template>
             </vs-input>
           </validation-provider>
-          <div class="center">
+          <div class="switches">
             <flex-input>
               <label class="title">Widoczność marki</label>
               <vs-switch success v-model="editedItem.public">
@@ -201,3 +201,12 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.switches {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding: 0 10px;
+}
+</style>

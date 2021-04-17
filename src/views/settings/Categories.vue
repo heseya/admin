@@ -203,5 +203,7 @@ export default {
 .switches {
   display: flex;
   justify-content: space-between;
+  margin-bottom: 12px;
+  padding: 0 10px;
 }
 </style>

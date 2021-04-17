@@ -39,10 +39,22 @@
               <template #message-danger>{{ errors[0] }}</template>
             </vs-input>
           </validation-provider>
-          <div class="center">
+          <div class="switches">
             <flex-input>
               <label class="title">Widoczność kategorii</label>
               <vs-switch success v-model="editedItem.public">
+                <template #off>
+                  <i class="bx bx-x"></i>
+                </template>
+                <template #on>
+                  <i class="bx bx-check"></i>
+                </template>
+              </vs-switch>
+            </flex-input>
+
+            <flex-input>
+              <label class="title">Ukryj na stronie głównej</label>
+              <vs-switch success v-model="editedItem.hide_on_index">
                 <template #off>
                   <i class="bx bx-x"></i>
                 </template>
@@ -104,7 +116,8 @@ export default {
     editedItem: {
       name: '',
       slug: '',
-      public: true
+      public: true,
+      hide_on_index: false,
     }
   }),
   computed: {
@@ -185,3 +198,10 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.switches {
+  display: flex;
+  justify-content: space-between;
+}
+</style>

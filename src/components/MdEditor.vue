@@ -2,7 +2,7 @@
   <div class="editor">
     <editor
       ref="editor"
-      initialValue=""
+      :initialValue="value"
       :options="options"
       initialEditType="wysiwyg"
       previewStyle="vertical"
@@ -15,37 +15,55 @@
 <script>
 import 'codemirror/lib/codemirror.css'
 import '@toast-ui/editor/dist/toastui-editor.css'
+// import debounce from 'lodash/debounce'
 import { Editor } from '@toast-ui/vue-editor'
 
 export default {
   data: () => ({
     options: {
-      hideModeSwitch: true
-    }
+      hideModeSwitch: true,
+      toolbarItems: [
+        'heading',
+        'bold',
+        'italic',
+        'strike',
+        'divider',
+        'hr',
+        'quote',
+        'divider',
+        'ul',
+        'ol',
+        'task',
+        'divider',
+        'table',
+        'link',
+        'divider',
+        'code',
+        'codeblock',
+      ],
+    },
   }),
   props: {
     value: {
       type: String,
-      default: ''
+      default: '',
     },
     height: {
       type: String,
-      default: '400px'
-    }
+      default: '400px',
+    },
   },
   methods: {
     change() {
       const value = this.$refs.editor.invoke('getMarkdown')
       this.$emit('input', value)
-    }
+    },
   },
-  watch: {
-    value(value) {
-      this.$refs.editor.invoke('setMarkdown', value)
-    }
+  mounted() {
+    this.$refs.editor.invoke('setMarkdown', this.value)
   },
   components: {
-    Editor
-  }
+    Editor,
+  },
 }
 </script>

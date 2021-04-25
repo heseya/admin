@@ -41,6 +41,15 @@ input {
   width: 100% !important;
 }
 
+hr {
+  all: unset;
+  display: block;
+  height: 1px;
+  background-color: #eee;
+  width: 100%;
+  margin: 12px 0;
+}
+
 .main {
   max-width: 940px;
   padding: 0 20px;

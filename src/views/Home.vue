@@ -102,14 +102,14 @@ export default {
     },
     async getPaymentsCount(from, to) {
       const query = from
-        ? `/analytics/payments/total?from=${format(from, 'yyyy-MM-dd')}&to=${format(
+        ? `/analytics/payments?group=yearly&from=${format(from, 'yyyy-MM-dd')}&to=${format(
             to,
             'yyyy-MM-dd',
           )}`
-        : '/analytics/payments/total'
+        : '/analytics/payments?group=yearly'
 
       const { data } = await api.get(query)
-      return data.data
+      return data.data.total
     },
     async getOrders() {
       await this.$store.dispatch('orders/fetch', {

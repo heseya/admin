@@ -13,7 +13,7 @@ const getApiURL = () => {
     case '***REMOVED***-admin.heseya.com':
       return 'https://***REMOVED***.***REMOVED***'
     default:
-      return 'http://store-api.test'
+      return 'https://dev.***REMOVED***'
   }
 }
 

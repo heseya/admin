@@ -204,7 +204,11 @@ export default {
       this.isModalActive = true
       if (id) {
         const item = this.$store.getters['shippingMethods/getFromListById'](id)
-        this.editedItem = { ...item, payment_methods: item.payment_methods.map(({ id }) => id) }
+        this.editedItem = {
+          ...item,
+          payment_methods: item.payment_methods.map(({ id }) => id),
+          countries: item.countries.map(({ code }) => code),
+        }
       } else {
         this.editedItem = {
           name: '',

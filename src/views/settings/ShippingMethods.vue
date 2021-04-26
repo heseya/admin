@@ -209,6 +209,9 @@ export default {
         this.editedItem = {
           name: '',
           price: 0,
+          black_list: false,
+          payment_methods: [],
+          countries: [],
           public: true,
         }
       }

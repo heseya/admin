@@ -48,7 +48,7 @@
               <template #message-danger>{{ errors[0] }}</template>
             </vs-input>
           </validation-provider>
-          <validation-provider v-slot="{ errors }">
+          <validation-provider v-slot="{ errors }" v-if="editedItem.id">
             <vs-input type="number" v-model="editedItem.quantity" label="Ilość w magazynie">
               <template #message-danger>{{ errors[0] }}</template>
             </vs-input>

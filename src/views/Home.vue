@@ -11,22 +11,28 @@
             <div class="incomes">
               <div class="income-box">
                 <div class="income-box__title">W tym tygodniu</div>
-                <div class="income-box__value">{{ currentWeekIncome }} {{ currency }}</div>
+                <div class="income-box__value">
+                  {{ currentWeekIncome.toFixed(2) }} {{ currency }}
+                </div>
                 <div class="income-box__orders">{{ currentWeekOrdersCount }} zamówień</div>
               </div>
               <div class="income-box">
                 <div class="income-box__title">W tym miesiącu</div>
-                <div class="income-box__value">{{ currentMonthIncome }} {{ currency }}</div>
+                <div class="income-box__value">
+                  {{ currentMonthIncome.toFixed(2) }} {{ currency }}
+                </div>
                 <div class="income-box__orders">{{ currentMonthOrdersCount }} zamówień</div>
               </div>
               <div class="income-box">
                 <div class="income-box__title">W tym roku</div>
-                <div class="income-box__value">{{ currentYearIncome }} {{ currency }}</div>
+                <div class="income-box__value">
+                  {{ currentYearIncome.toFixed(2) }} {{ currency }}
+                </div>
                 <div class="income-box__orders">{{ currentYearOrdersCount }} zamówień</div>
               </div>
               <div class="income-box">
                 <div class="income-box__title">W ubiegłym roku</div>
-                <div class="income-box__value">{{ lastYearIncome }} {{ currency }}</div>
+                <div class="income-box__value">{{ lastYearIncome.toFixed(2) }} {{ currency }}</div>
                 <div class="income-box__orders">{{ lastYearOrdersCount }} zamówień</div>
               </div>
             </div>

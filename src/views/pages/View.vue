@@ -43,7 +43,7 @@
           </div>
           <br />
           <small class="label">Treść</small>
-          <Textarea v-model="form.content_md" />
+          <MdEditor v-model="form.content_md" />
           <br />
           <vs-button color="dark" size="large" @click="handleSubmit(save)">
             Zapisz
@@ -61,7 +61,7 @@ import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/Card.vue'
 import FlexInput from '@/components/FlexInput.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
-import Textarea from '@/components/Textarea.vue'
+import MdEditor from '@/components/MdEditor.vue'
 
 export default {
   components: {
@@ -69,9 +69,9 @@ export default {
     Card,
     FlexInput,
     PopConfirm,
-    Textarea,
+    MdEditor,
     ValidationProvider,
-    ValidationObserver
+    ValidationObserver,
   },
   data() {
     return {
@@ -79,8 +79,8 @@ export default {
         name: '',
         slug: '',
         content_md: '',
-        public: true
-      }
+        public: true,
+      },
     }
   },
   computed: {
@@ -95,7 +95,7 @@ export default {
     },
     error() {
       return this.$store.getters['pages/getError']
-    }
+    },
   },
   watch: {
     page(page) {
@@ -108,10 +108,10 @@ export default {
         this.$vs.notification({
           color: 'danger',
           title: error.message,
-          text: error?.response?.data?.message
+          text: error?.response?.data?.message,
         })
       }
-    }
+    },
   },
   methods: {
     editSlug() {
@@ -124,19 +124,19 @@ export default {
         if (newID) {
           this.$vs.notification({
             color: 'success',
-            title: 'Strona została utworzona.'
+            title: 'Strona została utworzona.',
           })
           this.$router.push(`/pages/${newID}`)
         }
       } else {
         const success = await this.$store.dispatch('pages/update', {
           id: this.id,
-          item: this.form
+          item: this.form,
         })
         if (success) {
           this.$vs.notification({
             color: 'success',
-            title: 'Strona została zaktualizowana.'
+            title: 'Strona została zaktualizowana.',
           })
         }
       }
@@ -148,12 +148,12 @@ export default {
       if (success) {
         this.$vs.notification({
           color: 'success',
-          title: 'Strona została usunięta.'
+          title: 'Strona została usunięta.',
         })
         this.$router.push('/pages')
       }
       loading.close()
-    }
+    },
   },
   async created() {
     if (!this.isNew) {
@@ -161,7 +161,7 @@ export default {
       await this.$store.dispatch('pages/get', this.id)
       loading.close()
     }
-  }
+  },
 }
 </script>
 

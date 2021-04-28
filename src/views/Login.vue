@@ -21,18 +21,18 @@ const DEBUG = process.env.NODE_ENV === 'development'
 
 export default {
   components: {
-    Card
+    Card,
   },
   data() {
     return {
       email: DEBUG ? '***REMOVED***' : '',
-      password: DEBUG ? '***REMOVED***' : ''
+      password: DEBUG ? '***REMOVED***' : '',
     }
   },
   computed: {
     loginError() {
       return this.$store.state.auth.error
-    }
+    },
   },
   watch: {
     loginError(error) {
@@ -40,22 +40,22 @@ export default {
         this.$vs.notification({
           color: 'danger',
           title: 'Błąd logowania',
-          text: 'Zły email lub hasło.'
+          text: 'Zły email lub hasło.',
         })
       }
-    }
+    },
   },
   methods: {
     async login() {
       const loading = this.$vs.loading({ color: '#000' })
       await this.$store.dispatch('auth/login', {
         email: this.email,
-        password: this.password
+        password: this.password,
       })
       loading.close()
-      this.$router.push({ name: 'Index' })
-    }
-  }
+      this.$router.push({ name: 'Home' })
+    },
+  },
 }
 </script>
 

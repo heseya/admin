@@ -12,11 +12,21 @@
 
     <card>
       <list>
+        <h2 class="section-title">Sklep</h2>
+        <list-item url="/pages">
+          <template #avatar>
+            <vs-avatar dark>
+              <i class="bx bxs-copy-alt"></i>
+            </vs-avatar>
+          </template>
+          Strony
+        </list-item>
+
         <h2 class="section-title">Produkty</h2>
         <list-item url="/settings/brands">
           <template #avatar>
             <vs-avatar dark>
-              <i class="bx bx-star"></i>
+              <i class="bx bxs-star"></i>
             </vs-avatar>
           </template>
           Marki
@@ -34,20 +44,10 @@
         <list-item url="/settings/statuses">
           <template #avatar>
             <vs-avatar dark>
-              <i class="bx bx-check-circle"></i>
+              <i class="bx bxs-check-circle"></i>
             </vs-avatar>
           </template>
           Statusy zamówień
-        </list-item>
-
-        <h2 class="section-title">Witryna sklepu</h2>
-        <list-item url="/settings/page-settings">
-          <template #avatar>
-            <vs-avatar dark>
-              <i class="bx bxs-cog"></i>
-            </vs-avatar>
-          </template>
-          Ustawienia strony
         </list-item>
 
         <h2 class="section-title">Dostawa</h2>
@@ -62,17 +62,35 @@
         <list-item url="/settings/package-templates">
           <template #avatar>
             <vs-avatar dark>
-              <i class="bx bx-box"></i>
+              <i class="bx bxs-box"></i>
             </vs-avatar>
           </template>
           Szablony przesyłek
+        </list-item>
+
+        <h2 class="section-title">Inne</h2>
+        <list-item url="/apps">
+          <template #avatar>
+            <vs-avatar dark>
+              <i class="bx bxs-store-alt"></i>
+            </vs-avatar>
+          </template>
+          Aplikacje
+        </list-item>
+        <list-item url="/settings/page-settings">
+          <template #avatar>
+            <vs-avatar dark>
+              <i class="bx bxs-cog"></i>
+            </vs-avatar>
+          </template>
+          Ustawienia zaawansowane
         </list-item>
 
         <h2 class="section-title">Konto</h2>
         <list-item @click="isChangePasswordModal = true">
           <template #avatar>
             <vs-avatar dark>
-              <i class="bx bx-lock"></i>
+              <i class="bx bxs-lock"></i>
             </vs-avatar>
           </template>
           Zmień hasło

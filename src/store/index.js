@@ -18,6 +18,7 @@ import { paymentMethods } from './paymentMethods'
 import { packageTemplates } from './packageTemplates'
 import { settings } from './settings'
 import { loginHistory } from './loginHistory'
+import { apps } from './apps'
 
 Vue.use(Vuex)
 
@@ -54,6 +55,7 @@ export default new Vuex.Store({
     packageTemplates,
     settings,
     loginHistory,
+    apps,
   },
   plugins: [new VuexPersistence({ modules: ['auth'] }).plugin],
 })

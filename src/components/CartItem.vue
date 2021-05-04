@@ -1,6 +1,6 @@
 <template>
   <div class="cart-item">
-    <img class="cart-item__cover" :src="coverUrl + `?w=60&h=60`" />
+    <img class="cart-item__cover" :src="`${coverUrl}?w=60&h=60`" :style="{ objectFit }" />
     <div class="cart-item__content">
       <span>
         {{ item.product.brand.name }} {{ item.product.name }}&nbsp;<small v-if="item.quantity !== 1">(x{{ item.quantity }})</small>
@@ -28,6 +28,9 @@ export default {
     },
     currency() {
       return this.$store.state.currency
+    },
+    objectFit() {
+      return this.$store.state.env.dashboard_products_contain ? 'contain' : 'cover'
     },
   },
 }

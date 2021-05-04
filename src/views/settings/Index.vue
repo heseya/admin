@@ -77,7 +77,7 @@
           </template>
           Aplikacje
         </list-item>
-        <list-item url="/settings/page-settings">
+        <list-item url="/settings/advanced">
           <template #avatar>
             <vs-avatar dark>
               <i class="bx bxs-cog"></i>

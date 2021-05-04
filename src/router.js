@@ -163,7 +163,7 @@ const router = new VueRouter({
       },
     },
     {
-      path: '/settings/page-settings',
+      path: '/settings/advanced',
       name: 'PageSettings',
       component: () => import('./views/settings/Settings.vue'),
       meta: {
@@ -172,7 +172,7 @@ const router = new VueRouter({
     },
     {
       path: '/settings/login-history',
-      name: 'PageSettings',
+      name: 'LoginHistory',
       component: () => import('./views/settings/LoginHistory.vue'),
       meta: {
         requiresAuth: true,

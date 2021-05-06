@@ -103,6 +103,7 @@ export default {
   created() {
     this.page = this.$route.query.page || 1
     this.filters.search = this.$route.query.search || ''
+    this.filters.limit = this.$route.query.limit || 12
     this.filters.category = this.$route.query.category || ALL_FILTER_VALUE
     this.filters.brand = this.$route.query.brand || ALL_FILTER_VALUE
     this.getProducts()

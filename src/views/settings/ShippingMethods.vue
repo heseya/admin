@@ -9,15 +9,27 @@
     <card>
       <app-empty v-if="!shippingMethods.length">Nie ma żadnej opcji dostawy</app-empty>
       <list>
-        <list-item
-          v-for="shippingMethod in shippingMethods"
-          :key="shippingMethod.id"
-          @click="openModal(shippingMethod.id)"
-          :hidden="!shippingMethod.public"
-        >
-          {{ shippingMethod.name }}
-          <small>{{ shippingMethod.price }} {{ currency }}</small>
-        </list-item>
+        <draggable v-model="shippingMethods">
+          <list-item
+            v-for="shippingMethod in shippingMethods"
+            :key="shippingMethod.id"
+            @click="openModal(shippingMethod.id)"
+            :hidden="!shippingMethod.public"
+          >
+            {{ shippingMethod.name }} - {{ shippingMethod.price }} {{ currency }}
+            <small v-if="shippingMethod.countries.length">
+              {{ shippingMethod.black_list ? 'Wszystkie kraje poza:' : 'Tylko wybrane kraje:' }}
+              {{ shippingMethod.countries.map((c) => c.name).join(', ') }}
+            </small>
+            <small v-else>
+              {{
+                shippingMethod.black_list
+                  ? 'Metoda dostepna w każdym kraju'
+                  : 'Metoda niedostepna w żadnym kraju'
+              }}
+            </small>
+          </list-item>
+        </draggable>
       </list>
     </card>
 
@@ -53,17 +65,43 @@
             </vs-select>
           </div>
           <br />
+
+          <hr />
+
+          <div class="center">
+            <flex-input>
+              <label class="title">Biała lista</label>
+              <switch-input v-model="editedItem.black_list" />
+              <label class="title">Czarna lista</label>
+            </flex-input>
+          </div>
+
+          <div class="center">
+            <vs-select
+              v-model="editedItem.countries"
+              :key="countries.length"
+              multiple
+              filter
+              collapse-chips
+              label="Kraje"
+            >
+              <vs-option
+                v-for="country in countries"
+                :key="country.code"
+                :value="country.code"
+                :label="country.name"
+              >
+                {{ country.name }}
+              </vs-option>
+            </vs-select>
+          </div>
+          <br />
+          <hr />
+
           <div class="center">
             <flex-input>
               <label class="title">Widoczność opcji dostawy</label>
-              <vs-switch success v-model="editedItem.public">
-                <template #off>
-                  <i class="bx bx-x"></i>
-                </template>
-                <template #on>
-                  <i class="bx bx-check"></i>
-                </template>
-              </vs-switch>
+              <switch-input v-model="editedItem.public"> </switch-input>
             </flex-input>
           </div>
         </modal-form>
@@ -96,6 +134,9 @@ import FlexInput from '@/components/FlexInput.vue'
 import ListItem from '@/components/ListItem.vue'
 import Empty from '@/components/Empty.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
+import Draggable from 'vuedraggable'
+import { api } from '../../api'
+import SwitchInput from '../../components/SwitchInput.vue'
 
 export default {
   components: {
@@ -108,7 +149,9 @@ export default {
     FlexInput,
     appEmpty: Empty,
     ValidationProvider,
-    ValidationObserver
+    ValidationObserver,
+    Draggable,
+    SwitchInput,
   },
   data: () => ({
     isModalActive: false,
@@ -116,22 +159,34 @@ export default {
       name: '',
       price: 0,
       payment_methods: [],
-      public: true
-    }
+      public: true,
+    },
+    countries: [],
   }),
   computed: {
     paymentMethods() {
       return this.$store.getters['paymentMethods/getData']
     },
-    shippingMethods() {
-      return this.$store.getters['shippingMethods/getData']
+    shippingMethods: {
+      get() {
+        return this.$store.getters['shippingMethods/getData']
+      },
+      async set(val) {
+        const loading = this.$vs.loading({ color: '#000' })
+        await this.$store.dispatch(
+          'shippingMethods/setOrder',
+          val.map((method) => method.id),
+        )
+        await this.$store.dispatch('shippingMethods/fetch')
+        loading.close()
+      },
     },
     error() {
       return this.$store.getters['shippingMethods/getError']
     },
     currency() {
       return this.$store.state.currency
-    }
+    },
   },
   watch: {
     error(error) {
@@ -139,22 +194,29 @@ export default {
         this.$vs.notification({
           color: 'danger',
           title: error.message,
-          text: error.response.data?.error?.message
+          text: error.response.data?.error?.message,
         })
       }
-    }
+    },
   },
   methods: {
     openModal(id) {
       this.isModalActive = true
       if (id) {
         const item = this.$store.getters['shippingMethods/getFromListById'](id)
-        this.editedItem = { ...item, payment_methods: item.payment_methods.map(({ id }) => id) }
+        this.editedItem = {
+          ...item,
+          payment_methods: item.payment_methods.map(({ id }) => id),
+          countries: item.countries.map(({ code }) => code),
+        }
       } else {
         this.editedItem = {
           name: '',
           price: 0,
-          public: true
+          black_list: false,
+          payment_methods: [],
+          countries: [],
+          public: true,
         }
       }
     },
@@ -163,7 +225,7 @@ export default {
       if (this.editedItem.id) {
         await this.$store.dispatch('shippingMethods/update', {
           id: this.editedItem.id,
-          item: this.editedItem
+          item: this.editedItem,
         })
       } else {
         await this.$store.dispatch('shippingMethods/add', this.editedItem)
@@ -176,15 +238,18 @@ export default {
       await this.$store.dispatch('shippingMethods/remove', this.editedItem.id)
       loading.close()
       this.isModalActive = false
-    }
+    },
   },
   async created() {
     const loading = this.$vs.loading({ color: '#000' })
     await Promise.all([
       this.$store.dispatch('shippingMethods/fetch'),
-      this.$store.dispatch('paymentMethods/fetch')
+      this.$store.dispatch('paymentMethods/fetch'),
     ])
     loading.close()
+
+    const { data } = await api.get('countries')
+    this.countries = data.data
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {
@@ -193,7 +258,7 @@ export default {
     } else {
       next()
     }
-  }
+  },
 }
 </script>
 
@@ -201,5 +266,17 @@ export default {
 .row {
   display: flex;
   justify-content: space-between;
+}
+
+.flex-input {
+  margin-bottom: 12px;
+}
+
+.switch-input {
+  margin-top: 0;
+}
+
+label.title {
+  margin: 0 6px;
 }
 </style>

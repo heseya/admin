@@ -4,8 +4,9 @@
       <div class="configurator__title">Schematy</div>
       <vs-button dark icon @click="isModalActive = true"><i class="bx bx-plus"></i></vs-button>
     </div>
-    <empty v-if="value.length === 0">Ten produkt nie ma jeszcze żadnego schematu</empty>
+    <empty v-if="schemas.length === 0">Ten produkt nie ma jeszcze żadnego schematu</empty>
     <list class="configurator__schemas">
+      <draggable v-model="schemas">
       <list-item
         class="configurator__schema"
         :class="{ [`configurator__schema--dep`]: schema.auto_dependecy }"
@@ -28,6 +29,7 @@
           </div>
         </template>
       </list-item>
+      </draggable>
     </list>
 
     <vs-dialog width="1000px" not-center v-model="isFormModalActive">
@@ -68,8 +70,8 @@ import Empty from '@/components/Empty.vue'
 import ModalForm from '@/components/ModalForm.vue'
 import SchemaForm from '@/components/schema/Form.vue'
 import Selector from '@/components/Selector.vue'
-
 import { SchemaTypeLabel } from '@/interfaces/SchemaType'
+import Draggable from 'vuedraggable'
 
 export default {
   name: 'SchemaConfigurator',
@@ -91,6 +93,16 @@ export default {
         this.editedSchema = {}
       }
     },
+  },
+  computed: {
+    schemas: {
+      get() {
+        return this.value
+      },
+      set(val) {
+        this.$emit('input', val)
+      }
+    }
   },
   methods: {
     editSchema(schema) {
@@ -127,6 +139,7 @@ export default {
     ModalForm,
     SchemaForm,
     Selector,
+    Draggable,
   },
 }
 </script>

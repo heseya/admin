@@ -118,7 +118,7 @@
 
               <div class="wide">
                 <small class="label">Opis</small>
-                <Textarea v-model="form.description_md" />
+                <md-editor v-if="!isLoading" v-model="form.description_md" />
                 <br />
                 <vs-button color="dark" size="large">Zapisz</vs-button>
               </div>
@@ -139,7 +139,7 @@ import Gallery from '@/components/Gallery.vue'
 import Card from '@/components/Card.vue'
 import FlexInput from '@/components/FlexInput.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
-import Textarea from '@/components/Textarea.vue'
+import MdEditor from '@/components/MdEditor.vue'
 import SchemaConfigurator from '@/components/schema/Configurator.vue'
 import { formatApiError } from '@/utils/errors'
 
@@ -164,6 +164,9 @@ export default {
   computed: {
     id() {
       return this.$route.params.id
+    },
+    isLoading() {
+      return this.$store.state.products.isLoading
     },
     isNew() {
       return this.id === 'create'
@@ -276,8 +279,8 @@ export default {
     PopConfirm,
     ValidationProvider,
     ValidationObserver,
-    Textarea,
     SchemaConfigurator,
+    MdEditor,
   },
 }
 </script>

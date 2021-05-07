@@ -1,13 +1,13 @@
 <template>
   <nav class="nav" :class="{ 'nav--hidden': isVisible }">
+    <router-link class="nav__link" to="/">
+      <img class="icon" src="/img/icons/home.svg" />
+      <span class="label animated faster fadeInLeft">Strona główna</span>
+    </router-link>
+
     <router-link class="nav__link" to="/products">
       <img class="icon" src="/img/icons/products.svg" />
       <span class="label animated faster fadeInLeft">Asortyment</span>
-    </router-link>
-
-    <router-link class="nav__link" to="/items">
-      <img class="icon" src="/img/icons/box.svg" />
-      <span class="label animated faster fadeInLeft">Magazyn</span>
     </router-link>
 
     <router-link class="nav__link" to="/orders">
@@ -15,14 +15,9 @@
       <span class="label animated faster fadeInLeft">Zamówienia</span>
     </router-link>
 
-    <!-- <router-link class="nav__link" to="/chats">
-      <img class="icon" src="/img/icons/chat.svg">
-      <span class="label animated faster fadeInLeft">Konwersajce</span>
-    </router-link> -->
-
-    <router-link class="nav__link" to="/pages">
-      <img class="icon" src="/img/icons/copy.svg" />
-      <span class="label animated faster fadeInLeft">Strony</span>
+    <router-link class="nav__link" to="/items">
+      <img class="icon" src="/img/icons/box.svg" />
+      <span class="label animated faster fadeInLeft">Magazyn</span>
     </router-link>
 
     <router-link class="nav__link" to="/settings">

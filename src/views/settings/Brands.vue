@@ -9,15 +9,17 @@
     <card>
       <app-empty v-if="!brands.length">Nie ma żadnej marki</app-empty>
       <list>
-        <list-item
-          v-for="brand in brands"
-          :key="brand.id"
-          @click="openModal(brand.id)"
-          :hidden="!brand.public"
-        >
-          {{ brand.name }}
-          <small>/{{ brand.slug }}</small>
-        </list-item>
+        <draggable v-model="brands">
+          <list-item
+            v-for="brand in brands"
+            :key="brand.id"
+            @click="openModal(brand.id)"
+            :hidden="!brand.public"
+          >
+            {{ brand.name }}
+            <small>/{{ brand.slug }}</small>
+          </list-item>
+        </draggable>
       </list>
     </card>
 
@@ -37,10 +39,22 @@
               <template #message-danger>{{ errors[0] }}</template>
             </vs-input>
           </validation-provider>
-          <div class="center">
+          <div class="switches">
             <flex-input>
               <label class="title">Widoczność marki</label>
               <vs-switch success v-model="editedItem.public">
+                <template #off>
+                  <i class="bx bx-x"></i>
+                </template>
+                <template #on>
+                  <i class="bx bx-check"></i>
+                </template>
+              </vs-switch>
+            </flex-input>
+
+            <flex-input>
+              <label class="title">Ukryj na stronie głównej</label>
+              <vs-switch success v-model="editedItem.hide_on_index">
                 <template #off>
                   <i class="bx bx-x"></i>
                 </template>
@@ -81,6 +95,7 @@ import ListItem from '@/components/ListItem.vue'
 import FlexInput from '@/components/FlexInput.vue'
 import Empty from '@/components/Empty.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
+import Draggable from 'vuedraggable'
 
 export default {
   components: {
@@ -93,19 +108,29 @@ export default {
     FlexInput,
     appEmpty: Empty,
     ValidationProvider,
-    ValidationObserver
+    ValidationObserver,
+    Draggable,
   },
   data: () => ({
     isModalActive: false,
     editedItem: {
       name: '',
       slug: '',
-      public: true
+      public: true,
+      hide_on_index: false,
     }
   }),
   computed: {
-    brands() {
-      return this.$store.getters['brands/getData']
+    brands: {
+      get() {
+        return this.$store.getters['brands/getData']
+      },
+      async set(val) {
+        const loading = this.$vs.loading({ color: '#000' })
+        await this.$store.dispatch('brands/setOrder', val.map((brand) => brand.id))
+        await this.$store.dispatch('brands/fetch')
+        loading.close()
+      }
     },
     error() {
       return this.$store.getters['brands/getError']
@@ -176,3 +201,12 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.switches {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding: 0 10px;
+}
+</style>

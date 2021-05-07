@@ -2,7 +2,7 @@
   <div class="gallery">
     <draggable class="gallery__images" v-model="images" :options="{ filter: '.undragabble' }">
       <div class="gallery__img" v-for="image in images" :key="image.url">
-        <img :src="`${image.url}?w=350&h=350`" />
+        <img :src="`${image.url}?w=350&h=350`" :style="{ objectFit }" />
         <div class="remove">
           <vs-button icon color="danger" @click="onImageDelete(image.id)">
             <i class="bx bx-trash"></i>
@@ -42,7 +42,10 @@ export default {
       set(val) {
         this.$emit('input', val)
       }
-    }
+    },
+    objectFit() {
+      return this.$store.state.env.dashboard_products_contain ? 'contain' : 'cover'
+    },
   },
   data: () => ({
     isDrag: false
@@ -60,7 +63,7 @@ export default {
     onUploadError(error) {
       this.$vs.notification({
         color: 'danger',
-        title: 'Coś poszło nie tak z wysyłaniem pliku',
+        title: 'Nie udało się przesłać zdjęcia',
         text: error.message
       })
     }

@@ -9,17 +9,19 @@
     <card>
       <app-empty v-if="!statuses.length">Nie ma żadnych statusów</app-empty>
       <list>
-        <list-item
-          v-for="status in statuses"
-          :key="status.id"
-          @click="openModal(status.id)"
-        >
-          <template #avatar>
-            <vs-avatar :color="`#${status.color}`" />
-          </template>
-          {{ status.name }}
-          <small>{{ status.description }}</small>
-        </list-item>
+        <draggable v-model="statuses">
+          <list-item
+            v-for="status in statuses"
+            :key="status.id"
+            @click="openModal(status.id)"
+          >
+            <template #avatar>
+              <vs-avatar :color="`#${status.color}`" />
+            </template>
+            {{ status.name }}
+            <small>{{ status.description }}</small>
+          </list-item>
+        </draggable>
       </list>
     </card>
 
@@ -73,6 +75,7 @@ import ModalForm from '@/components/ModalForm.vue'
 import ListItem from '@/components/ListItem.vue'
 import Empty from '@/components/Empty.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
+import Draggable from 'vuedraggable'
 
 export default {
   components: {
@@ -84,7 +87,8 @@ export default {
     PopConfirm,
     appEmpty: Empty,
     ValidationProvider,
-    ValidationObserver
+    ValidationObserver,
+    Draggable,
   },
   data: () => ({
     isModalActive: false,
@@ -95,8 +99,16 @@ export default {
     }
   }),
   computed: {
-    statuses() {
-      return this.$store.getters['statuses/getData']
+    statuses: {
+      get() {
+        return this.$store.getters['statuses/getData']
+      },
+      async set(val) {
+        const loading = this.$vs.loading({ color: '#000' })
+        await this.$store.dispatch('statuses/setOrder', val.map((status) => status.id))
+        await this.$store.dispatch('statuses/fetch')
+        loading.close()
+      }
     }
   },
   watch: {

@@ -240,7 +240,7 @@ export default {
       }))
 
       if (!this.form?.id) {
-        const { id: newID } = await this.$store.dispatch('schemas/add', this.form)
+        const { id: newID } = await this.$store.dispatch('schemas/add', { ...this.form, options })
         if (newID) {
           this.$vs.notification({
             color: 'success',

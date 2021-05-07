@@ -1,14 +1,14 @@
 import { createStore } from './generator'
 import { api } from '@/api'
 
-export const categories = createStore('CATEGORIES', 'categories', {
+export const apps = createStore('APPS', 'apps', {
   state: {},
   getters: {},
   mutations: {},
   actions: {
-    async setOrder({ commit }, categories) {
+    async addApp({ commit }, url) {
       try {
-        const { data } = await api.post('/categories/order', { categories })
+        const { data } = await api.post('/apps', { url: url })
         return data
       } catch (error) {
         return false

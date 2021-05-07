@@ -1,9 +1,9 @@
 <template>
   <div>
     <top-nav title="Zamówienia">
-      <!-- <vs-button to="/orders/create" color="dark" icon>
-        <i class="bx bx-plus"></i>
-      </vs-button> -->
+      <vs-button color="dark" @click="areFiltersOpen = true" icon>
+        <i class="bx bx-filter-alt"></i>
+      </vs-button>
     </top-nav>
 
     <card>
@@ -15,7 +15,7 @@
               <i class="bx bx-dollar"></i>
             </vs-avatar>
           </template>
-          {{ order.code }}
+          {{ order.code }} <span v-if="order.delivery_address"> - {{ order.delivery_address.name }}</span>
           <small>{{ order.summary }} {{ currency }}</small>
           <template #action>
             <div :style="{ color: `#${order.status.color}` }">{{ order.status.name }}</div>
@@ -25,7 +25,16 @@
       </list>
     </card>
 
-    <pagination v-if="meta.last_page" v-model="page" :length="meta.last_page" />
+    <pagination v-if="meta.last_page" :value="page" @input="changePage" :length="meta.last_page" />
+
+    <vs-dialog width="550px" not-center v-model="areFiltersOpen">
+      <template #header>
+        <h4>Filtry</h4>
+      </template>
+      <modal-form>
+        <order-filter :filters="filters" @search="makeSearch" />
+      </modal-form>
+    </vs-dialog>
   </div>
 </template>
 
@@ -36,10 +45,17 @@ import List from '@/components/List.vue'
 import ListItem from '@/components/ListItem.vue'
 import Empty from '@/components/Empty.vue'
 import { getRelativeDate } from '@/utils/utils'
-import Pagination from '../../components/Pagination.vue'
+import Pagination from '@/components/Pagination.vue'
+import OrderFilter, {
+  EMPTY_ORDER_FILTERS,
+  ALL_FILTER_VALUE
+} from '@/components/OrderFilter'
+import ModalForm from '@/components/ModalForm'
 
 export default {
   components: {
+    ModalForm,
+    OrderFilter,
     TopNav,
     Card,
     List,
@@ -49,6 +65,8 @@ export default {
   },
   data: () => ({
     page: 1,
+    filters: { ...EMPTY_ORDER_FILTERS },
+    areFiltersOpen: false,
   }),
   computed: {
     orders() {
@@ -62,23 +80,54 @@ export default {
     },
   },
   watch: {
-    page(page) {
-      if (this.meta.current_page !== page) this.getOrders(page)
-      window.scrollTo(0, 0)
+    '$route.query'({ page }) {
+      this.page = page || 1
+      if (this.meta.current_page !== page) {
+        this.getOrders()
+        window.scrollTo(0, 0)
+      }
     },
   },
   methods: {
     getRelativeDate(date) {
       return getRelativeDate(date)
     },
-    async getOrders(page) {
+    changePage(page) {
+      if (this.page !== page) {
+        this.$router.push({ path: 'orders', query: { ...this.$route.query, page } })
+      }
+    },
+    formatFilters(filters) {
+      return Object.fromEntries(
+        Object.entries(filters).filter(([, v]) => v !== ALL_FILTER_VALUE && v !== ''),
+      )
+    },
+    makeSearch(filters) {
+      this.filters = filters
+
+      const queryFilters = this.formatFilters(filters)
+
+      this.$router.push({
+        path: 'orders',
+        query: { page: undefined, ...queryFilters },
+      })
+    },
+    async getOrders() {
       const loading = this.$vs.loading({ color: '#000' })
-      await this.$store.dispatch('orders/fetch', { page })
+      const queryFilters = this.formatFilters(this.filters)
+      await this.$store.dispatch('orders/fetch', {
+        page: this.page,
+        ...queryFilters,
+      })
       loading.close()
     },
   },
   created() {
-    this.getOrders(1)
+    this.page = this.$route.query.page || 1
+    this.filters.search = this.$route.query.search || ''
+    this.filters.category = this.$route.query.category || ALL_FILTER_VALUE
+    this.filters.brand = this.$route.query.brand || ALL_FILTER_VALUE
+    this.getOrders()
   },
 }
 </script>

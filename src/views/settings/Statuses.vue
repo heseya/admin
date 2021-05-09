@@ -46,6 +46,9 @@
               <template #message-danger>{{ errors[0] }}</template>
             </vs-input>
           </validation-provider>
+          <SwitchInput v-model="editedItem.cancel">
+            <template #title>Anulowanie zamówienia</template>
+          </SwitchInput>
         </modal-form>
         <template #footer>
           <div class="row">
@@ -76,6 +79,7 @@ import ListItem from '@/components/ListItem.vue'
 import Empty from '@/components/Empty.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
 import Draggable from 'vuedraggable'
+import SwitchInput from '@/components/SwitchInput.vue'
 
 export default {
   components: {
@@ -89,6 +93,7 @@ export default {
     ValidationProvider,
     ValidationObserver,
     Draggable,
+    SwitchInput,
   },
   data: () => ({
     isModalActive: false,
@@ -140,7 +145,8 @@ export default {
         this.editedItem = {
           name: '',
           description: '',
-          color: '000000'
+          color: '000000',
+          cancel: false
         }
       }
     },

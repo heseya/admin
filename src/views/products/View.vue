@@ -114,6 +114,12 @@
                     <template #message-danger>{{ errors[0] }}</template>
                   </vs-select>
                 </validation-provider>
+                <br /><br />
+                <validation-provider rules="required" v-slot="{ errors }">
+                  <vs-input v-model="form.quantity_step" type="number" max="999999" step="0.01" label="Format ilości">
+                    <template #message-danger>{{ errors[0] }}</template>
+                  </vs-input>
+                </validation-provider>
               </div>
 
               <div class="wide">
@@ -155,6 +161,7 @@ export default {
         public: true,
         brand_id: 0,
         category_id: 0,
+        quantity_step: 1,
         schemas: [],
         gallery: [],
         media: [],

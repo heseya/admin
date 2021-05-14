@@ -13,7 +13,7 @@
               <div class="cart-item__content">
                 <span>Dostawa {{ order.shipping_method.name }}</span>
               </div>
-              <span class="cart-item__price">{{ order.shipping_method.price }} {{ currency }}</span>
+              <span class="cart-item__price">{{ order.shipping_price }} {{ currency }}</span>
             </div>
             <div class="cart-total">
               Łącznie: <b>{{ order.summary }} {{ currency }}</b>

@@ -1,6 +1,15 @@
 <template>
   <div>
-    <top-nav :title="`Zamówienie ${order.code}`"> </top-nav>
+    <top-nav
+      :title="`Zamówienie ${order.code}`"
+      :subtitle="`z dnia ${order.created_at}`"
+    >
+      <a :href="`https://***REMOVED***.eu/payment/${order.code}`" target="_blank">
+        <vs-button color="dark" icon>
+          <i class="bx bxs-dollar-circle"></i>
+        </vs-button>
+      </a>
+    </top-nav>
 
     <div class="order">
       <div>
@@ -51,10 +60,16 @@
       </div>
 
       <div>
+        <card v-if="order.comment">
+          <template>
+            <h2 class="section-title">Komentarz</h2>
+            <p>{{ order.comment }}</p>
+          </template>
+        </card>
         <card>
-          <br />
           <template v-if="order.status">
-            <vs-select label="Status" v-model="status" :key="statuses.length" :loading="isLoading">
+            <h2 class="section-title">Status</h2>
+            <vs-select v-model="status" :key="statuses.length" :loading="isLoading">
               <vs-option
                 v-for="status in statuses"
                 :label="status.name"
@@ -73,9 +88,6 @@
             <span class="payment-method__name">{{ payment.method }}</span>
             <span class="payment-method__amount">({{ payment.amount }} {{ currency }})</span>
           </div>
-          <br />
-          <h2 class="section-title">Złożone</h2>
-          <small>{{ relativeOrderedDate }}</small>
         </card>
         <card>
           <h2 class="section-title">E-mail</h2>
@@ -85,15 +97,11 @@
           <br />
           <h2 class="section-title">Adres dostawy</h2>
           <app-address :address="order.delivery_address" />
-          <br />
-          <template v-if="order.invoice_address">
-            <h2 class="section-title">Faktura</h2>
+        </card>
+        <card v-if="order.invoice_address">
+          <template>
+            <h2 class="section-title">Adres rozliczeniowy</h2>
             <app-address :address="order.invoice_address" />
-          </template>
-          <br />
-          <template v-if="order.comment">
-            <h2 class="section-title">Komentarz do zamówienia</h2>
-            <p>{{ order.comment }}</p>
           </template>
         </card>
       </div>

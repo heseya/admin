@@ -12,6 +12,8 @@ const getApiURL = () => {
       return 'https://***REMOVED***.***REMOVED***'
     case '***REMOVED***-admin.heseya.com':
       return 'https://***REMOVED***.***REMOVED***'
+    case 'admin.***REMOVED***.eu':
+      return 'https://***REMOVED***.***REMOVED***'
     default:
       return 'https://dev.***REMOVED***'
   }

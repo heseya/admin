@@ -26,7 +26,7 @@ export default {
       return this.$store.state.currency
     },
     objectFit() {
-      return this.$store.state.env.dashboard_products_contain ? 'contain' : 'cover'
+      return +this.$store.state.env.dashboard_products_contain ? 'contain' : 'cover'
     },
   },
   methods: {

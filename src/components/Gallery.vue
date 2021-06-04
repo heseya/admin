@@ -29,10 +29,10 @@ import MediaUploader from '@/components/MediaUploader'
 export default {
   components: {
     appMediaUploader: MediaUploader,
-    Draggable
+    Draggable,
   },
   props: {
-    value: Array
+    value: Array,
   },
   computed: {
     images: {
@@ -41,14 +41,14 @@ export default {
       },
       set(val) {
         this.$emit('input', val)
-      }
+      },
     },
     objectFit() {
-      return this.$store.state.env.dashboard_products_contain ? 'contain' : 'cover'
+      return +this.$store.state.env.dashboard_products_contain ? 'contain' : 'cover'
     },
   },
   data: () => ({
-    isDrag: false
+    isDrag: false,
   }),
   methods: {
     dragChange(isDrag) {
@@ -64,10 +64,10 @@ export default {
       this.$vs.notification({
         color: 'danger',
         title: 'Nie udało się przesłać zdjęcia',
-        text: error.message
+        text: error.message,
       })
-    }
-  }
+    },
+  },
 }
 </script>
 

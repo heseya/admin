@@ -118,7 +118,7 @@ export default {
       slug: '',
       public: true,
       hide_on_index: false,
-    }
+    },
   }),
   computed: {
     brands: {
@@ -127,14 +127,17 @@ export default {
       },
       async set(val) {
         const loading = this.$vs.loading({ color: '#000' })
-        await this.$store.dispatch('brands/setOrder', val.map((brand) => brand.id))
+        await this.$store.dispatch(
+          'brands/setOrder',
+          val.map((brand) => brand.id),
+        )
         await this.$store.dispatch('brands/fetch')
         loading.close()
-      }
+      },
     },
     error() {
       return this.$store.getters['brands/getError']
-    }
+    },
   },
   watch: {
     error(error) {
@@ -142,10 +145,10 @@ export default {
         this.$vs.notification({
           color: 'danger',
           title: error.message,
-          text: error.response.data?.error?.message
+          text: error.response.data?.error?.message,
         })
       }
-    }
+    },
   },
   methods: {
     async getBrands() {
@@ -154,7 +157,9 @@ export default {
       loading.close()
     },
     editSlug() {
-      this.editedItem.slug = slugify(this.editedItem.name, { lower: true, remove: /[.]/g })
+      if (!this.editedItem.id) {
+        this.editedItem.slug = slugify(this.editedItem.name, { lower: true, remove: /[.]/g })
+      }
     },
     openModal(id) {
       this.isModalActive = true
@@ -164,7 +169,7 @@ export default {
         this.editedItem = {
           name: '',
           slug: '',
-          public: true
+          public: true,
         }
       }
     },
@@ -173,7 +178,7 @@ export default {
       if (this.editedItem.id) {
         await this.$store.dispatch('brands/update', {
           id: this.editedItem.id,
-          item: this.editedItem
+          item: this.editedItem,
         })
       } else {
         await this.$store.dispatch('brands/add', this.editedItem)
@@ -186,7 +191,7 @@ export default {
       await this.$store.dispatch('brands/remove', this.editedItem.id)
       loading.close()
       this.isModalActive = false
-    }
+    },
   },
   created() {
     this.getBrands()
@@ -198,7 +203,7 @@ export default {
     } else {
       next()
     }
-  }
+  },
 }
 </script>
 

@@ -118,7 +118,9 @@ export default {
   },
   methods: {
     editSlug() {
-      this.form.slug = slugify(this.form.name, { lower: true, remove: /[.]/g })
+      if (this.isNew) {
+        this.form.slug = slugify(this.form.name, { lower: true, remove: /[.]/g })
+      }
     },
     async save() {
       const loading = this.$vs.loading({ color: '#000' })

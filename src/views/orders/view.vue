@@ -1,9 +1,6 @@
 <template>
   <div>
-    <top-nav
-      :title="`Zamówienie ${order.code}`"
-      :subtitle="`z dnia ${order.created_at}`"
-    >
+    <top-nav :title="`Zamówienie ${order.code}`" :subtitle="`z dnia ${formattedDate}`">
       <a :href="`https://***REMOVED***.eu/payment/${order.code}`" target="_blank">
         <vs-button color="dark" icon>
           <i class="bx bxs-dollar-circle"></i>
@@ -114,7 +111,7 @@ import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/Card.vue'
 import Address from '@/components/Address.vue'
 import CartItem from '@/components/CartItem.vue'
-import { getRelativeDate } from '@/utils/utils'
+import { getRelativeDate, formatDate } from '@/utils/utils'
 import { createPackage } from '@/services/createPackage'
 
 export default {
@@ -146,10 +143,12 @@ export default {
     relativeOrderedDate() {
       return getRelativeDate(this.order.created_at)
     },
+    formattedDate() {
+      return formatDate(this.order.created_at)
+    },
   },
   watch: {
     order(order) {
-      console.log('🚀 ~ file: view.vue ~ line 144 ~ order ~ order', order)
       this.status = order?.status?.id
       this.shippingNumber = order.shipping_number
     },

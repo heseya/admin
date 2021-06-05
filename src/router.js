@@ -9,14 +9,6 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: '/',
-      name: 'Index',
-      redirect: { name: 'Orders' },
-      meta: {
-        requiresAuth: true,
-      },
-    },
-    {
       path: '/login',
       name: 'Login',
       props: true,
@@ -24,6 +16,14 @@ const router = new VueRouter({
       meta: {
         hiddenNav: true,
         recaptchaAlert: true,
+      },
+    },
+    {
+      path: '/',
+      name: 'Home',
+      component: () => import('./views/Home.vue'),
+      meta: {
+        requiresAuth: true,
       },
     },
     {
@@ -107,6 +107,14 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/apps',
+      name: 'Apps',
+      component: () => import('./views/apps/index.vue'),
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
       path: '/settings',
       name: 'Settings',
       component: () => import('./views/settings/Index.vue'),
@@ -155,9 +163,17 @@ const router = new VueRouter({
       },
     },
     {
-      path: '/settings/page-settings',
+      path: '/settings/advanced',
       name: 'PageSettings',
       component: () => import('./views/settings/Settings.vue'),
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: '/settings/login-history',
+      name: 'LoginHistory',
+      component: () => import('./views/settings/LoginHistory.vue'),
       meta: {
         requiresAuth: true,
       },

@@ -55,7 +55,7 @@ export default {
   },
   watch: {
     page(page) {
-      if (this.meta.current_page !== page) this.getOrders(page)
+      if (this.meta.current_page !== page) this.getPages(page)
       window.scrollTo(0, 0)
     },
   },

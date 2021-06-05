@@ -25,7 +25,7 @@
         </vs-select>
       </validation-provider>
       <validation-provider rules="required|not-negative" v-slot="{ errors }">
-        <vs-input v-model="form.price" label="Dodatkowa cena">
+        <vs-input v-model="form.price" type="number" label="Dodatkowa cena">
           <template #message-danger>{{ errors[0] }}</template>
         </vs-input>
       </validation-provider>
@@ -226,7 +226,7 @@ export default {
       }))
 
       if (!this.form?.id) {
-        const { id: newID } = await this.$store.dispatch('schemas/add', this.form)
+        const { id: newID } = await this.$store.dispatch('schemas/add', { ...this.form, options })
         if (newID) {
           this.$vs.notification({
             color: 'success',

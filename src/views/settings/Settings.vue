@@ -149,6 +149,7 @@ export default {
       } else {
         await this.$store.dispatch('settings/add', this.editedItem)
       }
+      await this.$store.dispatch('fetchEnv')
       loading.close()
       this.isModalActive = false
     },

@@ -1,13 +1,13 @@
 <template>
   <nav class="nav" :class="{ 'nav--hidden': isVisible }">
+    <router-link class="nav__link" to="/">
+      <img class="icon" src="/img/icons/home.svg" />
+      <span class="label animated faster fadeInLeft">Strona główna</span>
+    </router-link>
+
     <router-link class="nav__link" to="/products">
       <img class="icon" src="/img/icons/products.svg" />
       <span class="label animated faster fadeInLeft">Asortyment</span>
-    </router-link>
-
-    <router-link class="nav__link" to="/items">
-      <img class="icon" src="/img/icons/box.svg" />
-      <span class="label animated faster fadeInLeft">Magazyn</span>
     </router-link>
 
     <router-link class="nav__link" to="/orders">

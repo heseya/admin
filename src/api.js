@@ -4,13 +4,15 @@ import router from './router'
 
 const getApiURL = () => {
   switch (window.location.host) {
-    case 'admin.trafika.bydgoszcz.pl':
-      return 'https://trafika.***REMOVED***'
-    case 'admin.depth.store':
+    case '***REMOVED***':
       return '***REMOVED***'
+    case 'admin.***REMOVED***.pl':
+      return 'https://***REMOVED***.***REMOVED***'
+    case 'admin.***REMOVED***.eu':
+      return 'https://***REMOVED***.***REMOVED***'
     case '***REMOVED***-admin.heseya.com':
       return 'https://***REMOVED***.***REMOVED***'
-    case 'admin.***REMOVED***.pl':
+    case 'admin.***REMOVED***.eu':
       return 'https://***REMOVED***.***REMOVED***'
     default:
       return 'https://dev.***REMOVED***'
@@ -33,7 +35,7 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(null, (error) => {
   if (error.response.status === 401) {
-    store.dispatch('auth/logout')
+    store.dispatch('auth/clearAuth')
     router.push('/login')
   }
   throw error

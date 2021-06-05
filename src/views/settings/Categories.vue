@@ -9,15 +9,17 @@
     <card>
       <app-empty v-if="!categories.length">Nie ma żadnej kategorii</app-empty>
       <list>
-        <list-item
-          v-for="category in categories"
-          :key="category.id"
-          @click="openModal(category.id)"
-          :hidden="!category.public"
-        >
-          {{ category.name }}
-          <small>/{{ category.slug }}</small>
-        </list-item>
+        <draggable v-model="categories">
+          <list-item
+            v-for="category in categories"
+            :key="category.id"
+            @click="openModal(category.id)"
+            :hidden="!category.public"
+          >
+            {{ category.name }}
+            <small>/{{ category.slug }}</small>
+          </list-item>
+        </draggable>
       </list>
     </card>
 
@@ -37,10 +39,22 @@
               <template #message-danger>{{ errors[0] }}</template>
             </vs-input>
           </validation-provider>
-          <div class="center">
+          <div class="switches">
             <flex-input>
               <label class="title">Widoczność kategorii</label>
               <vs-switch success v-model="editedItem.public">
+                <template #off>
+                  <i class="bx bx-x"></i>
+                </template>
+                <template #on>
+                  <i class="bx bx-check"></i>
+                </template>
+              </vs-switch>
+            </flex-input>
+
+            <flex-input>
+              <label class="title">Ukryj na stronie głównej</label>
+              <vs-switch success v-model="editedItem.hide_on_index">
                 <template #off>
                   <i class="bx bx-x"></i>
                 </template>
@@ -81,6 +95,7 @@ import ListItem from '@/components/ListItem.vue'
 import FlexInput from '@/components/FlexInput.vue'
 import Empty from '@/components/Empty.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
+import Draggable from 'vuedraggable'
 
 export default {
   components: {
@@ -93,20 +108,33 @@ export default {
     FlexInput,
     appEmpty: Empty,
     ValidationProvider,
-    ValidationObserver
+    ValidationObserver,
+    Draggable,
   },
   data: () => ({
     isModalActive: false,
     editedItem: {
       name: '',
       slug: '',
-      public: true
-    }
+      public: true,
+      hide_on_index: false,
+    },
   }),
   computed: {
-    categories() {
-      return this.$store.getters['categories/getData']
-    }
+    categories: {
+      get() {
+        return this.$store.getters['categories/getData']
+      },
+      async set(val) {
+        const loading = this.$vs.loading({ color: '#000' })
+        await this.$store.dispatch(
+          'categories/setOrder',
+          val.map((brand) => brand.id),
+        )
+        await this.$store.dispatch('categories/fetch')
+        loading.close()
+      },
+    },
   },
   watch: {
     error(error) {
@@ -114,10 +142,10 @@ export default {
         this.$vs.notification({
           color: 'danger',
           title: error.message,
-          text: error.response.data?.error?.message
+          text: error.response.data?.error?.message,
         })
       }
-    }
+    },
   },
   methods: {
     async getCategories() {
@@ -126,7 +154,9 @@ export default {
       loading.close()
     },
     editSlug() {
-      this.editedItem.slug = slugify(this.editedItem.name, { lower: true, remove: /[.]/g })
+      if (!this.editedItem.id) {
+        this.editedItem.slug = slugify(this.editedItem.name, { lower: true, remove: /[.]/g })
+      }
     },
     openModal(id) {
       this.isModalActive = true
@@ -136,7 +166,7 @@ export default {
         this.editedItem = {
           name: '',
           slug: '',
-          public: true
+          public: true,
         }
       }
     },
@@ -145,7 +175,7 @@ export default {
       if (this.editedItem.id) {
         await this.$store.dispatch('categories/update', {
           id: this.editedItem.id,
-          item: this.editedItem
+          item: this.editedItem,
         })
       } else {
         await this.$store.dispatch('categories/add', this.editedItem)
@@ -158,7 +188,7 @@ export default {
       await this.$store.dispatch('categories/remove', this.editedItem.id)
       loading.close()
       this.isModalActive = false
-    }
+    },
   },
   created() {
     this.getCategories()
@@ -170,6 +200,15 @@ export default {
     } else {
       next()
     }
-  }
+  },
 }
 </script>
+
+<style lang="scss" scoped>
+.switches {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding: 0 10px;
+}
+</style>

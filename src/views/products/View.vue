@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :key="$route.params.id">
     <top-nav :title="!isNew ? product.name : 'Nowy produkt'">
       <pop-confirm
         v-if="!isNew"
@@ -114,13 +114,34 @@
                     <template #message-danger>{{ errors[0] }}</template>
                   </vs-select>
                 </validation-provider>
+                <br /><br />
+                <validation-provider rules="required" v-slot="{ errors }">
+                  <vs-input
+                    v-model="form.quantity_step"
+                    type="number"
+                    max="999999"
+                    step="0.01"
+                    label="Format ilości"
+                  >
+                    <template #message-danger>{{ errors[0] }}</template>
+                  </vs-input>
+                </validation-provider>
               </div>
 
               <div class="wide">
                 <small class="label">Opis</small>
-                <Textarea v-model="form.description_md" />
+                <md-editor v-if="!isLoading" v-model="form.description_md" />
                 <br />
-                <vs-button color="dark" size="large">Zapisz</vs-button>
+                <div class="flex">
+                  <vs-button color="dark" size="large">Zapisz</vs-button>
+                  <vs-button
+                    color="dark"
+                    size="large"
+                    type="button"
+                    @click="handleSubmit(submitAndGoNext)"
+                    >Zapisz i dodaj następny</vs-button
+                  >
+                </div>
               </div>
             </form>
           </validation-observer>
@@ -133,37 +154,44 @@
 <script>
 import slugify from 'slugify'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
+import cloneDeep from 'lodash/cloneDeep'
 
 import TopNav from '@/layout/TopNav.vue'
 import Gallery from '@/components/Gallery.vue'
 import Card from '@/components/Card.vue'
 import FlexInput from '@/components/FlexInput.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
-import Textarea from '@/components/Textarea.vue'
+import MdEditor from '@/components/MdEditor.vue'
 import SchemaConfigurator from '@/components/schema/Configurator.vue'
 import { formatApiError } from '@/utils/errors'
+
+const EMPTY_FORM = {
+  name: '',
+  slug: '',
+  price: 0,
+  description: '',
+  digital: false,
+  public: true,
+  brand_id: 0,
+  category_id: 0,
+  quantity_step: 1,
+  schemas: [],
+  gallery: [],
+  media: [],
+}
 
 export default {
   data() {
     return {
-      form: {
-        name: '',
-        slug: '',
-        price: 0,
-        description: '',
-        digital: false,
-        public: true,
-        brand_id: 0,
-        category_id: 0,
-        schemas: [],
-        gallery: [],
-        media: [],
-      },
+      form: cloneDeep(EMPTY_FORM),
     }
   },
   computed: {
     id() {
       return this.$route.params.id
+    },
+    isLoading() {
+      return this.$store.state.products.isLoading
     },
     isNew() {
       return this.id === 'create'
@@ -185,10 +213,14 @@ export default {
   },
   methods: {
     async fetch() {
+      this.form = cloneDeep(EMPTY_FORM)
+      if (this.isNew) return
       return this.$store.dispatch('products/get', this.$route.params.id)
     },
     editSlug() {
-      this.form.slug = slugify(this.form.name, { lower: true, remove: /[.]/g })
+      if (this.isNew) {
+        this.form.slug = slugify(this.form.name, { lower: true, remove: /[.]/g })
+      }
     },
     async deleteProduct() {
       const loading = this.$vs.loading({ color: '#000' })
@@ -221,15 +253,20 @@ export default {
         actionPayload,
       )
 
-      if (newID) {
-        this.$vs.notification({
-          color: 'success',
-          title: successMessage,
-        })
+      this.$vs.notification({
+        color: 'success',
+        title: successMessage,
+      })
+
+      if (newID !== this.product.id) {
         this.$router.push(`/products/${newID}`)
       }
 
       loading.close()
+    },
+    async submitAndGoNext() {
+      await this.saveProduct()
+      this.$router.push('/products/create')
     },
   },
   watch: {
@@ -263,7 +300,7 @@ export default {
       this.$store.dispatch('categories/fetch'),
       this.$store.dispatch('brands/fetch'),
     ])
-    if (!this.isNew) await this.fetch()
+    await this.fetch()
     loading.close()
   },
   components: {
@@ -274,8 +311,8 @@ export default {
     PopConfirm,
     ValidationProvider,
     ValidationObserver,
-    Textarea,
     SchemaConfigurator,
+    MdEditor,
   },
 }
 </script>

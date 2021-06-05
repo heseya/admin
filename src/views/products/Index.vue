@@ -1,10 +1,6 @@
 <template>
   <div>
     <top-nav title="Asortyment">
-      <vs-button to="/items" color="dark" icon>
-        <i class="bx bxs-package"></i>
-      </vs-button>
-
       <vs-button color="dark" @click="areFiltersOpen = true" icon>
         <i class="bx bx-filter-alt"></i>
       </vs-button>
@@ -35,12 +31,12 @@
 import TopNav from '@/layout/TopNav.vue'
 import Product from '@/components/Product.vue'
 import Empty from '@/components/Empty.vue'
-import Pagination from '../../components/Pagination.vue'
+import Pagination from '@/components/Pagination.vue'
 import ProductsFilter, {
   ALL_FILTER_VALUE,
   EMPTY_PRODUCT_FILTERS,
-} from '../../components/ProductsFilter.vue'
-import ModalForm from '../../components/ModalForm.vue'
+} from '@/components/ProductsFilter.vue'
+import ModalForm from '@/components/ModalForm.vue'
 
 export default {
   components: {
@@ -76,7 +72,7 @@ export default {
   methods: {
     changePage(page) {
       if (this.page !== page) {
-        this.$router.push({ path: 'products', query: { page, search: this.$route.query.search } })
+        this.$router.push({ path: 'products', query: { ...this.$route.query, page } })
       }
     },
     formatFilters(filters) {
@@ -107,6 +103,7 @@ export default {
   created() {
     this.page = this.$route.query.page || 1
     this.filters.search = this.$route.query.search || ''
+    this.filters.limit = this.$route.query.limit || 12
     this.filters.category = this.$route.query.category || ALL_FILTER_VALUE
     this.filters.brand = this.$route.query.brand || ALL_FILTER_VALUE
     this.getProducts()

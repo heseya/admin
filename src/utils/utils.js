@@ -1,3 +1,5 @@
+import format from 'date-fns/format'
+
 /**
  * Returns last element of the given array
  * @param {Array} array
@@ -29,4 +31,8 @@ export const getRelativeDate = (date, lang = 'pl') => {
   if (diff > -30) return rtf.format(diff, 'day')
   else if (diff > -356) return rtf.format(parseInt(diff / 30), 'month')
   else return rtf.format(parseInt(diff / 365), 'year')
+}
+
+export const formatDate = (date) => {
+  return format(new Date(date), 'dd.MM.yyyy hh:mm:ss')
 }

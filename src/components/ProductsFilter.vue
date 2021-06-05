@@ -24,6 +24,19 @@
 
     <br />
 
+    <vs-select v-model="limit" label="Maksymalna liczba elementów na stronie" filter>
+      <vs-option label="12" :value="12"> 12 </vs-option>
+      <vs-option label="24" :value="24"> 24 </vs-option>
+      <vs-option label="36" :value="36"> 36 </vs-option>
+      <vs-option label="48" :value="48"> 48 </vs-option>
+      <vs-option label="64" :value="64"> 64 </vs-option>
+      <vs-option label="128" :value="128"> 128 </vs-option>
+      <vs-option label="256" :value="256"> 256 </vs-option>
+      <vs-option label="500" :value="500"> 500 </vs-option>
+    </vs-select>
+
+    <br />
+
     <vs-button @click="makeSearch" color="dark"> <i class="bx bx-search"></i> Wyszukaj </vs-button>
     <vs-button @click="clearFilters" transparent>
       Wyczyść filtry
@@ -38,6 +51,7 @@ export const ALL_FILTER_VALUE = '_all'
 
 export const EMPTY_PRODUCT_FILTERS = {
   search: '',
+  limit: 12,
   category: ALL_FILTER_VALUE,
   brand: ALL_FILTER_VALUE,
 }
@@ -45,6 +59,7 @@ export const EMPTY_PRODUCT_FILTERS = {
 export default {
   data: () => ({
     search: '',
+    limit: 12,
     category: ALL_FILTER_VALUE,
     brand: ALL_FILTER_VALUE,
   }),
@@ -57,6 +72,7 @@ export default {
   watch: {
     filters(f) {
       this.search = f.search
+      this.limit = f.limit
       this.category = f.category
       this.brand = f.brand
     },
@@ -71,7 +87,12 @@ export default {
   },
   methods: {
     makeSearch() {
-      this.$emit('search', { search: this.search, category: this.category, brand: this.brand })
+      this.$emit('search', {
+        search: this.search,
+        category: this.category,
+        brand: this.brand,
+        limit: this.limit,
+      })
     },
     clearFilters() {
       this.$emit('search', clone(EMPTY_PRODUCT_FILTERS))
@@ -85,14 +106,12 @@ export default {
     this.search = this.filters.search
     this.category = this.filters.category
     this.brand = this.filters.brand
-    console.log('this.search', this.search)
-    console.log('this.category', this.category)
-    console.log('this.brand', this.brand)
+    this.limit = this.filters.limit
   },
 }
 </script>
 
 <style lang="scss" scoped>
-.products-filter {
-}
+// .products-filter {
+// }
 </style>

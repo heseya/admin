@@ -16,6 +16,11 @@
         >
           {{ discount.code }}
           <small>{{ discount.description }}</small>
+
+          <template #action>
+            - {{ discount.discount }} {{ discount.type === 0 ? '%' : currency }}
+            <small style="white-space: nowrap">wykorzystano {{ discount.uses }} z {{ discount.max_uses }}</small>
+          </template>
         </list-item>
       </list>
     </card>
@@ -27,7 +32,7 @@
         </template>
         <modal-form>
           <validation-provider rules="required" v-slot="{ errors }">
-            <vs-input v-model="editedItem.code" @input="editSlug" label="Kod">
+            <vs-input v-model="editedItem.code" label="Kod">
               <template #message-danger>{{ errors[0] }}</template>
             </vs-input>
           </validation-provider>
@@ -35,6 +40,11 @@
             <vs-input v-model="editedItem.description" label="Opis">
               <template #message-danger>{{ errors[0] }}</template>
             </vs-input>
+          <validation-provider rules="required" v-slot="{ errors }">
+            <vs-input v-model="editedItem.max_uses" label="Maksymalna ilość użyć">
+              <template #message-danger>{{ errors[0] }}</template>
+            </vs-input>
+          </validation-provider>
           </validation-provider>
           <validation-provider rules="required" v-slot="{ errors }">
             <vs-input v-model="editedItem.discount" label="Zniżka">
@@ -42,9 +52,11 @@
             </vs-input>
           </validation-provider>
           <validation-provider rules="required" v-slot="{ errors }">
-            <vs-input v-model="editedItem.type" label="Typ">
+            <vs-select v-model="editedItem.type" label="Typ">
+              <vs-option label="Procentowy" value="0">Rabat Procentowy</vs-option>
+              <vs-option label="Kwotowy" value="1">Rabat Kwotowy</vs-option>
               <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
+            </vs-select>
           </validation-provider>
         </modal-form>
         <template #footer>
@@ -94,13 +106,18 @@ export default {
     editedItem: {
       name: '',
       slug: '',
-      public: true
+      type: 0,
+      discount: 0.00,
+      max_uses: 1,
     }
   }),
   computed: {
     discounts() {
       return this.$store.getters['discounts/getData']
-    }
+    },
+    currency() {
+      return this.$store.state.currency
+    },
   },
   watch: {
     error(error) {

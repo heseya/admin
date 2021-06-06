@@ -32,8 +32,7 @@
       <vs-option label="64" :value="64"> 64 </vs-option>
       <vs-option label="128" :value="128"> 128 </vs-option>
       <vs-option label="256" :value="256"> 256 </vs-option>
-      <vs-option label="512" :value="512"> 512 </vs-option>
-      <vs-option label="1024" :value="1024"> 1024 </vs-option>
+      <vs-option label="500" :value="500"> 500 </vs-option>
     </vs-select>
 
     <br />

@@ -1,6 +1,12 @@
 <template>
   <div>
-    <top-nav :title="`Zamówienie ${order.code}`"> </top-nav>
+    <top-nav :title="`Zamówienie ${order.code}`" :subtitle="`z dnia ${formattedDate}`">
+      <a :href="`https://***REMOVED***.eu/payment/${order.code}`" target="_blank">
+        <vs-button color="dark" icon>
+          <i class="bx bxs-dollar-circle"></i>
+        </vs-button>
+      </a>
+    </top-nav>
 
     <div class="order">
       <div>
@@ -13,7 +19,7 @@
               <div class="cart-item__content">
                 <span>Dostawa {{ order.shipping_method.name }}</span>
               </div>
-              <span class="cart-item__price">{{ order.shipping_method.price }} {{ currency }}</span>
+              <span class="cart-item__price">{{ order.shipping_price }} {{ currency }}</span>
             </div>
             <div class="cart-total">
               Łącznie: <b>{{ order.summary }} {{ currency }}</b>
@@ -51,10 +57,16 @@
       </div>
 
       <div>
+        <card v-if="order.comment">
+          <template>
+            <h2 class="section-title">Komentarz</h2>
+            <p>{{ order.comment }}</p>
+          </template>
+        </card>
         <card>
-          <br />
           <template v-if="order.status">
-            <vs-select label="Status" v-model="status" :key="statuses.length" :loading="isLoading">
+            <h2 class="section-title">Status</h2>
+            <vs-select v-model="status" :key="statuses.length" :loading="isLoading">
               <vs-option
                 v-for="status in statuses"
                 :label="status.name"
@@ -73,9 +85,6 @@
             <span class="payment-method__name">{{ payment.method }}</span>
             <span class="payment-method__amount">({{ payment.amount }} {{ currency }})</span>
           </div>
-          <br />
-          <h2 class="section-title">Złożone</h2>
-          <small>{{ relativeOrderedDate }}</small>
         </card>
         <card>
           <h2 class="section-title">E-mail</h2>
@@ -85,15 +94,11 @@
           <br />
           <h2 class="section-title">Adres dostawy</h2>
           <app-address :address="order.delivery_address" />
-          <br />
-          <template v-if="order.invoice_address">
-            <h2 class="section-title">Faktura</h2>
+        </card>
+        <card v-if="order.invoice_address">
+          <template>
+            <h2 class="section-title">Adres rozliczeniowy</h2>
             <app-address :address="order.invoice_address" />
-          </template>
-          <br />
-          <template v-if="order.comment">
-            <h2 class="section-title">Komentarz do zamówienia</h2>
-            <p>{{ order.comment }}</p>
           </template>
         </card>
       </div>
@@ -106,7 +111,7 @@ import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/Card.vue'
 import Address from '@/components/Address.vue'
 import CartItem from '@/components/CartItem.vue'
-import { getRelativeDate } from '@/utils/utils'
+import { getRelativeDate, formatDate } from '@/utils/utils'
 import { createPackage } from '@/services/createPackage'
 
 export default {
@@ -138,10 +143,12 @@ export default {
     relativeOrderedDate() {
       return getRelativeDate(this.order.created_at)
     },
+    formattedDate() {
+      return formatDate(this.order.created_at)
+    },
   },
   watch: {
     order(order) {
-      console.log('🚀 ~ file: view.vue ~ line 144 ~ order ~ order', order)
       this.status = order?.status?.id
       this.shippingNumber = order.shipping_number
     },

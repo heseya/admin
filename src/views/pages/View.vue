@@ -43,7 +43,7 @@
           </div>
           <br />
           <small class="label">Treść</small>
-          <MdEditor v-model="form.content_md" />
+          <md-editor v-if="!isLoading" v-model="form.content_md" />
           <br />
           <vs-button color="dark" size="large" @click="handleSubmit(save)">
             Zapisz
@@ -96,6 +96,9 @@ export default {
     error() {
       return this.$store.getters['pages/getError']
     },
+    isLoading() {
+      return this.$store.state.pages.isLoading
+    },
   },
   watch: {
     page(page) {
@@ -115,7 +118,9 @@ export default {
   },
   methods: {
     editSlug() {
-      this.form.slug = slugify(this.form.name, { lower: true, remove: /[.]/g })
+      if (this.isNew) {
+        this.form.slug = slugify(this.form.name, { lower: true, remove: /[.]/g })
+      }
     },
     async save() {
       const loading = this.$vs.loading({ color: '#000' })

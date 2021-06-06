@@ -17,9 +17,19 @@
           </template>
           {{ order.code }} <span v-if="order.delivery_address"> - {{ order.delivery_address.name }}</span>
           <small>{{ order.summary }} {{ currency }}</small>
-          <template #action>
-            <div :style="{ color: `#${order.status.color}` }">{{ order.status.name }}</div>
-            <div>{{ getRelativeDate(order.created_at) }}</div>
+          <template #action class="list-action">
+            <vs-tooltip>
+              <div v-if="order.comment">
+                <i class="bx bx-comment"></i>
+              </div>
+              <template #tooltip>
+                {{ order.comment }}
+              </template>
+            </vs-tooltip>
+            <div>
+              <div :style="{ color: `#${order.status.color}` }">{{ order.status.name }}</div>
+              <div>{{ getRelativeDate(order.created_at) }}</div>
+            </div>
           </template>
         </list-item>
       </list>
@@ -131,3 +141,14 @@ export default {
   },
 }
 </script>
+
+<style lang="scss">
+.list-item__action {
+  display: flex;
+  align-items: center;
+
+  .bx-comment {
+    margin: 0 12px;
+  }
+}
+</style>

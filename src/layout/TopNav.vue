@@ -2,6 +2,7 @@
   <nav class="top-nav">
     <div class="top-nav__title">
       <h1 class="title">{{ title }}</h1>
+      <small>{{ subtitle }}</small>
     </div>
 
     <div class="top-nav__buttons">
@@ -13,7 +14,8 @@
 <script>
 export default {
   props: {
-    title: String
+    title: String,
+    subtitle: String,
   }
 }
 </script>
@@ -27,14 +29,16 @@ export default {
   align-items: center;
 
   &__title {
-    display: flex;
-    align-items: center;
-
     h1 {
       display: inline-block;
       font-size: 28px;
       font-weight: 200;
       margin: 0;
+    }
+
+    small {
+      display: block;
+      color: #888;
     }
   }
 

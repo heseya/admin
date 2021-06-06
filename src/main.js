@@ -4,6 +4,7 @@ import Vuesax from 'vuesax'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import { disableScrollOnInput } from './utils/disableScrollOnInput'
 
 import './utils/rules'
 import './utils/slugs'
@@ -21,3 +22,5 @@ new Vue({
 }).$mount('#app')
 
 Vue.use(Vuesax)
+
+disableScrollOnInput()

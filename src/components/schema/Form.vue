@@ -28,6 +28,7 @@
         <vs-input
           v-if="form.type !== SchemaType.multiplySchema"
           v-model="form.price"
+          type="number"
           :label="form.type === SchemaType.multiply ? 'Cena za sztukę' : 'Dodatkowa cena'"
         >
           <template #message-danger>{{ errors[0] }}</template>

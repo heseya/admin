@@ -5,8 +5,8 @@ export const SchemaType = {
   boolean: 'boolean',
   multiply: 'multiply',
   multiplySchema: 'multiply_schema',
-  date: 'date',
-  file: 'file',
+  // date: 'date',
+  // file: 'file',
 }
 
 export const SchemaTypeLabel = {

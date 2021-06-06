@@ -12,7 +12,7 @@
           <template #action>
             <div class="flex">
               <vs-button success icon @click.stop.prevent="onSelect(item)">
-                Dodaj
+                {{ addText }}
               </vs-button>
             </div>
           </template>
@@ -29,6 +29,7 @@ import queryString from 'query-string'
 import List from '@/components/List.vue'
 import Empty from '@/components/Empty.vue'
 import ListItem from '@/components/ListItem.vue'
+import { SchemaTypeLabel } from '@/interfaces/SchemaType'
 import { api } from '../api'
 
 export default {
@@ -45,6 +46,10 @@ export default {
     typeName: {
       type: String,
       default: 'schemat',
+    },
+    addText: {
+      type: String,
+      default: 'Dodaj',
     },
     existing: {
       type: Array,
@@ -87,7 +92,9 @@ export default {
       this.$emit('select', schema)
     },
     getSubText(item) {
-      if (this.type === 'schemas') return item.description
+      if (this.type === 'schemas') {
+        return `${SchemaTypeLabel[item.type]} | ${item.description}`
+      }
       if (this.type === 'items') return `SKU: ${item.sku}`
       return ''
     },

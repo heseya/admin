@@ -83,9 +83,9 @@ const router = new VueRouter({
       },
     },
     {
-      path: '/chats',
-      name: 'Chats',
-      component: () => import('./views/chats/Index.vue'),
+      path: '/discounts',
+      name: 'Items',
+      component: () => import('./views/discounts/index.vue'),
       meta: {
         requiresAuth: true,
       },

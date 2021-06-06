@@ -43,7 +43,6 @@ export default {
 <style lang="scss">
 .list-item {
   all: unset;
-  font-family: $font-main;
   width: 100%;
   box-sizing: border-box;
   cursor: pointer;

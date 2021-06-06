@@ -1,6 +1,6 @@
 <template>
   <div>
-    <top-nav title="Ustawienia strony">
+    <top-nav title="Ustawienia zaawansowane">
       <vs-button @click="openModal()" color="dark" icon>
         <i class="bx bx-plus"></i>
       </vs-button>

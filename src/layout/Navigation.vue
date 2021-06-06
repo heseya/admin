@@ -20,6 +20,11 @@
       <span class="label animated faster fadeInLeft">Magazyn</span>
     </router-link>
 
+    <router-link class="nav__link" to="/discounts">
+      <img class="icon" src="/img/icons/coupon.svg" />
+      <span class="label animated faster fadeInLeft">Kody rabatowe</span>
+    </router-link>
+
     <router-link class="nav__link" to="/settings">
       <img class="icon" src="/img/icons/settings.svg" />
       <span class="label animated faster fadeInLeft">Ustawienia</span>

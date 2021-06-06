@@ -77,9 +77,9 @@ export default {
   &__price {
     display: flex;
     justify-content: center;
-    // align-items: center;
     margin-left: auto;
     font-family: $font-sec;
+    white-space: nowrap;
   }
 }
 </style>

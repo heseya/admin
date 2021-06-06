@@ -19,6 +19,7 @@ import { packageTemplates } from './packageTemplates'
 import { settings } from './settings'
 import { loginHistory } from './loginHistory'
 import { apps } from './apps'
+import { discounts } from '@/store/discounts'
 
 Vue.use(Vuex)
 
@@ -54,6 +55,7 @@ export default new Vuex.Store({
     paymentMethods,
     packageTemplates,
     settings,
+    discounts,
     loginHistory,
     apps,
   },

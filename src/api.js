@@ -28,6 +28,7 @@ api.interceptors.request.use((config) => {
 
   if (token != null) {
     config.headers.Authorization = `Bearer ${token}`
+    config.headers['x-language'] = 'pl'
   }
 
   return config

@@ -25,6 +25,8 @@
       </list>
     </card>
 
+    <app-pagination v-if="meta.last_page" :value="page" @input="changePage" :length="meta.last_page" />
+
     <validation-observer v-slot="{ handleSubmit }">
       <vs-dialog width="550px" not-center v-model="isModalActive">
         <template #header>
@@ -62,15 +64,15 @@
         <template #footer>
           <div class="row">
             <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
-            <pop-confirm
-              title="Czy na pewno chcesz usunąć ten kod?"
-              okText="Usuń"
-              cancelText="Anuluj"
-              @confirm="deleteItem"
-              v-slot="{ open }"
-            >
-              <vs-button v-if="editedItem.id" color="danger" @click="open">Usuń</vs-button>
-            </pop-confirm>
+<!--            <pop-confirm-->
+<!--              title="Czy na pewno chcesz usunąć ten kod?"-->
+<!--              okText="Usuń"-->
+<!--              cancelText="Anuluj"-->
+<!--              @confirm="deleteItem"-->
+<!--              v-slot="{ open }"-->
+<!--            >-->
+<!--              <vs-button v-if="editedItem.id" color="danger" @click="open">Usuń</vs-button>-->
+<!--            </pop-confirm>-->
           </div>
         </template>
       </vs-dialog>
@@ -79,7 +81,6 @@
 </template>
 
 <script>
-import slugify from 'slugify'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/Card.vue'
@@ -87,7 +88,7 @@ import List from '@/components/List.vue'
 import ModalForm from '@/components/ModalForm.vue'
 import ListItem from '@/components/ListItem.vue'
 import Empty from '@/components/Empty.vue'
-import PopConfirm from '@/components/PopConfirm.vue'
+import Pagination from '@/components/Pagination.vue'
 
 export default {
   components: {
@@ -96,13 +97,14 @@ export default {
     List,
     ListItem,
     ModalForm,
-    PopConfirm,
     appEmpty: Empty,
     ValidationProvider,
-    ValidationObserver
+    ValidationObserver,
+    appPagination: Pagination,
   },
   data: () => ({
     isModalActive: false,
+    page: 1,
     editedItem: {
       name: '',
       slug: '',
@@ -114,6 +116,9 @@ export default {
   computed: {
     discounts() {
       return this.$store.getters['discounts/getData']
+    },
+    meta() {
+      return this.$store.getters['pages/getMeta']
     },
     currency() {
       return this.$store.state.currency
@@ -128,16 +133,28 @@ export default {
           text: error.response.data?.error?.message
         })
       }
-    }
+    },
+    '$route.query'({ page }) {
+      this.page = page || 1
+      if (this.meta.current_page !== page) {
+        this.getOrders()
+        window.scrollTo(0, 0)
+      }
+    },
   },
   methods: {
-    async getCategories() {
-      const loading = this.$vs.loading({ color: '#000' })
-      await this.$store.dispatch('discounts/fetch')
-      loading.close()
+    changePage(page) {
+      if (this.page !== page) {
+        this.$router.push({ path: 'discounts', query: { page } })
+      }
     },
-    editSlug() {
-      this.editedItem.slug = slugify(this.editedItem.name, { lower: true, remove: /[.]/g })
+    async getDiscounts() {
+      const loading = this.$vs.loading({ color: '#000' })
+      await this.$store.dispatch('discounts/fetch', {
+        page: this.page,
+        limit: 50,
+      })
+      loading.close()
     },
     openModal(id) {
       this.isModalActive = true
@@ -147,7 +164,9 @@ export default {
         this.editedItem = {
           name: '',
           slug: '',
-          public: true
+          type: 0,
+          discount: 0.00,
+          max_uses: 1,
         }
       }
     },
@@ -172,7 +191,8 @@ export default {
     }
   },
   created() {
-    this.getCategories()
+    this.page = this.$route.query.page || 1
+    this.getDiscounts()
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {

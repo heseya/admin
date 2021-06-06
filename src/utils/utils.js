@@ -34,5 +34,5 @@ export const getRelativeDate = (date, lang = 'pl') => {
 }
 
 export const formatDate = (date) => {
-  return format(new Date(date), 'dd.MM.yyyy hh:mm:ss')
+  return format(new Date(date), 'dd.MM.yyyy HH:mm:ss') + ' / ' + date
 }

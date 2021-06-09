@@ -20,14 +20,9 @@
         @input="changePerPage"
         label="Elementów na stronę"
       >
-        <vs-option label="12" :value="12"> 12 </vs-option>
-        <vs-option label="24" :value="24"> 24 </vs-option>
-        <vs-option label="36" :value="36"> 36 </vs-option>
-        <vs-option label="48" :value="48"> 48 </vs-option>
-        <vs-option label="64" :value="64"> 64 </vs-option>
-        <vs-option label="128" :value="128"> 128 </vs-option>
-        <vs-option label="256" :value="256"> 256 </vs-option>
-        <vs-option label="500" :value="500"> 500 </vs-option>
+        <vs-option v-for="option in perPageOptions" :key="option" :label="option" :value="option">
+          {{ option }}
+        </vs-option>
       </vs-select>
 
       <AppPagination
@@ -49,6 +44,7 @@ import Pagination from '@/components/Pagination.vue'
 import Card from '@/components/Card.vue'
 import List from '@/components/List.vue'
 
+import { ResponseMeta } from '@/interfaces/Response'
 import { formatFilters } from '@/utils/utils'
 import { debounce } from 'lodash'
 
@@ -83,11 +79,14 @@ export default Vue.extend({
     itemsPerPage: 24,
   }),
   computed: {
-    items(): any[] {
+    items(): unknown[] {
       return this.$store.getters[`${this.storeKey}/getData`]
     },
-    meta(): any {
+    meta(): ResponseMeta {
       return this.$store.getters[`${this.storeKey}/getMeta`]
+    },
+    perPageOptions(): number[] {
+      return [12, 24, 36, 48, 64, 128, 250, 500]
     },
   },
   watch: {
@@ -106,13 +105,15 @@ export default Vue.extend({
   methods: {
     changePage(page: number) {
       if (this.page !== page) {
-        this.$router.push({ path: 'products', query: { ...this.$route.query, page } })
+        this.$router.push({ path: 'products', query: { ...this.$route.query, page: String(page) } })
       }
     },
     changePerPage(perPage: number) {
       this.itemsPerPage = perPage
+      localStorage.setItem(`${this.storeKey}_per_page`, String(perPage))
+
       if (this.page === 1) this.getItems()
-      else this.$router.push({ path: 'products', query: { ...this.$route.query, page: 1 } })
+      else this.$router.push({ path: 'products', query: { ...this.$route.query, page: '1' } })
     },
     async getItems() {
       const loading = this.$vs.loading({ color: '#000' })
@@ -129,6 +130,7 @@ export default Vue.extend({
   },
   beforeMount() {
     this.page = Number(this.$route.query.page) || 1
+    this.itemsPerPage = +(localStorage.getItem(`${this.storeKey}_per_page`) || 24)
     this.getItems()
   },
 })

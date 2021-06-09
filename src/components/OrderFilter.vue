@@ -37,8 +37,7 @@
 
 <script>
 import clone from 'lodash/clone'
-
-export const ALL_FILTER_VALUE = '_all'
+import { ALL_FILTER_VALUE } from '@/consts/filters'
 
 export const EMPTY_ORDER_FILTERS = {
   search: '',

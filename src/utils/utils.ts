@@ -1,3 +1,4 @@
+import { ALL_FILTER_VALUE } from '@/consts/filters'
 import format from 'date-fns/format'
 
 /**
@@ -35,4 +36,10 @@ export const getRelativeDate = (date: DateInput, lang = 'pl') => {
 
 export const formatDate = (date: DateInput) => {
   return format(new Date(date), 'dd.MM.yyyy HH:mm:ss')
+}
+
+export const formatFilters = (filters: Record<string, unknown>) => {
+  return Object.fromEntries(
+    Object.entries(filters).filter(([, v]) => v !== ALL_FILTER_VALUE && v !== ''),
+  )
 }

@@ -14,6 +14,6 @@ export const shippingMethods = createStore('SHIPPING_METHODS', 'shipping-methods
       } catch (error) {
         return false
       }
-    }
-  }
+    },
+  },
 })

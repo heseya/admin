@@ -15,6 +15,6 @@ export const orders = createStore('ORDERS', 'orders', {
         commit('ORDERS_SET_ERROR', error)
         return false
       }
-    }
-  }
+    },
+  },
 })

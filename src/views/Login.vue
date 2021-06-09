@@ -7,9 +7,7 @@
       <br /><br />
       <vs-input v-model="password" label="Hasło" type="password" @keydown.enter="login" />
       <br />
-      <vs-button color="dark" @click="login">
-        Zaloguj
-      </vs-button>
+      <vs-button color="dark" @click="login"> Zaloguj </vs-button>
     </card>
   </div>
 </template>

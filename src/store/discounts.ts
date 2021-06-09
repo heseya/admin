@@ -4,5 +4,5 @@ export const discounts = createStore('DISCOUNTS', 'discounts', {
   state: {},
   getters: {},
   mutations: {},
-  actions: {}
+  actions: {},
 })

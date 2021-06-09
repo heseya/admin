@@ -16,5 +16,13 @@ module.exports = {
     'comma-dangle': 'off',
   },
 
-  extends: ['plugin:vue/essential', '@vue/standard', '@vue/typescript'],
+  extends: [
+    'plugin:vue/essential',
+    '@vue/standard',
+    '@vue/typescript',
+    'prettier',
+    'plugin:prettier/recommended',
+  ],
+
+  plugins: ['prettier'],
 }

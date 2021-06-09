@@ -4,5 +4,5 @@ export const packageTemplates = createStore('PACKAGE_TEMPLATES', 'package-templa
   state: {},
   getters: {},
   mutations: {},
-  actions: {}
+  actions: {},
 })

@@ -67,7 +67,7 @@ export default {
     },
   },
   methods: {
-    getItems: debounce(async function(search) {
+    getItems: debounce(async function (search) {
       if (search === '') {
         this.data = []
         return

@@ -15,8 +15,8 @@ export default {
   props: {
     value: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
   computed: {
     formValue: {
@@ -25,9 +25,9 @@ export default {
       },
       set(val) {
         this.$emit('input', val)
-      }
-    }
-  }
+      },
+    },
+  },
 }
 </script>
 

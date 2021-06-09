@@ -105,9 +105,7 @@
 
       <vs-dialog width="800px" not-center v-model="isUsedSchemaModalActive">
         <template #header>
-          <h4 class="flex schema-selector-title">
-            Wybierz istniejący schemat
-          </h4>
+          <h4 class="flex schema-selector-title">Wybierz istniejący schemat</h4>
         </template>
         <modal-form>
           <selector
@@ -135,9 +133,7 @@
       </validation-provider>
     </Zone>
     <br />
-    <vs-button color="dark" size="large" @click.stop="handleSubmit(submit)">
-      Zapisz
-    </vs-button>
+    <vs-button color="dark" size="large" @click.stop="handleSubmit(submit)"> Zapisz </vs-button>
   </validation-observer>
 </template>
 

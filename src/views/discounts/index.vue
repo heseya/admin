@@ -9,23 +9,26 @@
     <card>
       <app-empty v-if="!discounts.length">Nie ma jeszcze żadnych kodów rabatowych</app-empty>
       <list>
-        <list-item
-          v-for="discount in discounts"
-          :key="discount.id"
-          @click="openModal(discount.id)"
-        >
+        <list-item v-for="discount in discounts" :key="discount.id" @click="openModal(discount.id)">
           {{ discount.code }}
           <small>{{ discount.description }}</small>
 
           <template #action>
             - {{ discount.discount }} {{ discount.type === 0 ? '%' : currency }}
-            <small style="white-space: nowrap">wykorzystano {{ discount.uses }} z {{ discount.max_uses }}</small>
+            <small style="white-space: nowrap"
+              >wykorzystano {{ discount.uses }} z {{ discount.max_uses }}</small
+            >
           </template>
         </list-item>
       </list>
     </card>
 
-    <app-pagination v-if="meta.last_page" :value="page" @input="changePage" :length="meta.last_page" />
+    <app-pagination
+      v-if="meta.last_page"
+      :value="page"
+      @input="changePage"
+      :length="meta.last_page"
+    />
 
     <validation-observer v-slot="{ handleSubmit }">
       <vs-dialog width="550px" not-center v-model="isModalActive">
@@ -42,11 +45,11 @@
             <vs-input v-model="editedItem.description" label="Opis">
               <template #message-danger>{{ errors[0] }}</template>
             </vs-input>
-          <validation-provider rules="required" v-slot="{ errors }">
-            <vs-input v-model="editedItem.max_uses" label="Maksymalna ilość użyć">
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
+            <validation-provider rules="required" v-slot="{ errors }">
+              <vs-input v-model="editedItem.max_uses" label="Maksymalna ilość użyć">
+                <template #message-danger>{{ errors[0] }}</template>
+              </vs-input>
+            </validation-provider>
           </validation-provider>
           <validation-provider rules="required" v-slot="{ errors }">
             <vs-input v-model="editedItem.discount" label="Zniżka">
@@ -64,15 +67,15 @@
         <template #footer>
           <div class="row">
             <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
-<!--            <pop-confirm-->
-<!--              title="Czy na pewno chcesz usunąć ten kod?"-->
-<!--              okText="Usuń"-->
-<!--              cancelText="Anuluj"-->
-<!--              @confirm="deleteItem"-->
-<!--              v-slot="{ open }"-->
-<!--            >-->
-<!--              <vs-button v-if="editedItem.id" color="danger" @click="open">Usuń</vs-button>-->
-<!--            </pop-confirm>-->
+            <!--            <pop-confirm-->
+            <!--              title="Czy na pewno chcesz usunąć ten kod?"-->
+            <!--              okText="Usuń"-->
+            <!--              cancelText="Anuluj"-->
+            <!--              @confirm="deleteItem"-->
+            <!--              v-slot="{ open }"-->
+            <!--            >-->
+            <!--              <vs-button v-if="editedItem.id" color="danger" @click="open">Usuń</vs-button>-->
+            <!--            </pop-confirm>-->
           </div>
         </template>
       </vs-dialog>
@@ -109,9 +112,9 @@ export default {
       name: '',
       slug: '',
       type: 0,
-      discount: 0.00,
+      discount: 0.0,
       max_uses: 1,
-    }
+    },
   }),
   computed: {
     discounts() {
@@ -130,7 +133,7 @@ export default {
         this.$vs.notification({
           color: 'danger',
           title: error.message,
-          text: error.response.data?.error?.message
+          text: error.response.data?.error?.message,
         })
       }
     },
@@ -165,7 +168,7 @@ export default {
           name: '',
           slug: '',
           type: 0,
-          discount: 0.00,
+          discount: 0.0,
           max_uses: 1,
         }
       }
@@ -175,7 +178,7 @@ export default {
       if (this.editedItem.id) {
         await this.$store.dispatch('discounts/update', {
           id: this.editedItem.id,
-          item: this.editedItem
+          item: this.editedItem,
         })
       } else {
         await this.$store.dispatch('discounts/add', this.editedItem)
@@ -188,7 +191,7 @@ export default {
       await this.$store.dispatch('discounts/remove', this.editedItem.id)
       loading.close()
       this.isModalActive = false
-    }
+    },
   },
   created() {
     this.page = this.$route.query.page || 1
@@ -201,6 +204,6 @@ export default {
     } else {
       next()
     }
-  }
+  },
 }
 </script>

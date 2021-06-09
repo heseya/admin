@@ -15,7 +15,8 @@
               <i class="bx bx-dollar"></i>
             </vs-avatar>
           </template>
-          {{ order.code }} <span v-if="order.delivery_address"> - {{ order.delivery_address.name }}</span>
+          {{ order.code }}
+          <span v-if="order.delivery_address"> - {{ order.delivery_address.name }}</span>
           <small>{{ order.summary }} {{ currency }}</small>
           <template #action>
             <div class="list-item__action--orders">
@@ -58,10 +59,7 @@ import ListItem from '@/components/ListItem.vue'
 import Empty from '@/components/Empty.vue'
 import { getRelativeDate } from '@/utils/utils'
 import Pagination from '@/components/Pagination.vue'
-import OrderFilter, {
-  EMPTY_ORDER_FILTERS,
-  ALL_FILTER_VALUE
-} from '@/components/OrderFilter'
+import OrderFilter, { EMPTY_ORDER_FILTERS, ALL_FILTER_VALUE } from '@/components/OrderFilter'
 import ModalForm from '@/components/ModalForm'
 
 export default {

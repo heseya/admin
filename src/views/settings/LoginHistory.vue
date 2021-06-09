@@ -5,17 +5,15 @@
     <card>
       <app-empty v-if="!history.length">Historia logowania jest pusta</app-empty>
       <list>
-        <list-item
-          v-for="login in history"
-          :key="login.created_at"
-          class="login-item"
-        >
+        <list-item v-for="login in history" :key="login.created_at" class="login-item">
           <template #avatar>
             <vs-avatar dark>
               <i :class="getBrowserIcon(login.browser)"></i>
             </vs-avatar>
           </template>
-          <span v-if="login.platform">{{ login.platform + ' ' + login.browser + ' ' + login.browser_ver }}</span>
+          <span v-if="login.platform">{{
+            login.platform + ' ' + login.browser + ' ' + login.browser_ver
+          }}</span>
           <span v-else>Nieznane urządzenie</span>
           <small v-if="login.ip" class="inline"> ({{ login.ip }})</small>
           <small v-if="!login.revoked" class="green">Sesja aktywna</small>
@@ -72,10 +70,14 @@ export default {
     },
     getBrowserIcon(browser) {
       switch (browser) {
-        case null: return 'bx bx-question-mark'
-        case 'Safari': return 'bx bxl-apple'
-        case 'IE': return 'bx bxl-internet-explorer'
-        default: return 'bx bxl-' + browser.toLowerCase()
+        case null:
+          return 'bx bx-question-mark'
+        case 'Safari':
+          return 'bx bxl-apple'
+        case 'IE':
+          return 'bx bxl-internet-explorer'
+        default:
+          return 'bx bxl-' + browser.toLowerCase()
       }
     },
     async getHistory() {

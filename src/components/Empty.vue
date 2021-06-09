@@ -6,9 +6,7 @@
       </slot>
     </div>
     <div class="empty__message">
-      <slot>
-        Nic tutaj nie ma
-      </slot>
+      <slot> Nic tutaj nie ma </slot>
     </div>
   </div>
 </template>

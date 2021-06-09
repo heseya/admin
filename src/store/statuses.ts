@@ -13,6 +13,6 @@ export const statuses = createStore('STATUSES', 'statuses', {
       } catch (error) {
         return false
       }
-    }
-  }
+    },
+  },
 })

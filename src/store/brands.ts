@@ -13,6 +13,6 @@ export const brands = createStore('BRANDS', 'brands', {
       } catch (error) {
         return false
       }
-    }
-  }
+    },
+  },
 })

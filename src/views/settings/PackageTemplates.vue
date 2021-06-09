@@ -16,9 +16,8 @@
         >
           {{ packageTemplate.name }}
           <small>
-            waga: <b>{{ packageTemplate.weight }}kg</b>,
-            wysokość: <b>{{ packageTemplate.height }}cm</b>,
-            szerokość: <b>{{ packageTemplate.width }}cm</b>,
+            waga: <b>{{ packageTemplate.weight }}kg</b>, wysokość:
+            <b>{{ packageTemplate.height }}cm</b>, szerokość: <b>{{ packageTemplate.width }}cm</b>,
             głębokość: <b>{{ packageTemplate.depth }}cm</b>
           </small>
         </list-item>
@@ -56,7 +55,6 @@
               <template #message-danger>{{ errors[0] }}</template>
             </vs-input>
           </validation-provider>
-
         </modal-form>
         <template #footer>
           <div class="row">
@@ -97,7 +95,7 @@ export default {
     PopConfirm,
     appEmpty: Empty,
     ValidationProvider,
-    ValidationObserver
+    ValidationObserver,
   },
   data: () => ({
     isModalActive: false,
@@ -106,8 +104,8 @@ export default {
       width: 0,
       height: 0,
       depth: 0,
-      weight: 0
-    }
+      weight: 0,
+    },
   }),
   computed: {
     packageTemplates() {
@@ -115,7 +113,7 @@ export default {
     },
     error() {
       return this.$store.getters['packageTemplates/getError']
-    }
+    },
   },
   watch: {
     error(error) {
@@ -123,10 +121,10 @@ export default {
         this.$vs.notification({
           color: 'danger',
           title: error.message,
-          text: error.response.data?.error?.message
+          text: error.response.data?.error?.message,
         })
       }
-    }
+    },
   },
   methods: {
     openModal(id) {
@@ -140,7 +138,7 @@ export default {
           width: 0,
           height: 0,
           depth: 0,
-          weight: 0
+          weight: 0,
         }
       }
     },
@@ -149,7 +147,7 @@ export default {
       if (this.editedItem.id) {
         await this.$store.dispatch('packageTemplates/update', {
           id: this.editedItem.id,
-          item: this.editedItem
+          item: this.editedItem,
         })
       } else {
         await this.$store.dispatch('packageTemplates/add', this.editedItem)
@@ -162,7 +160,7 @@ export default {
       await this.$store.dispatch('packageTemplates/remove', this.editedItem.id)
       loading.close()
       this.isModalActive = false
-    }
+    },
   },
   async created() {
     const loading = this.$vs.loading({ color: '#000' })
@@ -176,7 +174,7 @@ export default {
     } else {
       next()
     }
-  }
+  },
 }
 </script>
 
@@ -185,5 +183,4 @@ export default {
   display: flex;
   justify-content: space-between;
 }
-
 </style>

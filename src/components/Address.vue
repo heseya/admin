@@ -3,9 +3,7 @@
     <template v-if="address">
       <span class="address__name">{{ address.name }}</span>
       <span class="address__field">{{ address.address }}</span>
-      <span class="address__field">
-        {{ address.zip }} {{ address.city }}
-      </span>
+      <span class="address__field"> {{ address.zip }} {{ address.city }} </span>
       <span class="address__field">
         {{ address.country_name ? address.country_name : address.country }}
       </span>
@@ -30,9 +28,9 @@ export default {
   props: {
     address: {
       type: Object,
-      default: () => ({})
-    }
-  }
+      default: () => ({}),
+    },
+  },
 }
 </script>
 

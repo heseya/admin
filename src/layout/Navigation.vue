@@ -38,8 +38,8 @@ export default {
   computed: {
     isVisible() {
       return this.$route.meta.hiddenNav
-    }
-  }
+    },
+  },
 }
 </script>
 

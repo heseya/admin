@@ -21,21 +21,21 @@
 export default {
   name: 'PopConfirm',
   data: () => ({
-    visible: false
+    visible: false,
   }),
   props: {
     title: {
       type: String,
-      default: 'Jesteś pewny?'
+      default: 'Jesteś pewny?',
     },
     okText: {
       type: String,
-      default: 'Tak'
+      default: 'Tak',
     },
     cancelText: {
       type: String,
-      default: 'Nie'
-    }
+      default: 'Nie',
+    },
   },
   methods: {
     setVisible(newValue) {
@@ -57,8 +57,8 @@ export default {
     cancel() {
       this.$emit('cancel')
       this.close()
-    }
-  }
+    },
+  },
 }
 </script>
 

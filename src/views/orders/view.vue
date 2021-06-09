@@ -23,7 +23,8 @@
             </div>
             <div class="cart-total">
               <div v-for="discount in order.discounts" :key="discount.id">
-                Rabat {{ discount.code }}: <b>- {{ discount.discount }} {{ discount.type === 0 ? '%' : currency }}</b>
+                Rabat {{ discount.code }}:
+                <b>- {{ discount.discount }} {{ discount.type === 0 ? '%' : currency }}</b>
               </div>
               Łącznie: <b>{{ order.summary }} {{ currency }}</b>
             </div>

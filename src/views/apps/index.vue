@@ -9,11 +9,7 @@
     <card>
       <app-empty v-if="!apps.length">Żadna aplikacja nie jest zainstalowana</app-empty>
       <list>
-        <list-item
-          class="app"
-          v-for="app in apps"
-          :key="app.id"
-        >
+        <list-item class="app" v-for="app in apps" :key="app.id">
           <template #avatar>
             <vs-avatar dark>
               <i class="bx bxs-extension"></i>
@@ -75,7 +71,7 @@ export default {
     isModalActive: false,
     editedItem: {
       url: '',
-    }
+    },
   }),
   computed: {
     apps() {

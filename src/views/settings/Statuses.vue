@@ -10,11 +10,7 @@
       <app-empty v-if="!statuses.length">Nie ma żadnych statusów</app-empty>
       <list>
         <draggable v-model="statuses">
-          <list-item
-            v-for="status in statuses"
-            :key="status.id"
-            @click="openModal(status.id)"
-          >
+          <list-item v-for="status in statuses" :key="status.id" @click="openModal(status.id)">
             <template #avatar>
               <vs-avatar :color="`#${status.color}`" />
             </template>
@@ -42,7 +38,12 @@
             </vs-input>
           </validation-provider>
           <validation-provider rules="required" v-slot="{ errors }">
-            <vs-input :value="`#${editedItem.color}`" label="Kolor statusu" @input="setColor" type="color">
+            <vs-input
+              :value="`#${editedItem.color}`"
+              label="Kolor statusu"
+              @input="setColor"
+              type="color"
+            >
               <template #message-danger>{{ errors[0] }}</template>
             </vs-input>
           </validation-provider>
@@ -100,8 +101,8 @@ export default {
     editedItem: {
       name: '',
       description: '',
-      color: ''
-    }
+      color: '',
+    },
   }),
   computed: {
     statuses: {
@@ -110,11 +111,14 @@ export default {
       },
       async set(val) {
         const loading = this.$vs.loading({ color: '#000' })
-        await this.$store.dispatch('statuses/setOrder', val.map((status) => status.id))
+        await this.$store.dispatch(
+          'statuses/setOrder',
+          val.map((status) => status.id),
+        )
         await this.$store.dispatch('statuses/fetch')
         loading.close()
-      }
-    }
+      },
+    },
   },
   watch: {
     error(error) {
@@ -122,10 +126,10 @@ export default {
         this.$vs.notification({
           color: 'danger',
           title: error.message,
-          text: error.response.data?.error?.message
+          text: error.response.data?.error?.message,
         })
       }
-    }
+    },
   },
   methods: {
     setColor(color) {
@@ -146,7 +150,7 @@ export default {
           name: '',
           description: '',
           color: '000000',
-          cancel: false
+          cancel: false,
         }
       }
     },
@@ -155,7 +159,7 @@ export default {
       if (this.editedItem.id) {
         await this.$store.dispatch('statuses/update', {
           id: this.editedItem.id,
-          item: this.editedItem
+          item: this.editedItem,
         })
       } else {
         await this.$store.dispatch('statuses/add', this.editedItem)
@@ -168,7 +172,7 @@ export default {
       await this.$store.dispatch('statuses/remove', this.editedItem.id)
       loading.close()
       this.isModalActive = false
-    }
+    },
   },
   created() {
     this.getStatuses()
@@ -180,12 +184,12 @@ export default {
     } else {
       next()
     }
-  }
+  },
 }
 </script>
 
 <style lang="scss">
-input[type="color"] {
+input[type='color'] {
   height: 30px !important;
 }
 </style>

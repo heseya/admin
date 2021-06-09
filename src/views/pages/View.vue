@@ -45,9 +45,7 @@
           <small class="label">Treść</small>
           <md-editor v-if="!isLoading" v-model="form.content_md" />
           <br />
-          <vs-button color="dark" size="large" @click="handleSubmit(save)">
-            Zapisz
-          </vs-button>
+          <vs-button color="dark" size="large" @click="handleSubmit(save)"> Zapisz </vs-button>
         </card>
       </validation-observer>
     </div>

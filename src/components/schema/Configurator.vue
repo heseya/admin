@@ -7,28 +7,30 @@
     <empty v-if="schemas.length === 0">Ten produkt nie ma jeszcze żadnego schematu</empty>
     <list class="configurator__schemas">
       <draggable v-model="schemas">
-      <list-item
-        class="configurator__schema"
-        :class="{ [`configurator__schema--dep`]: schema.auto_dependecy }"
-        :title="schema.auto_dependecy ? 'Schemat jest automatyczny - nie możesz go usunąć' : ''"
-        v-for="schema in value"
-        :key="schema.id"
-        no-hover
-        :hidden="schema.hidden"
-      >
-        <i class="bx bx-network-chart" v-if="schema.auto_dependecy"></i>
-        {{ schema.name }}
-        <small class="optional">{{ !schema.required ? '(opcjonalny)' : '' }}</small>
-        <small>{{ schema.description }}</small>
-        <template #action>
-          <div class="flex">
-            <vs-button dark icon @click="editSchema(schema)"><i class="bx bx-edit"></i></vs-button>
-            <vs-button danger icon @click="removeSchema(schema.id)" class="schema-delete">
-              <i class="bx bx-trash"></i>
-            </vs-button>
-          </div>
-        </template>
-      </list-item>
+        <list-item
+          class="configurator__schema"
+          :class="{ [`configurator__schema--dep`]: schema.auto_dependecy }"
+          :title="schema.auto_dependecy ? 'Schemat jest automatyczny - nie możesz go usunąć' : ''"
+          v-for="schema in value"
+          :key="schema.id"
+          no-hover
+          :hidden="schema.hidden"
+        >
+          <i class="bx bx-network-chart" v-if="schema.auto_dependecy"></i>
+          {{ schema.name }}
+          <small class="optional">{{ !schema.required ? '(opcjonalny)' : '' }}</small>
+          <small>{{ schema.description }}</small>
+          <template #action>
+            <div class="flex">
+              <vs-button dark icon @click="editSchema(schema)"
+                ><i class="bx bx-edit"></i
+              ></vs-button>
+              <vs-button danger icon @click="removeSchema(schema.id)" class="schema-delete">
+                <i class="bx bx-trash"></i>
+              </vs-button>
+            </div>
+          </template>
+        </list-item>
       </draggable>
     </list>
 
@@ -101,8 +103,8 @@ export default {
       },
       set(val) {
         this.$emit('input', val)
-      }
-    }
+      },
+    },
   },
   methods: {
     editSchema(schema) {

@@ -13,6 +13,6 @@ export const categories = createStore('CATEGORIES', 'categories', {
       } catch (error) {
         return false
       }
-    }
-  }
+    },
+  },
 })

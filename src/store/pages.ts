@@ -4,5 +4,5 @@ export const pages = createStore('PAGES', 'pages', {
   state: {},
   getters: {},
   mutations: {},
-  actions: {}
+  actions: {},
 })

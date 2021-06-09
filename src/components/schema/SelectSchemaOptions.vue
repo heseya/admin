@@ -23,9 +23,7 @@
       <SwitchInput v-model="option.disabled">
         <template #title>Disabled</template>
       </SwitchInput>
-      <vs-radio :value="defaultOption" @input="setDefault" :val="i" dark>
-        Domyślny
-      </vs-radio>
+      <vs-radio :value="defaultOption" @input="setDefault" :val="i" dark> Domyślny </vs-radio>
       <vs-button
         size="small"
         danger

@@ -13,6 +13,6 @@ export const apps = createStore('APPS', 'apps', {
       } catch (error) {
         return false
       }
-    }
-  }
+    },
+  },
 })

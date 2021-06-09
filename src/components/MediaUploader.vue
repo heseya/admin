@@ -20,13 +20,13 @@ export default {
   name: 'MediaUploader',
   data: () => ({
     isDrag: false,
-    file: null
+    file: null,
   }),
   props: {
     extensions: {
       type: Array,
-      default: () => ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg']
-    }
+      default: () => ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg'],
+    },
   },
   methods: {
     selectFiles() {
@@ -52,7 +52,7 @@ export default {
         this.$vs.notification({
           color: 'danger',
           title: 'Złe rozszerzenie pliku',
-          text: `Obsługiwane są tylko pliki z rozszerzeniami: ${this.extensions.join(', ')}`
+          text: `Obsługiwane są tylko pliki z rozszerzeniami: ${this.extensions.join(', ')}`,
         })
         return
       }
@@ -78,8 +78,8 @@ export default {
     changeDrag(isDrag) {
       this.isDrag = isDrag
       this.$emit('dragChange', isDrag)
-    }
-  }
+    },
+  },
 }
 </script>
 

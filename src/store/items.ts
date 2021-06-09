@@ -3,17 +3,17 @@ import { api } from '../api'
 
 export const items = createStore('ITEMS', 'items', {
   state: {
-    depositError: null
+    depositError: null,
   },
   getters: {
     getDepositError(state) {
       return state.depositError
-    }
+    },
   },
   mutations: {
     PRODUCTS_SET_DEPOSITS_ERROR(state, error) {
       state.depositError = error
-    }
+    },
   },
   actions: {
     async updateQuantity({ commit }, { id, quantity }) {
@@ -29,12 +29,12 @@ export const items = createStore('ITEMS', 'items', {
     async getQuantity({ commit }, id) {
       commit('PRODUCTS_SET_DEPOSITS_ERROR', null)
       try {
-        const { data } = await api.get(`/items/id:${id}/deposits`)
+        const { data } = await api.get<{ data: { quantity: number }[] }>(`/items/id:${id}/deposits`)
         return data.data.reduce((acc, { quantity }) => acc + quantity, 0)
       } catch (error) {
         commit('PRODUCTS_SET_DEPOSITS_ERROR', error)
         return false
       }
-    }
-  }
+    },
+  },
 })

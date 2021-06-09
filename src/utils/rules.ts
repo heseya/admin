@@ -8,7 +8,7 @@ extend('required', {
 
 extend('password', {
   params: ['target'],
-  validate(password, { target }) {
+  validate(password, { target }: Record<string, any>) {
     return password === target
   },
   message: 'Powtórzone hasło różni się od nowego hasła',

@@ -1,4 +1,5 @@
 import Vue from 'vue'
+// @ts-ignore
 import Vuesax from 'vuesax'
 
 import App from './App.vue'

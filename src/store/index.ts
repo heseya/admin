@@ -4,6 +4,8 @@ import VuexPersistence from 'vuex-persist'
 
 import { api } from '../api'
 
+import { Setting } from '@/interfaces/Settings'
+
 import { auth } from './auth'
 import { items } from './items'
 import { products } from './products'
@@ -19,14 +21,14 @@ import { packageTemplates } from './packageTemplates'
 import { settings } from './settings'
 import { loginHistory } from './loginHistory'
 import { apps } from './apps'
-import { discounts } from '@/store/discounts'
+import { discounts } from './discounts'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
     currency: 'zł',
-    env: {},
+    env: {} as Record<string, string>,
   },
   mutations: {
     SET_ENV(state, newEnv) {
@@ -35,7 +37,7 @@ export default new Vuex.Store({
   },
   actions: {
     async fetchEnv({ commit }) {
-      const response = await api.get('/settings')
+      const response = await api.get<{ data: Setting[] }>('/settings')
       const settingsArray = response.data.data
       const settings = Object.fromEntries(settingsArray.map(({ name, value }) => [name, value]))
       commit('SET_ENV', settings)

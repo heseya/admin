@@ -1,10 +1,10 @@
 import { api } from '@/api'
 
-export const createPackage = async (orderId, packageTemplateId) => {
+export const createPackage = async (orderId: string, packageTemplateId: string) => {
   try {
     const { status, data } = await api.post('furgonetka/create-package', {
       order_id: orderId,
-      package_template_id: packageTemplateId
+      package_template_id: packageTemplateId,
     })
 
     if (status !== 201) {
@@ -13,12 +13,12 @@ export const createPackage = async (orderId, packageTemplateId) => {
 
     return {
       success: true,
-      shippingNumber: data.shipping_number
+      shippingNumber: data.shipping_number,
     }
   } catch (error) {
     return {
       success: false,
-      error
+      error,
     }
   }
 }

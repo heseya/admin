@@ -1,6 +1,8 @@
 export const disableScrollOnInput = () => {
   document.addEventListener('wheel', function(event) {
-    if (document.activeElement.type === 'number') {
+    // @ts-ignore
+    if (document.activeElement?.type === 'number') {
+      // @ts-ignore
       document.activeElement.blur()
     }
   })

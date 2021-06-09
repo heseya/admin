@@ -34,7 +34,7 @@ api.interceptors.request.use((config) => {
   return config
 })
 
-api.interceptors.response.use(null, (error) => {
+api.interceptors.response.use(undefined, (error) => {
   if (error.response.status === 401) {
     store.dispatch('auth/clearAuth')
     router.push('/login')

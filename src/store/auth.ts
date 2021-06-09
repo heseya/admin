@@ -1,19 +1,23 @@
+import { User } from '@/interfaces/User'
+import { Module } from 'vuex'
 import { api } from '../api'
 
-export const auth = {
+const state = {
+  error: null as null | Error,
+  user: null as null | User,
+  token: null as null | string,
+}
+
+export const auth: Module<typeof state, any> = {
   namespaced: true,
-  state: {
-    error: null,
-    user: null,
-    token: null
-  },
+  state,
   getters: {
     getToken(state) {
       return state.token
     },
     isLogged(state) {
       return !!state.user
-    }
+    },
   },
   mutations: {
     SET_TOKEN(state, newToken) {
@@ -24,10 +28,10 @@ export const auth = {
     },
     SET_ERROR(state, newError) {
       state.error = newError
-    }
+    },
   },
   actions: {
-    async login({ commit }, { email, password }) {
+    async login({ commit }, { email, password }: { email: string; password: string }) {
       commit('SET_ERROR', null)
       try {
         const { data } = await api.post('/login', { email, password })
@@ -49,6 +53,6 @@ export const auth = {
       commit('SET_ERROR', null)
       commit('SET_USER', null)
       commit('SET_TOKEN', null)
-    }
-  }
+    },
+  },
 }

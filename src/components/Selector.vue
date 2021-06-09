@@ -84,6 +84,7 @@ export default {
         this.data = data.data
         loading.close()
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error(error)
         loading.close()
       }

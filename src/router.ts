@@ -182,6 +182,8 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  window.scrollTo(0, 0)
+
   if (to.matched.some((rec) => rec.meta.requiresAuth)) {
     if (!store.getters['auth/isLogged']) {
       // User is not logged

@@ -98,14 +98,17 @@ export default Vue.extend({
       }
     },
     // eslint-disable-next-line prettier/prettier
-    filters: debounce(function(this: any) {
+    filters: debounce(function (this: any) {
       this.getItems()
     }, 300),
   },
   methods: {
     changePage(page: number) {
       if (this.page !== page) {
-        this.$router.push({ path: 'products', query: { ...this.$route.query, page: String(page) } })
+        this.$router.push({
+          path: this.$route.path,
+          query: { ...this.$route.query, page: String(page) },
+        })
       }
     },
     changePerPage(perPage: number) {
@@ -113,7 +116,7 @@ export default Vue.extend({
       localStorage.setItem(`${this.storeKey}_per_page`, String(perPage))
 
       if (this.page === 1) this.getItems()
-      else this.$router.push({ path: 'products', query: { ...this.$route.query, page: '1' } })
+      else this.$router.push({ path: this.$route.path, query: { ...this.$route.query, page: '1' } })
     },
     async getItems() {
       const loading = this.$vs.loading({ color: '#000' })

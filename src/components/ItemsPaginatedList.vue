@@ -98,7 +98,7 @@ export default Vue.extend({
       }
     },
     // eslint-disable-next-line prettier/prettier
-    filters: debounce(function() {
+    filters: debounce(function(this: any) {
       this.getItems()
     }, 300),
   },

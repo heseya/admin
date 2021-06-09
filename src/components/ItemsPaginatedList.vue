@@ -121,8 +121,8 @@ export default Vue.extend({
       const queryFilters = formatFilters(this.filters)
       await this.$store.dispatch(`${this.storeKey}/fetch`, {
         page: this.page,
+        limit: this.itemsPerPage,
         ...queryFilters,
-        limit: this.itemsPerPage, // TODO
       })
 
       loading.close()

@@ -7,7 +7,13 @@
     <AppCard>
       <AppEmpty v-if="!items.length">{{ emptyText }}</AppEmpty>
       <AppList class="paginated-items__list">
-        <template v-for="item in items">
+        <Draggable v-if="draggable" v-model="items" handle=".paginated-items__item">
+          <template v-for="item in items">
+            <slot :item="item" className="paginated-items__item" />
+          </template>
+        </Draggable>
+
+        <template v-for="item in items" v-else>
           <slot :item="item" />
         </template>
       </AppList>
@@ -37,6 +43,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import Draggable from 'vuedraggable'
 
 import TopNav from '@/layout/TopNav.vue'
 import Empty from '@/components/Empty.vue'
@@ -47,6 +54,7 @@ import List from '@/components/List.vue'
 import { ResponseMeta } from '@/interfaces/Response'
 import { formatFilters } from '@/utils/utils'
 import { debounce } from 'lodash'
+import { formatApiError } from '@/utils/errors'
 
 export default Vue.extend({
   components: {
@@ -55,6 +63,7 @@ export default Vue.extend({
     AppPagination: Pagination,
     AppCard: Card,
     AppList: List,
+    Draggable,
   },
   props: {
     title: {
@@ -64,6 +73,10 @@ export default Vue.extend({
     storeKey: {
       type: String,
       required: true,
+    },
+    draggable: {
+      type: Boolean,
+      default: false,
     },
     emptyText: {
       type: String,
@@ -79,11 +92,25 @@ export default Vue.extend({
     itemsPerPage: 24,
   }),
   computed: {
-    items(): unknown[] {
-      return this.$store.getters[`${this.storeKey}/getData`]
+    items: {
+      get(): unknown[] {
+        return this.$store.getters[`${this.storeKey}/getData`]
+      },
+      async set(items: any[]) {
+        const loading = this.$vs.loading({ color: '#000' })
+        await this.$store.dispatch(
+          `${this.storeKey}/setOrder`,
+          items.map(({ id }) => id),
+        )
+        await this.getItems()
+        loading.close()
+      },
     },
     meta(): ResponseMeta {
       return this.$store.getters[`${this.storeKey}/getMeta`]
+    },
+    error(): any {
+      return this.$store.getters[`${this.storeKey}/getError`]
     },
     perPageOptions(): number[] {
       return [12, 24, 36, 48, 64, 128, 250, 500]
@@ -97,7 +124,14 @@ export default Vue.extend({
         window.scrollTo(0, 0)
       }
     },
-    // eslint-disable-next-line prettier/prettier
+    error(error) {
+      if (error) {
+        this.$vs.notification({
+          color: 'danger',
+          ...formatApiError(error),
+        })
+      }
+    },
     filters: debounce(function (this: any) {
       this.getItems()
     }, 300),

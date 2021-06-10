@@ -6,7 +6,6 @@
           <template #message-danger>{{ errors[0] }}</template>
         </vs-input>
       </validation-provider>
-      <vs-input v-model="form.price" label="Cena" type="number" step="0.01" />
       <div class="center">
         <vs-select
           v-model="form.payment_methods"
@@ -14,7 +13,7 @@
           multiple
           filter
           collapse-chips
-          label="Metody płatności"
+          label="Dostępne metody płatności"
         >
           <vs-option
             v-for="method in paymentMethods"
@@ -27,13 +26,24 @@
         </vs-select>
       </div>
       <br />
+      <div class="center">
+        <flex-input>
+          <label class="title">Widoczność opcji dostawy</label>
+          <switch-input v-model="form.public"> </switch-input>
+        </flex-input>
+      </div>
 
       <hr />
 
+      <PriceRangesForm v-model="form.price_ranges" />
+
+      <hr />
+
+      <h5>Wysyłka możliwa do</h5>
       <div class="center">
         <flex-input>
           <label class="title">Biała lista</label>
-          <switch-input v-model="form.black_list" />
+          <vs-switch color="#000" v-model="form.black_list" />
           <label class="title">Czarna lista</label>
         </flex-input>
       </div>
@@ -57,15 +67,6 @@
           </vs-option>
         </vs-select>
       </div>
-      <br />
-      <hr />
-
-      <div class="center">
-        <flex-input>
-          <label class="title">Widoczność opcji dostawy</label>
-          <switch-input v-model="form.public"> </switch-input>
-        </flex-input>
-      </div>
     </modal-form>
   </div>
 </template>
@@ -78,8 +79,9 @@ import ModalForm from '@/components/ModalForm.vue'
 import SwitchInput from '@/components/SwitchInput.vue'
 import FlexInput from '@/components/FlexInput.vue'
 
-import { ShippingMethod } from '@/interfaces/ShippingMethod'
+import { ShippingMethodCountry, ShippingMethodDTO } from '@/interfaces/ShippingMethod'
 import { PaymentMethod } from '@/interfaces/PaymentMethod'
+import PriceRangesForm from './PriceRangesForm.vue'
 
 export default Vue.extend({
   name: 'ShippingMethodsForm',
@@ -87,21 +89,18 @@ export default Vue.extend({
     value: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<ShippingMethod>,
+    } as Vue.PropOptions<ShippingMethodDTO>,
     countries: {
       type: Array,
       required: true,
-    } as Vue.PropOptions<any[]>,
+    } as Vue.PropOptions<ShippingMethodCountry[]>,
   },
-  data: () => ({
-    countries: [] as any[],
-  }),
   computed: {
     form: {
-      get(): ShippingMethod {
+      get(): ShippingMethodDTO {
         return this.value
       },
-      set(value: ShippingMethod) {
+      set(value: ShippingMethodDTO) {
         this.$emit('input', value)
       },
     },
@@ -114,12 +113,15 @@ export default Vue.extend({
     FlexInput,
     ValidationProvider,
     SwitchInput,
+    PriceRangesForm,
   },
 })
 </script>
 
 <style lang="scss">
 .shipping-methods-form {
+  margin-bottom: 24px;
+
   .flex-input {
     margin-bottom: 12px;
   }

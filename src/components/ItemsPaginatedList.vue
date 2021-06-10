@@ -54,6 +54,7 @@ import List from '@/components/List.vue'
 import { ResponseMeta } from '@/interfaces/Response'
 import { formatFilters } from '@/utils/utils'
 import { debounce } from 'lodash'
+import { formatApiError } from '@/utils/errors'
 
 export default Vue.extend({
   components: {
@@ -108,6 +109,9 @@ export default Vue.extend({
     meta(): ResponseMeta {
       return this.$store.getters[`${this.storeKey}/getMeta`]
     },
+    error(): any {
+      return this.$store.getters[`${this.storeKey}/getError`]
+    },
     perPageOptions(): number[] {
       return [12, 24, 36, 48, 64, 128, 250, 500]
     },
@@ -120,7 +124,14 @@ export default Vue.extend({
         window.scrollTo(0, 0)
       }
     },
-    // eslint-disable-next-line prettier/prettier
+    error(error) {
+      if (error) {
+        this.$vs.notification({
+          color: 'danger',
+          ...formatApiError(error),
+        })
+      }
+    },
     filters: debounce(function (this: any) {
       this.getItems()
     }, 300),

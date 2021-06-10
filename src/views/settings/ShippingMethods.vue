@@ -9,7 +9,7 @@
 
       <template v-slot="{ item: shippingMethod }">
         <list-item @click="openModal(shippingMethod.id)" :hidden="!shippingMethod.public">
-          {{ shippingMethod.name }} - {{ shippingMethod.price }} {{ currency }}
+          {{ shippingMethod.name }}
           <small v-if="shippingMethod.countries.length">
             {{ shippingMethod.black_list ? 'Wszystkie kraje poza:' : 'Tylko wybrane kraje:' }}
             {{ shippingMethod.countries.map((c) => c.name).join(', ') }}
@@ -26,7 +26,7 @@
     </ItemsPaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
-      <vs-dialog width="550px" not-center v-model="isModalActive">
+      <vs-dialog width="660px" not-center v-model="isModalActive">
         <template #header>
           <h4>{{ editedItem.id ? 'Edycja opcji' : 'Nowa opcja' }} dostawy</h4>
         </template>
@@ -70,47 +70,9 @@ export default {
   },
   data: () => ({
     isModalActive: false,
-    editedItem: {
-      name: '',
-      price: 0,
-      payment_methods: [],
-      public: true,
-    },
+    editedItem: {},
     countries: [],
   }),
-  computed: {
-    shippingMethods: {
-      get() {
-        return this.$store.getters['shippingMethods/getData']
-      },
-      async set(val) {
-        const loading = this.$vs.loading({ color: '#000' })
-        await this.$store.dispatch(
-          'shippingMethods/setOrder',
-          val.map((method) => method.id),
-        )
-        await this.$store.dispatch('shippingMethods/fetch')
-        loading.close()
-      },
-    },
-    error() {
-      return this.$store.getters['shippingMethods/getError']
-    },
-    currency() {
-      return this.$store.state.currency
-    },
-  },
-  watch: {
-    error(error) {
-      if (error) {
-        this.$vs.notification({
-          color: 'danger',
-          title: error.message,
-          text: error.response.data?.error?.message,
-        })
-      }
-    },
-  },
   methods: {
     openModal(id) {
       this.isModalActive = true
@@ -120,14 +82,23 @@ export default {
           ...item,
           payment_methods: item.payment_methods.map(({ id }) => id),
           countries: item.countries.map(({ code }) => code),
+          price_ranges: item.price_ranges.map(({ start, prices }) => ({
+            start,
+            value: prices[0].value,
+          })),
         }
       } else {
         this.editedItem = {
           name: '',
-          price: 0,
           black_list: false,
           payment_methods: [],
           countries: [],
+          price_ranges: [
+            {
+              start: 0,
+              value: 0,
+            },
+          ],
           public: true,
         }
       }

@@ -35,7 +35,9 @@
 
       <hr />
 
-      <PriceRangesForm v-model="form.price_ranges" />
+      <validation-provider ref="priceRange" rules="price-ranges-duplicates" v-slot="{ errors }">
+        <PriceRangesForm v-model="form.price_ranges" :error="errors[0]" />
+      </validation-provider>
 
       <hr />
 
@@ -106,6 +108,15 @@ export default Vue.extend({
     },
     paymentMethods(): PaymentMethod[] {
       return this.$store.getters['paymentMethods/getData']
+    },
+  },
+  watch: {
+    'form.price_ranges': {
+      deep: true,
+      handler(v) {
+        // @ts-ignore
+        this.$refs.priceRange.validate()
+      },
     },
   },
   components: {

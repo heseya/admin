@@ -1,3 +1,4 @@
+import { ShippingMethodPriceRangeDTO } from '@/interfaces/ShippingMethod'
 import { extend } from 'vee-validate'
 import { required } from 'vee-validate/dist/rules'
 
@@ -45,5 +46,19 @@ extend('letters-only', {
   message: 'Wartość może składać się tylko z liter i podkreślników (_)',
   validate: (value) => {
     return /^[a-zA-Z_]+(?:[a-zA-Z]+)*$/.test(value)
+  },
+})
+
+extend('price-ranges-duplicates', {
+  message: 'Zakresy cen nie mogą zawierać zduplikowanych progów',
+  validate: (value) => {
+    const values: number[] = []
+
+    const cond = (value as ShippingMethodPriceRangeDTO[]).every(({ start }) => {
+      const isDuplicate = values.includes(+start)
+      values.push(+start)
+      return !isDuplicate
+    })
+    return cond
   },
 })

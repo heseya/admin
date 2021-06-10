@@ -10,11 +10,12 @@
           :disabled="i === 0"
         />
         <vs-input label="Stawka" type="number" v-model="range.value" />
-        <vs-button danger icon @click.stop="removeRange(i)" v-if="i !== 0">
+        <vs-button transparent danger icon @click.stop="removeRange(i)" v-if="i !== 0">
           <i class="bx bxs-trash"></i>
         </vs-button>
       </div>
     </div>
+    <small class="price-ranges-form__error">{{ error }}</small>
     <vs-button color="#000" size="small" @click="addRange">
       <i class="bx bx-plus"></i> &nbsp;&nbsp; Dodaj zakres
     </vs-button>
@@ -32,11 +33,15 @@ export default Vue.extend({
       type: Array,
       default: () => [{ start: 0, value: 0 }],
     } as Vue.PropOptions<ShippingMethodPriceRangeDTO[]>,
+    error: {
+      type: String,
+      default: '',
+    },
   },
   computed: {
     priceRanges: {
       get(): ShippingMethodPriceRangeDTO[] {
-        return [...this.value].sort((a, b) => a.start - b.start)
+        return this.value
       },
       set(v: ShippingMethodPriceRangeDTO[]) {
         this.$emit('input', v)
@@ -46,10 +51,14 @@ export default Vue.extend({
   methods: {
     addRange(start?: number) {
       const rangeStart = start ?? Math.max(...this.priceRanges.map((p) => p.start), 0)
-      this.priceRanges = [...this.priceRanges, { start: rangeStart, value: 0 }]
+      this.priceRanges = [...this.priceRanges, { start: rangeStart, value: 0 }].sort(
+        (a, b) => a.start - b.start,
+      )
     },
     removeRange(index: number) {
-      this.priceRanges = this.priceRanges.filter((_u, i) => i !== index)
+      this.priceRanges = this.priceRanges
+        .filter((_u, i) => i !== index)
+        .sort((a, b) => a.start - b.start)
     },
   },
   created() {
@@ -78,6 +87,14 @@ export default Vue.extend({
       margin: 0;
       transform: scale(0.7);
     }
+  }
+
+  &__error {
+    display: block;
+    color: red;
+    margin-left: 6px;
+    font-size: 0.7em;
+    margin-bottom: 6px;
   }
 }
 </style>

@@ -7,7 +7,7 @@
     <AppCard>
       <AppEmpty v-if="!items.length">{{ emptyText }}</AppEmpty>
       <AppList class="paginated-items__list">
-        <Draggable v-if="draggable" v-model="items" handle=".paginated-items__item">
+        <Draggable v-if="draggable" v-model="items">
           <template v-for="item in items">
             <slot :item="item" className="paginated-items__item" />
           </template>

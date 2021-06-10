@@ -1,37 +1,29 @@
 <template>
   <div>
-    <top-nav title="Opcje Dostawy">
-      <vs-button @click="openModal()" color="dark" icon>
-        <i class="bx bx-plus"></i>
-      </vs-button>
-    </top-nav>
+    <ItemsPaginatedList title="Opcje Dostawy" storeKey="shippingMethods" draggable>
+      <template #nav>
+        <vs-button @click="openModal()" color="dark" icon>
+          <i class="bx bx-plus"></i>
+        </vs-button>
+      </template>
 
-    <card>
-      <app-empty v-if="!shippingMethods.length">Nie ma żadnej opcji dostawy</app-empty>
-      <list>
-        <draggable v-model="shippingMethods">
-          <list-item
-            v-for="shippingMethod in shippingMethods"
-            :key="shippingMethod.id"
-            @click="openModal(shippingMethod.id)"
-            :hidden="!shippingMethod.public"
-          >
-            {{ shippingMethod.name }} - {{ shippingMethod.price }} {{ currency }}
-            <small v-if="shippingMethod.countries.length">
-              {{ shippingMethod.black_list ? 'Wszystkie kraje poza:' : 'Tylko wybrane kraje:' }}
-              {{ shippingMethod.countries.map((c) => c.name).join(', ') }}
-            </small>
-            <small v-else>
-              {{
-                shippingMethod.black_list
-                  ? 'Metoda dostepna w każdym kraju'
-                  : 'Metoda niedostepna w żadnym kraju'
-              }}
-            </small>
-          </list-item>
-        </draggable>
-      </list>
-    </card>
+      <template v-slot="{ item: shippingMethod }">
+        <list-item @click="openModal(shippingMethod.id)" :hidden="!shippingMethod.public">
+          {{ shippingMethod.name }} - {{ shippingMethod.price }} {{ currency }}
+          <small v-if="shippingMethod.countries.length">
+            {{ shippingMethod.black_list ? 'Wszystkie kraje poza:' : 'Tylko wybrane kraje:' }}
+            {{ shippingMethod.countries.map((c) => c.name).join(', ') }}
+          </small>
+          <small v-else>
+            {{
+              shippingMethod.black_list
+                ? 'Metoda dostepna w każdym kraju'
+                : 'Metoda niedostepna w żadnym kraju'
+            }}
+          </small>
+        </list-item>
+      </template>
+    </ItemsPaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
       <vs-dialog width="550px" not-center v-model="isModalActive">
@@ -126,32 +118,24 @@
 
 <script>
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
-import TopNav from '@/layout/TopNav.vue'
-import Card from '@/components/Card.vue'
-import List from '@/components/List.vue'
 import ModalForm from '@/components/ModalForm.vue'
+import ItemsPaginatedList from '@/components/ItemsPaginatedList.vue'
 import FlexInput from '@/components/FlexInput.vue'
 import ListItem from '@/components/ListItem.vue'
-import Empty from '@/components/Empty.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
-import Draggable from 'vuedraggable'
 import { api } from '../../api'
 import SwitchInput from '../../components/SwitchInput.vue'
 
 export default {
   components: {
-    TopNav,
-    Card,
-    List,
     ListItem,
     ModalForm,
     PopConfirm,
     FlexInput,
-    appEmpty: Empty,
     ValidationProvider,
     ValidationObserver,
-    Draggable,
     SwitchInput,
+    ItemsPaginatedList,
   },
   data: () => ({
     isModalActive: false,
@@ -242,14 +226,10 @@ export default {
   },
   async created() {
     const loading = this.$vs.loading({ color: '#000' })
-    await Promise.all([
-      this.$store.dispatch('shippingMethods/fetch'),
-      this.$store.dispatch('paymentMethods/fetch'),
-    ])
-    loading.close()
-
+    this.$store.dispatch('paymentMethods/fetch')
     const { data } = await api.get('countries')
     this.countries = data.data
+    loading.close()
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {

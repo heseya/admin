@@ -23,13 +23,14 @@
 export default {
   props: {
     url: String,
+    el: String,
     hidden: Boolean,
     noHover: Boolean,
   },
   computed: {
     component() {
       if (this.url) return 'router-link'
-      else return 'button'
+      return this.el || 'button'
     },
   },
   methods: {

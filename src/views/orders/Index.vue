@@ -51,9 +51,10 @@
 <script>
 import ListItem from '@/components/ListItem.vue'
 import { formatFilters, getRelativeDate } from '@/utils/utils'
-import OrderFilter, { EMPTY_ORDER_FILTERS, ALL_FILTER_VALUE } from '@/components/OrderFilter'
+import OrderFilter, { EMPTY_ORDER_FILTERS } from '@/components/OrderFilter'
 import ModalForm from '@/components/ModalForm'
 import ItemsPaginatedList from '@/components/ItemsPaginatedList.vue'
+import { ALL_FILTER_VALUE } from '@/consts/filters'
 
 export default {
   components: {

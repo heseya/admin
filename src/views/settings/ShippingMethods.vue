@@ -30,73 +30,7 @@
         <template #header>
           <h4>{{ editedItem.id ? 'Edycja opcji' : 'Nowa opcja' }} dostawy</h4>
         </template>
-        <modal-form>
-          <validation-provider rules="required" v-slot="{ errors }">
-            <vs-input v-model="editedItem.name" label="Nazwa">
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
-          <vs-input v-model="editedItem.price" label="Cena" type="number" step="0.01" />
-          <div class="center">
-            <vs-select
-              v-model="editedItem.payment_methods"
-              :key="paymentMethods.length"
-              multiple
-              filter
-              collapse-chips
-              label="Metody płatności"
-            >
-              <vs-option
-                v-for="method in paymentMethods"
-                :key="method.id"
-                :value="method.id"
-                :label="method.name"
-              >
-                {{ method.name }}
-              </vs-option>
-            </vs-select>
-          </div>
-          <br />
-
-          <hr />
-
-          <div class="center">
-            <flex-input>
-              <label class="title">Biała lista</label>
-              <switch-input v-model="editedItem.black_list" />
-              <label class="title">Czarna lista</label>
-            </flex-input>
-          </div>
-
-          <div class="center">
-            <vs-select
-              v-model="editedItem.countries"
-              :key="countries.length"
-              multiple
-              filter
-              collapse-chips
-              label="Kraje"
-            >
-              <vs-option
-                v-for="country in countries"
-                :key="country.code"
-                :value="country.code"
-                :label="country.name"
-              >
-                {{ country.name }}
-              </vs-option>
-            </vs-select>
-          </div>
-          <br />
-          <hr />
-
-          <div class="center">
-            <flex-input>
-              <label class="title">Widoczność opcji dostawy</label>
-              <switch-input v-model="editedItem.public"> </switch-input>
-            </flex-input>
-          </div>
-        </modal-form>
+        <ShippingMethodsForm v-model="editedItem" :countries="countries" />
         <template #footer>
           <div class="row">
             <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
@@ -117,25 +51,22 @@
 </template>
 
 <script>
-import { ValidationProvider, ValidationObserver } from 'vee-validate'
-import ModalForm from '@/components/ModalForm.vue'
+import { ValidationObserver } from 'vee-validate'
+
 import ItemsPaginatedList from '@/components/ItemsPaginatedList.vue'
-import FlexInput from '@/components/FlexInput.vue'
 import ListItem from '@/components/ListItem.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
+import ShippingMethodsForm from '@/components/forms/shippingMethods/Index.vue'
+
 import { api } from '../../api'
-import SwitchInput from '../../components/SwitchInput.vue'
 
 export default {
   components: {
     ListItem,
-    ModalForm,
     PopConfirm,
-    FlexInput,
-    ValidationProvider,
     ValidationObserver,
-    SwitchInput,
     ItemsPaginatedList,
+    ShippingMethodsForm,
   },
   data: () => ({
     isModalActive: false,
@@ -148,9 +79,6 @@ export default {
     countries: [],
   }),
   computed: {
-    paymentMethods() {
-      return this.$store.getters['paymentMethods/getData']
-    },
     shippingMethods: {
       get() {
         return this.$store.getters['shippingMethods/getData']
@@ -246,17 +174,5 @@ export default {
 .row {
   display: flex;
   justify-content: space-between;
-}
-
-.flex-input {
-  margin-bottom: 12px;
-}
-
-.switch-input {
-  margin-top: 0;
-}
-
-label.title {
-  margin: 0 6px;
 }
 </style>

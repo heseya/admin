@@ -25,6 +25,7 @@
 <script>
 import Draggable from 'vuedraggable'
 import MediaUploader from '@/components/MediaUploader'
+import { formatApiError } from '@/utils/errors'
 
 export default {
   components: {
@@ -63,8 +64,7 @@ export default {
     onUploadError(error) {
       this.$vs.notification({
         color: 'danger',
-        title: 'Nie udało się przesłać zdjęcia',
-        text: error.message,
+        ...formatApiError(error),
       })
     },
   },

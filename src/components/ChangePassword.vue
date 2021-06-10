@@ -32,6 +32,7 @@
 <script>
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import { api } from '../api'
+import { formatApiError } from '@/utils/errors'
 
 export default {
   components: {
@@ -60,8 +61,7 @@ export default {
       } catch (error) {
         this.$vs.notification({
           color: 'danger',
-          title: 'Coś poszło nie tak ze zmianą hasła',
-          text: error.message,
+          ...formatApiError(error),
         })
       } finally {
         this.isLoading = false

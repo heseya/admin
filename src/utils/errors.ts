@@ -1,6 +1,10 @@
 import { AxiosError } from 'axios'
 
-export const formatApiError = (error: AxiosError) => ({
-  title: error.response?.data?.message || error.message,
-  text: Object.values(error.response?.data?.errors || {})[0] || '',
-})
+export const formatApiError = (error: AxiosError) => {
+  const responseData = error.response?.data
+
+  return {
+    title: responseData?.message || error.message,
+    text: Object.values(responseData?.errors || {})[0] || '',
+  }
+}

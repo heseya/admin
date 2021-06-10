@@ -77,6 +77,7 @@ import ListItem from '@/components/ListItem.vue'
 import Empty from '@/components/Empty.vue'
 import SwitchInput from '@/components/SwitchInput.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
+import { formatApiError } from '@/utils/errors'
 
 export default {
   components: {
@@ -113,8 +114,7 @@ export default {
       if (error) {
         this.$vs.notification({
           color: 'danger',
-          title: error.message,
-          text: error.response.data?.error?.message,
+          ...formatApiError(error),
         })
       }
     },

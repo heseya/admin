@@ -117,6 +117,7 @@ import Address from '@/components/Address.vue'
 import CartItem from '@/components/CartItem.vue'
 import { getRelativeDate, formatDate } from '@/utils/utils'
 import { createPackage } from '@/services/createPackage'
+import { formatApiError } from '@/utils/errors'
 
 export default {
   components: {
@@ -193,8 +194,7 @@ export default {
       } else {
         this.$vs.notification({
           color: 'danger',
-          title: 'Nie udało się utworzyć przesyłki',
-          text: error.message,
+          ...formatApiError(error),
         })
       }
 

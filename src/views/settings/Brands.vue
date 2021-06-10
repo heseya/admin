@@ -96,6 +96,7 @@ import FlexInput from '@/components/FlexInput.vue'
 import Empty from '@/components/Empty.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
 import Draggable from 'vuedraggable'
+import { formatApiError } from '@/utils/errors'
 
 export default {
   components: {
@@ -144,8 +145,7 @@ export default {
       if (error) {
         this.$vs.notification({
           color: 'danger',
-          title: error.message,
-          text: error.response.data?.error?.message,
+          ...formatApiError(error),
         })
       }
     },

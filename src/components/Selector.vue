@@ -31,6 +31,7 @@ import Empty from '@/components/Empty.vue'
 import ListItem from '@/components/ListItem.vue'
 import { SchemaTypeLabel } from '@/interfaces/SchemaType'
 import { api } from '../api'
+import { formatApiError } from '@/utils/errors'
 
 export default {
   name: 'Selector',
@@ -84,8 +85,10 @@ export default {
         this.data = data.data
         loading.close()
       } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error(error)
+        this.$vs.notification({
+          color: 'danger',
+          ...formatApiError(error),
+        })
         loading.close()
       }
     }, 300),

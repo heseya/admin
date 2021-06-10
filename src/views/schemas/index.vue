@@ -42,6 +42,7 @@ import ListItem from '@/components/ListItem.vue'
 import Empty from '@/components/Empty.vue'
 import { SchemaTypeLabel } from '@/interfaces/SchemaType'
 import Pagination from '../../components/Pagination.vue'
+import { formatApiError } from '@/utils/errors'
 
 export default {
   components: {
@@ -84,8 +85,7 @@ export default {
       if (error) {
         this.$vs.notification({
           color: 'danger',
-          title: error.response.data?.message || error.message,
-          text: Object.values(error.response.data?.errors || {})[0] || '',
+          ...formatApiError(error),
         })
       }
     },

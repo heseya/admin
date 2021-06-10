@@ -28,6 +28,7 @@ import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/Card.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
 import SchemaForm from '@/components/schema/Form.vue'
+import { formatApiError } from '@/utils/errors'
 
 export default {
   components: {
@@ -58,8 +59,7 @@ export default {
       if (error) {
         this.$vs.notification({
           color: 'danger',
-          title: error.message,
-          text: error?.response?.data?.message,
+          ...formatApiError(error),
         })
       }
     },

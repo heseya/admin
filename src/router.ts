@@ -115,6 +115,14 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/apps/:id',
+      name: 'AppsView',
+      component: () => import('./views/apps/View.vue'),
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
       path: '/settings',
       name: 'Settings',
       component: () => import('./views/settings/Index.vue'),

@@ -19,6 +19,13 @@ export default {
   },
   created() {
     this.$store.dispatch('fetchEnv')
+
+    const registerChannel = new BroadcastChannel('register')
+    const tokenChannel = new BroadcastChannel('token')
+
+    registerChannel.onmessage = () => {
+      tokenChannel.postMessage(this.$store.state.auth.token)
+    }
   },
 }
 </script>

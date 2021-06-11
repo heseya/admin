@@ -19,7 +19,7 @@
       </AppList>
     </AppCard>
 
-    <div class="paginated-items__footer">
+    <div class="paginated-items__footer" v-if="meta.last_page">
       <vs-select
         class="per-page-select"
         :value="itemsPerPage"
@@ -31,12 +31,7 @@
         </vs-option>
       </vs-select>
 
-      <AppPagination
-        v-if="meta.last_page"
-        :value="page"
-        @input="changePage"
-        :length="meta.last_page"
-      />
+      <AppPagination :value="page" @input="changePage" :length="meta.last_page" />
     </div>
   </div>
 </template>

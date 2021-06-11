@@ -1,27 +1,18 @@
 <template>
   <div>
-    <top-nav title="Marki">
-      <vs-button @click="openModal()" color="dark" icon>
-        <i class="bx bx-plus"></i>
-      </vs-button>
-    </top-nav>
-
-    <card>
-      <app-empty v-if="!brands.length">Nie ma żadnej marki</app-empty>
-      <list>
-        <draggable v-model="brands">
-          <list-item
-            v-for="brand in brands"
-            :key="brand.id"
-            @click="openModal(brand.id)"
-            :hidden="!brand.public"
-          >
-            {{ brand.name }}
-            <small>/{{ brand.slug }}</small>
-          </list-item>
-        </draggable>
-      </list>
-    </card>
+    <ItemsPaginatedList title="Marki" storeKey="brands" draggable>
+      <template #nav>
+        <vs-button @click="openModal()" color="dark" icon>
+          <i class="bx bx-plus"></i>
+        </vs-button>
+      </template>
+      <template v-slot="{ item: brand }">
+        <list-item @click="openModal(brand.id)" :hidden="!brand.public">
+          {{ brand.name }}
+          <small>/{{ brand.slug }}</small>
+        </list-item>
+      </template>
+    </ItemsPaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
       <vs-dialog width="550px" not-center v-model="isModalActive">
@@ -87,30 +78,22 @@
 <script>
 import slugify from 'slugify'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
-import TopNav from '@/layout/TopNav.vue'
-import Card from '@/components/Card.vue'
-import List from '@/components/List.vue'
+
+import ItemsPaginatedList from '@/components/ItemsPaginatedList.vue'
 import ModalForm from '@/components/ModalForm.vue'
 import ListItem from '@/components/ListItem.vue'
 import FlexInput from '@/components/FlexInput.vue'
-import Empty from '@/components/Empty.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
-import Draggable from 'vuedraggable'
-import { formatApiError } from '@/utils/errors'
 
 export default {
   components: {
-    TopNav,
-    Card,
-    List,
     ListItem,
     ModalForm,
     PopConfirm,
     FlexInput,
-    appEmpty: Empty,
     ValidationProvider,
     ValidationObserver,
-    Draggable,
+    ItemsPaginatedList,
   },
   data: () => ({
     isModalActive: false,
@@ -121,41 +104,7 @@ export default {
       hide_on_index: false,
     },
   }),
-  computed: {
-    brands: {
-      get() {
-        return this.$store.getters['brands/getData']
-      },
-      async set(val) {
-        const loading = this.$vs.loading({ color: '#000' })
-        await this.$store.dispatch(
-          'brands/setOrder',
-          val.map((brand) => brand.id),
-        )
-        await this.$store.dispatch('brands/fetch')
-        loading.close()
-      },
-    },
-    error() {
-      return this.$store.getters['brands/getError']
-    },
-  },
-  watch: {
-    error(error) {
-      if (error) {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(error),
-        })
-      }
-    },
-  },
   methods: {
-    async getBrands() {
-      const loading = this.$vs.loading({ color: '#000' })
-      await this.$store.dispatch('brands/fetch')
-      loading.close()
-    },
     editSlug() {
       if (!this.editedItem.id) {
         this.editedItem.slug = slugify(this.editedItem.name, { lower: true, remove: /[.]/g })
@@ -192,9 +141,6 @@ export default {
       loading.close()
       this.isModalActive = false
     },
-  },
-  created() {
-    this.getBrands()
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {

@@ -1,34 +1,26 @@
 <template>
   <div>
-    <top-nav title="Kody rabatowe">
-      <vs-button @click="openModal()" color="dark" icon>
-        <i class="bx bx-plus"></i>
-      </vs-button>
-    </top-nav>
+    <ItemsPaginatedList title="Kody rabatowe" storeKey="discounts">
+      <template #nav>
+        <vs-button @click="openModal()" color="dark" icon>
+          <i class="bx bx-plus"></i>
+        </vs-button>
+      </template>
 
-    <card>
-      <app-empty v-if="!discounts.length">Nie ma jeszcze żadnych kodów rabatowych</app-empty>
-      <list>
-        <list-item v-for="discount in discounts" :key="discount.id" @click="openModal(discount.id)">
+      <template v-slot="{ item: discount }">
+        <list-item @click="openModal(discount.id)">
           {{ discount.code }}
           <small>{{ discount.description }}</small>
 
           <template #action>
-            - {{ discount.discount }} {{ discount.type === 0 ? '%' : currency }}
+            -{{ discount.discount }} {{ discount.type === 0 ? '%' : currency }}
             <small style="white-space: nowrap"
               >wykorzystano {{ discount.uses }} z {{ discount.max_uses }}</small
             >
           </template>
         </list-item>
-      </list>
-    </card>
-
-    <app-pagination
-      v-if="meta.last_page"
-      :value="page"
-      @input="changePage"
-      :length="meta.last_page"
-    />
+      </template>
+    </ItemsPaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
       <vs-dialog width="550px" not-center v-model="isModalActive">
@@ -85,91 +77,45 @@
 
 <script>
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
-import TopNav from '@/layout/TopNav.vue'
-import Card from '@/components/Card.vue'
-import List from '@/components/List.vue'
 import ModalForm from '@/components/ModalForm.vue'
 import ListItem from '@/components/ListItem.vue'
-import Empty from '@/components/Empty.vue'
-import Pagination from '@/components/Pagination.vue'
-import { formatApiError } from '@/utils/errors'
+import ItemsPaginatedList from '@/components/ItemsPaginatedList.vue'
+
+const EMPTY_FORM = {
+  name: '',
+  slug: '',
+  type: 0,
+  discount: 0.0,
+  max_uses: 1,
+}
 
 export default {
   components: {
-    TopNav,
-    Card,
-    List,
     ListItem,
     ModalForm,
-    appEmpty: Empty,
     ValidationProvider,
     ValidationObserver,
-    appPagination: Pagination,
+    ItemsPaginatedList,
   },
   data: () => ({
     isModalActive: false,
-    page: 1,
     editedItem: {
-      name: '',
-      slug: '',
-      type: 0,
-      discount: 0.0,
-      max_uses: 1,
+      ...EMPTY_FORM,
     },
   }),
   computed: {
-    discounts() {
-      return this.$store.getters['discounts/getData']
-    },
-    meta() {
-      return this.$store.getters['pages/getMeta']
-    },
     currency() {
       return this.$store.state.currency
     },
   },
-  watch: {
-    error(error) {
-      if (error) {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(error),
-        })
-      }
-    },
-    '$route.query'({ page }) {
-      this.page = page || 1
-      if (this.meta.current_page !== page) {
-        this.getOrders()
-        window.scrollTo(0, 0)
-      }
-    },
-  },
   methods: {
-    changePage(page) {
-      if (this.page !== page) {
-        this.$router.push({ path: 'discounts', query: { page } })
-      }
-    },
-    async getDiscounts() {
-      const loading = this.$vs.loading({ color: '#000' })
-      await this.$store.dispatch('discounts/fetch', {
-        page: this.page,
-        limit: 50,
-      })
-      loading.close()
-    },
     openModal(id) {
       this.isModalActive = true
       if (id) {
         this.editedItem = this.$store.getters['discounts/getFromListById'](id)
       } else {
         this.editedItem = {
-          name: '',
-          slug: '',
-          type: 0,
-          discount: 0.0,
-          max_uses: 1,
+          ...EMPTY_FORM,
         }
       }
     },
@@ -192,10 +138,6 @@ export default {
       loading.close()
       this.isModalActive = false
     },
-  },
-  created() {
-    this.page = this.$route.query.page || 1
-    this.getDiscounts()
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {

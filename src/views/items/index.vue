@@ -1,36 +1,33 @@
 <template>
   <div>
-    <top-nav title="Magazyn">
-      <vs-input
-        state="dark"
-        type="search"
-        v-model="search"
-        @keydown.enter="makeSearch"
-        placeholder="Wyszukiwanie"
-      />
+    <ItemsPaginatedList title="Magazyn" storeKey="items" :filters="{ filters }">
+      <template #nav>
+        <vs-input
+          state="dark"
+          type="search"
+          v-model="filters.search"
+          @keydown.enter="makeSearch"
+          placeholder="Wyszukiwanie"
+        />
 
-      <vs-button @click="makeSearch" color="dark" icon>
-        <i class="bx bx-search"></i>
-      </vs-button>
-      <vs-button @click="openModal()" color="dark" icon>
-        <i class="bx bx-plus"></i>
-      </vs-button>
-    </top-nav>
+        <vs-button @click="makeSearch" color="dark" icon>
+          <i class="bx bx-search"></i>
+        </vs-button>
+        <vs-button @click="openModal()" color="dark" icon>
+          <i class="bx bx-plus"></i>
+        </vs-button>
+      </template>
 
-    <card>
-      <app-empty v-if="!items.length">Magazyn jest pusty</app-empty>
-      <list>
-        <list-item v-for="item in items" :key="item.id" @click="openModal(item.id)">
+      <template v-slot="{ item }">
+        <list-item @click="openModal(item.id)">
           {{ item.name }}
           <small>{{ item.sku }}</small>
           <template #action>
             <small>{{ item.quantity }} sztuk</small>
           </template>
         </list-item>
-      </list>
-    </card>
-
-    <pagination @input="changePage" v-if="meta.last_page" :value="page" :length="meta.last_page" />
+      </template>
+    </ItemsPaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
       <vs-dialog width="550px" not-center v-model="isModalActive">
@@ -75,32 +72,25 @@
 
 <script>
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
-import TopNav from '@/layout/TopNav.vue'
-import Card from '@/components/Card.vue'
-import List from '@/components/List.vue'
+
+import ItemsPaginatedList from '@/components/ItemsPaginatedList.vue'
 import ModalForm from '@/components/ModalForm.vue'
 import PopConfirm from '@/components/PopConfirm.vue'
 import ListItem from '@/components/ListItem.vue'
-import Empty from '@/components/Empty.vue'
-import { formatApiError } from '@/utils/errors'
-import Pagination from '../../components/Pagination.vue'
 
 export default {
   components: {
-    TopNav,
-    Card,
-    List,
     ListItem,
     ModalForm,
-    appEmpty: Empty,
     PopConfirm,
     ValidationProvider,
     ValidationObserver,
-    Pagination,
+    ItemsPaginatedList,
   },
   data: () => ({
-    page: 1,
-    search: '',
+    filters: {
+      search: '',
+    },
     isModalActive: false,
     editedItem: {
       name: '',
@@ -109,15 +99,6 @@ export default {
     editedOriginalQuantity: 0,
   }),
   computed: {
-    items() {
-      return this.$store.getters['items/getData']
-    },
-    meta() {
-      return this.$store.getters['items/getMeta']
-    },
-    error() {
-      return this.$store.getters['items/getError']
-    },
     depositsError() {
       return this.$store.getters['items/getDepositError']
     },
@@ -126,25 +107,10 @@ export default {
     },
   },
   watch: {
-    '$route.query'({ page }) {
-      this.page = page || 1
-      if (this.meta.current_page !== page) {
-        this.getItems()
-        window.scrollTo(0, 0)
-      }
-    },
-    error(error) {
-      if (error) {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(error),
-        })
-      }
-    },
     depositsError(depositsError) {
       if (depositsError) {
         // eslint-disable-next-line no-console
-        console.log('depositsError', depositsError)
+        console.error('depositsError', depositsError)
         this.$vs.notification({
           color: 'danger',
           title: depositsError.message,
@@ -153,26 +119,13 @@ export default {
     },
   },
   methods: {
-    changePage(page) {
-      if (this.page !== page) {
-        this.$router.push({ path: 'items', query: { page, search: this.$route.query.search } })
-      }
-    },
     makeSearch() {
-      if (this.search !== this.$route.query.search) {
+      if (this.filters.search !== this.$route.query.search) {
         this.$router.push({
           path: 'items',
-          query: { page: undefined, search: this.search || undefined },
+          query: { page: undefined, search: this.filters.search || undefined },
         })
       }
-    },
-    async getItems() {
-      const loading = this.$vs.loading({ color: '#000' })
-      await this.$store.dispatch('items/fetch', {
-        page: this.page,
-        search: this.$route.query.search,
-      })
-      loading.close()
     },
 
     openModal(id) {
@@ -220,9 +173,7 @@ export default {
     },
   },
   created() {
-    this.page = this.$route.query.page || 1
-    this.search = this.$route.query.search || ''
-    this.getItems()
+    this.filters.search = this.$route.query.search || ''
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {

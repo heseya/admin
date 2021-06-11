@@ -1,73 +1,30 @@
 <template>
   <div>
-    <top-nav title="Strony">
-      <vs-button to="/pages/create" color="dark" icon>
-        <i class="bx bx-plus"></i>
-      </vs-button>
-    </top-nav>
+    <ItemsPaginatedList title="Strony" storeKey="pages">
+      <template #nav>
+        <vs-button to="/pages/create" color="dark" icon>
+          <i class="bx bx-plus"></i>
+        </vs-button>
+      </template>
 
-    <card>
-      <app-empty v-if="!pages.length">Nie ma żadnej strony</app-empty>
-      <list>
-        <list-item
-          v-for="page in pages"
-          :key="page.id"
-          :url="'/pages/' + page.id"
-          :hidden="!page.public"
-        >
+      <template v-slot="{ item: page }">
+        <list-item :url="`/pages/${page.id}`" :hidden="!page.public">
           {{ page.name }}
           <small>/{{ page.slug }}</small>
         </list-item>
-      </list>
-    </card>
-
-    <pagination v-if="meta.last_page" v-model="page" :length="meta.last_page" />
+      </template>
+    </ItemsPaginatedList>
   </div>
 </template>
 
 <script>
-import TopNav from '@/layout/TopNav.vue'
-import Card from '@/components/Card.vue'
-import List from '@/components/List.vue'
 import ListItem from '@/components/ListItem.vue'
-import Empty from '@/components/Empty.vue'
-import Pagination from '../../components/Pagination.vue'
+import ItemsPaginatedList from '@/components/ItemsPaginatedList.vue'
 
 export default {
   components: {
-    TopNav,
-    Card,
-    List,
     ListItem,
-    appEmpty: Empty,
-    Pagination,
-  },
-  data: () => ({
-    page: 1,
-  }),
-  computed: {
-    pages() {
-      return this.$store.getters['pages/getData']
-    },
-    meta() {
-      return this.$store.getters['pages/getMeta']
-    },
-  },
-  watch: {
-    page(page) {
-      if (this.meta.current_page !== page) this.getPages(page)
-      window.scrollTo(0, 0)
-    },
-  },
-  methods: {
-    async getPages(page = 1) {
-      const loading = this.$vs.loading({ color: '#000' })
-      await this.$store.dispatch('pages/fetch', { page })
-      loading.close()
-    },
-  },
-  created() {
-    this.getPages()
+    ItemsPaginatedList,
   },
 }
 </script>

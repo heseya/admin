@@ -78,7 +78,7 @@
 <script>
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import ModalForm from '@/components/ModalForm.vue'
-import ListItem from '@/components/ListItem.vue'
+import ListItem from '@/components/layout/ListItem.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 
 const EMPTY_FORM = {

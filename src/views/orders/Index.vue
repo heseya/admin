@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import ListItem from '@/components/ListItem.vue'
+import ListItem from '@/components/layout/ListItem.vue'
 import { formatFilters, getRelativeDate } from '@/utils/utils'
 import OrderFilter, { EMPTY_ORDER_FILTERS } from '@/components/OrderFilter'
 import ModalForm from '@/components/ModalForm'

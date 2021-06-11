@@ -56,9 +56,9 @@
 import slugify from 'slugify'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import TopNav from '@/layout/TopNav.vue'
-import Card from '@/components/Card.vue'
-import FlexInput from '@/components/FlexInput.vue'
-import PopConfirm from '@/components/PopConfirm.vue'
+import Card from '@/components/layout/Card.vue'
+import FlexInput from '@/components/layout/FlexInput.vue'
+import PopConfirm from '@/components/layout/PopConfirm.vue'
 import MdEditor from '@/components/MdEditor.vue'
 import { formatApiError } from '@/utils/errors'
 

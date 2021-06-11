@@ -70,9 +70,9 @@ import startOfWeek from 'date-fns/startOfWeek'
 import startOfYear from 'date-fns/startOfYear'
 
 import TopNav from '@/layout/TopNav.vue'
-import Card from '@/components/Card.vue'
+import Card from '@/components/layout/Card.vue'
 import { getRelativeDate } from '@/utils/utils'
-import ListItem from '@/components/ListItem'
+import ListItem from '@/components/layout/ListItem'
 import { api } from '../api'
 
 export default {

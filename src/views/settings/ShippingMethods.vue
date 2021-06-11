@@ -54,8 +54,8 @@
 import { ValidationObserver } from 'vee-validate'
 
 import PaginatedList from '@/components/PaginatedList.vue'
-import ListItem from '@/components/ListItem.vue'
-import PopConfirm from '@/components/PopConfirm.vue'
+import ListItem from '@/components/layout/ListItem.vue'
+import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ShippingMethodsForm from '@/components/forms/shippingMethods/Index.vue'
 
 import { api } from '../../api'

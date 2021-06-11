@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import ListItem from '@/components/ListItem.vue'
+import ListItem from '@/components/layout/ListItem.vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import ModalForm from '@/components/ModalForm'
 import PaginatedList from '@/components/PaginatedList.vue'

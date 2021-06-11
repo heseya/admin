@@ -112,9 +112,9 @@
 
 <script>
 import TopNav from '@/layout/TopNav.vue'
-import Card from '@/components/Card.vue'
+import Card from '@/components/layout/Card.vue'
 import Address from '@/components/Address.vue'
-import CartItem from '@/components/CartItem.vue'
+import CartItem from '@/components/layout/CartItem.vue'
 import { getRelativeDate, formatDate } from '@/utils/utils'
 import { createPackage } from '@/services/createPackage'
 import { formatApiError } from '@/utils/errors'

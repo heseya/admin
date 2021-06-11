@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import Card from '@/components/Card.vue'
+import Card from '@/components/layout/Card.vue'
 
 const DEBUG = process.env.NODE_ENV === 'development'
 

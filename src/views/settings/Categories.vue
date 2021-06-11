@@ -82,9 +82,9 @@ import slugify from 'slugify'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/ModalForm.vue'
-import ListItem from '@/components/ListItem.vue'
-import FlexInput from '@/components/FlexInput.vue'
-import PopConfirm from '@/components/PopConfirm.vue'
+import ListItem from '@/components/layout/ListItem.vue'
+import FlexInput from '@/components/layout/FlexInput.vue'
+import PopConfirm from '@/components/layout/PopConfirm.vue'
 
 export default {
   components: {

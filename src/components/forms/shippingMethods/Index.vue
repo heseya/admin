@@ -79,7 +79,7 @@ import { ValidationProvider } from 'vee-validate'
 
 import ModalForm from '@/components/ModalForm.vue'
 import SwitchInput from '@/components/SwitchInput.vue'
-import FlexInput from '@/components/FlexInput.vue'
+import FlexInput from '@/components/layout/FlexInput.vue'
 
 import { ShippingMethodCountry, ShippingMethodDTO } from '@/interfaces/ShippingMethod'
 import { PaymentMethod } from '@/interfaces/PaymentMethod'

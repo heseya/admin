@@ -20,17 +20,31 @@
 </template>
 
 <script>
-export default {
+import Vue from 'vue'
+
+export default Vue.extend({
   props: {
-    url: String,
-    el: String,
-    hidden: Boolean,
-    noHover: Boolean,
+    url: {
+      type: String,
+      required: true,
+    },
+    el: {
+      type: String,
+      default: 'button',
+    },
+    hidden: {
+      type: Boolean,
+      default: false,
+    },
+    noHover: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     component() {
       if (this.url) return 'router-link'
-      return this.el || 'button'
+      return this.el
     },
   },
   methods: {
@@ -38,7 +52,7 @@ export default {
       this.$emit('click')
     },
   },
-}
+})
 </script>
 
 <style lang="scss">

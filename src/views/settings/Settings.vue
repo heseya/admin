@@ -70,13 +70,13 @@
 import clone from 'lodash/clone'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import TopNav from '@/layout/TopNav.vue'
-import Card from '@/components/Card.vue'
-import List from '@/components/List.vue'
+import Card from '@/components/layout/Card.vue'
+import List from '@/components/layout/List.vue'
 import ModalForm from '@/components/ModalForm.vue'
-import ListItem from '@/components/ListItem.vue'
-import Empty from '@/components/Empty.vue'
+import ListItem from '@/components/layout/ListItem.vue'
+import Empty from '@/components/layout/Empty.vue'
 import SwitchInput from '@/components/SwitchInput.vue'
-import PopConfirm from '@/components/PopConfirm.vue'
+import PopConfirm from '@/components/layout/PopConfirm.vue'
 import { formatApiError } from '@/utils/errors'
 
 export default {

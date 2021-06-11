@@ -41,10 +41,10 @@ import Vue from 'vue'
 import Draggable from 'vuedraggable'
 
 import TopNav from '@/layout/TopNav.vue'
-import Empty from '@/components/Empty.vue'
+import Empty from '@/components/layout/Empty.vue'
 import Pagination from '@/components/Pagination.vue'
-import Card from '@/components/Card.vue'
-import List from '@/components/List.vue'
+import Card from '@/components/layout/Card.vue'
+import List from '@/components/layout/List.vue'
 
 import { ResponseMeta } from '@/interfaces/Response'
 import { formatFilters } from '@/utils/utils'

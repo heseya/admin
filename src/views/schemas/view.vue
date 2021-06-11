@@ -25,8 +25,8 @@
 
 <script>
 import TopNav from '@/layout/TopNav.vue'
-import Card from '@/components/Card.vue'
-import PopConfirm from '@/components/PopConfirm.vue'
+import Card from '@/components/layout/Card.vue'
+import PopConfirm from '@/components/layout/PopConfirm.vue'
 import SchemaForm from '@/components/schema/Form.vue'
 import { formatApiError } from '@/utils/errors'
 

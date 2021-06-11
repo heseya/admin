@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ItemsPaginatedList title="Kategorie" storeKey="categories" draggable>
+    <PaginatedList title="Kategorie" storeKey="categories" draggable>
       <template #nav>
         <vs-button @click="openModal()" color="dark" icon>
           <i class="bx bx-plus"></i>
@@ -13,7 +13,7 @@
           <small>/{{ category.slug }}</small>
         </list-item>
       </template>
-    </ItemsPaginatedList>
+    </PaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
       <vs-dialog width="550px" not-center v-model="isModalActive">
@@ -80,7 +80,7 @@
 import slugify from 'slugify'
 
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
-import ItemsPaginatedList from '@/components/ItemsPaginatedList.vue'
+import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/ModalForm.vue'
 import ListItem from '@/components/ListItem.vue'
 import FlexInput from '@/components/FlexInput.vue'
@@ -88,7 +88,7 @@ import PopConfirm from '@/components/PopConfirm.vue'
 
 export default {
   components: {
-    ItemsPaginatedList,
+    PaginatedList,
     ListItem,
     ModalForm,
     PopConfirm,

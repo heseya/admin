@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ItemsPaginatedList title="Kody rabatowe" storeKey="discounts">
+    <PaginatedList title="Kody rabatowe" storeKey="discounts">
       <template #nav>
         <vs-button @click="openModal()" color="dark" icon>
           <i class="bx bx-plus"></i>
@@ -20,7 +20,7 @@
           </template>
         </list-item>
       </template>
-    </ItemsPaginatedList>
+    </PaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
       <vs-dialog width="550px" not-center v-model="isModalActive">
@@ -79,7 +79,7 @@
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import ModalForm from '@/components/ModalForm.vue'
 import ListItem from '@/components/ListItem.vue'
-import ItemsPaginatedList from '@/components/ItemsPaginatedList.vue'
+import PaginatedList from '@/components/PaginatedList.vue'
 
 const EMPTY_FORM = {
   name: '',
@@ -95,7 +95,7 @@ export default {
     ModalForm,
     ValidationProvider,
     ValidationObserver,
-    ItemsPaginatedList,
+    PaginatedList,
   },
   data: () => ({
     isModalActive: false,

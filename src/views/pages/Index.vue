@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ItemsPaginatedList title="Strony" storeKey="pages">
+    <PaginatedList title="Strony" storeKey="pages">
       <template #nav>
         <vs-button to="/pages/create" color="dark" icon>
           <i class="bx bx-plus"></i>
@@ -13,18 +13,18 @@
           <small>/{{ page.slug }}</small>
         </list-item>
       </template>
-    </ItemsPaginatedList>
+    </PaginatedList>
   </div>
 </template>
 
 <script>
 import ListItem from '@/components/ListItem.vue'
-import ItemsPaginatedList from '@/components/ItemsPaginatedList.vue'
+import PaginatedList from '@/components/PaginatedList.vue'
 
 export default {
   components: {
     ListItem,
-    ItemsPaginatedList,
+    PaginatedList,
   },
 }
 </script>

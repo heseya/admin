@@ -124,26 +124,28 @@ export default {
   async created() {
     const loading = this.$vs.loading({ color: '#000' })
 
-    const yearStart = startOfYear(Date.now())
-    const [, currentWeek, currentMonth, currentYear, lastYear] = await Promise.all([
-      this.getOrders(),
-      this.getPaymentsCount(startOfWeek(Date.now()), Date.now()),
-      this.getPaymentsCount(startOfMonth(Date.now()), Date.now()),
-      this.getPaymentsCount(startOfYear(Date.now()), Date.now()),
-      this.getPaymentsCount(sub(yearStart, { years: 1 }), sub(yearStart, { days: 1 })),
-    ])
+    try {
+      const yearStart = startOfYear(Date.now())
+      const [, currentWeek, currentMonth, currentYear, lastYear] = await Promise.all([
+        this.getOrders(),
+        this.getPaymentsCount(startOfWeek(Date.now()), Date.now()),
+        this.getPaymentsCount(startOfMonth(Date.now()), Date.now()),
+        this.getPaymentsCount(startOfYear(Date.now()), Date.now()),
+        this.getPaymentsCount(sub(yearStart, { years: 1 }), sub(yearStart, { days: 1 })),
+      ])
 
-    this.currentWeekIncome = currentWeek.amount
-    this.currentWeekOrdersCount = currentWeek.count
+      this.currentWeekIncome = currentWeek.amount
+      this.currentWeekOrdersCount = currentWeek.count
 
-    this.currentMonthIncome = currentMonth.amount
-    this.currentMonthOrdersCount = currentMonth.count
+      this.currentMonthIncome = currentMonth.amount
+      this.currentMonthOrdersCount = currentMonth.count
 
-    this.currentYearIncome = currentYear.amount
-    this.currentYearOrdersCount = currentYear.count
+      this.currentYearIncome = currentYear.amount
+      this.currentYearOrdersCount = currentYear.count
 
-    this.lastYearIncome = lastYear.amount
-    this.lastYearOrdersCount = lastYear.count
+      this.lastYearIncome = lastYear.amount
+      this.lastYearOrdersCount = lastYear.count
+    } catch {}
     loading.close()
   },
 }

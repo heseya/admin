@@ -30,8 +30,8 @@ export const getRelativeDate = (date: DateInput, lang = 'pl') => {
   if (diff > -1 && minutesDiff < -59) return rtf.format(Math.round(minutesDiff / 60), 'hours')
   if (diff > -1) return rtf.format(minutesDiff, 'minute')
   if (diff > -30) return rtf.format(diff, 'day')
-  else if (diff > -356) return rtf.format(diff / 30, 'month')
-  else return rtf.format(diff / 365, 'year')
+  else if (diff > -356) return rtf.format(Math.floor(diff / 30), 'month')
+  else return rtf.format(Math.floor(diff / 365), 'year')
 }
 
 export const formatDate = (date: DateInput) => {

@@ -17,7 +17,7 @@
             <div class="cart-item">
               <img class="cart-item__cover" src="/img/delivery.svg" />
               <div class="cart-item__content">
-                <span>Dostawa {{ order.shipping_method.name }}</span>
+                <span>Dostawa {{ order.shipping_method && order.shipping_method.name }}</span>
               </div>
               <span class="cart-item__price">{{ order.shipping_price }} {{ currency }}</span>
             </div>
@@ -146,10 +146,10 @@ export default {
       return this.$store.getters['packageTemplates/getData']
     },
     relativeOrderedDate() {
-      return getRelativeDate(this.order.created_at)
+      return this.order.created_at && getRelativeDate(this.order.created_at)
     },
     formattedDate() {
-      return formatDate(this.order.created_at)
+      return this.order.created_at && formatDate(this.order.created_at)
     },
   },
   watch: {

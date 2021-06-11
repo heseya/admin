@@ -86,6 +86,13 @@ export default {
     padding: 0;
     min-height: 100px;
     margin-bottom: 12px;
+    align-items: start;
+  }
+
+  @media (min-width: 700px) {
+    .paginated-items__list {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
   }
 
   @media (min-width: $break) {

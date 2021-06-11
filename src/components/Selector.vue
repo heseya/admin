@@ -83,14 +83,13 @@ export default {
         })
         const { data } = await api.get(`/${this.type}?${query}`)
         this.data = data.data
-        loading.close()
       } catch (error) {
         this.$vs.notification({
           color: 'danger',
           ...formatApiError(error),
         })
-        loading.close()
       }
+      loading.close()
     }, 300),
     onSelect(schema) {
       this.$emit('select', schema)

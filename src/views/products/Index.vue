@@ -79,7 +79,7 @@ export default {
     box-shadow: none;
   }
 
-  .paginated-items__list {
+  .paginated-list__list {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: 22px;
@@ -90,13 +90,13 @@ export default {
   }
 
   @media (min-width: 700px) {
-    .paginated-items__list {
+    .paginated-list__list {
       grid-template-columns: 1fr 1fr 1fr;
     }
   }
 
   @media (min-width: $break) {
-    .paginated-items__list {
+    .paginated-list__list {
       grid-template-columns: 1fr 1fr 1fr 1fr;
     }
   }

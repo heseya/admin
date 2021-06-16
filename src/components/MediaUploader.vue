@@ -13,8 +13,8 @@
 </template>
 
 <script>
-import { api } from '@/api'
 import { getLastElement } from '@/utils/utils'
+import { uploadMedia } from '@/services/uploadMedia'
 
 export default {
   name: 'MediaUploader',
@@ -58,16 +58,15 @@ export default {
       }
 
       const loading = this.$vs.loading({ color: '#000' })
-      try {
-        const form = new FormData()
-        form.append('file', this.file)
 
-        const { data } = await api.post('/media', form)
-        this.$emit('upload', data.data)
+      const { success, url, error } = await uploadMedia(this.file)
+      if (success) {
+        this.$emit('upload', url)
         this.file = null
-      } catch (error) {
+      } else {
         this.$emit('error', error)
       }
+
       loading.close()
     },
     isFileValid() {

@@ -43,7 +43,7 @@
           </div>
           <br />
           <small class="label">Treść</small>
-          <md-editor v-if="!isLoading" v-model="form.content_md" />
+          <rich-editor v-if="!isLoading" v-model="form.content_html" />
           <br />
           <vs-button color="dark" size="large" @click="handleSubmit(save)"> Zapisz </vs-button>
         </card>
@@ -59,7 +59,7 @@ import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import FlexInput from '@/components/layout/FlexInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import MdEditor from '@/components/MdEditor.vue'
+import RichEditor from '@/components/RichEditor.vue'
 import { formatApiError } from '@/utils/errors'
 
 export default {
@@ -68,7 +68,7 @@ export default {
     Card,
     FlexInput,
     PopConfirm,
-    MdEditor,
+    RichEditor,
     ValidationProvider,
     ValidationObserver,
   },
@@ -78,6 +78,7 @@ export default {
         name: '',
         slug: '',
         content_md: '',
+        content_html: '',
         public: true,
       },
     }

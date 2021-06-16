@@ -36,9 +36,9 @@ export default {
           ['clean'], // remove formatting button
         ],
         imageUploader: {
-          upload: async (file) => {
-            const { success, url, error } = await uploadMedia(file)
-            if (success) return url
+          upload: async (sourceFile) => {
+            const { success, file, error } = await uploadMedia(sourceFile)
+            if (success) return file.url
             this.$vs.notification({ color: 'danger', ...formatApiError(error) })
             return null
           },

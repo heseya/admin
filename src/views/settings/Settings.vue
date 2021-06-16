@@ -1,25 +1,18 @@
 <template>
   <div>
-    <top-nav title="Ustawienia zaawansowane">
-      <vs-button @click="openModal()" color="dark" icon>
-        <i class="bx bx-plus"></i>
-      </vs-button>
-    </top-nav>
-
-    <card>
-      <app-empty v-if="!settings.length">Nie ma żadnych ustawień</app-empty>
-      <list>
-        <list-item
-          v-for="setting in settings"
-          :key="setting.name"
-          @click="openModal(setting)"
-          :hidden="!setting.public"
-        >
+    <PaginatedList title="Ustawienia zaawansowane" storeKey="settings">
+      <template #nav>
+        <vs-button @click="openModal()" color="dark" icon>
+          <i class="bx bx-plus"></i>
+        </vs-button>
+      </template>
+      <template v-slot="{ item: setting }">
+        <list-item @click="openModal(setting)" :hidden="!setting.public">
           {{ setting.name }}
           <small>{{ setting.value }}</small>
         </list-item>
-      </list>
-    </card>
+      </template>
+    </PaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
       <vs-dialog width="550px" not-center v-model="isModalActive">
@@ -69,25 +62,18 @@
 <script>
 import clone from 'lodash/clone'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
-import TopNav from '@/layout/TopNav.vue'
-import Card from '@/components/layout/Card.vue'
-import List from '@/components/layout/List.vue'
+import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
-import Empty from '@/components/layout/Empty.vue'
 import SwitchInput from '@/components/SwitchInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import { formatApiError } from '@/utils/errors'
 
 export default {
   components: {
-    TopNav,
-    Card,
-    List,
+    PaginatedList,
     ListItem,
     ModalForm,
     PopConfirm,
-    appEmpty: Empty,
     ValidationProvider,
     ValidationObserver,
     SwitchInput,
@@ -101,30 +87,7 @@ export default {
       public: true,
     },
   }),
-  computed: {
-    settings() {
-      return this.$store.getters['settings/getData']
-    },
-    error() {
-      return this.$store.getters['settings/getError']
-    },
-  },
-  watch: {
-    error(error) {
-      if (error) {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(error),
-        })
-      }
-    },
-  },
   methods: {
-    async getSettings() {
-      const loading = this.$vs.loading({ color: '#000' })
-      await this.$store.dispatch('settings/fetch')
-      loading.close()
-    },
     openModal(item) {
       this.isModalActive = true
       if (item) {
@@ -159,9 +122,6 @@ export default {
       loading.close()
       this.isModalActive = false
     },
-  },
-  created() {
-    this.getSettings()
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {

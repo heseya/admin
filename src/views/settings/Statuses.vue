@@ -7,7 +7,7 @@
         </vs-button>
       </template>
       <template v-slot="{ item: status }">
-        <list-item @click="openModal(status.id)">
+        <list-item @click="openModal(status.id)" :key="status.id">
           <template #avatar>
             <vs-avatar :color="`#${status.color}`" />
           </template>

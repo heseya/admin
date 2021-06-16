@@ -9,7 +9,7 @@
       <AppList class="paginated-list__list">
         <Draggable v-if="draggable" v-model="items">
           <template v-for="item in items">
-            <slot :item="item" className="paginated-list__item" />
+            <slot :item="item" />
           </template>
         </Draggable>
 

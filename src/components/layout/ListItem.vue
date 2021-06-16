@@ -57,7 +57,8 @@ export default Vue.extend({
 
 <style lang="scss">
 .list-item {
-  all: unset;
+  border: none;
+  background-color: #fff0;
   width: 100%;
   box-sizing: border-box;
   cursor: pointer;
@@ -70,6 +71,8 @@ export default Vue.extend({
   align-items: center;
   text-decoration: none;
   color: black;
+  transition: 0.3s;
+  text-align: left;
 
   &:hover {
     background-color: $grey-light;

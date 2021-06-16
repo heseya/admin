@@ -1,6 +1,12 @@
 <template>
   <div class="cart-item">
-    <img class="cart-item__cover" :src="`${coverUrl}?w=60&h=60`" :style="{ objectFit }" />
+    <img
+      v-if="coverUrl"
+      class="cart-item__cover"
+      :src="`${coverUrl}?w=60&h=60`"
+      :style="{ objectFit }"
+    />
+    <div v-else class="cart-item__cover" />
     <div class="cart-item__content">
       <span>
         {{ item.product.brand.name }} {{ item.product.name }}&nbsp;<small v-if="item.quantity !== 1"
@@ -16,8 +22,10 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue'
+
+export default Vue.extend({
   props: {
     item: {
       type: Object,
@@ -25,17 +33,17 @@ export default {
     },
   },
   computed: {
-    coverUrl() {
+    coverUrl(): string {
       return this.item?.product?.cover?.url
     },
-    currency() {
+    currency(): string {
       return this.$store.state.currency
     },
-    objectFit() {
+    objectFit(): string {
       return +this.$store.state.env.dashboard_products_contain ? 'contain' : 'cover'
     },
   },
-}
+})
 </script>
 
 <style lang="scss">

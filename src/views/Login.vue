@@ -14,6 +14,7 @@
 
 <script>
 import Card from '@/components/layout/Card.vue'
+import { formatApiError } from '@/utils/errors'
 
 const DEBUG = process.env.NODE_ENV === 'development'
 
@@ -37,8 +38,7 @@ export default {
       if (error) {
         this.$vs.notification({
           color: 'danger',
-          title: 'Błąd logowania',
-          text: 'Zły email lub hasło.',
+          ...formatApiError(error),
         })
       }
     },

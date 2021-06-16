@@ -136,6 +136,9 @@ export default {
     currency() {
       return this.$store.state.currency
     },
+    error() {
+      return this.$store.getters['orders/getError']
+    },
     order() {
       return this.$store.getters['orders/getSelected']
     },
@@ -161,20 +164,26 @@ export default {
       if (prevStatus === '') return
       this.setStatus(status)
     },
+    error(error) {
+      if (error) this.$vs.notification({ color: 'danger', ...formatApiError(error) })
+    },
   },
   methods: {
     async setStatus(newStatus) {
       this.isLoading = true
+
       const success = await this.$store.dispatch('orders/changeStatus', {
         orderId: this.order.id,
         statusId: newStatus,
       })
+
       if (success) {
         this.$vs.notification({
           color: 'success',
           title: 'Status zamówienia został zmieniony',
         })
       }
+
       this.isLoading = false
     },
     async createPackage() {

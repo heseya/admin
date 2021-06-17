@@ -103,6 +103,9 @@ export default {
     right: 10px;
     bottom: 10px;
     max-width: calc(100% - 20px);
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
   }
 
   &__tag {

@@ -28,12 +28,7 @@
             </vs-input>
           </validation-provider>
           <validation-provider rules="required" v-slot="{ errors }">
-            <vs-input
-              :value="`#${editedItem.color}`"
-              label="Kolor statusu"
-              @input="setColor"
-              type="color"
-            >
+            <vs-input :value="`#${editedItem.color}`" label="Kolor" @input="setColor" type="color">
               <template #message-danger>{{ errors[0] }}</template>
             </vs-input>
           </validation-provider>

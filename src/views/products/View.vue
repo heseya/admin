@@ -71,8 +71,6 @@
                   </vs-input>
                 </validation-provider>
                 <br />
-                <br />
-                <tags-select v-model="form.tags" />
               </div>
 
               <div>
@@ -128,6 +126,10 @@
                     <template #message-danger>{{ errors[0] }}</template>
                   </vs-input>
                 </validation-provider>
+              </div>
+
+              <div class="wide">
+                <tags-select v-model="form.tags" />
               </div>
 
               <div class="wide">

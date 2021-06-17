@@ -1,24 +1,30 @@
 <template>
-  <div class="tags-select">
-    <div class="tags-select__list"></div>
-    <a-select
-      :value="selectValue"
-      mode="multiple"
-      labelInValue
-      placeholder="Wybierz tagi"
-      notFoundContent=""
-      @search="onSearch"
-      @select="onSelect"
-      @deselect="onDeselect"
+  <div class="tags">
+    <small class="label">Tagi</small>
+    <multiselect
+      v-model="value"
+      tag-placeholder="Dodaj jako nowy tag"
+      selectLabel="Naciśnij enter by wybrać"
+      selectedLabel="Wybrany"
+      placeholder="Wyszukaj lub dodaj tagi"
+      deselect-label="Usuń tag"
+      label="name"
+      track-by="id"
+      :options="options"
+      :multiple="true"
+      :taggable="true"
+      :close-on-select="false"
+      @tag="addTag"
+      @search-change="onSearch"
+      class="tags__select"
     >
-      <a-select-option v-for="tag in searchedTags" :key="tag.id" :value="tag.id">
-        {{ tag.name }}
-      </a-select-option>
-    </a-select>
+      <template slot="noOptions"> Lista jest pusta </template>
+    </multiselect>
   </div>
 </template>
 <script lang="ts">
 import Vue from 'vue'
+import Multiselect from 'vue-multiselect'
 import { debounce } from 'lodash'
 import { Tag } from '@/interfaces/Tag'
 
@@ -30,9 +36,6 @@ export default Vue.extend({
     } as Vue.PropOptions<Tag[]>,
   },
   computed: {
-    selectValue(): { label: string; key: string }[] {
-      return this.tags.map(({ name, id }) => ({ label: name, key: id }))
-    },
     tags: {
       get(): Tag[] {
         return this.value || []
@@ -41,7 +44,7 @@ export default Vue.extend({
         this.$emit('input', v)
       },
     },
-    searchedTags(): Tag[] {
+    options(): Tag[] {
       return this.$accessor.tags.data
     },
   },
@@ -49,22 +52,24 @@ export default Vue.extend({
     onSearch: debounce(function (this: any, search: string) {
       if (!search) return this.$accessor.tags.clearData()
       this.$accessor.tags.fetch({ search })
-    }, 0),
-    async onSelect(tag: { label: string; key: string }) {
-      const existingTag = this.searchedTags.find((t) => t.id === tag.key)
-      if (existingTag) return (this.tags = [...this.tags, existingTag])
-
-      const newTag = await this.$accessor.tags.add({ name: tag.label })
+    }, 200),
+    async addTag(tagName: string) {
+      const newTag = await this.$accessor.tags.add({ name: tagName })
       this.tags = [...this.tags, newTag]
     },
-    onDeselect(tag: { label: string; key: string }) {
-      this.tags = this.tags.filter(({ id }) => tag.key !== id)
-    },
+  },
+  components: {
+    Multiselect,
   },
 })
 </script>
 
 <style lang="scss" scoped>
-.tags-select {
+.tags {
+  width: 100%;
+
+  &__select {
+    width: 100%;
+  }
 }
 </style>

@@ -105,6 +105,6 @@ hr {
 }
 
 .multiselect__tag-icon::after {
-  color: #666;
+  color: #fff;
 }
 </style>

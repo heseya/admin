@@ -18,7 +18,13 @@
       @search-change="onSearch"
       class="tags__select"
     >
-      <template slot="noOptions"> Lista jest pusta </template>
+      <template #noOptions> Lista jest pusta </template>
+      <template #tag="{ option, remove }">
+        <span class="multiselect__tag" :style="{ backgroundColor: `#${option.color}` }">
+          <span>{{ option.name }}</span>
+          <i aria-hidden="true" @click="remove" class="multiselect__tag-icon"></i>
+        </span>
+      </template>
     </multiselect>
   </div>
 </template>

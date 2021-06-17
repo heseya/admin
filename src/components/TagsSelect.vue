@@ -2,7 +2,7 @@
   <div class="tags">
     <small class="label">Tagi</small>
     <multiselect
-      v-model="value"
+      v-model="tags"
       tag-placeholder="Dodaj jako nowy tag"
       selectLabel="Naciśnij enter by wybrać"
       selectedLabel="Wybrany"

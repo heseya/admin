@@ -96,6 +96,10 @@ hr {
   display: flex;
 }
 
+.multiselect {
+  z-index: 1000;
+}
+
 .multiselect__tag {
   background: #000;
 }

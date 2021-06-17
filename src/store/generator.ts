@@ -1,9 +1,10 @@
 import queryString from 'query-string'
+import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 import { ActionTree, GetterTree, MutationTree } from 'vuex'
 
+import { ResponseMeta } from '@/interfaces/Response'
+import { RootState } from '.'
 import { api } from '../api'
-
-export type RootState = any
 
 export interface ExtendStore<S> {
   state: S
@@ -18,7 +19,11 @@ export interface ExtendStore<S> {
  * @param endpoint - CRUD API endoint for given entity type
  * @param extend - custom state, actions, mutations and getters. Are merged with genereted ones
  */
-export const createStore = <E>(name: string, endpoint: string, extend: ExtendStore<E>) => {
+export const createVuexCRUD = <Item extends { id: string }, S extends {} = {}>(
+  name: string,
+  endpoint: string,
+  extend: ExtendStore<S>,
+) => {
   const upperCaseName = name.toUpperCase()
 
   const mutationsNames = {
@@ -32,18 +37,16 @@ export const createStore = <E>(name: string, endpoint: string, extend: ExtendSto
     SET_LOADING: `${upperCaseName}_SET_LOADING`,
   }
 
-  const state = () => ({
+  const moduleState = () => ({
     ...(extend?.state || {}),
     error: null as null | Error,
     isLoading: false,
-    meta: {} as any,
-    data: [] as any[],
-    selected: {} as any,
+    meta: {} as ResponseMeta,
+    data: [] as Item[],
+    selected: {} as Item,
   })
 
-  type StateType = ReturnType<typeof state>
-
-  const getters: GetterTree<StateType, RootState> = {
+  const moduleGetters = getterTree(moduleState, {
     ...(extend?.getters || {}),
     getError(state) {
       return state.error
@@ -63,27 +66,30 @@ export const createStore = <E>(name: string, endpoint: string, extend: ExtendSto
     getFromListById(state) {
       return (searchedId: string) => ({ ...state.data.find(({ id }) => id === searchedId) })
     },
-  }
+  })
 
   // @ts-ignore
-  const mutations: MutationTree<StateType> = {
+  const moduleMutations = mutationTree(moduleState, {
     ...(extend?.mutations || {}),
-    [mutationsNames.SET_ERROR](state, newError) {
+    [mutationsNames.SET_ERROR](state, newError: Error) {
       state.error = newError
     },
-    [mutationsNames.SET_LOADING](state, isLoading) {
+    [mutationsNames.SET_LOADING](state, isLoading: boolean) {
       state.isLoading = isLoading
     },
-    [mutationsNames.SET_META](state, newMeta) {
+    [mutationsNames.SET_META](state, newMeta: ResponseMeta) {
       state.meta = newMeta
     },
-    [mutationsNames.SET_DATA](state, newData = []) {
+    [mutationsNames.SET_DATA](state, newData: Item[] = []) {
       state.data = newData
     },
-    [mutationsNames.ADD_DATA](state, newItem) {
+    [mutationsNames.ADD_DATA](state, newItem: Item) {
       state.data = [...state.data, newItem]
     },
-    [mutationsNames.EDIT_DATA](state, { key, value, item: editedItem }) {
+    [mutationsNames.EDIT_DATA](
+      state,
+      { key, value, item: editedItem }: { key: keyof Item; value: unknown; item: Item },
+    ) {
       const index = state.data.findIndex((item) => item[key] === value)
       if (index >= 0) {
         const copy = [...state.data]
@@ -93,145 +99,151 @@ export const createStore = <E>(name: string, endpoint: string, extend: ExtendSto
         state.data = [...state.data, editedItem]
       }
     },
-    [mutationsNames.REMOVE_DATA](state, { key, value }) {
+    [mutationsNames.REMOVE_DATA](state, { key, value }: { key: keyof Item; value: unknown }) {
       state.data = state.data.filter((item) => item[key] !== value)
     },
-    [mutationsNames.SET_SELECTED](state, newSelected) {
+    [mutationsNames.SET_SELECTED](state, newSelected: Item) {
       state.selected = newSelected
     },
-  }
+  })
 
-  const actions: ActionTree<StateType, RootState> = {
-    ...(extend?.actions || {}),
-    async fetch({ commit }, query) {
-      commit(mutationsNames.SET_ERROR, null)
-      commit(mutationsNames.SET_LOADING, true)
-      try {
-        const filteredQuery = query
-          ? Object.fromEntries(Object.entries(query).filter(([key, value]) => !!value))
-          : {}
-        const stringQuery = queryString.stringify(filteredQuery)
+  const moduleActions = actionTree(
+    { state: moduleState, getters: moduleGetters, mutations: moduleMutations },
+    {
+      ...(extend?.actions || {}),
+      async fetch({ commit }, query: Record<string, any>) {
+        commit(mutationsNames.SET_ERROR, null)
+        commit(mutationsNames.SET_LOADING, true)
+        try {
+          const filteredQuery = query
+            ? Object.fromEntries(Object.entries(query).filter(([key, value]) => !!value))
+            : {}
+          const stringQuery = queryString.stringify(filteredQuery)
 
-        const { data } = await api.get(`/${endpoint}?${stringQuery}`)
-        commit(mutationsNames.SET_META, data.meta)
-        commit(mutationsNames.SET_DATA, data.data)
-        commit(mutationsNames.SET_LOADING, false)
-        return true
-      } catch (error) {
-        commit(mutationsNames.SET_ERROR, error)
-        commit(mutationsNames.SET_LOADING, false)
-        return false
-      }
+          const { data } = await api.get(`/${endpoint}?${stringQuery}`)
+          commit(mutationsNames.SET_META, data.meta)
+          commit(mutationsNames.SET_DATA, data.data)
+          commit(mutationsNames.SET_LOADING, false)
+          return true
+        } catch (error) {
+          commit(mutationsNames.SET_ERROR, error)
+          commit(mutationsNames.SET_LOADING, false)
+          return false
+        }
+      },
+      async get({ commit }, id: string) {
+        commit(mutationsNames.SET_ERROR, null)
+        commit(mutationsNames.SET_LOADING, true)
+        try {
+          const { data: responseData } = await api.get(`/${endpoint}/id:${id}`)
+          commit(mutationsNames.SET_SELECTED, responseData.data)
+          commit(mutationsNames.SET_LOADING, false)
+          return true
+        } catch (error) {
+          commit(mutationsNames.SET_ERROR, error)
+          commit(mutationsNames.SET_LOADING, false)
+          return false
+        }
+      },
+      async add({ commit }, item: Partial<Item>) {
+        commit(mutationsNames.SET_ERROR, null)
+        commit(mutationsNames.SET_LOADING, true)
+        try {
+          const { data } = await api.post(`/${endpoint}`, item)
+          commit(mutationsNames.ADD_DATA, data.data)
+          commit(mutationsNames.SET_LOADING, false)
+          return data.data
+        } catch (error) {
+          commit(mutationsNames.SET_ERROR, error)
+          commit(mutationsNames.SET_LOADING, false)
+          return false
+        }
+      },
+      async edit({ commit }, { id, item }: { id: string; item: Partial<Item> }) {
+        commit(mutationsNames.SET_LOADING, true)
+        commit(mutationsNames.SET_ERROR, null)
+        try {
+          const { data } = await api.put(`/${endpoint}/id:${id}`, item)
+          commit(mutationsNames.EDIT_DATA, { key: 'id', value: id, item: data.data })
+          commit(mutationsNames.SET_LOADING, false)
+          return data.data
+        } catch (error) {
+          commit(mutationsNames.SET_ERROR, error)
+          commit(mutationsNames.SET_LOADING, false)
+          return false
+        }
+      },
+      async update({ commit }, { id, item }: { id: string; item: Partial<Item> }) {
+        commit(mutationsNames.SET_LOADING, true)
+        commit(mutationsNames.SET_ERROR, null)
+        try {
+          const { data } = await api.patch(`/${endpoint}/id:${id}`, item)
+          commit(mutationsNames.EDIT_DATA, { key: 'id', value: id, item: data.data })
+          commit(mutationsNames.SET_LOADING, false)
+          return data.data
+        } catch (error) {
+          commit(mutationsNames.SET_ERROR, error)
+          commit(mutationsNames.SET_LOADING, false)
+          return false
+        }
+      },
+      async updateByKey(
+        { commit },
+        { key, value, item }: { key: keyof Item; value: unknown; item: Partial<Item> },
+      ) {
+        commit(mutationsNames.SET_LOADING, true)
+        commit(mutationsNames.SET_ERROR, null)
+        try {
+          const { data } = await api.patch(`/${endpoint}/${value}`, item)
+          commit(mutationsNames.EDIT_DATA, { key, value, item: data.data })
+          commit(mutationsNames.SET_LOADING, false)
+          return data.data
+        } catch (error) {
+          commit(mutationsNames.SET_ERROR, error)
+          commit(mutationsNames.SET_LOADING, false)
+          return false
+        }
+      },
+      async remove({ commit }, id: string) {
+        commit(mutationsNames.SET_LOADING, true)
+        commit(mutationsNames.SET_ERROR, null)
+        try {
+          await api.delete(`/${endpoint}/id:${id}`)
+          commit(mutationsNames.REMOVE_DATA, { key: 'id', value: id })
+          commit(mutationsNames.SET_LOADING, false)
+          return true
+        } catch (error) {
+          commit(mutationsNames.SET_ERROR, error)
+          commit(mutationsNames.SET_LOADING, false)
+          return false
+        }
+      },
+      async removeByKey({ commit }, { key, value }: { key: keyof Item; value: unknown }) {
+        commit(mutationsNames.SET_LOADING, true)
+        commit(mutationsNames.SET_ERROR, null)
+        try {
+          await api.delete(`/${endpoint}/${value}`)
+          commit(mutationsNames.REMOVE_DATA, { key, value })
+          commit(mutationsNames.SET_LOADING, false)
+          return true
+        } catch (error) {
+          commit(mutationsNames.SET_ERROR, error)
+          commit(mutationsNames.SET_LOADING, false)
+          return false
+        }
+      },
     },
-    async get({ commit }, id) {
-      commit(mutationsNames.SET_ERROR, null)
-      commit(mutationsNames.SET_LOADING, true)
-      try {
-        const { data: responseData } = await api.get(`/${endpoint}/id:${id}`)
-        commit(mutationsNames.SET_SELECTED, responseData.data)
-        commit(mutationsNames.SET_LOADING, false)
-        return true
-      } catch (error) {
-        commit(mutationsNames.SET_ERROR, error)
-        commit(mutationsNames.SET_LOADING, false)
-        return false
-      }
-    },
-    async add({ commit }, item) {
-      commit(mutationsNames.SET_ERROR, null)
-      commit(mutationsNames.SET_LOADING, true)
-      try {
-        const { data } = await api.post(`/${endpoint}`, item)
-        commit(mutationsNames.ADD_DATA, data.data)
-        commit(mutationsNames.SET_LOADING, false)
-        return data.data
-      } catch (error) {
-        commit(mutationsNames.SET_ERROR, error)
-        commit(mutationsNames.SET_LOADING, false)
-        return false
-      }
-    },
-    async edit({ commit }, { id, item }) {
-      commit(mutationsNames.SET_LOADING, true)
-      commit(mutationsNames.SET_ERROR, null)
-      try {
-        const { data } = await api.put(`/${endpoint}/id:${id}`, item)
-        commit(mutationsNames.EDIT_DATA, { key: 'id', value: id, item: data.data })
-        commit(mutationsNames.SET_LOADING, false)
-        return data.data
-      } catch (error) {
-        commit(mutationsNames.SET_ERROR, error)
-        commit(mutationsNames.SET_LOADING, false)
-        return false
-      }
-    },
-    async update({ commit }, { id, item }) {
-      commit(mutationsNames.SET_LOADING, true)
-      commit(mutationsNames.SET_ERROR, null)
-      try {
-        const { data } = await api.patch(`/${endpoint}/id:${id}`, item)
-        commit(mutationsNames.EDIT_DATA, { key: 'id', value: id, item: data.data })
-        commit(mutationsNames.SET_LOADING, false)
-        return data.data
-      } catch (error) {
-        commit(mutationsNames.SET_ERROR, error)
-        commit(mutationsNames.SET_LOADING, false)
-        return false
-      }
-    },
-    async updateByKey({ commit }, { key, value, item }) {
-      commit(mutationsNames.SET_LOADING, true)
-      commit(mutationsNames.SET_ERROR, null)
-      try {
-        const { data } = await api.patch(`/${endpoint}/${value}`, item)
-        commit(mutationsNames.EDIT_DATA, { key, value, item: data.data })
-        commit(mutationsNames.SET_LOADING, false)
-        return data.data
-      } catch (error) {
-        commit(mutationsNames.SET_ERROR, error)
-        commit(mutationsNames.SET_LOADING, false)
-        return false
-      }
-    },
-    async remove({ commit }, id) {
-      commit(mutationsNames.SET_LOADING, true)
-      commit(mutationsNames.SET_ERROR, null)
-      try {
-        await api.delete(`/${endpoint}/id:${id}`)
-        commit(mutationsNames.REMOVE_DATA, { key: 'id', value: id })
-        commit(mutationsNames.SET_LOADING, false)
-        return true
-      } catch (error) {
-        commit(mutationsNames.SET_ERROR, error)
-        commit(mutationsNames.SET_LOADING, false)
-        return false
-      }
-    },
-    async removeByKey({ commit }, { key, value }) {
-      commit(mutationsNames.SET_LOADING, true)
-      commit(mutationsNames.SET_ERROR, null)
-      try {
-        await api.delete(`/${endpoint}/${value}`)
-        commit(mutationsNames.REMOVE_DATA, { key, value })
-        commit(mutationsNames.SET_LOADING, false)
-        return true
-      } catch (error) {
-        commit(mutationsNames.SET_ERROR, error)
-        commit(mutationsNames.SET_LOADING, false)
-        return false
-      }
-    },
-  }
+  )
 
   return {
     namespaced: true,
-    state,
-    getters,
-    mutations,
-    actions,
+    state: moduleState,
+    getters: moduleGetters,
+    mutations: moduleMutations,
+    actions: moduleActions,
   }
 }
 
 export default {
-  createStore,
+  createVuexCRUD,
 }

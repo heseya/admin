@@ -18,7 +18,7 @@ export default {
     Navigation,
   },
   created() {
-    this.$store.dispatch('fetchEnv')
+    this.$accessor.fetchEnv()
   },
 }
 </script>

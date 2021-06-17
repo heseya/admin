@@ -112,7 +112,7 @@ export default {
       } else {
         await this.$store.dispatch('settings/add', this.editedItem)
       }
-      await this.$store.dispatch('fetchEnv')
+      await this.$accessor.fetchEnv()
       loading.close()
       this.isModalActive = false
     },

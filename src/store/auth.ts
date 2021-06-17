@@ -1,36 +1,38 @@
+import { actionTree, getterTree, mutationTree } from 'typed-vuex'
+
 import { User } from '@/interfaces/User'
-import { Module } from 'vuex'
 import { api } from '../api'
 
-const state = {
+const state = () => ({
   error: null as null | Error,
   user: null as null | User,
   token: null as null | string,
-}
+})
 
-export const auth: Module<typeof state, any> = {
-  namespaced: true,
-  state,
-  getters: {
-    getToken(state) {
-      return state.token
-    },
-    isLogged(state) {
-      return !!state.user
-    },
+const getters = getterTree(state, {
+  getToken(state) {
+    return state.token
   },
-  mutations: {
-    SET_TOKEN(state, newToken) {
-      state.token = newToken
-    },
-    SET_USER(state, newUser) {
-      state.user = newUser
-    },
-    SET_ERROR(state, newError) {
-      state.error = newError
-    },
+  isLogged(state) {
+    return !!state.user
   },
-  actions: {
+})
+
+const mutations = mutationTree(state, {
+  SET_TOKEN(state, newToken) {
+    state.token = newToken
+  },
+  SET_USER(state, newUser) {
+    state.user = newUser
+  },
+  SET_ERROR(state, newError) {
+    state.error = newError
+  },
+})
+
+const actions = actionTree(
+  { state, getters, mutations },
+  {
     async login({ commit }, { email, password }: { email: string; password: string }) {
       commit('SET_ERROR', null)
       try {
@@ -55,4 +57,12 @@ export const auth: Module<typeof state, any> = {
       commit('SET_TOKEN', null)
     },
   },
+)
+
+export const auth = {
+  namespaced: true,
+  state,
+  getters,
+  mutations,
+  actions,
 }

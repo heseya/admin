@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import store from './store'
+import store, { accessor } from './store'
 
 Vue.use(VueRouter)
 
@@ -185,7 +185,7 @@ router.beforeEach((to, from, next) => {
   window.scrollTo(0, 0)
 
   if (to.matched.some((rec) => rec.meta.requiresAuth)) {
-    if (!store.getters['auth/isLogged']) {
+    if (!accessor.auth.isLogged) {
       // User is not logged
       next({
         name: 'Login',

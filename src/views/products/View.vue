@@ -71,6 +71,8 @@
                   </vs-input>
                 </validation-provider>
                 <br />
+                <br />
+                <tags-select v-model="form.tags" />
               </div>
 
               <div>
@@ -164,6 +166,7 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import MdEditor from '@/components/MdEditor.vue'
 import SchemaConfigurator from '@/components/schema/Configurator.vue'
 import { formatApiError } from '@/utils/errors'
+import TagsSelect from '@/components/TagsSelect.vue'
 
 const EMPTY_FORM = {
   name: '',
@@ -178,6 +181,7 @@ const EMPTY_FORM = {
   schemas: [],
   gallery: [],
   media: [],
+  tags: [],
 }
 
 export default {
@@ -237,6 +241,7 @@ export default {
     async saveProduct() {
       const apiPayload = {
         ...this.form,
+        tags: this.form.tags.map(({ id }) => id),
         media: this.form.gallery.map(({ id }) => id),
         schemas: this.form.schemas.map(({ id }) => id),
       }
@@ -313,10 +318,10 @@ export default {
     ValidationObserver,
     SchemaConfigurator,
     MdEditor,
+    TagsSelect,
   },
 }
 </script>
-
 <style lang="scss">
 .product {
   &__info {

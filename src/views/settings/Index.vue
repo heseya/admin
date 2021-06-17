@@ -39,6 +39,14 @@
           </template>
           Kategorie
         </list-item>
+        <list-item url="/settings/tags">
+          <template #avatar>
+            <vs-avatar dark>
+              <i class="bx bxs-purchase-tag"></i>
+            </vs-avatar>
+          </template>
+          Tagi
+        </list-item>
 
         <h2 class="section-title">Zamówienia</h2>
         <list-item url="/settings/statuses">

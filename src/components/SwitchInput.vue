@@ -1,7 +1,7 @@
 <template>
-  <div class="switch-input">
+  <div class="switch-input" :class="{ 'switch-input--horizontal': horizontal }">
     <label class="switch-input__label">
-      <slot name="title"></slot>
+      <slot name="title">{{ label }}</slot>
     </label>
     <vs-switch success :value="value" @input="onInput">
       <template #off>
@@ -15,19 +15,25 @@
 </template>
 
 <script>
-export default {
+import Vue from 'vue'
+export default Vue.extend({
   props: {
     value: {
       type: Boolean,
       default: false,
     },
+    horizontal: {
+      type: Boolean,
+      default: false,
+    },
+    label: String,
   },
   methods: {
     onInput(v) {
       this.$emit('input', v)
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>
@@ -42,6 +48,15 @@ export default {
     font-family: $font-main;
     font-size: 0.8em;
     margin-bottom: 3px;
+  }
+
+  &--horizontal {
+    flex-direction: row;
+  }
+  &--horizontal &__label {
+    font-size: 1em;
+    font-family: $font-sec;
+    margin-right: 10px;
   }
 }
 </style>

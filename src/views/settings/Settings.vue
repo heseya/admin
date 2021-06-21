@@ -20,19 +20,16 @@
           <h4>{{ editedItem.id ? 'Edycja ustawienie' : 'Nowe ustawienie' }}</h4>
         </template>
         <modal-form>
-          <validation-provider rules="required|letters-only" v-slot="{ errors }">
-            <vs-input v-model="editedItem.name" label="Klucz" :disabled="editedItem.permanent">
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
-          <validation-provider rules="required" v-slot="{ errors }">
-            <vs-input v-model="editedItem.value" label="Wartość">
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
-          <SwitchInput v-model="editedItem.public">
-            <template #title>Wartość publiczna</template>
-          </SwitchInput>
+          <validated-input
+            rules="required|letters-only"
+            v-model="editedItem.name"
+            label="Klucz"
+            :disabled="editedItem.permanent"
+          />
+
+          <validated-input rules="required" v-model="editedItem.value" label="Wartość" />
+
+          <SwitchInput v-model="editedItem.public" label="Wartość publiczna" horizontal />
         </modal-form>
         <template #footer>
           <div class="row">
@@ -49,8 +46,9 @@
                 color="danger"
                 :disabled="editedItem.permanent"
                 @click="open"
-                >Usuń</vs-button
               >
+                Usuń
+              </vs-button>
             </pop-confirm>
           </div>
         </template>
@@ -61,12 +59,13 @@
 
 <script>
 import clone from 'lodash/clone'
-import { ValidationProvider, ValidationObserver } from 'vee-validate'
+import { ValidationObserver } from 'vee-validate'
 import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import SwitchInput from '@/components/SwitchInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
+import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
 export default {
   components: {
@@ -74,9 +73,9 @@ export default {
     ListItem,
     ModalForm,
     PopConfirm,
-    ValidationProvider,
     ValidationObserver,
     SwitchInput,
+    ValidatedInput,
   },
   data: () => ({
     isModalActive: false,

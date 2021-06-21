@@ -19,26 +19,10 @@
       <validation-observer v-slot="{ handleSubmit }">
         <card>
           <div class="page__info">
-            <validation-provider rules="required" v-slot="{ errors }">
-              <vs-input v-model="form.name" @input="editSlug" label="Nazwa">
-                <template #message-danger>{{ errors[0] }}</template>
-              </vs-input>
-            </validation-provider>
-            <validation-provider rules="required|slug" v-slot="{ errors }">
-              <vs-input v-model="form.slug" label="Link">
-                <template #message-danger>{{ errors[0] }}</template>
-              </vs-input>
-            </validation-provider>
+            <validated-input rules="required" v-model="form.name" @input="editSlug" label="Nazwa" />
+            <validated-input rules="required|slug" v-model="form.slug" label="Link" />
             <flex-input>
-              <label class="title">Widoczność strony</label>
-              <vs-switch success v-model="form.public">
-                <template #off>
-                  <i class="bx bx-x"></i>
-                </template>
-                <template #on>
-                  <i class="bx bx-check"></i>
-                </template>
-              </vs-switch>
+              <switch-input horizontal label="Widoczność strony" v-model="form.public" />
             </flex-input>
           </div>
           <br />
@@ -54,13 +38,14 @@
 
 <script>
 import slugify from 'slugify'
-import { ValidationProvider, ValidationObserver } from 'vee-validate'
+import { ValidationObserver } from 'vee-validate'
 import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import FlexInput from '@/components/layout/FlexInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import MdEditor from '@/components/MdEditor.vue'
 import { formatApiError } from '@/utils/errors'
+import SwitchInput from '@/components/SwitchInput.vue'
 
 export default {
   components: {
@@ -69,8 +54,8 @@ export default {
     FlexInput,
     PopConfirm,
     MdEditor,
-    ValidationProvider,
     ValidationObserver,
+    SwitchInput,
   },
   data() {
     return {

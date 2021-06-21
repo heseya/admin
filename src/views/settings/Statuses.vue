@@ -23,29 +23,18 @@
           <h4>{{ editedItem.id ? 'Edycja statusu' : 'Nowy status' }}</h4>
         </template>
         <modal-form>
-          <validation-provider rules="required" v-slot="{ errors }">
-            <vs-input v-model="editedItem.name" label="Nazwa">
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
-          <validation-provider rules="required" v-slot="{ errors }">
-            <vs-input v-model="editedItem.description" label="Opis">
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
-          <validation-provider rules="required" v-slot="{ errors }">
-            <vs-input
-              :value="`#${editedItem.color}`"
-              label="Kolor statusu"
-              @input="setColor"
-              type="color"
-            >
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
-          <SwitchInput v-model="editedItem.cancel">
-            <template #title>Anulowanie zamówienia</template>
-          </SwitchInput>
+          <validated-input rules="required" v-model="editedItem.name" label="Nazwa" />
+
+          <validated-input rules="required" v-model="editedItem.description" label="Opis" />
+
+          <validated-input
+            rules="required"
+            :value="`#${editedItem.color}`"
+            label="Kolor statusu"
+            @input="setColor"
+            type="color"
+          />
+          <SwitchInput horizontal v-model="editedItem.cancel" label="Anulowanie zamówienia" />
         </modal-form>
         <template #footer>
           <div class="row">
@@ -67,12 +56,13 @@
 </template>
 
 <script>
-import { ValidationProvider, ValidationObserver } from 'vee-validate'
+import { ValidationObserver } from 'vee-validate'
 import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import SwitchInput from '@/components/SwitchInput.vue'
+import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
 export default {
   components: {
@@ -80,9 +70,9 @@ export default {
     ListItem,
     ModalForm,
     PopConfirm,
-    ValidationProvider,
     ValidationObserver,
     SwitchInput,
+    ValidatedInput,
   },
   data: () => ({
     isModalActive: false,

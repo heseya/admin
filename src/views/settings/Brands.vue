@@ -20,39 +20,23 @@
           <h4>{{ editedItem.id ? 'Edycja marki' : 'Nowa marka' }}</h4>
         </template>
         <modal-form>
-          <validation-provider rules="required" v-slot="{ errors }">
-            <vs-input v-model="editedItem.name" @input="editSlug" label="Nazwa">
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
-          <validation-provider rules="required|slug" v-slot="{ errors }">
-            <vs-input v-model="editedItem.slug" label="Link">
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
+          <validated-input
+            rules="required"
+            v-model="editedItem.name"
+            @input="editSlug"
+            label="Nazwa"
+          />
+          <validated-input rules="required|slug" v-model="editedItem.slug" label="Link" />
           <div class="switches">
             <flex-input>
-              <label class="title">Widoczność marki</label>
-              <vs-switch success v-model="editedItem.public">
-                <template #off>
-                  <i class="bx bx-x"></i>
-                </template>
-                <template #on>
-                  <i class="bx bx-check"></i>
-                </template>
-              </vs-switch>
+              <switch-input horizontal v-model="editedItem.public" label="Widoczność marki" />
             </flex-input>
-
             <flex-input>
-              <label class="title">Ukryj na stronie głównej</label>
-              <vs-switch success v-model="editedItem.hide_on_index">
-                <template #off>
-                  <i class="bx bx-x"></i>
-                </template>
-                <template #on>
-                  <i class="bx bx-check"></i>
-                </template>
-              </vs-switch>
+              <switch-input
+                horizontal
+                v-model="editedItem.hide_on_index"
+                label="Ukryj na stronie głównej"
+              />
             </flex-input>
           </div>
         </modal-form>
@@ -77,13 +61,15 @@
 
 <script>
 import slugify from 'slugify'
-import { ValidationProvider, ValidationObserver } from 'vee-validate'
+import { ValidationObserver } from 'vee-validate'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import FlexInput from '@/components/layout/FlexInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
+import ValidatedInput from '@/components/form/ValidatedInput.vue'
+import SwitchInput from '@/components/SwitchInput.vue'
 
 export default {
   components: {
@@ -91,9 +77,10 @@ export default {
     ModalForm,
     PopConfirm,
     FlexInput,
-    ValidationProvider,
     ValidationObserver,
     PaginatedList,
+    ValidatedInput,
+    SwitchInput,
   },
   data: () => ({
     isModalActive: false,

@@ -26,9 +26,9 @@
 // import uniqBy from 'lodash/uniqBy'
 import debounce from 'lodash/debounce'
 import queryString from 'query-string'
-import List from '@/components/List.vue'
-import Empty from '@/components/Empty.vue'
-import ListItem from '@/components/ListItem.vue'
+import List from '@/components/layout/List.vue'
+import Empty from '@/components/layout/Empty.vue'
+import ListItem from '@/components/layout/ListItem.vue'
 import { SchemaTypeLabel } from '@/interfaces/SchemaType'
 import { api } from '../api'
 import { formatApiError } from '@/utils/errors'
@@ -83,14 +83,13 @@ export default {
         })
         const { data } = await api.get(`/${this.type}?${query}`)
         this.data = data.data
-        loading.close()
       } catch (error) {
         this.$vs.notification({
           color: 'danger',
           ...formatApiError(error),
         })
-        loading.close()
       }
+      loading.close()
     }, 300),
     onSelect(schema) {
       this.$emit('select', schema)

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ItemsPaginatedList title="Zamówienia" :filters="filters" storeKey="orders">
+    <PaginatedList title="Zamówienia" :filters="filters" storeKey="orders">
       <template #nav>
         <vs-button color="dark" @click="areFiltersOpen = true" icon>
           <i class="bx bx-filter-alt"></i>
@@ -35,7 +35,7 @@
           </template>
         </list-item>
       </template>
-    </ItemsPaginatedList>
+    </PaginatedList>
 
     <vs-dialog width="550px" not-center v-model="areFiltersOpen">
       <template #header>
@@ -49,11 +49,11 @@
 </template>
 
 <script>
-import ListItem from '@/components/ListItem.vue'
+import ListItem from '@/components/layout/ListItem.vue'
 import { formatFilters, getRelativeDate } from '@/utils/utils'
 import OrderFilter, { EMPTY_ORDER_FILTERS } from '@/components/OrderFilter'
 import ModalForm from '@/components/ModalForm'
-import ItemsPaginatedList from '@/components/ItemsPaginatedList.vue'
+import PaginatedList from '@/components/PaginatedList.vue'
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 
 export default {
@@ -61,7 +61,7 @@ export default {
     ModalForm,
     OrderFilter,
     ListItem,
-    ItemsPaginatedList,
+    PaginatedList,
   },
   data: () => ({
     filters: { ...EMPTY_ORDER_FILTERS },

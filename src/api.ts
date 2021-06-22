@@ -1,5 +1,5 @@
 import axios from 'axios'
-import store from './store/index'
+import { accessor } from './store/index'
 import router from './router'
 
 const getApiURL = () => {
@@ -24,7 +24,7 @@ export const api = axios.create({
 })
 
 api.interceptors.request.use((config) => {
-  const token = store.getters['auth/getToken']
+  const token = accessor.auth.getToken
 
   if (token != null) {
     config.headers.Authorization = `Bearer ${token}`
@@ -36,7 +36,7 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(undefined, (error) => {
   if (error.response.status === 401) {
-    store.dispatch('auth/clearAuth')
+    accessor.auth.clearAuth()
     router.push('/login')
   }
   throw error

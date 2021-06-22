@@ -17,7 +17,7 @@
             <div class="cart-item">
               <img class="cart-item__cover" src="/img/delivery.svg" />
               <div class="cart-item__content">
-                <span>Dostawa {{ order.shipping_method.name }}</span>
+                <span>Dostawa {{ order.shipping_method && order.shipping_method.name }}</span>
               </div>
               <span class="cart-item__price">{{ order.shipping_price }} {{ currency }}</span>
             </div>
@@ -112,9 +112,9 @@
 
 <script>
 import TopNav from '@/layout/TopNav.vue'
-import Card from '@/components/Card.vue'
+import Card from '@/components/layout/Card.vue'
 import Address from '@/components/Address.vue'
-import CartItem from '@/components/CartItem.vue'
+import CartItem from '@/components/layout/CartItem.vue'
 import { getRelativeDate, formatDate } from '@/utils/utils'
 import { createPackage } from '@/services/createPackage'
 import { formatApiError } from '@/utils/errors'
@@ -136,6 +136,9 @@ export default {
     currency() {
       return this.$store.state.currency
     },
+    error() {
+      return this.$store.getters['orders/getError']
+    },
     order() {
       return this.$store.getters['orders/getSelected']
     },
@@ -146,10 +149,10 @@ export default {
       return this.$store.getters['packageTemplates/getData']
     },
     relativeOrderedDate() {
-      return getRelativeDate(this.order.created_at)
+      return this.order.created_at && getRelativeDate(this.order.created_at)
     },
     formattedDate() {
-      return formatDate(this.order.created_at)
+      return this.order.created_at && formatDate(this.order.created_at)
     },
   },
   watch: {
@@ -161,20 +164,26 @@ export default {
       if (prevStatus === '') return
       this.setStatus(status)
     },
+    error(error) {
+      if (error) this.$vs.notification({ color: 'danger', ...formatApiError(error) })
+    },
   },
   methods: {
     async setStatus(newStatus) {
       this.isLoading = true
+
       const success = await this.$store.dispatch('orders/changeStatus', {
         orderId: this.order.id,
         statusId: newStatus,
       })
+
       if (success) {
         this.$vs.notification({
           color: 'success',
           title: 'Status zamówienia został zmieniony',
         })
       }
+
       this.isLoading = false
     },
     async createPackage() {

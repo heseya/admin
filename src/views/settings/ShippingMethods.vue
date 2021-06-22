@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ItemsPaginatedList title="Opcje Dostawy" storeKey="shippingMethods" draggable>
+    <PaginatedList title="Opcje Dostawy" storeKey="shippingMethods" draggable>
       <template #nav>
         <vs-button @click="openModal()" color="dark" icon>
           <i class="bx bx-plus"></i>
@@ -23,7 +23,7 @@
           </small>
         </list-item>
       </template>
-    </ItemsPaginatedList>
+    </PaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
       <vs-dialog width="660px" not-center v-model="isModalActive">
@@ -53,9 +53,9 @@
 <script>
 import { ValidationObserver } from 'vee-validate'
 
-import ItemsPaginatedList from '@/components/ItemsPaginatedList.vue'
-import ListItem from '@/components/ListItem.vue'
-import PopConfirm from '@/components/PopConfirm.vue'
+import PaginatedList from '@/components/PaginatedList.vue'
+import ListItem from '@/components/layout/ListItem.vue'
+import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ShippingMethodsForm from '@/components/forms/shippingMethods/Index.vue'
 
 import { api } from '../../api'
@@ -65,7 +65,7 @@ export default {
     ListItem,
     PopConfirm,
     ValidationObserver,
-    ItemsPaginatedList,
+    PaginatedList,
     ShippingMethodsForm,
   },
   data: () => ({

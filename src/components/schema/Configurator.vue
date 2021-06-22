@@ -66,9 +66,9 @@
 </template>
 
 <script>
-import List from '@/components/List.vue'
-import ListItem from '@/components/ListItem.vue'
-import Empty from '@/components/Empty.vue'
+import List from '@/components/layout/List.vue'
+import ListItem from '@/components/layout/ListItem.vue'
+import Empty from '@/components/layout/Empty.vue'
 import ModalForm from '@/components/ModalForm.vue'
 import SchemaForm from '@/components/schema/Form.vue'
 import Selector from '@/components/Selector.vue'

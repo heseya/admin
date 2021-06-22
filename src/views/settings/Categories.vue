@@ -1,27 +1,19 @@
 <template>
   <div>
-    <top-nav title="Kategorie">
-      <vs-button @click="openModal()" color="dark" icon>
-        <i class="bx bx-plus"></i>
-      </vs-button>
-    </top-nav>
+    <PaginatedList title="Kategorie" storeKey="categories" draggable>
+      <template #nav>
+        <vs-button @click="openModal()" color="dark" icon>
+          <i class="bx bx-plus"></i>
+        </vs-button>
+      </template>
 
-    <card>
-      <app-empty v-if="!categories.length">Nie ma żadnej kategorii</app-empty>
-      <list>
-        <draggable v-model="categories">
-          <list-item
-            v-for="category in categories"
-            :key="category.id"
-            @click="openModal(category.id)"
-            :hidden="!category.public"
-          >
-            {{ category.name }}
-            <small>/{{ category.slug }}</small>
-          </list-item>
-        </draggable>
-      </list>
-    </card>
+      <template v-slot="{ item: category }">
+        <list-item @click="openModal(category.id)" :hidden="!category.public">
+          {{ category.name }}
+          <small>/{{ category.slug }}</small>
+        </list-item>
+      </template>
+    </PaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
       <vs-dialog width="550px" not-center v-model="isModalActive">
@@ -29,39 +21,24 @@
           <h4>{{ editedItem.id ? 'Edycja kategorii' : 'Nowa kategoria' }}</h4>
         </template>
         <modal-form>
-          <validation-provider rules="required" v-slot="{ errors }">
-            <vs-input v-model="editedItem.name" @input="editSlug" label="Nazwa">
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
-          <validation-provider rules="required|slug" v-slot="{ errors }">
-            <vs-input v-model="editedItem.slug" label="Link">
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
+          <validated-input
+            rules="required"
+            v-model="editedItem.name"
+            @input="editSlug"
+            label="Nazwa"
+          />
+          <validated-input rules="required|slug" v-model="editedItem.slug" label="Link" />
           <div class="switches">
             <flex-input>
-              <label class="title">Widoczność kategorii</label>
-              <vs-switch success v-model="editedItem.public">
-                <template #off>
-                  <i class="bx bx-x"></i>
-                </template>
-                <template #on>
-                  <i class="bx bx-check"></i>
-                </template>
-              </vs-switch>
+              <switch-input horizontal v-model="editedItem.public" label="Widoczność kategorii" />
             </flex-input>
 
             <flex-input>
-              <label class="title">Ukryj na stronie głównej</label>
-              <vs-switch success v-model="editedItem.hide_on_index">
-                <template #off>
-                  <i class="bx bx-x"></i>
-                </template>
-                <template #on>
-                  <i class="bx bx-check"></i>
-                </template>
-              </vs-switch>
+              <switch-input
+                horizontal
+                v-model="editedItem.hide_on_index"
+                label="Ukryj na stronie głównej"
+              />
             </flex-input>
           </div>
         </modal-form>
@@ -86,31 +63,26 @@
 
 <script>
 import slugify from 'slugify'
-import { ValidationProvider, ValidationObserver } from 'vee-validate'
-import TopNav from '@/layout/TopNav.vue'
-import Card from '@/components/Card.vue'
-import List from '@/components/List.vue'
+
+import { ValidationObserver } from 'vee-validate'
+import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/ModalForm.vue'
-import ListItem from '@/components/ListItem.vue'
-import FlexInput from '@/components/FlexInput.vue'
-import Empty from '@/components/Empty.vue'
-import PopConfirm from '@/components/PopConfirm.vue'
-import Draggable from 'vuedraggable'
-import { formatApiError } from '@/utils/errors'
+import ListItem from '@/components/layout/ListItem.vue'
+import FlexInput from '@/components/layout/FlexInput.vue'
+import PopConfirm from '@/components/layout/PopConfirm.vue'
+import ValidatedInput from '@/components/form/ValidatedInput.vue'
+import SwitchInput from '@/components/SwitchInput.vue'
 
 export default {
   components: {
-    TopNav,
-    Card,
-    List,
+    PaginatedList,
     ListItem,
     ModalForm,
     PopConfirm,
     FlexInput,
-    appEmpty: Empty,
-    ValidationProvider,
     ValidationObserver,
-    Draggable,
+    ValidatedInput,
+    SwitchInput,
   },
   data: () => ({
     isModalActive: false,
@@ -121,38 +93,7 @@ export default {
       hide_on_index: false,
     },
   }),
-  computed: {
-    categories: {
-      get() {
-        return this.$store.getters['categories/getData']
-      },
-      async set(val) {
-        const loading = this.$vs.loading({ color: '#000' })
-        await this.$store.dispatch(
-          'categories/setOrder',
-          val.map((brand) => brand.id),
-        )
-        await this.$store.dispatch('categories/fetch')
-        loading.close()
-      },
-    },
-  },
-  watch: {
-    error(error) {
-      if (error) {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(error),
-        })
-      }
-    },
-  },
   methods: {
-    async getCategories() {
-      const loading = this.$vs.loading({ color: '#000' })
-      await this.$store.dispatch('categories/fetch')
-      loading.close()
-    },
     editSlug() {
       if (!this.editedItem.id) {
         this.editedItem.slug = slugify(this.editedItem.name, { lower: true, remove: /[.]/g })
@@ -189,9 +130,6 @@ export default {
       loading.close()
       this.isModalActive = false
     },
-  },
-  created() {
-    this.getCategories()
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {

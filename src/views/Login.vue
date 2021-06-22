@@ -13,7 +13,8 @@
 </template>
 
 <script>
-import Card from '@/components/Card.vue'
+import Card from '@/components/layout/Card.vue'
+import { formatApiError } from '@/utils/errors'
 
 const DEBUG = process.env.NODE_ENV === 'development'
 
@@ -37,8 +38,7 @@ export default {
       if (error) {
         this.$vs.notification({
           color: 'danger',
-          title: 'Błąd logowania',
-          text: 'Zły email lub hasło.',
+          ...formatApiError(error),
         })
       }
     },
@@ -46,7 +46,7 @@ export default {
   methods: {
     async login() {
       const loading = this.$vs.loading({ color: '#000' })
-      await this.$store.dispatch('auth/login', {
+      await this.$accessor.auth.login({
         email: this.email,
         password: this.password,
       })

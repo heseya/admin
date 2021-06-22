@@ -18,7 +18,7 @@ export default {
     Navigation,
   },
   created() {
-    this.$store.dispatch('fetchEnv')
+    this.$accessor.fetchEnv()
 
     const registerChannel = new BroadcastChannel('register')
     const tokenChannel = new BroadcastChannel('token')

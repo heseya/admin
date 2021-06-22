@@ -1,6 +1,6 @@
 <template>
   <div class="products-container">
-    <ItemsPaginatedList title="Asortyment" :filters="filters" storeKey="products">
+    <PaginatedList title="Asortyment" :filters="filters" storeKey="products">
       <template #nav>
         <vs-button color="dark" @click="areFiltersOpen = true" icon>
           <i class="bx bx-filter-alt"></i>
@@ -14,7 +14,7 @@
       <template v-slot="{ item }">
         <Product :product="item"></Product>
       </template>
-    </ItemsPaginatedList>
+    </PaginatedList>
 
     <vs-dialog width="550px" not-center v-model="areFiltersOpen">
       <template #header>
@@ -31,7 +31,7 @@
 import Product from '@/components/Product.vue'
 import ProductsFilter, { EMPTY_PRODUCT_FILTERS } from '@/components/ProductsFilter.vue'
 import ModalForm from '@/components/ModalForm.vue'
-import ItemsPaginatedList from '@/components/ItemsPaginatedList.vue'
+import PaginatedList from '@/components/PaginatedList.vue'
 import { formatFilters } from '@/utils/utils'
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 
@@ -40,7 +40,7 @@ export default {
     Product,
     ProductsFilter,
     ModalForm,
-    ItemsPaginatedList,
+    PaginatedList,
   },
   data: () => ({
     filters: { ...EMPTY_PRODUCT_FILTERS },
@@ -79,17 +79,24 @@ export default {
     box-shadow: none;
   }
 
-  .paginated-items__list {
+  .paginated-list__list {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: 22px;
     padding: 0;
     min-height: 100px;
     margin-bottom: 12px;
+    align-items: start;
+  }
+
+  @media (min-width: 700px) {
+    .paginated-list__list {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
   }
 
   @media (min-width: $break) {
-    .paginated-items__list {
+    .paginated-list__list {
       grid-template-columns: 1fr 1fr 1fr 1fr;
     }
   }

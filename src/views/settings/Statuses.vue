@@ -1,25 +1,21 @@
 <template>
   <div>
-    <top-nav title="Statusy zamówień">
-      <vs-button @click="openModal()" color="dark" icon>
-        <i class="bx bx-plus"></i>
-      </vs-button>
-    </top-nav>
-
-    <card>
-      <app-empty v-if="!statuses.length">Nie ma żadnych statusów</app-empty>
-      <list>
-        <draggable v-model="statuses">
-          <list-item v-for="status in statuses" :key="status.id" @click="openModal(status.id)">
-            <template #avatar>
-              <vs-avatar :color="`#${status.color}`" />
-            </template>
-            {{ status.name }}
-            <small>{{ status.description }}</small>
-          </list-item>
-        </draggable>
-      </list>
-    </card>
+    <PaginatedList title="Statusy zamówień" storeKey="statuses" draggable>
+      <template #nav>
+        <vs-button @click="openModal()" color="dark" icon>
+          <i class="bx bx-plus"></i>
+        </vs-button>
+      </template>
+      <template v-slot="{ item: status }">
+        <list-item @click="openModal(status.id)" :key="status.id">
+          <template #avatar>
+            <vs-avatar :color="`#${status.color}`" />
+          </template>
+          {{ status.name }}
+          <small>{{ status.description }}</small>
+        </list-item>
+      </template>
+    </PaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
       <vs-dialog width="550px" not-center v-model="isModalActive">
@@ -27,29 +23,18 @@
           <h4>{{ editedItem.id ? 'Edycja statusu' : 'Nowy status' }}</h4>
         </template>
         <modal-form>
-          <validation-provider rules="required" v-slot="{ errors }">
-            <vs-input v-model="editedItem.name" label="Nazwa">
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
-          <validation-provider rules="required" v-slot="{ errors }">
-            <vs-input v-model="editedItem.description" label="Opis">
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
-          <validation-provider rules="required" v-slot="{ errors }">
-            <vs-input
-              :value="`#${editedItem.color}`"
-              label="Kolor statusu"
-              @input="setColor"
-              type="color"
-            >
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
-          <SwitchInput v-model="editedItem.cancel">
-            <template #title>Anulowanie zamówienia</template>
-          </SwitchInput>
+          <validated-input rules="required" v-model="editedItem.name" label="Nazwa" />
+
+          <validated-input rules="required" v-model="editedItem.description" label="Opis" />
+
+          <validated-input
+            rules="required"
+            :value="`#${editedItem.color}`"
+            label="Kolor statusu"
+            @input="setColor"
+            type="color"
+          />
+          <SwitchInput horizontal v-model="editedItem.cancel" label="Anulowanie zamówienia" />
         </modal-form>
         <template #footer>
           <div class="row">
@@ -71,31 +56,23 @@
 </template>
 
 <script>
-import { ValidationProvider, ValidationObserver } from 'vee-validate'
-import TopNav from '@/layout/TopNav.vue'
-import Card from '@/components/Card.vue'
-import List from '@/components/List.vue'
+import { ValidationObserver } from 'vee-validate'
+import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/ModalForm.vue'
-import ListItem from '@/components/ListItem.vue'
-import Empty from '@/components/Empty.vue'
-import PopConfirm from '@/components/PopConfirm.vue'
-import Draggable from 'vuedraggable'
+import ListItem from '@/components/layout/ListItem.vue'
+import PopConfirm from '@/components/layout/PopConfirm.vue'
 import SwitchInput from '@/components/SwitchInput.vue'
-import { formatApiError } from '@/utils/errors'
+import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
 export default {
   components: {
-    TopNav,
-    Card,
-    List,
+    PaginatedList,
     ListItem,
     ModalForm,
     PopConfirm,
-    appEmpty: Empty,
-    ValidationProvider,
     ValidationObserver,
-    Draggable,
     SwitchInput,
+    ValidatedInput,
   },
   data: () => ({
     isModalActive: false,
@@ -105,40 +82,9 @@ export default {
       color: '',
     },
   }),
-  computed: {
-    statuses: {
-      get() {
-        return this.$store.getters['statuses/getData']
-      },
-      async set(val) {
-        const loading = this.$vs.loading({ color: '#000' })
-        await this.$store.dispatch(
-          'statuses/setOrder',
-          val.map((status) => status.id),
-        )
-        await this.$store.dispatch('statuses/fetch')
-        loading.close()
-      },
-    },
-  },
-  watch: {
-    error(error) {
-      if (error) {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(error),
-        })
-      }
-    },
-  },
   methods: {
     setColor(color) {
       this.editedItem.color = color.split('#')[1] ?? color
-    },
-    async getStatuses() {
-      const loading = this.$vs.loading({ color: '#000' })
-      await this.$store.dispatch('statuses/fetch')
-      loading.close()
     },
     openModal(id) {
       this.isModalActive = true
@@ -173,9 +119,6 @@ export default {
       loading.close()
       this.isModalActive = false
     },
-  },
-  created() {
-    this.getStatuses()
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {

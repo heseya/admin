@@ -20,17 +20,31 @@
 </template>
 
 <script>
-export default {
+import Vue from 'vue'
+
+export default Vue.extend({
   props: {
-    url: String,
-    el: String,
-    hidden: Boolean,
-    noHover: Boolean,
+    url: {
+      type: String,
+      required: false,
+    },
+    el: {
+      type: String,
+      default: 'button',
+    },
+    hidden: {
+      type: Boolean,
+      default: false,
+    },
+    noHover: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     component() {
       if (this.url) return 'router-link'
-      return this.el || 'button'
+      return this.el
     },
   },
   methods: {
@@ -38,12 +52,13 @@ export default {
       this.$emit('click')
     },
   },
-}
+})
 </script>
 
 <style lang="scss">
 .list-item {
-  all: unset;
+  border: none;
+  background-color: #fff0;
   width: 100%;
   box-sizing: border-box;
   cursor: pointer;
@@ -56,6 +71,8 @@ export default {
   align-items: center;
   text-decoration: none;
   color: black;
+  transition: 0.3s;
+  text-align: left;
 
   &:hover {
     background-color: $grey-light;

@@ -1,15 +1,15 @@
 <template>
-  <div class="paginated-items">
+  <div class="paginated-list">
     <AppTopNav :title="title">
       <slot name="nav"></slot>
     </AppTopNav>
 
     <AppCard>
       <AppEmpty v-if="!items.length">{{ emptyText }}</AppEmpty>
-      <AppList class="paginated-items__list">
+      <AppList class="paginated-list__list">
         <Draggable v-if="draggable" v-model="items">
           <template v-for="item in items">
-            <slot :item="item" className="paginated-items__item" />
+            <slot :item="item" />
           </template>
         </Draggable>
 
@@ -19,7 +19,7 @@
       </AppList>
     </AppCard>
 
-    <div class="paginated-items__footer">
+    <div class="paginated-list__footer" v-if="meta.last_page">
       <vs-select
         class="per-page-select"
         :value="itemsPerPage"
@@ -31,12 +31,7 @@
         </vs-option>
       </vs-select>
 
-      <AppPagination
-        v-if="meta.last_page"
-        :value="page"
-        @input="changePage"
-        :length="meta.last_page"
-      />
+      <AppPagination :value="page" @input="changePage" :length="meta.last_page" />
     </div>
   </div>
 </template>
@@ -46,10 +41,10 @@ import Vue from 'vue'
 import Draggable from 'vuedraggable'
 
 import TopNav from '@/layout/TopNav.vue'
-import Empty from '@/components/Empty.vue'
+import Empty from '@/components/layout/Empty.vue'
 import Pagination from '@/components/Pagination.vue'
-import Card from '@/components/Card.vue'
-import List from '@/components/List.vue'
+import Card from '@/components/layout/Card.vue'
+import List from '@/components/layout/List.vue'
 
 import { ResponseMeta } from '@/interfaces/Response'
 import { formatFilters } from '@/utils/utils'
@@ -174,7 +169,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-.paginated-items {
+.paginated-list {
   &__footer {
     display: flex;
     align-items: flex-end;

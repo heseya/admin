@@ -1,11 +1,7 @@
 <template>
   <div class="shipping-methods-form">
     <modal-form>
-      <validation-provider rules="required" v-slot="{ errors }">
-        <vs-input v-model="form.name" label="Nazwa">
-          <template #message-danger>{{ errors[0] }}</template>
-        </vs-input>
-      </validation-provider>
+      <validated-input rules="required" v-model="form.name" label="Nazwa" />
       <div class="center">
         <vs-select
           v-model="form.payment_methods"
@@ -79,11 +75,12 @@ import { ValidationProvider } from 'vee-validate'
 
 import ModalForm from '@/components/ModalForm.vue'
 import SwitchInput from '@/components/SwitchInput.vue'
-import FlexInput from '@/components/FlexInput.vue'
+import FlexInput from '@/components/layout/FlexInput.vue'
 
 import { ShippingMethodCountry, ShippingMethodDTO } from '@/interfaces/ShippingMethod'
 import { PaymentMethod } from '@/interfaces/PaymentMethod'
 import PriceRangesForm from './PriceRangesForm.vue'
+import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
 export default Vue.extend({
   name: 'ShippingMethodsForm',
@@ -125,6 +122,7 @@ export default Vue.extend({
     ValidationProvider,
     SwitchInput,
     PriceRangesForm,
+    ValidatedInput,
   },
 })
 </script>

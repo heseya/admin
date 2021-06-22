@@ -35,21 +35,16 @@
           <h4>{{ editedItem.id ? 'Edycja' : 'Nowy' }} przedmiot</h4>
         </template>
         <modal-form>
-          <validation-provider rules="required" v-slot="{ errors }">
-            <vs-input v-model="editedItem.name" label="Nazwa">
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
-          <validation-provider rules="required" v-slot="{ errors }">
-            <vs-input v-model="editedItem.sku" label="SKU">
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
-          <validation-provider v-slot="{ errors }" v-if="editedItem.id">
-            <vs-input type="number" v-model="editedItem.quantity" label="Ilość w magazynie">
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
+          <validated-input rules="required" v-model="editedItem.name" label="Nazwa" />
+
+          <validated-input rules="required" v-model="editedItem.sku" label="SKU" />
+          <validated-input
+            rules="required"
+            v-if="editedItem.id"
+            type="number"
+            v-model="editedItem.quantity"
+            label="Ilość w magazynie"
+          />
         </modal-form>
         <template #footer>
           <div class="row">
@@ -71,21 +66,22 @@
 </template>
 
 <script>
-import { ValidationProvider, ValidationObserver } from 'vee-validate'
+import { ValidationObserver } from 'vee-validate'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/ModalForm.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
+import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
 export default {
   components: {
     ListItem,
     ModalForm,
     PopConfirm,
-    ValidationProvider,
     ValidationObserver,
     PaginatedList,
+    ValidatedInput,
   },
   data: () => ({
     filters: {

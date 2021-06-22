@@ -24,31 +24,36 @@
           <h4>{{ editedItem.id ? 'Edycja szablony' : 'Nowy szablon' }}</h4>
         </template>
         <modal-form>
-          <validation-provider rules="required" v-slot="{ errors }">
-            <vs-input v-model="editedItem.name" label="Nazwa">
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
-          <validation-provider rules="required|positive" v-slot="{ errors }">
-            <vs-input v-model="editedItem.weight" type="number" step="0.01" label="Waga (kg)">
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
-          <validation-provider rules="required|positive" v-slot="{ errors }">
-            <vs-input v-model="editedItem.width" type="number" label="Szerokość (cm)">
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
-          <validation-provider rules="required|positive" v-slot="{ errors }">
-            <vs-input v-model="editedItem.height" type="number" label="Wysokość (cm)">
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
-          <validation-provider rules="required|positive" v-slot="{ errors }">
-            <vs-input v-model="editedItem.depth" type="number" label="Głębokość (cm)">
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
+          <validated-input rules="required" v-model="editedItem.name" label="Nazwa" />
+
+          <validated-input
+            rules="required|positive"
+            v-model="editedItem.weight"
+            type="number"
+            step="0.01"
+            label="Waga (kg)"
+          />
+
+          <validated-input
+            rules="required|positive"
+            v-model="editedItem.width"
+            type="number"
+            label="Szerokość (cm)"
+          />
+
+          <validated-input
+            rules="required|positive"
+            v-model="editedItem.height"
+            type="number"
+            label="Wysokość (cm)"
+          />
+
+          <validated-input
+            rules="required|positive"
+            v-model="editedItem.depth"
+            type="number"
+            label="Głębokość (cm)"
+          />
         </modal-form>
         <template #footer>
           <div class="row">
@@ -70,11 +75,12 @@
 </template>
 
 <script>
-import { ValidationProvider, ValidationObserver } from 'vee-validate'
+import { ValidationObserver } from 'vee-validate'
 import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
+import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
 export default {
   components: {
@@ -82,8 +88,8 @@ export default {
     ListItem,
     ModalForm,
     PopConfirm,
-    ValidationProvider,
     ValidationObserver,
+    ValidatedInput,
   },
   data: () => ({
     isModalActive: false,

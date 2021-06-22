@@ -28,33 +28,22 @@
           <h4>{{ editedItem.id ? 'Edycja kodu rabatowego' : 'Nowy kod rabatowy' }}</h4>
         </template>
         <modal-form>
-          <validation-provider rules="required" v-slot="{ errors }">
-            <vs-input v-model="editedItem.code" label="Kod">
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
-          <validation-provider v-slot="{ errors }">
-            <vs-input v-model="editedItem.description" label="Opis">
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-            <validation-provider rules="required" v-slot="{ errors }">
-              <vs-input v-model="editedItem.max_uses" label="Maksymalna ilość użyć">
-                <template #message-danger>{{ errors[0] }}</template>
-              </vs-input>
-            </validation-provider>
-          </validation-provider>
-          <validation-provider rules="required" v-slot="{ errors }">
-            <vs-input v-model="editedItem.discount" label="Zniżka">
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
-          <validation-provider rules="required" v-slot="{ errors }">
+          <validated-input rules="required" v-model="editedItem.code" label="Kod" />
+          <validated-input rules="required" v-model="editedItem.description" label="Opis" />
+
+          <validated-input
+            rules="required"
+            v-model="editedItem.max_uses"
+            label="Maksymalna ilość użyć"
+          />
+          <validated-input rules="required" v-model="editedItem.discount" label="Zniżka" />
+          <ValidationProvider rules="required" v-slot="{ errors }">
             <vs-select v-model="editedItem.type" label="Typ">
               <vs-option label="Procentowy" value="0">Rabat Procentowy</vs-option>
               <vs-option label="Kwotowy" value="1">Rabat Kwotowy</vs-option>
               <template #message-danger>{{ errors[0] }}</template>
             </vs-select>
-          </validation-provider>
+          </ValidationProvider>
         </modal-form>
         <template #footer>
           <div class="row">
@@ -80,6 +69,7 @@ import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import ModalForm from '@/components/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
+import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
 const EMPTY_FORM = {
   name: '',
@@ -96,6 +86,7 @@ export default {
     ValidationProvider,
     ValidationObserver,
     PaginatedList,
+    ValidatedInput,
   },
   data: () => ({
     isModalActive: false,

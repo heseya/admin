@@ -1,7 +1,7 @@
-import { createStore } from './generator'
+import { createVuexCRUD } from './generator'
 import { api } from '@/api'
 
-export const statuses = createStore('STATUSES', 'statuses', {
+export const statuses = createVuexCRUD('STATUSES', 'statuses', {
   state: {},
   getters: {},
   mutations: {},

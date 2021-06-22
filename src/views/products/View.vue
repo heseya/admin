@@ -53,23 +53,22 @@
             <form @submit.prevent="handleSubmit(saveProduct)" class="product__info">
               <div>
                 <br />
-                <validation-provider rules="required" v-slot="{ errors }">
-                  <vs-input v-model="form.name" @input="editSlug" label="Nazwa">
-                    <template #message-danger>{{ errors[0] }}</template>
-                  </vs-input>
-                </validation-provider>
+                <validated-input
+                  rules="required"
+                  v-model="form.name"
+                  @input="editSlug"
+                  label="Nazwa"
+                />
                 <br /><br />
-                <validation-provider rules="required|slug" v-slot="{ errors }">
-                  <vs-input v-model="form.slug" label="Link">
-                    <template #message-danger>{{ errors[0] }}</template>
-                  </vs-input>
-                </validation-provider>
+                <validated-input rules="required|slug" v-model="form.slug" label="Link" />
                 <br /><br />
-                <validation-provider rules="required" v-slot="{ errors }">
-                  <vs-input v-model="form.price" type="number" step="0.01" label="Cena">
-                    <template #message-danger>{{ errors[0] }}</template>
-                  </vs-input>
-                </validation-provider>
+                <validated-input
+                  rules="required"
+                  v-model="form.price"
+                  type="number"
+                  step="0.01"
+                  label="Cena"
+                />
                 <br />
               </div>
 
@@ -115,17 +114,14 @@
                   </vs-select>
                 </validation-provider>
                 <br /><br />
-                <validation-provider rules="required" v-slot="{ errors }">
-                  <vs-input
-                    v-model="form.quantity_step"
-                    type="number"
-                    max="999999"
-                    step="0.01"
-                    label="Format ilości"
-                  >
-                    <template #message-danger>{{ errors[0] }}</template>
-                  </vs-input>
-                </validation-provider>
+                <validated-input
+                  rules="required"
+                  v-model="form.quantity_step"
+                  type="number"
+                  max="999999"
+                  step="0.01"
+                  label="Format ilości"
+                />
               </div>
 
               <div class="wide">
@@ -164,6 +160,7 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import RichEditor from '@/components/RichEditor.vue'
 import SchemaConfigurator from '@/components/schema/Configurator.vue'
 import { formatApiError } from '@/utils/errors'
+import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
 const EMPTY_FORM = {
   name: '',
@@ -313,6 +310,7 @@ export default {
     ValidationObserver,
     SchemaConfigurator,
     RichEditor,
+    ValidatedInput,
   },
 }
 </script>

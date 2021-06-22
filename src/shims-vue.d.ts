@@ -1,4 +1,5 @@
 import VueRouter, { Route } from 'vue-router'
+import { accessor } from './store'
 
 declare module '*.vue' {
   import Vue from 'vue'
@@ -10,5 +11,6 @@ declare module 'vue/types/vue' {
     $router: VueRouter
     $route: Route
     $vs: any
+    $accessor: typeof accessor
   }
 }

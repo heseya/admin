@@ -1,6 +1,6 @@
-import { createStore } from './generator'
+import { createVuexCRUD } from './generator'
 
-export const settings = createStore('SETTINGS', 'settings', {
+export const settings = createVuexCRUD('SETTINGS', 'settings', {
   state: {},
   getters: {},
   mutations: {},

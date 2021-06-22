@@ -25,11 +25,7 @@
           <h4>Dodaj Aplikacje</h4>
         </template>
         <modal-form>
-          <validation-provider rules="required" v-slot="{ errors }">
-            <vs-input v-model="editedItem.url" label="URL">
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
+          <validated-input rules="required" v-model="editedItem.url" label="URL" />
         </modal-form>
         <template #footer>
           <div class="row">
@@ -43,17 +39,18 @@
 
 <script>
 import ListItem from '@/components/layout/ListItem.vue'
-import { ValidationObserver, ValidationProvider } from 'vee-validate'
+import { ValidationObserver } from 'vee-validate'
 import ModalForm from '@/components/ModalForm'
 import PaginatedList from '@/components/PaginatedList.vue'
+import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
 export default {
   components: {
     ListItem,
     ModalForm,
-    ValidationProvider,
     ValidationObserver,
     PaginatedList,
+    ValidatedInput,
   },
   data: () => ({
     isModalActive: false,

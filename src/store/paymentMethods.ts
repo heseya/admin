@@ -1,6 +1,6 @@
-import { createStore } from './generator'
+import { createVuexCRUD } from './generator'
 
-export const paymentMethods = createStore('PAYMENT_METHODS', 'payment-methods', {
+export const paymentMethods = createVuexCRUD('PAYMENT_METHODS', 'payment-methods', {
   state: {},
   getters: {},
   mutations: {},

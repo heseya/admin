@@ -46,6 +46,7 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import RichEditor from '@/components/RichEditor.vue'
 import { formatApiError } from '@/utils/errors'
 import SwitchInput from '@/components/SwitchInput.vue'
+import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
 export default {
   components: {
@@ -54,9 +55,9 @@ export default {
     FlexInput,
     PopConfirm,
     RichEditor,
-    ValidationProvider,
     ValidationObserver,
     SwitchInput,
+    ValidatedInput,
   },
   data() {
     return {

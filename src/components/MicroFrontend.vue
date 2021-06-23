@@ -1,42 +1,72 @@
 <template>
-  <main :id="name + '-container'" />
+  <main :id="appKey + '-container'" />
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue'
+export default Vue.extend({
   name: 'MicroFrontend',
-  props: ['history', 'name', 'host'],
-  mounted() {
-    const { name, host } = this
-    const { document } = window
-    const scriptId = `micro-frontend-script-${name}`
-    if (document.getElementById(scriptId)) {
-      this.renderMicroFrontend()
-      return
-    }
-    fetch(`${host}/asset-manifest.json`)
-      .then((res) => res.json())
-      .then((manifest) => {
-        const script = document.createElement('script')
-        script.id = scriptId
-        script.type = 'module'
-        script.crossOrigin = ''
-        const appSrc = manifest['index.js'] || manifest['main.js'] || manifest['main.umd.min.js']
+  props: ['appKey', 'host'],
+  async mounted() {
+    this.initializeRepository()
 
-        script.src = `${host}${appSrc}`
-        script.onload = this.renderMicroFrontend
-        document.head.appendChild(script)
-      })
+    const registerChannel = new BroadcastChannel('register')
+    registerChannel.onmessage = (ev) => {
+      const appName = ev.data.split(': ')[1]
+      const app = window.microApps.find((app) => app.name === appName)
+      app.host = this.host
+      console.log('register', app)
+      this.mountApp()
+    }
+
+    if (this.findApp(this.host)) {
+      this.mountApp()
+    } else {
+      await this.registerApp(this.appKey, this.host)
+    }
   },
   beforeDestroy() {
-    const { name } = this
-    window[`unmount${name}`](`${name}-container`)
+    this.unmountApp()
   },
   methods: {
-    renderMicroFrontend: function () {
-      const { name, history } = this
-      window[`render${name}`](`${name}-container`, history)
+    initializeRepository() {
+      if (!window.microApps) window.microApps = []
+    },
+
+    findApp(host: string) {
+      return window.microApps.find((app) => app.host === host)
+    },
+
+    async registerApp(appKey: string, host: string) {
+      const { document } = window
+
+      const scriptId = `micro-frontend-script-${appKey}`
+      if (document.getElementById(scriptId)) {
+        this.mountApp()
+        return
+      }
+
+      const response = await fetch(`${host}/asset-manifest.json`)
+      const manifest = await response.json()
+
+      const script = document.createElement('script')
+      script.id = scriptId
+      script.type = 'module'
+      script.crossOrigin = ''
+      const appSrc = manifest['index.js'] || manifest['main.js'] || manifest['main.umd.min.js']
+
+      script.src = `${host}${appSrc}`
+      document.head.appendChild(script)
+    },
+
+    mountApp() {
+      const app = window.microApps.find((app) => app.host === this.host)
+      app.mount(`${this.appKey}-container`, history)
+    },
+    unmountApp() {
+      const app = window.microApps.find((app) => app.host === this.host)
+      app.unmount(`${this.appKey}-container`)
     },
   },
-}
+})
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div class="app-containter">
-    <micro-frontend name="Test" host="//localhost:5000/" history="{}" />
+    <micro-frontend app-key="Test" host="//localhost:5000/" />
   </div>
 </template>
 

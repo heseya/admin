@@ -20,10 +20,10 @@ export default {
   created() {
     this.$accessor.fetchEnv()
 
-    const registerChannel = new BroadcastChannel('register')
+    const mountedChannel = new BroadcastChannel('mounted')
     const tokenChannel = new BroadcastChannel('token')
 
-    registerChannel.onmessage = () => {
+    mountedChannel.onmessage = () => {
       tokenChannel.postMessage(this.$store.state.auth.token)
     }
   },

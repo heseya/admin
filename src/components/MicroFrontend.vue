@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { findAppByHost, initializeRepository, installApp, onRegister } from '../../lib'
+import { findAppByHost, initializeRepository, installApp, onRegister } from 'microfront-lib'
 
 export default Vue.extend({
   name: 'MicroFrontend',
@@ -35,11 +35,11 @@ export default Vue.extend({
   methods: {
     mountApp() {
       const app = findAppByHost(this.host)
-      app.mount(this.containerId, history)
+      if (app) app.mount(this.containerId)
     },
     unmountApp() {
       const app = findAppByHost(this.host)
-      app.unmount(this.containerId)
+      if (app) app.unmount(this.containerId)
     },
   },
 })

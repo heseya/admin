@@ -1,7 +1,5 @@
 export const initializeRepository = () => {
   // @ts-ignore
-  window.isParentApp = true
-  // @ts-ignore
   if (!window.microApps) window.microApps = []
 }
 
@@ -31,7 +29,11 @@ export const installApp = async (host: string) => {
   script.id = scriptId
   script.type = 'module'
   script.crossOrigin = ''
-  const appSrc = manifest['index.js'] || manifest['main.js'] || manifest['main.umd.min.js']
+  const appSrc =
+    manifest['index.js'] ||
+    manifest['bundle.js'] ||
+    manifest['main.js'] ||
+    manifest['main.umd.min.js']
 
   script.src = `${host}${appSrc}`
   document.head.appendChild(script)

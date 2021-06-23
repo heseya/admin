@@ -6005,8 +6005,8 @@ microevent.ts@~0.1.1:
   resolved "https://registry.yarnpkg.com/microevent.ts/-/microevent.ts-0.1.1.tgz#70b09b83f43df5172d0205a63025bce0f7357fa0"
   integrity sha512-jo1OfR4TaEwd5HOrt5+tAZ9mqT4jmpNAusXtyfNzqVm9uiSYFZlKM1wYL4oU7azZW/PxQW53wM0S6OR1JHNa2g==
 
-"microfront-lib@file:../microfront-lib/src":
-  version "0.0.0"
+"microfront-lib@file:../microfront-lib":
+  version "0.0.1"
 
 micromatch@^3.1.10, micromatch@^3.1.4:
   version "3.1.10"

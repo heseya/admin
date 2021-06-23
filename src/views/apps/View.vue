@@ -1,6 +1,6 @@
 <template>
-  <div class="app-containter">
-    <micro-frontend app-key="Test" host="//localhost:5000/" />
+  <div class="micro-app-containter">
+    <micro-frontend app-key="TestApp" host="//localhost:5000/" />
   </div>
 </template>
 
@@ -14,6 +14,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.app-containter {
+.micro-app-containter {
 }
 </style>

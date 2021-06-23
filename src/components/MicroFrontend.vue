@@ -1,71 +1,45 @@
 <template>
-  <main :id="appKey + '-container'" />
+  <main :id="containerId" />
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import { findAppByHost, initializeRepository, installApp, onRegister } from '../../lib'
+
 export default Vue.extend({
   name: 'MicroFrontend',
   props: ['appKey', 'host'],
   async mounted() {
-    this.initializeRepository()
+    initializeRepository()
 
-    const registerChannel = new BroadcastChannel('register')
-    registerChannel.onmessage = (ev) => {
-      const appName = ev.data.split(': ')[1]
-      const app = window.microApps.find((app) => app.name === appName)
+    onRegister((app) => {
       app.host = this.host
       console.log('register', app)
       this.mountApp()
-    }
+    })
 
-    if (this.findApp(this.host)) {
+    if (findAppByHost(this.host)) {
       this.mountApp()
     } else {
-      await this.registerApp(this.appKey, this.host)
+      await installApp(this.host)
     }
   },
   beforeDestroy() {
     this.unmountApp()
   },
+  computed: {
+    containerId(): string {
+      return `${this.appKey}-container`
+    },
+  },
   methods: {
-    initializeRepository() {
-      if (!window.microApps) window.microApps = []
-    },
-
-    findApp(host: string) {
-      return window.microApps.find((app) => app.host === host)
-    },
-
-    async registerApp(appKey: string, host: string) {
-      const { document } = window
-
-      const scriptId = `micro-frontend-script-${appKey}`
-      if (document.getElementById(scriptId)) {
-        this.mountApp()
-        return
-      }
-
-      const response = await fetch(`${host}/asset-manifest.json`)
-      const manifest = await response.json()
-
-      const script = document.createElement('script')
-      script.id = scriptId
-      script.type = 'module'
-      script.crossOrigin = ''
-      const appSrc = manifest['index.js'] || manifest['main.js'] || manifest['main.umd.min.js']
-
-      script.src = `${host}${appSrc}`
-      document.head.appendChild(script)
-    },
-
     mountApp() {
-      const app = window.microApps.find((app) => app.host === this.host)
-      app.mount(`${this.appKey}-container`, history)
+      const app = findAppByHost(this.host)
+      app.mount(this.containerId, history)
     },
     unmountApp() {
-      const app = window.microApps.find((app) => app.host === this.host)
-      app.unmount(`${this.appKey}-container`)
+      const app = findAppByHost(this.host)
+      app.unmount(this.containerId)
     },
   },
 })

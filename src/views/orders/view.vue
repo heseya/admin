@@ -61,12 +61,6 @@
       </div>
 
       <div>
-        <card v-if="order.comment">
-          <template>
-            <h2 class="section-title">Komentarz</h2>
-            <p>{{ order.comment }}</p>
-          </template>
-        </card>
         <card>
           <template v-if="order.status">
             <h2 class="section-title">Status</h2>
@@ -90,23 +84,44 @@
             <span class="payment-method__amount">({{ payment.amount }} {{ currency }})</span>
           </div>
         </card>
+        <card class="comment">
+          <template>
+            <h2 class="section-title">Komentarz</h2>
+            <vs-button size="tiny" dark class="comment__edit" @click="editComment">
+              <i class="bx bxs-pencil"></i>
+            </vs-button>
+            <span class="comment__content">
+              {{ order.comment || 'Brak komentarza do zamówienia' }}
+            </span>
+          </template>
+        </card>
         <card>
           <h2 class="section-title">E-mail</h2>
           <div class="shipping">
+            <vs-button size="tiny" dark class="shipping__edit" @click="editEmail">
+              <i class="bx bxs-pencil"></i>
+            </vs-button>
             <span class="shipping__name">{{ order.email }}</span>
           </div>
           <br />
           <h2 class="section-title">Adres dostawy</h2>
-          <app-address :address="order.delivery_address" />
+          <app-address :address="order.delivery_address" @edit="editDeliveryAddress" />
         </card>
         <card v-if="order.invoice_address">
           <template>
             <h2 class="section-title">Adres rozliczeniowy</h2>
-            <app-address :address="order.invoice_address" />
+            <app-address :address="order.invoice_address" @edit="editInvoiceAddress" />
           </template>
         </card>
       </div>
     </div>
+
+    <vs-dialog width="800px" not-center v-model="isModalActive">
+      <template #header>
+        <h4>Edytuj</h4>
+      </template>
+      <modal-form> content </modal-form>
+    </vs-dialog>
   </div>
 </template>
 
@@ -118,6 +133,7 @@ import CartItem from '@/components/layout/CartItem.vue'
 import { getRelativeDate, formatDate } from '@/utils/utils'
 import { createPackage } from '@/services/createPackage'
 import { formatApiError } from '@/utils/errors'
+import ModalForm from '@/components/ModalForm.vue'
 
 export default {
   components: {
@@ -125,12 +141,14 @@ export default {
     Card,
     appAddress: Address,
     appCartItem: CartItem,
+    ModalForm,
   },
   data: () => ({
     status: '',
     packageTemplateId: '',
     shippingNumber: '',
     isLoading: false,
+    isModalActive: false,
   }),
   computed: {
     currency() {
@@ -209,6 +227,18 @@ export default {
 
       loading.close()
     },
+    editComment() {
+      this.isModalActive = true
+    },
+    editEmail() {
+      this.isModalActive = true
+    },
+    editDeliveryAddress() {
+      this.isModalActive = true
+    },
+    editInvoiceAddress() {
+      this.isModalActive = true
+    },
   },
   async created() {
     const loading = this.$vs.loading({ color: '#000' })
@@ -248,11 +278,34 @@ export default {
   flex-direction: column;
   margin-top: 8px;
   color: #444;
+  position: relative;
+
+  &__edit {
+    position: absolute;
+    bottom: calc(100% + 2px);
+    right: 0;
+  }
 
   &__name {
     font-size: 1.1em;
     margin-bottom: 3px;
     color: #111;
+  }
+}
+
+.comment {
+  position: relative;
+
+  &__content {
+    display: block;
+    margin-top: 10px;
+    font-size: 0.9em;
+  }
+
+  &__edit {
+    position: absolute;
+    top: 16px;
+    right: 20px;
   }
 }
 

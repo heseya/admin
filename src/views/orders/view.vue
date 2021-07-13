@@ -118,9 +118,9 @@
 
     <vs-dialog width="800px" not-center v-model="isModalActive">
       <template #header>
-        <h4>Edytuj</h4>
+        <h4>Edytuj {{ modalFormTitle }}</h4>
       </template>
-      <modal-form> content </modal-form>
+      <modal-form> {{ form }} </modal-form>
     </vs-dialog>
   </div>
 </template>
@@ -148,6 +148,9 @@ export default {
     packageTemplateId: '',
     shippingNumber: '',
     isLoading: false,
+
+    modalFormTitle: '',
+    form: {},
     isModalActive: false,
   }),
   computed: {
@@ -229,15 +232,35 @@ export default {
     },
     editComment() {
       this.isModalActive = true
+      this.modalFormTitle = 'komentarz do zamówienia'
+      this.form = {
+        comment: this.order.comment,
+      }
     },
     editEmail() {
       this.isModalActive = true
+      this.modalFormTitle = 'adres e-mail'
+      this.form = {
+        email: this.order.email,
+      }
     },
     editDeliveryAddress() {
       this.isModalActive = true
+      this.modalFormTitle = 'adres dostawy'
+      this.form = {
+        delivery_address: {
+          ...this.order.delivery_address,
+        },
+      }
     },
     editInvoiceAddress() {
       this.isModalActive = true
+      this.modalFormTitle = 'adres rozliczeniowy'
+      this.form = {
+        invoice_address: {
+          ...this.order.invoice_address,
+        },
+      }
     },
   },
   async created() {

@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 
+import { ID } from './ID'
 import { PaymentMethod } from './PaymentMethod'
 
 export interface ShippingMethodCountry {
@@ -8,12 +9,12 @@ export interface ShippingMethodCountry {
 }
 
 export interface ShippingMethodPriceRange {
-  id: string
+  id: ID
   start: number
   prices: {
-    id: string
+    id: ID
     value: number
-    model_id: string
+    model_id: ID
   }[]
 }
 

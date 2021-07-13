@@ -4,14 +4,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { findAppByHost, init, installApp } from 'microfront-lib'
+import { findAppByHost, installApp } from 'microfront-lib'
 
 export default Vue.extend({
   name: 'MicroFrontend',
   props: ['appKey', 'host'],
   async mounted() {
-    init()
-
     if (findAppByHost(this.host)) {
       this.mountApp()
     } else {

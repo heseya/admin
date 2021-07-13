@@ -11,6 +11,8 @@
 </template>
 
 <script>
+import { init as initMicroApps, onMounted } from 'microfront-lib'
+
 import Navigation from './layout/Navigation.vue'
 
 export default {
@@ -18,14 +20,14 @@ export default {
     Navigation,
   },
   created() {
+    initMicroApps()
     this.$accessor.fetchEnv()
 
-    const mountedChannel = new BroadcastChannel('mounted')
     const tokenChannel = new BroadcastChannel('token')
 
-    mountedChannel.onmessage = () => {
+    onMounted(() => {
       tokenChannel.postMessage(this.$store.state.auth.token)
-    }
+    })
   },
 }
 </script>

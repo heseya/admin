@@ -120,7 +120,9 @@
       <template #header>
         <h4>Edytuj {{ modalFormTitle }}</h4>
       </template>
-      <modal-form> {{ form }} </modal-form>
+      <modal-form>
+        <partial-update-form v-model="form" @save="saveForm" />
+      </modal-form>
     </vs-dialog>
   </div>
 </template>
@@ -134,6 +136,7 @@ import { getRelativeDate, formatDate } from '@/utils/utils'
 import { createPackage } from '@/services/createPackage'
 import { formatApiError } from '@/utils/errors'
 import ModalForm from '@/components/ModalForm.vue'
+import PartialUpdateForm from '@/components/forms/orders/PartialUpdateForm.vue'
 
 export default {
   components: {
@@ -142,6 +145,7 @@ export default {
     appAddress: Address,
     appCartItem: CartItem,
     ModalForm,
+    PartialUpdateForm,
   },
   data: () => ({
     status: '',
@@ -261,6 +265,16 @@ export default {
           ...this.order.invoice_address,
         },
       }
+    },
+    async saveForm() {
+      const loading = this.$vs.loading({ color: '#000' })
+      await this.$accessor.orders.update({ id: this.order.id, item: this.form })
+      this.isModalActive = false
+      this.$vs.notification({
+        color: 'success',
+        title: 'Zamówienie zostało zaktualizowane',
+      })
+      loading.close()
     },
   },
   async created() {

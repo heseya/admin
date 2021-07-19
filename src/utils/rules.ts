@@ -1,10 +1,14 @@
 import { ShippingMethodPriceRangeDTO } from '@/interfaces/ShippingMethod'
 import { extend } from 'vee-validate'
-import { required } from 'vee-validate/dist/rules'
+import { required, email } from 'vee-validate/dist/rules'
 
 extend('required', {
   ...required,
   message: 'To pole jest wymagane',
+})
+extend('email', {
+  ...email,
+  message: 'Wprowadź poprawny adres email',
 })
 
 extend('password', {

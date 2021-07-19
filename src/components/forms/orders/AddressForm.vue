@@ -6,7 +6,18 @@
       <validated-input rules="required" name="address" label="Kod pocztowy" v-model="form.zip" />
       <validated-input rules="required" name="address" label="Miasto" v-model="form.city" />
     </div>
-    <validated-input rules="required" name="address" label="Kraj" v-model="form.country" />
+    <ValidationProvider rules="required" tag="div" class="address-form__select">
+      <vs-select v-model="form.country" label="Kraj" :key="countries.length" filter>
+        <vs-option
+          v-for="country in countries"
+          :key="country.code"
+          :label="country.name"
+          :value="country.code"
+        >
+          {{ country.name }}
+        </vs-option>
+      </vs-select>
+    </ValidationProvider>
     <validated-input rules="required" name="address" label="Telefon" v-model="form.phone" />
     <validated-input name="address" label="VAT" v-model="form.vat" />
   </div>
@@ -14,9 +25,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { ValidationProvider } from 'vee-validate'
 
 import { Address } from '@/interfaces/Address'
+import { Country } from '@/interfaces/Country'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
+import { api } from '@/api'
 
 export default Vue.extend({
   name: 'AddressForm',
@@ -26,6 +40,9 @@ export default Vue.extend({
       required: true,
     } as Vue.PropOptions<Address>,
   },
+  data: () => ({
+    countries: [] as Country[],
+  }),
   computed: {
     form: {
       get(): Address {
@@ -39,8 +56,15 @@ export default Vue.extend({
       return Object.keys(this.form)
     },
   },
+  async created() {
+    const {
+      data: { data: countries },
+    } = await api.get('/countries')
+    this.countries = countries
+  },
   components: {
     ValidatedInput,
+    ValidationProvider,
   },
 })
 </script>
@@ -58,6 +82,15 @@ export default Vue.extend({
       &:not(:first-child) {
         margin-left: 16px;
       }
+    }
+  }
+
+  &__select {
+    position: relative;
+    margin-bottom: 32px;
+
+    ::v-deep .vs-select__label--label {
+      transform: translateY(-28px) !important;
     }
   }
 }

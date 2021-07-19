@@ -64,8 +64,3 @@ export default Vue.extend({
   },
 })
 </script>
-
-<style lang="scss" scoped>
-.partial-update-form {
-}
-</style>

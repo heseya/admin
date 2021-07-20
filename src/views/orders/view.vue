@@ -87,7 +87,7 @@
         <card class="comment">
           <template>
             <h2 class="section-title">Komentarz</h2>
-            <vs-button size="tiny" dark class="comment__edit" @click="editComment">
+            <vs-button size="tiny" dark transparent class="comment__edit" @click="editComment">
               <i class="bx bxs-pencil"></i>
             </vs-button>
             <span class="comment__content">
@@ -97,17 +97,17 @@
         </card>
         <card>
           <h2 class="section-title">E-mail</h2>
-          <div class="shipping">
-            <vs-button size="tiny" dark class="shipping__edit" @click="editEmail">
+          <div class="email">
+            <vs-button size="tiny" dark transparent class="email__edit" @click="editEmail">
               <i class="bx bxs-pencil"></i>
             </vs-button>
-            <span class="shipping__name">{{ order.email }}</span>
+            <a :href="`mailto:${order.email}`" class="email__name">{{ order.email }}</a>
           </div>
           <br />
           <h2 class="section-title">Adres dostawy</h2>
           <app-address :address="order.delivery_address" @edit="editDeliveryAddress" />
         </card>
-        <card v-if="order.invoice_address">
+        <card>
           <template>
             <h2 class="section-title">Adres rozliczeniowy</h2>
             <app-address :address="order.invoice_address" @edit="editInvoiceAddress" />
@@ -137,6 +137,17 @@ import { createPackage } from '@/services/createPackage'
 import { formatApiError } from '@/utils/errors'
 import ModalForm from '@/components/ModalForm.vue'
 import PartialUpdateForm from '@/components/forms/orders/PartialUpdateForm.vue'
+
+const DEFAULT_FORM = {
+  address: '',
+  city: '',
+  country: 'PL',
+  country_name: '',
+  name: '',
+  phone: '',
+  vat: '',
+  zip: '',
+}
 
 export default {
   components: {
@@ -262,7 +273,7 @@ export default {
       this.modalFormTitle = 'adres rozliczeniowy'
       this.form = {
         invoice_address: {
-          ...this.order.invoice_address,
+          ...(this.order.invoice_address || DEFAULT_FORM),
         },
       }
     },
@@ -310,7 +321,7 @@ export default {
   }
 }
 
-.shipping {
+.email {
   display: flex;
   flex-direction: column;
   margin-top: 8px;
@@ -319,12 +330,12 @@ export default {
 
   &__edit {
     position: absolute;
-    bottom: calc(100% + 2px);
+    bottom: calc(100% + 4px);
     right: 0;
   }
 
   &__name {
-    font-size: 1.1em;
+    font-size: 1em;
     margin-bottom: 3px;
     color: #111;
   }

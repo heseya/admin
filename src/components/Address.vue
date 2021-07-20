@@ -1,6 +1,6 @@
 <template>
   <div class="address">
-    <vs-button v-if="!hideEdit" size="tiny" dark class="address__edit" @click="edit">
+    <vs-button v-if="!hideEdit" size="tiny" dark transparent class="address__edit" @click="edit">
       <i class="bx bxs-pencil"></i>
     </vs-button>
     <template v-if="address">
@@ -20,7 +20,7 @@
       </template>
     </template>
     <template v-else>
-      <span class="address__error">Address is not provided!</span>
+      <small class="address__error">Brak podanego adresu</small>
     </template>
   </div>
 </template>
@@ -56,7 +56,7 @@ export default {
 
   &__edit {
     position: absolute;
-    top: -10px;
+    top: -38px;
     right: 0;
   }
 

@@ -2,7 +2,7 @@
 import { ID } from './ID'
 
 export interface Address {
-  id: ID
+  id?: ID
   address: string
   city: string
   country: string

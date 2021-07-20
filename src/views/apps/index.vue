@@ -63,10 +63,10 @@ export default {
       this.isModalActive = true
     },
     async saveModal() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       await this.$store.dispatch('apps/add', this.editedItem)
       await this.$store.dispatch('apps/fetch')
-      loading.close()
+      this.$accessor.stopLoading()
       this.isModalActive = false
     },
   },

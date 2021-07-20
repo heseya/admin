@@ -47,6 +47,14 @@
           </template>
           Tagi
         </list-item>
+        <list-item url="/schemas">
+          <template #avatar>
+            <vs-avatar dark>
+              <i class="bx bxs-customize"></i>
+            </vs-avatar>
+          </template>
+          Schematy
+        </list-item>
 
         <h2 class="section-title">Zamówienia</h2>
         <list-item url="/settings/statuses">
@@ -156,9 +164,9 @@ export default {
   },
   methods: {
     async logout() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       await this.$accessor.auth.logout()
-      loading.close()
+      this.$accessor.stopLoading()
       this.$router.push('/login')
     },
   },

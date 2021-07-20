@@ -87,7 +87,7 @@
         <card class="comment">
           <template>
             <h2 class="section-title">Komentarz</h2>
-            <vs-button size="tiny" dark class="comment__edit" @click="editComment">
+            <vs-button size="tiny" dark transparent class="comment__edit" @click="editComment">
               <i class="bx bxs-pencil"></i>
             </vs-button>
             <span class="comment__content">
@@ -97,20 +97,24 @@
         </card>
         <card>
           <h2 class="section-title">E-mail</h2>
-          <div class="shipping">
-            <vs-button size="tiny" dark class="shipping__edit" @click="editEmail">
+          <div class="email">
+            <vs-button size="tiny" dark transparent class="email__edit" @click="editEmail">
               <i class="bx bxs-pencil"></i>
             </vs-button>
-            <span class="shipping__name">{{ order.email }}</span>
+            <a :href="`mailto:${order.email}`" class="email__name">{{ order.email }}</a>
           </div>
           <br />
           <h2 class="section-title">Adres dostawy</h2>
-          <app-address :address="order.delivery_address" @edit="editDeliveryAddress" />
+          <app-address :address="order.delivery_address" @edit="editDeliveryAddress" hideRemove />
         </card>
-        <card v-if="order.invoice_address">
+        <card>
           <template>
             <h2 class="section-title">Adres rozliczeniowy</h2>
-            <app-address :address="order.invoice_address" @edit="editInvoiceAddress" />
+            <app-address
+              :address="order.invoice_address"
+              @edit="editInvoiceAddress"
+              @remove="removeInvoiceAddress"
+            />
           </template>
         </card>
       </div>
@@ -137,6 +141,17 @@ import { createPackage } from '@/services/createPackage'
 import { formatApiError } from '@/utils/errors'
 import ModalForm from '@/components/ModalForm.vue'
 import PartialUpdateForm from '@/components/forms/orders/PartialUpdateForm.vue'
+
+const DEFAULT_FORM = {
+  address: '',
+  city: '',
+  country: 'PL',
+  country_name: '',
+  name: '',
+  phone: '',
+  vat: '',
+  zip: '',
+}
 
 export default {
   components: {
@@ -213,7 +228,7 @@ export default {
     },
     async createPackage() {
       if (!this.packageTemplateId) return
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       const { success, shippingNumber, error } = await createPackage(
         this.order.id,
         this.packageTemplateId,
@@ -232,7 +247,7 @@ export default {
         })
       }
 
-      loading.close()
+      this.$accessor.stopLoading()
     },
     editComment() {
       this.isModalActive = true
@@ -262,29 +277,33 @@ export default {
       this.modalFormTitle = 'adres rozliczeniowy'
       this.form = {
         invoice_address: {
-          ...this.order.invoice_address,
+          ...(this.order.invoice_address || DEFAULT_FORM),
         },
       }
     },
+    removeInvoiceAddress() {
+      this.form = { invoice_address: null }
+      this.saveForm()
+    },
     async saveForm() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       await this.$accessor.orders.update({ id: this.order.id, item: this.form })
       this.isModalActive = false
       this.$vs.notification({
         color: 'success',
         title: 'Zamówienie zostało zaktualizowane',
       })
-      loading.close()
+      this.$accessor.stopLoading()
     },
   },
   async created() {
-    const loading = this.$vs.loading({ color: '#000' })
+    this.$accessor.startLoading()
     await Promise.all([
       this.$store.dispatch('orders/get', this.$route.params.id),
       this.$store.dispatch('statuses/fetch'),
       this.$store.dispatch('packageTemplates/fetch'),
     ])
-    loading.close()
+    this.$accessor.stopLoading()
   },
 }
 </script>
@@ -310,7 +329,7 @@ export default {
   }
 }
 
-.shipping {
+.email {
   display: flex;
   flex-direction: column;
   margin-top: 8px;
@@ -319,12 +338,12 @@ export default {
 
   &__edit {
     position: absolute;
-    bottom: calc(100% + 2px);
+    bottom: calc(100% + 4px);
     right: 0;
   }
 
   &__name {
-    font-size: 1.1em;
+    font-size: 1em;
     margin-bottom: 3px;
     color: #111;
   }

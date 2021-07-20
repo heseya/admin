@@ -122,7 +122,7 @@ export default {
     },
   },
   async created() {
-    const loading = this.$vs.loading({ color: '#000' })
+    this.$accessor.startLoading()
 
     try {
       const yearStart = startOfYear(Date.now())
@@ -146,7 +146,8 @@ export default {
       this.lastYearIncome = lastYear.amount
       this.lastYearOrdersCount = lastYear.count
     } catch {}
-    loading.close()
+
+    this.$accessor.stopLoading()
   },
 }
 </script>

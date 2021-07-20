@@ -101,7 +101,7 @@ export default {
       }
     },
     async saveModal() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       if (this.editedItem.id) {
         await this.$store.dispatch('statuses/update', {
           id: this.editedItem.id,
@@ -110,13 +110,13 @@ export default {
       } else {
         await this.$store.dispatch('statuses/add', this.editedItem)
       }
-      loading.close()
+      this.$accessor.stopLoading()
       this.isModalActive = false
     },
     async deleteItem() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       await this.$store.dispatch('statuses/remove', this.editedItem.id)
-      loading.close()
+      this.$accessor.stopLoading()
       this.isModalActive = false
     },
   },

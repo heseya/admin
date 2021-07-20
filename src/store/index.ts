@@ -29,6 +29,7 @@ import { tags } from './tags'
 Vue.use(Vuex)
 
 const state = () => ({
+  loading: false,
   currency: 'zł',
   env: {} as Record<string, string>,
 })
@@ -41,6 +42,9 @@ const mutations = mutationTree(state, {
   SET_ENV(state, newEnv) {
     state.env = newEnv
   },
+  SET_LOADING(state, loading) {
+    state.loading = loading
+  },
 })
 
 const actions = actionTree(
@@ -51,6 +55,12 @@ const actions = actionTree(
       const settingsArray = response.data.data
       const settings = Object.fromEntries(settingsArray.map(({ name, value }) => [name, value]))
       commit('SET_ENV', settings)
+    },
+    startLoading({ commit, state }) {
+      if (!state.loading) commit('SET_LOADING', true)
+    },
+    stopLoading({ commit, state }) {
+      if (state.loading) commit('SET_LOADING', false)
     },
   },
 )

@@ -104,7 +104,7 @@ export default {
       }
     },
     async saveModal() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       if (this.editedItem.id) {
         await this.$store.dispatch('shippingMethods/update', {
           id: this.editedItem.id,
@@ -113,22 +113,22 @@ export default {
       } else {
         await this.$store.dispatch('shippingMethods/add', this.editedItem)
       }
-      loading.close()
+      this.$accessor.stopLoading()
       this.isModalActive = false
     },
     async deleteItem() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       await this.$store.dispatch('shippingMethods/remove', this.editedItem.id)
-      loading.close()
+      this.$accessor.stopLoading()
       this.isModalActive = false
     },
   },
   async created() {
-    const loading = this.$vs.loading({ color: '#000' })
+    this.$accessor.startLoading()
     this.$store.dispatch('paymentMethods/fetch')
     const { data } = await api.get('countries')
     this.countries = data.data
-    loading.close()
+    this.$accessor.stopLoading()
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {

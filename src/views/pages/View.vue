@@ -109,7 +109,7 @@ export default {
       }
     },
     async save() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       if (this.isNew) {
         const { id: newID } = await this.$store.dispatch('pages/add', this.form)
         if (newID) {
@@ -131,10 +131,10 @@ export default {
           })
         }
       }
-      loading.close()
+      this.$accessor.stopLoading()
     },
     async deletePage() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       const success = await this.$store.dispatch('pages/remove', this.id)
       if (success) {
         this.$vs.notification({
@@ -143,14 +143,14 @@ export default {
         })
         this.$router.push('/pages')
       }
-      loading.close()
+      this.$accessor.stopLoading()
     },
   },
   async created() {
     if (!this.isNew) {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       await this.$store.dispatch('pages/get', this.id)
-      loading.close()
+      this.$accessor.stopLoading()
     }
   },
 }

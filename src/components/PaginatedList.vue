@@ -92,13 +92,13 @@ export default Vue.extend({
         return this.$store.getters[`${this.storeKey}/getData`]
       },
       async set(items: any[]) {
-        const loading = this.$vs.loading({ color: '#000' })
+        this.$accessor.startLoading()
         await this.$store.dispatch(
           `${this.storeKey}/setOrder`,
           items.map(({ id }) => id),
         )
         await this.getItems()
-        loading.close()
+        this.$accessor.stopLoading()
       },
     },
     meta(): ResponseMeta {
@@ -148,7 +148,7 @@ export default Vue.extend({
       else this.$router.push({ path: this.$route.path, query: { ...this.$route.query, page: '1' } })
     },
     async getItems() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
 
       const queryFilters = formatFilters(this.filters)
       await this.$store.dispatch(`${this.storeKey}/fetch`, {
@@ -157,7 +157,7 @@ export default Vue.extend({
         ...queryFilters,
       })
 
-      loading.close()
+      this.$accessor.stopLoading()
     },
   },
   beforeMount() {

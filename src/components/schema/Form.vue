@@ -26,10 +26,10 @@
       </validation-provider>
       <validation-provider rules="required|not-negative" v-slot="{ errors }">
         <vs-input
-          v-if="form.type !== SchemaType.multiplySchema"
+          v-if="form.type !== SchemaType.MultiplySchema"
           v-model="form.price"
           type="number"
-          :label="form.type === SchemaType.multiply ? 'Cena za sztukę' : 'Dodatkowa cena'"
+          :label="form.type === SchemaType.Multiply ? 'Cena za sztukę' : 'Dodatkowa cena'"
         >
           <template #message-danger>{{ errors[0] }}</template>
         </vs-input>
@@ -43,7 +43,7 @@
         <template #title>Wymagany</template>
       </SwitchInput>
     </div>
-    <div class="flex" v-if="isKindOfNumeric(form.type) || form.type === SchemaType.string">
+    <div class="flex" v-if="isKindOfNumeric(form.type) || form.type === SchemaType.String">
       <validation-provider v-slot="{ errors }">
         <vs-input
           v-model="form.min"
@@ -71,7 +71,7 @@
     </div>
     <validation-provider
       v-slot="{ errors }"
-      v-if="isKindOfNumeric(form.type) || form.type === SchemaType.string"
+      v-if="isKindOfNumeric(form.type) || form.type === SchemaType.String"
     >
       <vs-input
         v-model="form.default"
@@ -81,7 +81,7 @@
         <template #message-danger>{{ errors[0] }}</template>
       </vs-input>
     </validation-provider>
-    <SwitchInput v-if="form.type === SchemaType.boolean" v-model="form.default">
+    <SwitchInput v-if="form.type === SchemaType.Boolean" v-model="form.default">
       <template #title>Wartość domyślna</template>
     </SwitchInput>
 
@@ -91,10 +91,10 @@
       v-model="form.options"
       :default-option="defaultOption"
       @setDefault="(v) => (defaultOption = v)"
-      v-if="form.type === SchemaType.select"
+      v-if="form.type === SchemaType.Select"
     />
 
-    <Zone v-if="form.type === SchemaType.multiplySchema">
+    <Zone v-if="form.type === SchemaType.MultiplySchema">
       <div class="used-schema">
         <div>
           <small>Mnożony schemat</small><br />
@@ -142,7 +142,8 @@ import cloneDeep from 'lodash/cloneDeep'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import SwitchInput from '@/components/SwitchInput.vue'
 import Zone from '@/components/Zone.vue'
-import { SchemaType, SchemaTypeLabel } from '@/interfaces/SchemaType'
+import { SchemaType } from '@/interfaces/Schema'
+import { SchemaTypeLabel } from '@/interfaces/SchemaType'
 import { CLEAR_FORM, CLEAR_OPTION } from '@/consts/schemaConsts'
 import SelectSchemaOptions from './SelectSchemaOptions.vue'
 import ModalForm from '../ModalForm.vue'
@@ -176,7 +177,7 @@ export default {
     },
     currentProductSchemas: {
       type: Array,
-      required: true,
+      default: () => [],
     },
   },
   computed: {
@@ -186,13 +187,13 @@ export default {
   },
   watch: {
     defaultOption(defaultOption) {
-      if (this.form.type === SchemaType.select) {
+      if (this.form.type === SchemaType.Select) {
         this.form.options = this.form.options.map((v) => ({ ...v, default: false }))
         this.form.options[defaultOption].default = true
       }
     },
     'form.type'(type) {
-      if (type === SchemaType.select) this.form.options = [cloneDeep(CLEAR_OPTION)]
+      if (type === SchemaType.Select) this.form.options = [cloneDeep(CLEAR_OPTION)]
       else this.form.options = []
     },
     'form.used_schemas.0'(schema) {
@@ -207,9 +208,9 @@ export default {
   methods: {
     isKindOfNumeric(type) {
       return (
-        type === SchemaType.numeric ||
-        type === SchemaType.multiply ||
-        type === SchemaType.multiplySchema
+        type === SchemaType.Numeric ||
+        type === SchemaType.Multiply ||
+        type === SchemaType.MultiplySchema
       )
     },
     selectUsedSchema(schema) {
@@ -218,7 +219,7 @@ export default {
       this.isUsedSchemaModalActive = false
     },
     async submit() {
-      if (this.form.type === SchemaType.multiplySchema && !this.form.used_schemas[0]) {
+      if (this.form.type === SchemaType.MultiplySchema && !this.form.used_schemas[0]) {
         this.$vs.notification({
           color: 'warning',
           title: 'Wybierz mnożony schemat',
@@ -226,7 +227,7 @@ export default {
         return
       }
 
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       let id = null
 
       this.form.default = this.defaultOption
@@ -258,7 +259,7 @@ export default {
           })
         }
       }
-      loading.close()
+      this.$accessor.stopLoading()
       this.$emit('submit', this.$store.getters['schemas/getFromListById'](id))
     },
   },

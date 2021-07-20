@@ -1,21 +1,12 @@
-export const SchemaType = {
-  string: 'string',
-  select: 'select',
-  numeric: 'numeric',
-  boolean: 'boolean',
-  multiply: 'multiply',
-  multiplySchema: 'multiply_schema',
-  // date: 'date',
-  // file: 'file',
-}
+import { SchemaType } from './Schema'
 
-export const SchemaTypeLabel = {
-  [SchemaType.string]: 'Wartość tekstowa',
-  [SchemaType.select]: 'Wybór spośród kilku opcji',
-  [SchemaType.numeric]: 'Wartość numeryczna',
-  [SchemaType.boolean]: 'Wartość typu prawda/fałsz',
-  [SchemaType.multiply]: 'Mnożona wartość numeryczna',
-  [SchemaType.multiplySchema]: 'Mnożenie schematów',
-  // [SchemaType.date]: 'Data',
-  // [SchemaType.file]: 'Plik',
+export const SchemaTypeLabel: Record<SchemaType, string> = {
+  [SchemaType.String]: 'Wartość tekstowa',
+  [SchemaType.Select]: 'Wybór spośród kilku opcji',
+  [SchemaType.Numeric]: 'Wartość numeryczna',
+  [SchemaType.Boolean]: 'Wartość typu prawda/fałsz',
+  [SchemaType.Multiply]: 'Mnożona wartość numeryczna',
+  [SchemaType.MultiplySchema]: 'Mnożenie schematów',
+  // [SchemaType.Date]: 'Data',
+  // [SchemaType.File]: 'Plik',
 }

@@ -105,12 +105,16 @@
           </div>
           <br />
           <h2 class="section-title">Adres dostawy</h2>
-          <app-address :address="order.delivery_address" @edit="editDeliveryAddress" />
+          <app-address :address="order.delivery_address" @edit="editDeliveryAddress" hideRemove />
         </card>
         <card>
           <template>
             <h2 class="section-title">Adres rozliczeniowy</h2>
-            <app-address :address="order.invoice_address" @edit="editInvoiceAddress" />
+            <app-address
+              :address="order.invoice_address"
+              @edit="editInvoiceAddress"
+              @remove="removeInvoiceAddress"
+            />
           </template>
         </card>
       </div>
@@ -276,6 +280,10 @@ export default {
           ...(this.order.invoice_address || DEFAULT_FORM),
         },
       }
+    },
+    removeInvoiceAddress() {
+      this.form = { invoice_address: null }
+      this.saveForm()
     },
     async saveForm() {
       const loading = this.$vs.loading({ color: '#000' })

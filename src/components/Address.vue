@@ -1,8 +1,34 @@
 <template>
   <div class="address">
-    <vs-button v-if="!hideEdit" size="tiny" dark transparent class="address__edit" @click="edit">
+    <vs-button
+      v-if="!hideEdit"
+      size="tiny"
+      dark
+      transparent
+      class="address__btn address__btn--edit"
+      @click="edit"
+    >
       <i class="bx bxs-pencil"></i>
     </vs-button>
+    <pop-confirm
+      v-if="!hideRemove && address"
+      title="Czy na pewno chcesz usunąć adres?"
+      okText="Usuń"
+      cancelText="Anuluj"
+      @confirm="remove"
+      v-slot="{ open }"
+    >
+      <vs-button
+        size="tiny"
+        dark
+        transparent
+        class="address__btn address__btn--remove"
+        @click="open"
+      >
+        <i class="bx bxs-trash"></i>
+      </vs-button>
+    </pop-confirm>
+
     <template v-if="address">
       <span class="address__name">{{ address.name }}</span>
       <span class="address__field">{{ address.address }}</span>
@@ -26,7 +52,9 @@
 </template>
 
 <script>
+import PopConfirm from './layout/PopConfirm.vue'
 export default {
+  components: { PopConfirm },
   name: 'Address',
   props: {
     address: {
@@ -37,10 +65,17 @@ export default {
       type: Boolean,
       default: false,
     },
+    hideRemove: {
+      type: Boolean,
+      default: false,
+    },
   },
   methods: {
     edit() {
       this.$emit('edit')
+    },
+    remove() {
+      this.$emit('remove')
     },
   },
 }
@@ -54,10 +89,14 @@ export default {
   color: #666;
   position: relative;
 
-  &__edit {
+  &__btn {
     position: absolute;
     top: -38px;
     right: 0;
+
+    &--remove {
+      right: 30px;
+    }
   }
 
   &__field {

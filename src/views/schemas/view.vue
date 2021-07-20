@@ -17,40 +17,45 @@
 
     <div class="schema">
       <card>
-        <SchemaForm @submit="save" :schema="schema" />
+        <SchemaForm :key="schema.id" :schema="schema" @submit="saveSchema" />
       </card>
     </div>
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
+import { cloneDeep } from 'lodash'
+
+import { Schema } from '@/interfaces/Schema'
+
 import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import SchemaForm from '@/components/schema/Form.vue'
 import { formatApiError } from '@/utils/errors'
 
-export default {
+export default Vue.extend({
   components: {
     TopNav,
     Card,
     SchemaForm,
     PopConfirm,
   },
-  data() {
-    return {}
-  },
+  data: () => ({
+    editedSchema: {} as Schema,
+  }),
   computed: {
-    id() {
+    id(): string {
       return this.$route.params.id
     },
-    isNew() {
+    isNew(): boolean {
       return this.id === 'create'
     },
-    schema() {
+    schema(): Schema {
       return this.$store.getters['schemas/getSelected']
     },
-    error() {
+    error(): any {
       return this.$store.getters['schemas/getError']
     },
   },
@@ -63,12 +68,15 @@ export default {
         })
       }
     },
+    schema() {
+      this.editedSchema = cloneDeep(this.schema)
+    },
   },
   methods: {
-    save(schema) {
-      if (!this.schema.id) {
-        this.$router.push(`/schemas/${schema.id}`)
-      }
+    async saveSchema() {
+      const loading = this.$vs.loading({ color: '#000' })
+      await this.$accessor.schemas.update({ id: this.schema.id, item: this.schema })
+      loading.close()
     },
     async deleteSchema() {
       const loading = this.$vs.loading({ color: '#000' })
@@ -90,7 +98,7 @@ export default {
       loading.close()
     }
   },
-}
+})
 </script>
 
 <style lang="scss">

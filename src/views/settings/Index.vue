@@ -47,6 +47,14 @@
           </template>
           Tagi
         </list-item>
+        <list-item url="/schemas">
+          <template #avatar>
+            <vs-avatar dark>
+              <i class="bx bxs-customize"></i>
+            </vs-avatar>
+          </template>
+          Schematy
+        </list-item>
 
         <h2 class="section-title">Zamówienia</h2>
         <list-item url="/settings/statuses">

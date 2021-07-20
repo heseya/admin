@@ -84,7 +84,7 @@ const router = new VueRouter({
     },
     {
       path: '/discounts',
-      name: 'Items',
+      name: 'Discounts',
       component: () => import('./views/discounts/index.vue'),
       meta: {
         requiresAuth: true,
@@ -150,6 +150,14 @@ const router = new VueRouter({
       path: '/settings/statuses',
       name: 'Statuses',
       component: () => import('./views/settings/Statuses.vue'),
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: '/settings/tags',
+      name: 'Tags',
+      component: () => import('./views/settings/Tags.vue'),
       meta: {
         requiresAuth: true,
       },

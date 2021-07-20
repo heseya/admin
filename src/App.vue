@@ -37,7 +37,7 @@ body {
   margin: 0;
 }
 
-input {
+.vs-input-parent input {
   width: 100% !important;
 }
 
@@ -99,5 +99,17 @@ hr {
 
 .flex {
   display: flex;
+}
+
+.multiselect {
+  z-index: 1000;
+}
+
+.multiselect__tag {
+  background: #000;
+}
+
+.multiselect__tag-icon::after {
+  color: #fff;
 }
 </style>

@@ -137,6 +137,10 @@ export const createVuexCRUD = <Item extends { id: string }, S extends {} = {}>(
           return false
         }
       },
+      clearData({ commit }) {
+        commit(mutationsNames.SET_META, {})
+        commit(mutationsNames.SET_DATA, [])
+      },
       async get({ commit }, id: string) {
         commit(mutationsNames.SET_ERROR, null)
         commit(mutationsNames.SET_LOADING, true)

@@ -22,10 +22,18 @@ stages:
 
 lint:
   stage: test
-  image: node:buster
   before_script:
     - yarn
   script:
     - yarn lint
+  rules:
+    - if: $CI_COMMIT_BRANCH != "master"
+
+test:
+  stage: test
+  before_script:
+    - yarn
+  script:
+    - yarn test
   rules:
     - if: $CI_COMMIT_BRANCH != "master"

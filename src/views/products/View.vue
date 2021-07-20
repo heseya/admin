@@ -125,6 +125,10 @@
               </div>
 
               <div class="wide">
+                <tags-select v-model="form.tags" />
+              </div>
+
+              <div class="wide">
                 <small class="label">Opis</small>
                 <md-editor v-if="!isLoading" v-model="form.description_md" />
                 <br />
@@ -161,6 +165,7 @@ import MdEditor from '@/components/MdEditor.vue'
 import SchemaConfigurator from '@/components/schema/Configurator.vue'
 import { formatApiError } from '@/utils/errors'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
+import TagsSelect from '@/components/TagsSelect.vue'
 
 const EMPTY_FORM = {
   name: '',
@@ -175,6 +180,7 @@ const EMPTY_FORM = {
   schemas: [],
   gallery: [],
   media: [],
+  tags: [],
 }
 
 export default {
@@ -234,6 +240,7 @@ export default {
     async saveProduct() {
       const apiPayload = {
         ...this.form,
+        tags: this.form.tags.map(({ id }) => id),
         media: this.form.gallery.map(({ id }) => id),
         schemas: this.form.schemas.map(({ id }) => id),
       }
@@ -310,11 +317,11 @@ export default {
     ValidationObserver,
     SchemaConfigurator,
     MdEditor,
+    TagsSelect,
     ValidatedInput,
   },
 }
 </script>
-
 <style lang="scss">
 .product {
   &__info {

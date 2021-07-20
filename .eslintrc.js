@@ -14,6 +14,7 @@ module.exports = {
     'no-debugger': 'warn',
     'space-before-function-paren': 'off',
     'comma-dangle': 'off',
+    camelcase: ['error', { properties: 'never' }],
   },
 
   extends: [

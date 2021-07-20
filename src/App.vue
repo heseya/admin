@@ -41,6 +41,11 @@ input {
   width: 100% !important;
 }
 
+.vs-button--size-tiny {
+  --vs-button-padding: 8px !important;
+  margin: 0;
+}
+
 hr {
   all: unset;
   display: block;

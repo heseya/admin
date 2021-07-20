@@ -5,6 +5,7 @@ import { ActionTree, GetterTree, MutationTree } from 'vuex'
 import { ResponseMeta } from '@/interfaces/Response'
 import { RootState } from '.'
 import { api } from '../api'
+import { cloneDeep } from 'lodash'
 
 export interface ExtendStore<S> {
   state: S
@@ -90,12 +91,17 @@ export const createVuexCRUD = <Item extends { id: string }, S extends {} = {}>(
       state,
       { key, value, item: editedItem }: { key: keyof Item; value: unknown; item: Item },
     ) {
-      const index = state.data.findIndex((item) => item[key] === value)
-      if (index >= 0) {
-        const copy = [...state.data]
-        copy[index] = editedItem
+      const editedItemIndex = state.data.findIndex((item) => item[key] === value)
+      if (editedItemIndex >= 0) {
+        // Edits any item on the list
+        const copy = cloneDeep(state.data)
+        copy[editedItemIndex] = editedItem
         state.data = copy
+      } else if (state.selected[key] === value) {
+        // Edits selected item
+        state.selected = editedItem
       } else {
+        // appends new item
         state.data = [...state.data, editedItem]
       }
     },
@@ -130,6 +136,10 @@ export const createVuexCRUD = <Item extends { id: string }, S extends {} = {}>(
           commit(mutationsNames.SET_LOADING, false)
           return false
         }
+      },
+      clearData({ commit }) {
+        commit(mutationsNames.SET_META, {})
+        commit(mutationsNames.SET_DATA, [])
       },
       async get({ commit }, id: string) {
         commit(mutationsNames.SET_ERROR, null)

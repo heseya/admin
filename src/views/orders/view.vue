@@ -228,7 +228,7 @@ export default {
     },
     async createPackage() {
       if (!this.packageTemplateId) return
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       const { success, shippingNumber, error } = await createPackage(
         this.order.id,
         this.packageTemplateId,
@@ -247,7 +247,7 @@ export default {
         })
       }
 
-      loading.close()
+      this.$accessor.stopLoading()
     },
     editComment() {
       this.isModalActive = true
@@ -286,24 +286,24 @@ export default {
       this.saveForm()
     },
     async saveForm() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       await this.$accessor.orders.update({ id: this.order.id, item: this.form })
       this.isModalActive = false
       this.$vs.notification({
         color: 'success',
         title: 'Zamówienie zostało zaktualizowane',
       })
-      loading.close()
+      this.$accessor.stopLoading()
     },
   },
   async created() {
-    const loading = this.$vs.loading({ color: '#000' })
+    this.$accessor.startLoading()
     await Promise.all([
       this.$store.dispatch('orders/get', this.$route.params.id),
       this.$store.dispatch('statuses/fetch'),
       this.$store.dispatch('packageTemplates/fetch'),
     ])
-    loading.close()
+    this.$accessor.stopLoading()
   },
 }
 </script>

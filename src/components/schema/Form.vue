@@ -227,7 +227,7 @@ export default {
         return
       }
 
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       let id = null
 
       this.form.default = this.defaultOption
@@ -259,7 +259,7 @@ export default {
           })
         }
       }
-      loading.close()
+      this.$accessor.stopLoading()
       this.$emit('submit', this.$store.getters['schemas/getFromListById'](id))
     },
   },

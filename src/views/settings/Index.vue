@@ -164,9 +164,9 @@ export default {
   },
   methods: {
     async logout() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       await this.$accessor.auth.logout()
-      loading.close()
+      this.$accessor.stopLoading()
       this.$router.push('/login')
     },
   },

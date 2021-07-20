@@ -137,7 +137,7 @@ export default {
       }
     },
     async saveModal() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       let success = false
       if (this.editedItem.id) {
         const quantityDiff = this.editedItem.quantity - this.editedOriginalQuantity
@@ -155,16 +155,16 @@ export default {
       } else {
         success = await this.$store.dispatch('items/add', this.editedItem)
       }
-      loading.close()
+      this.$accessor.stopLoading()
 
       if (success) {
         this.isModalActive = false
       }
     },
     async deleteItem() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       await this.$store.dispatch('items/remove', this.editedItem.id)
-      loading.close()
+      this.$accessor.stopLoading()
       this.isModalActive = false
     },
   },

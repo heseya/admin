@@ -226,7 +226,7 @@ export default {
       }
     },
     async deleteProduct() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       const success = await this.$store.dispatch('products/remove', this.id)
       if (success) {
         this.$vs.notification({
@@ -235,7 +235,7 @@ export default {
         })
         this.$router.push('/products')
       }
-      loading.close()
+      this.$accessor.stopLoading()
     },
     async saveProduct() {
       const apiPayload = {
@@ -244,7 +244,7 @@ export default {
         media: this.form.gallery.map(({ id }) => id),
         schemas: this.form.schemas.map(({ id }) => id),
       }
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
 
       const successMessage = this.isNew
         ? 'Produkt został utworzony'
@@ -266,7 +266,7 @@ export default {
         this.$router.push(`/products/${newID}`)
       }
 
-      loading.close()
+      this.$accessor.stopLoading()
     },
     async submitAndGoNext() {
       await this.saveProduct()
@@ -293,19 +293,19 @@ export default {
       }
     },
     async '$route.params.id'() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       await this.fetch()
-      loading.close()
+      this.$accessor.stopLoading()
     },
   },
   async created() {
-    const loading = this.$vs.loading({ color: '#000' })
+    this.$accessor.startLoading()
     await Promise.all([
       this.$store.dispatch('categories/fetch'),
       this.$store.dispatch('brands/fetch'),
     ])
     await this.fetch()
-    loading.close()
+    this.$accessor.stopLoading()
   },
   components: {
     TopNav,

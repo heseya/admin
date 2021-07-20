@@ -10,17 +10,35 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import Navigation from './layout/Navigation.vue'
 
-export default {
+export default Vue.extend({
   components: {
     Navigation,
+  },
+  data: () => ({
+    loadingInstance: null as null | { close: () => void },
+  }),
+  computed: {
+    isLoading(): boolean {
+      return this.$store.state.loading
+    },
+  },
+  watch: {
+    isLoading(isLoading: boolean) {
+      if (isLoading) {
+        this.loadingInstance = this.$vs.loading({ color: '#000' })
+      } else if (this.loadingInstance) {
+        this.loadingInstance.close()
+      }
+    },
   },
   created() {
     this.$accessor.fetchEnv()
   },
-}
+})
 </script>
 
 <style lang="scss">

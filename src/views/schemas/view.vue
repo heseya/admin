@@ -74,12 +74,12 @@ export default Vue.extend({
   },
   methods: {
     async saveSchema() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       await this.$accessor.schemas.update({ id: this.schema.id, item: this.schema })
-      loading.close()
+      this.$accessor.stopLoading()
     },
     async deleteSchema() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       const success = await this.$store.dispatch('schemas/remove', this.id)
       if (success) {
         this.$vs.notification({
@@ -88,14 +88,14 @@ export default Vue.extend({
         })
         this.$router.push('/schemas')
       }
-      loading.close()
+      this.$accessor.stopLoading()
     },
   },
   async created() {
     if (!this.isNew) {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       await this.$store.dispatch('schemas/get', this.id)
-      loading.close()
+      this.$accessor.stopLoading()
     }
   },
 })

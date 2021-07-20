@@ -101,7 +101,7 @@ export default {
       }
     },
     async saveModal() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       if (this.editedItem.id) {
         await this.$store.dispatch('settings/updateByKey', {
           key: 'name',
@@ -112,13 +112,13 @@ export default {
         await this.$store.dispatch('settings/add', this.editedItem)
       }
       await this.$accessor.fetchEnv()
-      loading.close()
+      this.$accessor.stopLoading()
       this.isModalActive = false
     },
     async deleteItem() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       await this.$store.dispatch('settings/removeByKey', { key: 'name', value: this.editedItem.id })
-      loading.close()
+      this.$accessor.stopLoading()
       this.isModalActive = false
     },
   },

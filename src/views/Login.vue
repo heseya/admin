@@ -45,12 +45,12 @@ export default {
   },
   methods: {
     async login() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       await this.$accessor.auth.login({
         email: this.email,
         password: this.password,
       })
-      loading.close()
+      this.$accessor.stopLoading()
       this.$router.push({ name: 'Home' })
     },
   },

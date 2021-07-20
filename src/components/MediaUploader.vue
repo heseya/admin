@@ -57,7 +57,7 @@ export default {
         return
       }
 
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       try {
         const form = new FormData()
         form.append('file', this.file)
@@ -68,7 +68,7 @@ export default {
       } catch (error) {
         this.$emit('error', error)
       }
-      loading.close()
+      this.$accessor.stopLoading()
     },
     isFileValid() {
       if (!this.file) return false

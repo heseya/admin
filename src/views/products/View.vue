@@ -130,7 +130,7 @@
 
               <div class="wide">
                 <small class="label">Opis</small>
-                <md-editor v-if="!isLoading" v-model="form.description_md" />
+                <rich-editor v-if="!isLoading" v-model="form.description_html" />
                 <br />
                 <div class="flex">
                   <vs-button color="dark" size="large">Zapisz</vs-button>
@@ -161,7 +161,7 @@ import Gallery from '@/components/Gallery.vue'
 import Card from '@/components/layout/Card.vue'
 import FlexInput from '@/components/layout/FlexInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import MdEditor from '@/components/MdEditor.vue'
+import RichEditor from '@/components/RichEditor.vue'
 import SchemaConfigurator from '@/components/schema/Configurator.vue'
 import { formatApiError } from '@/utils/errors'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
@@ -171,7 +171,7 @@ const EMPTY_FORM = {
   name: '',
   slug: '',
   price: 0,
-  description: '',
+  description_html: '',
   digital: false,
   public: true,
   brand_id: 0,
@@ -316,7 +316,7 @@ export default {
     ValidationProvider,
     ValidationObserver,
     SchemaConfigurator,
-    MdEditor,
+    RichEditor,
     TagsSelect,
     ValidatedInput,
   },

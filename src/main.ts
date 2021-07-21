@@ -8,6 +8,8 @@ import router from './router'
 import store from './store'
 import { disableScrollOnInput } from './utils/disableScrollOnInput'
 
+import './plugins/quill'
+
 import './utils/rules'
 import './utils/slugs'
 

@@ -25,14 +25,15 @@
 <script>
 import Draggable from 'vuedraggable'
 import MediaUploader from '@/components/MediaUploader'
+import { formatApiError } from '@/utils/errors'
 
 export default {
   components: {
     appMediaUploader: MediaUploader,
-    Draggable
+    Draggable,
   },
   props: {
-    value: Array
+    value: Array,
   },
   computed: {
     images: {
@@ -41,14 +42,14 @@ export default {
       },
       set(val) {
         this.$emit('input', val)
-      }
+      },
     },
     objectFit() {
-      return this.$store.state.env.dashboard_products_contain ? 'contain' : 'cover'
+      return +this.$store.state.env.dashboard_products_contain ? 'contain' : 'cover'
     },
   },
   data: () => ({
-    isDrag: false
+    isDrag: false,
   }),
   methods: {
     dragChange(isDrag) {
@@ -63,11 +64,10 @@ export default {
     onUploadError(error) {
       this.$vs.notification({
         color: 'danger',
-        title: 'Nie udało się przesłać zdjęcia',
-        text: error.message
+        ...formatApiError(error),
       })
-    }
-  }
+    },
+  },
 }
 </script>
 

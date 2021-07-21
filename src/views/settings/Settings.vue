@@ -1,25 +1,18 @@
 <template>
   <div>
-    <top-nav title="Ustawienia strony">
-      <vs-button @click="openModal()" color="dark" icon>
-        <i class="bx bx-plus"></i>
-      </vs-button>
-    </top-nav>
-
-    <card>
-      <app-empty v-if="!settings.length">Nie ma żadnych ustawień</app-empty>
-      <list>
-        <list-item
-          v-for="setting in settings"
-          :key="setting.name"
-          @click="openModal(setting)"
-          :hidden="!setting.public"
-        >
+    <PaginatedList title="Ustawienia zaawansowane" storeKey="settings">
+      <template #nav>
+        <vs-button @click="openModal()" color="dark" icon>
+          <i class="bx bx-plus"></i>
+        </vs-button>
+      </template>
+      <template v-slot="{ item: setting }">
+        <list-item @click="openModal(setting)" :hidden="!setting.public">
           {{ setting.name }}
           <small>{{ setting.value }}</small>
         </list-item>
-      </list>
-    </card>
+      </template>
+    </PaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
       <vs-dialog width="550px" not-center v-model="isModalActive">
@@ -27,19 +20,16 @@
           <h4>{{ editedItem.id ? 'Edycja ustawienie' : 'Nowe ustawienie' }}</h4>
         </template>
         <modal-form>
-          <validation-provider rules="required|letters-only" v-slot="{ errors }">
-            <vs-input v-model="editedItem.name" label="Klucz" :disabled="editedItem.permanent">
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
-          <validation-provider rules="required" v-slot="{ errors }">
-            <vs-input v-model="editedItem.value" label="Wartość">
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
-          <SwitchInput v-model="editedItem.public">
-            <template #title>Wartość publiczna</template>
-          </SwitchInput>
+          <validated-input
+            rules="required|letters-only"
+            v-model="editedItem.name"
+            label="Klucz"
+            :disabled="editedItem.permanent"
+          />
+
+          <validated-input rules="required" v-model="editedItem.value" label="Wartość" />
+
+          <SwitchInput v-model="editedItem.public" label="Wartość publiczna" horizontal />
         </modal-form>
         <template #footer>
           <div class="row">
@@ -56,8 +46,9 @@
                 color="danger"
                 :disabled="editedItem.permanent"
                 @click="open"
-                >Usuń</vs-button
               >
+                Usuń
+              </vs-button>
             </pop-confirm>
           </div>
         </template>
@@ -68,28 +59,23 @@
 
 <script>
 import clone from 'lodash/clone'
-import { ValidationProvider, ValidationObserver } from 'vee-validate'
-import TopNav from '@/layout/TopNav.vue'
-import Card from '@/components/Card.vue'
-import List from '@/components/List.vue'
+import { ValidationObserver } from 'vee-validate'
+import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/ModalForm.vue'
-import ListItem from '@/components/ListItem.vue'
-import Empty from '@/components/Empty.vue'
+import ListItem from '@/components/layout/ListItem.vue'
 import SwitchInput from '@/components/SwitchInput.vue'
-import PopConfirm from '@/components/PopConfirm.vue'
+import PopConfirm from '@/components/layout/PopConfirm.vue'
+import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
 export default {
   components: {
-    TopNav,
-    Card,
-    List,
+    PaginatedList,
     ListItem,
     ModalForm,
     PopConfirm,
-    appEmpty: Empty,
-    ValidationProvider,
     ValidationObserver,
     SwitchInput,
+    ValidatedInput,
   },
   data: () => ({
     isModalActive: false,
@@ -100,31 +86,7 @@ export default {
       public: true,
     },
   }),
-  computed: {
-    settings() {
-      return this.$store.getters['settings/getData']
-    },
-    error() {
-      return this.$store.getters['settings/getError']
-    },
-  },
-  watch: {
-    error(error) {
-      if (error) {
-        this.$vs.notification({
-          color: 'danger',
-          title: error.message,
-          text: error.response.data?.error?.message,
-        })
-      }
-    },
-  },
   methods: {
-    async getSettings() {
-      const loading = this.$vs.loading({ color: '#000' })
-      await this.$store.dispatch('settings/fetch')
-      loading.close()
-    },
     openModal(item) {
       this.isModalActive = true
       if (item) {
@@ -139,7 +101,7 @@ export default {
       }
     },
     async saveModal() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       if (this.editedItem.id) {
         await this.$store.dispatch('settings/updateByKey', {
           key: 'name',
@@ -149,19 +111,16 @@ export default {
       } else {
         await this.$store.dispatch('settings/add', this.editedItem)
       }
-      await this.$store.dispatch('fetchEnv')
-      loading.close()
+      await this.$accessor.fetchEnv()
+      this.$accessor.stopLoading()
       this.isModalActive = false
     },
     async deleteItem() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       await this.$store.dispatch('settings/removeByKey', { key: 'name', value: this.editedItem.id })
-      loading.close()
+      this.$accessor.stopLoading()
       this.isModalActive = false
     },
-  },
-  created() {
-    this.getSettings()
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {

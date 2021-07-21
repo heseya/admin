@@ -1,6 +1,12 @@
 <template>
   <div>
-    <top-nav :title="`Zamówienie ${order.code}`"> </top-nav>
+    <top-nav :title="`Zamówienie ${order.code}`" :subtitle="`z dnia ${formattedDate}`">
+      <a :href="`https://***REMOVED***.eu/payment/${order.code}`" target="_blank">
+        <vs-button color="dark" icon>
+          <i class="bx bxs-dollar-circle"></i>
+        </vs-button>
+      </a>
+    </top-nav>
 
     <div class="order">
       <div>
@@ -11,11 +17,15 @@
             <div class="cart-item">
               <img class="cart-item__cover" src="/img/delivery.svg" />
               <div class="cart-item__content">
-                <span>Dostawa {{ order.shipping_method.name }}</span>
+                <span>Dostawa {{ order.shipping_method && order.shipping_method.name }}</span>
               </div>
-              <span class="cart-item__price">{{ order.shipping_method.price }} {{ currency }}</span>
+              <span class="cart-item__price">{{ order.shipping_price }} {{ currency }}</span>
             </div>
             <div class="cart-total">
+              <div v-for="discount in order.discounts" :key="discount.id">
+                Rabat {{ discount.code }}:
+                <b>- {{ discount.discount }} {{ discount.type === 0 ? '%' : currency }}</b>
+              </div>
               Łącznie: <b>{{ order.summary }} {{ currency }}</b>
             </div>
           </div>
@@ -52,9 +62,9 @@
 
       <div>
         <card>
-          <br />
           <template v-if="order.status">
-            <vs-select label="Status" v-model="status" :key="statuses.length" :loading="isLoading">
+            <h2 class="section-title">Status</h2>
+            <vs-select v-model="status" :key="statuses.length" :loading="isLoading">
               <vs-option
                 v-for="status in statuses"
                 :label="status.name"
@@ -73,41 +83,75 @@
             <span class="payment-method__name">{{ payment.method }}</span>
             <span class="payment-method__amount">({{ payment.amount }} {{ currency }})</span>
           </div>
-          <br />
-          <h2 class="section-title">Złożone</h2>
-          <small>{{ relativeOrderedDate }}</small>
+        </card>
+        <card class="comment">
+          <template>
+            <h2 class="section-title">Komentarz</h2>
+            <vs-button size="tiny" dark transparent class="comment__edit" @click="editComment">
+              <i class="bx bxs-pencil"></i>
+            </vs-button>
+            <span class="comment__content">
+              {{ order.comment || 'Brak komentarza do zamówienia' }}
+            </span>
+          </template>
         </card>
         <card>
           <h2 class="section-title">E-mail</h2>
-          <div class="shipping">
-            <span class="shipping__name">{{ order.email }}</span>
+          <div class="email">
+            <vs-button size="tiny" dark transparent class="email__edit" @click="editEmail">
+              <i class="bx bxs-pencil"></i>
+            </vs-button>
+            <a :href="`mailto:${order.email}`" class="email__name">{{ order.email }}</a>
           </div>
           <br />
           <h2 class="section-title">Adres dostawy</h2>
-          <app-address :address="order.delivery_address" />
-          <br />
-          <template v-if="order.invoice_address">
-            <h2 class="section-title">Faktura</h2>
-            <app-address :address="order.invoice_address" />
-          </template>
-          <br />
-          <template v-if="order.comment">
-            <h2 class="section-title">Komentarz do zamówienia</h2>
-            <p>{{ order.comment }}</p>
+          <app-address :address="order.delivery_address" @edit="editDeliveryAddress" hideRemove />
+        </card>
+        <card>
+          <template>
+            <h2 class="section-title">Adres rozliczeniowy</h2>
+            <app-address
+              :address="order.invoice_address"
+              @edit="editInvoiceAddress"
+              @remove="removeInvoiceAddress"
+            />
           </template>
         </card>
       </div>
     </div>
+
+    <vs-dialog width="800px" not-center v-model="isModalActive">
+      <template #header>
+        <h4>Edytuj {{ modalFormTitle }}</h4>
+      </template>
+      <modal-form>
+        <partial-update-form v-model="form" @save="saveForm" />
+      </modal-form>
+    </vs-dialog>
   </div>
 </template>
 
 <script>
 import TopNav from '@/layout/TopNav.vue'
-import Card from '@/components/Card.vue'
+import Card from '@/components/layout/Card.vue'
 import Address from '@/components/Address.vue'
-import CartItem from '@/components/CartItem.vue'
-import { getRelativeDate } from '@/utils/utils'
+import CartItem from '@/components/layout/CartItem.vue'
+import { getRelativeDate, formatDate } from '@/utils/utils'
 import { createPackage } from '@/services/createPackage'
+import { formatApiError } from '@/utils/errors'
+import ModalForm from '@/components/ModalForm.vue'
+import PartialUpdateForm from '@/components/forms/orders/PartialUpdateForm.vue'
+
+const DEFAULT_FORM = {
+  address: '',
+  city: '',
+  country: 'PL',
+  country_name: '',
+  name: '',
+  phone: '',
+  vat: '',
+  zip: '',
+}
 
 export default {
   components: {
@@ -115,16 +159,25 @@ export default {
     Card,
     appAddress: Address,
     appCartItem: CartItem,
+    ModalForm,
+    PartialUpdateForm,
   },
   data: () => ({
     status: '',
     packageTemplateId: '',
     shippingNumber: '',
     isLoading: false,
+
+    modalFormTitle: '',
+    form: {},
+    isModalActive: false,
   }),
   computed: {
     currency() {
       return this.$store.state.currency
+    },
+    error() {
+      return this.$store.getters['orders/getError']
     },
     order() {
       return this.$store.getters['orders/getSelected']
@@ -136,12 +189,14 @@ export default {
       return this.$store.getters['packageTemplates/getData']
     },
     relativeOrderedDate() {
-      return getRelativeDate(this.order.created_at)
+      return this.order.created_at && getRelativeDate(this.order.created_at)
+    },
+    formattedDate() {
+      return this.order.created_at && formatDate(this.order.created_at)
     },
   },
   watch: {
     order(order) {
-      console.log('🚀 ~ file: view.vue ~ line 144 ~ order ~ order', order)
       this.status = order?.status?.id
       this.shippingNumber = order.shipping_number
     },
@@ -149,25 +204,31 @@ export default {
       if (prevStatus === '') return
       this.setStatus(status)
     },
+    error(error) {
+      if (error) this.$vs.notification({ color: 'danger', ...formatApiError(error) })
+    },
   },
   methods: {
     async setStatus(newStatus) {
       this.isLoading = true
+
       const success = await this.$store.dispatch('orders/changeStatus', {
         orderId: this.order.id,
         statusId: newStatus,
       })
+
       if (success) {
         this.$vs.notification({
           color: 'success',
           title: 'Status zamówienia został zmieniony',
         })
       }
+
       this.isLoading = false
     },
     async createPackage() {
       if (!this.packageTemplateId) return
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       const { success, shippingNumber, error } = await createPackage(
         this.order.id,
         this.packageTemplateId,
@@ -182,22 +243,67 @@ export default {
       } else {
         this.$vs.notification({
           color: 'danger',
-          title: 'Nie udało się utworzyć przesyłki',
-          text: error.message,
+          ...formatApiError(error),
         })
       }
 
-      loading.close()
+      this.$accessor.stopLoading()
+    },
+    editComment() {
+      this.isModalActive = true
+      this.modalFormTitle = 'komentarz do zamówienia'
+      this.form = {
+        comment: this.order.comment,
+      }
+    },
+    editEmail() {
+      this.isModalActive = true
+      this.modalFormTitle = 'adres e-mail'
+      this.form = {
+        email: this.order.email,
+      }
+    },
+    editDeliveryAddress() {
+      this.isModalActive = true
+      this.modalFormTitle = 'adres dostawy'
+      this.form = {
+        delivery_address: {
+          ...this.order.delivery_address,
+        },
+      }
+    },
+    editInvoiceAddress() {
+      this.isModalActive = true
+      this.modalFormTitle = 'adres rozliczeniowy'
+      this.form = {
+        invoice_address: {
+          ...(this.order.invoice_address || DEFAULT_FORM),
+        },
+      }
+    },
+    removeInvoiceAddress() {
+      this.form = { invoice_address: null }
+      this.saveForm()
+    },
+    async saveForm() {
+      this.$accessor.startLoading()
+      await this.$accessor.orders.update({ id: this.order.id, item: this.form })
+      this.isModalActive = false
+      this.$vs.notification({
+        color: 'success',
+        title: 'Zamówienie zostało zaktualizowane',
+      })
+      this.$accessor.stopLoading()
     },
   },
   async created() {
-    const loading = this.$vs.loading({ color: '#000' })
+    this.$accessor.startLoading()
     await Promise.all([
       this.$store.dispatch('orders/get', this.$route.params.id),
       this.$store.dispatch('statuses/fetch'),
       this.$store.dispatch('packageTemplates/fetch'),
     ])
-    loading.close()
+    this.$accessor.stopLoading()
   },
 }
 </script>
@@ -223,16 +329,39 @@ export default {
   }
 }
 
-.shipping {
+.email {
   display: flex;
   flex-direction: column;
   margin-top: 8px;
   color: #444;
+  position: relative;
+
+  &__edit {
+    position: absolute;
+    bottom: calc(100% + 4px);
+    right: 0;
+  }
 
   &__name {
-    font-size: 1.1em;
+    font-size: 1em;
     margin-bottom: 3px;
     color: #111;
+  }
+}
+
+.comment {
+  position: relative;
+
+  &__content {
+    display: block;
+    margin-top: 10px;
+    font-size: 0.9em;
+  }
+
+  &__edit {
+    position: absolute;
+    top: 16px;
+    right: 20px;
   }
 }
 

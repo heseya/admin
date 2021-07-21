@@ -1,31 +1,41 @@
 <template>
   <div>
-    <top-nav title="Zamówienia">
-      <vs-button color="dark" @click="areFiltersOpen = true" icon>
-        <i class="bx bx-filter-alt"></i>
-      </vs-button>
-    </top-nav>
+    <PaginatedList title="Zamówienia" :filters="filters" storeKey="orders">
+      <template #nav>
+        <vs-button color="dark" @click="areFiltersOpen = true" icon>
+          <i class="bx bx-filter-alt"></i>
+        </vs-button>
+      </template>
 
-    <card>
-      <app-empty v-if="!orders.length">Nie ma żadnego zamówienia</app-empty>
-      <list>
-        <list-item v-for="order in orders" :key="order.id" :url="`/orders/${order.id}`">
+      <template v-slot="{ item: order }">
+        <list-item :key="order.id" :url="`/orders/${order.id}`">
           <template #avatar>
             <vs-avatar :success="order.payed" :danger="!order.payed">
               <i class="bx bx-dollar"></i>
             </vs-avatar>
           </template>
-          {{ order.code }} <span v-if="order.delivery_address"> - {{ order.delivery_address.name }}</span>
+          {{ order.code }}
+          <span v-if="order.delivery_address"> - {{ order.delivery_address.name }}</span>
           <small>{{ order.summary }} {{ currency }}</small>
           <template #action>
-            <div :style="{ color: `#${order.status.color}` }">{{ order.status.name }}</div>
-            <div>{{ getRelativeDate(order.created_at) }}</div>
+            <div class="list-item__action--orders">
+              <vs-tooltip>
+                <div v-if="order.comment">
+                  <i class="bx bx-comment"></i>
+                </div>
+                <template #tooltip>
+                  {{ order.comment }}
+                </template>
+              </vs-tooltip>
+              <div>
+                <div :style="{ color: `#${order.status.color}` }">{{ order.status.name }}</div>
+                <div>{{ getRelativeDate(order.created_at) }}</div>
+              </div>
+            </div>
           </template>
         </list-item>
-      </list>
-    </card>
-
-    <pagination v-if="meta.last_page" :value="page" @input="changePage" :length="meta.last_page" />
+      </template>
+    </PaginatedList>
 
     <vs-dialog width="550px" not-center v-model="areFiltersOpen">
       <template #header>
@@ -39,95 +49,59 @@
 </template>
 
 <script>
-import TopNav from '@/layout/TopNav.vue'
-import Card from '@/components/Card.vue'
-import List from '@/components/List.vue'
-import ListItem from '@/components/ListItem.vue'
-import Empty from '@/components/Empty.vue'
-import { getRelativeDate } from '@/utils/utils'
-import Pagination from '@/components/Pagination.vue'
-import OrderFilter, {
-  EMPTY_ORDER_FILTERS,
-  ALL_FILTER_VALUE
-} from '@/components/OrderFilter'
+import ListItem from '@/components/layout/ListItem.vue'
+import { formatFilters, getRelativeDate } from '@/utils/utils'
+import OrderFilter, { EMPTY_ORDER_FILTERS } from '@/components/OrderFilter'
 import ModalForm from '@/components/ModalForm'
+import PaginatedList from '@/components/PaginatedList.vue'
+import { ALL_FILTER_VALUE } from '@/consts/filters'
 
 export default {
   components: {
     ModalForm,
     OrderFilter,
-    TopNav,
-    Card,
-    List,
     ListItem,
-    appEmpty: Empty,
-    Pagination,
+    PaginatedList,
   },
   data: () => ({
-    page: 1,
     filters: { ...EMPTY_ORDER_FILTERS },
     areFiltersOpen: false,
   }),
   computed: {
-    orders() {
-      return this.$store.getters['orders/getData']
-    },
-    meta() {
-      return this.$store.getters['orders/getMeta']
-    },
     currency() {
       return this.$store.state.currency
-    },
-  },
-  watch: {
-    '$route.query'({ page }) {
-      this.page = page || 1
-      if (this.meta.current_page !== page) {
-        this.getOrders()
-        window.scrollTo(0, 0)
-      }
     },
   },
   methods: {
     getRelativeDate(date) {
       return getRelativeDate(date)
     },
-    changePage(page) {
-      if (this.page !== page) {
-        this.$router.push({ path: 'orders', query: { ...this.$route.query, page } })
-      }
-    },
-    formatFilters(filters) {
-      return Object.fromEntries(
-        Object.entries(filters).filter(([, v]) => v !== ALL_FILTER_VALUE && v !== ''),
-      )
-    },
     makeSearch(filters) {
       this.filters = filters
 
-      const queryFilters = this.formatFilters(filters)
+      const queryFilters = formatFilters(filters)
 
       this.$router.push({
         path: 'orders',
         query: { page: undefined, ...queryFilters },
       })
     },
-    async getOrders() {
-      const loading = this.$vs.loading({ color: '#000' })
-      const queryFilters = this.formatFilters(this.filters)
-      await this.$store.dispatch('orders/fetch', {
-        page: this.page,
-        ...queryFilters,
-      })
-      loading.close()
-    },
   },
   created() {
-    this.page = this.$route.query.page || 1
     this.filters.search = this.$route.query.search || ''
     this.filters.category = this.$route.query.category || ALL_FILTER_VALUE
     this.filters.brand = this.$route.query.brand || ALL_FILTER_VALUE
-    this.getOrders()
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.list-item__action--orders {
+  display: flex;
+  align-items: center;
+
+  .bx-comment {
+    margin: 0 12px;
+  }
+}
+</style>

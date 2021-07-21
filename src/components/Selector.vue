@@ -12,7 +12,7 @@
           <template #action>
             <div class="flex">
               <vs-button success icon @click.stop.prevent="onSelect(item)">
-                Dodaj
+                {{ addText }}
               </vs-button>
             </div>
           </template>
@@ -26,10 +26,12 @@
 // import uniqBy from 'lodash/uniqBy'
 import debounce from 'lodash/debounce'
 import queryString from 'query-string'
-import List from '@/components/List.vue'
-import Empty from '@/components/Empty.vue'
-import ListItem from '@/components/ListItem.vue'
+import List from '@/components/layout/List.vue'
+import Empty from '@/components/layout/Empty.vue'
+import ListItem from '@/components/layout/ListItem.vue'
+import { SchemaTypeLabel } from '@/interfaces/SchemaType'
 import { api } from '../api'
+import { formatApiError } from '@/utils/errors'
 
 export default {
   name: 'Selector',
@@ -45,6 +47,10 @@ export default {
     typeName: {
       type: String,
       default: 'schemat',
+    },
+    addText: {
+      type: String,
+      default: 'Dodaj',
     },
     existing: {
       type: Array,
@@ -62,7 +68,7 @@ export default {
     },
   },
   methods: {
-    getItems: debounce(async function(search) {
+    getItems: debounce(async function (search) {
       if (search === '') {
         this.data = []
         return
@@ -77,17 +83,21 @@ export default {
         })
         const { data } = await api.get(`/${this.type}?${query}`)
         this.data = data.data
-        loading.close()
       } catch (error) {
-        console.error(error)
-        loading.close()
+        this.$vs.notification({
+          color: 'danger',
+          ...formatApiError(error),
+        })
       }
+      loading.close()
     }, 300),
     onSelect(schema) {
       this.$emit('select', schema)
     },
     getSubText(item) {
-      if (this.type === 'schemas') return item.description
+      if (this.type === 'schemas') {
+        return `${SchemaTypeLabel[item.type]} | ${item.description}`
+      }
       if (this.type === 'items') return `SKU: ${item.sku}`
       return ''
     },

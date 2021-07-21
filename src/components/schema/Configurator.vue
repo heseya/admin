@@ -9,18 +9,23 @@
       <draggable v-model="schemas">
         <list-item
           class="configurator__schema"
-          v-for="schema in schemas"
+          :class="{ [`configurator__schema--dep`]: schema.auto_dependecy }"
+          :title="schema.auto_dependecy ? 'Schemat jest automatyczny - nie możesz go usunąć' : ''"
+          v-for="schema in value"
           :key="schema.id"
           no-hover
           :hidden="schema.hidden"
         >
+          <i class="bx bx-network-chart" v-if="schema.auto_dependecy"></i>
           {{ schema.name }}
           <small class="optional">{{ !schema.required ? '(opcjonalny)' : '' }}</small>
           <small>{{ schema.description }}</small>
           <template #action>
             <div class="flex">
-              <vs-button dark icon @click="editSchema(schema)"><i class="bx bx-edit"></i></vs-button>
-              <vs-button danger icon @click="removeSchema(schema.id)">
+              <vs-button dark icon @click="editSchema(schema)"
+                ><i class="bx bx-edit"></i
+              ></vs-button>
+              <vs-button danger icon @click="removeSchema(schema.id)" class="schema-delete">
                 <i class="bx bx-trash"></i>
               </vs-button>
             </div>
@@ -34,7 +39,7 @@
         <h4 style="margin-bottom: 0">{{ editedSchema.id ? 'Edycja schematu' : 'Nowy schemat' }}</h4>
       </template>
       <modal-form v-if="isFormModalActive">
-        <SchemaForm :schema="editedSchema" @submit="updateSchema" />
+        <SchemaForm :schema="editedSchema" @submit="updateSchema" :currentProductSchemas="value" />
       </modal-form>
     </vs-dialog>
 
@@ -61,9 +66,9 @@
 </template>
 
 <script>
-import List from '@/components/List.vue'
-import ListItem from '@/components/ListItem.vue'
-import Empty from '@/components/Empty.vue'
+import List from '@/components/layout/List.vue'
+import ListItem from '@/components/layout/ListItem.vue'
+import Empty from '@/components/layout/Empty.vue'
 import ModalForm from '@/components/ModalForm.vue'
 import SchemaForm from '@/components/schema/Form.vue'
 import Selector from '@/components/Selector.vue'
@@ -98,8 +103,8 @@ export default {
       },
       set(val) {
         this.$emit('input', val)
-      }
-    }
+      },
+    },
   },
   methods: {
     editSchema(schema) {
@@ -154,6 +159,14 @@ export default {
 
   &__schemas {
     padding: 0;
+  }
+
+  &__schema {
+    &--dep {
+      .schema-delete {
+        display: none;
+      }
+    }
   }
 }
 

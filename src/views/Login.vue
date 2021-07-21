@@ -7,15 +7,14 @@
       <br /><br />
       <vs-input v-model="password" label="Hasło" type="password" @keydown.enter="login" />
       <br />
-      <vs-button color="dark" @click="login">
-        Zaloguj
-      </vs-button>
+      <vs-button color="dark" @click="login"> Zaloguj </vs-button>
     </card>
   </div>
 </template>
 
 <script>
-import Card from '@/components/Card.vue'
+import Card from '@/components/layout/Card.vue'
+import { formatApiError } from '@/utils/errors'
 
 const DEBUG = process.env.NODE_ENV === 'development'
 
@@ -39,20 +38,19 @@ export default {
       if (error) {
         this.$vs.notification({
           color: 'danger',
-          title: 'Błąd logowania',
-          text: 'Zły email lub hasło.',
+          ...formatApiError(error),
         })
       }
     },
   },
   methods: {
     async login() {
-      const loading = this.$vs.loading({ color: '#000' })
-      await this.$store.dispatch('auth/login', {
+      this.$accessor.startLoading()
+      await this.$accessor.auth.login({
         email: this.email,
         password: this.password,
       })
-      loading.close()
+      this.$accessor.stopLoading()
       this.$router.push({ name: 'Home' })
     },
   },

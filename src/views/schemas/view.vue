@@ -17,39 +17,45 @@
 
     <div class="schema">
       <card>
-        <SchemaForm @submit="save" :schema="schema" />
+        <SchemaForm :key="schema.id" :schema="schema" @submit="saveSchema" />
       </card>
     </div>
   </div>
 </template>
 
-<script>
-import TopNav from '@/layout/TopNav.vue'
-import Card from '@/components/Card.vue'
-import PopConfirm from '@/components/PopConfirm.vue'
-import SchemaForm from '@/components/schema/Form.vue'
+<script lang="ts">
+import Vue from 'vue'
+import { cloneDeep } from 'lodash'
 
-export default {
+import { Schema } from '@/interfaces/Schema'
+
+import TopNav from '@/layout/TopNav.vue'
+import Card from '@/components/layout/Card.vue'
+import PopConfirm from '@/components/layout/PopConfirm.vue'
+import SchemaForm from '@/components/schema/Form.vue'
+import { formatApiError } from '@/utils/errors'
+
+export default Vue.extend({
   components: {
     TopNav,
     Card,
     SchemaForm,
     PopConfirm,
   },
-  data() {
-    return {}
-  },
+  data: () => ({
+    editedSchema: {} as Schema,
+  }),
   computed: {
-    id() {
+    id(): string {
       return this.$route.params.id
     },
-    isNew() {
+    isNew(): boolean {
       return this.id === 'create'
     },
-    schema() {
+    schema(): Schema {
       return this.$store.getters['schemas/getSelected']
     },
-    error() {
+    error(): any {
       return this.$store.getters['schemas/getError']
     },
   },
@@ -58,20 +64,22 @@ export default {
       if (error) {
         this.$vs.notification({
           color: 'danger',
-          title: error.message,
-          text: error?.response?.data?.message,
+          ...formatApiError(error),
         })
       }
     },
+    schema() {
+      this.editedSchema = cloneDeep(this.schema)
+    },
   },
   methods: {
-    save(schema) {
-      if (!this.schema.id) {
-        this.$router.push(`/schemas/${schema.id}`)
-      }
+    async saveSchema() {
+      this.$accessor.startLoading()
+      await this.$accessor.schemas.update({ id: this.schema.id, item: this.schema })
+      this.$accessor.stopLoading()
     },
     async deleteSchema() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       const success = await this.$store.dispatch('schemas/remove', this.id)
       if (success) {
         this.$vs.notification({
@@ -80,17 +88,17 @@ export default {
         })
         this.$router.push('/schemas')
       }
-      loading.close()
+      this.$accessor.stopLoading()
     },
   },
   async created() {
     if (!this.isNew) {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       await this.$store.dispatch('schemas/get', this.id)
-      loading.close()
+      this.$accessor.stopLoading()
     }
   },
-}
+})
 </script>
 
 <style lang="scss">

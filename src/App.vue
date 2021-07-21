@@ -10,17 +10,35 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import Navigation from './layout/Navigation.vue'
 
-export default {
+export default Vue.extend({
   components: {
     Navigation,
   },
-  created() {
-    this.$store.dispatch('fetchEnv')
+  data: () => ({
+    loadingInstance: null as null | { close: () => void },
+  }),
+  computed: {
+    isLoading(): boolean {
+      return this.$store.state.loading
+    },
   },
-}
+  watch: {
+    isLoading(isLoading: boolean) {
+      if (isLoading) {
+        this.loadingInstance = this.$vs.loading({ color: '#000' })
+      } else if (this.loadingInstance) {
+        this.loadingInstance.close()
+      }
+    },
+  },
+  created() {
+    this.$accessor.fetchEnv()
+  },
+})
 </script>
 
 <style lang="scss">
@@ -37,8 +55,13 @@ body {
   margin: 0;
 }
 
-input {
+.vs-input-parent input {
   width: 100% !important;
+}
+
+.vs-button--size-tiny {
+  --vs-button-padding: 8px !important;
+  margin: 0;
 }
 
 hr {
@@ -94,5 +117,17 @@ hr {
 
 .flex {
   display: flex;
+}
+
+.multiselect {
+  z-index: 1000;
+}
+
+.multiselect__tag {
+  background: #000;
+}
+
+.multiselect__tag-icon::after {
+  color: #fff;
 }
 </style>

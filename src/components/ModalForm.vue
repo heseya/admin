@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: 'ModalForm'
+  name: 'ModalForm',
 }
 </script>
 
@@ -40,6 +40,11 @@ export default {
   .center {
     display: flex;
     justify-content: center;
+    align-items: center;
+
+    > *:not(:first-child) {
+      margin-left: 12px;
+    }
   }
 }
 </style>

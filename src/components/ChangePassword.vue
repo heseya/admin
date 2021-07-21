@@ -32,17 +32,18 @@
 <script>
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import { api } from '../api'
+import { formatApiError } from '@/utils/errors'
 
 export default {
   components: {
     ValidationProvider,
-    ValidationObserver
+    ValidationObserver,
   },
   data: () => ({
     password: '',
     passwordNew: '',
     passwordConfirmation: '',
-    isLoading: false
+    isLoading: false,
   }),
   methods: {
     async changePassword() {
@@ -51,24 +52,23 @@ export default {
         await api.patch('user/password', {
           password: this.password,
           password_new: this.passwordNew,
-          password_confirmation: this.passwordConfirmation
+          password_confirmation: this.passwordConfirmation,
         })
         this.$vs.notification({
           color: 'success',
-          title: 'Hasło zostało zmienione'
+          title: 'Hasło zostało zmienione',
         })
       } catch (error) {
         this.$vs.notification({
           color: 'danger',
-          title: 'Coś poszło nie tak ze zmianą hasła',
-          text: error.message
+          ...formatApiError(error),
         })
       } finally {
         this.isLoading = false
         this.$emit('close')
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

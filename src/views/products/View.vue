@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :key="$route.params.id">
     <top-nav :title="!isNew ? product.name : 'Nowy produkt'">
       <pop-confirm
         v-if="!isNew"
@@ -53,23 +53,22 @@
             <form @submit.prevent="handleSubmit(saveProduct)" class="product__info">
               <div>
                 <br />
-                <validation-provider rules="required" v-slot="{ errors }">
-                  <vs-input v-model="form.name" @input="editSlug" label="Nazwa">
-                    <template #message-danger>{{ errors[0] }}</template>
-                  </vs-input>
-                </validation-provider>
+                <validated-input
+                  rules="required"
+                  v-model="form.name"
+                  @input="editSlug"
+                  label="Nazwa"
+                />
                 <br /><br />
-                <validation-provider rules="required|slug" v-slot="{ errors }">
-                  <vs-input v-model="form.slug" label="Link">
-                    <template #message-danger>{{ errors[0] }}</template>
-                  </vs-input>
-                </validation-provider>
+                <validated-input rules="required|slug" v-model="form.slug" label="Link" />
                 <br /><br />
-                <validation-provider rules="required" v-slot="{ errors }">
-                  <vs-input v-model="form.price" type="number" step="0.01" label="Cena">
-                    <template #message-danger>{{ errors[0] }}</template>
-                  </vs-input>
-                </validation-provider>
+                <validated-input
+                  rules="required"
+                  v-model="form.price"
+                  type="number"
+                  step="0.01"
+                  label="Cena"
+                />
                 <br />
               </div>
 
@@ -115,18 +114,34 @@
                   </vs-select>
                 </validation-provider>
                 <br /><br />
-                <validation-provider rules="required" v-slot="{ errors }">
-                  <vs-input v-model="form.quantity_step" type="number" max="999999" step="0.01" label="Format ilości">
-                    <template #message-danger>{{ errors[0] }}</template>
-                  </vs-input>
-                </validation-provider>
+                <validated-input
+                  rules="required"
+                  v-model="form.quantity_step"
+                  type="number"
+                  max="999999"
+                  step="0.01"
+                  label="Format ilości"
+                />
+              </div>
+
+              <div class="wide">
+                <tags-select v-model="form.tags" />
               </div>
 
               <div class="wide">
                 <small class="label">Opis</small>
-                <md-editor v-if="!isLoading" v-model="form.description_md" />
+                <rich-editor v-if="!isLoading" v-model="form.description_html" />
                 <br />
-                <vs-button color="dark" size="large">Zapisz</vs-button>
+                <div class="flex">
+                  <vs-button color="dark" size="large">Zapisz</vs-button>
+                  <vs-button
+                    color="dark"
+                    size="large"
+                    type="button"
+                    @click="handleSubmit(submitAndGoNext)"
+                    >Zapisz i dodaj następny</vs-button
+                  >
+                </div>
               </div>
             </form>
           </validation-observer>
@@ -139,33 +154,39 @@
 <script>
 import slugify from 'slugify'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
+import cloneDeep from 'lodash/cloneDeep'
 
 import TopNav from '@/layout/TopNav.vue'
 import Gallery from '@/components/Gallery.vue'
-import Card from '@/components/Card.vue'
-import FlexInput from '@/components/FlexInput.vue'
-import PopConfirm from '@/components/PopConfirm.vue'
-import MdEditor from '@/components/MdEditor.vue'
+import Card from '@/components/layout/Card.vue'
+import FlexInput from '@/components/layout/FlexInput.vue'
+import PopConfirm from '@/components/layout/PopConfirm.vue'
+import RichEditor from '@/components/RichEditor.vue'
 import SchemaConfigurator from '@/components/schema/Configurator.vue'
 import { formatApiError } from '@/utils/errors'
+import ValidatedInput from '@/components/form/ValidatedInput.vue'
+import TagsSelect from '@/components/TagsSelect.vue'
+
+const EMPTY_FORM = {
+  name: '',
+  slug: '',
+  price: 0,
+  description_html: '',
+  digital: false,
+  public: true,
+  brand_id: 0,
+  category_id: 0,
+  quantity_step: 1,
+  schemas: [],
+  gallery: [],
+  media: [],
+  tags: [],
+}
 
 export default {
   data() {
     return {
-      form: {
-        name: '',
-        slug: '',
-        price: 0,
-        description: '',
-        digital: false,
-        public: true,
-        brand_id: 0,
-        category_id: 0,
-        quantity_step: 1,
-        schemas: [],
-        gallery: [],
-        media: [],
-      },
+      form: cloneDeep(EMPTY_FORM),
     }
   },
   computed: {
@@ -195,13 +216,17 @@ export default {
   },
   methods: {
     async fetch() {
+      this.form = cloneDeep(EMPTY_FORM)
+      if (this.isNew) return
       return this.$store.dispatch('products/get', this.$route.params.id)
     },
     editSlug() {
-      this.form.slug = slugify(this.form.name, { lower: true, remove: /[.]/g })
+      if (this.isNew) {
+        this.form.slug = slugify(this.form.name, { lower: true, remove: /[.]/g })
+      }
     },
     async deleteProduct() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       const success = await this.$store.dispatch('products/remove', this.id)
       if (success) {
         this.$vs.notification({
@@ -210,15 +235,16 @@ export default {
         })
         this.$router.push('/products')
       }
-      loading.close()
+      this.$accessor.stopLoading()
     },
     async saveProduct() {
       const apiPayload = {
         ...this.form,
+        tags: this.form.tags.map(({ id }) => id),
         media: this.form.gallery.map(({ id }) => id),
         schemas: this.form.schemas.map(({ id }) => id),
       }
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
 
       const successMessage = this.isNew
         ? 'Produkt został utworzony'
@@ -231,15 +257,20 @@ export default {
         actionPayload,
       )
 
-      if (newID) {
-        this.$vs.notification({
-          color: 'success',
-          title: successMessage,
-        })
+      this.$vs.notification({
+        color: 'success',
+        title: successMessage,
+      })
+
+      if (newID !== this.product.id) {
         this.$router.push(`/products/${newID}`)
       }
 
-      loading.close()
+      this.$accessor.stopLoading()
+    },
+    async submitAndGoNext() {
+      await this.saveProduct()
+      this.$router.push('/products/create')
     },
   },
   watch: {
@@ -262,19 +293,19 @@ export default {
       }
     },
     async '$route.params.id'() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       await this.fetch()
-      loading.close()
+      this.$accessor.stopLoading()
     },
   },
   async created() {
-    const loading = this.$vs.loading({ color: '#000' })
+    this.$accessor.startLoading()
     await Promise.all([
       this.$store.dispatch('categories/fetch'),
       this.$store.dispatch('brands/fetch'),
     ])
-    if (!this.isNew) await this.fetch()
-    loading.close()
+    await this.fetch()
+    this.$accessor.stopLoading()
   },
   components: {
     TopNav,
@@ -285,11 +316,12 @@ export default {
     ValidationProvider,
     ValidationObserver,
     SchemaConfigurator,
-    MdEditor,
+    RichEditor,
+    TagsSelect,
+    ValidatedInput,
   },
 }
 </script>
-
 <style lang="scss">
 .product {
   &__info {

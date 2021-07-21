@@ -1,10 +1,40 @@
 <template>
   <div class="address">
+    <vs-button
+      v-if="!hideEdit"
+      size="tiny"
+      dark
+      transparent
+      class="address__btn address__btn--edit"
+      @click="edit"
+    >
+      <i class="bx bxs-pencil"></i>
+    </vs-button>
+    <pop-confirm
+      v-if="!hideRemove && address"
+      title="Czy na pewno chcesz usunąć adres?"
+      okText="Usuń"
+      cancelText="Anuluj"
+      @confirm="remove"
+      v-slot="{ open }"
+    >
+      <vs-button
+        size="tiny"
+        dark
+        transparent
+        class="address__btn address__btn--remove"
+        @click="open"
+      >
+        <i class="bx bxs-trash"></i>
+      </vs-button>
+    </pop-confirm>
+
     <template v-if="address">
       <span class="address__name">{{ address.name }}</span>
       <span class="address__field">{{ address.address }}</span>
+      <span class="address__field"> {{ address.zip }} {{ address.city }} </span>
       <span class="address__field">
-        {{ address.zip }}, {{ address.city }}, {{ address.country }}
+        {{ address.country_name || address.country }}
       </span>
       <template v-if="address.vat">
         <span class="address__subtitle">VAT:</span>
@@ -16,20 +46,38 @@
       </template>
     </template>
     <template v-else>
-      <span class="address__error">Address is not provided!</span>
+      <small class="address__error">Brak podanego adresu</small>
     </template>
   </div>
 </template>
 
 <script>
+import PopConfirm from './layout/PopConfirm.vue'
 export default {
+  components: { PopConfirm },
   name: 'Address',
   props: {
     address: {
       type: Object,
-      default: () => ({})
-    }
-  }
+      default: () => ({}),
+    },
+    hideEdit: {
+      type: Boolean,
+      default: false,
+    },
+    hideRemove: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  methods: {
+    edit() {
+      this.$emit('edit')
+    },
+    remove() {
+      this.$emit('remove')
+    },
+  },
 }
 </script>
 
@@ -39,6 +87,17 @@ export default {
   flex-direction: column;
   margin-top: 8px;
   color: #666;
+  position: relative;
+
+  &__btn {
+    position: absolute;
+    top: -38px;
+    right: 0;
+
+    &--remove {
+      right: 30px;
+    }
+  }
 
   &__field {
     display: block;

@@ -1,27 +1,32 @@
 <template>
   <nav class="nav" :class="{ 'nav--hidden': isVisible }">
     <router-link class="nav__link" to="/">
-      <img class="icon" src="/img/icons/home.svg" />
+      <img src="/img/icons/home.svg" />
       <span class="label animated faster fadeInLeft">Strona główna</span>
     </router-link>
 
     <router-link class="nav__link" to="/products">
-      <img class="icon" src="/img/icons/products.svg" />
+      <img src="/img/icons/products.svg" />
       <span class="label animated faster fadeInLeft">Asortyment</span>
     </router-link>
 
     <router-link class="nav__link" to="/orders">
-      <img class="icon" src="/img/icons/orders.svg" />
+      <img src="/img/icons/orders.svg" />
       <span class="label animated faster fadeInLeft">Zamówienia</span>
     </router-link>
 
     <router-link class="nav__link" to="/items">
-      <img class="icon" src="/img/icons/box.svg" />
+      <img src="/img/icons/box.svg" />
       <span class="label animated faster fadeInLeft">Magazyn</span>
     </router-link>
 
+    <router-link class="nav__link" to="/discounts">
+      <img src="/img/icons/coupon.svg" />
+      <span class="label animated faster fadeInLeft">Kody rabatowe</span>
+    </router-link>
+
     <router-link class="nav__link" to="/settings">
-      <img class="icon" src="/img/icons/settings.svg" />
+      <img src="/img/icons/settings.svg" />
       <span class="label animated faster fadeInLeft">Ustawienia</span>
     </router-link>
   </nav>
@@ -33,8 +38,8 @@ export default {
   computed: {
     isVisible() {
       return this.$route.meta.hiddenNav
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -72,8 +77,9 @@ export default {
     }
 
     img {
-      width: 42%;
-      padding: 29%;
+      width: 60px;
+      padding: 17px;
+      box-sizing: border-box;
     }
 
     .label {

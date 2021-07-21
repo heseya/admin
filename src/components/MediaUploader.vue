@@ -13,20 +13,20 @@
 </template>
 
 <script>
-import { api } from '@/api'
 import { getLastElement } from '@/utils/utils'
+import { uploadMedia } from '@/services/uploadMedia'
 
 export default {
   name: 'MediaUploader',
   data: () => ({
     isDrag: false,
-    file: null
+    file: null,
   }),
   props: {
     extensions: {
       type: Array,
-      default: () => ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg']
-    }
+      default: () => ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg'],
+    },
   },
   methods: {
     selectFiles() {
@@ -52,23 +52,22 @@ export default {
         this.$vs.notification({
           color: 'danger',
           title: 'Złe rozszerzenie pliku',
-          text: `Obsługiwane są tylko pliki z rozszerzeniami: ${this.extensions.join(', ')}`
+          text: `Obsługiwane są tylko pliki z rozszerzeniami: ${this.extensions.join(', ')}`,
         })
         return
       }
 
-      const loading = this.$vs.loading({ color: '#000' })
-      try {
-        const form = new FormData()
-        form.append('file', this.file)
+      this.$accessor.startLoading()
 
-        const { data } = await api.post('/media', form)
-        this.$emit('upload', data.data)
+      const { success, url, error } = await uploadMedia(this.file)
+      if (success) {
+        this.$emit('upload', url)
         this.file = null
-      } catch (error) {
+      } else {
         this.$emit('error', error)
       }
-      loading.close()
+
+      this.$accessor.stopLoading()
     },
     isFileValid() {
       if (!this.file) return false
@@ -78,8 +77,8 @@ export default {
     changeDrag(isDrag) {
       this.isDrag = isDrag
       this.$emit('dragChange', isDrag)
-    }
-  }
+    },
+  },
 }
 </script>
 

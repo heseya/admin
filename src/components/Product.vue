@@ -6,6 +6,17 @@
     <div class="product-box__img">
       <img v-if="product.cover" :src="`${product.cover.url}?w=350&h=350`" :style="{ objectFit }" />
       <i v-else class="product-box__img-icon bx bx-image"></i>
+
+      <div class="product-box__tags">
+        <div
+          class="product-box__tag"
+          :style="{ backgroundColor: `#${tag.color}` }"
+          v-for="tag in product.tags"
+          :key="tag.id"
+        >
+          {{ tag.name }}
+        </div>
+      </div>
     </div>
     <div class="flex">
       <div class="name">
@@ -26,7 +37,7 @@ export default {
       return this.$store.state.currency
     },
     objectFit() {
-      return this.$store.state.env.dashboard_products_contain ? 'contain' : 'cover'
+      return +this.$store.state.env.dashboard_products_contain ? 'contain' : 'cover'
     },
   },
   methods: {
@@ -85,6 +96,27 @@ export default {
       height: 100%;
       transition: transform 0.3s;
     }
+  }
+
+  &__tags {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    max-width: calc(100% - 20px);
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  &__tag {
+    display: inline-block;
+    margin-right: 3px;
+    margin-top: 3px;
+    background-color: #000;
+    padding: 3px 6px;
+    color: #fff;
+    font-size: 0.7em;
+    border-radius: 3px;
   }
 
   &:hover &__img img {

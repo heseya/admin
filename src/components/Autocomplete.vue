@@ -23,9 +23,7 @@
     </div>
     <vs-dialog width="800px" not-center v-model="isModalActive">
       <template #header>
-        <h4>
-          Wybierz przedmiot z magazynu
-        </h4>
+        <h4>Wybierz przedmiot z magazynu</h4>
       </template>
       <modal-form>
         <selector typeName="produkt" type="items" :existing="value" @select="addItem" />

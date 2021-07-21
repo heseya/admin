@@ -1,29 +1,22 @@
 <template>
   <div>
-    <top-nav title="Szablony przesyłek">
-      <vs-button @click="openModal()" color="dark" icon>
-        <i class="bx bx-plus"></i>
-      </vs-button>
-    </top-nav>
-
-    <card>
-      <app-empty v-if="!packageTemplates.length">Nie ma żadnego szablonu przesyłki</app-empty>
-      <list>
-        <list-item
-          v-for="packageTemplate in packageTemplates"
-          :key="packageTemplate.id"
-          @click="openModal(packageTemplate.id)"
-        >
+    <PaginatedList title="Szablony przesyłek" storeKey="packageTemplates">
+      <template #nav>
+        <vs-button @click="openModal()" color="dark" icon>
+          <i class="bx bx-plus"></i>
+        </vs-button>
+      </template>
+      <template v-slot="{ item: packageTemplate }">
+        <list-item @click="openModal(packageTemplate.id)">
           {{ packageTemplate.name }}
           <small>
-            waga: <b>{{ packageTemplate.weight }}kg</b>,
-            wysokość: <b>{{ packageTemplate.height }}cm</b>,
-            szerokość: <b>{{ packageTemplate.width }}cm</b>,
+            waga: <b>{{ packageTemplate.weight }}kg</b>, wysokość:
+            <b>{{ packageTemplate.height }}cm</b>, szerokość: <b>{{ packageTemplate.width }}cm</b>,
             głębokość: <b>{{ packageTemplate.depth }}cm</b>
           </small>
         </list-item>
-      </list>
-    </card>
+      </template>
+    </PaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
       <vs-dialog width="550px" not-center v-model="isModalActive">
@@ -31,32 +24,36 @@
           <h4>{{ editedItem.id ? 'Edycja szablony' : 'Nowy szablon' }}</h4>
         </template>
         <modal-form>
-          <validation-provider rules="required" v-slot="{ errors }">
-            <vs-input v-model="editedItem.name" label="Nazwa">
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
-          <validation-provider rules="required|positive" v-slot="{ errors }">
-            <vs-input v-model="editedItem.weight" type="number" step="0.01" label="Waga (kg)">
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
-          <validation-provider rules="required|positive" v-slot="{ errors }">
-            <vs-input v-model="editedItem.width" type="number" label="Szerokość (cm)">
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
-          <validation-provider rules="required|positive" v-slot="{ errors }">
-            <vs-input v-model="editedItem.height" type="number" label="Wysokość (cm)">
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
-          <validation-provider rules="required|positive" v-slot="{ errors }">
-            <vs-input v-model="editedItem.depth" type="number" label="Głębokość (cm)">
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-input>
-          </validation-provider>
+          <validated-input rules="required" v-model="editedItem.name" label="Nazwa" />
 
+          <validated-input
+            rules="required|positive"
+            v-model="editedItem.weight"
+            type="number"
+            step="0.01"
+            label="Waga (kg)"
+          />
+
+          <validated-input
+            rules="required|positive"
+            v-model="editedItem.width"
+            type="number"
+            label="Szerokość (cm)"
+          />
+
+          <validated-input
+            rules="required|positive"
+            v-model="editedItem.height"
+            type="number"
+            label="Wysokość (cm)"
+          />
+
+          <validated-input
+            rules="required|positive"
+            v-model="editedItem.depth"
+            type="number"
+            label="Głębokość (cm)"
+          />
         </modal-form>
         <template #footer>
           <div class="row">
@@ -78,26 +75,21 @@
 </template>
 
 <script>
-import { ValidationProvider, ValidationObserver } from 'vee-validate'
-import TopNav from '@/layout/TopNav.vue'
-import Card from '@/components/Card.vue'
-import List from '@/components/List.vue'
+import { ValidationObserver } from 'vee-validate'
+import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/ModalForm.vue'
-import ListItem from '@/components/ListItem.vue'
-import Empty from '@/components/Empty.vue'
-import PopConfirm from '@/components/PopConfirm.vue'
+import ListItem from '@/components/layout/ListItem.vue'
+import PopConfirm from '@/components/layout/PopConfirm.vue'
+import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
 export default {
   components: {
-    TopNav,
-    Card,
-    List,
+    PaginatedList,
     ListItem,
     ModalForm,
     PopConfirm,
-    appEmpty: Empty,
-    ValidationProvider,
-    ValidationObserver
+    ValidationObserver,
+    ValidatedInput,
   },
   data: () => ({
     isModalActive: false,
@@ -106,28 +98,9 @@ export default {
       width: 0,
       height: 0,
       depth: 0,
-      weight: 0
-    }
-  }),
-  computed: {
-    packageTemplates() {
-      return this.$store.getters['packageTemplates/getData']
+      weight: 0,
     },
-    error() {
-      return this.$store.getters['packageTemplates/getError']
-    }
-  },
-  watch: {
-    error(error) {
-      if (error) {
-        this.$vs.notification({
-          color: 'danger',
-          title: error.message,
-          text: error.response.data?.error?.message
-        })
-      }
-    }
-  },
+  }),
   methods: {
     openModal(id) {
       this.isModalActive = true
@@ -140,34 +113,29 @@ export default {
           width: 0,
           height: 0,
           depth: 0,
-          weight: 0
+          weight: 0,
         }
       }
     },
     async saveModal() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       if (this.editedItem.id) {
         await this.$store.dispatch('packageTemplates/update', {
           id: this.editedItem.id,
-          item: this.editedItem
+          item: this.editedItem,
         })
       } else {
         await this.$store.dispatch('packageTemplates/add', this.editedItem)
       }
-      loading.close()
+      this.$accessor.stopLoading()
       this.isModalActive = false
     },
     async deleteItem() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       await this.$store.dispatch('packageTemplates/remove', this.editedItem.id)
-      loading.close()
+      this.$accessor.stopLoading()
       this.isModalActive = false
-    }
-  },
-  async created() {
-    const loading = this.$vs.loading({ color: '#000' })
-    await this.$store.dispatch('packageTemplates/fetch')
-    loading.close()
+    },
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {
@@ -176,7 +144,7 @@ export default {
     } else {
       next()
     }
-  }
+  },
 }
 </script>
 
@@ -185,5 +153,4 @@ export default {
   display: flex;
   justify-content: space-between;
 }
-
 </style>

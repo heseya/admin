@@ -39,6 +39,22 @@
           </template>
           Kategorie
         </list-item>
+        <list-item url="/settings/tags">
+          <template #avatar>
+            <vs-avatar dark>
+              <i class="bx bxs-purchase-tag"></i>
+            </vs-avatar>
+          </template>
+          Tagi
+        </list-item>
+        <list-item url="/schemas">
+          <template #avatar>
+            <vs-avatar dark>
+              <i class="bx bxs-customize"></i>
+            </vs-avatar>
+          </template>
+          Schematy
+        </list-item>
 
         <h2 class="section-title">Zamówienia</h2>
         <list-item url="/settings/statuses">
@@ -125,9 +141,9 @@
 
 <script>
 import TopNav from '@/layout/TopNav.vue'
-import Card from '@/components/Card.vue'
-import List from '@/components/List.vue'
-import ListItem from '@/components/ListItem.vue'
+import Card from '@/components/layout/Card.vue'
+import List from '@/components/layout/List.vue'
+import ListItem from '@/components/layout/ListItem.vue'
 import ChangePassword from '@/components/ChangePassword.vue'
 
 export default {
@@ -148,9 +164,9 @@ export default {
   },
   methods: {
     async logout() {
-      const loading = this.$vs.loading({ color: '#000' })
-      await this.$store.dispatch('auth/logout')
-      loading.close()
+      this.$accessor.startLoading()
+      await this.$accessor.auth.logout()
+      this.$accessor.stopLoading()
       this.$router.push('/login')
     },
   },

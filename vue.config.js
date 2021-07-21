@@ -5,11 +5,11 @@ module.exports = {
         prependData: `
           @import "@/scss/_variables.scss";
           @import "@/scss/_title.scss";
-        `
-      }
-    }
+        `,
+      },
+    },
   },
   pwa: {
-    themeColor: '#000'
-  }
+    themeColor: '#000',
+  },
 }

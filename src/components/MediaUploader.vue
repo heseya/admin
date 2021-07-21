@@ -58,9 +58,6 @@ export default {
       }
 
       this.$accessor.startLoading()
-      try {
-        const form = new FormData()
-        form.append('file', this.file)
 
       const { success, url, error } = await uploadMedia(this.file)
       if (success) {
@@ -69,6 +66,7 @@ export default {
       } else {
         this.$emit('error', error)
       }
+
       this.$accessor.stopLoading()
     },
     isFileValid() {

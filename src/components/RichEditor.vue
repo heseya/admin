@@ -1,12 +1,6 @@
 <template>
-  <div class="editor">
-    <quill-editor
-      ref="editor"
-      :value="value"
-      @input="onInput"
-      :options="editorOption"
-      :height="height"
-    />
+  <div class="rich-editor" :style="{ '--height': height }">
+    <quill-editor ref="editor" :value="value" @input="onInput" :options="editorOption" />
   </div>
 </template>
 
@@ -58,8 +52,17 @@ export default {
   },
   methods: {
     onInput(value) {
+      console.log('🚀 ~ file: RichEditor.vue ~ line 55 ~ onInput ~ value', value)
       this.$emit('input', value)
     },
   },
 }
 </script>
+
+<style lang="scss">
+.rich-editor {
+  .ql-editor {
+    height: var(--height);
+  }
+}
+</style>

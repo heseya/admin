@@ -52,7 +52,6 @@ export default {
   },
   methods: {
     onInput(value) {
-      console.log('🚀 ~ file: RichEditor.vue ~ line 55 ~ onInput ~ value', value)
       this.$emit('input', value)
     },
   },

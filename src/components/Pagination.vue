@@ -14,8 +14,9 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue'
+export default Vue.extend({
   name: 'Pagination',
   props: {
     value: {
@@ -32,12 +33,12 @@ export default {
     },
   },
   computed: {
-    page() {
+    page(): number {
       return Number(this.value)
     },
   },
   methods: {
-    onInput(v) {
+    onInput(v: number | string) {
       this.$emit('input', v)
     },
     next() {
@@ -47,7 +48,7 @@ export default {
       if (this.page > 1) this.onInput(this.page - 1)
     },
   },
-}
+})
 </script>
 
 <style lang="scss">

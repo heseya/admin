@@ -4,11 +4,13 @@
   </div>
 </template>
 
-<script>
-import { uploadMedia } from '@/services/uploadMedia'
-import { formatApiError } from '@/utils/errors'
+<script lang="ts">
+import Vue from 'vue'
 
-export default {
+import { uploadMedia } from '@/services/uploadMedia'
+import { QuillOptionsStatic } from 'quill'
+
+export default Vue.extend({
   data: () => ({
     editorOption: {
       theme: 'snow',
@@ -30,15 +32,17 @@ export default {
           ['clean'], // remove formatting button
         ],
         imageUploader: {
-          upload: async (sourceFile) => {
+          upload: async (sourceFile: File) => {
             const { success, file, error } = await uploadMedia(sourceFile)
-            if (success) return file.url
-            this.$vs.notification({ color: 'danger', ...formatApiError(error) })
+            if (success && file) return file.url
+            // eslint-disable-next-line no-console
+            console.error('Failed to upload file to CDN:', error)
+            // this.$vs.notification({ color: 'danger', ...formatApiError(error) })
             return null
           },
         },
       },
-    },
+    } as QuillOptionsStatic,
   }),
   props: {
     value: {
@@ -51,11 +55,11 @@ export default {
     },
   },
   methods: {
-    onInput(value) {
+    onInput(value: string) {
       this.$emit('input', value)
     },
   },
-}
+})
 </script>
 
 <style lang="scss">

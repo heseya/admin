@@ -27,21 +27,23 @@
   </button>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue'
+export default Vue.extend({
   props: {
     product: Object,
   },
   computed: {
-    currency() {
+    currency(): string {
       return this.$store.state.currency
     },
-    objectFit() {
+    objectFit(): string {
       return +this.$store.state.env.dashboard_products_contain ? 'contain' : 'cover'
     },
   },
   methods: {
     onClick() {
+      // @ts-ignore
       if (window.copyIdMode === true) {
         this.copyId()
         return
@@ -60,7 +62,7 @@ export default {
   mounted() {
     navigator.permissions.query({ name: 'clipboard-write' })
   },
-}
+})
 </script>
 
 <style lang="scss">

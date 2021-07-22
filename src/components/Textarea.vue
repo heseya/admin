@@ -10,8 +10,10 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue'
+
+export default Vue.extend({
   props: {
     value: {
       type: String,
@@ -20,15 +22,15 @@ export default {
   },
   computed: {
     formValue: {
-      get() {
+      get(): string {
         return this.value
       },
-      set(val) {
+      set(val: string) {
         this.$emit('input', val)
       },
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

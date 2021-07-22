@@ -19,7 +19,7 @@
       </vs-select>
     </ValidationProvider>
     <validated-input rules="required" name="address" label="Telefon" v-model="form.phone" />
-    <validated-input name="address" label="VAT" v-model="form.vat" />
+    <validated-input name="address" label="NIP" v-model="form.vat" />
   </div>
 </template>
 

@@ -37,7 +37,7 @@
         {{ address.country_name || address.country }}
       </span>
       <template v-if="address.vat">
-        <span class="address__subtitle">VAT:</span>
+        <span class="address__subtitle">NIP:</span>
         <span class="address__field">{{ address.vat }}</span>
       </template>
       <template v-if="address.phone">

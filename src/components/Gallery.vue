@@ -22,25 +22,32 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import Draggable from 'vuedraggable'
-import MediaUploader from '@/components/MediaUploader'
-import { formatApiError } from '@/utils/errors'
 
-export default {
+import MediaUploader from '@/components/MediaUploader.vue'
+import { formatApiError } from '@/utils/errors'
+import { ID } from '@/interfaces/ID'
+import { CdnMedia } from '@/interfaces/Media'
+
+export default Vue.extend({
   components: {
     appMediaUploader: MediaUploader,
     Draggable,
   },
   props: {
-    value: Array,
+    value: {
+      type: Array,
+      default: () => [],
+    } as Vue.PropOptions<CdnMedia[]>,
   },
   computed: {
     images: {
-      get() {
+      get(): CdnMedia[] {
         return this.value
       },
-      set(val) {
+      set(val: CdnMedia[]) {
         this.$emit('input', val)
       },
     },
@@ -52,23 +59,23 @@ export default {
     isDrag: false,
   }),
   methods: {
-    dragChange(isDrag) {
+    dragChange(isDrag: boolean) {
       this.isDrag = isDrag
     },
-    onImageDelete(deletedId) {
+    onImageDelete(deletedId: ID) {
       this.images = this.images.filter(({ id }) => deletedId !== id)
     },
-    onImageUpload(file) {
+    onImageUpload(file: CdnMedia) {
       this.images = [...this.images, file]
     },
-    onUploadError(error) {
+    onUploadError(error: any) {
       this.$vs.notification({
         color: 'danger',
         ...formatApiError(error),
       })
     },
   },
-}
+})
 </script>
 
 <style lang="scss">

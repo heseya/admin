@@ -1,17 +1,12 @@
 import { api } from '@/api'
-
-interface CdnFile {
-  id: string
-  type: 'photo'
-  url: string
-}
+import { CdnMedia } from '@/interfaces/Media'
 
 export const uploadMedia = async (file: File) => {
   try {
     const form = new FormData()
     form.append('file', file)
 
-    const { data } = await api.post<{ data: CdnFile }>('/media', form)
+    const { data } = await api.post<{ data: CdnMedia }>('/media', form)
 
     return {
       success: true,

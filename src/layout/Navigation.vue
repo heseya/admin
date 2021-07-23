@@ -32,15 +32,16 @@
   </nav>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue'
+export default Vue.extend({
   name: 'Navigation',
   computed: {
-    isVisible() {
-      return this.$route.meta.hiddenNav
+    isVisible(): boolean {
+      return !!this.$route.meta?.hiddenNav || false
     },
   },
-}
+})
 </script>
 
 <style lang="scss">

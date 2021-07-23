@@ -51,16 +51,19 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Address } from '@/interfaces/Address'
+import Vue from 'vue'
 import PopConfirm from './layout/PopConfirm.vue'
-export default {
+
+export default Vue.extend({
   components: { PopConfirm },
   name: 'Address',
   props: {
     address: {
       type: Object,
-      default: () => ({}),
-    },
+      default: () => null,
+    } as Vue.PropOptions<Address>,
     hideEdit: {
       type: Boolean,
       default: false,
@@ -78,7 +81,7 @@ export default {
       this.$emit('remove')
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

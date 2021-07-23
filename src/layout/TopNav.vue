@@ -11,13 +11,14 @@
   </nav>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue'
+export default Vue.extend({
   props: {
     title: String,
     subtitle: String,
   },
-}
+})
 </script>
 
 <style lang="scss">

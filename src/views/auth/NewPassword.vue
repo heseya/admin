@@ -28,13 +28,16 @@
   </central-screen-form>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
+
 import CentralScreenForm from '@/components/form/CentralScreenForm.vue'
-import { formatApiError } from '@/utils/errors'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
-export default {
+import { formatApiError } from '@/utils/errors'
+
+export default Vue.extend({
   components: {
     CentralScreenForm,
     ValidatedInput,
@@ -48,12 +51,12 @@ export default {
     }
   },
   computed: {
-    error() {
+    error(): any {
       return this.$store.state.auth.error
     },
   },
   watch: {
-    error(error) {
+    error(error: any) {
       if (error) {
         this.$vs.notification({
           color: 'danger',
@@ -66,8 +69,8 @@ export default {
     async changePassword() {
       this.$accessor.startLoading()
       const isSuccess = await this.$accessor.auth.resetPassword({
-        email: this.$route.query.email,
-        token: this.$route.query.token,
+        email: this.$route.query.email as string,
+        token: this.$route.query.token as string,
         password: this.password,
       })
       this.$accessor.stopLoading()
@@ -81,5 +84,5 @@ export default {
       }
     },
   },
-}
+})
 </script>

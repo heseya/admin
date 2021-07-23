@@ -14,7 +14,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import Vue from 'vue'
 export default Vue.extend({
   props: {
@@ -29,7 +29,7 @@ export default Vue.extend({
     label: String,
   },
   methods: {
-    onInput(v) {
+    onInput(v: boolean) {
       this.$emit('input', v)
     },
   },

@@ -17,14 +17,15 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 
-export default {
+export default Vue.extend({
   components: {
     ListItem,
     PaginatedList,
   },
-}
+})
 </script>

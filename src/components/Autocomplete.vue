@@ -32,11 +32,17 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import Selector from '@/components/Selector.vue'
 import ModalForm from '@/components/ModalForm.vue'
+import { ID } from '@/interfaces/ID'
 
-export default {
+interface AutocompleteItem {
+  id: ID
+}
+
+export default Vue.extend({
   name: 'Autocomplete',
   props: {
     type: {
@@ -50,31 +56,31 @@ export default {
     value: {
       type: Array,
       default: null,
-    },
+    } as Vue.PropOptions<AutocompleteItem[]>,
   },
   data: () => ({
     isModalActive: false,
   }),
   computed: {
     compValue: {
-      get() {
+      get(): AutocompleteItem[] {
         return this.value
       },
-      set(v) {
+      set(v: AutocompleteItem[]) {
         this.$emit('input', v)
       },
     },
   },
   methods: {
-    addItem(item) {
+    addItem(item: AutocompleteItem) {
       this.compValue.push(item)
     },
-    deleteItem(itemId) {
+    deleteItem(itemId: ID) {
       this.compValue = this.compValue.filter((item) => item.id !== itemId)
     },
   },
   components: { Selector, ModalForm },
-}
+})
 </script>
 
 <style lang="scss" scoped>

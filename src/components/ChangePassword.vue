@@ -29,12 +29,13 @@
   </validation-observer>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import { api } from '../api'
 import { formatApiError } from '@/utils/errors'
 
-export default {
+export default Vue.extend({
   components: {
     ValidationProvider,
     ValidationObserver,
@@ -69,7 +70,7 @@ export default {
       }
     },
   },
-}
+})
 </script>
 
 <style>

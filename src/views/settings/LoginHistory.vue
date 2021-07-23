@@ -19,17 +19,19 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
+
 import PaginatedList from '@/components/PaginatedList.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 
-export default {
+export default Vue.extend({
   components: {
     PaginatedList,
     ListItem,
   },
   methods: {
-    getBrowserIcon(browser) {
+    getBrowserIcon(browser: string) {
       switch (browser) {
         case null:
           return 'bx bx-question-mark'
@@ -42,7 +44,7 @@ export default {
       }
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

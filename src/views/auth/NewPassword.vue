@@ -36,6 +36,7 @@ import CentralScreenForm from '@/components/form/CentralScreenForm.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
 import { formatApiError } from '@/utils/errors'
+import { api } from '@/api'
 
 export default Vue.extend({
   components: {
@@ -64,6 +65,17 @@ export default Vue.extend({
         })
       }
     },
+  },
+  async created() {
+    const { token, email } = this.$route.query
+
+    try {
+      if (!token || !email) throw new Error('Token or email does not exist')
+      await api.get(`/users/reset-password?token=${token}&email=${email}`)
+    } catch (e) {
+      this.$vs.notification({ color: 'danger', ...formatApiError(e) })
+      this.$router.replace('/login')
+    }
   },
   methods: {
     async changePassword() {

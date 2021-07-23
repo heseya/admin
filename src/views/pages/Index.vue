@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PaginatedList title="Strony" storeKey="pages">
+    <PaginatedList title="Strony" storeKey="pages" draggable>
       <template #nav>
         <vs-button to="/pages/create" color="dark" icon>
           <i class="bx bx-plus"></i>

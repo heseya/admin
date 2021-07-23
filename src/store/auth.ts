@@ -43,6 +43,16 @@ const actions = actionTree(
         commit('SET_ERROR', e)
       }
     },
+    async requestResetPassword({ commit }, { email }: { email: string }) {
+      commit('SET_ERROR', null)
+      try {
+        await api.post('/users/reset-password', { email })
+        return true
+      } catch (e) {
+        commit('SET_ERROR', e)
+        return false
+      }
+    },
     async logout({ commit, dispatch }) {
       try {
         await api.post('/auth/logout')

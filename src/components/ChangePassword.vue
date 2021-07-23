@@ -9,22 +9,22 @@
     <br />
     <br />
     <validation-provider rules="required" vid="passwordNew" v-slot="{ errors }">
-      <vs-input v-model="passwordNew" label="Nowe hasło" type="password">
+      <vs-input v-model="passwordNew" label="Nowe hasło" type="password|password">
         <template #message-danger>{{ errors[0] }}</template>
       </vs-input>
     </validation-provider>
     <br />
     <br />
-    <validation-provider rules="required|password:@passwordNew" v-slot="{ errors }">
+    <validation-provider rules="required|repeatPassword:@passwordNew" v-slot="{ errors }">
       <vs-input v-model="passwordConfirmation" label="Powtórz nowe hasło" type="password">
         <template #message-danger>{{ errors[0] }}</template>
       </vs-input>
     </validation-provider>
     <br />
     <div class="center">
-      <vs-button @click="handleSubmit(changePassword)" color="dark" :loading="isLoading"
-        >Zmień hasło</vs-button
-      >
+      <vs-button @click="handleSubmit(changePassword)" color="dark" :loading="isLoading">
+        Zmień hasło
+      </vs-button>
     </div>
   </validation-observer>
 </template>

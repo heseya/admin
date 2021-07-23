@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import store, { accessor } from './store'
+import { accessor } from './store'
 
 Vue.use(VueRouter)
 
@@ -12,7 +12,27 @@ const router = new VueRouter({
       path: '/login',
       name: 'Login',
       props: true,
-      component: () => import('./views/Login.vue'),
+      component: () => import('./views/auth/Login.vue'),
+      meta: {
+        hiddenNav: true,
+        recaptchaAlert: true,
+      },
+    },
+    {
+      path: '/reset-password',
+      name: 'ResetPassword',
+      props: true,
+      component: () => import('./views/auth/ResetPassword.vue'),
+      meta: {
+        hiddenNav: true,
+        recaptchaAlert: true,
+      },
+    },
+    {
+      path: '/new-password',
+      name: 'NewPassword',
+      props: true,
+      component: () => import('./views/auth/NewPassword.vue'),
       meta: {
         hiddenNav: true,
         recaptchaAlert: true,

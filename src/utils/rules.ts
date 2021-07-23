@@ -11,12 +11,19 @@ extend('email', {
   message: 'Wprowadź poprawny adres email',
 })
 
-extend('password', {
+extend('repeatPassword', {
   params: ['target'],
   validate(password, { target }: Record<string, any>) {
     return password === target
   },
   message: 'Powtórzone hasło różni się od nowego hasła',
+})
+
+extend('password', {
+  validate(password) {
+    return password.length >= 10
+  },
+  message: 'Hasło musi mieć przynajmniej 10 znaków',
 })
 
 extend('positive', {

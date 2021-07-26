@@ -1,7 +1,7 @@
 import { api } from '@/api'
 import { createVuexCRUD } from './generator'
 
-export const pages = createVuexCRUD('PAGES', 'pages', {
+export const pages = createVuexCRUD()('pages', {
   state: {},
   getters: {},
   mutations: {},

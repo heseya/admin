@@ -3,13 +3,9 @@ import { api } from '../api'
 import { ID } from '@/interfaces/ID'
 import { Product } from '@/interfaces/Product'
 
-interface ProductExtendedState {
-  depositError: null | Error
-}
-
-export const products = createVuexCRUD<Product, ProductExtendedState>('PRODUCTS', 'products', {
+export const products = createVuexCRUD<Product>()('products', {
   state: {
-    depositError: null,
+    depositError: null as null | Error,
   },
   getters: {
     getDepositError(state) {

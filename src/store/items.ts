@@ -1,7 +1,7 @@
 import { createVuexCRUD } from './generator'
 import { api } from '../api'
 
-export const items = createVuexCRUD('ITEMS', 'items', {
+export const items = createVuexCRUD()('items', {
   state: {
     depositError: null,
   },

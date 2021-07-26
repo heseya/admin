@@ -1,6 +1,6 @@
 import { createVuexCRUD } from './generator'
 
-export const packageTemplates = createVuexCRUD('PACKAGE_TEMPLATES', 'package-templates', {
+export const packageTemplates = createVuexCRUD()('package-templates', {
   state: {},
   getters: {},
   mutations: {},

@@ -7,11 +7,19 @@ import { RootState } from '.'
 import { api } from '../api'
 import { cloneDeep } from 'lodash'
 
-export interface ExtendStore<S> {
+interface DefaultStore<Item> {
+  error: null | Error
+  isLoading: boolean
+  meta: ResponseMeta
+  data: Item[]
+  selected: Item
+}
+
+export interface ExtendStore<S, Item> {
   state: S
-  getters: GetterTree<S, RootState>
-  mutations: MutationTree<S>
-  actions: ActionTree<S, RootState>
+  getters: GetterTree<S & DefaultStore<Item>, RootState>
+  mutations: MutationTree<S & DefaultStore<Item>>
+  actions: ActionTree<S & DefaultStore<Item>, RootState>
 }
 
 /**
@@ -23,7 +31,7 @@ export interface ExtendStore<S> {
 export const createVuexCRUD = <Item extends { id: string }, S extends {} = {}>(
   name: string,
   endpoint: string,
-  extend: ExtendStore<S>,
+  extend: ExtendStore<S, Item>,
 ) => {
   const upperCaseName = name.toUpperCase()
 

@@ -1,7 +1,8 @@
 import { createVuexCRUD } from './generator'
 import { api } from '@/api'
+import { OrderStatus } from '@/interfaces/Order'
 
-export const statuses = createVuexCRUD('STATUSES', 'statuses', {
+export const statuses = createVuexCRUD<OrderStatus>('STATUSES', 'statuses', {
   state: {},
   getters: {},
   mutations: {},

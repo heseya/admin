@@ -1,7 +1,13 @@
 import { createVuexCRUD } from './generator'
 import { api } from '../api'
+import { ID } from '@/interfaces/ID'
+import { Product } from '@/interfaces/Product'
 
-export const products = createVuexCRUD('PRODUCTS', 'products', {
+interface ProductExtendedState {
+  depositError: null | Error
+}
+
+export const products = createVuexCRUD<Product, ProductExtendedState>('PRODUCTS', 'products', {
   state: {
     depositError: null,
   },
@@ -16,7 +22,7 @@ export const products = createVuexCRUD('PRODUCTS', 'products', {
     },
   },
   actions: {
-    async updateQuantity({ commit }, { id, quantity }) {
+    async updateQuantity({ commit }, { id, quantity }: { id: ID; quantity: number }) {
       commit('PRODUCTS_SET_DEPOSITS_ERROR', null)
       try {
         const { data } = await api.post(`/items/id:${id}/deposits`, { quantity })

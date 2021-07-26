@@ -142,7 +142,7 @@ export default {
       if (this.editedItem.id) {
         const quantityDiff = this.editedItem.quantity - this.editedOriginalQuantity
         if (quantityDiff) {
-          success = await this.$store.dispatch('items/updateQuantity', {
+          success = await this.$accessor.items.updateQuantity({
             id: this.editedItem.id,
             quantity: quantityDiff,
           })

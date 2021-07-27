@@ -137,19 +137,23 @@
   </validation-observer>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
+
 import SwitchInput from '@/components/SwitchInput.vue'
 import Zone from '@/components/Zone.vue'
-import { SchemaType } from '@/interfaces/Schema'
-import { SchemaTypeLabel } from '@/interfaces/SchemaType'
-import { CLEAR_FORM, CLEAR_OPTION } from '@/consts/schemaConsts'
 import SelectSchemaOptions from './SelectSchemaOptions.vue'
 import ModalForm from '../ModalForm.vue'
 import Selector from '../Selector.vue'
 
-export default {
+import { Schema, SchemaType } from '@/interfaces/Schema'
+import { SchemaTypeLabel } from '@/consts/schemaTypeLabels'
+
+import { CLEAR_FORM, CLEAR_OPTION } from '@/consts/schemaConsts'
+
+export default Vue.extend({
   components: {
     ValidationProvider,
     ValidationObserver,
@@ -174,29 +178,29 @@ export default {
     schema: {
       type: Object,
       required: true,
-    },
+    } as Vue.PropOptions<Schema>,
     currentProductSchemas: {
       type: Array,
       default: () => [],
-    },
+    } as Vue.PropOptions<Schema[]>,
   },
   computed: {
-    selectableSchemas() {
+    selectableSchemas(): Schema[] {
       return this.currentProductSchemas.filter(({ id }) => id !== this.form.id)
     },
   },
   watch: {
-    defaultOption(defaultOption) {
+    defaultOption(defaultOption: number) {
       if (this.form.type === SchemaType.Select) {
         this.form.options = this.form.options.map((v) => ({ ...v, default: false }))
         this.form.options[defaultOption].default = true
       }
     },
-    'form.type'(type) {
+    'form.type'(type: SchemaType) {
       if (type === SchemaType.Select) this.form.options = [cloneDeep(CLEAR_OPTION)]
       else this.form.options = []
     },
-    'form.used_schemas.0'(schema) {
+    'form.used_schemas.0'(schema: Schema) {
       // ! This is buggy, and somehow works only on init
       const newName =
         [...this.currentProductSchemas, ...this.$store.state.schemas.data].find(
@@ -206,14 +210,14 @@ export default {
     },
   },
   methods: {
-    isKindOfNumeric(type) {
+    isKindOfNumeric(type: SchemaType): boolean {
       return (
         type === SchemaType.Numeric ||
         type === SchemaType.Multiply ||
         type === SchemaType.MultiplySchema
       )
     },
-    selectUsedSchema(schema) {
+    selectUsedSchema(schema: Schema) {
       this.form.used_schemas[0] = schema.id
       this.usedSchemaName = schema.name
       this.isUsedSchemaModalActive = false
@@ -267,7 +271,7 @@ export default {
     this.form = this.schema.type ? cloneDeep(this.schema) : cloneDeep(CLEAR_FORM)
     this.defaultOption = Number(this.form.default)
   },
-}
+})
 </script>
 
 <style lang="scss">

@@ -65,63 +65,68 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
+import Draggable from 'vuedraggable'
+
 import List from '@/components/layout/List.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import Empty from '@/components/layout/Empty.vue'
 import ModalForm from '@/components/ModalForm.vue'
 import SchemaForm from '@/components/schema/Form.vue'
 import Selector from '@/components/Selector.vue'
-import { SchemaTypeLabel } from '@/interfaces/SchemaType'
-import Draggable from 'vuedraggable'
 
-export default {
+import { SchemaTypeLabel } from '@/consts/schemaTypeLabels'
+import { Schema } from '@/interfaces/Schema'
+import { ID } from '@/interfaces/ID'
+
+export default Vue.extend({
   name: 'SchemaConfigurator',
   props: {
     value: {
       type: Array,
       required: true,
-    },
+    } as Vue.PropOptions<Schema[]>,
   },
   data: () => ({
     SchemaTypeLabel: Object.freeze(SchemaTypeLabel),
     isModalActive: false,
     isFormModalActive: false,
-    editedSchema: {},
+    editedSchema: {} as Schema,
   }),
   watch: {
     isFormModalActive() {
       if (!this.isFormModalActive) {
-        this.editedSchema = {}
+        this.editedSchema = {} as Schema
       }
     },
   },
   computed: {
     schemas: {
-      get() {
+      get(): Schema[] {
         return this.value
       },
-      set(val) {
+      set(val: Schema[]) {
         this.$emit('input', val)
       },
     },
   },
   methods: {
-    editSchema(schema) {
+    editSchema(schema: Schema) {
       this.editedSchema = schema
       this.isFormModalActive = true
     },
-    removeSchema(schemaId) {
+    removeSchema(schemaId: ID) {
       this.$emit(
         'input',
         this.value.filter((s) => s.id !== schemaId),
       )
     },
-    addSchema(schema) {
+    addSchema(schema: Schema) {
       this.$emit('input', [...this.value, schema])
     },
-    updateSchema(schema) {
-      this.editedSchema = {}
+    updateSchema(schema: Schema) {
+      this.editedSchema = {} as Schema
       this.isFormModalActive = false
 
       if (this.value.find(({ id }) => id === schema.id)) {
@@ -143,7 +148,7 @@ export default {
     Selector,
     Draggable,
   },
-}
+})
 </script>
 <style lang="scss" scoped>
 .configurator {

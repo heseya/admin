@@ -40,14 +40,17 @@
   </Zone>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import { ValidationProvider } from 'vee-validate'
 import cloneDeep from 'lodash/cloneDeep'
 import Zone from '@/components/Zone.vue'
 import Autocomplete from '../Autocomplete.vue'
 import SwitchInput from '../SwitchInput.vue'
+import { SchemaOption } from '@/interfaces/Schema'
 
-const CLEAR_OPTION = {
+const CLEAR_OPTION: SchemaOption = {
+  id: '',
   name: '',
   default: false,
   disabled: false,
@@ -55,7 +58,7 @@ const CLEAR_OPTION = {
   items: [],
 }
 
-export default {
+export default Vue.extend({
   name: 'SelectSchemaOptions',
   components: {
     ValidationProvider,
@@ -71,30 +74,30 @@ export default {
     value: {
       type: Array,
       required: true,
-    },
+    } as Vue.PropOptions<SchemaOption[]>,
   },
   computed: {
     options: {
-      get() {
+      get(): SchemaOption[] {
         return this.value
       },
-      set(v) {
+      set(v: SchemaOption[]) {
         this.$emit('input', v)
       },
     },
   },
   methods: {
-    setDefault(v) {
+    setDefault(v: number) {
       this.$emit('setDefault', v)
     },
     addOption() {
       this.options.push(cloneDeep(CLEAR_OPTION))
     },
-    removeOption(index) {
+    removeOption(index: number) {
       this.options = this.options.filter((_, i) => i !== index)
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

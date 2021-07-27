@@ -1,4 +1,4 @@
-import { SchemaType } from './Schema'
+import { SchemaType } from '../interfaces/Schema'
 
 export const SchemaTypeLabel: Record<SchemaType, string> = {
   [SchemaType.String]: 'Wartość tekstowa',

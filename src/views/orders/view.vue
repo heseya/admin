@@ -131,16 +131,21 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
+
 import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import Address from '@/components/Address.vue'
 import CartItem from '@/components/layout/CartItem.vue'
+import ModalForm from '@/components/ModalForm.vue'
+import PartialUpdateForm from '@/components/forms/orders/PartialUpdateForm.vue'
+
 import { getRelativeDate, formatDate } from '@/utils/utils'
 import { createPackage } from '@/services/createPackage'
 import { formatApiError } from '@/utils/errors'
-import ModalForm from '@/components/ModalForm.vue'
-import PartialUpdateForm from '@/components/forms/orders/PartialUpdateForm.vue'
+import { Order, OrderStatus } from '@/interfaces/Order'
+import { PackageTemplate } from '@/interfaces/PackageTemplate'
 
 const DEFAULT_FORM = {
   address: '',
@@ -153,7 +158,7 @@ const DEFAULT_FORM = {
   zip: '',
 }
 
-export default {
+export default Vue.extend({
   components: {
     TopNav,
     Card,
@@ -167,41 +172,40 @@ export default {
     packageTemplateId: '',
     shippingNumber: '',
     isLoading: false,
-
     modalFormTitle: '',
     form: {},
     isModalActive: false,
   }),
   computed: {
-    currency() {
+    currency(): string {
       return this.$store.state.currency
     },
-    error() {
+    error(): any {
       return this.$store.getters['orders/getError']
     },
-    order() {
+    order(): Order {
       return this.$store.getters['orders/getSelected']
     },
-    statuses() {
+    statuses(): OrderStatus[] {
       return this.$store.getters['statuses/getData']
     },
-    packageTemplates() {
+    packageTemplates(): PackageTemplate[] {
       return this.$store.getters['packageTemplates/getData']
     },
-    relativeOrderedDate() {
+    relativeOrderedDate(): string {
       return this.order.created_at && getRelativeDate(this.order.created_at)
     },
-    formattedDate() {
+    formattedDate(): string {
       return this.order.created_at && formatDate(this.order.created_at)
     },
   },
   watch: {
-    order(order) {
+    order(order: Order) {
       this.status = order?.status?.id
-      this.shippingNumber = order.shipping_number
+      this.shippingNumber = order.shipping_number || ''
     },
-    status(status, prevStatus) {
-      if (prevStatus === '') return
+    status(status: OrderStatus, prevStatus: OrderStatus) {
+      if (!prevStatus) return
       this.setStatus(status)
     },
     error(error) {
@@ -209,7 +213,7 @@ export default {
     },
   },
   methods: {
-    async setStatus(newStatus) {
+    async setStatus(newStatus: OrderStatus) {
       this.isLoading = true
 
       const success = await this.$store.dispatch('orders/changeStatus', {
@@ -305,7 +309,7 @@ export default {
     ])
     this.$accessor.stopLoading()
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

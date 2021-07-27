@@ -36,19 +36,23 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import slugify from 'slugify'
 import { ValidationObserver } from 'vee-validate'
+
 import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import FlexInput from '@/components/layout/FlexInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import RichEditor from '@/components/RichEditor.vue'
-import { formatApiError } from '@/utils/errors'
 import SwitchInput from '@/components/SwitchInput.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
-export default {
+import { formatApiError } from '@/utils/errors'
+import { Page } from '@/interfaces/Page'
+
+export default Vue.extend({
   components: {
     TopNav,
     Card,
@@ -71,24 +75,24 @@ export default {
     }
   },
   computed: {
-    id() {
+    id(): string {
       return this.$route.params.id
     },
-    isNew() {
+    isNew(): boolean {
       return this.id === 'create'
     },
-    page() {
+    page(): Page {
       return this.$store.getters['pages/getSelected']
     },
-    error() {
+    error(): any {
       return this.$store.getters['pages/getError']
     },
-    isLoading() {
+    isLoading(): boolean {
       return this.$store.state.pages.isLoading
     },
   },
   watch: {
-    page(page) {
+    page(page: Page) {
       if (!this.isNew) {
         this.form = { ...page }
       }
@@ -153,7 +157,7 @@ export default {
       this.$accessor.stopLoading()
     }
   },
-}
+})
 </script>
 
 <style lang="scss">

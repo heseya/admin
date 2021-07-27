@@ -35,9 +35,14 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import clone from 'lodash/clone'
+
 import { ALL_FILTER_VALUE } from '@/consts/filters'
+
+import { OrderStatus } from '@/interfaces/Order'
+import { ShippingMethod } from '@/interfaces/ShippingMethod'
 
 export const EMPTY_ORDER_FILTERS = {
   search: '',
@@ -45,7 +50,9 @@ export const EMPTY_ORDER_FILTERS = {
   shipping_method_id: ALL_FILTER_VALUE,
 }
 
-export default {
+type OrderFilers = typeof EMPTY_ORDER_FILTERS
+
+export default Vue.extend({
   data: () => ({
     search: '',
     status_id: ALL_FILTER_VALUE,
@@ -55,20 +62,20 @@ export default {
     filters: {
       type: Object,
       default: () => ({ ...EMPTY_ORDER_FILTERS }),
-    },
+    } as Vue.PropOptions<OrderFilers>,
   },
   watch: {
-    filters(f) {
+    filters(f: OrderFilers) {
       this.search = f.search
       this.status_id = f.status_id
       this.shipping_method_id = f.shipping_method_id
     },
   },
   computed: {
-    statuses() {
+    statuses(): OrderStatus[] {
       return this.$store.getters['statuses/getData']
     },
-    shippingMethods() {
+    shippingMethods(): ShippingMethod[] {
       return this.$store.getters['shippingMethods/getData']
     },
   },
@@ -90,10 +97,10 @@ export default {
   },
   mounted() {
     this.search = this.filters.search
-    this.status = this.filters.status
-    this.shippingMethod = this.filters.shippingMethod
+    this.status_id = this.filters.status_id
+    this.shipping_method_id = this.filters.shipping_method_id
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

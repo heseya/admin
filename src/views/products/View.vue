@@ -151,7 +151,8 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import slugify from 'slugify'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import cloneDeep from 'lodash/cloneDeep'
@@ -163,11 +164,15 @@ import FlexInput from '@/components/layout/FlexInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import RichEditor from '@/components/RichEditor.vue'
 import SchemaConfigurator from '@/components/schema/Configurator.vue'
-import { formatApiError } from '@/utils/errors'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 import TagsSelect from '@/components/TagsSelect.vue'
 
-const EMPTY_FORM = {
+import { formatApiError } from '@/utils/errors'
+import { ID } from '@/interfaces/ID'
+import { Product } from '@/interfaces/Product'
+
+const EMPTY_FORM: Product = {
+  id: '',
   name: '',
   slug: '',
   price: 0,
@@ -183,35 +188,33 @@ const EMPTY_FORM = {
   tags: [],
 }
 
-export default {
+export default Vue.extend({
   data() {
     return {
       form: cloneDeep(EMPTY_FORM),
     }
   },
   computed: {
-    id() {
+    id(): ID {
       return this.$route.params.id
     },
-    isLoading() {
+    isLoading(): boolean {
       return this.$store.state.products.isLoading
     },
-    isNew() {
+    isNew(): boolean {
       return this.id === 'create'
     },
-    product() {
-      return this.$store.getters['products/getSelected']
+    product(): Product {
+      return this.$accessor.products.getSelected
     },
-    brands() {
-      return this.$store.getters['brands/getData']
+    brands(): any[] {
+      return this.$accessor.brands.getData
     },
-    categories() {
-      return this.$store.getters['categories/getData']
+    categories(): any[] {
+      return this.$accessor.categories.getData
     },
-    error() {
-      return (
-        this.$store.getters['products/getError'] || this.$store.getters['products/getDepositError']
-      )
+    error(): any {
+      return this.$accessor.products.getError || this.$accessor.products.getDepositError
     },
   },
   methods: {
@@ -227,7 +230,7 @@ export default {
     },
     async deleteProduct() {
       this.$accessor.startLoading()
-      const success = await this.$store.dispatch('products/remove', this.id)
+      const success = await this.$accessor.products.remove(this.id)
       if (success) {
         this.$vs.notification({
           color: 'success',
@@ -320,8 +323,9 @@ export default {
     TagsSelect,
     ValidatedInput,
   },
-}
+})
 </script>
+
 <style lang="scss">
 .product {
   &__info {

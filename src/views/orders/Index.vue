@@ -48,15 +48,20 @@
   </div>
 </template>
 
-<script>
-import ListItem from '@/components/layout/ListItem.vue'
-import { formatFilters, getRelativeDate } from '@/utils/utils'
-import OrderFilter, { EMPTY_ORDER_FILTERS } from '@/components/OrderFilter'
-import ModalForm from '@/components/ModalForm'
-import PaginatedList from '@/components/PaginatedList.vue'
+<script lang="ts">
+import Vue from 'vue'
+
+import { DateInput, formatFilters, getRelativeDate } from '@/utils/utils'
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 
-export default {
+import ListItem from '@/components/layout/ListItem.vue'
+import OrderFilter, { EMPTY_ORDER_FILTERS } from '@/components/OrderFilter.vue'
+import ModalForm from '@/components/ModalForm.vue'
+import PaginatedList from '@/components/PaginatedList.vue'
+
+type OrderFilersType = typeof EMPTY_ORDER_FILTERS
+
+export default Vue.extend({
   components: {
     ModalForm,
     OrderFilter,
@@ -64,19 +69,19 @@ export default {
     PaginatedList,
   },
   data: () => ({
-    filters: { ...EMPTY_ORDER_FILTERS },
+    filters: { ...EMPTY_ORDER_FILTERS } as OrderFilersType,
     areFiltersOpen: false,
   }),
   computed: {
-    currency() {
+    currency(): string {
       return this.$store.state.currency
     },
   },
   methods: {
-    getRelativeDate(date) {
+    getRelativeDate(date: DateInput) {
       return getRelativeDate(date)
     },
-    makeSearch(filters) {
+    makeSearch(filters: OrderFilersType) {
       this.filters = filters
 
       const queryFilters = formatFilters(filters)
@@ -88,11 +93,12 @@ export default {
     },
   },
   created() {
-    this.filters.search = this.$route.query.search || ''
-    this.filters.category = this.$route.query.category || ALL_FILTER_VALUE
-    this.filters.brand = this.$route.query.brand || ALL_FILTER_VALUE
+    this.filters.search = (this.$route.query.search as string) || ''
+    this.filters.status_id = (this.$route.query.status_id as string) || ALL_FILTER_VALUE
+    this.filters.shipping_method_id =
+      (this.$route.query.shipping_method_id as string) || ALL_FILTER_VALUE
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

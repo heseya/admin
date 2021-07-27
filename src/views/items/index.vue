@@ -65,7 +65,8 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 
 import PaginatedList from '@/components/PaginatedList.vue'
@@ -73,8 +74,17 @@ import ModalForm from '@/components/ModalForm.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
+import { ID } from '@/interfaces/ID'
+import { ProductItem } from '@/interfaces/Product'
 
-export default {
+const EMPTY_FORM: ProductItem = {
+  id: '',
+  name: '',
+  sku: '',
+  quantity: 0,
+}
+
+export default Vue.extend({
   components: {
     ListItem,
     ModalForm,
@@ -88,17 +98,14 @@ export default {
       search: '',
     },
     isModalActive: false,
-    editedItem: {
-      name: '',
-      sku: '',
-    },
+    editedItem: { ...EMPTY_FORM },
     editedOriginalQuantity: 0,
   }),
   computed: {
-    depositsError() {
+    depositsError(): any {
       return this.$store.getters['items/getDepositError']
     },
-    currency() {
+    currency(): string {
       return this.$store.state.currency
     },
   },
@@ -124,16 +131,13 @@ export default {
       }
     },
 
-    openModal(id) {
+    openModal(id: ID) {
       this.isModalActive = true
       if (id) {
         this.editedItem = this.$store.getters['items/getFromListById'](id)
         this.editedOriginalQuantity = this.editedItem.quantity || 0
       } else {
-        this.editedItem = {
-          name: '',
-          sku: '',
-        }
+        this.editedItem = { ...EMPTY_FORM }
       }
     },
     async saveModal() {
@@ -169,7 +173,7 @@ export default {
     },
   },
   created() {
-    this.filters.search = this.$route.query.search || ''
+    this.filters.search = (this.$route.query.search as string) || ''
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {
@@ -179,5 +183,5 @@ export default {
       next()
     }
   },
-}
+})
 </script>

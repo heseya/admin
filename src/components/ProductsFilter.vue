@@ -25,7 +25,8 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import clone from 'lodash/clone'
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 
@@ -35,7 +36,9 @@ export const EMPTY_PRODUCT_FILTERS = {
   brand: ALL_FILTER_VALUE,
 }
 
-export default {
+type ProductFilers = typeof EMPTY_PRODUCT_FILTERS
+
+export default Vue.extend({
   data: () => ({
     search: '',
     category: ALL_FILTER_VALUE,
@@ -45,20 +48,20 @@ export default {
     filters: {
       type: Object,
       default: () => ({ ...EMPTY_PRODUCT_FILTERS }),
-    },
+    } as Vue.PropOptions<ProductFilers>,
   },
   watch: {
-    filters(f) {
+    filters(f: ProductFilers) {
       this.search = f.search
       this.category = f.category
       this.brand = f.brand
     },
   },
   computed: {
-    categories() {
+    categories(): any[] {
       return this.$store.getters['categories/getData']
     },
-    brands() {
+    brands(): any[] {
       return this.$store.getters['brands/getData']
     },
   },
@@ -83,7 +86,7 @@ export default {
     this.category = this.filters.category
     this.brand = this.filters.brand
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

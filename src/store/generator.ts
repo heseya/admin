@@ -43,14 +43,15 @@ export const createVuexCRUD =
       SET_LOADING: 'SET_LOADING',
     }
 
-    const moduleState = () => ({
-      ...(extend?.state || {}),
-      error: null as null | Error,
-      isLoading: false,
-      meta: {} as ResponseMeta,
-      data: [] as Item[],
-      selected: {} as Item,
-    })
+    const moduleState = () =>
+      ({
+        ...(extend?.state || {}),
+        error: null as null | Error,
+        isLoading: false,
+        meta: {} as ResponseMeta,
+        data: [] as Item[],
+        selected: {} as Item,
+      } as DefaultStore<Item> & S)
 
     const moduleGetters = getterTree(moduleState, {
       ...(extend?.getters || {}),

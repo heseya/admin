@@ -55,8 +55,11 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
+import { clone } from 'lodash'
+
 import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
@@ -64,7 +67,18 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import SwitchInput from '@/components/SwitchInput.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
-export default {
+import { ID } from '@/interfaces/ID'
+import { OrderStatus } from '@/interfaces/Order'
+
+const CLEAR_STATUS: OrderStatus = {
+  id: '',
+  name: '',
+  description: '',
+  color: '000000',
+  cancel: false,
+}
+
+export default Vue.extend({
   components: {
     PaginatedList,
     ListItem,
@@ -76,28 +90,19 @@ export default {
   },
   data: () => ({
     isModalActive: false,
-    editedItem: {
-      name: '',
-      description: '',
-      color: '',
-    },
+    editedItem: clone(CLEAR_STATUS) as OrderStatus,
   }),
   methods: {
-    setColor(color) {
+    setColor(color: string) {
       this.editedItem.color = color.split('#')[1] ?? color
     },
-    openModal(id) {
+    openModal(id: ID) {
       this.isModalActive = true
       if (id) {
         this.editedItem = this.$store.getters['statuses/getFromListById'](id)
         this.setColor(this.editedItem.color)
       } else {
-        this.editedItem = {
-          name: '',
-          description: '',
-          color: '000000',
-          cancel: false,
-        }
+        this.editedItem = clone(CLEAR_STATUS)
       }
     },
     async saveModal() {
@@ -128,7 +133,7 @@ export default {
       next()
     }
   },
-}
+})
 </script>
 
 <style lang="scss">

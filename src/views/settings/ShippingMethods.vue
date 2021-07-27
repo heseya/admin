@@ -50,17 +50,20 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
+import { api } from '../../api'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ShippingMethodsForm from '@/components/forms/shippingMethods/Index.vue'
 
-import { api } from '../../api'
+import { ID } from '@/interfaces/ID'
+import { ShippingMethodDTO } from '@/interfaces/ShippingMethod'
 
-export default {
+export default Vue.extend({
   components: {
     ListItem,
     PopConfirm,
@@ -70,14 +73,14 @@ export default {
   },
   data: () => ({
     isModalActive: false,
-    editedItem: {},
+    editedItem: {} as ShippingMethodDTO,
     countries: [],
   }),
   methods: {
-    openModal(id) {
+    openModal(id: ID) {
       this.isModalActive = true
       if (id) {
-        const item = this.$store.getters['shippingMethods/getFromListById'](id)
+        const item = this.$accessor.shippingMethods.getFromListById(id)
         this.editedItem = {
           ...item,
           payment_methods: item.payment_methods.map(({ id }) => id),
@@ -138,7 +141,7 @@ export default {
       next()
     }
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

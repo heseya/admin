@@ -57,9 +57,11 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import clone from 'lodash/clone'
 import { ValidationObserver } from 'vee-validate'
+
 import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
@@ -67,7 +69,17 @@ import SwitchInput from '@/components/SwitchInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
-export default {
+import { Setting } from '@/interfaces/Settings'
+
+const CLEAR_SETTING: Setting = {
+  id: '',
+  name: '',
+  value: '',
+  permanent: false,
+  public: true,
+}
+
+export default Vue.extend({
   components: {
     PaginatedList,
     ListItem,
@@ -79,25 +91,15 @@ export default {
   },
   data: () => ({
     isModalActive: false,
-    editedItem: {
-      name: '',
-      value: '',
-      permanent: false,
-      public: true,
-    },
+    editedItem: clone(CLEAR_SETTING),
   }),
   methods: {
-    openModal(item) {
+    openModal(item: Setting) {
       this.isModalActive = true
       if (item) {
         this.editedItem = { id: item.name, ...clone(item) }
       } else {
-        this.editedItem = {
-          name: '',
-          value: '',
-          permanent: false,
-          public: true,
-        }
+        this.editedItem = clone(CLEAR_SETTING)
       }
     },
     async saveModal() {
@@ -130,5 +132,5 @@ export default {
       next()
     }
   },
-}
+})
 </script>

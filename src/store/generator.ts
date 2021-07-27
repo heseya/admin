@@ -6,6 +6,7 @@ import { ResponseMeta } from '@/interfaces/Response'
 import { RootState } from '.'
 import { api } from '../api'
 import { cloneDeep } from 'lodash'
+import { ID } from '@/interfaces/ID'
 
 interface DefaultStore<Item> {
   error: null | Error
@@ -29,7 +30,7 @@ export interface ExtendStore<S, Item> {
  * @param extend - custom state, actions, mutations and getters. Are merged with genereted ones
  */
 export const createVuexCRUD =
-  <Item extends { id: string }>() =>
+  <Item extends { id: ID }>() =>
   <S extends {} = {}>(endpoint: string, extend: ExtendStore<S, Item>) => {
     const mutationsNames = {
       SET_ERROR: 'SET_ERROR',
@@ -69,7 +70,8 @@ export const createVuexCRUD =
         return state.data
       },
       getFromListById(state) {
-        return (searchedId: string) => ({ ...state.data.find(({ id }) => id === searchedId) })
+        return (searchedId: string) =>
+          ({ ...state.data.find(({ id }) => id === searchedId) } as Item)
       },
     })
 

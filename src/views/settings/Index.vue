@@ -139,14 +139,15 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import List from '@/components/layout/List.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import ChangePassword from '@/components/ChangePassword.vue'
 
-export default {
+export default Vue.extend({
   components: {
     TopNav,
     Card,
@@ -178,7 +179,7 @@ export default {
       next()
     }
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

@@ -33,6 +33,7 @@ export interface ShippingMethod {
 }
 
 export interface ShippingMethodDTO {
+  id?: ID
   name: string
   payment_methods: string[]
   public: boolean

@@ -64,22 +64,29 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
+
 import ModalForm from '@/components/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
-const EMPTY_FORM = {
-  name: '',
-  slug: '',
+import { DiscountCode } from '@/interfaces/DiscountCode'
+import { ID } from '@/interfaces/ID'
+
+const EMPTY_DISCOUNT_CODE: DiscountCode = {
+  id: '',
   type: 0,
+  code: '',
   discount: 0.0,
   max_uses: 1,
+  available: true,
+  uses: 0,
 }
 
-export default {
+export default Vue.extend({
   components: {
     ListItem,
     ModalForm,
@@ -91,8 +98,8 @@ export default {
   data: () => ({
     isModalActive: false,
     editedItem: {
-      ...EMPTY_FORM,
-    },
+      ...EMPTY_DISCOUNT_CODE,
+    } as DiscountCode,
   }),
   computed: {
     currency() {
@@ -100,13 +107,13 @@ export default {
     },
   },
   methods: {
-    openModal(id) {
+    openModal(id: ID) {
       this.isModalActive = true
       if (id) {
         this.editedItem = this.$store.getters['discounts/getFromListById'](id)
       } else {
         this.editedItem = {
-          ...EMPTY_FORM,
+          ...EMPTY_DISCOUNT_CODE,
         }
       }
     },
@@ -138,5 +145,5 @@ export default {
       next()
     }
   },
-}
+})
 </script>

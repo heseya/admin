@@ -74,15 +74,30 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
+import { clone } from 'lodash'
+
 import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
-export default {
+import { ID } from '@/interfaces/ID'
+import { PackageTemplate } from '@/interfaces/PackageTemplate'
+
+const CLEAR_PACKAGE_TEMPALTE: PackageTemplate = {
+  id: '',
+  name: '',
+  width: 0,
+  height: 0,
+  depth: 0,
+  weight: 0,
+}
+
+export default Vue.extend({
   components: {
     PaginatedList,
     ListItem,
@@ -93,28 +108,16 @@ export default {
   },
   data: () => ({
     isModalActive: false,
-    editedItem: {
-      name: '',
-      width: 0,
-      height: 0,
-      depth: 0,
-      weight: 0,
-    },
+    editedItem: clone(CLEAR_PACKAGE_TEMPALTE),
   }),
   methods: {
-    openModal(id) {
+    openModal(id: ID) {
       this.isModalActive = true
       if (id) {
-        const item = this.$store.getters['packageTemplates/getFromListById'](id)
-        this.editedItem = { ...item }
+        const item = this.$accessor.packageTemplates.getFromListById(id)
+        this.editedItem = clone(item)
       } else {
-        this.editedItem = {
-          name: '',
-          width: 0,
-          height: 0,
-          depth: 0,
-          weight: 0,
-        }
+        this.editedItem = clone(CLEAR_PACKAGE_TEMPALTE)
       }
     },
     async saveModal() {
@@ -145,7 +148,7 @@ export default {
       next()
     }
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

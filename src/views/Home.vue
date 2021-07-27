@@ -62,20 +62,23 @@
   </div>
 </template>
 
-<script>
-import format from 'date-fns/format'
+<script lang="ts">
+import Vue from 'vue'
 import sub from 'date-fns/sub'
 import startOfMonth from 'date-fns/startOfMonth'
 import startOfWeek from 'date-fns/startOfWeek'
 import startOfYear from 'date-fns/startOfYear'
 
+import { getPaymentsCount } from '@/services/statistics'
+import { DateInput, getRelativeDate } from '@/utils/utils'
+
 import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
-import { getRelativeDate } from '@/utils/utils'
-import ListItem from '@/components/layout/ListItem'
-import { api } from '../api'
+import ListItem from '@/components/layout/ListItem.vue'
 
-export default {
+import { Order } from '@/interfaces/Order'
+
+export default Vue.extend({
   components: {
     ListItem,
     TopNav,
@@ -92,30 +95,22 @@ export default {
     lastYearOrdersCount: 0,
   }),
   computed: {
-    storeName() {
+    storeName(): string {
       return this.$store.state.env.store_name ?? 'E-Commerce Dog'
     },
-    orders() {
-      return this.$store.getters['orders/getData']
+    orders(): Order[] {
+      return this.$accessor.orders.getData
     },
-    currency() {
+    currency(): string {
       return this.$store.state.currency
     },
   },
   methods: {
-    getRelativeDate(date) {
+    getRelativeDate(date: DateInput) {
       return getRelativeDate(date)
     },
-    async getPaymentsCount(from, to) {
-      const query = from
-        ? `/analytics/payments?from=${format(from, 'yyyy-MM-dd')}&to=${format(to, 'yyyy-MM-dd')}`
-        : '/analytics/payments'
-
-      const { data } = await api.get(query)
-      return data.data?.total || { amount: 0, count: 0 }
-    },
     async getOrders() {
-      await this.$store.dispatch('orders/fetch', {
+      await this.$accessor.orders.fetch({
         page: 1,
         limit: 6,
       })
@@ -128,10 +123,10 @@ export default {
       const yearStart = startOfYear(Date.now())
       const [, currentWeek, currentMonth, currentYear, lastYear] = await Promise.all([
         this.getOrders(),
-        this.getPaymentsCount(startOfWeek(Date.now()), Date.now()),
-        this.getPaymentsCount(startOfMonth(Date.now()), Date.now()),
-        this.getPaymentsCount(startOfYear(Date.now()), Date.now()),
-        this.getPaymentsCount(sub(yearStart, { years: 1 }), sub(yearStart, { days: 1 })),
+        getPaymentsCount(startOfWeek(Date.now()), Date.now()),
+        getPaymentsCount(startOfMonth(Date.now()), Date.now()),
+        getPaymentsCount(startOfYear(Date.now()), Date.now()),
+        getPaymentsCount(sub(yearStart, { years: 1 }), sub(yearStart, { days: 1 })),
       ])
 
       this.currentWeekIncome = currentWeek.amount
@@ -149,7 +144,7 @@ export default {
 
     this.$accessor.stopLoading()
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

@@ -147,6 +147,7 @@ export default Vue.extend({
 
     &__prefix {
       font-size: 0.85em;
+      white-space: nowrap;
     }
 
     &__input {

@@ -45,16 +45,15 @@ export const createVuexCRUD =
 
     const moduleState = () =>
       ({
-        ...(extend?.state || {}),
         error: null as null | Error,
         isLoading: false,
         meta: {} as ResponseMeta,
         data: [] as Item[],
         selected: {} as Item,
+        ...(extend?.state || {}),
       } as DefaultStore<Item> & S)
 
     const moduleGetters = getterTree(moduleState, {
-      ...(extend?.getters || {}),
       getError(state) {
         return state.error
       },
@@ -74,11 +73,11 @@ export const createVuexCRUD =
         return (searchedId: string) =>
           ({ ...state.data.find(({ id }) => id === searchedId) } as Item)
       },
+      ...(extend?.getters || {}),
     })
 
     // @ts-ignore
     const moduleMutations = mutationTree(moduleState, {
-      ...(extend?.mutations || {}),
       [mutationsNames.SET_ERROR](state, newError: Error) {
         state.error = newError
       },
@@ -118,12 +117,12 @@ export const createVuexCRUD =
       [mutationsNames.SET_SELECTED](state, newSelected: Item) {
         state.selected = newSelected
       },
+      ...(extend?.mutations || {}),
     })
 
     const moduleActions = actionTree(
       { state: moduleState, getters: moduleGetters, mutations: moduleMutations },
       {
-        ...(extend?.actions || {}),
         async fetch({ commit }, query: Record<string, any>) {
           commit(mutationsNames.SET_ERROR, null)
           commit(mutationsNames.SET_LOADING, true)
@@ -249,6 +248,7 @@ export const createVuexCRUD =
             return false
           }
         },
+        ...(extend?.actions || {}),
       },
     )
 

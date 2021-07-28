@@ -13,10 +13,7 @@
       </template>
 
       <template v-slot="{ item: set }">
-        <list-item @click="editProductSet(set.id)" :hidden="!set.public">
-          {{ set.name }}
-          <small>{{ set.children.length }} subkolekcji</small>
-        </list-item>
+        <ProductSet :set="set" @edit="editProductSet" @create="createProductSet" />
       </template>
     </PaginatedList>
 
@@ -34,11 +31,11 @@ import Vue from 'vue'
 import { cloneDeep } from 'lodash'
 
 import PaginatedList from '@/components/PaginatedList.vue'
-import ListItem from '@/components/layout/ListItem.vue'
 import ProductSetForm from '@/components/forms/productSets/Form.vue'
 
 import { ID } from '@/interfaces/ID'
 import { ProductSet, ProductSetDTO } from '@/interfaces/ProductSet'
+import ProductSetComponent from '@/components/ProductSet.vue'
 
 const CLEAR_FORM: ProductSetDTO = {
   id: '',
@@ -53,9 +50,9 @@ const CLEAR_FORM: ProductSetDTO = {
 
 export default Vue.extend({
   components: {
-    ListItem,
     PaginatedList,
     ProductSetForm,
+    ProductSet: ProductSetComponent,
   },
   data: () => ({
     isModalActive: false,
@@ -92,3 +89,11 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style lang="scss">
+.product-set {
+  &__actions {
+    display: flex;
+  }
+}
+</style>

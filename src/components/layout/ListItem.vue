@@ -9,7 +9,7 @@
     <div v-if="!!$slots.avatar" class="list-item__avatar">
       <slot name="avatar"></slot>
     </div>
-    <div>
+    <div class="list-item__content">
       <i v-if="hidden" class="bx bx-lock-alt"></i>
       <slot></slot>
     </div>

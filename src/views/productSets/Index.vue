@@ -33,7 +33,6 @@ import { cloneDeep } from 'lodash'
 import PaginatedList from '@/components/PaginatedList.vue'
 import ProductSetForm from '@/components/forms/productSets/Form.vue'
 
-import { ID } from '@/interfaces/ID'
 import { ProductSet, ProductSetDTO } from '@/interfaces/ProductSet'
 import ProductSetComponent from '@/components/ProductSet.vue'
 
@@ -60,14 +59,13 @@ export default Vue.extend({
     editedItem: cloneDeep(CLEAR_FORM) as ProductSetDTO,
   }),
   methods: {
-    editProductSet(id: ID) {
-      const editedItem = this.$accessor.productSets.getFromListById(id)
+    editProductSet(set: ProductSet) {
       this.editedItem = {
-        ...cloneDeep(editedItem),
-        parent_id: editedItem.parent?.id || null,
-        children_ids: editedItem.children.map((child) => child.id),
+        ...cloneDeep(set),
+        parent_id: set.parent?.id || null,
+        children_ids: set.children.map((child) => child.id),
       }
-      this.editedItemSlugPrefix = editedItem.parent?.slug || ''
+      this.editedItemSlugPrefix = set.parent?.slug || ''
       this.isModalActive = true
     },
     createProductSet(parent: ProductSet | null = null) {

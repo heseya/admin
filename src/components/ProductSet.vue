@@ -1,10 +1,25 @@
 <template>
-  <list-item @click="() => {}" :hidden="!set.public" class="product-set">
-    {{ set.name }}
+  <list-item
+    @click="areChildrenVisible = !areChildrenVisible"
+    :hidden="!set.public"
+    class="product-set"
+  >
+    <div class="product-set__title">
+      <vs-button transparent icon dark v-if="set.children.length">
+        <i v-if="areChildrenVisible" class="bx bx-minus"></i>
+        <i v-else class="bx bx-plus"></i>
+      </vs-button>
+      {{ set.name }}
+    </div>
     <small>/{{ set.slug }} | {{ set.children.length }} subkolekcji</small>
 
-    <div class="product-set__children">
-      <product-set v-for="child in set.children" :set="child" :key="child.id" v-on="$listeners" />
+    <div class="product-set__children" v-show="areChildrenVisible">
+      <product-set
+        v-for="child in set.children"
+        :set="{ ...child, parent: set }"
+        :key="child.id"
+        v-on="$listeners"
+      />
     </div>
 
     <template #action>
@@ -34,9 +49,12 @@ export default Vue.extend({
       required: true,
     } as Vue.PropOptions<ProductSet>,
   },
+  data: () => ({
+    areChildrenVisible: false,
+  }),
   methods: {
     edit() {
-      this.$emit('edit', this.set.id)
+      this.$emit('edit', this.set)
     },
     create() {
       this.$emit('create', this.set)
@@ -49,6 +67,11 @@ export default Vue.extend({
 .product-set {
   cursor: default;
   display: flex;
+
+  &__title {
+    display: inline-flex;
+    align-items: center;
+  }
 
   &__actions {
     display: flex;

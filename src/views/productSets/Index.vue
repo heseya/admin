@@ -1,21 +1,31 @@
 <template>
   <div>
-    <PaginatedList title="Kolekcje produktów" storeKey="productSets" draggable>
+    <PaginatedList
+      title="Kolekcje produktów"
+      storeKey="productSets"
+      :params="{ tree: 1 }"
+      draggable
+    >
       <template #nav>
-        <vs-button @click="openModal()" color="dark" icon>
+        <vs-button @click="createProductSet()" color="dark" icon>
           <i class="bx bx-plus"></i>
         </vs-button>
       </template>
 
       <template v-slot="{ item: set }">
-        <list-item @click="openModal(set.id)" :hidden="!set.public">
+        <list-item @click="editProductSet(set.id)" :hidden="!set.public">
           {{ set.name }}
           <small>{{ set.children.length }} subkolekcji</small>
         </list-item>
       </template>
     </PaginatedList>
 
-    <ProductSetForm :value="editedItem" :is-open="isModalActive" @close="isModalActive = false" />
+    <ProductSetForm
+      :value="editedItem"
+      :slugPrefix="editedItemSlugPrefix"
+      :is-open="isModalActive"
+      @close="isModalActive = false"
+    />
   </div>
 </template>
 
@@ -28,18 +38,17 @@ import ListItem from '@/components/layout/ListItem.vue'
 import ProductSetForm from '@/components/forms/productSets/Form.vue'
 
 import { ID } from '@/interfaces/ID'
-import { ProductSet } from '@/interfaces/ProductSet'
+import { ProductSet, ProductSetDTO } from '@/interfaces/ProductSet'
 
-const CLEAR_FORM: ProductSet = {
+const CLEAR_FORM: ProductSetDTO = {
   id: '',
   name: '',
   slug: '',
   slug_override: false,
   public: true,
-  public_parent: false,
   hide_on_index: false,
-  parent: null,
-  children: [],
+  parent_id: null,
+  children_ids: [],
 }
 
 export default Vue.extend({
@@ -50,16 +59,27 @@ export default Vue.extend({
   },
   data: () => ({
     isModalActive: false,
-    editedItem: cloneDeep(CLEAR_FORM) as ProductSet,
+    editedItemSlugPrefix: '',
+    editedItem: cloneDeep(CLEAR_FORM) as ProductSetDTO,
   }),
   methods: {
-    openModal(id: ID) {
-      this.isModalActive = true
-      if (id) {
-        this.editedItem = this.$store.getters['productSets/getFromListById'](id)
-      } else {
-        this.editedItem = cloneDeep(CLEAR_FORM)
+    editProductSet(id: ID) {
+      const editedItem = this.$accessor.productSets.getFromListById(id)
+      this.editedItem = {
+        ...cloneDeep(editedItem),
+        parent_id: editedItem.parent?.id || null,
+        children_ids: editedItem.children.map((child) => child.id),
       }
+      this.editedItemSlugPrefix = editedItem.parent?.slug || ''
+      this.isModalActive = true
+    },
+    createProductSet(parent: ProductSet | null = null) {
+      this.editedItem = {
+        ...cloneDeep(CLEAR_FORM),
+        parent_id: parent?.id || null,
+      }
+      this.editedItemSlugPrefix = parent?.slug || ''
+      this.isModalActive = true
     },
   },
   beforeRouteLeave(to, from, next) {

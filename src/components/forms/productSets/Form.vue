@@ -1,22 +1,42 @@
 <template>
-  <validation-observer v-slot="{ handleSubmit }">
+  <validation-observer v-slot="{ handleSubmit }" class="product-set-form">
     <vs-dialog width="550px" not-center :value="isOpen" @input="$emit('close')">
       <template #header>
         <h4>{{ form.id ? 'Edycja kolekcji' : 'Nowa kolekcja' }}</h4>
       </template>
-      <modal-form>
+      <modal-form class="product-set-form">
         <validated-input rules="required" v-model="form.name" @input="editSlug" label="Nazwa" />
-        <validated-input rules="required|slug" v-model="form.slug" label="Link" />
+
+        <div class="slug-input">
+          <span class="slug-input__prefix" v-if="slugPrefix && !form.slug_override">
+            {{ slugPrefix }}-
+          </span>
+
+          <validated-input
+            class="slug-input__input"
+            rules="required|slug"
+            v-model="form.slug"
+            label="Link"
+          />
+
+          <switch-input
+            v-if="slugPrefix"
+            class="slug-input__switch"
+            v-model="form.slug_override"
+            label="Nadpisz sluga"
+          />
+        </div>
+
         <div class="switches">
-          <flex-input>
-            <switch-input horizontal v-model="form.public" label="Widoczność kolekcji" />
-          </flex-input>
           <flex-input>
             <switch-input
               horizontal
               v-model="form.hide_on_index"
               label="Ukryj na stronie głównej"
             />
+          </flex-input>
+          <flex-input>
+            <switch-input horizontal v-model="form.public" label="Widoczność kolekcji" />
           </flex-input>
         </div>
       </modal-form>
@@ -50,7 +70,7 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 import SwitchInput from '@/components/SwitchInput.vue'
 
-import { ProductSet } from '@/interfaces/ProductSet'
+import { ProductSetDTO } from '@/interfaces/ProductSet'
 
 export default Vue.extend({
   components: {
@@ -65,17 +85,21 @@ export default Vue.extend({
     value: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<ProductSet>,
+    } as Vue.PropOptions<ProductSetDTO>,
+    slugPrefix: {
+      type: String,
+      default: '',
+    },
     isOpen: {
       type: Boolean,
       default: false,
     },
   },
   data: () => ({
-    form: {} as ProductSet,
+    form: {} as ProductSetDTO,
   }),
   watch: {
-    value(value: ProductSet) {
+    value(value: ProductSetDTO) {
       this.form = cloneDeep(value)
     },
   },
@@ -108,11 +132,37 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss" scoped>
-.switches {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 12px;
-  padding: 0 10px;
+<style lang="scss">
+.product-set-form {
+  .switches {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    padding: 0 10px;
+  }
+
+  .slug-input {
+    display: flex;
+    align-items: center;
+
+    &__prefix {
+      font-size: 0.85em;
+    }
+
+    &__input {
+      width: 100%;
+
+      > * {
+        margin-bottom: 0 !important;
+      }
+    }
+
+    &__switch {
+      width: 130px;
+      margin-top: -20px;
+      margin-left: 10px;
+      text-align: center;
+    }
+  }
 }
 </style>

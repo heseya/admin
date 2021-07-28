@@ -2,19 +2,19 @@
   <div class="products-filter">
     <vs-input type="search" v-model="search" @keydown.enter="makeSearch" label="Wyszukiwanie" />
 
-    <vs-select v-model="category" label="Kategoria" :key="'cat' + categories.length" filter>
+    <vs-select v-model="category" label="Kategoria" :key="'cat' + productSets.length" filter>
       <vs-option label="Wszystkie" value="_all"> Wszystkie </vs-option>
-      <vs-option v-for="cat in categories" :key="cat.id" :label="cat.name" :value="cat.slug">
-        {{ cat.name }}
+      <vs-option v-for="set in productSets" :key="set.id" :label="set.name" :value="set.slug">
+        {{ set.name }}
       </vs-option>
     </vs-select>
 
     <br />
 
-    <vs-select v-model="brand" label="Marka" :key="'brand' + brands.length" filter>
+    <vs-select v-model="brand" label="Marka" :key="'brand' + productSets.length" filter>
       <vs-option label="Wszystkie" value="_all"> Wszystkie </vs-option>
-      <vs-option v-for="b in brands" :key="b.id" :label="b.name" :value="b.slug">
-        {{ b.name }}
+      <vs-option v-for="set in productSets" :key="set.id" :label="set.name" :value="set.slug">
+        {{ set.name }}
       </vs-option>
     </vs-select>
 
@@ -58,11 +58,8 @@ export default Vue.extend({
     },
   },
   computed: {
-    categories(): any[] {
-      return this.$store.getters['categories/getData']
-    },
-    brands(): any[] {
-      return this.$store.getters['brands/getData']
+    productSets(): any[] {
+      return this.$store.getters['productSets/getData']
     },
   },
   methods: {
@@ -78,8 +75,7 @@ export default Vue.extend({
     },
   },
   created() {
-    this.$store.dispatch('categories/fetch')
-    this.$store.dispatch('brands/fetch')
+    this.$store.dispatch('productSets/fetch')
   },
   mounted() {
     this.search = this.filters.search

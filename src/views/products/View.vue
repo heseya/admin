@@ -78,17 +78,17 @@
                   <vs-select
                     v-model="form.brand_id"
                     placeholder="Wybierz markę"
-                    :key="brands.length"
+                    :key="productSets.length"
                     filter
                     label="Marka"
                   >
                     <vs-option
-                      v-for="brand in brands"
-                      :key="brand.id"
-                      :label="brand.name"
-                      :value="brand.id"
+                      v-for="set in productSets"
+                      :key="set.id"
+                      :label="set.name"
+                      :value="set.id"
                     >
-                      <i class="bx bx-lock" v-if="!brand.public"></i> {{ brand.name }}
+                      <i class="bx bx-lock" v-if="!set.public"></i> {{ set.name }}
                     </vs-option>
                     <template #message-danger>{{ errors[0] }}</template>
                   </vs-select>
@@ -97,18 +97,18 @@
                 <validation-provider rules="id-required" v-slot="{ errors }">
                   <vs-select
                     v-model="form.category_id"
-                    :key="categories.length"
+                    :key="productSets.length"
                     filter
                     placeholder="Wybierz kategorię"
                     label="Kategoria"
                   >
                     <vs-option
-                      v-for="category in categories"
-                      :key="category.id"
-                      :label="category.name"
-                      :value="category.id"
+                      v-for="set in productSets"
+                      :key="set.id"
+                      :label="set.name"
+                      :value="set.id"
                     >
-                      <i class="bx bx-lock" v-if="!category.public"></i> {{ category.name }}
+                      <i class="bx bx-lock" v-if="!set.public"></i> {{ set.name }}
                     </vs-option>
                     <template #message-danger>{{ errors[0] }}</template>
                   </vs-select>
@@ -179,8 +179,8 @@ const EMPTY_FORM: Product = {
   description_html: '',
   digital: false,
   public: true,
-  brand_id: 0,
-  category_id: 0,
+  brand_id: '',
+  category_id: '',
   quantity_step: 1,
   schemas: [],
   gallery: [],
@@ -207,11 +207,8 @@ export default Vue.extend({
     product(): Product {
       return this.$accessor.products.getSelected
     },
-    brands(): any[] {
-      return this.$accessor.brands.getData
-    },
-    categories(): any[] {
-      return this.$accessor.categories.getData
+    productSets(): any[] {
+      return this.$accessor.productSets.getData
     },
     error(): any {
       return this.$accessor.products.getError || this.$accessor.products.getDepositError
@@ -281,8 +278,8 @@ export default Vue.extend({
       if (!this.isNew) {
         this.form = {
           ...product,
-          brand_id: product.brand.id,
-          category_id: product.category.id,
+          brand_id: product.brand?.id || '',
+          category_id: product.category?.id || '',
           media: [],
         }
       }
@@ -303,10 +300,7 @@ export default Vue.extend({
   },
   async created() {
     this.$accessor.startLoading()
-    await Promise.all([
-      this.$store.dispatch('categories/fetch'),
-      this.$store.dispatch('brands/fetch'),
-    ])
+    await this.$store.dispatch('productSets/fetch')
     await this.fetch()
     this.$accessor.stopLoading()
   },

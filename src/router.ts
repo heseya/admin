@@ -151,22 +151,6 @@ const router = new VueRouter({
       },
     },
     {
-      path: '/settings/brands',
-      name: 'Brands',
-      component: () => import('./views/settings/Brands.vue'),
-      meta: {
-        requiresAuth: true,
-      },
-    },
-    {
-      path: '/settings/categories',
-      name: 'Categories',
-      component: () => import('./views/settings/Categories.vue'),
-      meta: {
-        requiresAuth: true,
-      },
-    },
-    {
       path: '/settings/shipping-methods',
       name: 'ShippingMethods',
       component: () => import('./views/settings/ShippingMethods.vue'),

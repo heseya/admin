@@ -31,6 +31,7 @@
           </template>
           Kolekcje produktów
         </list-item>
+
         <list-item url="/settings/tags">
           <template #avatar>
             <vs-avatar dark>
@@ -39,6 +40,7 @@
           </template>
           Tagi
         </list-item>
+
         <list-item url="/schemas">
           <template #avatar>
             <vs-avatar dark>

@@ -12,8 +12,8 @@ export interface Product {
   description_html: string
   digital: boolean
   public: boolean
-  brand_id: number
-  category_id: number
+  brand_id: ID
+  category_id: ID
   quantity_step: number
   schemas: Schema[]
   gallery: CdnMedia[]

@@ -15,7 +15,7 @@ const getApiURL = () => {
     case 'admin.***REMOVED***.eu':
       return 'https://***REMOVED***.***REMOVED***'
     default:
-      return 'https://dev.***REMOVED***'
+      return process.env.VUE_APP_API_URL || 'https://dev.***REMOVED***'
   }
 }
 

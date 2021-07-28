@@ -23,21 +23,13 @@
         </list-item>
 
         <h2 class="section-title">Produkty</h2>
-        <list-item url="/settings/brands">
-          <template #avatar>
-            <vs-avatar dark>
-              <i class="bx bxs-star"></i>
-            </vs-avatar>
-          </template>
-          Marki
-        </list-item>
-        <list-item url="/settings/categories">
+        <list-item url="/settings/product-sets">
           <template #avatar>
             <vs-avatar dark>
               <i class="bx bx-list-ul"></i>
             </vs-avatar>
           </template>
-          Kategorie
+          Kolekcje produktów
         </list-item>
         <list-item url="/settings/tags">
           <template #avatar>

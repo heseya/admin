@@ -25,6 +25,7 @@ import { loginHistory } from './loginHistory'
 import { apps } from './apps'
 import { discounts } from './discounts'
 import { tags } from './tags'
+import { productSets } from './productSets'
 
 Vue.use(Vuex)
 
@@ -88,6 +89,7 @@ const storePattern = {
     loginHistory,
     apps,
     tags,
+    productSets,
   },
 }
 

@@ -143,6 +143,14 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/settings/product-sets',
+      name: 'ProductSets',
+      component: () => import('./views/productSets/Index.vue'),
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
       path: '/settings/brands',
       name: 'Brands',
       component: () => import('./views/settings/Brands.vue'),

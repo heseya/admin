@@ -4,7 +4,8 @@ import { ID } from './ID'
 export interface ProductSet {
   id: ID
   name: string
-  slug: string
+  slug: Readonly<string>
+  slug_suffix: string
   slug_override: boolean
   public: boolean
   public_parent: boolean
@@ -16,7 +17,7 @@ export interface ProductSet {
 export interface ProductSetDTO {
   id?: ID
   name: string
-  slug: string
+  slug_suffix: string
   slug_override: boolean
   public: boolean
   hide_on_index: boolean

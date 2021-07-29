@@ -10,9 +10,7 @@
         <i v-else class="bx bx-plus"></i>
       </vs-button>
 
-      <span class="product-set__name">
-        {{ set.name }}
-      </span>
+      <span class="product-set__name"> {{ set.name }} (/{{ set.slug }}) </span>
 
       <div class="product-set__actions">
         <vs-button @click="create" color="success" icon size="small">

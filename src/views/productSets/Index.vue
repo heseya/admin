@@ -39,7 +39,7 @@ import ProductSetComponent from '@/components/ProductSet.vue'
 const CLEAR_FORM: ProductSetDTO = {
   id: '',
   name: '',
-  slug: '',
+  slug_suffix: '',
   slug_override: false,
   public: true,
   hide_on_index: false,

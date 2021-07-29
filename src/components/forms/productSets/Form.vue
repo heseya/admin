@@ -15,7 +15,7 @@
           <validated-input
             class="slug-input__input"
             rules="required|slug"
-            v-model="form.slug"
+            v-model="form.slug_suffix"
             label="Link"
           />
 
@@ -106,7 +106,7 @@ export default Vue.extend({
   methods: {
     editSlug() {
       if (!this.form.id) {
-        this.form.slug = slugify(this.form.name, { lower: true, remove: /[.]/g })
+        this.form.slug_suffix = slugify(this.form.name, { lower: true, remove: /[.]/g })
       }
     },
     async saveModal() {

@@ -38,13 +38,14 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { isArray } from 'lodash'
+
 import ProductTile from '@/components/ProductTile.vue'
 import ProductListItem from '@/components/ProductListItem.vue'
 import ProductsFilter, { EMPTY_PRODUCT_FILTERS } from '@/components/ProductsFilter.vue'
 import ModalForm from '@/components/ModalForm.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 import { formatFilters } from '@/utils/utils'
-import { ALL_FILTER_VALUE } from '@/consts/filters'
 
 const LOCAL_STORAGE_KEY = 'products-list-view'
 
@@ -80,8 +81,8 @@ export default Vue.extend({
   },
   created() {
     this.filters.search = (this.$route.query.search as string) || ''
-    this.filters.category = (this.$route.query.category as string) || ALL_FILTER_VALUE
-    this.filters.brand = (this.$route.query.brand as string) || ALL_FILTER_VALUE
+    const sets = this.$route.query.set || []
+    this.filters.sets = isArray(sets) ? (sets as string[]) : [sets]
 
     this.listView = !!+(window.localStorage.getItem(LOCAL_STORAGE_KEY) || 0)
   },

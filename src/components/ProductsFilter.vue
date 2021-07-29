@@ -2,7 +2,7 @@
   <div class="products-filter">
     <vs-input type="search" v-model="search" @keydown.enter="makeSearch" label="Wyszukiwanie" />
 
-    <vs-select v-model="sets" label="Kolekcje" :key="productSets.length" filter multiple>
+    <vs-select v-model="sets" label="Kolekcje" :key="productSets.length" filter>
       <vs-option v-for="set in productSets" :key="set.id" :label="set.name" :value="set.slug">
         {{ set.name }}
       </vs-option>
@@ -21,7 +21,7 @@ import clone from 'lodash/clone'
 
 export const EMPTY_PRODUCT_FILTERS = {
   search: '',
-  sets: [] as string[],
+  sets: '',
 }
 
 type ProductFilers = typeof EMPTY_PRODUCT_FILTERS
@@ -29,7 +29,7 @@ type ProductFilers = typeof EMPTY_PRODUCT_FILTERS
 export default Vue.extend({
   data: () => ({
     search: '',
-    sets: [] as string[],
+    sets: '',
   }),
   props: {
     filters: {
@@ -60,7 +60,7 @@ export default Vue.extend({
     },
   },
   created() {
-    this.$store.dispatch('productSets/fetch')
+    this.$store.dispatch('productSets/fetch', { flat: 1, tree: 0 })
   },
   mounted() {
     this.search = this.filters.search

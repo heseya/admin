@@ -38,7 +38,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { isArray } from 'lodash'
 
 import ProductTile from '@/components/ProductTile.vue'
 import ProductListItem from '@/components/ProductListItem.vue'
@@ -81,8 +80,10 @@ export default Vue.extend({
   },
   created() {
     this.filters.search = (this.$route.query.search as string) || ''
-    const sets = this.$route.query.set || []
-    this.filters.sets = isArray(sets) ? (sets as string[]) : [sets]
+    this.filters.sets = (this.$route.query.set as string) || ''
+    // for future purposes, when we'll be able to filter by more than one set
+    // const sets = this.$route.query.set || []
+    // this.filters.sets = isArray(sets) ? (sets as string[]) : [sets]
 
     this.listView = !!+(window.localStorage.getItem(LOCAL_STORAGE_KEY) || 0)
   },

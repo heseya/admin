@@ -1,11 +1,11 @@
 import queryString from 'query-string'
+import { cloneDeep, isNil } from 'lodash'
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 import { ActionTree, GetterTree, MutationTree } from 'vuex'
 
 import { ResponseMeta } from '@/interfaces/Response'
 import { RootState } from '.'
 import { api } from '../api'
-import { cloneDeep } from 'lodash'
 import { ID } from '@/interfaces/ID'
 
 interface DefaultStore<Item> {
@@ -136,13 +136,13 @@ export const createVuexCRUD =
           commit(mutationsNames.SET_DATA, [])
         },
 
-        async fetch({ commit }, query: Record<string, any>) {
+        async fetch({ commit }, query?: Record<string, any>) {
           commit(mutationsNames.SET_ERROR, null)
           commit(mutationsNames.SET_LOADING, true)
           try {
-            const filteredQuery = query
-              ? Object.fromEntries(Object.entries(query).filter(([key, value]) => !!value))
-              : {}
+            const filteredQuery = Object.fromEntries(
+              Object.entries(query || {}).filter(([key, value]) => !isNil(value)),
+            )
             const stringQuery = queryString.stringify({ ...(params.get || {}), ...filteredQuery })
 
             const { data } = await api.get(`/${endpoint}?${stringQuery}`)

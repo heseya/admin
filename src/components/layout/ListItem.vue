@@ -10,7 +10,7 @@
       <slot name="avatar"></slot>
     </div>
     <div class="list-item__content">
-      <i v-if="hidden" class="bx bx-lock-alt"></i>
+      <i v-if="hidden" class="list-item__hidden-icon bx bx-low-vision"></i>
       <slot></slot>
     </div>
     <div class="list-item__action">
@@ -73,6 +73,11 @@ export default Vue.extend({
   color: black;
   transition: 0.3s;
   text-align: left;
+
+  &__hidden-icon {
+    font-size: 0.9em;
+    margin-right: 6px;
+  }
 
   &:hover {
     background-color: $grey-light;

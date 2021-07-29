@@ -1,17 +1,28 @@
 <template>
-  <list-item
-    @click="areChildrenVisible = !areChildrenVisible"
-    :hidden="!set.public"
+  <div
+    @click.stop="toggleChildrenVisibility"
     class="product-set"
+    :class="{ 'product-set--hidden': !set.public }"
   >
-    <div class="product-set__title">
-      <vs-button transparent icon dark v-if="set.children.length">
+    <div class="product-set__content">
+      <vs-button transparent icon size="mini" dark :disabled="set.children.length == 0">
         <i v-if="areChildrenVisible" class="bx bx-minus"></i>
         <i v-else class="bx bx-plus"></i>
       </vs-button>
-      {{ set.name }}
+
+      <span class="product-set__name">
+        {{ set.name }}
+      </span>
+
+      <div class="product-set__actions">
+        <vs-button @click="create" color="success" icon size="small">
+          <i class="bx bx-plus"></i>
+        </vs-button>
+        <vs-button @click="edit" color="dark" icon size="small">
+          <i class="bx bx-edit"></i>
+        </vs-button>
+      </div>
     </div>
-    <small>/{{ set.slug }} | {{ set.children.length }} subkolekcji</small>
 
     <div class="product-set__children" v-show="areChildrenVisible">
       <product-set
@@ -21,28 +32,16 @@
         v-on="$listeners"
       />
     </div>
-
-    <template #action>
-      <div class="product-set__actions">
-        <vs-button @click="create" color="dark" icon>
-          <i class="bx bx-plus"></i>
-        </vs-button>
-        <vs-button @click="edit" color="dark" icon>
-          <i class="bx bx-edit"></i>
-        </vs-button>
-      </div>
-    </template>
-  </list-item>
+  </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import ListItem from '@/components/layout/ListItem.vue'
+
 import { ProductSet } from '@/interfaces/ProductSet'
 
 export default Vue.extend({
   name: 'ProductSet',
-  components: { ListItem },
   props: {
     set: {
       type: Object,
@@ -59,6 +58,9 @@ export default Vue.extend({
     create() {
       this.$emit('create', this.set)
     },
+    toggleChildrenVisibility() {
+      if (this.set.children.length) this.areChildrenVisible = !this.areChildrenVisible
+    },
   },
 })
 </script>
@@ -66,18 +68,34 @@ export default Vue.extend({
 <style lang="scss">
 .product-set {
   cursor: default;
-  display: flex;
+  border-radius: 0;
+  padding: 2px 8px;
+  padding-right: 0;
+  border-bottom: solid 1px #aaa;
 
-  &__title {
-    display: inline-flex;
+  &:hover {
+    background-color: $grey-light;
+  }
+
+  &:last-of-type {
+    border-bottom: none;
+  }
+
+  &__content {
+    display: flex;
     align-items: center;
+  }
+
+  &__name {
+    font-family: $font-sec;
+    font-weight: 500;
   }
 
   &__actions {
     display: flex;
     align-items: flex-start;
-    transform: scale(0.8);
     margin-left: 24px;
+    margin-left: auto;
   }
 
   .list-item__action {
@@ -88,12 +106,9 @@ export default Vue.extend({
   }
 
   &__children {
-    padding-left: 20px;
-    width: 100% !important;
+    padding-left: 12px;
 
     > .product-set {
-      width: 100%;
-      padding: 4px 12px;
     }
   }
 }

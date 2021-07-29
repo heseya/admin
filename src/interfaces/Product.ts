@@ -3,6 +3,7 @@ import { ID } from './ID'
 import { Schema } from './Schema'
 import { Tag } from './Tag'
 import { CdnMedia } from './Media'
+import { ProductSet } from './ProductSet'
 
 export interface Product {
   id: ID
@@ -12,13 +13,34 @@ export interface Product {
   description_html: string
   digital: boolean
   public: boolean
-  brand_id: ID
-  category_id: ID
   quantity_step: number
+  brand: ProductSet
+  category: ProductSet
+  sets: ProductSet[]
   schemas: Schema[]
   gallery: CdnMedia[]
-  media: CdnMedia[]
+  cover: CdnMedia
   tags: Tag[]
+}
+
+export interface ProductDTO {
+  id?: ID
+  name: string
+  slug: string
+  price: number
+  description_html: string
+  digital: boolean
+  public: boolean
+  quantity_step: number
+  sets: ID[]
+  tags: ID[]
+  schemas: ID[]
+}
+
+export interface ProductComponentForm
+  extends Omit<Product, 'id' | 'sets' | 'brand' | 'category' | 'cover'> {
+  id?: ID
+  sets: ID[]
 }
 
 export interface ProductItem {

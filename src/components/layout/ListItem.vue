@@ -4,7 +4,7 @@
     :to="url"
     class="list-item"
     :class="{ 'list-item--no-hover': noHover }"
-    @click.prevent.stop="click"
+    @click.stop="click"
   >
     <div v-if="!!$slots.avatar" class="list-item__avatar">
       <slot name="avatar"></slot>

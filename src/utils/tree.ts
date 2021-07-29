@@ -2,16 +2,24 @@
 import { cloneDeep } from 'lodash'
 import { ID } from '@/interfaces/ID'
 
-const replaceInArray = <T extends { id: ID }>(array: T[], item: T): T[] => {
-  const itemIndex = array.findIndex(({ id }) => id === item.id)
-  if (itemIndex >= 0) array[itemIndex] = item
-  return cloneDeep(array)
+export interface Tree<T> {
+  id: ID
+  children: T[]
 }
 
-export const findInTree = <T extends { id: ID; children: T[] }>(
-  array: T[],
-  id: ID,
-): T | undefined => {
+export interface TreeWithParents<T> extends Tree<T> {
+  parent_id?: ID
+  parent: T | null
+}
+
+const replaceInArray = <T extends { id: ID }>(array: T[], item: T): T[] => {
+  const arrayCopy = cloneDeep(array)
+  const itemIndex = arrayCopy.findIndex(({ id }) => id === item.id)
+  if (itemIndex >= 0) arrayCopy[itemIndex] = cloneDeep(item)
+  return arrayCopy
+}
+
+export const findInTree = <T extends Tree<T>>(array: T[], id: ID): T | undefined => {
   for (const item of array) {
     if (item.id === id) {
       return item
@@ -24,12 +32,7 @@ export const findInTree = <T extends { id: ID; children: T[] }>(
   return undefined
 }
 
-export const removeFromTree = <
-  T extends { id: ID; children: T[]; parent_id?: ID; parent: T | null },
->(
-  array: T[],
-  id: ID,
-): T[] => {
+export const removeFromTree = <T extends TreeWithParents<T>>(array: T[], id: ID): T[] => {
   const item = findInTree(array, id)
   if (!item) return array
 
@@ -41,12 +44,7 @@ export const removeFromTree = <
   return array
 }
 
-export const updateItemInTree = <
-  T extends { id: ID; children: T[]; parent_id?: ID; parent: T | null },
->(
-  array: T[],
-  updatedItem: T,
-): T[] => {
+export const updateItemInTree = <T extends TreeWithParents<T>>(array: T[], updatedItem: T): T[] => {
   const item = findInTree(array, updatedItem.id)
   if (!item) return [...array, updatedItem]
 

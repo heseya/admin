@@ -22,6 +22,7 @@ export const productSets = createVuexCRUD<ProductSet>()(
           parent.children = [...parent.children, newSet]
         }
       },
+
       EDIT_DATA(
         state,
         { key, value, item }: { key: keyof ProductSet; value: unknown; item: ProductSet },
@@ -34,6 +35,7 @@ export const productSets = createVuexCRUD<ProductSet>()(
 
         state.data = updateItemInTree(state.data, item)
       },
+
       REMOVE_DATA(state, { value: id }: { value: ID }) {
         state.data = removeFromTree(state.data, id)
       },

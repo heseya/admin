@@ -23,6 +23,14 @@ export interface ExtendStore<S, Item> {
   actions: ActionTree<S & DefaultStore<Item>, RootState>
 }
 
+interface CrudParams {
+  get?: Record<string, any>
+  add?: Record<string, any>
+  edit?: Record<string, any>
+  update?: Record<string, any>
+  remove?: Record<string, any>
+}
+
 /**
  * Creates state, actions and mutation for CRUD methods of given entity
  * @param name - uppercased string to be used in mutation names
@@ -31,7 +39,7 @@ export interface ExtendStore<S, Item> {
  */
 export const createVuexCRUD =
   <Item extends { id: ID }>() =>
-  <S extends {} = {}>(endpoint: string, extend: ExtendStore<S, Item>) => {
+  <S extends {} = {}>(endpoint: string, extend: ExtendStore<S, Item>, params: CrudParams = {}) => {
     const mutationsNames = {
       SET_ERROR: 'SET_ERROR',
       SET_META: 'SET_META',
@@ -123,6 +131,11 @@ export const createVuexCRUD =
     const moduleActions = actionTree(
       { state: moduleState, getters: moduleGetters, mutations: moduleMutations },
       {
+        clearData({ commit }) {
+          commit(mutationsNames.SET_META, {})
+          commit(mutationsNames.SET_DATA, [])
+        },
+
         async fetch({ commit }, query: Record<string, any>) {
           commit(mutationsNames.SET_ERROR, null)
           commit(mutationsNames.SET_LOADING, true)
@@ -130,7 +143,7 @@ export const createVuexCRUD =
             const filteredQuery = query
               ? Object.fromEntries(Object.entries(query).filter(([key, value]) => !!value))
               : {}
-            const stringQuery = queryString.stringify(filteredQuery)
+            const stringQuery = queryString.stringify({ ...(params.get || {}), ...filteredQuery })
 
             const { data } = await api.get(`/${endpoint}?${stringQuery}`)
             commit(mutationsNames.SET_META, data.meta)
@@ -143,15 +156,12 @@ export const createVuexCRUD =
             return false
           }
         },
-        clearData({ commit }) {
-          commit(mutationsNames.SET_META, {})
-          commit(mutationsNames.SET_DATA, [])
-        },
         async get({ commit }, id: string) {
           commit(mutationsNames.SET_ERROR, null)
           commit(mutationsNames.SET_LOADING, true)
           try {
-            const { data: responseData } = await api.get(`/${endpoint}/id:${id}`)
+            const stringQuery = queryString.stringify(params.get || {})
+            const { data: responseData } = await api.get(`/${endpoint}/id:${id}?${stringQuery}`)
             commit(mutationsNames.SET_SELECTED, responseData.data)
             commit(mutationsNames.SET_LOADING, false)
             return true
@@ -161,11 +171,13 @@ export const createVuexCRUD =
             return false
           }
         },
+
         async add({ commit }, item: Partial<Item>) {
           commit(mutationsNames.SET_ERROR, null)
           commit(mutationsNames.SET_LOADING, true)
           try {
-            const { data } = await api.post(`/${endpoint}`, item)
+            const stringQuery = queryString.stringify(params.add || {})
+            const { data } = await api.post(`/${endpoint}?${stringQuery}`, item)
             commit(mutationsNames.ADD_DATA, data.data)
             commit(mutationsNames.SET_LOADING, false)
             return data.data
@@ -175,11 +187,13 @@ export const createVuexCRUD =
             return false
           }
         },
+
         async edit({ commit }, { id, item }: { id: string; item: Partial<Item> }) {
           commit(mutationsNames.SET_LOADING, true)
           commit(mutationsNames.SET_ERROR, null)
           try {
-            const { data } = await api.put(`/${endpoint}/id:${id}`, item)
+            const stringQuery = queryString.stringify(params.edit || {})
+            const { data } = await api.put(`/${endpoint}/id:${id}?${stringQuery}`, item)
             commit(mutationsNames.EDIT_DATA, { key: 'id', value: id, item: data.data })
             commit(mutationsNames.SET_LOADING, false)
             return data.data
@@ -189,11 +203,13 @@ export const createVuexCRUD =
             return false
           }
         },
+
         async update({ commit }, { id, item }: { id: string; item: Partial<Item> }) {
           commit(mutationsNames.SET_LOADING, true)
           commit(mutationsNames.SET_ERROR, null)
           try {
-            const { data } = await api.patch(`/${endpoint}/id:${id}`, item)
+            const stringQuery = queryString.stringify(params.update || {})
+            const { data } = await api.patch(`/${endpoint}/id:${id}?${stringQuery}`, item)
             commit(mutationsNames.EDIT_DATA, { key: 'id', value: id, item: data.data })
             commit(mutationsNames.SET_LOADING, false)
             return data.data
@@ -210,7 +226,8 @@ export const createVuexCRUD =
           commit(mutationsNames.SET_LOADING, true)
           commit(mutationsNames.SET_ERROR, null)
           try {
-            const { data } = await api.patch(`/${endpoint}/${value}`, item)
+            const stringQuery = queryString.stringify(params.update || {})
+            const { data } = await api.patch(`/${endpoint}/${value}?${stringQuery}`, item)
             commit(mutationsNames.EDIT_DATA, { key, value, item: data.data })
             commit(mutationsNames.SET_LOADING, false)
             return data.data
@@ -220,11 +237,13 @@ export const createVuexCRUD =
             return false
           }
         },
+
         async remove({ commit }, id: string) {
           commit(mutationsNames.SET_LOADING, true)
           commit(mutationsNames.SET_ERROR, null)
           try {
-            await api.delete(`/${endpoint}/id:${id}`)
+            const stringQuery = queryString.stringify(params.remove || {})
+            await api.delete(`/${endpoint}/id:${id}?${stringQuery}`)
             commit(mutationsNames.REMOVE_DATA, { key: 'id', value: id })
             commit(mutationsNames.SET_LOADING, false)
             return true
@@ -238,7 +257,8 @@ export const createVuexCRUD =
           commit(mutationsNames.SET_LOADING, true)
           commit(mutationsNames.SET_ERROR, null)
           try {
-            await api.delete(`/${endpoint}/${value}`)
+            const stringQuery = queryString.stringify(params.remove || {})
+            await api.delete(`/${endpoint}/${value}?${stringQuery}`)
             commit(mutationsNames.REMOVE_DATA, { key, value })
             commit(mutationsNames.SET_LOADING, false)
             return true

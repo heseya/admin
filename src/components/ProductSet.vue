@@ -5,7 +5,7 @@
     :class="{ 'product-set--hidden': !set.public }"
   >
     <div class="product-set__content">
-      <vs-button transparent icon size="mini" dark :disabled="set.children.length == 0">
+      <vs-button transparent icon size="mini" dark :disabled="!children.length">
         <i v-if="areChildrenVisible" class="bx bx-minus"></i>
         <i v-else class="bx bx-plus"></i>
       </vs-button>
@@ -13,10 +13,10 @@
       <span class="product-set__name"> {{ set.name }} (/{{ set.slug }}) </span>
 
       <div class="product-set__actions">
-        <vs-button @click="create" color="success" icon size="small">
+        <vs-button @click.stop="create" color="success" icon size="small">
           <i class="bx bx-plus"></i>
         </vs-button>
-        <vs-button @click="edit" color="dark" icon size="small">
+        <vs-button @click.stop="edit" color="dark" icon size="small">
           <i class="bx bx-edit"></i>
         </vs-button>
       </div>
@@ -24,7 +24,7 @@
 
     <div class="product-set__children" v-show="areChildrenVisible">
       <product-set
-        v-for="child in set.children"
+        v-for="child in children"
         :set="{ ...child, parent: set }"
         :key="child.id"
         v-on="$listeners"
@@ -49,6 +49,11 @@ export default Vue.extend({
   data: () => ({
     areChildrenVisible: false,
   }),
+  computed: {
+    children(): ProductSet[] {
+      return this.set.children || []
+    },
+  },
   methods: {
     edit() {
       this.$emit('edit', this.set)
@@ -69,7 +74,7 @@ export default Vue.extend({
   border-radius: 0;
   padding: 2px 8px;
   padding-right: 0;
-  border-bottom: solid 1px #aaa;
+  border-bottom: solid 1px #ccc;
 
   &:hover {
     background-color: $grey-light;

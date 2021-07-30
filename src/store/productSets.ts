@@ -2,8 +2,12 @@ import { ProductSet } from '@/interfaces/ProductSet'
 import { createVuexCRUD } from './generator'
 import { findInTree, removeFromTree, updateItemInTree } from '@/utils/tree'
 import { ID } from '@/interfaces/ID'
+import { api } from '@/api'
+import { reorderCollection } from '@/services/reorderCollection'
 
 const PARAM = { tree: 1 }
+
+const reorderSets = reorderCollection('product-sets', 'product_sets')
 
 export const productSets = createVuexCRUD<ProductSet>()(
   'product-sets',
@@ -42,7 +46,14 @@ export const productSets = createVuexCRUD<ProductSet>()(
         state.data = removeFromTree(state.data, id)
       },
     },
-    actions: {},
+    actions: {
+      async reorder(_u, productSets: ID[]) {
+        await reorderSets(productSets)
+      },
+      async reorderChildren(_u, { parentId, ids }: { parentId: ID; ids: ID[] }) {
+        await reorderSets(ids, parentId)
+      },
+    },
   },
   { get: PARAM, edit: PARAM, update: PARAM },
 )

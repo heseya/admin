@@ -1,6 +1,6 @@
 import { createVuexCRUD } from './generator'
-import { api } from '@/api'
 import { ShippingMethod } from '@/interfaces/ShippingMethod'
+import { reorderCollection } from '@/services/reorderCollection'
 
 export const shippingMethods = createVuexCRUD<ShippingMethod>()('shipping-methods', {
   state: {},
@@ -8,13 +8,8 @@ export const shippingMethods = createVuexCRUD<ShippingMethod>()('shipping-method
   mutations: {},
   actions: {
     // eslint-disable-next-line camelcase
-    async setOrder({ commit }, shipping_methods) {
-      try {
-        const { data } = await api.post('/shipping-methods/order', { shipping_methods })
-        return data
-      } catch (error) {
-        return false
-      }
+    async reorder({ commit }, items) {
+      await reorderCollection('shipping-methods', 'shipping_methods', 'order')(items)
     },
   },
 })

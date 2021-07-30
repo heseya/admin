@@ -98,7 +98,7 @@ export default Vue.extend({
       async set(items: any[]) {
         this.$accessor.startLoading()
         await this.$store.dispatch(
-          `${this.storeKey}/setOrder`,
+          `${this.storeKey}/reorder`,
           items.map(({ id }) => id),
         )
         await this.getItems()

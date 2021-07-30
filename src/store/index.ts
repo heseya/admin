@@ -13,8 +13,6 @@ import { items } from './items'
 import { products } from './products'
 import { schemas } from './schemas'
 import { pages } from './pages'
-import { brands } from './brands'
-import { categories } from './categories'
 import { orders } from './orders'
 import { statuses } from './statuses'
 import { shippingMethods } from './shippingMethods'
@@ -25,6 +23,7 @@ import { authSessions } from './authSessions'
 import { apps } from './apps'
 import { discounts } from './discounts'
 import { tags } from './tags'
+import { productSets } from './productSets'
 
 Vue.use(Vuex)
 
@@ -76,8 +75,6 @@ const storePattern = {
     schemas,
     products,
     pages,
-    brands,
-    categories,
     orders,
     shippingMethods,
     statuses,
@@ -88,6 +85,7 @@ const storePattern = {
     authSessions,
     apps,
     tags,
+    productSets,
   },
 }
 

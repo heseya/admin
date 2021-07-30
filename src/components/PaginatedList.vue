@@ -81,6 +81,10 @@ export default Vue.extend({
       type: Object,
       default: () => ({}),
     },
+    params: {
+      type: Object,
+      default: () => ({}),
+    },
   },
   data: () => ({
     page: 1,
@@ -155,6 +159,7 @@ export default Vue.extend({
         page: this.page,
         limit: this.itemsPerPage,
         ...queryFilters,
+        ...this.params,
       })
 
       this.$accessor.stopLoading()

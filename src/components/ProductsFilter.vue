@@ -2,19 +2,9 @@
   <div class="products-filter">
     <vs-input type="search" v-model="search" @keydown.enter="makeSearch" label="Wyszukiwanie" />
 
-    <vs-select v-model="category" label="Kategoria" :key="'cat' + categories.length" filter>
-      <vs-option label="Wszystkie" value="_all"> Wszystkie </vs-option>
-      <vs-option v-for="cat in categories" :key="cat.id" :label="cat.name" :value="cat.slug">
-        {{ cat.name }}
-      </vs-option>
-    </vs-select>
-
-    <br />
-
-    <vs-select v-model="brand" label="Marka" :key="'brand' + brands.length" filter>
-      <vs-option label="Wszystkie" value="_all"> Wszystkie </vs-option>
-      <vs-option v-for="b in brands" :key="b.id" :label="b.name" :value="b.slug">
-        {{ b.name }}
+    <vs-select v-model="sets" label="Kolekcje" :key="productSets.length" filter>
+      <vs-option v-for="set in productSets" :key="set.id" :label="set.name" :value="set.slug">
+        {{ set.name }}
       </vs-option>
     </vs-select>
 
@@ -28,12 +18,10 @@
 <script lang="ts">
 import Vue from 'vue'
 import clone from 'lodash/clone'
-import { ALL_FILTER_VALUE } from '@/consts/filters'
 
 export const EMPTY_PRODUCT_FILTERS = {
   search: '',
-  category: ALL_FILTER_VALUE,
-  brand: ALL_FILTER_VALUE,
+  sets: '',
 }
 
 type ProductFilers = typeof EMPTY_PRODUCT_FILTERS
@@ -41,8 +29,7 @@ type ProductFilers = typeof EMPTY_PRODUCT_FILTERS
 export default Vue.extend({
   data: () => ({
     search: '',
-    category: ALL_FILTER_VALUE,
-    brand: ALL_FILTER_VALUE,
+    sets: '',
   }),
   props: {
     filters: {
@@ -53,24 +40,19 @@ export default Vue.extend({
   watch: {
     filters(f: ProductFilers) {
       this.search = f.search
-      this.category = f.category
-      this.brand = f.brand
+      this.sets = f.sets
     },
   },
   computed: {
-    categories(): any[] {
-      return this.$store.getters['categories/getData']
-    },
-    brands(): any[] {
-      return this.$store.getters['brands/getData']
+    productSets(): any[] {
+      return this.$store.getters['productSets/getData']
     },
   },
   methods: {
     makeSearch() {
       this.$emit('search', {
         search: this.search,
-        category: this.category,
-        brand: this.brand,
+        set: this.sets,
       })
     },
     clearFilters() {
@@ -78,13 +60,11 @@ export default Vue.extend({
     },
   },
   created() {
-    this.$store.dispatch('categories/fetch')
-    this.$store.dispatch('brands/fetch')
+    this.$store.dispatch('productSets/fetch', { flat: 1, tree: 0 })
   },
   mounted() {
     this.search = this.filters.search
-    this.category = this.filters.category
-    this.brand = this.filters.brand
+    this.sets = this.filters.sets
   },
 })
 </script>

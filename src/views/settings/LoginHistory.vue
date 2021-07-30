@@ -68,7 +68,7 @@ export default Vue.extend({
     PopConfirm,
   },
   computed: {
-    areSessionsToKill() {
+    areSessionsToKill(): boolean {
       return this.$accessor.authSessions.getData.filter((s) => !s.revoked).length > 1
     },
   },
@@ -89,6 +89,7 @@ export default Vue.extend({
       this.$accessor.authSessions.kill(id)
     },
     killAllSessions() {
+      // TODO: null because of the bug in Accessor typing, and TS do not accept no parameters
       this.$accessor.authSessions.killAll(null)
     },
   },

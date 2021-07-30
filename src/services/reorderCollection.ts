@@ -7,10 +7,10 @@ export const reorderCollection =
   async (ids: ID[], parentId?: ID) => {
     try {
       const suffix = parentId ? `/id:${parentId}` : ''
-      const { data } = await api.post(`/${rootEndpoint}/${endpoint}${suffix}`, {
+      await api.post<null>(`/${rootEndpoint}/${endpoint}${suffix}`, {
         [key]: ids,
       })
-      return data
+      return true
     } catch (error) {
       return false
     }

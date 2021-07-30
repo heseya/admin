@@ -88,13 +88,16 @@ export default Vue.extend({
   padding: 2px 8px;
   padding-right: 0;
   border-bottom: solid 1px #ccc;
+  cursor: grab;
+  transition: 0.3s;
+
+  &.sortable-chosen,
+  &:hover {
+    background-color: $grey-light;
+  }
 
   &__hidden-icon {
     font-size: 0.7em;
-  }
-
-  &:hover {
-    background-color: $grey-light;
   }
 
   &:last-of-type {

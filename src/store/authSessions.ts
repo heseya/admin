@@ -4,7 +4,7 @@ import { createVuexCRUD } from './generator'
 import { ID } from '@/interfaces/ID'
 import { AuthSession } from '@/interfaces/AuthSession'
 
-export const loginHistory = createVuexCRUD<AuthSession>()('auth/login-history', {
+export const authSessions = createVuexCRUD<AuthSession>()('auth/login-history', {
   state: {},
   getters: {},
   mutations: {},

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PaginatedList title="Historia logowania" storeKey="loginHistory">
+    <PaginatedList title="Historia logowania" storeKey="authSessions">
       <template #nav>
         <pop-confirm
           title="Czy na pewno chcesz wylogować wszystkie sesje użytkownika? Tylko obecna pozostanie aktywna."
@@ -35,7 +35,7 @@
               title="Czy na pewno chcesz wylogować tę sesję użytkownika?"
               okText="Usuń"
               cancelText="Anuluj"
-              @confirm="killSession"
+              @confirm="killSession(login.id)"
               v-slot="{ open }"
             >
               <vs-button
@@ -69,7 +69,7 @@ export default Vue.extend({
   },
   computed: {
     areSessionsToKill() {
-      return this.$accessor.loginHistory.getData.filter((s) => !s.revoked).length > 1
+      return this.$accessor.authSessions.getData.filter((s) => !s.revoked).length > 1
     },
   },
   methods: {
@@ -86,10 +86,10 @@ export default Vue.extend({
       }
     },
     killSession(id: ID) {
-      this.$accessor.loginHistory.kill(id)
+      this.$accessor.authSessions.kill(id)
     },
     killAllSessions() {
-      this.$accessor.loginHistory.killAll()
+      this.$accessor.authSessions.killAll(null)
     },
   },
 })

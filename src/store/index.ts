@@ -21,7 +21,7 @@ import { shippingMethods } from './shippingMethods'
 import { paymentMethods } from './paymentMethods'
 import { packageTemplates } from './packageTemplates'
 import { settings } from './settings'
-import { loginHistory } from './loginHistory'
+import { authSessions } from './authSessions'
 import { apps } from './apps'
 import { discounts } from './discounts'
 import { tags } from './tags'
@@ -85,7 +85,7 @@ const storePattern = {
     packageTemplates,
     settings,
     discounts,
-    loginHistory,
+    authSessions,
     apps,
     tags,
   },

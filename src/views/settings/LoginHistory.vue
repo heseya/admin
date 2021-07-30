@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PaginatedList title="Historia logowania" storeKey="authSessions">
+    <PaginatedList title="Sesje użytkownika" storeKey="authSessions">
       <template #nav>
         <pop-confirm
           title="Czy na pewno chcesz wylogować wszystkie sesje użytkownika? Tylko obecna pozostanie aktywna."

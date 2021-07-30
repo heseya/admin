@@ -60,7 +60,7 @@ export default Vue.extend({
     },
   },
   created() {
-    this.$store.dispatch('productSets/fetch', { flat: 1, tree: 0 })
+    this.$accessor.productSets.fetch({ tree: undefined })
   },
   mounted() {
     this.search = this.filters.search

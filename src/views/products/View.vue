@@ -277,7 +277,7 @@ export default Vue.extend({
   },
   async created() {
     this.$accessor.startLoading()
-    await this.$store.dispatch('productSets/fetch')
+    this.$accessor.productSets.fetch({ tree: undefined })
     await this.fetch()
     this.$accessor.stopLoading()
   },

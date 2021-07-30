@@ -142,9 +142,12 @@ export const createVuexCRUD =
           commit(mutationsNames.SET_LOADING, true)
           try {
             const filteredQuery = Object.fromEntries(
-              Object.entries(query || {}).filter(([key, value]) => !isNil(value)),
+              Object.entries({ ...(params.get || {}), ...(query || {}) }).filter(
+                ([_key, value]) => !isNil(value),
+              ),
             )
-            const stringQuery = queryString.stringify({ ...(params.get || {}), ...filteredQuery })
+
+            const stringQuery = queryString.stringify(filteredQuery)
 
             const { data } = await api.get(`/${endpoint}?${stringQuery}`)
             commit(mutationsNames.SET_META, data.meta)

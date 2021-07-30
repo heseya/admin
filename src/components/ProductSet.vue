@@ -1,16 +1,15 @@
 <template>
-  <div
-    @click.stop="toggleChildrenVisibility"
-    class="product-set"
-    :class="{ 'product-set--hidden': !set.public }"
-  >
+  <div @click.stop="toggleChildrenVisibility" class="product-set">
     <div class="product-set__content">
       <vs-button transparent icon size="mini" dark :disabled="!children.length">
         <i v-if="areChildrenVisible" class="bx bx-minus"></i>
         <i v-else class="bx bx-plus"></i>
       </vs-button>
 
-      <span class="product-set__name"> {{ set.name }} (/{{ set.slug }}) </span>
+      <span class="product-set__name">
+        <i v-if="!set.public" class="product-set__hidden-icon bx bx-low-vision"></i>
+        {{ set.name }} <small>(/{{ set.slug }})</small>
+      </span>
 
       <div class="product-set__actions">
         <vs-button @click.stop="create" color="success" icon size="small">
@@ -75,6 +74,10 @@ export default Vue.extend({
   padding: 2px 8px;
   padding-right: 0;
   border-bottom: solid 1px #ccc;
+
+  &__hidden-icon {
+    font-size: 0.7em;
+  }
 
   &:hover {
     background-color: $grey-light;

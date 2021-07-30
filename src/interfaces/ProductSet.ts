@@ -8,7 +8,7 @@ export interface ProductSet {
   slug_suffix: string
   slug_override: boolean
   public: boolean
-  public_parent: boolean
+  visible: boolean
   hide_on_index: boolean
   parent: ProductSet | null
   children: ProductSet[]

@@ -117,7 +117,7 @@
               <i class="bx bx-history"></i>
             </vs-avatar>
           </template>
-          Historia logowania
+          Sesje użytkownika
         </list-item>
         <list-item @click="logout">
           <template #avatar>

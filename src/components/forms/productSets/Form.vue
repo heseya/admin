@@ -19,12 +19,19 @@
             label="Link"
           />
 
-          <switch-input
-            v-if="slugPrefix"
-            class="slug-input__switch"
-            v-model="form.slug_override"
-            label="Nadpisz sluga"
-          />
+          <vs-tooltip bottom>
+            <switch-input
+              v-if="slugPrefix"
+              class="slug-input__switch"
+              v-model="form.slug_override"
+              label="Nadpisz link"
+            />
+
+            <template #tooltip>
+              Domyślnie, początek linku wynika z linku kolekcji-rodzica. Nadpisując link, sprawiamy,
+              że link będzie dokładnie taki jaki zostanie wpisany.
+            </template>
+          </vs-tooltip>
         </div>
 
         <div class="switches">

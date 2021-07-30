@@ -3,6 +3,8 @@ import { createVuexCRUD } from './generator'
 import { findInTree, removeFromTree, updateItemInTree } from '@/utils/tree'
 import { ID } from '@/interfaces/ID'
 
+const PARAM = { tree: 1 }
+
 export const productSets = createVuexCRUD<ProductSet>()(
   'product-sets',
   {
@@ -42,5 +44,5 @@ export const productSets = createVuexCRUD<ProductSet>()(
     },
     actions: {},
   },
-  { get: { tree: 1 }, edit: { tree: 1 }, update: { tree: 1 } },
+  { get: PARAM, edit: PARAM, update: PARAM },
 )

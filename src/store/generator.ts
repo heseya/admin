@@ -3,9 +3,10 @@ import { cloneDeep, isNil } from 'lodash'
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 import { ActionTree, GetterTree, MutationTree } from 'vuex'
 
-import { ResponseMeta } from '@/interfaces/Response'
-import { RootState } from '.'
 import { api } from '../api'
+
+import { RootState } from '.'
+import { ResponseMeta } from '@/interfaces/Response'
 import { ID } from '@/interfaces/ID'
 
 interface DefaultStore<Item> {
@@ -16,7 +17,7 @@ interface DefaultStore<Item> {
   selected: Item
 }
 
-export interface ExtendStore<S, Item> {
+interface ExtendStore<S, Item> {
   state: S
   getters: GetterTree<S & DefaultStore<Item>, RootState>
   mutations: MutationTree<S & DefaultStore<Item>>

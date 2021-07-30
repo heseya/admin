@@ -110,9 +110,6 @@ export default Vue.extend({
 
   &__children {
     padding-left: 12px;
-
-    > .product-set {
-    }
   }
 }
 </style>

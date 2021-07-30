@@ -9,6 +9,10 @@ import { RootState } from '.'
 import { ResponseMeta } from '@/interfaces/Response'
 import { ID } from '@/interfaces/ID'
 
+export interface BaseItem {
+  id: ID
+}
+
 interface DefaultStore<Item> {
   error: null | Error
   isLoading: boolean
@@ -39,7 +43,7 @@ interface CrudParams {
  * @param extend - custom state, actions, mutations and getters. Are merged with genereted ones
  */
 export const createVuexCRUD =
-  <Item extends { id: ID }>() =>
+  <Item extends BaseItem>() =>
   <S extends {} = {}>(endpoint: string, extend: ExtendStore<S, Item>, params: CrudParams = {}) => {
     const mutationsNames = {
       SET_ERROR: 'SET_ERROR',

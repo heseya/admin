@@ -50,6 +50,7 @@ import { ResponseMeta } from '@/interfaces/Response'
 import { formatFilters } from '@/utils/utils'
 import { debounce } from 'lodash'
 import { formatApiError } from '@/utils/errors'
+import { BaseItem } from '@/store/generator'
 
 export default Vue.extend({
   components: {
@@ -92,10 +93,10 @@ export default Vue.extend({
   }),
   computed: {
     items: {
-      get(): unknown[] {
+      get(): BaseItem[] {
         return this.$store.getters[`${this.storeKey}/getData`]
       },
-      async set(items: any[]) {
+      async set(items: BaseItem[]) {
         this.$accessor.startLoading()
         await this.$store.dispatch(
           `${this.storeKey}/reorder`,

@@ -1,5 +1,5 @@
 import { api } from '@/api'
-import { createVuexCRUD } from './generator'
+import { createVuexCRUD, StoreMutations } from './generator'
 
 import { ID } from '@/interfaces/ID'
 import { AuthSession } from '@/interfaces/AuthSession'
@@ -10,38 +10,42 @@ export const authSessions = createVuexCRUD<AuthSession>()('auth/login-history', 
   mutations: {},
   actions: {
     async kill({ state, commit }, id: ID) {
-      commit('SET_LOADING', true)
-      commit('SET_ERROR', null)
+      commit(StoreMutations.SetLoading, true)
+      commit(StoreMutations.SetError, null)
       try {
         await api.get(`/auth/kill-session/id:${id}`)
 
         const killedSession = state.data.find((s) => s.id === id)!
-        commit('EDIT_DATA', { key: 'id', value: id, item: { ...killedSession, revoked: true } })
+        commit(StoreMutations.EditData, {
+          key: 'id',
+          value: id,
+          item: { ...killedSession, revoked: true },
+        })
 
-        commit('SET_LOADING', false)
+        commit(StoreMutations.SetLoading, false)
         return true
       } catch (error) {
-        commit('SET_ERROR', error)
-        commit('SET_LOADING', false)
+        commit(StoreMutations.SetError, error)
+        commit(StoreMutations.SetLoading, false)
         return false
       }
     },
     async killAll({ state, commit }) {
-      commit('SET_LOADING', true)
-      commit('SET_ERROR', null)
+      commit(StoreMutations.SetLoading, true)
+      commit(StoreMutations.SetError, null)
       try {
         await api.get(`/auth/kill-all-sessions`)
 
         commit(
-          'SET_DATA',
+          StoreMutations.SetData,
           state.data.map((s) => ({ ...s, revoked: !s.current_session })),
         )
 
-        commit('SET_LOADING', false)
+        commit(StoreMutations.SetLoading, false)
         return true
       } catch (error) {
-        commit('SET_ERROR', error)
-        commit('SET_LOADING', false)
+        commit(StoreMutations.SetError, error)
+        commit(StoreMutations.SetLoading, false)
         return false
       }
     },

@@ -191,6 +191,7 @@ export default Vue.extend({
       return this.$accessor.productSets.getData
     },
     error(): any {
+      // @ts-ignore // TODO: fix extended store getters typings
       return this.$accessor.products.getError || this.$accessor.products.getDepositError
     },
   },

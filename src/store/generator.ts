@@ -13,7 +13,18 @@ export interface BaseItem {
   id: ID
 }
 
-interface DefaultStore<Item> {
+export enum StoreMutations {
+  SetError = 'SET_ERROR',
+  SetMeta = 'SET_META',
+  SetData = 'SET_DATA',
+  AddData = 'ADD_DATA',
+  EditData = 'EDIT_DATA',
+  RemoveData = 'REMOVE_DATA',
+  SetSelected = 'SET_SELECTED',
+  SetLoading = 'SET_LOADING',
+}
+
+interface DefaultStore<Item extends BaseItem> {
   error: null | Error
   isLoading: boolean
   meta: ResponseMeta
@@ -21,11 +32,11 @@ interface DefaultStore<Item> {
   selected: Item
 }
 
-interface ExtendStore<S, Item> {
-  state: S
-  getters: GetterTree<S & DefaultStore<Item>, RootState>
-  mutations: MutationTree<S & DefaultStore<Item>>
-  actions: ActionTree<S & DefaultStore<Item>, RootState>
+interface ExtendStore<State, Item extends BaseItem> {
+  state: State
+  getters: GetterTree<State & DefaultStore<Item>, RootState>
+  mutations: MutationTree<State & DefaultStore<Item>>
+  actions: ActionTree<State & DefaultStore<Item>, RootState>
 }
 
 interface CrudParams {
@@ -41,21 +52,11 @@ interface CrudParams {
  * @param name - uppercased string to be used in mutation names
  * @param endpoint - CRUD API endoint for given entity type
  * @param extend - custom state, actions, mutations and getters. Are merged with genereted ones
+ * @param params - fixed Query params for requests in scope
  */
 export const createVuexCRUD =
   <Item extends BaseItem>() =>
-  <S extends {} = {}>(endpoint: string, extend: ExtendStore<S, Item>, params: CrudParams = {}) => {
-    const mutationsNames = {
-      SET_ERROR: 'SET_ERROR',
-      SET_META: 'SET_META',
-      SET_DATA: 'SET_DATA',
-      ADD_DATA: 'ADD_DATA',
-      EDIT_DATA: 'EDIT_DATA',
-      REMOVE_DATA: 'REMOVE_DATA',
-      SET_SELECTED: 'SET_SELECTED',
-      SET_LOADING: 'SET_LOADING',
-    }
-
+  <State>(endpoint: string, extend: ExtendStore<State, Item>, params: CrudParams = {}) => {
     const moduleState = () =>
       ({
         error: null as null | Error,
@@ -64,7 +65,7 @@ export const createVuexCRUD =
         data: [] as Item[],
         selected: {} as Item,
         ...(extend?.state || {}),
-      } as DefaultStore<Item> & S)
+      } as DefaultStore<Item> & State)
 
     const moduleGetters = getterTree(moduleState, {
       getError(state) {
@@ -89,24 +90,23 @@ export const createVuexCRUD =
       ...(extend?.getters || {}),
     })
 
-    // @ts-ignore
     const moduleMutations = mutationTree(moduleState, {
-      [mutationsNames.SET_ERROR](state, newError: Error) {
+      [StoreMutations.SetError](state, newError: Error | null) {
         state.error = newError
       },
-      [mutationsNames.SET_LOADING](state, isLoading: boolean) {
+      [StoreMutations.SetLoading](state, isLoading: boolean) {
         state.isLoading = isLoading
       },
-      [mutationsNames.SET_META](state, newMeta: ResponseMeta) {
+      [StoreMutations.SetMeta](state, newMeta: ResponseMeta) {
         state.meta = newMeta
       },
-      [mutationsNames.SET_DATA](state, newData: Item[] = []) {
+      [StoreMutations.SetData](state, newData: Item[] = []) {
         state.data = newData
       },
-      [mutationsNames.ADD_DATA](state, newItem: Item) {
+      [StoreMutations.AddData](state, newItem: Item) {
         state.data = [...state.data, newItem]
       },
-      [mutationsNames.EDIT_DATA](
+      [StoreMutations.EditData](
         state,
         { key, value, item: editedItem }: { key: keyof Item; value: unknown; item: Item },
       ) {
@@ -124,10 +124,10 @@ export const createVuexCRUD =
           state.data = [...state.data, editedItem]
         }
       },
-      [mutationsNames.REMOVE_DATA](state, { key, value }: { key: keyof Item; value: unknown }) {
+      [StoreMutations.RemoveData](state, { key, value }: { key: keyof Item; value: unknown }) {
         state.data = state.data.filter((item) => item[key] !== value)
       },
-      [mutationsNames.SET_SELECTED](state, newSelected: Item) {
+      [StoreMutations.SetSelected](state, newSelected: Item) {
         state.selected = newSelected
       },
       ...(extend?.mutations || {}),
@@ -137,13 +137,13 @@ export const createVuexCRUD =
       { state: moduleState, getters: moduleGetters, mutations: moduleMutations },
       {
         clearData({ commit }) {
-          commit(mutationsNames.SET_META, {})
-          commit(mutationsNames.SET_DATA, [])
+          commit(StoreMutations.SetMeta, {} as ResponseMeta)
+          commit(StoreMutations.SetData, [])
         },
 
         async fetch({ commit }, query?: Record<string, any>) {
-          commit(mutationsNames.SET_ERROR, null)
-          commit(mutationsNames.SET_LOADING, true)
+          commit(StoreMutations.SetError, null)
+          commit(StoreMutations.SetLoading, true)
           try {
             const filteredQuery = Object.fromEntries(
               Object.entries({ ...(params.get || {}), ...(query || {}) }).filter(
@@ -154,76 +154,76 @@ export const createVuexCRUD =
             const stringQuery = queryString.stringify(filteredQuery)
 
             const { data } = await api.get(`/${endpoint}?${stringQuery}`)
-            commit(mutationsNames.SET_META, data.meta)
-            commit(mutationsNames.SET_DATA, data.data)
-            commit(mutationsNames.SET_LOADING, false)
+            commit(StoreMutations.SetMeta, data.meta)
+            commit(StoreMutations.SetData, data.data)
+            commit(StoreMutations.SetLoading, false)
             return true
           } catch (error) {
-            commit(mutationsNames.SET_ERROR, error)
-            commit(mutationsNames.SET_LOADING, false)
+            commit(StoreMutations.SetError, error)
+            commit(StoreMutations.SetLoading, false)
             return false
           }
         },
         async get({ commit }, id: string) {
-          commit(mutationsNames.SET_ERROR, null)
-          commit(mutationsNames.SET_LOADING, true)
+          commit(StoreMutations.SetError, null)
+          commit(StoreMutations.SetLoading, true)
           try {
             const stringQuery = queryString.stringify(params.get || {})
             const { data: responseData } = await api.get(`/${endpoint}/id:${id}?${stringQuery}`)
-            commit(mutationsNames.SET_SELECTED, responseData.data)
-            commit(mutationsNames.SET_LOADING, false)
+            commit(StoreMutations.SetSelected, responseData.data)
+            commit(StoreMutations.SetLoading, false)
             return true
           } catch (error) {
-            commit(mutationsNames.SET_ERROR, error)
-            commit(mutationsNames.SET_LOADING, false)
+            commit(StoreMutations.SetError, error)
+            commit(StoreMutations.SetLoading, false)
             return false
           }
         },
 
         async add({ commit }, item: Partial<Item>) {
-          commit(mutationsNames.SET_ERROR, null)
-          commit(mutationsNames.SET_LOADING, true)
+          commit(StoreMutations.SetError, null)
+          commit(StoreMutations.SetLoading, true)
           try {
             const stringQuery = queryString.stringify(params.add || {})
             const { data } = await api.post(`/${endpoint}?${stringQuery}`, item)
-            commit(mutationsNames.ADD_DATA, data.data)
-            commit(mutationsNames.SET_LOADING, false)
+            commit(StoreMutations.AddData, data.data)
+            commit(StoreMutations.SetLoading, false)
             return data.data
           } catch (error) {
-            commit(mutationsNames.SET_ERROR, error)
-            commit(mutationsNames.SET_LOADING, false)
+            commit(StoreMutations.SetError, error)
+            commit(StoreMutations.SetLoading, false)
             return false
           }
         },
 
         async edit({ commit }, { id, item }: { id: string; item: Partial<Item> }) {
-          commit(mutationsNames.SET_LOADING, true)
-          commit(mutationsNames.SET_ERROR, null)
+          commit(StoreMutations.SetLoading, true)
+          commit(StoreMutations.SetError, null)
           try {
             const stringQuery = queryString.stringify(params.edit || {})
             const { data } = await api.put(`/${endpoint}/id:${id}?${stringQuery}`, item)
-            commit(mutationsNames.EDIT_DATA, { key: 'id', value: id, item: data.data })
-            commit(mutationsNames.SET_LOADING, false)
+            commit(StoreMutations.EditData, { key: 'id', value: id, item: data.data })
+            commit(StoreMutations.SetLoading, false)
             return data.data
           } catch (error) {
-            commit(mutationsNames.SET_ERROR, error)
-            commit(mutationsNames.SET_LOADING, false)
+            commit(StoreMutations.SetError, error)
+            commit(StoreMutations.SetLoading, false)
             return false
           }
         },
 
         async update({ commit }, { id, item }: { id: string; item: Partial<Item> }) {
-          commit(mutationsNames.SET_LOADING, true)
-          commit(mutationsNames.SET_ERROR, null)
+          commit(StoreMutations.SetLoading, true)
+          commit(StoreMutations.SetError, null)
           try {
             const stringQuery = queryString.stringify(params.update || {})
             const { data } = await api.patch(`/${endpoint}/id:${id}?${stringQuery}`, item)
-            commit(mutationsNames.EDIT_DATA, { key: 'id', value: id, item: data.data })
-            commit(mutationsNames.SET_LOADING, false)
+            commit(StoreMutations.EditData, { key: 'id', value: id, item: data.data })
+            commit(StoreMutations.SetLoading, false)
             return data.data
           } catch (error) {
-            commit(mutationsNames.SET_ERROR, error)
-            commit(mutationsNames.SET_LOADING, false)
+            commit(StoreMutations.SetError, error)
+            commit(StoreMutations.SetLoading, false)
             return false
           }
         },
@@ -231,48 +231,48 @@ export const createVuexCRUD =
           { commit },
           { key, value, item }: { key: keyof Item; value: unknown; item: Partial<Item> },
         ) {
-          commit(mutationsNames.SET_LOADING, true)
-          commit(mutationsNames.SET_ERROR, null)
+          commit(StoreMutations.SetLoading, true)
+          commit(StoreMutations.SetError, null)
           try {
             const stringQuery = queryString.stringify(params.update || {})
             const { data } = await api.patch(`/${endpoint}/${value}?${stringQuery}`, item)
-            commit(mutationsNames.EDIT_DATA, { key, value, item: data.data })
-            commit(mutationsNames.SET_LOADING, false)
+            commit(StoreMutations.EditData, { key, value, item: data.data })
+            commit(StoreMutations.SetLoading, false)
             return data.data
           } catch (error) {
-            commit(mutationsNames.SET_ERROR, error)
-            commit(mutationsNames.SET_LOADING, false)
+            commit(StoreMutations.SetError, error)
+            commit(StoreMutations.SetLoading, false)
             return false
           }
         },
 
         async remove({ commit }, id: string) {
-          commit(mutationsNames.SET_LOADING, true)
-          commit(mutationsNames.SET_ERROR, null)
+          commit(StoreMutations.SetLoading, true)
+          commit(StoreMutations.SetError, null)
           try {
             const stringQuery = queryString.stringify(params.remove || {})
             await api.delete(`/${endpoint}/id:${id}?${stringQuery}`)
-            commit(mutationsNames.REMOVE_DATA, { key: 'id', value: id })
-            commit(mutationsNames.SET_LOADING, false)
+            commit(StoreMutations.RemoveData, { key: 'id', value: id })
+            commit(StoreMutations.SetLoading, false)
             return true
           } catch (error) {
-            commit(mutationsNames.SET_ERROR, error)
-            commit(mutationsNames.SET_LOADING, false)
+            commit(StoreMutations.SetError, error)
+            commit(StoreMutations.SetLoading, false)
             return false
           }
         },
         async removeByKey({ commit }, { key, value }: { key: keyof Item; value: unknown }) {
-          commit(mutationsNames.SET_LOADING, true)
-          commit(mutationsNames.SET_ERROR, null)
+          commit(StoreMutations.SetLoading, true)
+          commit(StoreMutations.SetError, null)
           try {
             const stringQuery = queryString.stringify(params.remove || {})
             await api.delete(`/${endpoint}/${value}?${stringQuery}`)
-            commit(mutationsNames.REMOVE_DATA, { key, value })
-            commit(mutationsNames.SET_LOADING, false)
+            commit(StoreMutations.RemoveData, { key, value })
+            commit(StoreMutations.SetLoading, false)
             return true
           } catch (error) {
-            commit(mutationsNames.SET_ERROR, error)
-            commit(mutationsNames.SET_LOADING, false)
+            commit(StoreMutations.SetError, error)
+            commit(StoreMutations.SetLoading, false)
             return false
           }
         },

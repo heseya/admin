@@ -1,4 +1,4 @@
-import { createVuexCRUD } from './generator'
+import { createVuexCRUD, StoreMutations } from './generator'
 import { api } from '../api'
 import { Order } from '@/interfaces/Order'
 
@@ -8,12 +8,12 @@ export const orders = createVuexCRUD<Order>()('orders', {
   mutations: {},
   actions: {
     async changeStatus({ commit }, { orderId, statusId }) {
-      commit('ORDERS_SET_ERROR', null)
+      commit(StoreMutations.SetError, null)
       try {
         const { status } = await api.post(`/orders/id:${orderId}/status`, { status_id: statusId })
         return status === 204
       } catch (error) {
-        commit('ORDERS_SET_ERROR', error)
+        commit(StoreMutations.SetError, error)
         return false
       }
     },

@@ -3,7 +3,7 @@ import { api } from '../api'
 
 export const items = createVuexCRUD()('items', {
   state: {
-    depositError: null,
+    depositError: null as Error | null,
   },
   getters: {
     getDepositError(state) {

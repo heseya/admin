@@ -13,18 +13,18 @@ export const products = createVuexCRUD<Product>()('products', {
     },
   },
   mutations: {
-    PRODUCTS_SET_DEPOSITS_ERROR(state, error) {
+    SET_DEPOSITS_ERROR(state, error) {
       state.depositError = error
     },
   },
   actions: {
     async updateQuantity({ commit }, { id, quantity }: { id: ID; quantity: number }) {
-      commit('PRODUCTS_SET_DEPOSITS_ERROR', null)
+      commit('SET_DEPOSITS_ERROR', null)
       try {
         const { data } = await api.post(`/items/id:${id}/deposits`, { quantity })
         return data
       } catch (error) {
-        commit('PRODUCTS_SET_DEPOSITS_ERROR', error)
+        commit('SET_DEPOSITS_ERROR', error)
         return false
       }
     },

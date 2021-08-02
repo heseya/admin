@@ -13,6 +13,7 @@ export interface Product {
   description_html: string
   digital: boolean
   public: boolean
+  visible: boolean
   quantity_step: number
   brand: ProductSet
   category: ProductSet
@@ -38,7 +39,7 @@ export interface ProductDTO {
 }
 
 export interface ProductComponentForm
-  extends Omit<Product, 'id' | 'sets' | 'brand' | 'category' | 'cover'> {
+  extends Omit<Product, 'id' | 'sets' | 'brand' | 'category' | 'cover' | 'visible'> {
   id?: ID
   sets: ID[]
 }

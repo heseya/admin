@@ -1,5 +1,5 @@
 import { ProductSet } from '@/interfaces/ProductSet'
-import { createVuexCRUD } from './generator'
+import { createVuexCRUD, StoreMutations } from './generator'
 import { findInTree, removeFromTree, updateItemInTree } from '@/utils/tree'
 import { ID } from '@/interfaces/ID'
 import { api } from '@/api'
@@ -16,7 +16,7 @@ export const productSets = createVuexCRUD<ProductSet>()(
     state: {},
     getters: {},
     mutations: {
-      ADD_DATA(state, newSet: ProductSet) {
+      [StoreMutations.AddData](state, newSet: ProductSet) {
         // Root level set
         if (!newSet.parent) {
           state.data = [...state.data, newSet]
@@ -30,7 +30,7 @@ export const productSets = createVuexCRUD<ProductSet>()(
         }
       },
 
-      EDIT_DATA(
+      [StoreMutations.EditData](
         state,
         { key, value, item }: { key: keyof ProductSet; value: unknown; item: ProductSet },
       ) {
@@ -43,7 +43,7 @@ export const productSets = createVuexCRUD<ProductSet>()(
         state.data = updateItemInTree(state.data, item)
       },
 
-      REMOVE_DATA(state, { value: id }: { value: ID }) {
+      [StoreMutations.RemoveData](state, { value: id }: { value: ID }) {
         state.data = removeFromTree(state.data, id)
       },
     },
@@ -59,7 +59,7 @@ export const productSets = createVuexCRUD<ProductSet>()(
         if (!parent) return
         parent.children = ids.map((id) => parent.children.find((i) => i.id === id)!)
 
-        commit('EDIT_DATA', { key: 'id', value: parentId, item: parent })
+        commit(StoreMutations.EditData, { key: 'id', value: parentId, item: parent })
       },
     },
   },

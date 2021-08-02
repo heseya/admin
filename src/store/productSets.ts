@@ -2,8 +2,13 @@ import { ProductSet } from '@/interfaces/ProductSet'
 import { createVuexCRUD } from './generator'
 import { findInTree, removeFromTree, updateItemInTree } from '@/utils/tree'
 import { ID } from '@/interfaces/ID'
+import { api } from '@/api'
+import { reorderCollection } from '@/services/reorderCollection'
+import { cloneDeep } from 'lodash'
 
 const PARAM = { tree: 1 }
+
+const reorderSets = reorderCollection('product-sets', 'product_sets')
 
 export const productSets = createVuexCRUD<ProductSet>()(
   'product-sets',
@@ -42,7 +47,21 @@ export const productSets = createVuexCRUD<ProductSet>()(
         state.data = removeFromTree(state.data, id)
       },
     },
-    actions: {},
+    actions: {
+      async reorder(_u, productSets: ID[]) {
+        await reorderSets(productSets)
+      },
+      async reorderChildren({ state, commit }, { parentId, ids }: { parentId: ID; ids: ID[] }) {
+        const success = await reorderSets(ids, parentId)
+        if (!success) return
+
+        const parent = cloneDeep(findInTree(state.data, parentId))
+        if (!parent) return
+        parent.children = ids.map((id) => parent.children.find((i) => i.id === id)!)
+
+        commit('EDIT_DATA', { key: 'id', value: parentId, item: parent })
+      },
+    },
   },
   { get: PARAM, edit: PARAM, update: PARAM },
 )

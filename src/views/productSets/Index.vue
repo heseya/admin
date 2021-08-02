@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PaginatedList title="Kolekcje produktów" storeKey="productSets">
+    <PaginatedList title="Kolekcje produktów" storeKey="productSets" draggable>
       <template #nav>
         <vs-button @click="createProductSet()" color="dark" icon>
           <i class="bx bx-plus"></i>

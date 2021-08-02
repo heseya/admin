@@ -1,4 +1,4 @@
-import { api } from '@/api'
+import { reorderCollection } from '@/services/reorderCollection'
 import { createVuexCRUD } from './generator'
 
 export const pages = createVuexCRUD()('pages', {
@@ -6,13 +6,8 @@ export const pages = createVuexCRUD()('pages', {
   getters: {},
   mutations: {},
   actions: {
-    async setOrder(_u, pages) {
-      try {
-        const { data } = await api.post('/pages/order', { pages })
-        return data
-      } catch (error) {
-        return false
-      }
+    async reorder(_u, pages) {
+      await reorderCollection('pages', 'pages', 'order')(pages)
     },
   },
 })

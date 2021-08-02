@@ -44,8 +44,8 @@ export default Vue.extend({
     },
   },
   computed: {
-    productSets(): any[] {
-      return this.$store.getters['productSets/getData']
+    productSets() {
+      return this.$accessor.productSets.getData
     },
   },
   methods: {

@@ -9,9 +9,8 @@
     <div v-else class="cart-item__cover" />
     <div class="cart-item__content">
       <span>
-        {{ item.product.brand.name }} {{ item.product.name }}&nbsp;<small v-if="item.quantity !== 1"
-          >(x{{ item.quantity }})</small
-        >
+        {{ item.product.brand && item.product.brand.name }} {{ item.product.name }}&nbsp;
+        <small v-if="item.quantity !== 1">(x{{ item.quantity }})</small>
       </span>
       <small v-for="schema in item.schemas" :key="schema.id">
         <span>{{ schema.name }}:</span> {{ schema.value }}
@@ -23,6 +22,7 @@
 </template>
 
 <script lang="ts">
+import { CartItem } from '@/interfaces/CartItem'
 import Vue from 'vue'
 
 export default Vue.extend({
@@ -30,7 +30,7 @@ export default Vue.extend({
     item: {
       type: Object,
       required: true,
-    },
+    } as Vue.PropOptions<CartItem>,
   },
   computed: {
     coverUrl(): string {

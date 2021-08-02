@@ -9,6 +9,8 @@ import { RootState } from '.'
 import { ResponseMeta } from '@/interfaces/Response'
 import { ID } from '@/interfaces/ID'
 
+type QueryPayload = Record<string, any>
+
 export interface BaseItem {
   id: ID
 }
@@ -40,11 +42,11 @@ interface ExtendStore<State, Item extends BaseItem> {
 }
 
 interface CrudParams {
-  get?: Record<string, any>
-  add?: Record<string, any>
-  edit?: Record<string, any>
-  update?: Record<string, any>
-  remove?: Record<string, any>
+  get?: QueryPayload
+  add?: QueryPayload
+  edit?: QueryPayload
+  update?: QueryPayload
+  remove?: QueryPayload
 }
 
 /**
@@ -110,15 +112,17 @@ export const createVuexCRUD =
         state,
         { key, value, item: editedItem }: { key: keyof Item; value: unknown; item: Item },
       ) {
+        if (state.selected[key] === value) {
+          // Edits selected item
+          state.selected = editedItem
+        }
+
         const editedItemIndex = state.data.findIndex((item) => item[key] === value)
         if (editedItemIndex >= 0) {
           // Edits any item on the list
           const copy = cloneDeep(state.data)
           copy[editedItemIndex] = editedItem
           state.data = copy
-        } else if (state.selected[key] === value) {
-          // Edits selected item
-          state.selected = editedItem
         } else {
           // appends new item
           state.data = [...state.data, editedItem]
@@ -141,7 +145,7 @@ export const createVuexCRUD =
           commit(StoreMutations.SetData, [])
         },
 
-        async fetch({ commit }, query?: Record<string, any>) {
+        async fetch({ commit }, query?: QueryPayload) {
           commit(StoreMutations.SetError, null)
           commit(StoreMutations.SetLoading, true)
           try {

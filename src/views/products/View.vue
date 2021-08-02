@@ -187,7 +187,7 @@ export default Vue.extend({
     product(): Product {
       return this.$accessor.products.getSelected
     },
-    productSets(): any[] {
+    productSets() {
       return this.$accessor.productSets.getData
     },
     error(): any {

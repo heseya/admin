@@ -17,7 +17,7 @@
 
     <div class="schema">
       <card>
-        <SchemaForm :key="schema.id" :schema="schema" @submit="saveSchema" />
+        <SchemaForm :key="schema.id" :schema="editedSchema" @submit="saveSchema" />
       </card>
     </div>
   </div>

@@ -2,9 +2,9 @@
 import { ID } from './ID'
 import { Address } from './Address'
 import { Payment } from './Payment'
-import { Product } from './Product'
 import { ShippingMethod } from './ShippingMethod'
 import { DiscountCode } from './DiscountCode'
+import { CartItem } from './CartItem'
 
 export interface OrderStatus {
   id: ID
@@ -27,7 +27,7 @@ export interface Order {
   payable: boolean
   payed: boolean
   payments: Payment[]
-  products: Product[]
+  products: CartItem[]
   shipping_method: ShippingMethod
   shipping_number?: string
   shipping_price: number

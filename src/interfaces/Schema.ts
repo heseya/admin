@@ -1,4 +1,5 @@
 import { ID } from './ID'
+import { Product, ProductItem } from './Product'
 
 export enum SchemaType {
   String = 'string',
@@ -17,7 +18,7 @@ export interface SchemaOption {
   default: boolean
   disabled: boolean
   price: number
-  items: any[]
+  items: ProductItem[]
 }
 export interface Schema {
   id: ID
@@ -32,10 +33,17 @@ export interface Schema {
   options: SchemaOption[]
   pattern: null | string
   price: number
-  products: any[]
+  products: Product[]
   required: boolean
   step: null | number
   // eslint-disable-next-line camelcase
-  used_schemas: any[]
+  used_schemas: Schema[]
   validation: string
+}
+
+export interface SchemaValue {
+  id: ID
+  name: string
+  price: number
+  value: number | string
 }

@@ -59,6 +59,7 @@ export default Vue.extend({
       },
       async set(items: ProductSet[]) {
         this.$accessor.startLoading()
+        // @ts-ignore // TODO: fix extended store actions typings
         await this.$accessor.productSets.reorderChildren({
           parentId: this.set.id,
           ids: items.map((i) => i.id),

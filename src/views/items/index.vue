@@ -131,7 +131,7 @@ export default Vue.extend({
       }
     },
 
-    openModal(id: ID) {
+    openModal(id?: ID) {
       this.isModalActive = true
       if (id) {
         this.editedItem = this.$store.getters['items/getFromListById'](id)
@@ -146,6 +146,7 @@ export default Vue.extend({
       if (this.editedItem.id) {
         const quantityDiff = this.editedItem.quantity - this.editedOriginalQuantity
         if (quantityDiff) {
+          // @ts-ignore // TODO: fix extended store actions typings
           success = await this.$accessor.items.updateQuantity({
             id: this.editedItem.id,
             quantity: quantityDiff,

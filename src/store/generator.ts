@@ -32,11 +32,11 @@ interface DefaultStore<Item extends BaseItem> {
   selected: Item
 }
 
-interface ExtendStore<S, Item extends BaseItem> {
-  state: S
-  getters: GetterTree<S & DefaultStore<Item>, RootState>
-  mutations: MutationTree<S & DefaultStore<Item>>
-  actions: ActionTree<S & DefaultStore<Item>, RootState>
+interface ExtendStore<State, Item extends BaseItem> {
+  state: State
+  getters: GetterTree<State & DefaultStore<Item>, RootState>
+  mutations: MutationTree<State & DefaultStore<Item>>
+  actions: ActionTree<State & DefaultStore<Item>, RootState>
 }
 
 interface CrudParams {
@@ -56,7 +56,7 @@ interface CrudParams {
  */
 export const createVuexCRUD =
   <Item extends BaseItem>() =>
-  <S extends {} = {}>(endpoint: string, extend: ExtendStore<S, Item>, params: CrudParams = {}) => {
+  <State>(endpoint: string, extend: ExtendStore<State, Item>, params: CrudParams = {}) => {
     const moduleState = () =>
       ({
         error: null as null | Error,
@@ -65,7 +65,7 @@ export const createVuexCRUD =
         data: [] as Item[],
         selected: {} as Item,
         ...(extend?.state || {}),
-      } as DefaultStore<Item> & S)
+      } as DefaultStore<Item> & State)
 
     const moduleGetters = getterTree(moduleState, {
       getError(state) {

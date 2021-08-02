@@ -86,11 +86,12 @@ export default Vue.extend({
       }
     },
     killSession(id: ID) {
+      // @ts-ignore // TODO: fix extended store actions typings
       this.$accessor.authSessions.kill(id)
     },
     killAllSessions() {
-      // TODO: null because of the bug in Accessor typing, and TS do not accept no parameters
-      this.$accessor.authSessions.killAll(null)
+      // @ts-ignore // TODO: fix extended store actions typings
+      this.$accessor.authSessions.killAll()
     },
   },
 })

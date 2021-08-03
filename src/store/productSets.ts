@@ -2,7 +2,6 @@ import { ProductSet } from '@/interfaces/ProductSet'
 import { createVuexCRUD, StoreMutations } from './generator'
 import { findInTree, removeFromTree, updateItemInTree } from '@/utils/tree'
 import { ID } from '@/interfaces/ID'
-import { api } from '@/api'
 import { reorderCollection } from '@/services/reorderCollection'
 import { cloneDeep } from 'lodash'
 
@@ -63,5 +62,5 @@ export const productSets = createVuexCRUD<ProductSet>()(
       },
     },
   },
-  { get: PARAM, edit: PARAM, update: PARAM },
+  { get: PARAM, edit: PARAM, update: PARAM, add: PARAM },
 )

@@ -39,6 +39,8 @@ export const removeFromTree = <T extends TreeWithParents<T>>(array: T[], id: ID)
   const parent = findInTree(array, item.parent?.id || item.parent_id!)
   if (parent) {
     parent.children = parent.children.filter((child) => child.id !== id)
+  } else {
+    return array.filter((child) => child.id !== id)
   }
 
   return array

@@ -152,6 +152,7 @@ import TagsSelect from '@/components/TagsSelect.vue'
 import { formatApiError } from '@/utils/errors'
 import { ID } from '@/interfaces/ID'
 import { Product, ProductDTO, ProductComponentForm } from '@/interfaces/Product'
+import { ProductSet } from '@/interfaces/ProductSet'
 
 const EMPTY_FORM: ProductComponentForm = {
   id: '',
@@ -187,7 +188,7 @@ export default Vue.extend({
     product(): Product {
       return this.$accessor.products.getSelected
     },
-    productSets() {
+    productSets(): ProductSet[] {
       return this.$accessor.productSets.getData
     },
     error(): any {

@@ -37,7 +37,7 @@ export interface Schema {
   required: boolean
   step: null | number
   // eslint-disable-next-line camelcase
-  used_schemas: Schema[]
+  used_schemas: any[] // TODO: SchemaDTO
   validation: string
 }
 

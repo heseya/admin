@@ -234,7 +234,8 @@ export default Vue.extend({
       this.$accessor.startLoading()
       let id = null
 
-      this.form.default = this.defaultOption
+      this.form.default =
+        this.form.type === SchemaType.Select ? this.defaultOption : this.form.default
 
       const options = this.form.options.map((opt) => ({
         ...opt,

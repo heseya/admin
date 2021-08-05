@@ -6,3 +6,14 @@ export interface User {
   email: string
   avatar: string
 }
+
+export interface CreateUserDTO {
+  name: string
+  email: string
+  password: string
+}
+export interface EditUserDTO {
+  id: ID
+  name: string
+  email: string
+}

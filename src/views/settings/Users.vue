@@ -1,17 +1,19 @@
 <template>
   <div>
-    <PaginatedList title="Tagi" storeKey="tags">
+    <PaginatedList title="Użytkownicy" storeKey="users">
       <template #nav>
         <vs-button @click="openModal()" color="dark" icon>
           <i class="bx bx-plus"></i>
         </vs-button>
       </template>
-      <template v-slot="{ item: tag }">
-        <list-item @click="openModal(tag.id)" :key="tag.id">
+      <template v-slot="{ item: user }">
+        <list-item @click="openModal(user.id)" :key="user.id">
           <template #avatar>
-            <vs-avatar :color="`#${tag.color}`" :key="tag.color" />
+            <vs-avatar>
+              <img :src="user.avatar" alt="" />
+            </vs-avatar>
           </template>
-          {{ tag.name }}
+          {{ user.name }}
         </list-item>
       </template>
     </PaginatedList>
@@ -19,30 +21,37 @@
     <validation-observer v-slot="{ handleSubmit }">
       <vs-dialog width="550px" not-center v-model="isModalActive">
         <template #header>
-          <h4>{{ editedItem.id ? 'Edycja taga' : 'Nowy tag' }}</h4>
+          <h4>{{ isNewUser(editedUser) ? 'Nowy użytkownik' : 'Edycja użytkownika' }}</h4>
         </template>
         <modal-form>
-          <validated-input rules="required" v-model="editedItem.name" label="Nazwa" />
-
+          <validated-input rules="required" v-model="editedUser.name" label="Nazwa" />
+          <validated-input rules="email|required" v-model="editedUser.email" label="Email" />
           <validated-input
-            rules="required"
-            :value="`#${editedItem.color}`"
-            label="Kolor"
-            @input="setColor"
-            type="color"
+            v-if="isNewUser(editedUser)"
+            type="password"
+            rules="password|required"
+            v-model="editedUser.password"
+            label="Hasło"
           />
         </modal-form>
         <template #footer>
           <div class="row">
             <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
             <pop-confirm
-              title="Czy na pewno chcesz usunąć ten tag?"
+              title="Czy na pewno chcesz usunąć tego użytkownika?"
               okText="Usuń"
               cancelText="Anuluj"
               @confirm="deleteItem"
               v-slot="{ open }"
             >
-              <vs-button v-if="editedItem.id" color="danger" @click="open">Usuń</vs-button>
+              <vs-button
+                v-if="!isNewUser(editedUser)"
+                :disabled="isEditedUserCurrentUser"
+                color="danger"
+                @click="open"
+              >
+                Usuń
+              </vs-button>
             </pop-confirm>
           </div>
         </template>
@@ -63,12 +72,16 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
 import { ID } from '@/interfaces/ID'
-import { Tag } from '@/interfaces/Tag'
+import { CreateUserDTO, EditUserDTO } from '@/interfaces/User'
 
-const CLEAR_TAG: Tag = {
-  id: '',
+const CLEAR_USER: CreateUserDTO = {
   name: '',
-  color: '000000',
+  email: '',
+  password: '',
+}
+
+const isNewUser = (user: CreateUserDTO | EditUserDTO): user is CreateUserDTO => {
+  return 'id' in user === false
 }
 
 export default Vue.extend({
@@ -82,39 +95,45 @@ export default Vue.extend({
   },
   data: () => ({
     isModalActive: false,
-    editedItem: clone(CLEAR_TAG) as Tag,
+    editedUser: clone(CLEAR_USER) as CreateUserDTO | EditUserDTO,
   }),
-  methods: {
-    setColor(color: string) {
-      this.editedItem.color = color.split('#')[1] ?? color
+  computed: {
+    isEditedUserCurrentUser(): boolean {
+      return !isNewUser(this.editedUser) && this.editedUser.id === this.$accessor.auth.user?.id
     },
+  },
+  methods: {
     openModal(id?: ID) {
       this.isModalActive = true
       if (id) {
-        this.editedItem = this.$store.getters['tags/getFromListById'](id)
-        this.setColor(this.editedItem.color)
+        this.editedUser = this.$accessor.users.getFromListById(id)
       } else {
-        this.editedItem = clone(CLEAR_TAG)
+        this.editedUser = clone(CLEAR_USER)
       }
     },
     async saveModal() {
       this.$accessor.startLoading()
-      if (this.editedItem.id) {
-        await this.$store.dispatch('tags/update', {
-          id: this.editedItem.id,
-          item: this.editedItem,
-        })
-      } else {
-        await this.$store.dispatch('tags/add', this.editedItem)
-      }
+
+      const updated = isNewUser(this.editedUser)
+        ? await this.$accessor.users.add(this.editedUser)
+        : await this.$accessor.users.update({
+            id: this.editedUser.id,
+            item: this.editedUser,
+          })
+      if (updated) this.isModalActive = false
+      this.$accessor.stopLoading()
+    },
+    async deleteItem() {
+      if (isNewUser(this.editedUser)) return
+
+      this.$accessor.startLoading()
+      await this.$accessor.users.remove(this.editedUser.id)
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
-    async deleteItem() {
-      this.$accessor.startLoading()
-      await this.$store.dispatch('tags/remove', this.editedItem.id)
-      this.$accessor.stopLoading()
-      this.isModalActive = false
+
+    isNewUser(user: CreateUserDTO | EditUserDTO): user is CreateUserDTO {
+      return isNewUser(user)
     },
   },
   beforeRouteLeave(to, from, next) {

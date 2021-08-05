@@ -57,7 +57,7 @@ interface CrudParams {
  * @param params - fixed Query params for requests in scope
  */
 export const createVuexCRUD =
-  <Item extends BaseItem>() =>
+  <Item extends BaseItem, CreateItemDTO = Partial<Item>, UpdateItemDTO = Partial<Item>>() =>
   <State>(endpoint: string, extend: ExtendStore<State, Item>, params: CrudParams = {}) => {
     const moduleState = () =>
       ({
@@ -187,7 +187,7 @@ export const createVuexCRUD =
           }
         },
 
-        async add({ commit }, item: Partial<Item>) {
+        async add({ commit }, item: CreateItemDTO) {
           commit(StoreMutations.SetError, null)
           commit(StoreMutations.SetLoading, true)
           try {
@@ -204,7 +204,7 @@ export const createVuexCRUD =
           }
         },
 
-        async edit({ commit }, { id, item }: { id: string; item: Partial<Item> }) {
+        async edit({ commit }, { id, item }: { id: string; item: UpdateItemDTO }) {
           commit(StoreMutations.SetLoading, true)
           commit(StoreMutations.SetError, null)
           try {
@@ -223,7 +223,7 @@ export const createVuexCRUD =
           }
         },
 
-        async update({ commit }, { id, item }: { id: string; item: Partial<Item> }) {
+        async update({ commit }, { id, item }: { id: string; item: Partial<UpdateItemDTO> }) {
           commit(StoreMutations.SetLoading, true)
           commit(StoreMutations.SetError, null)
           try {
@@ -243,7 +243,7 @@ export const createVuexCRUD =
         },
         async updateByKey(
           { commit },
-          { key, value, item }: { key: keyof Item; value: unknown; item: Partial<Item> },
+          { key, value, item }: { key: keyof Item; value: unknown; item: Partial<UpdateItemDTO> },
         ) {
           commit(StoreMutations.SetLoading, true)
           commit(StoreMutations.SetError, null)

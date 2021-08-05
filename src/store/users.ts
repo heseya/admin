@@ -1,7 +1,7 @@
 import { createVuexCRUD } from './generator'
-import { User } from '@/interfaces/User'
+import { CreateUserDTO, EditUserDTO, User } from '@/interfaces/User'
 
-export const users = createVuexCRUD<User>()('users', {
+export const users = createVuexCRUD<User, CreateUserDTO, EditUserDTO>()('users', {
   state: {},
   getters: {},
   mutations: {},

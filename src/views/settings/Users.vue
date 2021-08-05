@@ -80,10 +80,6 @@ const CLEAR_USER: CreateUserDTO = {
   password: '',
 }
 
-const isNewUser = (user: CreateUserDTO | EditUserDTO): user is CreateUserDTO => {
-  return 'id' in user === false
-}
-
 export default Vue.extend({
   components: {
     PaginatedList,
@@ -99,7 +95,7 @@ export default Vue.extend({
   }),
   computed: {
     isEditedUserCurrentUser(): boolean {
-      return !isNewUser(this.editedUser) && this.editedUser.id === this.$accessor.auth.user?.id
+      return !this.isNewUser(this.editedUser) && this.editedUser.id === this.$accessor.auth.user?.id
     },
   },
   methods: {
@@ -114,7 +110,7 @@ export default Vue.extend({
     async saveModal() {
       this.$accessor.startLoading()
 
-      const updated = isNewUser(this.editedUser)
+      const updated = this.isNewUser(this.editedUser)
         ? await this.$accessor.users.add(this.editedUser)
         : await this.$accessor.users.update({
             id: this.editedUser.id,
@@ -124,7 +120,7 @@ export default Vue.extend({
       this.$accessor.stopLoading()
     },
     async deleteItem() {
-      if (isNewUser(this.editedUser)) return
+      if (this.isNewUser(this.editedUser)) return
 
       this.$accessor.startLoading()
       await this.$accessor.users.remove(this.editedUser.id)
@@ -133,7 +129,7 @@ export default Vue.extend({
     },
 
     isNewUser(user: CreateUserDTO | EditUserDTO): user is CreateUserDTO {
-      return isNewUser(user)
+      return 'id' in user === false
     },
   },
   beforeRouteLeave(to, from, next) {

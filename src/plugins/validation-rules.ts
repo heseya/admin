@@ -1,6 +1,9 @@
-import { ShippingMethodPriceRangeDTO } from '@/interfaces/ShippingMethod'
 import { extend } from 'vee-validate'
 import { required, email } from 'vee-validate/dist/rules'
+
+import { ShippingMethodPriceRangeDTO } from '@/interfaces/ShippingMethod'
+
+import { ONLY_LETTERS_REGEX, PASSWORD_REGEX, SLUG_REGEX } from '@/consts/regexes'
 
 extend('required', {
   ...required,
@@ -21,7 +24,7 @@ extend('repeatPassword', {
 
 extend('password', {
   validate(password) {
-    return /^(?=.*\d)(?=.*\W)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{10,}$/g.test(password)
+    return PASSWORD_REGEX.test(password)
   },
   message:
     'Hasło musi mieć przynajmniej 10 znaków oraz zawierać małą, dużą literę, cyfrę i znak specjalny',
@@ -50,14 +53,14 @@ extend('id-required', {
 extend('slug', {
   message: 'Link może składać się tylko z małych liter, cyfr i myślników',
   validate: (value) => {
-    return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value)
+    return SLUG_REGEX.test(value)
   },
 })
 
 extend('letters-only', {
   message: 'Wartość może składać się tylko z liter i podkreślników (_)',
   validate: (value) => {
-    return /^[a-zA-Z_]+(?:[a-zA-Z]+)*$/.test(value)
+    return ONLY_LETTERS_REGEX.test(value)
   },
 })
 

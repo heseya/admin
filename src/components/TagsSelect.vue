@@ -61,7 +61,7 @@ export default Vue.extend({
     }, 200),
     async addTag(tagName: string) {
       const newTag = await this.$accessor.tags.add({ name: tagName })
-      this.tags = [...this.tags, newTag]
+      if (newTag) this.tags = [...this.tags, newTag]
     },
   },
   components: {

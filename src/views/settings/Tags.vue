@@ -88,7 +88,7 @@ export default Vue.extend({
     setColor(color: string) {
       this.editedItem.color = color.split('#')[1] ?? color
     },
-    openModal(id: ID) {
+    openModal(id?: ID) {
       this.isModalActive = true
       if (id) {
         this.editedItem = this.$store.getters['tags/getFromListById'](id)

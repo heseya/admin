@@ -95,6 +95,14 @@
           </template>
           Ustawienia zaawansowane
         </list-item>
+        <list-item url="/settings/users">
+          <template #avatar>
+            <vs-avatar dark>
+              <i class="bx bxs-group"></i>
+            </vs-avatar>
+          </template>
+          Lista użytkowników
+        </list-item>
 
         <h2 class="section-title">Konto</h2>
         <list-item @click="isChangePasswordModal = true">
@@ -140,6 +148,7 @@ import Card from '@/components/layout/Card.vue'
 import List from '@/components/layout/List.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import ChangePassword from '@/components/ChangePassword.vue'
+import { User } from '@/interfaces/User'
 
 export default Vue.extend({
   components: {
@@ -153,8 +162,8 @@ export default Vue.extend({
     isChangePasswordModal: false,
   }),
   computed: {
-    user() {
-      return this.$store.state.auth.user || {}
+    user(): User {
+      return this.$store.state.auth.user
     },
   },
   methods: {

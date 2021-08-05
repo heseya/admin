@@ -9,6 +9,7 @@ import { api } from '../api'
 import { Setting } from '@/interfaces/Settings'
 
 import { auth } from './auth'
+import { users } from './users'
 import { items } from './items'
 import { products } from './products'
 import { schemas } from './schemas'
@@ -71,6 +72,7 @@ const storePattern = {
   actions,
   modules: {
     auth,
+    users,
     items,
     schemas,
     products,

@@ -21,9 +21,10 @@ extend('repeatPassword', {
 
 extend('password', {
   validate(password) {
-    return password.length >= 10
+    return /^(?=.*\d)(?=.*\W)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{10,}$/g.test(password)
   },
-  message: 'Hasło musi mieć przynajmniej 10 znaków',
+  message:
+    'Hasło musi mieć przynajmniej 10 znaków oraz zawierać małą, dużą literę, cyfrę i znak specjalny',
 })
 
 extend('positive', {
@@ -62,14 +63,13 @@ extend('letters-only', {
 
 extend('price-ranges-duplicates', {
   message: 'Zakresy cen nie mogą zawierać zduplikowanych progów',
-  validate: (value) => {
-    const values: number[] = []
+  validate: (priceRanges: ShippingMethodPriceRangeDTO[]) => {
+    const startValues: number[] = []
 
-    const cond = (value as ShippingMethodPriceRangeDTO[]).every(({ start }) => {
-      const isDuplicate = values.includes(+start)
-      values.push(+start)
+    return priceRanges.every(({ start }) => {
+      const isDuplicate = startValues.includes(+start)
+      startValues.push(+start)
       return !isDuplicate
     })
-    return cond
   },
 })

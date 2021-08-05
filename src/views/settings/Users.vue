@@ -101,11 +101,7 @@ export default Vue.extend({
   methods: {
     openModal(id?: ID) {
       this.isModalActive = true
-      if (id) {
-        this.editedUser = this.$accessor.users.getFromListById(id)
-      } else {
-        this.editedUser = clone(CLEAR_USER)
-      }
+      this.editedUser = id ? this.$accessor.users.getFromListById(id) : clone(CLEAR_USER)
     },
     async saveModal() {
       this.$accessor.startLoading()
@@ -117,6 +113,7 @@ export default Vue.extend({
             item: this.editedUser,
           })
       if (updated) this.isModalActive = false
+
       this.$accessor.stopLoading()
     },
     async deleteItem() {
@@ -124,15 +121,15 @@ export default Vue.extend({
 
       this.$accessor.startLoading()
       await this.$accessor.users.remove(this.editedUser.id)
-      this.$accessor.stopLoading()
       this.isModalActive = false
+      this.$accessor.stopLoading()
     },
 
     isNewUser(user: CreateUserDTO | EditUserDTO): user is CreateUserDTO {
       return 'id' in user === false
     },
   },
-  beforeRouteLeave(to, from, next) {
+  beforeRouteLeave(_to, _from, next) {
     if (this.isModalActive) {
       this.isModalActive = false
       next(false)
@@ -142,9 +139,3 @@ export default Vue.extend({
   },
 })
 </script>
-
-<style lang="scss">
-input[type='color'] {
-  height: 30px !important;
-}
-</style>

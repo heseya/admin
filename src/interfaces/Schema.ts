@@ -45,5 +45,5 @@ export interface SchemaValue {
   id: ID
   name: string
   price: number
-  value: number | string
+  value: string
 }

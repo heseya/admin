@@ -25,11 +25,11 @@
         </template>
         <modal-form>
           <validated-input rules="required" v-model="editedUser.name" label="Nazwa" />
-          <validated-input rules="email|required" v-model="editedUser.email" label="Email" />
+          <validated-input rules="required|email" v-model="editedUser.email" label="Email" />
           <validated-input
             v-if="isNewUser(editedUser)"
             type="password"
-            rules="password|required"
+            rules="required|password"
             v-model="editedUser.password"
             label="Hasło"
           />

@@ -23,7 +23,7 @@ extend('repeatPassword', {
 })
 
 extend('password', {
-  validate(password) {
+  validate(password: string) {
     return PASSWORD_REGEX.test(password)
   },
   message:

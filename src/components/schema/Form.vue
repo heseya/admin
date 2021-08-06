@@ -1,17 +1,9 @@
 <template>
   <validation-observer v-slot="{ handleSubmit }" class="schema-form">
-    <validation-provider rules="required" v-slot="{ errors }">
-      <vs-input v-model="form.name" label="Nazwa">
-        <template #message-danger>{{ errors[0] }}</template>
-      </vs-input>
-    </validation-provider>
-    <validation-provider v-slot="{ errors }">
-      <vs-input v-model="form.description" label="Opis">
-        <template #message-danger>{{ errors[0] }}</template>
-      </vs-input>
-    </validation-provider>
+    <validated-input name="name" rules="required" v-model="form.name" label="Nazwa" />
+    <validated-input name="description" v-model="form.description" label="Opis" />
     <div class="flex">
-      <validation-provider rules="id-required" v-slot="{ errors }">
+      <validation-provider name="schema-type" rules="id-required" v-slot="{ errors }">
         <vs-select v-model="form.type" label="Typ schematu">
           <vs-option
             v-for="{ value, label } in SchemaTypesOptions"
@@ -24,16 +16,15 @@
           <template #message-danger>{{ errors[0] }}</template>
         </vs-select>
       </validation-provider>
-      <validation-provider rules="required|not-negative" v-slot="{ errors }">
-        <vs-input
-          v-if="form.type !== SchemaType.MultiplySchema"
-          v-model="form.price"
-          type="number"
-          :label="form.type === SchemaType.Multiply ? 'Cena za sztukę' : 'Dodatkowa cena'"
-        >
-          <template #message-danger>{{ errors[0] }}</template>
-        </vs-input>
-      </validation-provider>
+
+      <validated-input
+        v-if="form.type !== SchemaType.MultiplySchema"
+        v-model="form.price"
+        name="price"
+        type="number"
+        rules="required|not-negative"
+        :label="form.type === SchemaType.Multiply ? 'Cena za sztukę' : 'Dodatkowa cena'"
+      />
     </div>
     <div class="flex">
       <SwitchInput v-model="form.hidden">
@@ -44,43 +35,34 @@
       </SwitchInput>
     </div>
     <div class="flex" v-if="isKindOfNumeric(form.type) || form.type === SchemaType.String">
-      <validation-provider v-slot="{ errors }">
-        <vs-input
-          v-model="form.min"
-          default="0"
-          type="number"
-          :label="isKindOfNumeric(form.type) ? 'Minimalna wartość' : 'Minimalna długość'"
-        >
-          <template #message-danger>{{ errors[0] }}</template>
-        </vs-input>
-      </validation-provider>
-      <validation-provider v-slot="{ errors }">
-        <vs-input
-          v-model="form.max"
-          type="number"
-          :label="isKindOfNumeric(form.type) ? 'Maksymalna wartość' : 'Maksymalna długość'"
-        >
-          <template #message-danger>{{ errors[0] }}</template>
-        </vs-input>
-      </validation-provider>
-      <validation-provider v-slot="{ errors }" v-if="isKindOfNumeric(form.type)">
-        <vs-input v-model="form.step" type="number" label="Krok">
-          <template #message-danger>{{ errors[0] }}</template>
-        </vs-input>
-      </validation-provider>
+      <validated-input
+        v-model="form.min"
+        default="0"
+        name="min"
+        type="number"
+        :label="isKindOfNumeric(form.type) ? 'Minimalna wartość' : 'Minimalna długość'"
+      />
+      <validated-input
+        v-model="form.max"
+        type="number"
+        name="max"
+        :label="isKindOfNumeric(form.type) ? 'Maksymalna wartość' : 'Maksymalna długość'"
+      />
+      <validated-input
+        v-if="isKindOfNumeric(form.type)"
+        v-model="form.step"
+        type="number"
+        name="step"
+        label="Krok"
+      />
     </div>
-    <validation-provider
-      v-slot="{ errors }"
+    <validated-input
       v-if="isKindOfNumeric(form.type) || form.type === SchemaType.String"
-    >
-      <vs-input
-        v-model="form.default"
-        :type="isKindOfNumeric(form.type) ? 'number' : 'text'"
-        label="Wartość domyślna"
-      >
-        <template #message-danger>{{ errors[0] }}</template>
-      </vs-input>
-    </validation-provider>
+      v-model="form.default"
+      name="default"
+      :type="isKindOfNumeric(form.type) ? 'number' : 'text'"
+      label="Wartość domyślna"
+    />
     <SwitchInput v-if="form.type === SchemaType.Boolean" v-model="form.default">
       <template #title>Wartość domyślna</template>
     </SwitchInput>
@@ -121,16 +103,8 @@
     <br />
 
     <Zone title="Opcje zaawansowane" type="danger">
-      <validation-provider v-slot="{ errors }">
-        <vs-input v-model="form.pattern" label="Wyrażenie regularne">
-          <template #message-danger>{{ errors[0] }}</template>
-        </vs-input>
-      </validation-provider>
-      <validation-provider v-slot="{ errors }">
-        <vs-input v-model="form.validation" label="Walidacja">
-          <template #message-danger>{{ errors[0] }}</template>
-        </vs-input>
-      </validation-provider>
+      <validated-input name="pattern" v-model="form.pattern" label="Wyrażenie regularne" />
+      <validated-input name="validation" v-model="form.validation" label="Walidacja" />
     </Zone>
     <br />
     <vs-button color="dark" size="large" @click.stop="handleSubmit(submit)"> Zapisz </vs-button>
@@ -148,6 +122,7 @@ import { CLEAR_FORM, CLEAR_OPTION } from '@/consts/schemaConsts'
 import SelectSchemaOptions from './SelectSchemaOptions.vue'
 import ModalForm from '../ModalForm.vue'
 import Selector from '../Selector.vue'
+import ValidatedInput from '../form/ValidatedInput.vue'
 
 export default {
   components: {
@@ -158,6 +133,7 @@ export default {
     SelectSchemaOptions,
     ModalForm,
     Selector,
+    ValidatedInput,
   },
   data: () => ({
     form: cloneDeep(CLEAR_FORM),

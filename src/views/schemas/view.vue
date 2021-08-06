@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :key="schema.id">
     <top-nav :title="!isNew ? schema.name : 'Nowy schemat'">
       <pop-confirm
         v-if="!isNew"
@@ -73,10 +73,8 @@ export default Vue.extend({
     },
   },
   methods: {
-    async saveSchema() {
-      this.$accessor.startLoading()
-      await this.$accessor.schemas.update({ id: this.schema.id, item: this.schema })
-      this.$accessor.stopLoading()
+    async saveSchema(schema: Schema) {
+      if (this.isNew) this.$router.push(`/schemas/${schema.id}`)
     },
     async deleteSchema() {
       this.$accessor.startLoading()

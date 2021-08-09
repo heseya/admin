@@ -54,7 +54,7 @@
 <script lang="ts">
 import { Address } from '@/interfaces/Address'
 import Vue from 'vue'
-import PopConfirm from './layout/PopConfirm.vue'
+import PopConfirm from '../../layout/PopConfirm.vue'
 
 export default Vue.extend({
   components: { PopConfirm },

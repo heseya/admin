@@ -35,7 +35,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import ListItem from './layout/ListItem.vue'
+import ListItem from '../../layout/ListItem.vue'
 
 export default Vue.extend({
   components: { ListItem },

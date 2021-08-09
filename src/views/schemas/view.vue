@@ -32,7 +32,7 @@ import { Schema } from '@/interfaces/Schema'
 import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import SchemaForm from '@/components/schema/Form.vue'
+import SchemaForm from '@/components/modules/schemas/Form.vue'
 import { formatApiError } from '@/utils/errors'
 
 export default Vue.extend({

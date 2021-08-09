@@ -7,7 +7,7 @@
       </vs-button>
     </template>
 
-    <div class="select-schema-options__option" v-for="(option, i) in options" :key="option + i">
+    <div class="select-schema-options__option" v-for="(option, i) in options" :key="i">
       <validation-provider class="input" v-slot="{ errors }" rules="required">
         <vs-input v-model="option.name" label="Nazwa">
           <template #message-danger>{{ errors[0] }}</template>
@@ -44,9 +44,11 @@
 import Vue from 'vue'
 import { ValidationProvider } from 'vee-validate'
 import cloneDeep from 'lodash/cloneDeep'
-import Zone from '@/components/Zone.vue'
-import Autocomplete from '../Autocomplete.vue'
-import SwitchInput from '../SwitchInput.vue'
+
+import Zone from '@/components/layout/Zone.vue'
+import Autocomplete from '@/components/Autocomplete.vue'
+import SwitchInput from '@/components/form/SwitchInput.vue'
+
 import { SchemaOption } from '@/interfaces/Schema'
 
 const CLEAR_OPTION: SchemaOption = {

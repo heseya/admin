@@ -26,10 +26,10 @@ import Vue from 'vue'
 import { cloneDeep } from 'lodash'
 
 import PaginatedList from '@/components/PaginatedList.vue'
-import ProductSetForm from '@/components/forms/productSets/Form.vue'
+import ProductSetForm from '@/components/modules/productSets/Form.vue'
 
 import { ProductSet, ProductSetDTO } from '@/interfaces/ProductSet'
-import ProductSetComponent from '@/components/ProductSet.vue'
+import ProductSetComponent from '@/components/modules/productSets/ProductSet.vue'
 
 const CLEAR_FORM: ProductSetDTO = {
   id: '',

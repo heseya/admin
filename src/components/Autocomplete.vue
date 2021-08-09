@@ -35,11 +35,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import Selector from '@/components/Selector.vue'
-import ModalForm from '@/components/ModalForm.vue'
+import ModalForm from '@/components/form/ModalForm.vue'
 import { ID } from '@/interfaces/ID'
 
 interface AutocompleteItem {
   id: ID
+  name: string
 }
 
 export default Vue.extend({

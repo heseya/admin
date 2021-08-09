@@ -70,7 +70,7 @@ import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 
 import PaginatedList from '@/components/PaginatedList.vue'
-import ModalForm from '@/components/ModalForm.vue'
+import ModalForm from '@/components/form/ModalForm.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'

@@ -136,10 +136,10 @@ import Vue from 'vue'
 
 import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
-import Address from '@/components/Address.vue'
+import Address from '@/components/modules/orders/OrderAddress.vue'
 import CartItem from '@/components/layout/CartItem.vue'
-import ModalForm from '@/components/ModalForm.vue'
-import PartialUpdateForm from '@/components/forms/orders/PartialUpdateForm.vue'
+import ModalForm from '@/components/form/ModalForm.vue'
+import PartialUpdateForm from '@/components/modules/orders/PartialUpdateForm.vue'
 
 import { getRelativeDate, formatDate } from '@/utils/utils'
 import { createPackage } from '@/services/createPackage'

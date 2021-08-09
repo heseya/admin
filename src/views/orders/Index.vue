@@ -55,8 +55,8 @@ import { DateInput, formatFilters, getRelativeDate } from '@/utils/utils'
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 
 import ListItem from '@/components/layout/ListItem.vue'
-import OrderFilter, { EMPTY_ORDER_FILTERS } from '@/components/OrderFilter.vue'
-import ModalForm from '@/components/ModalForm.vue'
+import OrderFilter, { EMPTY_ORDER_FILTERS } from '@/components/modules/orders/OrderFilter.vue'
+import ModalForm from '@/components/form/ModalForm.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 
 type OrderFilersType = typeof EMPTY_ORDER_FILTERS

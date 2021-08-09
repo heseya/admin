@@ -147,7 +147,7 @@ import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import List from '@/components/layout/List.vue'
 import ListItem from '@/components/layout/ListItem.vue'
-import ChangePassword from '@/components/ChangePassword.vue'
+import ChangePassword from '@/components/modules/auth/ChangePassword.vue'
 import { User } from '@/interfaces/User'
 
 export default Vue.extend({

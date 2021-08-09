@@ -68,7 +68,7 @@
 import Vue from 'vue'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 
-import ModalForm from '@/components/ModalForm.vue'
+import ModalForm from '@/components/form/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
@@ -102,12 +102,12 @@ export default Vue.extend({
     } as DiscountCode,
   }),
   computed: {
-    currency() {
+    currency(): string {
       return this.$store.state.currency
     },
   },
   methods: {
-    openModal(id: ID) {
+    openModal(id?: ID) {
       this.isModalActive = true
       if (id) {
         this.editedItem = this.$store.getters['discounts/getFromListById'](id)

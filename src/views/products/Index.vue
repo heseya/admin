@@ -39,10 +39,12 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import ProductTile from '@/components/ProductTile.vue'
-import ProductListItem from '@/components/ProductListItem.vue'
-import ProductsFilter, { EMPTY_PRODUCT_FILTERS } from '@/components/ProductsFilter.vue'
-import ModalForm from '@/components/ModalForm.vue'
+import ProductTile from '@/components/modules/products/ProductTile.vue'
+import ProductListItem from '@/components/modules/products/ProductListItem.vue'
+import ProductsFilter, {
+  EMPTY_PRODUCT_FILTERS,
+} from '@/components/modules/products/ProductsFilter.vue'
+import ModalForm from '@/components/form/ModalForm.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 import { formatFilters } from '@/utils/utils'
 

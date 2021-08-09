@@ -80,7 +80,7 @@ import { ValidationObserver } from 'vee-validate'
 import { clone } from 'lodash'
 
 import PaginatedList from '@/components/PaginatedList.vue'
-import ModalForm from '@/components/ModalForm.vue'
+import ModalForm from '@/components/form/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
@@ -111,7 +111,7 @@ export default Vue.extend({
     editedItem: clone(CLEAR_PACKAGE_TEMPALTE),
   }),
   methods: {
-    openModal(id: ID) {
+    openModal(id?: ID) {
       this.isModalActive = true
       if (id) {
         const item = this.$accessor.packageTemplates.getFromListById(id)

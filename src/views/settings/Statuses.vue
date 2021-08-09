@@ -61,10 +61,10 @@ import { ValidationObserver } from 'vee-validate'
 import { clone } from 'lodash'
 
 import PaginatedList from '@/components/PaginatedList.vue'
-import ModalForm from '@/components/ModalForm.vue'
+import ModalForm from '@/components/form/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import SwitchInput from '@/components/SwitchInput.vue'
+import SwitchInput from '@/components/form/SwitchInput.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
 import { ID } from '@/interfaces/ID'
@@ -96,7 +96,7 @@ export default Vue.extend({
     setColor(color: string) {
       this.editedItem.color = color.split('#')[1] ?? color
     },
-    openModal(id: ID) {
+    openModal(id?: ID) {
       this.isModalActive = true
       if (id) {
         this.editedItem = this.$store.getters['statuses/getFromListById'](id)

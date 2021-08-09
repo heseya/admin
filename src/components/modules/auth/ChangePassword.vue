@@ -32,7 +32,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
-import { api } from '../api'
+import { api } from '../../../api'
 import { formatApiError } from '@/utils/errors'
 
 export default Vue.extend({

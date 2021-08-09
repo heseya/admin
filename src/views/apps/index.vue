@@ -8,7 +8,7 @@
       </template>
 
       <template v-slot="{ item: app }">
-        <list-item class="app">
+        <list-item no-hover>
           <template #avatar>
             <vs-avatar dark>
               <i class="bx bxs-extension"></i>
@@ -74,13 +74,3 @@ export default Vue.extend({
   },
 })
 </script>
-
-<style lang="scss" scoped>
-.app {
-  cursor: default;
-
-  &:hover {
-    background: none;
-  }
-}
-</style>

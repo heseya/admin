@@ -82,7 +82,7 @@ export default Vue.extend({
         case 'IE':
           return 'bx bxl-internet-explorer'
         default:
-          return 'bx bxl-' + browser.toLowerCase()
+          return `bx bxl-${browser.toLowerCase()}`
       }
     },
     killSession(id: ID) {

@@ -13,122 +13,33 @@
     <card>
       <list>
         <h2 class="section-title">Sklep</h2>
-        <list-item url="/pages">
-          <template #avatar>
-            <vs-avatar dark>
-              <i class="bx bxs-copy-alt"></i>
-            </vs-avatar>
-          </template>
-          Strony
-        </list-item>
+        <SettingsItem name="Strony" url="/pages" icon="bx bxs-copy-alt" />
 
         <h2 class="section-title">Produkty</h2>
-        <list-item url="/settings/product-sets">
-          <template #avatar>
-            <vs-avatar dark>
-              <i class="bx bx-list-ul"></i>
-            </vs-avatar>
-          </template>
-          Kolekcje produktów
-        </list-item>
-
-        <list-item url="/settings/tags">
-          <template #avatar>
-            <vs-avatar dark>
-              <i class="bx bxs-purchase-tag"></i>
-            </vs-avatar>
-          </template>
-          Tagi
-        </list-item>
-
-        <list-item url="/schemas">
-          <template #avatar>
-            <vs-avatar dark>
-              <i class="bx bxs-customize"></i>
-            </vs-avatar>
-          </template>
-          Schematy
-        </list-item>
+        <SettingsItem name="Kolekcje produktów" url="/settings/product-sets" icon="bx bx-list-ul" />
+        <SettingsItem name="Tagi" icon="bx bxs-purchase-tag" url="/settings/tags" />
+        <SettingsItem name="Schematy" icon="bx bxs-customize" url="/schemas" />
 
         <h2 class="section-title">Zamówienia</h2>
-        <list-item url="/settings/statuses">
-          <template #avatar>
-            <vs-avatar dark>
-              <i class="bx bxs-check-circle"></i>
-            </vs-avatar>
-          </template>
-          Statusy zamówień
-        </list-item>
+        <SettingsItem name="Statusy zamówień" icon="bx bxs-check-circle" url="/settings/statuses" />
 
         <h2 class="section-title">Dostawa</h2>
-        <list-item url="/settings/shipping-methods">
-          <template #avatar>
-            <vs-avatar dark>
-              <i class="bx bxs-truck"></i>
-            </vs-avatar>
-          </template>
-          Opcje dostawy
-        </list-item>
-        <list-item url="/settings/package-templates">
-          <template #avatar>
-            <vs-avatar dark>
-              <i class="bx bxs-box"></i>
-            </vs-avatar>
-          </template>
-          Szablony przesyłek
-        </list-item>
+        <SettingsItem name="Opcje dostawy" icon="bx bxs-truck" url="/settings/shipping-methods" />
+        <SettingsItem
+          name="Szablony przesyłek"
+          icon="bx bxs-box"
+          url="/settings/package-templates"
+        />
 
         <h2 class="section-title">Inne</h2>
-        <list-item url="/apps">
-          <template #avatar>
-            <vs-avatar dark>
-              <i class="bx bxs-store-alt"></i>
-            </vs-avatar>
-          </template>
-          Aplikacje
-        </list-item>
-        <list-item url="/settings/advanced">
-          <template #avatar>
-            <vs-avatar dark>
-              <i class="bx bxs-cog"></i>
-            </vs-avatar>
-          </template>
-          Ustawienia zaawansowane
-        </list-item>
-        <list-item url="/settings/users">
-          <template #avatar>
-            <vs-avatar dark>
-              <i class="bx bxs-group"></i>
-            </vs-avatar>
-          </template>
-          Lista użytkowników
-        </list-item>
+        <SettingsItem name="Aplikacje" icon="bx bxs-store-alt" url="/apps" />
+        <SettingsItem name="Ustawienia zaawansowane" icon="bx bxs-cog" url="/settings/advanced" />
+        <SettingsItem name="Lista użytkowników" icon="bx bxs-group" url="/settings/users" />
 
         <h2 class="section-title">Konto</h2>
-        <list-item @click="isChangePasswordModal = true">
-          <template #avatar>
-            <vs-avatar dark>
-              <i class="bx bxs-lock"></i>
-            </vs-avatar>
-          </template>
-          Zmień hasło
-        </list-item>
-        <list-item url="/settings/login-history">
-          <template #avatar>
-            <vs-avatar dark>
-              <i class="bx bx-history"></i>
-            </vs-avatar>
-          </template>
-          Sesje użytkownika
-        </list-item>
-        <list-item @click="logout">
-          <template #avatar>
-            <vs-avatar dark>
-              <i class="bx bx-log-out-circle"></i>
-            </vs-avatar>
-          </template>
-          Wyloguj
-        </list-item>
+        <SettingsItem name="Zmień hasło" icon="bx bxs-lock" @click="isChangePasswordModal = true" />
+        <SettingsItem name="Sesje użytkownika" icon="bx bx-history" url="/settings/login-history" />
+        <SettingsItem name="Wyloguj" icon="bx bx-log-out-circle" @click="logout" />
       </list>
     </card>
 
@@ -136,7 +47,7 @@
       <template #header>
         <h4>Zmiana hasła</h4>
       </template>
-      <app-change-password @close="isChangePasswordModal = false" />
+      <ChangePasswordForm @close="isChangePasswordModal = false" />
     </vs-dialog>
   </div>
 </template>
@@ -146,17 +57,17 @@ import Vue from 'vue'
 import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import List from '@/components/layout/List.vue'
-import ListItem from '@/components/layout/ListItem.vue'
-import ChangePassword from '@/components/modules/auth/ChangePassword.vue'
+import ChangePasswordForm from '@/components/modules/auth/ChangePassword.vue'
 import { User } from '@/interfaces/User'
+import SettingsItem from '@/components/modules/settings/SettingsItem.vue'
 
 export default Vue.extend({
   components: {
     TopNav,
     Card,
     List,
-    ListItem,
-    appChangePassword: ChangePassword,
+    SettingsItem,
+    ChangePasswordForm,
   },
   data: () => ({
     isChangePasswordModal: false,

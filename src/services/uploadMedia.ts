@@ -1,4 +1,5 @@
 import { api } from '@/api'
+import { ID } from '@/interfaces/ID'
 import { CdnMedia } from '@/interfaces/Media'
 
 export const uploadMedia = async (file: File) => {
@@ -17,5 +18,14 @@ export const uploadMedia = async (file: File) => {
       success: false,
       error,
     }
+  }
+}
+
+export const removeMedia = async (fileId: ID): Promise<true | Error> => {
+  try {
+    await api.delete<null>(`/media/id:${fileId}`)
+    return true
+  } catch (error) {
+    return error
   }
 }

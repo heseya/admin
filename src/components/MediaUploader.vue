@@ -67,7 +67,7 @@ export default Vue.extend({
 
       const { success, file, error } = await uploadMedia(this.file!)
       if (success && file) {
-        this.$emit('upload', file.url)
+        this.$emit('upload', file)
         this.file = null
       } else {
         this.$emit('error', error)

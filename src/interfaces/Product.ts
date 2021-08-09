@@ -36,6 +36,7 @@ export interface ProductDTO {
   sets: ID[]
   tags: ID[]
   schemas: ID[]
+  media: ID[]
 }
 
 export interface ProductComponentForm

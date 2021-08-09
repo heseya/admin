@@ -16,7 +16,7 @@
       </template>
 
       <template v-slot="{ item: login }">
-        <list-item class="login-item">
+        <list-item class="login-item" no-hover>
           <template #avatar>
             <vs-avatar dark>
               <i :class="getBrowserIcon(login.browser)"></i>
@@ -26,11 +26,12 @@
             {{ login.platform + ' ' + login.browser + ' ' + login.browser_ver }}
           </span>
           <span v-else>Nieznane urządzenie</span>
-          <small v-if="login.ip" class="inline"> ({{ login.ip }})</small>
-          <small v-if="!login.revoked" class="green">Sesja aktywna</small>
+          <small v-if="login.ip" class="login-item__ip"> ({{ login.ip }})</small>
+          <small v-if="!login.revoked" class="login-item__active">Sesja aktywna</small>
           <small>{{ login.created_at }}</small>
 
           <template #action>
+            <small v-if="login.current_session" class="login-item__current">To ty</small>
             <pop-confirm
               title="Czy na pewno chcesz wylogować tę sesję użytkownika?"
               okText="Usuń"
@@ -98,19 +99,27 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.green {
-  color: green;
-}
-
-.inline {
-  display: inline;
-}
-
 .login-item {
-  cursor: default;
+  $activeColor: #158a15;
 
-  &:hover {
-    background: none;
+  &__active {
+    color: $activeColor;
+  }
+
+  &__current {
+    width: 70px;
+    margin-right: 5px;
+    box-sizing: border-box;
+    background-color: lighten($activeColor, 60%);
+    text-align: center;
+    color: $activeColor;
+    border: dashed 1px $activeColor;
+    border-radius: 8px;
+    padding: 4px;
+  }
+
+  &__ip {
+    display: inline;
   }
 }
 </style>

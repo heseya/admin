@@ -59,9 +59,9 @@ export default {
 
       this.$accessor.startLoading()
 
-      const { success, url, error } = await uploadMedia(this.file)
+      const { success, file, error } = await uploadMedia(this.file)
       if (success) {
-        this.$emit('upload', url)
+        this.$emit('upload', file)
         this.file = null
       } else {
         this.$emit('error', error)

@@ -8,8 +8,8 @@
     </validation-provider>
     <br />
     <br />
-    <validation-provider rules="required" vid="passwordNew" v-slot="{ errors }">
-      <vs-input v-model="passwordNew" label="Nowe hasło" type="password|password">
+    <validation-provider rules="required|password" vid="passwordNew" v-slot="{ errors }">
+      <vs-input v-model="passwordNew" label="Nowe hasło" type="password">
         <template #message-danger>{{ errors[0] }}</template>
       </vs-input>
     </validation-provider>

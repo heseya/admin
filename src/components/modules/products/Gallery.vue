@@ -42,10 +42,6 @@ export default Vue.extend({
       type: Array,
       default: () => [],
     } as Vue.PropOptions<CdnMedia[]>,
-    autoDelete: {
-      type: Boolean,
-      default: false,
-    },
   },
   computed: {
     images: {
@@ -68,7 +64,7 @@ export default Vue.extend({
     this.removeTouchedFiles()
   },
   data: () => ({
-    filesToRemove: [] as ID[],
+    mediaToDelete: [] as ID[],
     isDrag: false,
   }),
   methods: {
@@ -78,14 +74,14 @@ export default Vue.extend({
     onImageDelete(deletedId: ID) {
       this.images = this.images.filter(({ id }) => deletedId !== id)
 
-      if (this.filesToRemove.find((id) => deletedId === id)) {
-        this.filesToRemove = this.filesToRemove.filter((id) => deletedId !== id)
+      if (this.mediaToDelete.find((id) => deletedId === id)) {
+        this.mediaToDelete = this.mediaToDelete.filter((id) => deletedId !== id)
         removeMedia(deletedId)
       }
     },
     onImageUpload(file: CdnMedia) {
       this.images = [...this.images, file]
-      this.filesToRemove = [...this.filesToRemove, file.id]
+      this.mediaToDelete = [...this.mediaToDelete, file.id]
     },
     onUploadError(error: any) {
       this.$vs.notification({
@@ -93,9 +89,12 @@ export default Vue.extend({
         ...formatApiError(error),
       })
     },
-    removeTouchedFiles() {
-      console.log('Removing following files:', this.filesToRemove)
-      this.filesToRemove.map(removeMedia)
+    clearMediaToDelete() {
+      this.mediaToDelete = []
+    },
+    async removeTouchedFiles() {
+      await Promise.all(this.mediaToDelete.map(removeMedia))
+      this.clearMediaToDelete()
     },
   },
 })

@@ -16,7 +16,7 @@
     </top-nav>
 
     <div class="product">
-      <gallery v-model="form.gallery" :auto-delete="isNew && !isSaving" />
+      <gallery ref="gallery" v-model="form.gallery" />
 
       <div>
         <card>
@@ -173,7 +173,6 @@ export default Vue.extend({
   data() {
     return {
       form: cloneDeep(EMPTY_FORM),
-      isSaving: false,
     }
   },
   computed: {
@@ -228,7 +227,6 @@ export default Vue.extend({
         schemas: this.form.schemas.map(({ id }) => id),
       }
 
-      this.isSaving = true
       this.$accessor.startLoading()
 
       const successMessage = this.isNew
@@ -239,7 +237,8 @@ export default Vue.extend({
         ? await this.$accessor.products.add(apiPayload)
         : await this.$accessor.products.update({ id: this.id, item: apiPayload })
 
-      this.isSaving = false
+      ;(this.$refs.gallery as any).clearMediaToDelete()
+
       this.$accessor.stopLoading()
 
       if (item) {

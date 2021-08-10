@@ -16,7 +16,7 @@
     </top-nav>
 
     <div class="product">
-      <gallery v-model="form.gallery" />
+      <gallery ref="gallery" v-model="form.gallery" />
 
       <div>
         <card>
@@ -226,29 +226,31 @@ export default Vue.extend({
         tags: this.form.tags.map(({ id }) => id),
         schemas: this.form.schemas.map(({ id }) => id),
       }
+
       this.$accessor.startLoading()
 
       const successMessage = this.isNew
         ? 'Produkt został utworzony'
         : 'Produkt został zaktualizowany'
 
-      const actionPayload = this.isNew ? apiPayload : { id: this.id, item: apiPayload }
+      const item = this.isNew
+        ? await this.$accessor.products.add(apiPayload)
+        : await this.$accessor.products.update({ id: this.id, item: apiPayload })
 
-      const { id: newID } = await this.$store.dispatch(
-        this.isNew ? 'products/add' : 'products/update',
-        actionPayload,
-      )
-
-      this.$vs.notification({
-        color: 'success',
-        title: successMessage,
-      })
-
-      if (newID !== this.product.id) {
-        this.$router.push(`/products/${newID}`)
-      }
+      ;(this.$refs.gallery as any).clearMediaToDelete()
 
       this.$accessor.stopLoading()
+
+      if (item) {
+        this.$vs.notification({
+          color: 'success',
+          title: successMessage,
+        })
+
+        if (item.id !== this.product.id) {
+          this.$router.push(`/products/${item.id}`)
+        }
+      }
     },
     async submitAndGoNext() {
       await this.saveProduct()

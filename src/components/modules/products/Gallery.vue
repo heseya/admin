@@ -30,6 +30,7 @@ import MediaUploader from '@/components/MediaUploader.vue'
 import { formatApiError } from '@/utils/errors'
 import { ID } from '@/interfaces/ID'
 import { CdnMedia } from '@/interfaces/Media'
+import { removeMedia } from '@/services/uploadMedia'
 
 export default Vue.extend({
   components: {
@@ -55,7 +56,15 @@ export default Vue.extend({
       return +this.$store.state.env.dashboard_products_contain ? 'contain' : 'cover'
     },
   },
+  mounted() {
+    window.addEventListener('beforeunload', this.removeTouchedFiles)
+  },
+  destroyed() {
+    window.removeEventListener('beforeunload', this.removeTouchedFiles)
+    this.removeTouchedFiles()
+  },
   data: () => ({
+    mediaToDelete: [] as ID[],
     isDrag: false,
   }),
   methods: {
@@ -64,15 +73,28 @@ export default Vue.extend({
     },
     onImageDelete(deletedId: ID) {
       this.images = this.images.filter(({ id }) => deletedId !== id)
+
+      if (this.mediaToDelete.find((id) => deletedId === id)) {
+        this.mediaToDelete = this.mediaToDelete.filter((id) => deletedId !== id)
+        removeMedia(deletedId)
+      }
     },
     onImageUpload(file: CdnMedia) {
       this.images = [...this.images, file]
+      this.mediaToDelete = [...this.mediaToDelete, file.id]
     },
     onUploadError(error: any) {
       this.$vs.notification({
         color: 'danger',
         ...formatApiError(error),
       })
+    },
+    clearMediaToDelete() {
+      this.mediaToDelete = []
+    },
+    async removeTouchedFiles() {
+      await Promise.all(this.mediaToDelete.map(removeMedia))
+      this.clearMediaToDelete()
     },
   },
 })

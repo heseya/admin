@@ -97,7 +97,7 @@ export default Vue.extend({
     openModal(item?: Setting) {
       this.isModalActive = true
       if (item) {
-        this.editedItem = { id: item.name, ...clone(item) }
+        this.editedItem = { ...clone(item), id: item.name }
       } else {
         this.editedItem = clone(CLEAR_SETTING)
       }
@@ -105,13 +105,13 @@ export default Vue.extend({
     async saveModal() {
       this.$accessor.startLoading()
       if (this.editedItem.id) {
-        await this.$store.dispatch('settings/updateByKey', {
+        await this.$accessor.settings.updateByKey({
           key: 'name',
           value: this.editedItem.id,
           item: this.editedItem,
         })
       } else {
-        await this.$store.dispatch('settings/add', this.editedItem)
+        await this.$accessor.settings.add(this.editedItem)
       }
       await this.$accessor.fetchEnv()
       this.$accessor.stopLoading()
@@ -119,7 +119,7 @@ export default Vue.extend({
     },
     async deleteItem() {
       this.$accessor.startLoading()
-      await this.$store.dispatch('settings/removeByKey', { key: 'name', value: this.editedItem.id })
+      await this.$accessor.settings.removeByKey({ key: 'name', value: this.editedItem.id })
       this.$accessor.stopLoading()
       this.isModalActive = false
     },

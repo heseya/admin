@@ -99,7 +99,7 @@ export default Vue.extend({
     openModal(id?: ID) {
       this.isModalActive = true
       if (id) {
-        this.editedItem = this.$store.getters['statuses/getFromListById'](id)
+        this.editedItem = this.$accessor.statuses.getFromListById(id)
         this.setColor(this.editedItem.color)
       } else {
         this.editedItem = clone(CLEAR_STATUS)
@@ -108,19 +108,19 @@ export default Vue.extend({
     async saveModal() {
       this.$accessor.startLoading()
       if (this.editedItem.id) {
-        await this.$store.dispatch('statuses/update', {
+        await this.$accessor.statuses.update({
           id: this.editedItem.id,
           item: this.editedItem,
         })
       } else {
-        await this.$store.dispatch('statuses/add', this.editedItem)
+        await this.$accessor.statuses.add(this.editedItem)
       }
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
     async deleteItem() {
       this.$accessor.startLoading()
-      await this.$store.dispatch('statuses/remove', this.editedItem.id)
+      await this.$accessor.statuses.remove(this.editedItem.id)
       this.$accessor.stopLoading()
       this.isModalActive = false
     },

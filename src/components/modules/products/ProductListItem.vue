@@ -44,10 +44,10 @@ export default Vue.extend({
   },
   computed: {
     currency(): string {
-      return this.$store.state.currency
+      return this.$accessor.currency
     },
     objectFit(): string {
-      return +this.$store.state.env.dashboard_products_contain ? 'contain' : 'cover'
+      return +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'
     },
   },
   methods: {

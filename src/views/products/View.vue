@@ -180,7 +180,7 @@ export default Vue.extend({
       return this.$route.params.id
     },
     isLoading(): boolean {
-      return this.$store.state.products.isLoading
+      return this.$accessor.products.isLoading
     },
     isNew(): boolean {
       return this.id === 'create'
@@ -200,7 +200,7 @@ export default Vue.extend({
     async fetch() {
       this.form = cloneDeep(EMPTY_FORM)
       if (this.isNew) return
-      this.$store.dispatch('products/get', this.$route.params.id)
+      this.$accessor.products.get(this.$route.params.id)
     },
     editSlug() {
       if (this.isNew) {

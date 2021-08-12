@@ -123,19 +123,19 @@ export default Vue.extend({
     async saveModal() {
       this.$accessor.startLoading()
       if (this.editedItem.id) {
-        await this.$store.dispatch('packageTemplates/update', {
+        await this.$accessor.packageTemplates.update({
           id: this.editedItem.id,
           item: this.editedItem,
         })
       } else {
-        await this.$store.dispatch('packageTemplates/add', this.editedItem)
+        await this.$accessor.packageTemplates.add(this.editedItem)
       }
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
     async deleteItem() {
       this.$accessor.startLoading()
-      await this.$store.dispatch('packageTemplates/remove', this.editedItem.id)
+      await this.$accessor.packageTemplates.remove(this.editedItem.id)
       this.$accessor.stopLoading()
       this.isModalActive = false
     },

@@ -73,10 +73,10 @@ export default Vue.extend({
   },
   computed: {
     statuses(): OrderStatus[] {
-      return this.$store.getters['statuses/getData']
+      return this.$accessor.statuses.getData
     },
     shippingMethods(): ShippingMethod[] {
-      return this.$store.getters['shippingMethods/getData']
+      return this.$accessor.shippingMethods.getData
     },
   },
   methods: {
@@ -92,8 +92,8 @@ export default Vue.extend({
     },
   },
   created() {
-    this.$store.dispatch('statuses/fetch')
-    this.$store.dispatch('shippingMethods/fetch')
+    this.$accessor.statuses.fetch()
+    this.$accessor.shippingMethods.fetch()
   },
   mounted() {
     this.search = this.filters.search

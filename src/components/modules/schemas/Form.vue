@@ -208,7 +208,7 @@ export default Vue.extend({
       }
 
       this.$accessor.startLoading()
-      let id = null
+      let id = ''
 
       this.form.default =
         this.form.type === SchemaType.Select ? this.defaultOption : this.form.default
@@ -219,17 +219,19 @@ export default Vue.extend({
       }))
 
       if (!this.form?.id) {
-        const { id: newID } = await this.$store.dispatch('schemas/add', { ...this.form, options })
-        if (newID) {
+        // @ts-ignore // TODO: Schema DTO
+        const schema = await this.$accessor.schemas.add({ ...this.form, options })
+        if (schema && schema.id) {
           this.$vs.notification({
             color: 'success',
             title: 'Schemat został utworzony.',
           })
-          id = newID
+          id = schema.id
         }
       } else {
-        const success = await this.$store.dispatch('schemas/update', {
+        const success = await this.$accessor.schemas.update({
           id: this.form.id,
+          // @ts-ignore // TODO: Schema DTO
           item: { ...this.form, options },
         })
         if (success) {
@@ -241,7 +243,7 @@ export default Vue.extend({
         }
       }
       this.$accessor.stopLoading()
-      this.$emit('submit', this.$store.getters['schemas/getFromListById'](id))
+      this.$emit('submit', this.$accessor.schemas.getFromListById(id))
     },
   },
   created() {

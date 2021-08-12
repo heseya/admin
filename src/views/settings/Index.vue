@@ -74,7 +74,7 @@ export default Vue.extend({
   }),
   computed: {
     user(): User {
-      return this.$store.state.auth.user
+      return this.$accessor.auth.user!
     },
   },
   methods: {

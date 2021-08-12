@@ -66,8 +66,8 @@ export default Vue.extend({
     },
     async saveModal() {
       this.$accessor.startLoading()
-      await this.$store.dispatch('apps/add', this.editedItem)
-      await this.$store.dispatch('apps/fetch')
+      await this.$accessor.apps.add(this.editedItem)
+      // await this.$accessor.apps.fetch()
       this.$accessor.stopLoading()
       this.isModalActive = false
     },

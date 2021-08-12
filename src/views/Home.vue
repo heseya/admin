@@ -96,13 +96,13 @@ export default Vue.extend({
   }),
   computed: {
     storeName(): string {
-      return this.$store.state.env.store_name ?? 'E-Commerce Dog'
+      return this.$accessor.env.store_name ?? 'E-Commerce Dog'
     },
     orders(): Order[] {
       return this.$accessor.orders.getData
     },
     currency(): string {
-      return this.$store.state.currency
+      return this.$accessor.currency
     },
   },
   methods: {

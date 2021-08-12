@@ -51,7 +51,7 @@ export default Vue.extend({
   }),
   computed: {
     currency(): string {
-      return this.$store.state.currency
+      return this.$accessor.currency
     },
   },
   methods: {

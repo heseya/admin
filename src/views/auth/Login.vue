@@ -49,7 +49,7 @@ export default Vue.extend({
   },
   computed: {
     loginError() {
-      return this.$store.state.auth.error
+      return this.$accessor.auth.error
     },
   },
   watch: {

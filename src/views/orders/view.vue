@@ -178,19 +178,19 @@ export default Vue.extend({
   }),
   computed: {
     currency(): string {
-      return this.$store.state.currency
+      return this.$accessor.currency
     },
     error(): any {
-      return this.$store.getters['orders/getError']
+      return this.$accessor.orders.getError
     },
     order(): Order {
-      return this.$store.getters['orders/getSelected']
+      return this.$accessor.orders.getSelected
     },
     statuses(): OrderStatus[] {
-      return this.$store.getters['statuses/getData']
+      return this.$accessor.statuses.getData
     },
     packageTemplates(): PackageTemplate[] {
-      return this.$store.getters['packageTemplates/getData']
+      return this.$accessor.packageTemplates.getData
     },
     relativeOrderedDate(): string {
       return this.order.created_at && getRelativeDate(this.order.created_at)
@@ -216,7 +216,8 @@ export default Vue.extend({
     async setStatus(newStatus: OrderStatus) {
       this.isLoading = true
 
-      const success = await this.$store.dispatch('orders/changeStatus', {
+      // @ts-ignore // TODO: fix extended store actions typings
+      const success = await this.$accessor.orders.changeStatus({
         orderId: this.order.id,
         statusId: newStatus,
       })
@@ -303,9 +304,9 @@ export default Vue.extend({
   async created() {
     this.$accessor.startLoading()
     await Promise.all([
-      this.$store.dispatch('orders/get', this.$route.params.id),
-      this.$store.dispatch('statuses/fetch'),
-      this.$store.dispatch('packageTemplates/fetch'),
+      this.$accessor.orders.get(this.$route.params.id),
+      this.$accessor.statuses.fetch(),
+      this.$accessor.packageTemplates.fetch(),
     ])
     this.$accessor.stopLoading()
   },

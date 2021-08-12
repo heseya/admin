@@ -53,7 +53,7 @@ export default Vue.extend({
   },
   computed: {
     error(): any {
-      return this.$store.state.auth.error
+      return this.$accessor.auth.error
     },
   },
   watch: {

@@ -53,10 +53,10 @@ export default Vue.extend({
       return this.id === 'create'
     },
     schema(): Schema {
-      return this.$store.getters['schemas/getSelected']
+      return this.$accessor.schemas.getSelected
     },
     error(): any {
-      return this.$store.getters['schemas/getError']
+      return this.$accessor.schemas.getError
     },
   },
   watch: {
@@ -78,7 +78,7 @@ export default Vue.extend({
     },
     async deleteSchema() {
       this.$accessor.startLoading()
-      const success = await this.$store.dispatch('schemas/remove', this.id)
+      const success = await this.$accessor.schemas.remove(this.id)
       if (success) {
         this.$vs.notification({
           color: 'success',
@@ -92,7 +92,7 @@ export default Vue.extend({
   async created() {
     if (!this.isNew) {
       this.$accessor.startLoading()
-      await this.$store.dispatch('schemas/get', this.id)
+      await this.$accessor.schemas.get(this.id)
       this.$accessor.stopLoading()
     }
   },

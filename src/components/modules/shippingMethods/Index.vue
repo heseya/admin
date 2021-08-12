@@ -104,7 +104,7 @@ export default Vue.extend({
       },
     },
     paymentMethods(): PaymentMethod[] {
-      return this.$store.getters['paymentMethods/getData']
+      return this.$accessor.paymentMethods.getData
     },
   },
   watch: {

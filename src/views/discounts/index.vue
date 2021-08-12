@@ -103,14 +103,14 @@ export default Vue.extend({
   }),
   computed: {
     currency(): string {
-      return this.$store.state.currency
+      return this.$accessor.currency
     },
   },
   methods: {
     openModal(id?: ID) {
       this.isModalActive = true
       if (id) {
-        this.editedItem = this.$store.getters['discounts/getFromListById'](id)
+        this.editedItem = this.$accessor.discounts.getFromListById(id)
       } else {
         this.editedItem = {
           ...EMPTY_DISCOUNT_CODE,
@@ -120,19 +120,19 @@ export default Vue.extend({
     async saveModal() {
       this.$accessor.startLoading()
       if (this.editedItem.id) {
-        await this.$store.dispatch('discounts/update', {
+        await this.$accessor.discounts.update({
           id: this.editedItem.id,
           item: this.editedItem,
         })
       } else {
-        await this.$store.dispatch('discounts/add', this.editedItem)
+        await this.$accessor.discounts.add(this.editedItem)
       }
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
     async deleteItem() {
       this.$accessor.startLoading()
-      await this.$store.dispatch('discounts/remove', this.editedItem.id)
+      await this.$accessor.discounts.remove(this.editedItem.id)
       this.$accessor.stopLoading()
       this.isModalActive = false
     },

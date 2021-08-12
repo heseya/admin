@@ -82,13 +82,13 @@ export default Vue.extend({
       return this.id === 'create'
     },
     page(): Page {
-      return this.$store.getters['pages/getSelected']
+      return this.$accessor.pages.getSelected
     },
     error(): any {
-      return this.$store.getters['pages/getError']
+      return this.$accessor.pages.getError
     },
     isLoading(): boolean {
-      return this.$store.state.pages.isLoading
+      return this.$accessor.pages.isLoading
     },
   },
   watch: {
@@ -115,16 +115,16 @@ export default Vue.extend({
     async save() {
       this.$accessor.startLoading()
       if (this.isNew) {
-        const { id: newID } = await this.$store.dispatch('pages/add', this.form)
-        if (newID) {
+        const page = await this.$accessor.pages.add(this.form)
+        if (page && page.id) {
           this.$vs.notification({
             color: 'success',
             title: 'Strona została utworzona.',
           })
-          this.$router.push(`/pages/${newID}`)
+          this.$router.push(`/pages/${page.id}`)
         }
       } else {
-        const success = await this.$store.dispatch('pages/update', {
+        const success = await this.$accessor.pages.update({
           id: this.id,
           item: this.form,
         })
@@ -139,7 +139,7 @@ export default Vue.extend({
     },
     async deletePage() {
       this.$accessor.startLoading()
-      const success = await this.$store.dispatch('pages/remove', this.id)
+      const success = await this.$accessor.pages.remove(this.id)
       if (success) {
         this.$vs.notification({
           color: 'success',
@@ -153,7 +153,7 @@ export default Vue.extend({
   async created() {
     if (!this.isNew) {
       this.$accessor.startLoading()
-      await this.$store.dispatch('pages/get', this.id)
+      await this.$accessor.pages.get(this.id)
       this.$accessor.stopLoading()
     }
   },

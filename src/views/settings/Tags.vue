@@ -91,7 +91,7 @@ export default Vue.extend({
     openModal(id?: ID) {
       this.isModalActive = true
       if (id) {
-        this.editedItem = this.$store.getters['tags/getFromListById'](id)
+        this.editedItem = this.$accessor.tags.getFromListById(id)
         this.setColor(this.editedItem.color)
       } else {
         this.editedItem = clone(CLEAR_TAG)
@@ -100,19 +100,19 @@ export default Vue.extend({
     async saveModal() {
       this.$accessor.startLoading()
       if (this.editedItem.id) {
-        await this.$store.dispatch('tags/update', {
+        await this.$accessor.tags.update({
           id: this.editedItem.id,
           item: this.editedItem,
         })
       } else {
-        await this.$store.dispatch('tags/add', this.editedItem)
+        await this.$accessor.tags.add(this.editedItem)
       }
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
     async deleteItem() {
       this.$accessor.startLoading()
-      await this.$store.dispatch('tags/remove', this.editedItem.id)
+      await this.$accessor.tags.remove(this.editedItem.id)
       this.$accessor.stopLoading()
       this.isModalActive = false
     },

@@ -77,7 +77,7 @@ export default Vue.extend({
     countries: [],
   }),
   methods: {
-    openModal(id: ID) {
+    openModal(id?: ID) {
       this.isModalActive = true
       if (id) {
         const item = this.$accessor.shippingMethods.getFromListById(id)
@@ -109,26 +109,27 @@ export default Vue.extend({
     async saveModal() {
       this.$accessor.startLoading()
       if (this.editedItem.id) {
-        await this.$store.dispatch('shippingMethods/update', {
+        await this.$accessor.shippingMethods.update({
           id: this.editedItem.id,
           item: this.editedItem,
         })
       } else {
-        await this.$store.dispatch('shippingMethods/add', this.editedItem)
+        await this.$accessor.shippingMethods.add(this.editedItem)
       }
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
     async deleteItem() {
+      if (!this.editedItem.id) return
       this.$accessor.startLoading()
-      await this.$store.dispatch('shippingMethods/remove', this.editedItem.id)
+      await this.$accessor.shippingMethods.remove(this.editedItem.id)
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
   },
   async created() {
     this.$accessor.startLoading()
-    this.$store.dispatch('paymentMethods/fetch')
+    this.$accessor.paymentMethods.fetch()
     const { data } = await api.get('countries')
     this.countries = data.data
     this.$accessor.stopLoading()

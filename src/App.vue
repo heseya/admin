@@ -23,7 +23,7 @@ export default Vue.extend({
   }),
   computed: {
     isLoading(): boolean {
-      return this.$store.state.loading
+      return this.$accessor.loading
     },
   },
   watch: {

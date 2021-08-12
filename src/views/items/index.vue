@@ -103,10 +103,11 @@ export default Vue.extend({
   }),
   computed: {
     depositsError(): any {
-      return this.$store.getters['items/getDepositError']
+      // @ts-ignore // TODO: fix extended store getters typings
+      return this.$accessor.items.getDepositError
     },
     currency(): string {
-      return this.$store.state.currency
+      return this.$accessor.currency
     },
   },
   watch: {
@@ -134,7 +135,7 @@ export default Vue.extend({
     openModal(id?: ID) {
       this.isModalActive = true
       if (id) {
-        this.editedItem = this.$store.getters['items/getFromListById'](id)
+        this.editedItem = this.$accessor.items.getFromListById(id)
         this.editedOriginalQuantity = this.editedItem.quantity || 0
       } else {
         this.editedItem = { ...EMPTY_FORM }
@@ -153,12 +154,12 @@ export default Vue.extend({
           })
         }
 
-        success = await this.$store.dispatch('items/update', {
+        success = !!(await this.$accessor.items.update({
           id: this.editedItem.id,
           item: this.editedItem,
-        })
+        }))
       } else {
-        success = await this.$store.dispatch('items/add', this.editedItem)
+        success = !!(await this.$accessor.items.add(this.editedItem))
       }
       this.$accessor.stopLoading()
 
@@ -168,7 +169,7 @@ export default Vue.extend({
     },
     async deleteItem() {
       this.$accessor.startLoading()
-      await this.$store.dispatch('items/remove', this.editedItem.id)
+      await this.$accessor.items.remove(this.editedItem.id)
       this.$accessor.stopLoading()
       this.isModalActive = false
     },

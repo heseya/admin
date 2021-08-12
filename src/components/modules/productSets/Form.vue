@@ -119,19 +119,20 @@ export default Vue.extend({
     async saveModal() {
       this.$accessor.startLoading()
       if (this.form.id) {
-        await this.$store.dispatch('productSets/update', {
+        await this.$accessor.productSets.update({
           id: this.form.id,
           item: this.form,
         })
       } else {
-        await this.$store.dispatch('productSets/add', this.form)
+        await this.$accessor.productSets.add(this.form)
       }
       this.$accessor.stopLoading()
       this.$emit('close')
     },
     async deleteItem() {
+      if (!this.form.id) return
       this.$accessor.startLoading()
-      await this.$store.dispatch('productSets/remove', this.form.id)
+      await this.$accessor.productSets.remove(this.form.id)
       this.$accessor.stopLoading()
       this.$emit('close')
     },

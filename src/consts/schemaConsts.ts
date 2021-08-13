@@ -1,7 +1,8 @@
 import { cloneDeep } from 'lodash'
-import { SchemaType } from '../interfaces/SchemaType'
+import { Schema, SchemaOption, SchemaType } from '../interfaces/Schema'
 
-export const CLEAR_OPTION = {
+export const CLEAR_OPTION: SchemaOption = {
+  id: '',
   name: '',
   default: false,
   disabled: false,
@@ -9,9 +10,12 @@ export const CLEAR_OPTION = {
   items: [],
 }
 
-export const CLEAR_FORM = {
+export const CLEAR_FORM: Schema = {
+  id: '',
+  available: true,
+  products: [],
   name: '',
-  type: SchemaType.select,
+  type: SchemaType.Select,
   description: '',
   price: 0,
   hidden: false,

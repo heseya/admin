@@ -55,16 +55,30 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
+import { clone } from 'lodash'
+
 import PaginatedList from '@/components/PaginatedList.vue'
-import ModalForm from '@/components/ModalForm.vue'
+import ModalForm from '@/components/form/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import SwitchInput from '@/components/SwitchInput.vue'
+import SwitchInput from '@/components/form/SwitchInput.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
-export default {
+import { ID } from '@/interfaces/ID'
+import { OrderStatus } from '@/interfaces/Order'
+
+const CLEAR_STATUS: OrderStatus = {
+  id: '',
+  name: '',
+  description: '',
+  color: '000000',
+  cancel: false,
+}
+
+export default Vue.extend({
   components: {
     PaginatedList,
     ListItem,
@@ -76,47 +90,38 @@ export default {
   },
   data: () => ({
     isModalActive: false,
-    editedItem: {
-      name: '',
-      description: '',
-      color: '',
-    },
+    editedItem: clone(CLEAR_STATUS) as OrderStatus,
   }),
   methods: {
-    setColor(color) {
+    setColor(color: string) {
       this.editedItem.color = color.split('#')[1] ?? color
     },
-    openModal(id) {
+    openModal(id?: ID) {
       this.isModalActive = true
       if (id) {
-        this.editedItem = this.$store.getters['statuses/getFromListById'](id)
+        this.editedItem = this.$accessor.statuses.getFromListById(id)
         this.setColor(this.editedItem.color)
       } else {
-        this.editedItem = {
-          name: '',
-          description: '',
-          color: '000000',
-          cancel: false,
-        }
+        this.editedItem = clone(CLEAR_STATUS)
       }
     },
     async saveModal() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       if (this.editedItem.id) {
-        await this.$store.dispatch('statuses/update', {
+        await this.$accessor.statuses.update({
           id: this.editedItem.id,
           item: this.editedItem,
         })
       } else {
-        await this.$store.dispatch('statuses/add', this.editedItem)
+        await this.$accessor.statuses.add(this.editedItem)
       }
-      loading.close()
+      this.$accessor.stopLoading()
       this.isModalActive = false
     },
     async deleteItem() {
-      const loading = this.$vs.loading({ color: '#000' })
-      await this.$store.dispatch('statuses/remove', this.editedItem.id)
-      loading.close()
+      this.$accessor.startLoading()
+      await this.$accessor.statuses.remove(this.editedItem.id)
+      this.$accessor.stopLoading()
       this.isModalActive = false
     },
   },
@@ -128,7 +133,7 @@ export default {
       next()
     }
   },
-}
+})
 </script>
 
 <style lang="scss">

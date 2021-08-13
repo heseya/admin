@@ -10,14 +10,39 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import { init as initMicroApps, onMounted } from 'microfront-lib'
 
 import Navigation from './layout/Navigation.vue'
 
-export default {
+export default Vue.extend({
   components: {
     Navigation,
+  },
+  data: () => ({
+    loadingInstance: null as null | { close: () => void },
+  }),
+  computed: {
+    isLoading(): boolean {
+      return this.$accessor.loading
+    },
+  },
+  watch: {
+    isLoading(isLoading: boolean) {
+      if (isLoading) {
+        this.loadingInstance = this.$vs.loading({ color: '#000' })
+      } else if (this.loadingInstance) {
+        this.loadingInstance.close()
+      }
+    },
+    '$accessor.auth.permissionsError'(_permissionsError) {
+      this.$vs.notification({
+        color: 'danger',
+        title: 'Brak uprawnień',
+        text: `Nie posiadasz uprawnień do tej akcji`,
+      })
+    },
   },
   created() {
     initMicroApps()
@@ -29,7 +54,7 @@ export default {
       tokenChannel.postMessage(this.$store.state.auth.token)
     })
   },
-}
+})
 </script>
 
 <style lang="scss">

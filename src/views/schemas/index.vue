@@ -31,13 +31,14 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 
-import { SchemaTypeLabel } from '@/interfaces/SchemaType'
+import { SchemaTypeLabel } from '@/consts/schemaTypeLabels'
 
-export default {
+export default Vue.extend({
   components: {
     PaginatedList,
     ListItem,
@@ -49,13 +50,13 @@ export default {
     SchemaTypeLabel: Object.freeze(SchemaTypeLabel),
   }),
   computed: {
-    currency() {
-      return this.$store.state.currency
+    currency(): string {
+      return this.$accessor.currency
     },
   },
   methods: {
     makeSearch() {
-      if (this.search !== this.$route.query.search) {
+      if (this.filters.search !== this.$route.query.search) {
         this.$router.push({
           path: 'schemas',
           query: { page: undefined, search: this.filters.search || undefined },
@@ -64,7 +65,7 @@ export default {
     },
   },
   created() {
-    this.filters.search = this.$route.query.search || ''
+    this.filters.search = (this.$route.query.search as string) || ''
   },
-}
+})
 </script>

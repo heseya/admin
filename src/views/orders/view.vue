@@ -87,7 +87,7 @@
         <card class="comment">
           <template>
             <h2 class="section-title">Komentarz</h2>
-            <vs-button size="tiny" dark class="comment__edit" @click="editComment">
+            <vs-button size="tiny" dark transparent class="comment__edit" @click="editComment">
               <i class="bx bxs-pencil"></i>
             </vs-button>
             <span class="comment__content">
@@ -97,20 +97,24 @@
         </card>
         <card>
           <h2 class="section-title">E-mail</h2>
-          <div class="shipping">
-            <vs-button size="tiny" dark class="shipping__edit" @click="editEmail">
+          <div class="email">
+            <vs-button size="tiny" dark transparent class="email__edit" @click="editEmail">
               <i class="bx bxs-pencil"></i>
             </vs-button>
-            <span class="shipping__name">{{ order.email }}</span>
+            <a :href="`mailto:${order.email}`" class="email__name">{{ order.email }}</a>
           </div>
           <br />
           <h2 class="section-title">Adres dostawy</h2>
-          <app-address :address="order.delivery_address" @edit="editDeliveryAddress" />
+          <app-address :address="order.delivery_address" @edit="editDeliveryAddress" hideRemove />
         </card>
-        <card v-if="order.invoice_address">
+        <card>
           <template>
             <h2 class="section-title">Adres rozliczeniowy</h2>
-            <app-address :address="order.invoice_address" @edit="editInvoiceAddress" />
+            <app-address
+              :address="order.invoice_address"
+              @edit="editInvoiceAddress"
+              @remove="removeInvoiceAddress"
+            />
           </template>
         </card>
       </div>
@@ -127,18 +131,34 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
+
 import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
-import Address from '@/components/Address.vue'
+import Address from '@/components/modules/orders/OrderAddress.vue'
 import CartItem from '@/components/layout/CartItem.vue'
+import ModalForm from '@/components/form/ModalForm.vue'
+import PartialUpdateForm from '@/components/modules/orders/PartialUpdateForm.vue'
+
 import { getRelativeDate, formatDate } from '@/utils/utils'
 import { createPackage } from '@/services/createPackage'
 import { formatApiError } from '@/utils/errors'
-import ModalForm from '@/components/ModalForm.vue'
-import PartialUpdateForm from '@/components/forms/orders/PartialUpdateForm.vue'
+import { Order, OrderStatus } from '@/interfaces/Order'
+import { PackageTemplate } from '@/interfaces/PackageTemplate'
 
-export default {
+const DEFAULT_FORM = {
+  address: '',
+  city: '',
+  country: 'PL',
+  country_name: '',
+  name: '',
+  phone: '',
+  vat: '',
+  zip: '',
+}
+
+export default Vue.extend({
   components: {
     TopNav,
     Card,
@@ -152,41 +172,40 @@ export default {
     packageTemplateId: '',
     shippingNumber: '',
     isLoading: false,
-
     modalFormTitle: '',
     form: {},
     isModalActive: false,
   }),
   computed: {
-    currency() {
-      return this.$store.state.currency
+    currency(): string {
+      return this.$accessor.currency
     },
-    error() {
-      return this.$store.getters['orders/getError']
+    error(): any {
+      return this.$accessor.orders.getError
     },
-    order() {
-      return this.$store.getters['orders/getSelected']
+    order(): Order {
+      return this.$accessor.orders.getSelected
     },
-    statuses() {
-      return this.$store.getters['statuses/getData']
+    statuses(): OrderStatus[] {
+      return this.$accessor.statuses.getData
     },
-    packageTemplates() {
-      return this.$store.getters['packageTemplates/getData']
+    packageTemplates(): PackageTemplate[] {
+      return this.$accessor.packageTemplates.getData
     },
-    relativeOrderedDate() {
+    relativeOrderedDate(): string {
       return this.order.created_at && getRelativeDate(this.order.created_at)
     },
-    formattedDate() {
+    formattedDate(): string {
       return this.order.created_at && formatDate(this.order.created_at)
     },
   },
   watch: {
-    order(order) {
+    order(order: Order) {
       this.status = order?.status?.id
-      this.shippingNumber = order.shipping_number
+      this.shippingNumber = order.shipping_number || ''
     },
-    status(status, prevStatus) {
-      if (prevStatus === '') return
+    status(status: OrderStatus, prevStatus: OrderStatus) {
+      if (!prevStatus) return
       this.setStatus(status)
     },
     error(error) {
@@ -194,10 +213,11 @@ export default {
     },
   },
   methods: {
-    async setStatus(newStatus) {
+    async setStatus(newStatus: OrderStatus) {
       this.isLoading = true
 
-      const success = await this.$store.dispatch('orders/changeStatus', {
+      // @ts-ignore // TODO: fix extended store actions typings
+      const success = await this.$accessor.orders.changeStatus({
         orderId: this.order.id,
         statusId: newStatus,
       })
@@ -213,7 +233,7 @@ export default {
     },
     async createPackage() {
       if (!this.packageTemplateId) return
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       const { success, shippingNumber, error } = await createPackage(
         this.order.id,
         this.packageTemplateId,
@@ -232,7 +252,7 @@ export default {
         })
       }
 
-      loading.close()
+      this.$accessor.stopLoading()
     },
     editComment() {
       this.isModalActive = true
@@ -262,31 +282,35 @@ export default {
       this.modalFormTitle = 'adres rozliczeniowy'
       this.form = {
         invoice_address: {
-          ...this.order.invoice_address,
+          ...(this.order.invoice_address || DEFAULT_FORM),
         },
       }
     },
+    removeInvoiceAddress() {
+      this.form = { invoice_address: null }
+      this.saveForm()
+    },
     async saveForm() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       await this.$accessor.orders.update({ id: this.order.id, item: this.form })
       this.isModalActive = false
       this.$vs.notification({
         color: 'success',
         title: 'Zamówienie zostało zaktualizowane',
       })
-      loading.close()
+      this.$accessor.stopLoading()
     },
   },
   async created() {
-    const loading = this.$vs.loading({ color: '#000' })
+    this.$accessor.startLoading()
     await Promise.all([
-      this.$store.dispatch('orders/get', this.$route.params.id),
-      this.$store.dispatch('statuses/fetch'),
-      this.$store.dispatch('packageTemplates/fetch'),
+      this.$accessor.orders.get(this.$route.params.id),
+      this.$accessor.statuses.fetch(),
+      this.$accessor.packageTemplates.fetch(),
     ])
-    loading.close()
+    this.$accessor.stopLoading()
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>
@@ -310,7 +334,7 @@ export default {
   }
 }
 
-.shipping {
+.email {
   display: flex;
   flex-direction: column;
   margin-top: 8px;
@@ -319,12 +343,12 @@ export default {
 
   &__edit {
     position: absolute;
-    bottom: calc(100% + 2px);
+    bottom: calc(100% + 4px);
     right: 0;
   }
 
   &__name {
-    font-size: 1.1em;
+    font-size: 1em;
     margin-bottom: 3px;
     color: #111;
   }

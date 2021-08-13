@@ -65,16 +65,26 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 
 import PaginatedList from '@/components/PaginatedList.vue'
-import ModalForm from '@/components/ModalForm.vue'
+import ModalForm from '@/components/form/ModalForm.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
+import { ID } from '@/interfaces/ID'
+import { ProductItem } from '@/interfaces/Product'
 
-export default {
+const EMPTY_FORM: ProductItem = {
+  id: '',
+  name: '',
+  sku: '',
+  quantity: 0,
+}
+
+export default Vue.extend({
   components: {
     ListItem,
     ModalForm,
@@ -88,18 +98,16 @@ export default {
       search: '',
     },
     isModalActive: false,
-    editedItem: {
-      name: '',
-      sku: '',
-    },
+    editedItem: { ...EMPTY_FORM },
     editedOriginalQuantity: 0,
   }),
   computed: {
-    depositsError() {
-      return this.$store.getters['items/getDepositError']
+    depositsError(): any {
+      // @ts-ignore // TODO: fix extended store getters typings
+      return this.$accessor.items.getDepositError
     },
-    currency() {
-      return this.$store.state.currency
+    currency(): string {
+      return this.$accessor.currency
     },
   },
   watch: {
@@ -124,52 +132,50 @@ export default {
       }
     },
 
-    openModal(id) {
+    openModal(id?: ID) {
       this.isModalActive = true
       if (id) {
-        this.editedItem = this.$store.getters['items/getFromListById'](id)
+        this.editedItem = this.$accessor.items.getFromListById(id)
         this.editedOriginalQuantity = this.editedItem.quantity || 0
       } else {
-        this.editedItem = {
-          name: '',
-          sku: '',
-        }
+        this.editedItem = { ...EMPTY_FORM }
       }
     },
     async saveModal() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       let success = false
       if (this.editedItem.id) {
         const quantityDiff = this.editedItem.quantity - this.editedOriginalQuantity
         if (quantityDiff) {
-          success = await this.$store.dispatch('items/updateQuantity', {
+          // @ts-ignore // TODO: fix extended store actions typings
+          success = await this.$accessor.items.updateQuantity({
             id: this.editedItem.id,
             quantity: quantityDiff,
           })
         }
 
-        success = await this.$store.dispatch('items/update', {
+        success = !!(await this.$accessor.items.update({
           id: this.editedItem.id,
           item: this.editedItem,
-        })
+        }))
       } else {
-        success = await this.$store.dispatch('items/add', this.editedItem)
+        success = !!(await this.$accessor.items.add(this.editedItem))
       }
-      loading.close()
+      this.$accessor.stopLoading()
 
       if (success) {
         this.isModalActive = false
       }
     },
     async deleteItem() {
-      const loading = this.$vs.loading({ color: '#000' })
-      await this.$store.dispatch('items/remove', this.editedItem.id)
-      loading.close()
+      this.$accessor.startLoading()
+      await this.$accessor.items.remove(this.editedItem.id)
+      this.$accessor.stopLoading()
       this.isModalActive = false
     },
   },
   created() {
-    this.filters.search = this.$route.query.search || ''
+    this.filters.search = (this.$route.query.search as string) || ''
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {
@@ -179,5 +185,5 @@ export default {
       next()
     }
   },
-}
+})
 </script>

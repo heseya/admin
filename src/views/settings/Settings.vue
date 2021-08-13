@@ -57,17 +57,29 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import clone from 'lodash/clone'
 import { ValidationObserver } from 'vee-validate'
+
 import PaginatedList from '@/components/PaginatedList.vue'
-import ModalForm from '@/components/ModalForm.vue'
+import ModalForm from '@/components/form/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
-import SwitchInput from '@/components/SwitchInput.vue'
+import SwitchInput from '@/components/form/SwitchInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
-export default {
+import { Setting } from '@/interfaces/Settings'
+
+const CLEAR_SETTING: Setting = {
+  id: '',
+  name: '',
+  value: '',
+  permanent: false,
+  public: true,
+}
+
+export default Vue.extend({
   components: {
     PaginatedList,
     ListItem,
@@ -79,46 +91,36 @@ export default {
   },
   data: () => ({
     isModalActive: false,
-    editedItem: {
-      name: '',
-      value: '',
-      permanent: false,
-      public: true,
-    },
+    editedItem: clone(CLEAR_SETTING),
   }),
   methods: {
-    openModal(item) {
+    openModal(item?: Setting) {
       this.isModalActive = true
       if (item) {
-        this.editedItem = { id: item.name, ...clone(item) }
+        this.editedItem = { ...clone(item), id: item.name }
       } else {
-        this.editedItem = {
-          name: '',
-          value: '',
-          permanent: false,
-          public: true,
-        }
+        this.editedItem = clone(CLEAR_SETTING)
       }
     },
     async saveModal() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       if (this.editedItem.id) {
-        await this.$store.dispatch('settings/updateByKey', {
+        await this.$accessor.settings.updateByKey({
           key: 'name',
           value: this.editedItem.id,
           item: this.editedItem,
         })
       } else {
-        await this.$store.dispatch('settings/add', this.editedItem)
+        await this.$accessor.settings.add(this.editedItem)
       }
       await this.$accessor.fetchEnv()
-      loading.close()
+      this.$accessor.stopLoading()
       this.isModalActive = false
     },
     async deleteItem() {
-      const loading = this.$vs.loading({ color: '#000' })
-      await this.$store.dispatch('settings/removeByKey', { key: 'name', value: this.editedItem.id })
-      loading.close()
+      this.$accessor.startLoading()
+      await this.$accessor.settings.removeByKey({ key: 'name', value: this.editedItem.id })
+      this.$accessor.stopLoading()
       this.isModalActive = false
     },
   },
@@ -130,5 +132,5 @@ export default {
       next()
     }
   },
-}
+})
 </script>

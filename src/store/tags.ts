@@ -2,7 +2,7 @@ import { createVuexCRUD } from './generator'
 
 import { Tag } from '@/interfaces/Tag'
 
-export const tags = createVuexCRUD<Tag>('TAGS', 'tags', {
+export const tags = createVuexCRUD<Tag>()('tags', {
   state: {},
   getters: {},
   mutations: {},

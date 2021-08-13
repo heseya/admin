@@ -22,22 +22,29 @@
   </div>
 </template>
 
-<script>
-// import uniqBy from 'lodash/uniqBy'
+<script lang="ts">
+import Vue from 'vue'
 import debounce from 'lodash/debounce'
 import queryString from 'query-string'
 import List from '@/components/layout/List.vue'
 import Empty from '@/components/layout/Empty.vue'
 import ListItem from '@/components/layout/ListItem.vue'
-import { SchemaTypeLabel } from '@/interfaces/SchemaType'
+import { SchemaTypeLabel } from '@/consts/schemaTypeLabels'
 import { api } from '../api'
 import { formatApiError } from '@/utils/errors'
+import { ID } from '@/interfaces/ID'
+import { SchemaType } from '@/interfaces/Schema'
 
-export default {
+interface Item {
+  id: ID
+  name: string
+}
+
+export default Vue.extend({
   name: 'Selector',
   data: () => ({
     query: '',
-    data: [],
+    data: [] as Item[],
   }),
   props: {
     type: {
@@ -55,20 +62,21 @@ export default {
     existing: {
       type: Array,
       default: () => [],
-    },
+    } as Vue.PropOptions<Item[]>,
   },
   computed: {
-    list() {
+    list(): Item[] {
       return this.data.filter((x) => !this.existing.find((y) => x.id === y.id))
     },
   },
   watch: {
-    query(search) {
+    query(search: string) {
       this.getItems(search)
     },
   },
   methods: {
-    getItems: debounce(async function (search) {
+    // TODO: "this" typing is wrong
+    getItems: debounce(async function (this: any, search: string) {
       if (search === '') {
         this.data = []
         return
@@ -91,12 +99,13 @@ export default {
       }
       loading.close()
     }, 300),
-    onSelect(schema) {
-      this.$emit('select', schema)
+    onSelect(item: Item) {
+      this.$emit('select', item)
     },
-    getSubText(item) {
+    // TODO: better typing
+    getSubText(item: any) {
       if (this.type === 'schemas') {
-        return `${SchemaTypeLabel[item.type]} | ${item.description}`
+        return `${SchemaTypeLabel[item.type as SchemaType]} | ${item.description}`
       }
       if (this.type === 'items') return `SKU: ${item.sku}`
       return ''
@@ -107,7 +116,7 @@ export default {
     ListItem,
     Empty,
   },
-}
+})
 </script>
 
 <style lang="scss">

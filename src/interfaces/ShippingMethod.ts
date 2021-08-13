@@ -23,6 +23,7 @@ export interface ShippingMethodPriceRangeDTO {
   value: number
 }
 export interface ShippingMethod {
+  id: ID
   name: string
   payment_methods: PaymentMethod[]
   public: boolean
@@ -32,6 +33,7 @@ export interface ShippingMethod {
 }
 
 export interface ShippingMethodDTO {
+  id?: ID
   name: string
   payment_methods: string[]
   public: boolean

@@ -1,6 +1,7 @@
+import { PackageTemplate } from '@/interfaces/PackageTemplate'
 import { createVuexCRUD } from './generator'
 
-export const packageTemplates = createVuexCRUD('PACKAGE_TEMPLATES', 'package-templates', {
+export const packageTemplates = createVuexCRUD<PackageTemplate>()('package-templates', {
   state: {},
   getters: {},
   mutations: {},

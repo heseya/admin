@@ -27,7 +27,7 @@
           </div>
           <br />
           <small class="label">Treść</small>
-          <md-editor v-if="!isLoading" v-model="form.content_md" />
+          <rich-editor v-if="!isLoading" v-model="form.content_html" />
           <br />
           <vs-button color="dark" size="large" @click="handleSubmit(save)"> Zapisz </vs-button>
         </card>
@@ -36,26 +36,32 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import slugify from 'slugify'
 import { ValidationObserver } from 'vee-validate'
+
 import TopNav from '@/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import FlexInput from '@/components/layout/FlexInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import MdEditor from '@/components/MdEditor.vue'
-import { formatApiError } from '@/utils/errors'
-import SwitchInput from '@/components/SwitchInput.vue'
+import RichEditor from '@/components/form/RichEditor.vue'
+import SwitchInput from '@/components/form/SwitchInput.vue'
+import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
-export default {
+import { formatApiError } from '@/utils/errors'
+import { Page } from '@/interfaces/Page'
+
+export default Vue.extend({
   components: {
     TopNav,
     Card,
     FlexInput,
     PopConfirm,
-    MdEditor,
+    RichEditor,
     ValidationObserver,
     SwitchInput,
+    ValidatedInput,
   },
   data() {
     return {
@@ -63,29 +69,30 @@ export default {
         name: '',
         slug: '',
         content_md: '',
+        content_html: '',
         public: true,
       },
     }
   },
   computed: {
-    id() {
+    id(): string {
       return this.$route.params.id
     },
-    isNew() {
+    isNew(): boolean {
       return this.id === 'create'
     },
-    page() {
-      return this.$store.getters['pages/getSelected']
+    page(): Page {
+      return this.$accessor.pages.getSelected
     },
-    error() {
-      return this.$store.getters['pages/getError']
+    error(): any {
+      return this.$accessor.pages.getError
     },
-    isLoading() {
-      return this.$store.state.pages.isLoading
+    isLoading(): boolean {
+      return this.$accessor.pages.isLoading
     },
   },
   watch: {
-    page(page) {
+    page(page: Page) {
       if (!this.isNew) {
         this.form = { ...page }
       }
@@ -106,18 +113,18 @@ export default {
       }
     },
     async save() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       if (this.isNew) {
-        const { id: newID } = await this.$store.dispatch('pages/add', this.form)
-        if (newID) {
+        const page = await this.$accessor.pages.add(this.form)
+        if (page && page.id) {
           this.$vs.notification({
             color: 'success',
             title: 'Strona została utworzona.',
           })
-          this.$router.push(`/pages/${newID}`)
+          this.$router.push(`/pages/${page.id}`)
         }
       } else {
-        const success = await this.$store.dispatch('pages/update', {
+        const success = await this.$accessor.pages.update({
           id: this.id,
           item: this.form,
         })
@@ -128,11 +135,11 @@ export default {
           })
         }
       }
-      loading.close()
+      this.$accessor.stopLoading()
     },
     async deletePage() {
-      const loading = this.$vs.loading({ color: '#000' })
-      const success = await this.$store.dispatch('pages/remove', this.id)
+      this.$accessor.startLoading()
+      const success = await this.$accessor.pages.remove(this.id)
       if (success) {
         this.$vs.notification({
           color: 'success',
@@ -140,17 +147,17 @@ export default {
         })
         this.$router.push('/pages')
       }
-      loading.close()
+      this.$accessor.stopLoading()
     },
   },
   async created() {
     if (!this.isNew) {
-      const loading = this.$vs.loading({ color: '#000' })
-      await this.$store.dispatch('pages/get', this.id)
-      loading.close()
+      this.$accessor.startLoading()
+      await this.$accessor.pages.get(this.id)
+      this.$accessor.stopLoading()
     }
   },
-}
+})
 </script>
 
 <style lang="scss">

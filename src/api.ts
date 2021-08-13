@@ -1,4 +1,6 @@
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
+import { isNull } from 'lodash'
+
 import { accessor } from './store/index'
 import router from './router'
 
@@ -15,7 +17,7 @@ const getApiURL = () => {
     case 'admin.***REMOVED***.eu':
       return 'https://***REMOVED***.***REMOVED***'
     default:
-      return 'https://dev.***REMOVED***'
+      return process.env.VUE_APP_API_URL || 'https://dev.***REMOVED***'
   }
 }
 
@@ -26,7 +28,7 @@ export const api = axios.create({
 api.interceptors.request.use((config) => {
   const token = accessor.auth.getToken
 
-  if (token != null) {
+  if (!isNull(token)) {
     config.headers.Authorization = `Bearer ${token}`
     config.headers['x-language'] = 'pl'
   }
@@ -34,9 +36,14 @@ api.interceptors.request.use((config) => {
   return config
 })
 
-api.interceptors.response.use(undefined, (error) => {
-  if (error.response.status === 401) {
+api.interceptors.response.use(undefined, (error: AxiosError) => {
+  if (error.response?.status === 403) {
+    accessor.auth.setPermissionsError(error.response.data)
+  }
+
+  if (error.response?.status === 401) {
     accessor.auth.clearAuth()
+    accessor.stopLoading()
     router.push('/login')
   }
   throw error

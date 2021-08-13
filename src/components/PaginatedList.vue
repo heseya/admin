@@ -50,6 +50,7 @@ import { ResponseMeta } from '@/interfaces/Response'
 import { formatFilters } from '@/utils/utils'
 import { debounce } from 'lodash'
 import { formatApiError } from '@/utils/errors'
+import { BaseItem } from '@/store/generator'
 
 export default Vue.extend({
   components: {
@@ -81,6 +82,10 @@ export default Vue.extend({
       type: Object,
       default: () => ({}),
     },
+    params: {
+      type: Object,
+      default: () => ({}),
+    },
   },
   data: () => ({
     page: 1,
@@ -88,17 +93,17 @@ export default Vue.extend({
   }),
   computed: {
     items: {
-      get(): unknown[] {
+      get(): BaseItem[] {
         return this.$store.getters[`${this.storeKey}/getData`]
       },
-      async set(items: any[]) {
-        const loading = this.$vs.loading({ color: '#000' })
+      async set(items: BaseItem[]) {
+        this.$accessor.startLoading()
         await this.$store.dispatch(
-          `${this.storeKey}/setOrder`,
+          `${this.storeKey}/reorder`,
           items.map(({ id }) => id),
         )
         await this.getItems()
-        loading.close()
+        this.$accessor.stopLoading()
       },
     },
     meta(): ResponseMeta {
@@ -148,16 +153,17 @@ export default Vue.extend({
       else this.$router.push({ path: this.$route.path, query: { ...this.$route.query, page: '1' } })
     },
     async getItems() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
 
       const queryFilters = formatFilters(this.filters)
       await this.$store.dispatch(`${this.storeKey}/fetch`, {
         page: this.page,
         limit: this.itemsPerPage,
         ...queryFilters,
+        ...this.params,
       })
 
-      loading.close()
+      this.$accessor.stopLoading()
     },
   },
   beforeMount() {

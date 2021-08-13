@@ -16,7 +16,7 @@
     </top-nav>
 
     <div class="product">
-      <gallery v-model="form.gallery" />
+      <gallery ref="gallery" v-model="form.gallery" />
 
       <div>
         <card>
@@ -74,41 +74,23 @@
 
               <div>
                 <br />
-                <validation-provider rules="id-required" v-slot="{ errors }">
+                <validation-provider v-slot="{ errors }">
                   <vs-select
-                    v-model="form.brand_id"
-                    placeholder="Wybierz markę"
-                    :key="brands.length"
+                    v-model="form.sets"
+                    placeholder="Wybierz kolekcje"
+                    :key="productSets.length"
                     filter
-                    label="Marka"
+                    multiple
+                    label="Kolekcje"
+                    @click.native.prevent.stop
                   >
                     <vs-option
-                      v-for="brand in brands"
-                      :key="brand.id"
-                      :label="brand.name"
-                      :value="brand.id"
+                      v-for="set in productSets"
+                      :key="set.id"
+                      :label="set.name"
+                      :value="set.id"
                     >
-                      <i class="bx bx-lock" v-if="!brand.public"></i> {{ brand.name }}
-                    </vs-option>
-                    <template #message-danger>{{ errors[0] }}</template>
-                  </vs-select>
-                </validation-provider>
-                <br /><br />
-                <validation-provider rules="id-required" v-slot="{ errors }">
-                  <vs-select
-                    v-model="form.category_id"
-                    :key="categories.length"
-                    filter
-                    placeholder="Wybierz kategorię"
-                    label="Kategoria"
-                  >
-                    <vs-option
-                      v-for="category in categories"
-                      :key="category.id"
-                      :label="category.name"
-                      :value="category.id"
-                    >
-                      <i class="bx bx-lock" v-if="!category.public"></i> {{ category.name }}
+                      <i class="bx bx-lock" v-if="!set.public"></i> {{ set.name }}
                     </vs-option>
                     <template #message-danger>{{ errors[0] }}</template>
                   </vs-select>
@@ -130,7 +112,7 @@
 
               <div class="wide">
                 <small class="label">Opis</small>
-                <md-editor v-if="!isLoading" v-model="form.description_md" />
+                <rich-editor v-if="!isLoading" v-model="form.description_html" />
                 <br />
                 <div class="flex">
                   <vs-button color="dark" size="large">Zapisz</vs-button>
@@ -151,74 +133,74 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import slugify from 'slugify'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import cloneDeep from 'lodash/cloneDeep'
 
 import TopNav from '@/layout/TopNav.vue'
-import Gallery from '@/components/Gallery.vue'
+import Gallery from '@/components/modules/products/Gallery.vue'
 import Card from '@/components/layout/Card.vue'
 import FlexInput from '@/components/layout/FlexInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import MdEditor from '@/components/MdEditor.vue'
-import SchemaConfigurator from '@/components/schema/Configurator.vue'
-import { formatApiError } from '@/utils/errors'
+import RichEditor from '@/components/form/RichEditor.vue'
+import SchemaConfigurator from '@/components/modules/schemas/Configurator.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 import TagsSelect from '@/components/TagsSelect.vue'
 
-const EMPTY_FORM = {
+import { formatApiError } from '@/utils/errors'
+import { ID } from '@/interfaces/ID'
+import { Product, ProductDTO, ProductComponentForm } from '@/interfaces/Product'
+import { ProductSet } from '@/interfaces/ProductSet'
+
+const EMPTY_FORM: ProductComponentForm = {
+  id: '',
   name: '',
   slug: '',
   price: 0,
-  description: '',
+  description_html: '',
   digital: false,
   public: true,
-  brand_id: 0,
-  category_id: 0,
+  sets: [],
   quantity_step: 1,
   schemas: [],
   gallery: [],
-  media: [],
   tags: [],
 }
 
-export default {
+export default Vue.extend({
   data() {
     return {
       form: cloneDeep(EMPTY_FORM),
     }
   },
   computed: {
-    id() {
+    id(): ID {
       return this.$route.params.id
     },
-    isLoading() {
-      return this.$store.state.products.isLoading
+    isLoading(): boolean {
+      return this.$accessor.products.isLoading
     },
-    isNew() {
+    isNew(): boolean {
       return this.id === 'create'
     },
-    product() {
-      return this.$store.getters['products/getSelected']
+    product(): Product {
+      return this.$accessor.products.getSelected
     },
-    brands() {
-      return this.$store.getters['brands/getData']
+    productSets(): ProductSet[] {
+      return this.$accessor.productSets.getData
     },
-    categories() {
-      return this.$store.getters['categories/getData']
-    },
-    error() {
-      return (
-        this.$store.getters['products/getError'] || this.$store.getters['products/getDepositError']
-      )
+    error(): any {
+      // @ts-ignore // TODO: fix extended store getters typings
+      return this.$accessor.products.getError || this.$accessor.products.getDepositError
     },
   },
   methods: {
     async fetch() {
       this.form = cloneDeep(EMPTY_FORM)
       if (this.isNew) return
-      return this.$store.dispatch('products/get', this.$route.params.id)
+      this.$accessor.products.get(this.$route.params.id)
     },
     editSlug() {
       if (this.isNew) {
@@ -226,8 +208,8 @@ export default {
       }
     },
     async deleteProduct() {
-      const loading = this.$vs.loading({ color: '#000' })
-      const success = await this.$store.dispatch('products/remove', this.id)
+      this.$accessor.startLoading()
+      const success = await this.$accessor.products.remove(this.id)
       if (success) {
         this.$vs.notification({
           color: 'success',
@@ -235,38 +217,40 @@ export default {
         })
         this.$router.push('/products')
       }
-      loading.close()
+      this.$accessor.stopLoading()
     },
     async saveProduct() {
-      const apiPayload = {
+      const apiPayload: ProductDTO = {
         ...this.form,
-        tags: this.form.tags.map(({ id }) => id),
         media: this.form.gallery.map(({ id }) => id),
+        tags: this.form.tags.map(({ id }) => id),
         schemas: this.form.schemas.map(({ id }) => id),
       }
-      const loading = this.$vs.loading({ color: '#000' })
+
+      this.$accessor.startLoading()
 
       const successMessage = this.isNew
         ? 'Produkt został utworzony'
         : 'Produkt został zaktualizowany'
 
-      const actionPayload = this.isNew ? apiPayload : { id: this.id, item: apiPayload }
+      const item = this.isNew
+        ? await this.$accessor.products.add(apiPayload)
+        : await this.$accessor.products.update({ id: this.id, item: apiPayload })
 
-      const { id: newID } = await this.$store.dispatch(
-        this.isNew ? 'products/add' : 'products/update',
-        actionPayload,
-      )
+      ;(this.$refs.gallery as any).clearMediaToDelete()
 
-      this.$vs.notification({
-        color: 'success',
-        title: successMessage,
-      })
+      this.$accessor.stopLoading()
 
-      if (newID !== this.product.id) {
-        this.$router.push(`/products/${newID}`)
+      if (item) {
+        this.$vs.notification({
+          color: 'success',
+          title: successMessage,
+        })
+
+        if (item.id !== this.product.id) {
+          this.$router.push(`/products/${item.id}`)
+        }
       }
-
-      loading.close()
     },
     async submitAndGoNext() {
       await this.saveProduct()
@@ -274,13 +258,11 @@ export default {
     },
   },
   watch: {
-    product(product) {
+    product(product: Product) {
       if (!this.isNew) {
         this.form = {
           ...product,
-          brand_id: product.brand.id,
-          category_id: product.category.id,
-          media: [],
+          sets: product.sets?.map(({ id }) => id) || [],
         }
       }
     },
@@ -293,19 +275,16 @@ export default {
       }
     },
     async '$route.params.id'() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       await this.fetch()
-      loading.close()
+      this.$accessor.stopLoading()
     },
   },
   async created() {
-    const loading = this.$vs.loading({ color: '#000' })
-    await Promise.all([
-      this.$store.dispatch('categories/fetch'),
-      this.$store.dispatch('brands/fetch'),
-    ])
+    this.$accessor.startLoading()
+    this.$accessor.productSets.fetch({ tree: undefined })
     await this.fetch()
-    loading.close()
+    this.$accessor.stopLoading()
   },
   components: {
     TopNav,
@@ -316,12 +295,13 @@ export default {
     ValidationProvider,
     ValidationObserver,
     SchemaConfigurator,
-    MdEditor,
+    RichEditor,
     TagsSelect,
     ValidatedInput,
   },
-}
+})
 </script>
+
 <style lang="scss">
 .product {
   &__info {

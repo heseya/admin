@@ -17,8 +17,9 @@
   </vs-tooltip>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue'
+export default Vue.extend({
   name: 'PopConfirm',
   data: () => ({
     visible: false,
@@ -38,7 +39,7 @@ export default {
     },
   },
   methods: {
-    setVisible(newValue) {
+    setVisible(newValue: boolean) {
       this.visible = !!newValue
     },
     open() {
@@ -59,7 +60,7 @@ export default {
       this.close()
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

@@ -64,22 +64,29 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
-import ModalForm from '@/components/ModalForm.vue'
+
+import ModalForm from '@/components/form/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
-const EMPTY_FORM = {
-  name: '',
-  slug: '',
+import { DiscountCode } from '@/interfaces/DiscountCode'
+import { ID } from '@/interfaces/ID'
+
+const EMPTY_DISCOUNT_CODE: DiscountCode = {
+  id: '',
   type: 0,
+  code: '',
   discount: 0.0,
   max_uses: 1,
+  available: true,
+  uses: 0,
 }
 
-export default {
+export default Vue.extend({
   components: {
     ListItem,
     ModalForm,
@@ -91,42 +98,42 @@ export default {
   data: () => ({
     isModalActive: false,
     editedItem: {
-      ...EMPTY_FORM,
-    },
+      ...EMPTY_DISCOUNT_CODE,
+    } as DiscountCode,
   }),
   computed: {
-    currency() {
-      return this.$store.state.currency
+    currency(): string {
+      return this.$accessor.currency
     },
   },
   methods: {
-    openModal(id) {
+    openModal(id?: ID) {
       this.isModalActive = true
       if (id) {
-        this.editedItem = this.$store.getters['discounts/getFromListById'](id)
+        this.editedItem = this.$accessor.discounts.getFromListById(id)
       } else {
         this.editedItem = {
-          ...EMPTY_FORM,
+          ...EMPTY_DISCOUNT_CODE,
         }
       }
     },
     async saveModal() {
-      const loading = this.$vs.loading({ color: '#000' })
+      this.$accessor.startLoading()
       if (this.editedItem.id) {
-        await this.$store.dispatch('discounts/update', {
+        await this.$accessor.discounts.update({
           id: this.editedItem.id,
           item: this.editedItem,
         })
       } else {
-        await this.$store.dispatch('discounts/add', this.editedItem)
+        await this.$accessor.discounts.add(this.editedItem)
       }
-      loading.close()
+      this.$accessor.stopLoading()
       this.isModalActive = false
     },
     async deleteItem() {
-      const loading = this.$vs.loading({ color: '#000' })
-      await this.$store.dispatch('discounts/remove', this.editedItem.id)
-      loading.close()
+      this.$accessor.startLoading()
+      await this.$accessor.discounts.remove(this.editedItem.id)
+      this.$accessor.stopLoading()
       this.isModalActive = false
     },
   },
@@ -138,5 +145,5 @@ export default {
       next()
     }
   },
-}
+})
 </script>

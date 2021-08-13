@@ -13,15 +13,23 @@ export const hasUserAccess = (required: Permission | Permission[]) => {
   return hasAccess(required)(userPermissions)
 }
 
+// This directive is used to hide the element if the user doesn't have the permission to it
 Vue.directive('can', function (el, binding, vnode) {
-  const behaviour = binding.modifiers.disable ? 'disable' : 'hide'
-  const ok = hasUserAccess(binding.value)
-  if (!ok) {
-    if (behaviour === 'hide') {
-      commentNode(el, vnode)
-    } else if (behaviour === 'disable') {
-      // @ts-ignore
-      el.disabled = true
+  // allowed modifiers: 'hide' | 'disable' | 'remove'
+  const behaviour = Object.keys(binding.modifiers)[0] || 'remove'
+
+  if (!hasUserAccess(binding.value)) {
+    switch (behaviour) {
+      case 'disable':
+        // @ts-ignore
+        el.disabled = true
+        break
+      case 'hide':
+        el.style.display = 'none'
+        break
+      case 'remove':
+      default:
+        commentNode(el, vnode)
     }
   }
 })

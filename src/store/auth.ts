@@ -48,6 +48,19 @@ const actions = actionTree(
         commit('SET_ERROR', e)
       }
     },
+    async fetchProfile({ commit, state }) {
+      commit('SET_ERROR', null)
+      try {
+        // TODO: unhide when endpoint below will be ready
+        // const { data } = await api.get<{ data: User }>('/auth/profile')
+        // commit('SET_USER', data.data)
+
+        // debug purpose only
+        commit('SET_USER', { ...state.user, permissions: ['settings.add'] })
+      } catch (e) {
+        commit('SET_ERROR', e)
+      }
+    },
     async logout({ commit, dispatch }) {
       try {
         await api.post('/auth/logout')

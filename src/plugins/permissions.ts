@@ -2,8 +2,9 @@ import Vue from 'vue'
 
 import { accessor } from '@/store'
 
-import { Permission, PERMISSIONS_TREE } from '@/consts/permissions'
+import { Permission } from '@/interfaces/Permissions'
 
+import { PERMISSIONS_TREE } from '@/consts/permissions'
 import { commentNode } from '@/utils/commentNode'
 import { hasAccess } from '@/utils/hasAccess'
 

@@ -1,4 +1,4 @@
-import { SettingsPermission, AdminPermission } from '../../consts/permissions'
+import { AdminPermission, SettingsPermission } from '../../interfaces/Permissions'
 import { hasAccess } from '../hasAccess'
 
 // write test for hasAccess
@@ -6,7 +6,10 @@ describe('hasAccess', () => {
   it('should return true if user has permission', () => {
     expect(hasAccess(SettingsPermission.Show)([SettingsPermission.Show])).toBe(true)
     expect(
-      hasAccess([AdminPermission.Login, SettingsPermission.Show])([SettingsPermission.Show]),
+      hasAccess([SettingsPermission.Show, AdminPermission.Login])([
+        SettingsPermission.Show,
+        AdminPermission.Login,
+      ]),
     ).toBe(true)
     expect(
       hasAccess([SettingsPermission.Show])([SettingsPermission.Show, AdminPermission.Login]),
@@ -17,6 +20,15 @@ describe('hasAccess', () => {
     expect(hasAccess(SettingsPermission.Show)([SettingsPermission.Add])).toBe(false)
     expect(
       hasAccess([AdminPermission.Login, SettingsPermission.Add])([SettingsPermission.Show]),
+    ).toBe(false)
+    expect(
+      hasAccess([AdminPermission.Login, SettingsPermission.Show])([SettingsPermission.Show]),
+    ).toBe(false)
+    expect(
+      hasAccess([SettingsPermission.Show, SettingsPermission.Add, AdminPermission.Login])([
+        SettingsPermission.Show,
+        AdminPermission.Login,
+      ]),
     ).toBe(false)
     expect(
       hasAccess([SettingsPermission.Show])([SettingsPermission.Edit, AdminPermission.Login]),

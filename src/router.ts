@@ -1,6 +1,11 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+
+import { Permission } from './interfaces/Permissions'
+
 import { accessor } from './store'
+import { hasAccess } from './utils/hasAccess'
+import { PERMISSIONS_TREE as Permissions } from './consts/permissions'
 
 Vue.use(VueRouter)
 
@@ -188,6 +193,7 @@ const router = new VueRouter({
       component: () => import('./views/settings/Settings.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Settings.Show],
       },
     },
     {
@@ -212,21 +218,27 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   window.scrollTo(0, 0)
 
-  if (to.matched.some((rec) => rec.meta.requiresAuth)) {
-    if (!accessor.auth.isLogged) {
-      // User is not logged
-      next({
-        name: 'Login',
-        params: { nextURL: to.fullPath },
-      })
-    } else {
-      // User is logged
-      next()
-    }
-  } else {
-    // Path does not requires auth
-    next()
+  const authRequired = !!to.meta?.requiresAuth || false
+  const requiredPermissions: Permission[] = to.meta?.permissions || []
+
+  if (authRequired && !accessor.auth.isLogged) {
+    accessor.auth.setPermissionsError(new Error('Not logged in'))
+    return next({
+      name: 'Login',
+      params: { nextURL: to.fullPath },
+    })
   }
+
+  if (
+    requiredPermissions.length > 0 &&
+    !hasAccess(requiredPermissions)(accessor.auth.user?.permissions || [])
+  ) {
+    accessor.auth.setPermissionsError(new Error('Not authorized'))
+    if (!from.name) next('/')
+    return
+  }
+
+  next()
 })
 
 export default router

@@ -56,7 +56,7 @@ const actions = actionTree(
         // commit('SET_USER', data.data)
 
         // debug purpose only
-        commit('SET_USER', { ...state.user, permissions: ['settings.add'] })
+        commit('SET_USER', { ...state.user, permissions: ['settings.show', 'settings.add'] })
       } catch (e) {
         commit('SET_ERROR', e)
       }

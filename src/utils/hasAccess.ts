@@ -6,7 +6,7 @@ export const hasAccess =
   (required: Permission | Permission[]) =>
   (userPermissions: Permission[]): boolean => {
     const requiredArray = isArray(required) ? required : [required]
-    return requiredArray.some((requiredPermission: Permission) =>
+    return requiredArray.every((requiredPermission: Permission) =>
       userPermissions.includes(requiredPermission),
     )
   }

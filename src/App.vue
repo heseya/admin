@@ -34,6 +34,13 @@ export default Vue.extend({
         this.loadingInstance.close()
       }
     },
+    '$accessor.auth.permissionsError'(_permissionsError) {
+      this.$vs.notification({
+        color: 'danger',
+        title: 'Brak uprawnień',
+        text: `Nie posiadasz uprawnień do tej akcji`,
+      })
+    },
   },
   created() {
     this.$accessor.fetchEnv()

@@ -5,6 +5,7 @@ import { api } from '../api'
 
 const state = () => ({
   error: null as null | Error,
+  permissionsError: null as null | Error,
   user: null as null | User,
   token: null as null | string,
 })
@@ -27,6 +28,9 @@ const mutations = mutationTree(state, {
   },
   SET_ERROR(state, newError) {
     state.error = newError
+  },
+  SET_PERMISSIONS_ERROR(state, newError) {
+    state.permissionsError = newError
   },
 })
 
@@ -55,6 +59,9 @@ const actions = actionTree(
       commit('SET_ERROR', null)
       commit('SET_USER', null)
       commit('SET_TOKEN', null)
+    },
+    setPermissionsError({ commit }, error: Error) {
+      commit('SET_PERMISSIONS_ERROR', error)
     },
 
     async requestResetPassword({ commit }, { email }: { email: string }) {

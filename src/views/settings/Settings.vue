@@ -2,7 +2,7 @@
   <div>
     <PaginatedList title="Ustawienia zaawansowane" storeKey="settings">
       <template #nav>
-        <vs-button @click="openModal()" color="dark" icon>
+        <vs-button @click="openModal()" color="dark" icon v-can="$p.Settings.Add">
           <i class="bx bx-plus"></i>
         </vs-button>
       </template>

@@ -78,6 +78,7 @@ const CLEAR_USER: CreateUserDTO = {
   name: '',
   email: '',
   password: '',
+  roles: [],
 }
 
 export default Vue.extend({
@@ -101,7 +102,15 @@ export default Vue.extend({
   methods: {
     openModal(id?: ID) {
       this.isModalActive = true
-      this.editedUser = id ? this.$accessor.users.getFromListById(id) : clone(CLEAR_USER)
+      if (id) {
+        const user = this.$accessor.users.getFromListById(id)
+        this.editedUser = {
+          ...user,
+          roles: user.roles.map(({ id }) => id),
+        }
+      } else {
+        this.editedUser = clone(CLEAR_USER)
+      }
     },
     async saveModal() {
       this.$accessor.startLoading()

@@ -3,13 +3,11 @@ import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 import { api } from '../api'
 
 import { User } from '@/interfaces/User'
-import { Permission } from '@/interfaces/Permissions'
 
 const state = () => ({
   error: null as null | Error,
   permissionsError: null as null | Error,
   user: null as null | User,
-  permissions: [] as Permission[],
   token: null as null | string,
 })
 

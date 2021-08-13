@@ -9,7 +9,7 @@ import { commentNode } from '@/utils/commentNode'
 import { hasAccess } from '@/utils/hasAccess'
 
 export const hasUserAccess = (required: Permission | Permission[]) => {
-  const userPermissions = accessor.auth.permissions
+  const userPermissions = accessor.auth.user?.permissions || []
   return hasAccess(required)(userPermissions)
 }
 

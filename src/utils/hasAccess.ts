@@ -1,5 +1,6 @@
-import { Permission } from '@/consts/permissions'
 import { isArray } from 'lodash'
+
+import { Permission } from '@/interfaces/Permissions'
 
 export const hasAccess =
   (required: Permission | Permission[]) =>

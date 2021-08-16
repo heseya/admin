@@ -54,6 +54,7 @@ import { ProductSet } from '@/interfaces/ProductSet'
 import { Product } from '@/interfaces/Product'
 import { ID } from '@/interfaces/ID'
 import { api } from '@/api'
+import { formatApiError } from '@/utils/errors'
 
 export default Vue.extend({
   components: { Selector, Empty },
@@ -95,17 +96,38 @@ export default Vue.extend({
     async fetchProducts() {
       if (!this.set) return
       this.$accessor.startLoading()
-      const {
-        data: { data: products },
-      } = await api.get<{ data: Product[] }>(`/products?set=${this.set.slug}?limit=5`) // TODO: change limit
-
-      this.products = products
+      try {
+        const {
+          data: { data: products },
+        } = await api.get<{ data: Product[] }>(`/product-sets/id:${this.set.id}/products`)
+        this.products = products
+      } catch (e) {
+        this.$vs.notification({
+          color: 'danger',
+          ...formatApiError(e),
+        })
+      }
       this.$accessor.stopLoading()
     },
 
-    save() {
-      // TODO: api endpoint
-      console.log('Saving products')
+    async save() {
+      if (!this.set) return
+      this.$accessor.startLoading()
+      try {
+        const products = this.products.map((p) => p.id)
+        await api.post(`/product-sets/id:${this.set.id}/products`, { products })
+        this.$vs.notification({
+          color: 'success',
+          title: 'Produkty zostały zapisane w kolekcji',
+        })
+        this.$emit('close')
+      } catch (e) {
+        this.$vs.notification({
+          color: 'danger',
+          ...formatApiError(e),
+        })
+      }
+      this.$accessor.stopLoading()
     },
   },
 })

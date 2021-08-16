@@ -2,7 +2,7 @@
   <div>
     <PaginatedList title="Ustawienia zaawansowane" storeKey="settings">
       <template #nav>
-        <vs-button @click="openModal()" color="dark" icon v-can="$p.Settings.Add">
+        <vs-button v-can="$p.Settings.Add" @click="openModal()" color="dark" icon>
           <i class="bx bx-plus"></i>
         </vs-button>
       </template>
@@ -42,6 +42,7 @@
               v-slot="{ open }"
             >
               <vs-button
+                v-can="$p.Settings.Remove"
                 v-if="editedItem.id"
                 color="danger"
                 :disabled="editedItem.permanent"

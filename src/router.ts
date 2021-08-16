@@ -137,6 +137,7 @@ const router = new VueRouter({
       component: () => import('./views/apps/index.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Apps.Show],
       },
     },
     {
@@ -202,6 +203,7 @@ const router = new VueRouter({
       component: () => import('./views/settings/Users.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Users.Show],
       },
     },
     {

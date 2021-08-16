@@ -9,6 +9,7 @@ export enum AnalyticsPermission {
 }
 
 export enum AppsPermission {
+  Show = 'apps.show',
   Install = 'apps.install',
   Remove = 'apps.remove',
 }

@@ -3,6 +3,7 @@ import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 import { api } from '../api'
 
 import { User } from '@/interfaces/User'
+import { PERMISSIONS_TREE } from '@/consts/permissions'
 
 const state = () => ({
   error: null as null | Error,
@@ -55,8 +56,16 @@ const actions = actionTree(
         // const { data } = await api.get<{ data: User }>('/auth/profile')
         // commit('SET_USER', data.data)
 
-        // debug purpose only
-        commit('SET_USER', { ...state.user, permissions: ['settings.show', 'settings.add'] })
+        //! debug purpose only
+        const TEST_PERMS: string[] = [] || ['settings.show', 'apps.show']
+        const ALL_PERMS = Object.values(PERMISSIONS_TREE)
+          .map((o) => Object.values(o))
+          .flat()
+        commit('SET_USER', {
+          ...state.user,
+          permissions: TEST_PERMS.length ? TEST_PERMS : ALL_PERMS,
+        })
+        //! debug end
       } catch (e) {
         commit('SET_ERROR', e)
       }

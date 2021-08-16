@@ -1,4 +1,5 @@
 import {
+  Permission,
   AdminPermission,
   AnalyticsPermission,
   AppsPermission,
@@ -49,5 +50,9 @@ export const PERMISSIONS_TREE = {
   Users: UsersPermission,
   Roles: RolesPermission,
 }
+
+export const ALL_PERMISSIONS: Permission[] = Object.values(PERMISSIONS_TREE)
+  .map((o) => Object.values(o))
+  .flat()
 
 export type PermissionsTree = typeof PERMISSIONS_TREE

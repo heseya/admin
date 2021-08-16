@@ -8,17 +8,22 @@ import { PERMISSIONS_TREE } from '@/consts/permissions'
 import { commentNode } from '@/utils/commentNode'
 import { hasAccess } from '@/utils/hasAccess'
 
-export const hasUserAccess = (required: Permission | Permission[]) => {
+export const hasUserAccess = (required: Permission | Permission[], anyOfRequired: boolean) => {
   const userPermissions = accessor.auth.user?.permissions || []
-  return hasAccess(required)(userPermissions)
+  return hasAccess(required, anyOfRequired)(userPermissions)
 }
 
 // This directive is used to hide the element if the user doesn't have the permission to it
 Vue.directive('can', function (el, binding, vnode) {
-  // allowed modifiers: 'hide' | 'disable' | 'remove'
-  const behaviour = Object.keys(binding.modifiers)[0] || 'remove'
+  const behaviour = binding.modifiers.hide
+    ? 'hide'
+    : binding.modifiers.disable
+    ? 'disable'
+    : 'remove'
 
-  if (!hasUserAccess(binding.value)) {
+  const anyOfRequired = !!binding.modifiers.any
+
+  if (!hasUserAccess(binding.value, anyOfRequired)) {
     switch (behaviour) {
       case 'disable':
         // @ts-ignore

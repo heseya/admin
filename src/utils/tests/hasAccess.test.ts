@@ -3,7 +3,7 @@ import { hasAccess } from '../hasAccess'
 
 // write test for hasAccess
 describe('hasAccess', () => {
-  it('should return true if user has permission', () => {
+  it('should return true if user has permission all required permissions', () => {
     expect(hasAccess(SettingsPermission.Show)([SettingsPermission.Show])).toBe(true)
     expect(
       hasAccess([SettingsPermission.Show, AdminPermission.Login])([
@@ -16,7 +16,21 @@ describe('hasAccess', () => {
     ).toBe(true)
   })
 
+  it('should return true if user has permission any of required permissions', () => {
+    expect(
+      hasAccess([SettingsPermission.Show, AdminPermission.Login], true)([AdminPermission.Login]),
+    ).toBe(true)
+    expect(
+      hasAccess([SettingsPermission.Show, SettingsPermission.Add], true)([SettingsPermission.Show]),
+    ).toBe(true)
+  })
+
   it('should return false if user dont have permission', () => {
+    expect(hasAccess(SettingsPermission.Show, true)([SettingsPermission.Add])).toBe(false)
+    expect(
+      hasAccess([AdminPermission.Login, SettingsPermission.Add], true)([SettingsPermission.Show]),
+    ).toBe(false)
+
     expect(hasAccess(SettingsPermission.Show)([SettingsPermission.Add])).toBe(false)
     expect(
       hasAccess([AdminPermission.Login, SettingsPermission.Add])([SettingsPermission.Show]),
@@ -33,5 +47,11 @@ describe('hasAccess', () => {
     expect(
       hasAccess([SettingsPermission.Show])([SettingsPermission.Edit, AdminPermission.Login]),
     ).toBe(false)
+  })
+
+  it('should return false if invalid input', () => {
+    expect(hasAccess({} as any)([null as any])).toBe(false)
+    expect(hasAccess(null as any, true)([SettingsPermission.Add])).toBe(false)
+    expect(hasAccess([{} as any], true)([{} as any])).toBe(false)
   })
 })

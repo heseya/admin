@@ -187,4 +187,5 @@ export interface PermissionObject {
   id: ID
   name: Permission
   description: string
+  assignable: boolean
 }

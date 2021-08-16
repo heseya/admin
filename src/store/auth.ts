@@ -1,7 +1,9 @@
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 
-import { User } from '@/interfaces/User'
 import { api } from '../api'
+
+import { User } from '@/interfaces/User'
+import { ALL_PERMISSIONS } from '@/consts/permissions'
 
 const state = () => ({
   error: null as null | Error,
@@ -43,6 +45,24 @@ const actions = actionTree(
         const { data } = await api.post('/login', { email, password })
         commit('SET_USER', data.data.user)
         commit('SET_TOKEN', data.data.token)
+      } catch (e) {
+        commit('SET_ERROR', e)
+      }
+    },
+    async fetchProfile({ commit, state }) {
+      commit('SET_ERROR', null)
+      try {
+        // TODO: unhide when endpoint below will be ready
+        // const { data } = await api.get<{ data: User }>('/auth/profile')
+        // commit('SET_USER', data.data)
+
+        //! debug purpose only
+        const TEST_PERMS: string[] = [] || ['settings.show', 'apps.show']
+        commit('SET_USER', {
+          ...state.user,
+          permissions: TEST_PERMS.length ? TEST_PERMS : ALL_PERMISSIONS,
+        })
+        //! debug end
       } catch (e) {
         commit('SET_ERROR', e)
       }

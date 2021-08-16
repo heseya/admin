@@ -31,10 +31,22 @@
           url="/settings/package-templates"
         />
 
-        <h2 class="section-title">Inne</h2>
-        <SettingsItem name="Aplikacje" icon="bx bxs-store-alt" url="/apps" />
-        <SettingsItem name="Ustawienia zaawansowane" icon="bx bxs-cog" url="/settings/advanced" />
-        <SettingsItem name="Lista użytkowników" icon="bx bxs-group" url="/settings/users" />
+        <h2 v-can.any="[$p.Apps.Show, $p.Settings.Show, $p.Users.Show]" class="section-title">
+          Inne
+        </h2>
+        <SettingsItem v-can="$p.Apps.Show" name="Aplikacje" icon="bx bxs-store-alt" url="/apps" />
+        <SettingsItem
+          v-can="$p.Settings.Show"
+          name="Ustawienia zaawansowane"
+          icon="bx bxs-cog"
+          url="/settings/advanced"
+        />
+        <SettingsItem
+          v-can="$p.Users.Show"
+          name="Lista użytkowników"
+          icon="bx bxs-group"
+          url="/settings/users"
+        />
 
         <h2 class="section-title">Konto</h2>
         <SettingsItem name="Zmień hasło" icon="bx bxs-lock" @click="isChangePasswordModal = true" />

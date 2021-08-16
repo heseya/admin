@@ -12,12 +12,29 @@
       </span>
 
       <div class="product-set__actions">
-        <vs-button @click.stop="create" color="success" icon size="small">
-          <i class="bx bx-plus"></i>
-        </vs-button>
-        <vs-button @click.stop="edit" color="dark" icon size="small">
-          <i class="bx bx-edit"></i>
-        </vs-button>
+        <vs-tooltip
+          shadow
+          interactivity
+          bottom
+          not-hover
+          :value="isMenuVisible"
+          @input="(v) => (isMenuVisible = v)"
+        >
+          <vs-button size="small" color="dark" icon transparent @click.stop="isMenuVisible = true">
+            <i class="bx bx-menu"></i>
+          </vs-button>
+          <template #tooltip>
+            <vs-button @click.stop="create" shadow>
+              <i class="bx bx-plus"></i> &nbsp; Dodaj subkolekcje
+            </vs-button>
+            <vs-button @click.stop="showProducts" shadow color="success">
+              <i class="bx bx-customize"></i> &nbsp; Zobacz produkty w kolekcji
+            </vs-button>
+            <vs-button @click.stop="edit" shadow color="dark">
+              <i class="bx bx-edit"></i> &nbsp; Edytuj kolekcję
+            </vs-button>
+          </template>
+        </vs-tooltip>
       </div>
     </div>
 
@@ -51,6 +68,7 @@ export default Vue.extend({
   },
   data: () => ({
     areChildrenVisible: false,
+    isMenuVisible: false,
   }),
   computed: {
     children: {
@@ -71,6 +89,9 @@ export default Vue.extend({
   methods: {
     edit() {
       this.$emit('edit', this.set)
+    },
+    showProducts() {
+      this.$emit('showProducts', this.set)
     },
     create() {
       this.$emit('create', this.set)

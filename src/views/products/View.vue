@@ -200,7 +200,9 @@ export default Vue.extend({
     async fetch() {
       this.form = cloneDeep(EMPTY_FORM)
       if (this.isNew) return
-      this.$accessor.products.get(this.$route.params.id)
+      this.$accessor.startLoading()
+      await this.$accessor.products.get(this.$route.params.id)
+      this.$accessor.stopLoading()
     },
     editSlug() {
       if (this.isNew) {

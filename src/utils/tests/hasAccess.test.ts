@@ -1,4 +1,4 @@
-import { AdminPermission, SettingsPermission } from '../../interfaces/Permissions'
+import { AdminPermission, SettingsPermission } from '../../enums/permissions'
 import { hasAccess } from '../hasAccess'
 
 // write test for hasAccess

@@ -1,5 +1,5 @@
+import { Permission } from '@/interfaces/Permissions'
 import {
-  Permission,
   AdminPermission,
   AnalyticsPermission,
   AppsPermission,
@@ -23,7 +23,7 @@ import {
   TagsPermission,
   UsersPermission,
   RolesPermission,
-} from '@/interfaces/Permissions'
+} from '@/enums/permissions'
 
 export const PERMISSIONS_TREE = {
   Admin: AdminPermission,

@@ -36,6 +36,7 @@
             <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
             <pop-confirm
               title="Czy na pewno chcesz usunąć to ustawienie?"
+              v-can="$p.Settings.Remove"
               okText="Usuń"
               cancelText="Anuluj"
               @confirm="deleteItem"
@@ -96,6 +97,8 @@ export default Vue.extend({
   }),
   methods: {
     openModal(item?: Setting) {
+      if (!this.$verboseCan([this.$p.Settings.Add, this.$p.Settings.Edit])) return
+
       this.isModalActive = true
       if (item) {
         this.editedItem = { ...clone(item), id: item.name }

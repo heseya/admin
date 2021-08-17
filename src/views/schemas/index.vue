@@ -13,7 +13,7 @@
         <vs-button @click="makeSearch" color="dark" icon>
           <i class="bx bx-search"></i>
         </vs-button>
-        <vs-button to="/schemas/create" color="dark" icon>
+        <vs-button to="/schemas/create" v-can="$p.ProductSets.Add" color="dark" icon>
           <i class="bx bx-plus"></i>
         </vs-button>
       </template>

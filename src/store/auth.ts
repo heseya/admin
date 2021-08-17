@@ -57,7 +57,10 @@ const actions = actionTree(
         // commit('SET_USER', data.data)
 
         //! debug purpose only
-        const TEST_PERMS: string[] = [] || ['settings.show', 'apps.show']
+        // eslint-disable-next-line no-constant-condition
+        const TEST_PERMS: string[] = false
+          ? ['product_sets.show', 'product_sets.show_detsails']
+          : []
         commit('SET_USER', {
           ...state.user,
           permissions: TEST_PERMS.length ? TEST_PERMS : ALL_PERMISSIONS,

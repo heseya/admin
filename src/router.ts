@@ -57,6 +57,7 @@ const router = new VueRouter({
       component: () => import('./views/items/index.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Items.Show],
       },
     },
     {
@@ -65,6 +66,7 @@ const router = new VueRouter({
       component: () => import('./views/schemas/index.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Products.Show],
       },
     },
     {
@@ -73,6 +75,7 @@ const router = new VueRouter({
       component: () => import('./views/schemas/view.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Products.ShowDetails],
       },
     },
     {
@@ -81,6 +84,7 @@ const router = new VueRouter({
       component: () => import('./views/products/Index.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Products.Show],
       },
     },
     {
@@ -89,6 +93,7 @@ const router = new VueRouter({
       component: () => import('./views/products/View.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Products.ShowDetails],
       },
     },
     {
@@ -97,6 +102,7 @@ const router = new VueRouter({
       component: () => import('./views/orders/Index.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Orders.Show],
       },
     },
     {
@@ -105,6 +111,7 @@ const router = new VueRouter({
       component: () => import('./views/orders/view.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Orders.ShowDetails],
       },
     },
     {
@@ -113,6 +120,7 @@ const router = new VueRouter({
       component: () => import('./views/discounts/index.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Discounts.Show],
       },
     },
     {
@@ -121,6 +129,7 @@ const router = new VueRouter({
       component: () => import('./views/pages/Index.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Pages.Show],
       },
     },
     {
@@ -129,6 +138,7 @@ const router = new VueRouter({
       component: () => import('./views/pages/View.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Pages.ShowDetails],
       },
     },
     {
@@ -154,6 +164,7 @@ const router = new VueRouter({
       component: () => import('./views/productSets/Index.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.ProductSets.Show],
       },
     },
     {
@@ -162,6 +173,7 @@ const router = new VueRouter({
       component: () => import('./views/settings/ShippingMethods.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.ShippingMethods.Show],
       },
     },
     {
@@ -170,6 +182,7 @@ const router = new VueRouter({
       component: () => import('./views/settings/Statuses.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Statuses.Show],
       },
     },
     {
@@ -178,6 +191,7 @@ const router = new VueRouter({
       component: () => import('./views/settings/Tags.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Tags.Show],
       },
     },
     {
@@ -186,6 +200,7 @@ const router = new VueRouter({
       component: () => import('./views/settings/PackageTemplates.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Packages.Show],
       },
     },
     {
@@ -212,6 +227,7 @@ const router = new VueRouter({
       component: () => import('./views/settings/LoginHistory.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Auth.SessionsShow],
       },
     },
   ],

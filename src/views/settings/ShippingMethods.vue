@@ -2,7 +2,7 @@
   <div>
     <PaginatedList title="Opcje Dostawy" storeKey="shippingMethods" draggable>
       <template #nav>
-        <vs-button @click="openModal()" color="dark" icon>
+        <vs-button v-can="$p.ShippingMethods.Add" @click="openModal()" color="dark" icon>
           <i class="bx bx-plus"></i>
         </vs-button>
       </template>
@@ -36,6 +36,7 @@
             <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
             <pop-confirm
               title="Czy na pewno chcesz usunąć tą metode dostawy?"
+              v-can="$p.ShippingMethods.Remove"
               okText="Usuń"
               cancelText="Anuluj"
               @confirm="deleteItem"
@@ -78,6 +79,8 @@ export default Vue.extend({
   }),
   methods: {
     openModal(id?: UUID) {
+      if (!this.$verboseCan([this.$p.ShippingMethods.Add, this.$p.ShippingMethods.Edit])) return
+
       this.isModalActive = true
       if (id) {
         const item = this.$accessor.shippingMethods.getFromListById(id)

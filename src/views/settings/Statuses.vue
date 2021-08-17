@@ -2,7 +2,7 @@
   <div>
     <PaginatedList title="Statusy zamówień" storeKey="statuses" draggable>
       <template #nav>
-        <vs-button @click="openModal()" color="dark" icon>
+        <vs-button v-can="$p.Statuses.Add" @click="openModal()" color="dark" icon>
           <i class="bx bx-plus"></i>
         </vs-button>
       </template>
@@ -41,6 +41,7 @@
             <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
             <pop-confirm
               title="Czy na pewno chcesz usunąć ten status?"
+              v-can="$p.Statuses.Remove"
               okText="Usuń"
               cancelText="Anuluj"
               @confirm="deleteItem"
@@ -97,6 +98,8 @@ export default Vue.extend({
       this.editedItem.color = color.split('#')[1] ?? color
     },
     openModal(id?: UUID) {
+      if (!this.$verboseCan([this.$p.Statuses.Add, this.$p.Statuses.Edit])) return
+
       this.isModalActive = true
       if (id) {
         this.editedItem = this.$accessor.statuses.getFromListById(id)

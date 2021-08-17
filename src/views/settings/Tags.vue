@@ -2,7 +2,7 @@
   <div>
     <PaginatedList title="Tagi" storeKey="tags">
       <template #nav>
-        <vs-button @click="openModal()" color="dark" icon>
+        <vs-button v-can="$p.Tags.Add" @click="openModal()" color="dark" icon>
           <i class="bx bx-plus"></i>
         </vs-button>
       </template>
@@ -37,6 +37,7 @@
             <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
             <pop-confirm
               title="Czy na pewno chcesz usunąć ten tag?"
+              v-can="$p.Tags.Remove"
               okText="Usuń"
               cancelText="Anuluj"
               @confirm="deleteItem"
@@ -89,6 +90,8 @@ export default Vue.extend({
       this.editedItem.color = color.split('#')[1] ?? color
     },
     openModal(id?: UUID) {
+      if (!this.$verboseCan([this.$p.Tags.Add, this.$p.Tags.Edit])) return
+
       this.isModalActive = true
       if (id) {
         this.editedItem = this.$accessor.tags.getFromListById(id)

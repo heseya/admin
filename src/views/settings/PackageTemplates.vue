@@ -2,7 +2,7 @@
   <div>
     <PaginatedList title="Szablony przesyłek" storeKey="packageTemplates">
       <template #nav>
-        <vs-button @click="openModal()" color="dark" icon>
+        <vs-button @click="openModal()" v-can="$p.Packages.Add" color="dark" icon>
           <i class="bx bx-plus"></i>
         </vs-button>
       </template>
@@ -60,6 +60,7 @@
             <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
             <pop-confirm
               title="Czy na pewno chcesz usunąć ten szablon dostawy?"
+              v-can="$p.Packages.Remove"
               okText="Usuń"
               cancelText="Anuluj"
               @confirm="deleteItem"
@@ -112,6 +113,8 @@ export default Vue.extend({
   }),
   methods: {
     openModal(id?: UUID) {
+      if (!this.$verboseCan([this.$p.Packages.Add, this.$p.Packages.Edit])) return
+
       this.isModalActive = true
       if (id) {
         const item = this.$accessor.packageTemplates.getFromListById(id)

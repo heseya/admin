@@ -4,6 +4,7 @@
       <pop-confirm
         v-if="!isNew"
         title="Czy na pewno chcesz usunąć ten schemat?"
+        v-can="$p.Schemas.Remove"
         okText="Usuń"
         cancelText="Anuluj"
         @confirm="deleteSchema"

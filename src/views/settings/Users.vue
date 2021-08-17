@@ -2,7 +2,7 @@
   <div>
     <PaginatedList title="Użytkownicy" storeKey="users">
       <template #nav>
-        <vs-button @click="openModal()" color="dark" icon>
+        <vs-button v-can="$p.Users.Add" @click="openModal()" color="dark" icon>
           <i class="bx bx-plus"></i>
         </vs-button>
       </template>
@@ -39,6 +39,7 @@
             <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
             <pop-confirm
               title="Czy na pewno chcesz usunąć tego użytkownika?"
+              v-can="$p.Users.Remove"
               okText="Usuń"
               cancelText="Anuluj"
               @confirm="deleteItem"
@@ -101,6 +102,8 @@ export default Vue.extend({
   },
   methods: {
     openModal(id?: UUID) {
+      if (!this.$verboseCan([this.$p.Users.Add, this.$p.Users.Edit])) return
+
       this.isModalActive = true
       if (id) {
         const user = this.$accessor.users.getFromListById(id)

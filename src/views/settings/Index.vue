@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="settings-page">
     <top-nav title="Ustawienia">
       <div class="profile">
         <span class="profile__name">{{ user.name }}</span>
@@ -12,20 +12,50 @@
 
     <card>
       <list>
-        <h2 class="section-title">Sklep</h2>
-        <SettingsItem name="Strony" url="/pages" icon="bx bxs-copy-alt" />
+        <h2 v-can.any="[$p.Pages.Show]" class="section-title">Sklep</h2>
+        <SettingsItem v-can="$p.Pages.Show" name="Strony" url="/pages" icon="bx bxs-copy-alt" />
 
-        <h2 class="section-title">Produkty</h2>
-        <SettingsItem name="Kolekcje produktów" url="/settings/product-sets" icon="bx bx-list-ul" />
-        <SettingsItem name="Tagi" icon="bx bxs-purchase-tag" url="/settings/tags" />
-        <SettingsItem name="Schematy" icon="bx bxs-customize" url="/schemas" />
-
-        <h2 class="section-title">Zamówienia</h2>
-        <SettingsItem name="Statusy zamówień" icon="bx bxs-check-circle" url="/settings/statuses" />
-
-        <h2 class="section-title">Dostawa</h2>
-        <SettingsItem name="Opcje dostawy" icon="bx bxs-truck" url="/settings/shipping-methods" />
+        <h2 v-can.any="[$p.ProductSets.Show, $p.Tags.Show, $p.Products.Show]" class="section-title">
+          Produkty
+        </h2>
         <SettingsItem
+          v-can="$p.ProductSets.Show"
+          name="Kolekcje produktów"
+          url="/settings/product-sets"
+          icon="bx bx-list-ul"
+        />
+        <SettingsItem
+          v-can="$p.Tags.Show"
+          name="Tagi"
+          icon="bx bxs-purchase-tag"
+          url="/settings/tags"
+        />
+        <SettingsItem
+          v-can="$p.Products.Show"
+          name="Schematy"
+          icon="bx bxs-customize"
+          url="/schemas"
+        />
+
+        <h2 v-can.any="[$p.Orders.Show]" class="section-title">Zamówienia</h2>
+        <SettingsItem
+          v-can="$p.Orders.Show"
+          name="Statusy zamówień"
+          icon="bx bxs-check-circle"
+          url="/settings/statuses"
+        />
+
+        <h2 v-can.any="[$p.ShippingMethods.Show, $p.Packages.Show]" class="section-title">
+          Dostawa
+        </h2>
+        <SettingsItem
+          v-can="$p.ShippingMethods.Show"
+          name="Opcje dostawy"
+          icon="bx bxs-truck"
+          url="/settings/shipping-methods"
+        />
+        <SettingsItem
+          v-can="$p.Packages.Show"
           name="Szablony przesyłek"
           icon="bx bxs-box"
           url="/settings/package-templates"
@@ -50,7 +80,12 @@
 
         <h2 class="section-title">Konto</h2>
         <SettingsItem name="Zmień hasło" icon="bx bxs-lock" @click="isChangePasswordModal = true" />
-        <SettingsItem name="Sesje użytkownika" icon="bx bx-history" url="/settings/login-history" />
+        <SettingsItem
+          v-can="$p.Auth.SessionsShow"
+          name="Sesje użytkownika"
+          icon="bx bx-history"
+          url="/settings/login-history"
+        />
         <SettingsItem name="Wyloguj" icon="bx bx-log-out-circle" @click="logout" />
       </list>
     </card>
@@ -109,6 +144,12 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
+.settings-page {
+  .section-title:first-of-type {
+    margin-top: 0;
+  }
+}
+
 .profile {
   display: flex;
   justify-content: center;

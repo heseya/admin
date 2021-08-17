@@ -2,7 +2,7 @@
   <div>
     <PaginatedList title="Kolekcje produktów" storeKey="productSets" draggable>
       <template #nav>
-        <vs-button @click="createProductSet()" color="dark" icon>
+        <vs-button v-can="$p.ProductSets.Add" @click="createProductSet()" color="dark" icon>
           <i class="bx bx-plus"></i>
         </vs-button>
       </template>

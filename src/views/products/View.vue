@@ -150,7 +150,7 @@ import ValidatedInput from '@/components/form/ValidatedInput.vue'
 import TagsSelect from '@/components/TagsSelect.vue'
 
 import { formatApiError } from '@/utils/errors'
-import { ID } from '@/interfaces/ID'
+import { UUID } from '@/interfaces/UUID'
 import { Product, ProductDTO, ProductComponentForm } from '@/interfaces/Product'
 import { ProductSet } from '@/interfaces/ProductSet'
 
@@ -176,7 +176,7 @@ export default Vue.extend({
     }
   },
   computed: {
-    id(): ID {
+    id(): UUID {
       return this.$route.params.id
     },
     isLoading(): boolean {
@@ -200,7 +200,9 @@ export default Vue.extend({
     async fetch() {
       this.form = cloneDeep(EMPTY_FORM)
       if (this.isNew) return
-      this.$accessor.products.get(this.$route.params.id)
+      this.$accessor.startLoading()
+      await this.$accessor.products.get(this.$route.params.id)
+      this.$accessor.stopLoading()
     },
     editSlug() {
       if (this.isNew) {

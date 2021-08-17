@@ -1,7 +1,7 @@
-import { ID } from './ID'
+import { UUID } from './UUID'
 
 export interface PackageTemplate {
-  id: ID
+  id: UUID
   name: string
   width: number
   height: number

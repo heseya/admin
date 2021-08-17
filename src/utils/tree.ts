@@ -1,25 +1,25 @@
 /* eslint-disable camelcase */
 import { cloneDeep } from 'lodash'
-import { ID } from '@/interfaces/ID'
+import { UUID } from '@/interfaces/UUID'
 
 export interface Tree<T> {
-  id: ID
+  id: UUID
   children: T[]
 }
 
 export interface TreeWithParents<T> extends Tree<T> {
-  parent_id?: ID
+  parent_id?: UUID
   parent: T | null
 }
 
-const replaceInArray = <T extends { id: ID }>(array: T[], item: T): T[] => {
+const replaceInArray = <T extends { id: UUID }>(array: T[], item: T): T[] => {
   const arrayCopy = cloneDeep(array)
   const itemIndex = arrayCopy.findIndex(({ id }) => id === item.id)
   if (itemIndex >= 0) arrayCopy[itemIndex] = cloneDeep(item)
   return arrayCopy
 }
 
-export const findInTree = <T extends Tree<T>>(array: T[], id: ID): T | undefined => {
+export const findInTree = <T extends Tree<T>>(array: T[], id: UUID): T | undefined => {
   for (const item of array) {
     if (item.id === id) {
       return item
@@ -32,7 +32,7 @@ export const findInTree = <T extends Tree<T>>(array: T[], id: ID): T | undefined
   return undefined
 }
 
-export const removeFromTree = <T extends TreeWithParents<T>>(array: T[], id: ID): T[] => {
+export const removeFromTree = <T extends TreeWithParents<T>>(array: T[], id: UUID): T[] => {
   const item = findInTree(array, id)
   if (!item) return array
 

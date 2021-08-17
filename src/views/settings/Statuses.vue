@@ -67,7 +67,7 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
-import { ID } from '@/interfaces/ID'
+import { UUID } from '@/interfaces/UUID'
 import { OrderStatus } from '@/interfaces/Order'
 
 const CLEAR_STATUS: OrderStatus = {
@@ -96,7 +96,7 @@ export default Vue.extend({
     setColor(color: string) {
       this.editedItem.color = color.split('#')[1] ?? color
     },
-    openModal(id?: ID) {
+    openModal(id?: UUID) {
       this.isModalActive = true
       if (id) {
         this.editedItem = this.$accessor.statuses.getFromListById(id)

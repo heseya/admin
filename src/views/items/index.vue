@@ -74,7 +74,7 @@ import ModalForm from '@/components/form/ModalForm.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
-import { ID } from '@/interfaces/ID'
+import { UUID } from '@/interfaces/UUID'
 import { ProductItem } from '@/interfaces/Product'
 
 const EMPTY_FORM: ProductItem = {
@@ -132,7 +132,7 @@ export default Vue.extend({
       }
     },
 
-    openModal(id?: ID) {
+    openModal(id?: UUID) {
       this.isModalActive = true
       if (id) {
         this.editedItem = this.$accessor.items.getFromListById(id)

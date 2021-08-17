@@ -1,7 +1,7 @@
-import { ID } from './ID'
+import { UUID } from './UUID'
 
 export interface Setting {
-  id: ID
+  id: UUID
   name: string
   value: string
   public: boolean

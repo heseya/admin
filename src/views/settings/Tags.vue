@@ -62,7 +62,7 @@ import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
-import { ID } from '@/interfaces/ID'
+import { UUID } from '@/interfaces/UUID'
 import { Tag } from '@/interfaces/Tag'
 
 const CLEAR_TAG: Tag = {
@@ -88,7 +88,7 @@ export default Vue.extend({
     setColor(color: string) {
       this.editedItem.color = color.split('#')[1] ?? color
     },
-    openModal(id?: ID) {
+    openModal(id?: UUID) {
       this.isModalActive = true
       if (id) {
         this.editedItem = this.$accessor.tags.getFromListById(id)

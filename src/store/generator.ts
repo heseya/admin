@@ -7,12 +7,12 @@ import { api } from '../api'
 
 import { RootState } from '.'
 import { ResponseMeta } from '@/interfaces/Response'
-import { ID } from '@/interfaces/ID'
+import { UUID } from '@/interfaces/UUID'
 
 type QueryPayload = Record<string, any>
 
 export interface BaseItem {
-  id: ID
+  id: UUID
 }
 
 export enum StoreMutations {

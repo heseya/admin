@@ -74,7 +74,7 @@ import PaginatedList from '@/components/PaginatedList.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
 import { DiscountCode } from '@/interfaces/DiscountCode'
-import { ID } from '@/interfaces/ID'
+import { UUID } from '@/interfaces/UUID'
 
 const EMPTY_DISCOUNT_CODE: DiscountCode = {
   id: '',
@@ -107,7 +107,7 @@ export default Vue.extend({
     },
   },
   methods: {
-    openModal(id?: ID) {
+    openModal(id?: UUID) {
       this.isModalActive = true
       if (id) {
         this.editedItem = this.$accessor.discounts.getFromListById(id)

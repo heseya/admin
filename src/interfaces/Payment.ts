@@ -1,11 +1,11 @@
 /* eslint-disable camelcase */
-import { ID } from './ID'
+import { UUID } from './UUID'
 
 export interface Payment {
-  id: ID
+  id: UUID
   amount: 609
   continue_url: string
-  external_id: ID
+  external_id: UUID
   method: string
   payed: boolean
   redirect_url: string

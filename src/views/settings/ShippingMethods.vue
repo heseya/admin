@@ -60,7 +60,7 @@ import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ShippingMethodsForm from '@/components/modules/shippingMethods/Index.vue'
 
-import { ID } from '@/interfaces/ID'
+import { UUID } from '@/interfaces/UUID'
 import { ShippingMethodDTO } from '@/interfaces/ShippingMethod'
 
 export default Vue.extend({
@@ -77,7 +77,7 @@ export default Vue.extend({
     countries: [],
   }),
   methods: {
-    openModal(id?: ID) {
+    openModal(id?: UUID) {
       this.isModalActive = true
       if (id) {
         const item = this.$accessor.shippingMethods.getFromListById(id)

@@ -1,8 +1,8 @@
 /* eslint-disable camelcase */
-import { ID } from './ID'
+import { UUID } from './UUID'
 
 export interface Address {
-  id?: ID
+  id?: UUID
   address: string
   city: string
   country: string

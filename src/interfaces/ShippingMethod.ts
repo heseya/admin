@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 
-import { ID } from './ID'
+import { UUID } from './UUID'
 import { PaymentMethod } from './PaymentMethod'
 
 export interface ShippingMethodCountry {
@@ -9,12 +9,12 @@ export interface ShippingMethodCountry {
 }
 
 export interface ShippingMethodPriceRange {
-  id: ID
+  id: UUID
   start: number
   prices: {
-    id: ID
+    id: UUID
     value: number
-    model_id: ID
+    model_id: UUID
   }[]
 }
 
@@ -23,7 +23,7 @@ export interface ShippingMethodPriceRangeDTO {
   value: number
 }
 export interface ShippingMethod {
-  id: ID
+  id: UUID
   name: string
   payment_methods: PaymentMethod[]
   public: boolean
@@ -33,7 +33,7 @@ export interface ShippingMethod {
 }
 
 export interface ShippingMethodDTO {
-  id?: ID
+  id?: UUID
   name: string
   payment_methods: string[]
   public: boolean

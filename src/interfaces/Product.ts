@@ -1,12 +1,12 @@
 /* eslint-disable camelcase */
-import { ID } from './ID'
+import { UUID } from './UUID'
 import { Schema } from './Schema'
 import { Tag } from './Tag'
 import { CdnMedia } from './Media'
 import { ProductSet } from './ProductSet'
 
 export interface Product {
-  id: ID
+  id: UUID
   name: string
   slug: string
   price: number
@@ -25,7 +25,7 @@ export interface Product {
 }
 
 export interface ProductDTO {
-  id?: ID
+  id?: UUID
   name: string
   slug: string
   price: number
@@ -33,20 +33,20 @@ export interface ProductDTO {
   digital: boolean
   public: boolean
   quantity_step: number
-  sets: ID[]
-  tags: ID[]
-  schemas: ID[]
-  media: ID[]
+  sets: UUID[]
+  tags: UUID[]
+  schemas: UUID[]
+  media: UUID[]
 }
 
 export interface ProductComponentForm
   extends Omit<Product, 'id' | 'sets' | 'brand' | 'category' | 'cover' | 'visible'> {
-  id?: ID
-  sets: ID[]
+  id?: UUID
+  sets: UUID[]
 }
 
 export interface ProductItem {
-  id: ID
+  id: UUID
   name: string
   sku: string
   quantity: number

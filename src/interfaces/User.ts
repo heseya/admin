@@ -15,11 +15,11 @@ export interface CreateUserDTO {
   name: string
   email: string
   password: string
-  roles: ID[]
+  roles: UUID[]
 }
 export interface EditUserDTO {
   id: UUID
   name: string
   email: string
-  roles: ID[]
+  roles: UUID[]
 }

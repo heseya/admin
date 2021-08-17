@@ -1,4 +1,4 @@
-import { ID } from './ID'
+import { UUID } from './UUID'
 import {
   AdminPermission,
   AnalyticsPermission,
@@ -51,7 +51,7 @@ export type Permission =
   | RolesPermission
 
 export interface PermissionObject {
-  id: ID
+  id: UUID
   name: Permission
   description: string
   assignable: boolean

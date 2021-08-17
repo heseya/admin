@@ -1,8 +1,8 @@
-import { ID } from './ID'
+import { UUID } from './UUID'
 import { Permission } from './Permissions'
 
 export interface Role {
-  id: ID
+  id: UUID
   name: string
   description: string
   assignable: boolean

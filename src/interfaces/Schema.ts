@@ -1,4 +1,4 @@
-import { ID } from './ID'
+import { UUID } from './UUID'
 import { Product, ProductItem } from './Product'
 
 export enum SchemaType {
@@ -13,7 +13,7 @@ export enum SchemaType {
 }
 
 export interface SchemaOption {
-  id: ID
+  id: UUID
   name: string
   default: boolean
   disabled: boolean
@@ -21,7 +21,7 @@ export interface SchemaOption {
   items: ProductItem[]
 }
 export interface Schema {
-  id: ID
+  id: UUID
   name: string
   description: string
   type: SchemaType
@@ -42,7 +42,7 @@ export interface Schema {
 }
 
 export interface SchemaValue {
-  id: ID
+  id: UUID
   name: string
   price: number
   value: string

@@ -1,9 +1,9 @@
 /* eslint-disable camelcase */
 
-import { ID } from './ID'
+import { UUID } from './UUID'
 
 export interface App {
-  id: ID
+  id: UUID
   name: string
   url: string
   created_at: string

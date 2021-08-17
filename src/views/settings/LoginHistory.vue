@@ -60,7 +60,7 @@ import Vue from 'vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import { ID } from '@/interfaces/ID'
+import { UUID } from '@/interfaces/UUID'
 
 export default Vue.extend({
   components: {
@@ -86,7 +86,7 @@ export default Vue.extend({
           return `bx bxl-${browser.toLowerCase()}`
       }
     },
-    killSession(id: ID) {
+    killSession(id: UUID) {
       // @ts-ignore // TODO: fix extended store actions typings
       this.$accessor.authSessions.kill(id)
     },

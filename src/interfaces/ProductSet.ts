@@ -1,8 +1,8 @@
 /* eslint-disable camelcase */
-import { ID } from './ID'
+import { UUID } from './UUID'
 
 export interface ProductSet {
-  id: ID
+  id: UUID
   name: string
   slug: Readonly<string>
   slug_suffix: string
@@ -15,12 +15,12 @@ export interface ProductSet {
 }
 
 export interface ProductSetDTO {
-  id?: ID
+  id?: UUID
   name: string
   slug_suffix: string
   slug_override: boolean
   public: boolean
   hide_on_index: boolean
-  parent_id: ID | null
-  children_ids: ID[]
+  parent_id: UUID | null
+  children_ids: UUID[]
 }

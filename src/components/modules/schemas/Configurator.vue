@@ -78,7 +78,7 @@ import Selector from '@/components/Selector.vue'
 
 import { SchemaTypeLabel } from '@/consts/schemaTypeLabels'
 import { Schema } from '@/interfaces/Schema'
-import { ID } from '@/interfaces/ID'
+import { UUID } from '@/interfaces/UUID'
 
 export default Vue.extend({
   name: 'SchemaConfigurator',
@@ -116,7 +116,7 @@ export default Vue.extend({
       this.editedSchema = schema
       this.isFormModalActive = true
     },
-    removeSchema(schemaId: ID) {
+    removeSchema(schemaId: UUID) {
       this.$emit(
         'input',
         this.value.filter((s) => s.id !== schemaId),

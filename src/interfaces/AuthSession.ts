@@ -1,8 +1,8 @@
-import { ID } from './ID'
+import { UUID } from './UUID'
 
 /* eslint-disable camelcase */
 export interface AuthSession {
-  id: ID
+  id: UUID
   browser: string
   browser_ver: string
   created_at: string

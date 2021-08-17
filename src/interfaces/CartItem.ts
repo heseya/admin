@@ -1,9 +1,9 @@
-import { ID } from './ID'
+import { UUID } from './UUID'
 import { Product } from './Product'
 import { SchemaValue } from './Schema'
 
 export interface CartItem {
-  id: ID
+  id: UUID
   deposits: unknown[] // TODO: type
   price: number
   product: Product

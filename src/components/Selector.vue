@@ -32,11 +32,11 @@ import ListItem from '@/components/layout/ListItem.vue'
 import { SchemaTypeLabel } from '@/consts/schemaTypeLabels'
 import { api } from '../api'
 import { formatApiError } from '@/utils/errors'
-import { ID } from '@/interfaces/ID'
+import { UUID } from '@/interfaces/UUID'
 import { SchemaType } from '@/interfaces/Schema'
 
 interface Item {
-  id: ID
+  id: UUID
   name: string
 }
 

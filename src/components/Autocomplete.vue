@@ -36,10 +36,10 @@
 import Vue from 'vue'
 import Selector from '@/components/Selector.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
-import { ID } from '@/interfaces/ID'
+import { UUID } from '@/interfaces/UUID'
 
 interface AutocompleteItem {
-  id: ID
+  id: UUID
   name: string
 }
 
@@ -76,7 +76,7 @@ export default Vue.extend({
     addItem(item: AutocompleteItem) {
       this.compValue.push(item)
     },
-    deleteItem(itemId: ID) {
+    deleteItem(itemId: UUID) {
       this.compValue = this.compValue.filter((item) => item.id !== itemId)
     },
   },

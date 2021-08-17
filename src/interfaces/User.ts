@@ -1,7 +1,7 @@
-import { ID } from './ID'
+import { UUID } from './UUID'
 
 export interface User {
-  id: ID
+  id: UUID
   name: string
   email: string
   avatar: string
@@ -13,7 +13,7 @@ export interface CreateUserDTO {
   password: string
 }
 export interface EditUserDTO {
-  id: ID
+  id: UUID
   name: string
   email: string
 }

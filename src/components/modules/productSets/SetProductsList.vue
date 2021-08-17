@@ -52,7 +52,7 @@ import Empty from '@/components/layout/Empty.vue'
 
 import { ProductSet } from '@/interfaces/ProductSet'
 import { Product } from '@/interfaces/Product'
-import { ID } from '@/interfaces/ID'
+import { UUID } from '@/interfaces/UUID'
 import { api } from '@/api'
 import { formatApiError } from '@/utils/errors'
 
@@ -89,7 +89,7 @@ export default Vue.extend({
     addProduct(product: Product) {
       this.products.push(product)
     },
-    removeProduct(productId: ID) {
+    removeProduct(productId: UUID) {
       this.products = this.products.filter((product) => product.id !== productId)
     },
 

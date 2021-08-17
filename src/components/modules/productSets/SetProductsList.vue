@@ -99,7 +99,7 @@ export default Vue.extend({
       try {
         const {
           data: { data: products },
-        } = await api.get<{ data: Product[] }>(`/product-sets/id:${this.set.id}/products`)
+        } = await api.get<{ data: Product[] }>(`/product-sets/id:${this.set.id}/products?limit=500`)
         this.products = products
       } catch (e) {
         this.$vs.notification({

@@ -1,9 +1,9 @@
-import { ID } from './ID'
+import { UUID } from './UUID'
 import { Permission } from './Permissions'
 import { Role } from './Role'
 
 export interface User {
-  id: ID
+  id: UUID
   name: string
   email: string
   avatar: string
@@ -18,7 +18,7 @@ export interface CreateUserDTO {
   roles: ID[]
 }
 export interface EditUserDTO {
-  id: ID
+  id: UUID
   name: string
   email: string
   roles: ID[]

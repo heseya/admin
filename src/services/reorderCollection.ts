@@ -1,10 +1,10 @@
 import { api } from '@/api'
 
-import { ID } from '@/interfaces/ID'
+import { UUID } from '@/interfaces/UUID'
 
 export const reorderCollection =
   (rootEndpoint: string, key: string, endpoint = 'reorder') =>
-  async (ids: ID[], parentId?: ID) => {
+  async (ids: UUID[], parentId?: UUID) => {
     try {
       const suffix = parentId ? `/id:${parentId}` : ''
       await api.post<null>(`/${rootEndpoint}/${endpoint}${suffix}`, {

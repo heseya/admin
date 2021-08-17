@@ -28,7 +28,7 @@ import Draggable from 'vuedraggable'
 
 import MediaUploader from '@/components/MediaUploader.vue'
 import { formatApiError } from '@/utils/errors'
-import { ID } from '@/interfaces/ID'
+import { UUID } from '@/interfaces/UUID'
 import { CdnMedia } from '@/interfaces/Media'
 import { removeMedia } from '@/services/uploadMedia'
 
@@ -64,14 +64,14 @@ export default Vue.extend({
     this.removeTouchedFiles()
   },
   data: () => ({
-    mediaToDelete: [] as ID[],
+    mediaToDelete: [] as UUID[],
     isDrag: false,
   }),
   methods: {
     dragChange(isDrag: boolean) {
       this.isDrag = isDrag
     },
-    onImageDelete(deletedId: ID) {
+    onImageDelete(deletedId: UUID) {
       this.images = this.images.filter(({ id }) => deletedId !== id)
 
       if (this.mediaToDelete.find((id) => deletedId === id)) {

@@ -85,7 +85,7 @@ import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
-import { ID } from '@/interfaces/ID'
+import { UUID } from '@/interfaces/UUID'
 import { PackageTemplate } from '@/interfaces/PackageTemplate'
 
 const CLEAR_PACKAGE_TEMPALTE: PackageTemplate = {
@@ -111,7 +111,7 @@ export default Vue.extend({
     editedItem: clone(CLEAR_PACKAGE_TEMPALTE),
   }),
   methods: {
-    openModal(id?: ID) {
+    openModal(id?: UUID) {
       this.isModalActive = true
       if (id) {
         const item = this.$accessor.packageTemplates.getFromListById(id)

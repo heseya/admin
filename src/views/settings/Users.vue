@@ -71,7 +71,7 @@ import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
-import { ID } from '@/interfaces/ID'
+import { UUID } from '@/interfaces/UUID'
 import { CreateUserDTO, EditUserDTO } from '@/interfaces/User'
 
 const CLEAR_USER: CreateUserDTO = {
@@ -100,7 +100,7 @@ export default Vue.extend({
     },
   },
   methods: {
-    openModal(id?: ID) {
+    openModal(id?: UUID) {
       this.isModalActive = true
       if (id) {
         const user = this.$accessor.users.getFromListById(id)

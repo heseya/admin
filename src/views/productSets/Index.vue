@@ -8,16 +8,23 @@
       </template>
 
       <template v-slot="{ item: set }">
-        <ProductSet :set="set" @edit="editProductSet" @create="createProductSet" />
+        <ProductSet
+          :set="set"
+          @edit="editProductSet"
+          @create="createProductSet"
+          @showProducts="showSetProducts"
+        />
       </template>
     </PaginatedList>
 
     <ProductSetForm
       :value="editedItem"
       :slugPrefix="editedItemSlugPrefix"
-      :is-open="isModalActive"
-      @close="isModalActive = false"
+      :is-open="isFormModalActive"
+      @close="isFormModalActive = false"
     />
+
+    <SetProductsList :set="selectedSet" :is-open="!!selectedSet" @close="selectedSet = null" />
   </div>
 </template>
 
@@ -27,9 +34,10 @@ import { cloneDeep } from 'lodash'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ProductSetForm from '@/components/modules/productSets/Form.vue'
+import ProductSetComponent from '@/components/modules/productSets/ProductSet.vue'
+import SetProductsList from '@/components/modules/productSets/SetProductsList.vue'
 
 import { ProductSet, ProductSetDTO } from '@/interfaces/ProductSet'
-import ProductSetComponent from '@/components/modules/productSets/ProductSet.vue'
 
 const CLEAR_FORM: ProductSetDTO = {
   id: '',
@@ -47,11 +55,13 @@ export default Vue.extend({
     PaginatedList,
     ProductSetForm,
     ProductSet: ProductSetComponent,
+    SetProductsList,
   },
   data: () => ({
-    isModalActive: false,
-    editedItemSlugPrefix: '',
+    isFormModalActive: false,
+    selectedSet: null as null | ProductSet,
     editedItem: cloneDeep(CLEAR_FORM) as ProductSetDTO,
+    editedItemSlugPrefix: '',
   }),
   methods: {
     editProductSet(set: ProductSet) {
@@ -61,7 +71,7 @@ export default Vue.extend({
         children_ids: set.children.map((child) => child.id),
       }
       this.editedItemSlugPrefix = set.parent?.slug || ''
-      this.isModalActive = true
+      this.isFormModalActive = true
     },
     createProductSet(parent: ProductSet | null = null) {
       this.editedItem = {
@@ -69,12 +79,15 @@ export default Vue.extend({
         parent_id: parent?.id || null,
       }
       this.editedItemSlugPrefix = parent?.slug || ''
-      this.isModalActive = true
+      this.isFormModalActive = true
+    },
+    showSetProducts(set: ProductSet) {
+      this.selectedSet = set
     },
   },
   beforeRouteLeave(to, from, next) {
-    if (this.isModalActive) {
-      this.isModalActive = false
+    if (this.isFormModalActive) {
+      this.isFormModalActive = false
       next(false)
     } else {
       next()

@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { ID } from './ID'
+import { UUID } from './UUID'
 
 export enum DiscountCodeType {
   Percentage = 0,
@@ -7,7 +7,7 @@ export enum DiscountCodeType {
 }
 
 export interface DiscountCode {
-  id: ID
+  id: UUID
   code: string
   description?: string
   type: DiscountCodeType

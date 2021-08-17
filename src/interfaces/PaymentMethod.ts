@@ -1,8 +1,8 @@
-import { ID } from './ID'
+import { UUID } from './UUID'
 
 export interface PaymentMethod {
   alias: string
-  id: ID
+  id: UUID
   name: string
   public: boolean
 }

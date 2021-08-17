@@ -1,7 +1,7 @@
 import { api } from '@/api'
 import { createVuexCRUD, StoreMutations } from './generator'
 
-import { ID } from '@/interfaces/ID'
+import { UUID } from '@/interfaces/UUID'
 import { AuthSession } from '@/interfaces/AuthSession'
 
 export const authSessions = createVuexCRUD<AuthSession>()('auth/login-history', {
@@ -9,7 +9,7 @@ export const authSessions = createVuexCRUD<AuthSession>()('auth/login-history', 
   getters: {},
   mutations: {},
   actions: {
-    async kill({ state, commit }, id: ID) {
+    async kill({ state, commit }, id: UUID) {
       commit(StoreMutations.SetLoading, true)
       commit(StoreMutations.SetError, null)
       try {

@@ -1,7 +1,7 @@
 import { ProductSet } from '@/interfaces/ProductSet'
 import { createVuexCRUD, StoreMutations } from './generator'
 import { findInTree, removeFromTree, updateItemInTree } from '@/utils/tree'
-import { ID } from '@/interfaces/ID'
+import { UUID } from '@/interfaces/UUID'
 import { reorderCollection } from '@/services/reorderCollection'
 import { cloneDeep } from 'lodash'
 
@@ -42,15 +42,15 @@ export const productSets = createVuexCRUD<ProductSet>()(
         state.data = updateItemInTree(state.data, item)
       },
 
-      [StoreMutations.RemoveData](state, { value: id }: { value: ID }) {
+      [StoreMutations.RemoveData](state, { value: id }: { value: UUID }) {
         state.data = removeFromTree(state.data, id)
       },
     },
     actions: {
-      async reorder(_u, productSets: ID[]) {
+      async reorder(_u, productSets: UUID[]) {
         await reorderSets(productSets)
       },
-      async reorderChildren({ state, commit }, { parentId, ids }: { parentId: ID; ids: ID[] }) {
+      async reorderChildren({ state, commit }, { parentId, ids }: { parentId: UUID; ids: UUID[] }) {
         const success = await reorderSets(ids, parentId)
         if (!success) return
 

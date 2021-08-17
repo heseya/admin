@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { ID } from './ID'
+import { UUID } from './UUID'
 import { Address } from './Address'
 import { Payment } from './Payment'
 import { ShippingMethod } from './ShippingMethod'
@@ -7,7 +7,7 @@ import { DiscountCode } from './DiscountCode'
 import { CartItem } from './CartItem'
 
 export interface OrderStatus {
-  id: ID
+  id: UUID
   name: string
   description: string
   color: string
@@ -15,7 +15,7 @@ export interface OrderStatus {
 }
 
 export interface Order {
-  id: ID
+  id: UUID
   code: string
   comment?: string
   created_at: string

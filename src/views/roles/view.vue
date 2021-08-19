@@ -4,6 +4,7 @@
       <pop-confirm
         v-if="!isNew"
         title="Czy na pewno chcesz usunąć tą rolę?"
+        v-can="$p.Roles.Remove"
         okText="Usuń"
         cancelText="Anuluj"
         @confirm="deletePage"
@@ -15,7 +16,11 @@
       </pop-confirm>
     </top-nav>
 
-    <RolesForm v-model="form" @submit="save" />
+    <RolesForm
+      v-model="form"
+      @submit="save"
+      :disabled="isNew ? !$can($p.Roles.Add) : !$can($p.Roles.Edit)"
+    />
   </div>
 </template>
 

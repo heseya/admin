@@ -10,7 +10,7 @@
           :key="perm.id"
           :value="has(perm.name)"
           @input="change(perm.name)"
-          v-bind="!perm.assignable ? { disabled: true } : {}"
+          v-bind="!perm.assignable || disabled ? { disabled: true } : {}"
         >
           {{ perm.name }}
         </vs-checkbox>
@@ -30,6 +30,10 @@ export default Vue.extend({
       type: Array,
       required: true,
     } as Vue.PropOptions<Permission[]>,
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     form: {

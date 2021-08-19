@@ -2,7 +2,7 @@
   <div>
     <PaginatedList title="Role" storeKey="roles">
       <template #nav>
-        <vs-button to="/settings/roles/create" color="dark" icon>
+        <vs-button to="/settings/roles/create" v-can="$p.Roles.Add" color="dark" icon>
           <i class="bx bx-plus"></i>
         </vs-button>
       </template>

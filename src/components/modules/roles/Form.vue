@@ -2,14 +2,21 @@
   <validation-observer v-slot="{ handleSubmit }">
     <card>
       <br />
-      <validated-input rules="required" v-model="form.name" label="Nazwa" />
+      <validated-input rules="required" v-model="form.name" label="Nazwa" :disabled="disabled" />
       <br />
       <br />
-      <validated-input rules="required" v-model="form.description" label="Opis" />
+      <validated-input
+        rules="required"
+        v-model="form.description"
+        label="Opis"
+        :disabled="disabled"
+      />
       <br />
-      <permissions-manager v-model="form.permissions" />
+      <permissions-manager v-model="form.permissions" :disabled="disabled" />
       <br />
-      <vs-button color="dark" size="large" @click="handleSubmit(submit)"> Zapisz </vs-button>
+      <vs-button v-if="!disabled" color="dark" size="large" @click="handleSubmit(submit)">
+        Zapisz
+      </vs-button>
     </card>
   </validation-observer>
 </template>
@@ -31,6 +38,10 @@ export default Vue.extend({
       type: Object,
       required: true,
     } as Vue.PropOptions<RoleDTO>,
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     form: {

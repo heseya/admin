@@ -58,7 +58,7 @@ const actions = actionTree(
 
         //! debug purpose only
         // eslint-disable-next-line no-constant-condition
-        const TEST_PERMS: string[] = false ? ['roles.edit', 'roles.show_details'] : []
+        const TEST_PERMS: string[] = true ? ['orders.edit.status', 'orders.show_details'] : []
         commit('SET_USER', {
           ...state.user,
           permissions: TEST_PERMS.length ? TEST_PERMS : ALL_PERMISSIONS,

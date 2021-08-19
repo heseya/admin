@@ -2,6 +2,7 @@
   <div class="address">
     <vs-button
       v-if="!hideEdit"
+      v-can="$p.Orders.Edit"
       size="tiny"
       dark
       transparent
@@ -12,6 +13,7 @@
     </vs-button>
     <pop-confirm
       v-if="!hideRemove && address"
+      v-can="$p.Orders.Edit"
       title="Czy na pewno chcesz usunąć adres?"
       okText="Usuń"
       cancelText="Anuluj"

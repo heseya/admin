@@ -4,6 +4,7 @@
       <pop-confirm
         v-if="!isNew"
         title="Czy na pewno chcesz usunąć tą stronę?"
+        v-can="$p.Pages.Remove"
         okText="Usuń"
         cancelText="Anuluj"
         @confirm="deletePage"
@@ -19,17 +20,35 @@
       <validation-observer v-slot="{ handleSubmit }">
         <card>
           <div class="page__info">
-            <validated-input rules="required" v-model="form.name" @input="editSlug" label="Nazwa" />
-            <validated-input rules="required|slug" v-model="form.slug" label="Link" />
+            <validated-input
+              rules="required"
+              v-model="form.name"
+              @input="editSlug"
+              label="Nazwa"
+              :disabled="isDisabled"
+            />
+            <validated-input
+              rules="required|slug"
+              v-model="form.slug"
+              label="Link"
+              :disabled="isDisabled"
+            />
             <flex-input>
-              <switch-input horizontal label="Widoczność strony" v-model="form.public" />
+              <switch-input
+                horizontal
+                label="Widoczność strony"
+                v-model="form.public"
+                :disabled="isDisabled"
+              />
             </flex-input>
           </div>
           <br />
           <small class="label">Treść</small>
-          <rich-editor v-if="!isLoading" v-model="form.content_html" />
+          <rich-editor v-if="!isLoading" v-model="form.content_html" :disabled="isDisabled" />
           <br />
-          <vs-button color="dark" size="large" @click="handleSubmit(save)"> Zapisz </vs-button>
+          <vs-button v-if="!isDisabled" color="dark" size="large" @click="handleSubmit(save)">
+            Zapisz
+          </vs-button>
         </card>
       </validation-observer>
     </div>
@@ -87,6 +106,9 @@ export default Vue.extend({
     },
     isLoading(): boolean {
       return this.$accessor.pages.isLoading
+    },
+    isDisabled(): boolean {
+      return !this.$can(this.isNew ? this.$p.Pages.Add : this.$p.Pages.Edit)
     },
   },
   watch: {

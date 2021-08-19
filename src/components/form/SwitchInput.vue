@@ -3,7 +3,7 @@
     <label class="switch-input__label">
       <slot name="title">{{ label }}</slot>
     </label>
-    <vs-switch success :value="value" @input="onInput">
+    <vs-switch success :value="value" @input="onInput" :disabled="disabled">
       <template #off>
         <i class="bx bx-x"></i>
       </template>
@@ -19,6 +19,10 @@ import Vue from 'vue'
 export default Vue.extend({
   props: {
     value: {
+      type: Boolean,
+      default: false,
+    },
+    disabled: {
       type: Boolean,
       default: false,
     },

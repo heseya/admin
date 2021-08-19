@@ -1,6 +1,12 @@
 <template>
   <div class="rich-editor" :style="{ '--height': height }">
-    <quill-editor ref="editor" :value="value" @input="onInput" :options="editorOption" />
+    <quill-editor
+      ref="editor"
+      :value="value"
+      @input="onInput"
+      :options="editorOption"
+      :disabled="disabled"
+    />
   </div>
 </template>
 
@@ -52,6 +58,10 @@ export default Vue.extend({
     height: {
       type: String,
       default: '400px',
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
     },
   },
   methods: {

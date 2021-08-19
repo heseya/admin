@@ -170,11 +170,9 @@ const EMPTY_FORM: ProductComponentForm = {
 }
 
 export default Vue.extend({
-  data() {
-    return {
-      form: cloneDeep(EMPTY_FORM),
-    }
-  },
+  data: () => ({
+    form: cloneDeep(EMPTY_FORM),
+  }),
   computed: {
     id(): UUID {
       return this.$route.params.id

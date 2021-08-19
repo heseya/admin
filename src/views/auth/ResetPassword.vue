@@ -40,12 +40,10 @@ export default Vue.extend({
     ValidatedInput,
     ValidationObserver,
   },
-  data() {
-    return {
-      email: '',
-      isSuccess: false,
-    }
-  },
+  data: () => ({
+    email: '',
+    isSuccess: false,
+  }),
   computed: {
     error(): any {
       return this.$accessor.auth.error

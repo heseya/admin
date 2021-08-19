@@ -63,17 +63,15 @@ export default Vue.extend({
     SwitchInput,
     ValidatedInput,
   },
-  data() {
-    return {
-      form: {
-        name: '',
-        slug: '',
-        content_md: '',
-        content_html: '',
-        public: true,
-      },
-    }
-  },
+  data: () => ({
+    form: {
+      name: '',
+      slug: '',
+      content_md: '',
+      content_html: '',
+      public: true,
+    },
+  }),
   computed: {
     id(): string {
       return this.$route.params.id

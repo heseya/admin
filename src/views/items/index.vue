@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PaginatedList title="Magazyn" storeKey="items" :filters="{ filters }">
+    <PaginatedList title="Magazyn" storeKey="items" :filters="filters">
       <template #nav>
         <vs-input
           state="dark"

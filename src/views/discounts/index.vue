@@ -2,7 +2,7 @@
   <div>
     <PaginatedList title="Kody rabatowe" storeKey="discounts">
       <template #nav>
-        <vs-button @click="openModal()" color="dark" icon>
+        <vs-button v-can="$p.Discounts.Add" @click="openModal()" color="dark" icon>
           <i class="bx bx-plus"></i>
         </vs-button>
       </template>
@@ -50,6 +50,7 @@
             <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
             <!--            <pop-confirm-->
             <!--              title="Czy na pewno chcesz usunąć ten kod?"-->
+            <!--              v-can="$p.Discounts.Remove"-->
             <!--              okText="Usuń"-->
             <!--              cancelText="Anuluj"-->
             <!--              @confirm="deleteItem"-->
@@ -108,6 +109,7 @@ export default Vue.extend({
   },
   methods: {
     openModal(id?: UUID) {
+      if (!this.$verboseCan([this.$p.Discounts.Add, this.$p.Discounts.Edit])) return
       this.isModalActive = true
       if (id) {
         this.editedItem = this.$accessor.discounts.getFromListById(id)

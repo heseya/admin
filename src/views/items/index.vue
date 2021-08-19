@@ -13,7 +13,7 @@
         <vs-button @click="makeSearch" color="dark" icon>
           <i class="bx bx-search"></i>
         </vs-button>
-        <vs-button @click="openModal()" color="dark" icon>
+        <vs-button v-can="$p.Items.Add" @click="openModal()" color="dark" icon>
           <i class="bx bx-plus"></i>
         </vs-button>
       </template>
@@ -51,6 +51,7 @@
             <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
             <pop-confirm
               title="Czy na pewno chcesz usunąć ten przedmiot?"
+              v-can="$p.Items.Add"
               okText="Usuń"
               cancelText="Anuluj"
               @confirm="deleteItem"
@@ -133,6 +134,7 @@ export default Vue.extend({
     },
 
     openModal(id?: UUID) {
+      if (!this.$verboseCan([this.$p.Items.Add, this.$p.Items.Edit])) return
       this.isModalActive = true
       if (id) {
         this.editedItem = this.$accessor.items.getFromListById(id)

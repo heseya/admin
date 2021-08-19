@@ -41,12 +41,10 @@ export default Vue.extend({
     ValidatedInput,
     ValidationObserver,
   },
-  data() {
-    return {
-      email: DEBUG ? '***REMOVED***' : '',
-      password: DEBUG ? '***REMOVED***' : '',
-    }
-  },
+  data: () => ({
+    email: DEBUG ? '***REMOVED***' : '',
+    password: DEBUG ? '***REMOVED***' : '',
+  }),
   computed: {
     loginError() {
       return this.$accessor.auth.error

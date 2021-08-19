@@ -44,13 +44,11 @@ export default Vue.extend({
     ValidatedInput,
     ValidationObserver,
   },
-  data() {
-    return {
-      password: '',
-      repeatPassword: '',
-      isSuccess: false,
-    }
-  },
+  data: () => ({
+    password: '',
+    repeatPassword: '',
+    isSuccess: false,
+  }),
   computed: {
     error(): any {
       return this.$accessor.auth.error

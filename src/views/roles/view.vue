@@ -15,9 +15,7 @@
       </pop-confirm>
     </top-nav>
 
-    <div class="page">
-      <RolesForm v-model="form" @submit="save" />
-    </div>
+    <RolesForm v-model="form" @submit="save" />
   </div>
 </template>
 
@@ -31,7 +29,6 @@ import RolesForm from '@/components/modules/roles/Form.vue'
 
 import { formatApiError } from '@/utils/errors'
 import { Role, RoleDTO } from '@/interfaces/Role'
-import { accessor } from '@/store'
 
 const CLEAN_FORM: RoleDTO = {
   name: '',
@@ -45,11 +42,9 @@ export default Vue.extend({
     PopConfirm,
     RolesForm,
   },
-  data() {
-    return {
-      form: cloneDeep(CLEAN_FORM),
-    }
-  },
+  data: () => ({
+    form: cloneDeep(CLEAN_FORM),
+  }),
   computed: {
     id(): string {
       return this.$route.params.id
@@ -58,13 +53,13 @@ export default Vue.extend({
       return this.id === 'create'
     },
     role(): Role {
-      return accessor.roles.getSelected
+      return this.$accessor.roles.getSelected
     },
     error(): any {
-      return accessor.roles.getError
+      return this.$accessor.roles.getError
     },
     isLoading(): boolean {
-      return accessor.roles.isLoading
+      return this.$accessor.roles.isLoading
     },
   },
   watch: {
@@ -84,33 +79,28 @@ export default Vue.extend({
   },
   methods: {
     async save() {
-      accessor.startLoading()
-      if (this.isNew) {
-        const role = await accessor.roles.add(this.form)
-        if (role && role.id) {
-          this.$vs.notification({
-            color: 'success',
-            title: 'Rola została utworzona.',
-          })
-          this.$router.push(`/settings/roles/${role.id}`)
-        }
-      } else {
-        const success = await accessor.roles.update({
-          id: this.id,
-          item: this.form,
+      this.$accessor.startLoading()
+      const successMessage = this.isNew
+        ? 'Produkt został utworzony'
+        : 'Produkt został zaktualizowany'
+
+      const role = this.isNew
+        ? await this.$accessor.roles.add(this.form)
+        : await this.$accessor.roles.update({ id: this.id, item: this.form })
+
+      if (role) {
+        this.$vs.notification({
+          color: 'success',
+          title: successMessage,
         })
-        if (success) {
-          this.$vs.notification({
-            color: 'success',
-            title: 'Rola została zaktualizowana.',
-          })
-        }
+        this.$router.push(`/settings/roles/${role.id}`)
       }
-      accessor.stopLoading()
+
+      this.$accessor.stopLoading()
     },
     async deletePage() {
-      accessor.startLoading()
-      const success = await accessor.roles.remove(this.id)
+      this.$accessor.startLoading()
+      const success = await this.$accessor.roles.remove(this.id)
       if (success) {
         this.$vs.notification({
           color: 'success',
@@ -118,43 +108,15 @@ export default Vue.extend({
         })
         this.$router.push('/settings/roles')
       }
-      accessor.stopLoading()
+      this.$accessor.stopLoading()
     },
   },
   async created() {
     if (!this.isNew) {
-      accessor.startLoading()
-      await accessor.roles.get(this.id)
-      accessor.stopLoading()
+      this.$accessor.startLoading()
+      await this.$accessor.roles.get(this.id)
+      this.$accessor.stopLoading()
     }
   },
 })
 </script>
-
-<style lang="scss">
-.page__info {
-  width: 100%;
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 30px 30px 20px;
-  row-gap: 20px;
-  margin-top: 15px;
-
-  input {
-    width: 100%;
-  }
-
-  .vs-select-content {
-    max-width: none;
-  }
-}
-
-@media (min-width: $break) {
-  .page__info {
-    grid-template-columns: 1fr 1fr 1fr;
-    column-gap: 20px;
-    grid-template-rows: 1fr;
-    row-gap: 0;
-  }
-}
-</style>

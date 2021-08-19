@@ -2,7 +2,7 @@
   <div class="permissions-manager">
     <span class="permissions-manager__title">Uprawnienia roli</span>
     <div v-for="{ section, permissions } in grouped" :key="section">
-      <span class="permissions-manager__subtitle">{{ section }}</span>
+      <span class="permissions-manager__subtitle">{{ section.replaceAll('_', ' ') }}</span>
       <div class="permissions-manager__content">
         <vs-checkbox
           v-for="perm in permissions"
@@ -41,11 +41,13 @@ export default Vue.extend({
       },
     },
     permissions(): PermissionObject[] {
-      return [...this.$accessor.roles.permissions].sort((a, b) => (a.name > b.name ? 1 : -1))
+      return this.$accessor.roles.permissions
     },
     grouped(): { section: string; permissions: PermissionObject[] }[] {
       const grouped = groupBy(this.permissions, (p) => p.name.split('.')[0])
-      return Object.keys(grouped).map((section) => ({ section, permissions: grouped[section] }))
+      return Object.keys(grouped)
+        .map((section) => ({ section, permissions: grouped[section] }))
+        .sort((a, b) => (a.section > b.section ? 1 : -1))
     },
   },
   methods: {
@@ -64,7 +66,7 @@ export default Vue.extend({
     },
   },
   created() {
-    // @ts-ignore
+    // @ts-ignore // TODO: fix extended store actions typings
     this.$accessor.roles.fetchPermissions()
   },
 })

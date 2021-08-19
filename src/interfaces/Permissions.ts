@@ -23,7 +23,7 @@ import {
   TagsPermission,
   UsersPermission,
   RolesPermission,
-} from '@/enums/Permissions'
+} from '@/enums/permissions'
 
 export type Permission =
   | AdminPermission

@@ -8,3 +8,9 @@ export interface Role {
   assignable: boolean
   permissions: Permission[]
 }
+
+export interface RoleDTO {
+  name: string
+  description: string
+  permissions: Permission[]
+}

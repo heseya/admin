@@ -10,7 +10,14 @@
       label="Hasło"
     />
 
-    <vs-select v-model="form.roles" label="Kolekcje" :key="roles.length" filter multiple>
+    <vs-select
+      v-model="form.roles"
+      label="Kolekcje"
+      :key="roles.length"
+      filter
+      multiple
+      @click.native.prevent.stop
+    >
       <vs-option
         v-for="role in roles"
         :key="role.id"

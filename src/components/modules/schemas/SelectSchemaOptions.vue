@@ -2,39 +2,42 @@
   <Zone class="select-schema-options">
     <template #title>
       Opcje do wyboru
-      <vs-button size="small" transparent @click.stop="addOption">
+      <vs-button :disabled="disabled" size="small" transparent @click.stop="addOption">
         <i class="bx bx-plus"></i> Dodaj
       </vs-button>
     </template>
 
     <div class="select-schema-options__option" v-for="(option, i) in options" :key="i">
       <validation-provider class="input" v-slot="{ errors }" rules="required">
-        <vs-input v-model="option.name" label="Nazwa">
+        <vs-input :disabled="disabled" v-model="option.name" label="Nazwa">
           <template #message-danger>{{ errors[0] }}</template>
         </vs-input>
       </validation-provider>
-      <vs-input v-model="option.price" type="number" label="Cena"></vs-input>
+      <vs-input :disabled="disabled" v-model="option.price" type="number" label="Cena"></vs-input>
       <Autocomplete
+        :disabled="disabled"
         class="input"
         type="products"
         label="Przedmioty z magazynu"
         v-model="options[i].items"
       />
-      <SwitchInput v-model="option.disabled">
+      <SwitchInput :disabled="disabled" v-model="option.disabled">
         <template #title>Disabled</template>
       </SwitchInput>
-      <vs-radio :value="defaultOption" @input="setDefault" :val="i" dark> Domyślny </vs-radio>
+      <vs-radio :disabled="disabled" :value="defaultOption" @input="setDefault" :val="i" dark>
+        Domyślny
+      </vs-radio>
       <vs-button
         size="small"
         danger
         icon
         @click.stop="removeOption(i)"
-        :disabled="options.length === 1"
+        :disabled="options.length === 1 || disabled"
       >
         <i class="bx bx-trash"></i>
       </vs-button>
     </div>
-    <vs-button size="small" transparent @click.stop="addOption">
+    <vs-button size="small" transparent @click.stop="addOption" :disabled="disabled">
       <i class="bx bx-plus"></i> Dodaj
     </vs-button>
   </Zone>
@@ -77,6 +80,7 @@ export default Vue.extend({
       type: Array,
       required: true,
     } as Vue.PropOptions<SchemaOption[]>,
+    disabled: { type: Boolean, default: false },
   },
   computed: {
     options: {

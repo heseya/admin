@@ -18,7 +18,12 @@
 
     <div class="schema">
       <card>
-        <SchemaForm :key="schema.id" :schema="editedSchema" @submit="saveSchema" />
+        <SchemaForm
+          :key="schema.id"
+          :schema="editedSchema"
+          @submit="saveSchema"
+          :disabled="!$can([$p.Products.Add, $p.Products.Edit], true)"
+        />
       </card>
     </div>
   </div>

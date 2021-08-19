@@ -1,15 +1,21 @@
 <template>
   <div class="gallery">
-    <draggable class="gallery__images" v-model="images" :options="{ filter: '.undragabble' }">
+    <draggable
+      class="gallery__images"
+      v-model="images"
+      :options="{ filter: '.undragabble' }"
+      :disabled="disabled"
+    >
       <div class="gallery__img" v-for="image in images" :key="image.url">
         <img :src="`${image.url}?w=350&h=350`" :style="{ objectFit }" />
         <div class="remove">
-          <vs-button icon color="danger" @click="onImageDelete(image.id)">
+          <vs-button v-if="!disabled" icon color="danger" @click="onImageDelete(image.id)">
             <i class="bx bx-trash"></i>
           </vs-button>
         </div>
       </div>
       <app-media-uploader
+        v-if="!disabled"
         @dragChange="dragChange"
         @upload="onImageUpload"
         @error="onUploadError"
@@ -42,6 +48,7 @@ export default Vue.extend({
       type: Array,
       default: () => [],
     } as Vue.PropOptions<CdnMedia[]>,
+    disabled: { type: Boolean, default: false },
   },
   computed: {
     images: {

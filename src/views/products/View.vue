@@ -4,6 +4,7 @@
       <pop-confirm
         v-if="!isNew"
         title="Czy na pewno chcesz usunąć ten produkt?"
+        v-can="$p.Products.Remove"
         okText="Usuń"
         cancelText="Anuluj"
         @confirm="deleteProduct"
@@ -16,13 +17,13 @@
     </top-nav>
 
     <div class="product">
-      <gallery ref="gallery" v-model="form.gallery" />
+      <gallery ref="gallery" v-model="form.gallery" :disabled="isDisabled" />
 
       <div>
         <card>
           <flex-input>
             <label class="title">Widoczność produktu</label>
-            <vs-switch success v-model="form.public">
+            <vs-switch success v-model="form.public" :disabled="isDisabled">
               <template #off>
                 <i class="bx bx-x"></i>
               </template>
@@ -43,7 +44,7 @@
 
       <div class="product__schemas">
         <card>
-          <SchemaConfigurator v-model="form.schemas" />
+          <SchemaConfigurator v-model="form.schemas" :disabled="isDisabled" />
         </card>
       </div>
 
@@ -58,9 +59,15 @@
                   v-model="form.name"
                   @input="editSlug"
                   label="Nazwa"
+                  :disabled="isDisabled"
                 />
                 <br /><br />
-                <validated-input rules="required|slug" v-model="form.slug" label="Link" />
+                <validated-input
+                  rules="required|slug"
+                  v-model="form.slug"
+                  label="Link"
+                  :disabled="isDisabled"
+                />
                 <br /><br />
                 <validated-input
                   rules="required"
@@ -68,6 +75,7 @@
                   type="number"
                   step="0.01"
                   label="Cena"
+                  :disabled="isDisabled"
                 />
                 <br />
               </div>
@@ -82,6 +90,7 @@
                     filter
                     multiple
                     label="Kolekcje"
+                    :disabled="isDisabled"
                     @click.native.prevent.stop
                   >
                     <vs-option
@@ -103,20 +112,26 @@
                   max="999999"
                   step="0.01"
                   label="Format ilości"
+                  :disabled="isDisabled"
                 />
               </div>
 
               <div class="wide">
-                <tags-select v-model="form.tags" />
+                <tags-select v-model="form.tags" :disabled="isDisabled" />
               </div>
 
               <div class="wide">
                 <small class="label">Opis</small>
-                <rich-editor v-if="!isLoading" v-model="form.description_html" />
+                <rich-editor
+                  v-if="!isLoading"
+                  v-model="form.description_html"
+                  :disabled="isDisabled"
+                />
                 <br />
                 <div class="flex">
-                  <vs-button color="dark" size="large">Zapisz</vs-button>
+                  <vs-button v-if="!isDisabled" color="dark" size="large">Zapisz</vs-button>
                   <vs-button
+                    v-if="!isDisabled"
                     color="dark"
                     size="large"
                     type="button"
@@ -192,6 +207,9 @@ export default Vue.extend({
     error(): any {
       // @ts-ignore // TODO: fix extended store getters typings
       return this.$accessor.products.getError || this.$accessor.products.getDepositError
+    },
+    isDisabled(): boolean {
+      return !this.$can(this.isNew ? this.$p.Products.Add : this.$p.Products.Edit)
     },
   },
   methods: {

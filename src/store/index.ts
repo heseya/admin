@@ -10,6 +10,7 @@ import { Setting } from '@/interfaces/Settings'
 
 import { auth } from './auth'
 import { users } from './users'
+import { roles } from './roles'
 import { items } from './items'
 import { products } from './products'
 import { schemas } from './schemas'
@@ -73,6 +74,7 @@ const storePattern = {
   modules: {
     auth,
     users,
+    roles,
     items,
     schemas,
     products,

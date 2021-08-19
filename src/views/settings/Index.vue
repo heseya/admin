@@ -61,21 +61,27 @@
           url="/settings/package-templates"
         />
 
-        <h2 v-can.any="[$p.Apps.Show, $p.Settings.Show, $p.Users.Show]" class="section-title">
-          Inne
-        </h2>
+        <h2 v-can.any="[$p.Roles.Show, $p.Users.Show]" class="section-title">Użytkownicy</h2>
+        <SettingsItem
+          v-can="$p.Users.Show"
+          name="Lista użytkowników"
+          icon="bx bxs-group"
+          url="/settings/users"
+        />
+        <SettingsItem
+          v-can="$p.Roles.Show"
+          name="Role użytkowników"
+          icon="bx bx-task"
+          url="/settings/roles"
+        />
+
+        <h2 v-can.any="[$p.Apps.Show, $p.Settings.Show]" class="section-title">Inne</h2>
         <SettingsItem v-can="$p.Apps.Show" name="Aplikacje" icon="bx bxs-store-alt" url="/apps" />
         <SettingsItem
           v-can="$p.Settings.Show"
           name="Ustawienia zaawansowane"
           icon="bx bxs-cog"
           url="/settings/advanced"
-        />
-        <SettingsItem
-          v-can="$p.Users.Show"
-          name="Lista użytkowników"
-          icon="bx bxs-group"
-          url="/settings/users"
         />
 
         <h2 class="section-title">Konto</h2>

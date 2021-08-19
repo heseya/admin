@@ -222,6 +222,24 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/settings/roles',
+      name: 'Roles',
+      component: () => import('./views/roles/index.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Roles.Show],
+      },
+    },
+    {
+      path: '/settings/roles/:id',
+      name: 'RolesView',
+      component: () => import('./views/roles/view.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Roles.ShowDetails],
+      },
+    },
+    {
       path: '/settings/login-history',
       name: 'LoginHistory',
       component: () => import('./views/settings/LoginHistory.vue'),

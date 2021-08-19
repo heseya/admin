@@ -23,17 +23,9 @@
         <template #header>
           <h4>{{ isNewUser(editedUser) ? 'Nowy użytkownik' : 'Edycja użytkownika' }}</h4>
         </template>
-        <modal-form>
-          <validated-input rules="required" v-model="editedUser.name" label="Nazwa" />
-          <validated-input rules="required|email" v-model="editedUser.email" label="Email" />
-          <validated-input
-            v-if="isNewUser(editedUser)"
-            type="password"
-            rules="required|password"
-            v-model="editedUser.password"
-            label="Hasło"
-          />
-        </modal-form>
+
+        <UserForm v-model="editedUser" />
+
         <template #footer>
           <div class="row">
             <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
@@ -67,10 +59,9 @@ import { ValidationObserver } from 'vee-validate'
 import { clone } from 'lodash'
 
 import PaginatedList from '@/components/PaginatedList.vue'
-import ModalForm from '@/components/form/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import ValidatedInput from '@/components/form/ValidatedInput.vue'
+import UserForm from '@/components/modules/users/Form.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import { CreateUserDTO, EditUserDTO } from '@/interfaces/User'
@@ -86,10 +77,9 @@ export default Vue.extend({
   components: {
     PaginatedList,
     ListItem,
-    ModalForm,
+    UserForm,
     PopConfirm,
     ValidationObserver,
-    ValidatedInput,
   },
   data: () => ({
     isModalActive: false,
@@ -109,7 +99,7 @@ export default Vue.extend({
         const user = this.$accessor.users.getFromListById(id)
         this.editedUser = {
           ...user,
-          roles: user.roles.map(({ id }) => id),
+          roles: user.roles?.map(({ id }) => id) || [],
         }
       } else {
         this.editedUser = clone(CLEAR_USER)

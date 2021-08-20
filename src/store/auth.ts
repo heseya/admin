@@ -4,7 +4,8 @@ import { api } from '../api'
 
 import { User } from '@/interfaces/User'
 import { UUID } from '@/interfaces/UUID'
-import { ALL_PERMISSIONS } from '@/consts/permissions'
+import { ALL_PERMISSIONS, PERMISSIONS_TREE } from '@/consts/permissions'
+import { hasAccess } from '@/utils/hasAccess'
 
 const state = () => ({
   error: null as null | Error,
@@ -12,6 +13,18 @@ const state = () => ({
   user: null as null | User,
   token: null as null | string,
 })
+
+//! debug purpose only
+const overrideUserPermissions = (user: User): User => {
+  const OVERRIDE = true
+  const ADD_ALL = true
+  const CUSTOM = ['xd']
+
+  return {
+    ...user,
+    permissions: !OVERRIDE ? user.permissions : ADD_ALL ? ALL_PERMISSIONS : (CUSTOM as any),
+  }
+}
 
 const getters = getterTree(state, {
   getToken(state) {
@@ -46,11 +59,23 @@ const actions = actionTree(
     async login({ commit }, { email, password }: { email: string; password: string }) {
       commit('SET_ERROR', null)
       try {
-        const { data } = await api.post('/login', { email, password })
+        const { data } = await api.post<{ data: { user: User; token: string } }>('/login', {
+          email,
+          password,
+        })
+
+        //! debug purpose only
+        data.data.user = overrideUserPermissions(data.data.user)
+
+        if (!hasAccess(PERMISSIONS_TREE.Admin.Login)(data.data.user.permissions))
+          throw new Error('Unauthorized')
+
         commit('SET_USER', data.data.user)
         commit('SET_TOKEN', data.data.token)
+        return data.data.user
       } catch (e) {
         commit('SET_ERROR', e)
+        return false
       }
     },
     async fetchProfile({ commit, state }) {
@@ -58,16 +83,11 @@ const actions = actionTree(
       commit('SET_ERROR', null)
       try {
         const { data } = await api.get<{ data: User }>(`/users/id:${state.user.id}`) // /auth/profile
-        commit('SET_USER', data.data)
 
         //! debug purpose only
-        // eslint-disable-next-line no-constant-condition
-        const TEST_PERMS: string[] = false ? ['xd'] : []
-        commit('SET_USER', {
-          ...state.user,
-          permissions: TEST_PERMS.length ? TEST_PERMS : ALL_PERMISSIONS,
-        })
-        //! debug end
+        data.data = overrideUserPermissions(data.data)
+
+        commit('SET_USER', data.data)
       } catch (e) {
         commit('SET_ERROR', e)
       }

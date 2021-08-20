@@ -63,12 +63,12 @@ export default Vue.extend({
   methods: {
     async login() {
       this.$accessor.startLoading()
-      await this.$accessor.auth.login({
+      const success = await this.$accessor.auth.login({
         email: this.email,
         password: this.password,
       })
+      if (success) this.$router.push({ name: 'Home' })
       this.$accessor.stopLoading()
-      this.$router.push({ name: 'Home' })
     },
   },
 })

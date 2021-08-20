@@ -12,73 +12,86 @@
 
     <card>
       <list>
-        <h2 v-can="$p.Pages.Show" class="section-title">Sklep</h2>
-        <SettingsItem v-can="$p.Pages.Show" name="Strony" url="/pages" icon="bx bxs-copy-alt" />
+        <h2 v-can.hide="$p.Pages.Show" class="section-title">Sklep</h2>
+        <SettingsItem
+          v-can.hide="$p.Pages.Show"
+          name="Strony"
+          url="/pages"
+          icon="bx bxs-copy-alt"
+        />
 
-        <h2 v-can.any="[$p.ProductSets.Show, $p.Tags.Show, $p.Products.Show]" class="section-title">
+        <h2
+          v-can.hide.any="[$p.ProductSets.Show, $p.Tags.Show, $p.Products.Show]"
+          class="section-title"
+        >
           Produkty
         </h2>
         <SettingsItem
-          v-can="$p.ProductSets.Show"
+          v-can.hide="$p.ProductSets.Show"
           name="Kolekcje produktów"
           url="/settings/product-sets"
           icon="bx bx-list-ul"
         />
         <SettingsItem
-          v-can="$p.Tags.Show"
+          v-can.hide="$p.Tags.Show"
           name="Tagi"
           icon="bx bxs-purchase-tag"
           url="/settings/tags"
         />
         <SettingsItem
-          v-can="$p.Products.Show"
+          v-can.hide="$p.Products.Show"
           name="Schematy"
           icon="bx bxs-customize"
           url="/schemas"
         />
 
-        <h2 v-can.any="[$p.Statuses.Show]" class="section-title">Zamówienia</h2>
+        <h2 v-can.hide.any="[$p.Statuses.Show]" class="section-title">Zamówienia</h2>
         <SettingsItem
-          v-can="$p.Statuses.Show"
+          v-can.hide="$p.Statuses.Show"
           name="Statusy zamówień"
           icon="bx bxs-check-circle"
           url="/settings/statuses"
         />
 
-        <h2 v-can.any="[$p.ShippingMethods.Show, $p.Packages.Show]" class="section-title">
+        <h2 v-can.hide.any="[$p.ShippingMethods.Show, $p.Packages.Show]" class="section-title">
           Dostawa
         </h2>
         <SettingsItem
-          v-can="$p.ShippingMethods.Show"
+          v-can.hide="$p.ShippingMethods.Show"
           name="Opcje dostawy"
           icon="bx bxs-truck"
           url="/settings/shipping-methods"
         />
         <SettingsItem
-          v-can="$p.Packages.Show"
+          v-can.hide="$p.Packages.Show"
           name="Szablony przesyłek"
           icon="bx bxs-box"
           url="/settings/package-templates"
         />
 
-        <h2 v-can.any="[$p.Roles.Show, $p.Users.Show]" class="section-title">Użytkownicy</h2>
+        <h2 v-can.hide.any="[$p.Roles.Show, $p.Users.Show]" class="section-title">Użytkownicy</h2>
         <SettingsItem
-          v-can="$p.Users.Show"
+          v-can.hide="$p.Users.Show"
           name="Lista użytkowników"
           icon="bx bxs-group"
           url="/settings/users"
         />
         <SettingsItem
-          v-can="$p.Roles.Show"
+          v-can.hide="$p.Roles.Show"
           name="Role użytkowników"
           icon="bx bx-task"
           url="/settings/roles"
         />
 
-        <h2 v-can.any="[$p.Apps.Show, $p.Settings.Show]" class="section-title">Inne</h2>
-        <SettingsItem v-can="$p.Apps.Show" name="Aplikacje" icon="bx bxs-store-alt" url="/apps" />
+        <h2 v-can.hide.any="[$p.Apps.Show, $p.Settings.Show]" class="section-title">Inne</h2>
         <SettingsItem
-          v-can="$p.Settings.Show"
+          v-can.hide="$p.Apps.Show"
+          name="Aplikacje"
+          icon="bx bxs-store-alt"
+          url="/apps"
+        />
+        <SettingsItem
+          v-can.hide="$p.Settings.Show"
           name="Ustawienia zaawansowane"
           icon="bx bxs-cog"
           url="/settings/advanced"
@@ -87,7 +100,7 @@
         <h2 class="section-title">Konto</h2>
         <SettingsItem name="Zmień hasło" icon="bx bxs-lock" @click="isChangePasswordModal = true" />
         <SettingsItem
-          v-can="$p.Auth.SessionsShow"
+          v-can.hide="$p.Auth.SessionsShow"
           name="Sesje użytkownika"
           icon="bx bx-history"
           url="/settings/login-history"

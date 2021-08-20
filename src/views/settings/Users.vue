@@ -14,6 +14,7 @@
             </vs-avatar>
           </template>
           {{ user.name }}
+          <small>{{ user.roles.map((r) => r.name).join(', ') }}</small>
         </list-item>
       </template>
     </PaginatedList>

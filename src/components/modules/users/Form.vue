@@ -12,7 +12,7 @@
 
     <vs-select
       v-model="form.roles"
-      label="Kolekcje"
+      label="Role"
       :key="roles.length"
       filter
       multiple

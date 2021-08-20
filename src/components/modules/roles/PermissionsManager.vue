@@ -37,6 +37,11 @@ import Vue from 'vue'
 import { Permission, PermissionObject } from '@/interfaces/Permissions'
 import { groupBy } from 'lodash'
 
+interface GroupedPermissions {
+  section: string
+  permissions: PermissionObject[]
+}
+
 export default Vue.extend({
   props: {
     value: {
@@ -60,7 +65,7 @@ export default Vue.extend({
     permissions(): PermissionObject[] {
       return this.$accessor.roles.permissions
     },
-    grouped(): { section: string; permissions: PermissionObject[] }[] {
+    grouped(): GroupedPermissions[] {
       const grouped = groupBy(this.permissions, (p) => p.name.split('.')[0])
       return Object.keys(grouped)
         .map((section) => ({ section, permissions: grouped[section] }))
@@ -82,24 +87,27 @@ export default Vue.extend({
       }
     },
 
+    getGroup(section: string): GroupedPermissions {
+      return this.grouped.find((g) => g.section === section)!
+    },
+
     hasAll(section: string): boolean {
-      const group = this.grouped.find((g) => g.section === section)!
+      const group = this.getGroup(section)
       return group.permissions.every((p) => this.has(p.name))
     },
     hasSome(section: string): boolean {
-      const group = this.grouped.find((g) => g.section === section)!
+      const group = this.getGroup(section)
       return group.permissions.some((p) => this.has(p.name))
     },
     changeAll(section: string) {
-      const group = this.grouped.find((g) => g.section === section)!
-
+      const group = this.getGroup(section)
       let form = [...this.form]
 
       // take back all group permissions
       form = this.form.filter((p) => !group.permissions.find((g) => g.name === p))
-      if (this.hasAll(section)) {
+      if (!this.hasAll(section)) {
         // add all group permissions
-        form = this.form = this.form.concat(group.permissions.map((p) => p.name))
+        form = this.form.concat(group.permissions.map((p) => p.name))
       }
 
       this.form = [...form]

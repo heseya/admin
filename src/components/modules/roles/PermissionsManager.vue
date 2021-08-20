@@ -2,14 +2,27 @@
   <div class="permissions-manager">
     <span class="permissions-manager__title">Uprawnienia roli</span>
     <div v-for="{ section, permissions } in grouped" :key="section">
-      <span class="permissions-manager__subtitle">{{ section.replaceAll('_', ' ') }}</span>
+      <span class="permissions-manager__subtitle">
+        <vs-button
+          class="permissions-manager__btn"
+          dark
+          icon
+          :transparent="!hasSome(section)"
+          @click="() => changeAll(section)"
+        >
+          <i v-if="hasAll(section)" class="bx bx-check"></i>
+          <i v-else class="bx bx-minus"></i>
+        </vs-button>
+        {{ section.replaceAll('_', ' ') }}
+      </span>
+
       <div class="permissions-manager__content">
         <vs-checkbox
           v-for="perm in permissions"
           dark
           :key="perm.id"
           :value="has(perm.name)"
-          @input="change(perm.name)"
+          @input="() => change(perm.name)"
           v-bind="!perm.assignable || disabled ? { disabled: true } : {}"
         >
           {{ perm.name }}
@@ -68,6 +81,29 @@ export default Vue.extend({
         this.form.push(perm)
       }
     },
+
+    hasAll(section: string): boolean {
+      const group = this.grouped.find((g) => g.section === section)!
+      return group.permissions.every((p) => this.has(p.name))
+    },
+    hasSome(section: string): boolean {
+      const group = this.grouped.find((g) => g.section === section)!
+      return group.permissions.some((p) => this.has(p.name))
+    },
+    changeAll(section: string) {
+      const group = this.grouped.find((g) => g.section === section)!
+
+      let form = [...this.form]
+
+      // take back all group permissions
+      form = this.form.filter((p) => !group.permissions.find((g) => g.name === p))
+      if (this.hasAll(section)) {
+        // add all group permissions
+        form = this.form = this.form.concat(group.permissions.map((p) => p.name))
+      }
+
+      this.form = [...form]
+    },
   },
   created() {
     // @ts-ignore // TODO: fix extended store actions typings
@@ -87,9 +123,23 @@ export default Vue.extend({
 
   &__subtitle {
     margin-bottom: 4px;
-    display: block;
+    display: flex;
+    align-items: center;
     font-family: $font-sec;
     text-transform: capitalize;
+  }
+
+  &__btn {
+    border-radius: 50%;
+    margin-left: 0;
+
+    & ::v-deep .vs-button__content {
+      padding: 4px;
+    }
+  }
+
+  ::v-deep .vs-checkbox-label {
+    color: #666;
   }
 
   &__content {

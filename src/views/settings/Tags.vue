@@ -22,9 +22,15 @@
           <h4>{{ editedItem.id ? 'Edycja taga' : 'Nowy tag' }}</h4>
         </template>
         <modal-form>
-          <validated-input rules="required" v-model="editedItem.name" label="Nazwa" />
+          <validated-input
+            :disabled="!canModify"
+            rules="required"
+            v-model="editedItem.name"
+            label="Nazwa"
+          />
 
           <validated-input
+            :disabled="!canModify"
             rules="required"
             :value="`#${editedItem.color}`"
             label="Kolor"
@@ -34,7 +40,9 @@
         </modal-form>
         <template #footer>
           <div class="row">
-            <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
+            <vs-button v-if="canModify" color="dark" @click="handleSubmit(saveModal)">
+              Zapisz
+            </vs-button>
             <pop-confirm
               title="Czy na pewno chcesz usunąć ten tag?"
               v-can="$p.Tags.Remove"
@@ -85,13 +93,16 @@ export default Vue.extend({
     isModalActive: false,
     editedItem: clone(CLEAR_TAG) as Tag,
   }),
+  computed: {
+    canModify(): boolean {
+      return this.$can(this.editedItem.id ? this.$p.Tags.Edit : this.$p.Tags.Add)
+    },
+  },
   methods: {
     setColor(color: string) {
       this.editedItem.color = color.split('#')[1] ?? color
     },
     openModal(id?: UUID) {
-      if (!this.$verboseCan([this.$p.Tags.Add, this.$p.Tags.Edit])) return
-
       this.isModalActive = true
       if (id) {
         this.editedItem = this.$accessor.tags.getFromListById(id)

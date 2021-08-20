@@ -12,7 +12,7 @@
 
     <card>
       <list>
-        <h2 v-can.any="[$p.Pages.Show]" class="section-title">Sklep</h2>
+        <h2 v-can="$p.Pages.Show" class="section-title">Sklep</h2>
         <SettingsItem v-can="$p.Pages.Show" name="Strony" url="/pages" icon="bx bxs-copy-alt" />
 
         <h2 v-can.any="[$p.ProductSets.Show, $p.Tags.Show, $p.Products.Show]" class="section-title">
@@ -37,9 +37,9 @@
           url="/schemas"
         />
 
-        <h2 v-can.any="[$p.Orders.Show]" class="section-title">Zamówienia</h2>
+        <h2 v-can.any="[$p.Statuses.Show]" class="section-title">Zamówienia</h2>
         <SettingsItem
-          v-can="$p.Orders.Show"
+          v-can="$p.Statuses.Show"
           name="Statusy zamówień"
           icon="bx bxs-check-circle"
           url="/settings/statuses"

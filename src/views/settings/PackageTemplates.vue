@@ -24,9 +24,15 @@
           <h4>{{ editedItem.id ? 'Edycja szablony' : 'Nowy szablon' }}</h4>
         </template>
         <modal-form>
-          <validated-input rules="required" v-model="editedItem.name" label="Nazwa" />
+          <validated-input
+            :disabled="!canModify"
+            rules="required"
+            v-model="editedItem.name"
+            label="Nazwa"
+          />
 
           <validated-input
+            :disabled="!canModify"
             rules="required|positive"
             v-model="editedItem.weight"
             type="number"
@@ -35,6 +41,7 @@
           />
 
           <validated-input
+            :disabled="!canModify"
             rules="required|positive"
             v-model="editedItem.width"
             type="number"
@@ -42,6 +49,7 @@
           />
 
           <validated-input
+            :disabled="!canModify"
             rules="required|positive"
             v-model="editedItem.height"
             type="number"
@@ -49,6 +57,7 @@
           />
 
           <validated-input
+            :disabled="!canModify"
             rules="required|positive"
             v-model="editedItem.depth"
             type="number"
@@ -57,7 +66,9 @@
         </modal-form>
         <template #footer>
           <div class="row">
-            <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
+            <vs-button v-if="canModify" color="dark" @click="handleSubmit(saveModal)">
+              Zapisz
+            </vs-button>
             <pop-confirm
               title="Czy na pewno chcesz usunąć ten szablon dostawy?"
               v-can="$p.Packages.Remove"
@@ -111,10 +122,13 @@ export default Vue.extend({
     isModalActive: false,
     editedItem: clone(CLEAR_PACKAGE_TEMPALTE),
   }),
+  computed: {
+    canModify(): boolean {
+      return this.$can(this.editedItem.id ? this.$p.Packages.Edit : this.$p.Packages.Add)
+    },
+  },
   methods: {
     openModal(id?: UUID) {
-      if (!this.$verboseCan([this.$p.Packages.Add, this.$p.Packages.Edit])) return
-
       this.isModalActive = true
       if (id) {
         const item = this.$accessor.packageTemplates.getFromListById(id)

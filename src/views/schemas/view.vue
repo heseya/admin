@@ -22,7 +22,7 @@
           :key="schema.id"
           :schema="editedSchema"
           @submit="saveSchema"
-          :disabled="!$can([$p.Products.Add, $p.Products.Edit], true)"
+          :disabled="!$can(isNew ? $p.Products.Edit : $p.Products.Add)"
         />
       </card>
     </div>

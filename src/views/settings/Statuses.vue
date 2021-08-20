@@ -23,22 +23,40 @@
           <h4>{{ editedItem.id ? 'Edycja statusu' : 'Nowy status' }}</h4>
         </template>
         <modal-form>
-          <validated-input rules="required" v-model="editedItem.name" label="Nazwa" />
-
-          <validated-input rules="required" v-model="editedItem.description" label="Opis" />
+          <validated-input
+            :disabled="!canModify"
+            rules="required"
+            v-model="editedItem.name"
+            label="Nazwa"
+          />
 
           <validated-input
+            :disabled="!canModify"
+            rules="required"
+            v-model="editedItem.description"
+            label="Opis"
+          />
+
+          <validated-input
+            :disabled="!canModify"
             rules="required"
             :value="`#${editedItem.color}`"
             label="Kolor statusu"
             @input="setColor"
             type="color"
           />
-          <SwitchInput horizontal v-model="editedItem.cancel" label="Anulowanie zamówienia" />
+          <SwitchInput
+            :disabled="!canModify"
+            horizontal
+            v-model="editedItem.cancel"
+            label="Anulowanie zamówienia"
+          />
         </modal-form>
         <template #footer>
           <div class="row">
-            <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
+            <vs-button v-if="canModify" color="dark" @click="handleSubmit(saveModal)">
+              Zapisz
+            </vs-button>
             <pop-confirm
               title="Czy na pewno chcesz usunąć ten status?"
               v-can="$p.Statuses.Remove"
@@ -93,13 +111,16 @@ export default Vue.extend({
     isModalActive: false,
     editedItem: clone(CLEAR_STATUS) as OrderStatus,
   }),
+  computed: {
+    canModify(): boolean {
+      return this.$can(this.editedItem.id ? this.$p.Statuses.Edit : this.$p.Statuses.Add)
+    },
+  },
   methods: {
     setColor(color: string) {
       this.editedItem.color = color.split('#')[1] ?? color
     },
     openModal(id?: UUID) {
-      if (!this.$verboseCan([this.$p.Statuses.Add, this.$p.Statuses.Edit])) return
-
       this.isModalActive = true
       if (id) {
         this.editedItem = this.$accessor.statuses.getFromListById(id)

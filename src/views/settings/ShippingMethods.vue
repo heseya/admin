@@ -30,10 +30,12 @@
         <template #header>
           <h4>{{ editedItem.id ? 'Edycja opcji' : 'Nowa opcja' }} dostawy</h4>
         </template>
-        <ShippingMethodsForm v-model="editedItem" :countries="countries" />
+        <ShippingMethodsForm v-model="editedItem" :countries="countries" :disabled="!canModify" />
         <template #footer>
           <div class="row">
-            <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
+            <vs-button v-if="canModify" color="dark" @click="handleSubmit(saveModal)">
+              Zapisz
+            </vs-button>
             <pop-confirm
               title="Czy na pewno chcesz usunąć tą metode dostawy?"
               v-can="$p.ShippingMethods.Remove"
@@ -77,10 +79,15 @@ export default Vue.extend({
     editedItem: {} as ShippingMethodDTO,
     countries: [],
   }),
+  computed: {
+    canModify(): boolean {
+      return this.$can(
+        this.editedItem.id ? this.$p.ShippingMethods.Edit : this.$p.ShippingMethods.Add,
+      )
+    },
+  },
   methods: {
     openModal(id?: UUID) {
-      if (!this.$verboseCan([this.$p.ShippingMethods.Add, this.$p.ShippingMethods.Edit])) return
-
       this.isModalActive = true
       if (id) {
         const item = this.$accessor.shippingMethods.getFromListById(id)

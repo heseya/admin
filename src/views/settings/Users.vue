@@ -25,11 +25,13 @@
           <h4>{{ isNewUser(editedUser) ? 'Nowy użytkownik' : 'Edycja użytkownika' }}</h4>
         </template>
 
-        <UserForm v-model="editedUser" />
+        <UserForm :disabled="!canModify" v-model="editedUser" />
 
         <template #footer>
           <div class="row">
-            <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
+            <vs-button v-if="canModify" color="dark" @click="handleSubmit(saveModal)">
+              Zapisz
+            </vs-button>
             <pop-confirm
               title="Czy na pewno chcesz usunąć tego użytkownika?"
               v-can="$p.Users.Remove"
@@ -90,10 +92,13 @@ export default Vue.extend({
     isEditedUserCurrentUser(): boolean {
       return !this.isNewUser(this.editedUser) && this.editedUser.id === this.$accessor.auth.user?.id
     },
+    canModify(): boolean {
+      return this.$can(this.isNewUser(this.editedUser) ? this.$p.Users.Edit : this.$p.Users.Add)
+    },
   },
   methods: {
     openModal(id?: UUID) {
-      if (!this.$verboseCan([this.$p.Users.Add, this.$p.Users.Edit])) return
+      if (!this.$verboseCan(this.$p.Users.ShowDetails)) return
 
       this.isModalActive = true
       if (id) {

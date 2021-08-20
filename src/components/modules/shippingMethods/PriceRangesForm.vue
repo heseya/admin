@@ -7,16 +7,23 @@
           label="Minimalna wartość koszyka"
           type="number"
           v-model="range.start"
-          :disabled="i === 0"
+          :disabled="i === 0 || disabled"
         />
-        <vs-input label="Stawka" type="number" v-model="range.value" />
-        <vs-button transparent danger icon @click.stop="removeRange(i)" v-if="i !== 0">
+        <vs-input :disabled="disabled" label="Stawka" type="number" v-model="range.value" />
+        <vs-button
+          :disabled="disabled"
+          transparent
+          danger
+          icon
+          @click.stop="removeRange(i)"
+          v-if="i !== 0"
+        >
           <i class="bx bxs-trash"></i>
         </vs-button>
       </div>
     </div>
     <small class="price-ranges-form__error">{{ error }}</small>
-    <vs-button color="#000" size="small" @click="addRange">
+    <vs-button :disabled="disabled" color="#000" size="small" @click="addRange">
       <i class="bx bx-plus"></i> &nbsp;&nbsp; Dodaj zakres
     </vs-button>
   </div>
@@ -36,6 +43,10 @@ export default Vue.extend({
     error: {
       type: String,
       default: '',
+    },
+    disabled: {
+      type: Boolean,
+      required: true,
     },
   },
   computed: {

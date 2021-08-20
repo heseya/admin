@@ -25,28 +25,28 @@
               v-model="form.name"
               @input="editSlug"
               label="Nazwa"
-              :disabled="isDisabled"
+              :disabled="!canModify"
             />
             <validated-input
               rules="required|slug"
               v-model="form.slug"
               label="Link"
-              :disabled="isDisabled"
+              :disabled="!canModify"
             />
             <flex-input>
               <switch-input
                 horizontal
                 label="Widoczność strony"
                 v-model="form.public"
-                :disabled="isDisabled"
+                :disabled="!canModify"
               />
             </flex-input>
           </div>
           <br />
           <small class="label">Treść</small>
-          <rich-editor v-if="!isLoading" v-model="form.content_html" :disabled="isDisabled" />
+          <rich-editor v-if="!isLoading" v-model="form.content_html" :disabled="!canModify" />
           <br />
-          <vs-button v-if="!isDisabled" color="dark" size="large" @click="handleSubmit(save)">
+          <vs-button v-if="!canModify" color="dark" size="large" @click="handleSubmit(save)">
             Zapisz
           </vs-button>
         </card>
@@ -107,8 +107,8 @@ export default Vue.extend({
     isLoading(): boolean {
       return this.$accessor.pages.isLoading
     },
-    isDisabled(): boolean {
-      return !this.$can(this.isNew ? this.$p.Pages.Add : this.$p.Pages.Edit)
+    canModify(): boolean {
+      return this.$can(this.isNew ? this.$p.Pages.Add : this.$p.Pages.Edit)
     },
   },
   watch: {

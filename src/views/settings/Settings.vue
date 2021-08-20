@@ -24,16 +24,28 @@
             rules="required|letters-only"
             v-model="editedItem.name"
             label="Klucz"
-            :disabled="editedItem.permanent"
+            :disabled="editedItem.permanent || !canModify"
           />
 
-          <validated-input rules="required" v-model="editedItem.value" label="Wartość" />
+          <validated-input
+            :disabled="!canModify"
+            rules="required"
+            v-model="editedItem.value"
+            label="Wartość"
+          />
 
-          <SwitchInput v-model="editedItem.public" label="Wartość publiczna" horizontal />
+          <SwitchInput
+            :disabled="!canModify"
+            v-model="editedItem.public"
+            label="Wartość publiczna"
+            horizontal
+          />
         </modal-form>
         <template #footer>
           <div class="row">
-            <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
+            <vs-button v-if="canModify" color="dark" @click="handleSubmit(saveModal)">
+              Zapisz
+            </vs-button>
             <pop-confirm
               title="Czy na pewno chcesz usunąć to ustawienie?"
               v-can="$p.Settings.Remove"
@@ -95,9 +107,14 @@ export default Vue.extend({
     isModalActive: false,
     editedItem: clone(CLEAR_SETTING),
   }),
+  computed: {
+    canModify(): boolean {
+      return this.$can(this.editedItem.id ? this.$p.Settings.Edit : this.$p.Settings.Add)
+    },
+  },
   methods: {
     openModal(item?: Setting) {
-      if (!this.$verboseCan([this.$p.Settings.Add, this.$p.Settings.Edit])) return
+      if (!this.$verboseCan(this.$p.Settings.ShowDetails)) return
 
       this.isModalActive = true
       if (item) {

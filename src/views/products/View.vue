@@ -17,13 +17,13 @@
     </top-nav>
 
     <div class="product">
-      <gallery ref="gallery" v-model="form.gallery" :disabled="isDisabled" />
+      <gallery ref="gallery" v-model="form.gallery" :disabled="!canModify" />
 
       <div>
         <card>
           <flex-input>
             <label class="title">Widoczność produktu</label>
-            <vs-switch success v-model="form.public" :disabled="isDisabled">
+            <vs-switch success v-model="form.public" :disabled="!canModify">
               <template #off>
                 <i class="bx bx-x"></i>
               </template>
@@ -44,7 +44,7 @@
 
       <div class="product__schemas">
         <card>
-          <SchemaConfigurator v-model="form.schemas" :disabled="isDisabled" />
+          <SchemaConfigurator v-model="form.schemas" :disabled="!canModify" />
         </card>
       </div>
 
@@ -59,14 +59,14 @@
                   v-model="form.name"
                   @input="editSlug"
                   label="Nazwa"
-                  :disabled="isDisabled"
+                  :disabled="!canModify"
                 />
                 <br /><br />
                 <validated-input
                   rules="required|slug"
                   v-model="form.slug"
                   label="Link"
-                  :disabled="isDisabled"
+                  :disabled="!canModify"
                 />
                 <br /><br />
                 <validated-input
@@ -75,7 +75,7 @@
                   type="number"
                   step="0.01"
                   label="Cena"
-                  :disabled="isDisabled"
+                  :disabled="!canModify"
                 />
                 <br />
               </div>
@@ -90,7 +90,7 @@
                     filter
                     multiple
                     label="Kolekcje"
-                    :disabled="isDisabled"
+                    :disabled="!canModify"
                     @click.native.prevent.stop
                   >
                     <vs-option
@@ -112,12 +112,12 @@
                   max="999999"
                   step="0.01"
                   label="Format ilości"
-                  :disabled="isDisabled"
+                  :disabled="!canModify"
                 />
               </div>
 
               <div class="wide">
-                <tags-select v-model="form.tags" :disabled="isDisabled" />
+                <tags-select v-model="form.tags" :disabled="!canModify" />
               </div>
 
               <div class="wide">
@@ -125,19 +125,20 @@
                 <rich-editor
                   v-if="!isLoading"
                   v-model="form.description_html"
-                  :disabled="isDisabled"
+                  :disabled="!canModify"
                 />
                 <br />
                 <div class="flex">
-                  <vs-button v-if="!isDisabled" color="dark" size="large">Zapisz</vs-button>
+                  <vs-button v-if="canModify" color="dark" size="large">Zapisz</vs-button>
                   <vs-button
-                    v-if="!isDisabled"
+                    v-if="canModify"
                     color="dark"
                     size="large"
                     type="button"
                     @click="handleSubmit(submitAndGoNext)"
-                    >Zapisz i dodaj następny</vs-button
                   >
+                    Zapisz i dodaj następny
+                  </vs-button>
                 </div>
               </div>
             </form>
@@ -208,8 +209,8 @@ export default Vue.extend({
       // @ts-ignore // TODO: fix extended store getters typings
       return this.$accessor.products.getError || this.$accessor.products.getDepositError
     },
-    isDisabled(): boolean {
-      return !this.$can(this.isNew ? this.$p.Products.Add : this.$p.Products.Edit)
+    canModify(): boolean {
+      return this.$can(this.isNew ? this.$p.Products.Add : this.$p.Products.Edit)
     },
   },
   methods: {

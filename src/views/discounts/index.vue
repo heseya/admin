@@ -28,17 +28,33 @@
           <h4>{{ editedItem.id ? 'Edycja kodu rabatowego' : 'Nowy kod rabatowy' }}</h4>
         </template>
         <modal-form>
-          <validated-input rules="required" v-model="editedItem.code" label="Kod" />
-          <validated-input rules="required" v-model="editedItem.description" label="Opis" />
+          <validated-input
+            :disabled="!canModify"
+            rules="required"
+            v-model="editedItem.code"
+            label="Kod"
+          />
+          <validated-input
+            :disabled="!canModify"
+            rules="required"
+            v-model="editedItem.description"
+            label="Opis"
+          />
 
           <validated-input
+            :disabled="!canModify"
             rules="required"
             v-model="editedItem.max_uses"
             label="Maksymalna ilość użyć"
           />
-          <validated-input rules="required" v-model="editedItem.discount" label="Zniżka" />
+          <validated-input
+            :disabled="!canModify"
+            rules="required"
+            v-model="editedItem.discount"
+            label="Zniżka"
+          />
           <ValidationProvider rules="required" v-slot="{ errors }">
-            <vs-select v-model="editedItem.type" label="Typ">
+            <vs-select :disabled="!canModify" v-model="editedItem.type" label="Typ">
               <vs-option label="Procentowy" value="0">Rabat Procentowy</vs-option>
               <vs-option label="Kwotowy" value="1">Rabat Kwotowy</vs-option>
               <template #message-danger>{{ errors[0] }}</template>
@@ -47,7 +63,9 @@
         </modal-form>
         <template #footer>
           <div class="row">
-            <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
+            <vs-button v-if="canModify" color="dark" @click="handleSubmit(saveModal)"
+              >Zapisz</vs-button
+            >
             <!--            <pop-confirm-->
             <!--              title="Czy na pewno chcesz usunąć ten kod?"-->
             <!--              v-can="$p.Discounts.Remove"-->
@@ -106,10 +124,13 @@ export default Vue.extend({
     currency(): string {
       return this.$accessor.currency
     },
+    canModify(): boolean {
+      return this.$can(this.editedItem.id ? this.$p.Discounts.Edit : this.$p.Discounts.Add)
+    },
   },
   methods: {
     openModal(id?: UUID) {
-      if (!this.$verboseCan([this.$p.Discounts.Add, this.$p.Discounts.Edit])) return
+      if (!this.$verboseCan(this.$p.Discounts.ShowDetails)) return
       this.isModalActive = true
       if (id) {
         this.editedItem = this.$accessor.discounts.getFromListById(id)

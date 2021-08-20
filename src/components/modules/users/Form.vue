@@ -1,8 +1,16 @@
 <template>
   <modal-form>
-    <validated-input rules="required" v-model="form.name" label="Nazwa" />
-    <validated-input rules="required|email" v-model="form.email" label="Email" />
+    <validated-input :disabled="disabled" rules="required" v-model="form.name" label="Nazwa" />
+
     <validated-input
+      :disabled="disabled"
+      rules="required|email"
+      v-model="form.email"
+      label="Email"
+    />
+
+    <validated-input
+      :disabled="disabled"
       v-if="isNewUser(form)"
       type="password"
       rules="required|password"
@@ -11,6 +19,7 @@
     />
 
     <vs-select
+      :disabled="disabled"
       v-model="form.roles"
       label="Role"
       :key="roles.length"
@@ -50,6 +59,10 @@ export default Vue.extend({
       type: Object,
       required: true,
     } as Vue.PropOptions<CreateUserDTO | EditUserDTO>,
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     form: {

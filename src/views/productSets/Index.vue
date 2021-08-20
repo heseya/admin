@@ -21,6 +21,8 @@
       :value="editedItem"
       :slugPrefix="editedItemSlugPrefix"
       :is-open="isFormModalActive"
+      :disabled="!$can(editedItem.id ? $p.ProductSets.Edit : $p.ProductSets.Add)"
+      :deletable="$can($p.ProductSets.Remove)"
       @close="isFormModalActive = false"
     />
 

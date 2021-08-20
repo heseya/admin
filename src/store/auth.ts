@@ -16,9 +16,9 @@ const state = () => ({
 
 //! debug purpose only
 const overrideUserPermissions = (user: User): User => {
-  const OVERRIDE = true
-  const ADD_ALL = true
-  const CUSTOM = ['xd']
+  const OVERRIDE = false
+  const ADD_ALL = false
+  const CUSTOM = ['statuses.show', 'statuses.show_details']
 
   return {
     ...user,
@@ -64,7 +64,7 @@ const actions = actionTree(
           password,
         })
 
-        //! debug purpose only
+        // TODO: remove
         data.data.user = overrideUserPermissions(data.data.user)
 
         if (!hasAccess(PERMISSIONS_TREE.Admin.Login)(data.data.user.permissions))
@@ -79,12 +79,11 @@ const actions = actionTree(
       }
     },
     async fetchProfile({ commit, state }) {
-      if (!state.user?.id) return
       commit('SET_ERROR', null)
       try {
-        const { data } = await api.get<{ data: User }>(`/users/id:${state.user.id}`) // /auth/profile
+        const { data } = await api.get<{ data: User }>(`/auth/profile`)
 
-        //! debug purpose only
+        // TODO: remove
         data.data = overrideUserPermissions(data.data)
 
         commit('SET_USER', data.data)

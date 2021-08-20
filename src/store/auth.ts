@@ -3,6 +3,7 @@ import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 import { api } from '../api'
 
 import { User } from '@/interfaces/User'
+import { UUID } from '@/interfaces/UUID'
 import { ALL_PERMISSIONS } from '@/consts/permissions'
 
 const state = () => ({
@@ -18,6 +19,9 @@ const getters = getterTree(state, {
   },
   isLogged(state) {
     return !!state.user
+  },
+  hasRole(state) {
+    return (roleId: UUID) => !!state.user?.roles.find((r) => r.id === roleId) || false
   },
 })
 
@@ -50,15 +54,15 @@ const actions = actionTree(
       }
     },
     async fetchProfile({ commit, state }) {
+      if (!state.user?.id) return
       commit('SET_ERROR', null)
       try {
-        // TODO: unhide when endpoint below will be ready
-        // const { data } = await api.get<{ data: User }>('/auth/profile')
-        // commit('SET_USER', data.data)
+        const { data } = await api.get<{ data: User }>(`/users/id:${state.user.id}`) // /auth/profile
+        commit('SET_USER', data.data)
 
         //! debug purpose only
         // eslint-disable-next-line no-constant-condition
-        const TEST_PERMS: string[] = true ? ['xd'] : []
+        const TEST_PERMS: string[] = false ? ['xd'] : []
         commit('SET_USER', {
           ...state.user,
           permissions: TEST_PERMS.length ? TEST_PERMS : ALL_PERMISSIONS,

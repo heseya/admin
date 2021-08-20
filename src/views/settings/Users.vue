@@ -116,6 +116,10 @@ export default Vue.extend({
           })
       if (updated) this.isModalActive = false
 
+      if (updated && updated?.id === this.$accessor.auth.user?.id) {
+        this.$accessor.auth.SET_USER(updated)
+      }
+
       this.$accessor.stopLoading()
     },
     async deleteItem() {

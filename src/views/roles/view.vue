@@ -85,21 +85,24 @@ export default Vue.extend({
   methods: {
     async save() {
       this.$accessor.startLoading()
-      const successMessage = this.isNew
-        ? 'Produkt został utworzony'
-        : 'Produkt został zaktualizowany'
+      const successMessage = this.isNew ? 'Rola została utworzona' : 'Rola została zaktualizowana'
 
       const role = this.isNew
         ? await this.$accessor.roles.add(this.form)
         : await this.$accessor.roles.update({ id: this.id, item: this.form })
+
+      if (role && this.$accessor.auth.hasRole(role.id)) {
+        await this.$accessor.auth.fetchProfile()
+      }
 
       if (role) {
         this.$vs.notification({
           color: 'success',
           title: successMessage,
         })
-        this.$router.push(`/settings/roles/${role.id}`)
       }
+
+      if (role && role.id !== this.id) this.$router.push(`/settings/roles/${role.id}`)
 
       this.$accessor.stopLoading()
     },

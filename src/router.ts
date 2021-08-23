@@ -248,6 +248,22 @@ const router = new VueRouter({
         permissions: [Permissions.Auth.SessionsShow],
       },
     },
+    {
+      path: '/403',
+      name: 'Error403',
+      component: () => import('./views/errors/403.vue'),
+      meta: {
+        hiddenNav: true,
+      },
+    },
+    {
+      path: '/*',
+      name: 'Error404',
+      component: () => import('./views/errors/404.vue'),
+      meta: {
+        hiddenNav: true,
+      },
+    },
   ],
 })
 
@@ -270,7 +286,7 @@ router.beforeEach((to, from, next) => {
     !hasAccess(requiredPermissions)(accessor.auth.user?.permissions || [])
   ) {
     accessor.auth.setPermissionsError(new Error('Not authorized'))
-    if (!from.name) next('/')
+    if (!from.name) next('/403')
     return
   }
 

@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import Navigation from './layout/Navigation.vue'
+import Navigation from './components/layout/Navigation.vue'
 
 export default Vue.extend({
   components: {

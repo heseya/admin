@@ -19,19 +19,19 @@
       </AppList>
     </AppCard>
 
-    <div class="paginated-list__footer" v-if="meta.last_page">
+    <div v-if="meta.last_page" class="paginated-list__footer">
       <vs-select
         class="per-page-select"
         :value="itemsPerPage"
-        @input="changePerPage"
         label="Elementów na stronę"
+        @input="changePerPage"
       >
         <vs-option v-for="option in perPageOptions" :key="option" :label="option" :value="option">
           {{ option }}
         </vs-option>
       </vs-select>
 
-      <AppPagination :value="page" @input="changePage" :length="meta.last_page" />
+      <AppPagination :value="page" :length="meta.last_page" @input="changePage" />
     </div>
   </div>
 </template>
@@ -40,7 +40,7 @@
 import Vue from 'vue'
 import Draggable from 'vuedraggable'
 
-import TopNav from '@/layout/TopNav.vue'
+import TopNav from '@/components/layout/TopNav.vue'
 import Empty from '@/components/layout/Empty.vue'
 import Pagination from '@/components/Pagination.vue'
 import Card from '@/components/layout/Card.vue'
@@ -136,6 +136,11 @@ export default Vue.extend({
       this.getItems()
     }, 300),
   },
+  beforeMount() {
+    this.page = Number(this.$route.query.page) || 1
+    this.itemsPerPage = +(localStorage.getItem(`${this.storeKey}_per_page`) || 24)
+    this.getItems()
+  },
   methods: {
     changePage(page: number) {
       if (this.page !== page) {
@@ -165,11 +170,6 @@ export default Vue.extend({
 
       this.$accessor.stopLoading()
     },
-  },
-  beforeMount() {
-    this.page = Number(this.$route.query.page) || 1
-    this.itemsPerPage = +(localStorage.getItem(`${this.storeKey}_per_page`) || 24)
-    this.getItems()
   },
 })
 </script>

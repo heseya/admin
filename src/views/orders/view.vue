@@ -34,18 +34,18 @@
         <card>
           <div class="flex-column send-package">
             <h2 class="section-title">Wyślij przesyłkę</h2>
-            <div class="flex" v-if="!shippingNumber">
+            <div v-if="!shippingNumber" class="flex">
               <vs-select
-                label="Szablon przesyłki"
-                placeholder="-- Wybierz szablon --"
                 :key="packageTemplates.length"
                 v-model="packageTemplateId"
+                label="Szablon przesyłki"
+                placeholder="-- Wybierz szablon --"
               >
                 <vs-option
                   v-for="template in packageTemplates"
+                  :key="template.id"
                   :label="template.name"
                   :value="template.id"
-                  :key="template.id"
                 >
                   {{ template.name }}
                 </vs-option>
@@ -64,12 +64,12 @@
         <card>
           <template v-if="order.status">
             <h2 class="section-title">Status</h2>
-            <vs-select v-model="status" :key="statuses.length" :loading="isLoading">
+            <vs-select :key="statuses.length" v-model="status" :loading="isLoading">
               <vs-option
                 v-for="status in statuses"
+                :key="status.id"
                 :label="status.name"
                 :value="status.id"
-                :key="status.id"
               >
                 {{ status.name }}
               </vs-option>
@@ -78,8 +78,8 @@
           <br />
           <h2 class="section-title">Próby płatności</h2>
           <div v-for="payment in order.payments" :key="payment.id" class="payment-method">
-            <i class="bx bxs-check-circle payment-method__success" v-if="payment.payed"></i>
-            <i class="bx bxs-x-circle payment-method__failed" v-if="!payment.payed"></i>
+            <i v-if="payment.payed" class="bx bxs-check-circle payment-method__success"></i>
+            <i v-if="!payment.payed" class="bx bxs-x-circle payment-method__failed"></i>
             <span class="payment-method__name">{{ payment.method }}</span>
             <span class="payment-method__amount">({{ payment.amount }} {{ currency }})</span>
           </div>
@@ -105,7 +105,7 @@
           </div>
           <br />
           <h2 class="section-title">Adres dostawy</h2>
-          <app-address :address="order.delivery_address" @edit="editDeliveryAddress" hideRemove />
+          <app-address :address="order.delivery_address" hide-remove @edit="editDeliveryAddress" />
         </card>
         <card>
           <template>
@@ -120,7 +120,7 @@
       </div>
     </div>
 
-    <vs-dialog width="800px" not-center v-model="isModalActive">
+    <vs-dialog v-model="isModalActive" width="800px" not-center>
       <template #header>
         <h4>Edytuj {{ modalFormTitle }}</h4>
       </template>
@@ -134,7 +134,7 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import TopNav from '@/layout/TopNav.vue'
+import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import Address from '@/components/modules/orders/OrderAddress.vue'
 import CartItem from '@/components/layout/CartItem.vue'
@@ -211,6 +211,15 @@ export default Vue.extend({
     error(error) {
       if (error) this.$vs.notification({ color: 'danger', ...formatApiError(error) })
     },
+  },
+  async created() {
+    this.$accessor.startLoading()
+    await Promise.all([
+      this.$accessor.orders.get(this.$route.params.id),
+      this.$accessor.statuses.fetch(),
+      this.$accessor.packageTemplates.fetch(),
+    ])
+    this.$accessor.stopLoading()
   },
   methods: {
     async setStatus(newStatus: OrderStatus) {
@@ -300,15 +309,6 @@ export default Vue.extend({
       })
       this.$accessor.stopLoading()
     },
-  },
-  async created() {
-    this.$accessor.startLoading()
-    await Promise.all([
-      this.$accessor.orders.get(this.$route.params.id),
-      this.$accessor.statuses.fetch(),
-      this.$accessor.packageTemplates.fetch(),
-    ])
-    this.$accessor.stopLoading()
   },
 })
 </script>

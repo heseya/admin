@@ -3,11 +3,11 @@
     <top-nav :title="!isNew ? product.name : 'Nowy produkt'">
       <pop-confirm
         v-if="!isNew"
-        title="Czy na pewno chcesz usunąć ten produkt?"
-        okText="Usuń"
-        cancelText="Anuluj"
-        @confirm="deleteProduct"
         v-slot="{ open }"
+        title="Czy na pewno chcesz usunąć ten produkt?"
+        ok-text="Usuń"
+        cancel-text="Anuluj"
+        @confirm="deleteProduct"
       >
         <vs-button dark icon @click="open">
           <i class="bx bx-trash"></i>
@@ -22,7 +22,7 @@
         <card>
           <flex-input>
             <label class="title">Widoczność produktu</label>
-            <vs-switch success v-model="form.public">
+            <vs-switch v-model="form.public" success>
               <template #off>
                 <i class="bx bx-x"></i>
               </template>
@@ -50,21 +50,21 @@
       <div class="product__details">
         <card>
           <validation-observer v-slot="{ handleSubmit }">
-            <form @submit.prevent="handleSubmit(saveProduct)" class="product__info">
+            <form class="product__info" @submit.prevent="handleSubmit(saveProduct)">
               <div>
                 <br />
                 <validated-input
-                  rules="required"
                   v-model="form.name"
-                  @input="editSlug"
+                  rules="required"
                   label="Nazwa"
+                  @input="editSlug"
                 />
                 <br /><br />
-                <validated-input rules="required|slug" v-model="form.slug" label="Link" />
+                <validated-input v-model="form.slug" rules="required|slug" label="Link" />
                 <br /><br />
                 <validated-input
-                  rules="required"
                   v-model="form.price"
+                  rules="required"
                   type="number"
                   step="0.01"
                   label="Cena"
@@ -76,9 +76,9 @@
                 <br />
                 <validation-provider v-slot="{ errors }">
                   <vs-select
+                    :key="productSets.length"
                     v-model="form.sets"
                     placeholder="Wybierz kolekcje"
-                    :key="productSets.length"
                     filter
                     multiple
                     label="Kolekcje"
@@ -90,15 +90,15 @@
                       :label="set.name"
                       :value="set.id"
                     >
-                      <i class="bx bx-lock" v-if="!set.public"></i> {{ set.name }}
+                      <i v-if="!set.public" class="bx bx-lock"></i> {{ set.name }}
                     </vs-option>
                     <template #message-danger>{{ errors[0] }}</template>
                   </vs-select>
                 </validation-provider>
                 <br /><br />
                 <validated-input
-                  rules="required"
                   v-model="form.quantity_step"
+                  rules="required"
                   type="number"
                   max="999999"
                   step="0.01"
@@ -139,7 +139,7 @@ import slugify from 'slugify'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import cloneDeep from 'lodash/cloneDeep'
 
-import TopNav from '@/layout/TopNav.vue'
+import TopNav from '@/components/layout/TopNav.vue'
 import Gallery from '@/components/modules/products/Gallery.vue'
 import Card from '@/components/layout/Card.vue'
 import FlexInput from '@/components/layout/FlexInput.vue'
@@ -170,6 +170,19 @@ const EMPTY_FORM: ProductComponentForm = {
 }
 
 export default Vue.extend({
+  components: {
+    TopNav,
+    Gallery,
+    Card,
+    FlexInput,
+    PopConfirm,
+    ValidationProvider,
+    ValidationObserver,
+    SchemaConfigurator,
+    RichEditor,
+    TagsSelect,
+    ValidatedInput,
+  },
   data: () => ({
     form: cloneDeep(EMPTY_FORM),
   }),
@@ -193,6 +206,35 @@ export default Vue.extend({
       // @ts-ignore // TODO: fix extended store getters typings
       return this.$accessor.products.getError || this.$accessor.products.getDepositError
     },
+  },
+  watch: {
+    product(product: Product) {
+      if (!this.isNew) {
+        this.form = {
+          ...product,
+          sets: product.sets?.map(({ id }) => id) || [],
+        }
+      }
+    },
+    error(error) {
+      if (error) {
+        this.$vs.notification({
+          color: 'danger',
+          ...formatApiError(error),
+        })
+      }
+    },
+    async '$route.params.id'() {
+      this.$accessor.startLoading()
+      await this.fetch()
+      this.$accessor.stopLoading()
+    },
+  },
+  async created() {
+    this.$accessor.startLoading()
+    this.$accessor.productSets.fetch({ tree: undefined })
+    await this.fetch()
+    this.$accessor.stopLoading()
   },
   methods: {
     async fetch() {
@@ -256,48 +298,6 @@ export default Vue.extend({
       await this.saveProduct()
       this.$router.push('/products/create')
     },
-  },
-  watch: {
-    product(product: Product) {
-      if (!this.isNew) {
-        this.form = {
-          ...product,
-          sets: product.sets?.map(({ id }) => id) || [],
-        }
-      }
-    },
-    error(error) {
-      if (error) {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(error),
-        })
-      }
-    },
-    async '$route.params.id'() {
-      this.$accessor.startLoading()
-      await this.fetch()
-      this.$accessor.stopLoading()
-    },
-  },
-  async created() {
-    this.$accessor.startLoading()
-    this.$accessor.productSets.fetch({ tree: undefined })
-    await this.fetch()
-    this.$accessor.stopLoading()
-  },
-  components: {
-    TopNav,
-    Gallery,
-    Card,
-    FlexInput,
-    PopConfirm,
-    ValidationProvider,
-    ValidationObserver,
-    SchemaConfigurator,
-    RichEditor,
-    TagsSelect,
-    ValidatedInput,
   },
 })
 </script>

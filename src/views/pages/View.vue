@@ -3,11 +3,11 @@
     <top-nav :title="!isNew ? page.name : 'Nowa strona'">
       <pop-confirm
         v-if="!isNew"
-        title="Czy na pewno chcesz usunąć tą stronę?"
-        okText="Usuń"
-        cancelText="Anuluj"
-        @confirm="deletePage"
         v-slot="{ open }"
+        title="Czy na pewno chcesz usunąć tą stronę?"
+        ok-text="Usuń"
+        cancel-text="Anuluj"
+        @confirm="deletePage"
       >
         <vs-button dark icon @click="open">
           <i class="bx bx-trash"></i>
@@ -19,10 +19,10 @@
       <validation-observer v-slot="{ handleSubmit }">
         <card>
           <div class="page__info">
-            <validated-input rules="required" v-model="form.name" @input="editSlug" label="Nazwa" />
-            <validated-input rules="required|slug" v-model="form.slug" label="Link" />
+            <validated-input v-model="form.name" rules="required" label="Nazwa" @input="editSlug" />
+            <validated-input v-model="form.slug" rules="required|slug" label="Link" />
             <flex-input>
-              <switch-input horizontal label="Widoczność strony" v-model="form.public" />
+              <switch-input v-model="form.public" horizontal label="Widoczność strony" />
             </flex-input>
           </div>
           <br />
@@ -41,7 +41,7 @@ import Vue from 'vue'
 import slugify from 'slugify'
 import { ValidationObserver } from 'vee-validate'
 
-import TopNav from '@/layout/TopNav.vue'
+import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import FlexInput from '@/components/layout/FlexInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
@@ -104,6 +104,13 @@ export default Vue.extend({
       }
     },
   },
+  async created() {
+    if (!this.isNew) {
+      this.$accessor.startLoading()
+      await this.$accessor.pages.get(this.id)
+      this.$accessor.stopLoading()
+    }
+  },
   methods: {
     editSlug() {
       if (this.isNew) {
@@ -147,13 +154,6 @@ export default Vue.extend({
       }
       this.$accessor.stopLoading()
     },
-  },
-  async created() {
-    if (!this.isNew) {
-      this.$accessor.startLoading()
-      await this.$accessor.pages.get(this.id)
-      this.$accessor.stopLoading()
-    }
   },
 })
 </script>

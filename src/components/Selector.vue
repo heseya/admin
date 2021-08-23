@@ -26,14 +26,17 @@
 import Vue from 'vue'
 import debounce from 'lodash/debounce'
 import queryString from 'query-string'
+
+import { api } from '../api'
+import { formatApiError } from '@/utils/errors'
+
 import List from '@/components/layout/List.vue'
 import Empty from '@/components/layout/Empty.vue'
 import ListItem from '@/components/layout/ListItem.vue'
+
+import { Schema } from '@/interfaces/Schema'
 import { SchemaTypeLabel } from '@/consts/schemaTypeLabels'
-import { api } from '../api'
-import { formatApiError } from '@/utils/errors'
 import { UUID } from '@/interfaces/UUID'
-import { SchemaType } from '@/interfaces/Schema'
 
 interface Item {
   id: UUID
@@ -105,7 +108,9 @@ export default Vue.extend({
     // TODO: better typing
     getSubText(item: any) {
       if (this.type === 'schemas') {
-        return `${SchemaTypeLabel[item.type as SchemaType]} | ${item.description}`
+        const schema = item as Schema
+        const schemaType = SchemaTypeLabel[schema.type]
+        return schema.description ? `${schemaType} | ${schema.description}` : schemaType
       }
       if (this.type === 'items') return `SKU: ${item.sku}`
       return ''

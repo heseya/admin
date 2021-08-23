@@ -44,9 +44,9 @@
         <card>
           <h2 class="section-title" style="margin-bottom: 20px">Ostatnie zamówienia</h2>
           <list-item
-            class="order"
             v-for="order in orders"
             :key="order.id"
+            class="order"
             :url="`/orders/${order.id}`"
           >
             <div>{{ order.code }}</div>
@@ -72,7 +72,7 @@ import startOfYear from 'date-fns/startOfYear'
 import { getPaymentsCount } from '@/services/statistics'
 import { DateInput, getRelativeDate } from '@/utils/utils'
 
-import TopNav from '@/layout/TopNav.vue'
+import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 
@@ -105,17 +105,6 @@ export default Vue.extend({
       return this.$accessor.currency
     },
   },
-  methods: {
-    getRelativeDate(date: DateInput) {
-      return getRelativeDate(date)
-    },
-    async getOrders() {
-      await this.$accessor.orders.fetch({
-        page: 1,
-        limit: 6,
-      })
-    },
-  },
   async created() {
     this.$accessor.startLoading()
 
@@ -143,6 +132,17 @@ export default Vue.extend({
     } catch {}
 
     this.$accessor.stopLoading()
+  },
+  methods: {
+    getRelativeDate(date: DateInput) {
+      return getRelativeDate(date)
+    },
+    async getOrders() {
+      await this.$accessor.orders.fetch({
+        page: 1,
+        limit: 6,
+      })
+    },
   },
 })
 </script>

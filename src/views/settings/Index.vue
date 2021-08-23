@@ -5,7 +5,7 @@
         <span class="profile__name">{{ user.name }}</span>
         <vs-avatar>
           <img v-if="user.avatar" :src="user.avatar" />
-          <i class="bx bx-user" v-else></i>
+          <i v-else class="bx bx-user"></i>
         </vs-avatar>
       </div>
     </top-nav>
@@ -43,7 +43,7 @@
       </list>
     </card>
 
-    <vs-dialog width="350px" not-center v-model="isChangePasswordModal">
+    <vs-dialog v-model="isChangePasswordModal" width="350px" not-center>
       <template #header>
         <h4>Zmiana hasła</h4>
       </template>
@@ -54,7 +54,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import TopNav from '@/layout/TopNav.vue'
+import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import List from '@/components/layout/List.vue'
 import ChangePasswordForm from '@/components/modules/auth/ChangePassword.vue'

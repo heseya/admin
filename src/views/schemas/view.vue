@@ -3,11 +3,11 @@
     <top-nav :title="!isNew ? schema.name : 'Nowy schemat'">
       <pop-confirm
         v-if="!isNew"
-        title="Czy na pewno chcesz usunąć ten schemat?"
-        okText="Usuń"
-        cancelText="Anuluj"
-        @confirm="deleteSchema"
         v-slot="{ open }"
+        title="Czy na pewno chcesz usunąć ten schemat?"
+        ok-text="Usuń"
+        cancel-text="Anuluj"
+        @confirm="deleteSchema"
       >
         <vs-button dark icon @click="open">
           <i class="bx bx-trash"></i>
@@ -29,7 +29,7 @@ import { cloneDeep } from 'lodash'
 
 import { Schema } from '@/interfaces/Schema'
 
-import TopNav from '@/layout/TopNav.vue'
+import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import SchemaForm from '@/components/modules/schemas/Form.vue'
@@ -72,6 +72,13 @@ export default Vue.extend({
       this.editedSchema = cloneDeep(this.schema)
     },
   },
+  async created() {
+    if (!this.isNew) {
+      this.$accessor.startLoading()
+      await this.$accessor.schemas.get(this.id)
+      this.$accessor.stopLoading()
+    }
+  },
   methods: {
     async saveSchema(schema: Schema) {
       if (this.isNew) this.$router.push(`/schemas/${schema.id}`)
@@ -88,13 +95,6 @@ export default Vue.extend({
       }
       this.$accessor.stopLoading()
     },
-  },
-  async created() {
-    if (!this.isNew) {
-      this.$accessor.startLoading()
-      await this.$accessor.schemas.get(this.id)
-      this.$accessor.stopLoading()
-    }
   },
 })
 </script>

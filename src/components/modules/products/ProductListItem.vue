@@ -1,5 +1,5 @@
 <template>
-  <list-item @click="onClick" class="product-list-item">
+  <list-item class="product-list-item" @click="onClick">
     <template #avatar>
       <vs-avatar color="#eee">
         <img
@@ -17,16 +17,16 @@
     <template #action>
       <div class="product-list-item__tags">
         <div
-          class="product-list-item__tag"
-          :style="{ backgroundColor: `#${tag.color}` }"
           v-for="tag in product.tags"
           :key="tag.id"
+          class="product-list-item__tag"
+          :style="{ backgroundColor: `#${tag.color}` }"
         >
           {{ tag.name }}
         </div>
       </div>
 
-      <vs-avatar size="22" class="product-list-item__icon" color="#000" v-if="!product.visible">
+      <vs-avatar v-if="!product.visible" size="22" class="product-list-item__icon" color="#000">
         <i class="bx bx-lock-alt"></i>
       </vs-avatar>
     </template>
@@ -35,12 +35,16 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import ListItem from '../../layout/ListItem.vue'
+import ListItem from '@/components/layout/ListItem.vue'
+import { Product } from '@/interfaces/Product'
 
 export default Vue.extend({
   components: { ListItem },
   props: {
-    product: Object,
+    product: {
+      type: Object,
+      required: true,
+    } as Vue.PropOptions<Product>,
   },
   computed: {
     currency(): string {
@@ -49,6 +53,9 @@ export default Vue.extend({
     objectFit(): string {
       return +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'
     },
+  },
+  mounted() {
+    navigator.permissions.query({ name: 'clipboard-write' })
   },
   methods: {
     onClick() {
@@ -67,9 +74,6 @@ export default Vue.extend({
         title: 'Skopiowano id',
       })
     },
-  },
-  mounted() {
-    navigator.permissions.query({ name: 'clipboard-write' })
   },
 })
 </script>

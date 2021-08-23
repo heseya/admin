@@ -1,8 +1,8 @@
 <template>
   <div>
-    <PaginatedList title="Szablony przesyłek" storeKey="packageTemplates">
+    <PaginatedList title="Szablony przesyłek" store-key="packageTemplates">
       <template #nav>
-        <vs-button @click="openModal()" v-can="$p.Packages.Add" color="dark" icon>
+        <vs-button v-can="$p.Packages.Add" color="dark" icon @click="openModal()">
           <i class="bx bx-plus"></i>
         </vs-button>
       </template>
@@ -19,47 +19,47 @@
     </PaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
-      <vs-dialog width="550px" not-center v-model="isModalActive">
+      <vs-dialog v-model="isModalActive" width="550px" not-center>
         <template #header>
           <h4>{{ editedItem.id ? 'Edycja szablony' : 'Nowy szablon' }}</h4>
         </template>
         <modal-form>
           <validated-input
+            v-model="editedItem.name"
             :disabled="!canModify"
             rules="required"
-            v-model="editedItem.name"
             label="Nazwa"
           />
 
           <validated-input
+            v-model="editedItem.weight"
             :disabled="!canModify"
             rules="required|positive"
-            v-model="editedItem.weight"
             type="number"
             step="0.01"
             label="Waga (kg)"
           />
 
           <validated-input
+            v-model="editedItem.width"
             :disabled="!canModify"
             rules="required|positive"
-            v-model="editedItem.width"
             type="number"
             label="Szerokość (cm)"
           />
 
           <validated-input
+            v-model="editedItem.height"
             :disabled="!canModify"
             rules="required|positive"
-            v-model="editedItem.height"
             type="number"
             label="Wysokość (cm)"
           />
 
           <validated-input
+            v-model="editedItem.depth"
             :disabled="!canModify"
             rules="required|positive"
-            v-model="editedItem.depth"
             type="number"
             label="Głębokość (cm)"
           />
@@ -70,12 +70,12 @@
               Zapisz
             </vs-button>
             <pop-confirm
-              title="Czy na pewno chcesz usunąć ten szablon dostawy?"
-              v-can="$p.Packages.Remove"
-              okText="Usuń"
-              cancelText="Anuluj"
-              @confirm="deleteItem"
               v-slot="{ open }"
+              v-can="$p.Packages.Remove"
+              title="Czy na pewno chcesz usunąć ten szablon dostawy?"
+              ok-text="Usuń"
+              cancel-text="Anuluj"
+              @confirm="deleteItem"
             >
               <vs-button v-if="editedItem.id" color="danger" @click="open">Usuń</vs-button>
             </pop-confirm>

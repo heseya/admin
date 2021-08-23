@@ -9,17 +9,17 @@
 
         <validated-input
           v-else-if="key === 'email'"
+          v-model="form[key]"
           name="email"
           label="Adres e-mail"
           rules="required|email"
-          v-model="form[key]"
         />
 
         <validated-input
           v-else-if="key === 'comment'"
+          v-model="form[key]"
           name="comment"
           label="Komentarz do zamówienia"
-          v-model="form[key]"
         />
       </div>
       <vs-button dark @click="handleSubmit(save)">Zapisz</vs-button>
@@ -36,8 +36,8 @@ import AddressForm from './AddressForm.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
 export default Vue.extend({
-  components: { AddressForm, ValidationObserver, ValidatedInput },
   name: 'PartialUpdateForm',
+  components: { AddressForm, ValidationObserver, ValidatedInput },
   props: {
     value: {
       type: Object,

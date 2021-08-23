@@ -20,16 +20,16 @@ import { uploadMedia } from '@/services/uploadMedia'
 
 export default Vue.extend({
   name: 'MediaUploader',
-  data: () => ({
-    isDrag: false,
-    file: null as null | File,
-  }),
   props: {
     extensions: {
       type: Array,
       default: () => ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg'],
     } as Vue.PropOptions<string[]>,
   },
+  data: () => ({
+    isDrag: false,
+    file: null as null | File,
+  }),
   methods: {
     selectFiles() {
       const input = document.createElement('input')

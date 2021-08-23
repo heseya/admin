@@ -1,6 +1,6 @@
 <template>
   <validation-observer v-slot="{ handleSubmit }">
-    <validation-provider rules="required" v-slot="{ errors }">
+    <validation-provider v-slot="{ errors }" rules="required">
       <vs-input v-model="password" icon-after label="Obecne hasło" type="password">
         <template #message-danger>{{ errors[0] }}</template>
         <template #icon><i class="bx bx-lock-open-alt"></i></template>
@@ -8,21 +8,21 @@
     </validation-provider>
     <br />
     <br />
-    <validation-provider rules="required|password" vid="passwordNew" v-slot="{ errors }">
+    <validation-provider v-slot="{ errors }" rules="required|password" vid="passwordNew">
       <vs-input v-model="passwordNew" label="Nowe hasło" type="password">
         <template #message-danger>{{ errors[0] }}</template>
       </vs-input>
     </validation-provider>
     <br />
     <br />
-    <validation-provider rules="required|repeatPassword:@passwordNew" v-slot="{ errors }">
+    <validation-provider v-slot="{ errors }" rules="required|repeatPassword:@passwordNew">
       <vs-input v-model="passwordConfirmation" label="Powtórz nowe hasło" type="password">
         <template #message-danger>{{ errors[0] }}</template>
       </vs-input>
     </validation-provider>
     <br />
     <div class="center">
-      <vs-button @click="handleSubmit(changePassword)" color="dark" :loading="isLoading">
+      <vs-button color="dark" :loading="isLoading" @click="handleSubmit(changePassword)">
         Zmień hasło
       </vs-button>
     </div>

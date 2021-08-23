@@ -10,7 +10,7 @@
     </template>
 
     <div v-if="products.length" class="set-products__list">
-      <div class="set-product-item" v-for="product in products" :key="product.id">
+      <div v-for="product in products" :key="product.id" class="set-product-item">
         <vs-avatar color="#eee">
           <img
             v-if="product.cover"
@@ -41,11 +41,11 @@
 
     <vs-button success @click="save">Zapisz</vs-button>
 
-    <vs-dialog width="800px" not-center v-model="isSelectorActive">
+    <vs-dialog v-model="isSelectorActive" width="800px" not-center>
       <template #header>
         <h4>Wybierz produkt</h4>
       </template>
-      <selector typeName="produkt" type="products" :existing="products" @select="addProduct" />
+      <selector type-name="produkt" type="products" :existing="products" @select="addProduct" />
     </vs-dialog>
   </vs-dialog>
 </template>
@@ -74,6 +74,10 @@ export default Vue.extend({
       default: false,
     },
   },
+  data: () => ({
+    isSelectorActive: false,
+    products: [] as Product[],
+  }),
   computed: {
     currency(): string {
       return this.$accessor.currency
@@ -82,10 +86,6 @@ export default Vue.extend({
       return +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'
     },
   },
-  data: () => ({
-    isSelectorActive: false,
-    products: [] as Product[],
-  }),
   watch: {
     set(v: ProductSet | null) {
       if (v) this.fetchProducts()

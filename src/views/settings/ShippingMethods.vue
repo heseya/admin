@@ -1,14 +1,14 @@
 <template>
   <div>
-    <PaginatedList title="Opcje Dostawy" storeKey="shippingMethods" draggable>
+    <PaginatedList title="Opcje Dostawy" store-key="shippingMethods" draggable>
       <template #nav>
-        <vs-button v-can="$p.ShippingMethods.Add" @click="openModal()" color="dark" icon>
+        <vs-button v-can="$p.ShippingMethods.Add" color="dark" icon @click="openModal()">
           <i class="bx bx-plus"></i>
         </vs-button>
       </template>
 
       <template v-slot="{ item: shippingMethod }">
-        <list-item @click="openModal(shippingMethod.id)" :hidden="!shippingMethod.public">
+        <list-item :hidden="!shippingMethod.public" @click="openModal(shippingMethod.id)">
           {{ shippingMethod.name }}
           <small v-if="shippingMethod.countries.length">
             {{ shippingMethod.black_list ? 'Wszystkie kraje poza:' : 'Tylko wybrane kraje:' }}
@@ -26,7 +26,7 @@
     </PaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
-      <vs-dialog width="660px" not-center v-model="isModalActive">
+      <vs-dialog v-model="isModalActive" width="660px" not-center>
         <template #header>
           <h4>{{ editedItem.id ? 'Edycja opcji' : 'Nowa opcja' }} dostawy</h4>
         </template>
@@ -37,12 +37,12 @@
               Zapisz
             </vs-button>
             <pop-confirm
-              title="Czy na pewno chcesz usunąć tą metode dostawy?"
-              v-can="$p.ShippingMethods.Remove"
-              okText="Usuń"
-              cancelText="Anuluj"
-              @confirm="deleteItem"
               v-slot="{ open }"
+              v-can="$p.ShippingMethods.Remove"
+              title="Czy na pewno chcesz usunąć tą metode dostawy?"
+              ok-text="Usuń"
+              cancel-text="Anuluj"
+              @confirm="deleteItem"
             >
               <vs-button v-if="editedItem.id" color="danger" @click="open">Usuń</vs-button>
             </pop-confirm>
@@ -85,6 +85,13 @@ export default Vue.extend({
         this.editedItem.id ? this.$p.ShippingMethods.Edit : this.$p.ShippingMethods.Add,
       )
     },
+  },
+  async created() {
+    this.$accessor.startLoading()
+    this.$accessor.paymentMethods.fetch()
+    const { data } = await api.get('countries')
+    this.countries = data.data
+    this.$accessor.stopLoading()
   },
   methods: {
     openModal(id?: UUID) {
@@ -136,13 +143,6 @@ export default Vue.extend({
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
-  },
-  async created() {
-    this.$accessor.startLoading()
-    this.$accessor.paymentMethods.fetch()
-    const { data } = await api.get('countries')
-    this.countries = data.data
-    this.$accessor.stopLoading()
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {

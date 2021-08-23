@@ -13,12 +13,12 @@
     </vs-button>
     <pop-confirm
       v-if="!hideRemove && address"
+      v-slot="{ open }"
       v-can="$p.Orders.Edit"
       title="Czy na pewno chcesz usunąć adres?"
-      okText="Usuń"
-      cancelText="Anuluj"
+      ok-text="Usuń"
+      cancel-text="Anuluj"
       @confirm="remove"
-      v-slot="{ open }"
     >
       <vs-button
         size="tiny"
@@ -59,8 +59,8 @@ import Vue from 'vue'
 import PopConfirm from '../../layout/PopConfirm.vue'
 
 export default Vue.extend({
-  components: { PopConfirm },
   name: 'Address',
+  components: { PopConfirm },
   props: {
     address: {
       type: Object,

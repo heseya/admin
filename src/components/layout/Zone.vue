@@ -1,7 +1,7 @@
 <template>
   <div class="zone" :class="`zone--${type}`">
-    <div class="zone__title" v-if="title">{{ title }}</div>
-    <div class="zone__title" v-else><slot name="title"></slot></div>
+    <div v-if="title" class="zone__title">{{ title }}</div>
+    <div v-else class="zone__title"><slot name="title"></slot></div>
     <slot></slot>
   </div>
 </template>

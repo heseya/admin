@@ -26,7 +26,7 @@ export default Vue.extend({
   props: {
     url: {
       type: String,
-      required: false,
+      default: null,
     },
     el: {
       type: String,

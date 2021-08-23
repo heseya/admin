@@ -14,10 +14,10 @@
 import Vue from 'vue'
 import Card from '../layout/Card.vue'
 export default Vue.extend({
-  components: { Card },
   name: 'CentralScreenForm',
+  components: { Card },
   props: {
-    title: String,
+    title: { type: String, default: '' },
   },
 })
 </script>

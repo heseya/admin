@@ -4,10 +4,10 @@
       <pop-confirm
         v-if="!isNew"
         v-slot="{ open }"
-        title="Czy na pewno chcesz usunąć ten schemat?"
         v-can="$p.Schemas.Remove"
-        okText="Usuń"
-        cancelText="Anuluj"
+        title="Czy na pewno chcesz usunąć ten schemat?"
+        ok-text="Usuń"
+        cancel-text="Anuluj"
         @confirm="deleteSchema"
       >
         <vs-button dark icon @click="open">
@@ -21,8 +21,8 @@
         <SchemaForm
           :key="schema.id"
           :schema="editedSchema"
-          @submit="saveSchema"
           :disabled="!$can(isNew ? $p.Products.Edit : $p.Products.Add)"
+          @submit="saveSchema"
         />
       </card>
     </div>

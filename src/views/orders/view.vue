@@ -65,8 +65,8 @@
           <template v-if="order.status">
             <h2 class="section-title">Status</h2>
             <vs-select
-              v-model="status"
               :key="statuses.length"
+              v-model="status"
               :loading="isLoading"
               :disabled="!$can($p.Orders.EditStatus)"
             >

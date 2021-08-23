@@ -1,15 +1,15 @@
 <template>
   <div>
-    <PaginatedList title="Tagi" storeKey="tags">
+    <PaginatedList title="Tagi" store-key="tags">
       <template #nav>
-        <vs-button v-can="$p.Tags.Add" @click="openModal()" color="dark" icon>
+        <vs-button v-can="$p.Tags.Add" color="dark" icon @click="openModal()">
           <i class="bx bx-plus"></i>
         </vs-button>
       </template>
       <template v-slot="{ item: tag }">
-        <list-item @click="openModal(tag.id)" :key="tag.id">
+        <list-item :key="tag.id" @click="openModal(tag.id)">
           <template #avatar>
-            <vs-avatar :color="`#${tag.color}`" :key="tag.color" />
+            <vs-avatar :key="tag.color" :color="`#${tag.color}`" />
           </template>
           {{ tag.name }}
         </list-item>
@@ -17,15 +17,15 @@
     </PaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
-      <vs-dialog width="550px" not-center v-model="isModalActive">
+      <vs-dialog v-model="isModalActive" width="550px" not-center>
         <template #header>
           <h4>{{ editedItem.id ? 'Edycja taga' : 'Nowy tag' }}</h4>
         </template>
         <modal-form>
           <validated-input
+            v-model="editedItem.name"
             :disabled="!canModify"
             rules="required"
-            v-model="editedItem.name"
             label="Nazwa"
           />
 
@@ -34,8 +34,8 @@
             rules="required"
             :value="`#${editedItem.color}`"
             label="Kolor"
-            @input="setColor"
             type="color"
+            @input="setColor"
           />
         </modal-form>
         <template #footer>
@@ -44,12 +44,12 @@
               Zapisz
             </vs-button>
             <pop-confirm
-              title="Czy na pewno chcesz usunąć ten tag?"
-              v-can="$p.Tags.Remove"
-              okText="Usuń"
-              cancelText="Anuluj"
-              @confirm="deleteItem"
               v-slot="{ open }"
+              v-can="$p.Tags.Remove"
+              title="Czy na pewno chcesz usunąć ten tag?"
+              ok-text="Usuń"
+              cancel-text="Anuluj"
+              @confirm="deleteItem"
             >
               <vs-button v-if="editedItem.id" color="danger" @click="open">Usuń</vs-button>
             </pop-confirm>

@@ -1,19 +1,19 @@
 <template>
   <div>
-    <PaginatedList title="Magazyn" storeKey="items" :filters="filters">
+    <PaginatedList title="Magazyn" store-key="items" :filters="filters">
       <template #nav>
         <vs-input
+          v-model="filters.search"
           state="dark"
           type="search"
-          v-model="filters.search"
-          @keydown.enter="makeSearch"
           placeholder="Wyszukiwanie"
+          @keydown.enter="makeSearch"
         />
 
-        <vs-button @click="makeSearch" color="dark" icon>
+        <vs-button color="dark" icon @click="makeSearch">
           <i class="bx bx-search"></i>
         </vs-button>
-        <vs-button v-can="$p.Items.Add" @click="openModal()" color="dark" icon>
+        <vs-button v-can="$p.Items.Add" color="dark" icon @click="openModal()">
           <i class="bx bx-plus"></i>
         </vs-button>
       </template>
@@ -30,30 +30,30 @@
     </PaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
-      <vs-dialog width="550px" not-center v-model="isModalActive">
+      <vs-dialog v-model="isModalActive" width="550px" not-center>
         <template #header>
           <h4>{{ editedItem.id ? 'Edycja' : 'Nowy' }} przedmiot</h4>
         </template>
         <modal-form>
           <validated-input
+            v-model="editedItem.name"
             :disabled="!canModify"
             rules="required"
-            v-model="editedItem.name"
             label="Nazwa"
           />
 
           <validated-input
+            v-model="editedItem.sku"
             :disabled="!canModify"
             rules="required"
-            v-model="editedItem.sku"
             label="SKU"
           />
           <validated-input
+            v-if="editedItem.id"
+            v-model="editedItem.quantity"
             :disabled="!canModify"
             rules="required"
-            v-if="editedItem.id"
             type="number"
-            v-model="editedItem.quantity"
             label="Ilość w magazynie"
           />
         </modal-form>
@@ -63,12 +63,12 @@
               Zapisz
             </vs-button>
             <pop-confirm
-              title="Czy na pewno chcesz usunąć ten przedmiot?"
-              v-can="$p.Items.Remove"
-              okText="Usuń"
-              cancelText="Anuluj"
-              @confirm="deleteItem"
               v-slot="{ open }"
+              v-can="$p.Items.Remove"
+              title="Czy na pewno chcesz usunąć ten przedmiot?"
+              ok-text="Usuń"
+              cancel-text="Anuluj"
+              @confirm="deleteItem"
             >
               <vs-button v-if="editedItem.id" color="danger" @click="open">Usuń</vs-button>
             </pop-confirm>
@@ -139,6 +139,9 @@ export default Vue.extend({
       }
     },
   },
+  created() {
+    this.filters.search = (this.$route.query.search as string) || ''
+  },
   methods: {
     makeSearch() {
       if (this.filters.search !== this.$route.query.search) {
@@ -191,9 +194,6 @@ export default Vue.extend({
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
-  },
-  created() {
-    this.filters.search = (this.$route.query.search as string) || ''
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {

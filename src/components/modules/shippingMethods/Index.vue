@@ -1,12 +1,12 @@
 <template>
   <div class="shipping-methods-form">
     <modal-form>
-      <validated-input :disabled="disabled" rules="required" v-model="form.name" label="Nazwa" />
+      <validated-input v-model="form.name" :disabled="disabled" rules="required" label="Nazwa" />
       <div class="center">
         <vs-select
-          :disabled="disabled"
-          v-model="form.payment_methods"
           :key="paymentMethods.length"
+          v-model="form.payment_methods"
+          :disabled="disabled"
           multiple
           filter
           collapse-chips
@@ -26,14 +26,14 @@
       <div class="center">
         <flex-input>
           <label class="title">Widoczność opcji dostawy</label>
-          <switch-input :disabled="disabled" v-model="form.public"> </switch-input>
+          <switch-input v-model="form.public" :disabled="disabled"> </switch-input>
         </flex-input>
       </div>
 
       <hr />
 
-      <validation-provider ref="priceRange" rules="price-ranges-duplicates" v-slot="{ errors }">
-        <PriceRangesForm :disabled="disabled" v-model="form.price_ranges" :error="errors[0]" />
+      <validation-provider ref="priceRange" v-slot="{ errors }" rules="price-ranges-duplicates">
+        <PriceRangesForm v-model="form.price_ranges" :disabled="disabled" :error="errors[0]" />
       </validation-provider>
 
       <hr />
@@ -42,16 +42,16 @@
       <div class="center">
         <flex-input>
           <label class="title">Biała lista</label>
-          <vs-switch :disabled="disabled" color="#000" v-model="form.black_list" />
+          <vs-switch v-model="form.black_list" :disabled="disabled" color="#000" />
           <label class="title">Czarna lista</label>
         </flex-input>
       </div>
 
       <div class="center">
         <vs-select
-          :disabled="disabled"
-          v-model="form.countries"
           :key="countries.length"
+          v-model="form.countries"
+          :disabled="disabled"
           multiple
           filter
           collapse-chips
@@ -86,6 +86,14 @@ import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
 export default Vue.extend({
   name: 'ShippingMethodsForm',
+  components: {
+    ModalForm,
+    FlexInput,
+    ValidationProvider,
+    SwitchInput,
+    PriceRangesForm,
+    ValidatedInput,
+  },
   props: {
     value: {
       type: Object,
@@ -121,14 +129,6 @@ export default Vue.extend({
         this.$refs.priceRange.validate()
       },
     },
-  },
-  components: {
-    ModalForm,
-    FlexInput,
-    ValidationProvider,
-    SwitchInput,
-    PriceRangesForm,
-    ValidatedInput,
   },
 })
 </script>

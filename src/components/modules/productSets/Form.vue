@@ -6,32 +6,32 @@
       </template>
       <modal-form class="product-set-form">
         <validated-input
+          v-model="form.name"
           :disabled="disabled"
           rules="required"
-          v-model="form.name"
-          @input="editSlug"
           label="Nazwa"
+          @input="editSlug"
         />
 
         <div class="slug-input">
-          <span class="slug-input__prefix" v-if="slugPrefix && !form.slug_override">
+          <span v-if="slugPrefix && !form.slug_override" class="slug-input__prefix">
             {{ slugPrefix }}-
           </span>
 
           <validated-input
+            v-model="form.slug_suffix"
             :disabled="disabled"
             class="slug-input__input"
             rules="required|slug"
-            v-model="form.slug_suffix"
             label="Link"
           />
 
           <vs-tooltip bottom>
             <switch-input
-              :disabled="disabled"
               v-if="slugPrefix"
-              class="slug-input__switch"
               v-model="form.slug_override"
+              :disabled="disabled"
+              class="slug-input__switch"
               label="Nadpisz link"
             />
 
@@ -45,17 +45,17 @@
         <div class="switches">
           <flex-input>
             <switch-input
+              v-model="form.hide_on_index"
               :disabled="disabled"
               horizontal
-              v-model="form.hide_on_index"
               label="Ukryj na stronie głównej"
             />
           </flex-input>
           <flex-input>
             <switch-input
+              v-model="form.public"
               :disabled="disabled"
               horizontal
-              v-model="form.public"
               label="Widoczność kolekcji"
             />
           </flex-input>
@@ -67,12 +67,12 @@
             Zapisz
           </vs-button>
           <pop-confirm
-            title="Czy na pewno chcesz usunąć tę kolekcję? Wraz z nią usuniesz wszystkie jej subkolekcje!"
             v-if="deletable"
-            okText="Usuń"
-            cancelText="Anuluj"
-            @confirm="deleteItem"
             v-slot="{ open }"
+            title="Czy na pewno chcesz usunąć tę kolekcję? Wraz z nią usuniesz wszystkie jej subkolekcje!"
+            ok-text="Usuń"
+            cancel-text="Anuluj"
+            @confirm="deleteItem"
           >
             <vs-button v-if="form.id" color="danger" @click="open">Usuń</vs-button>
           </pop-confirm>

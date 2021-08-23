@@ -1,16 +1,16 @@
 <template>
   <div class="products-container" :class="{ 'products-container--grid-view': !listView }">
-    <PaginatedList title="Asortyment" :filters="filters" storeKey="products">
+    <PaginatedList title="Asortyment" :filters="filters" store-key="products">
       <template #nav>
         <vs-tooltip bottom>
-          <vs-button color="dark" @click="listView = !listView" icon>
+          <vs-button color="dark" icon @click="listView = !listView">
             <i v-if="!listView" class="bx bx-list-ul"></i>
             <i v-else class="bx bx-grid"></i>
           </vs-button>
           <template #tooltip> Przełącz na widok {{ listView ? 'siatki' : 'listy' }} </template>
         </vs-tooltip>
 
-        <vs-button color="dark" @click="areFiltersOpen = true" icon>
+        <vs-button color="dark" icon @click="areFiltersOpen = true">
           <i class="bx bx-filter-alt"></i>
         </vs-button>
 
@@ -25,7 +25,7 @@
       </template>
     </PaginatedList>
 
-    <vs-dialog width="550px" not-center v-model="areFiltersOpen">
+    <vs-dialog v-model="areFiltersOpen" width="550px" not-center>
       <template #header>
         <h4>Filtry</h4>
       </template>
@@ -63,18 +63,6 @@ export default Vue.extend({
     areFiltersOpen: false,
     listView: false,
   }),
-  methods: {
-    makeSearch(filters: typeof EMPTY_PRODUCT_FILTERS) {
-      this.filters = filters
-
-      const queryFilters = formatFilters(filters)
-
-      this.$router.push({
-        path: 'products',
-        query: { page: undefined, ...queryFilters },
-      })
-    },
-  },
   watch: {
     listView(listView: boolean) {
       window.localStorage.setItem(LOCAL_STORAGE_KEY, String(Number(listView)))
@@ -88,6 +76,18 @@ export default Vue.extend({
     // this.filters.sets = isArray(sets) ? (sets as string[]) : [sets]
 
     this.listView = !!+(window.localStorage.getItem(LOCAL_STORAGE_KEY) || 0)
+  },
+  methods: {
+    makeSearch(filters: typeof EMPTY_PRODUCT_FILTERS) {
+      this.filters = filters
+
+      const queryFilters = formatFilters(filters)
+
+      this.$router.push({
+        path: 'products',
+        query: { page: undefined, ...queryFilters },
+      })
+    },
   },
 })
 </script>

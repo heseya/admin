@@ -1,13 +1,13 @@
 <template>
   <div>
-    <PaginatedList title="Ustawienia zaawansowane" storeKey="settings">
+    <PaginatedList title="Ustawienia zaawansowane" store-key="settings">
       <template #nav>
-        <vs-button v-can="$p.Settings.Add" @click="openModal()" color="dark" icon>
+        <vs-button v-can="$p.Settings.Add" color="dark" icon @click="openModal()">
           <i class="bx bx-plus"></i>
         </vs-button>
       </template>
       <template v-slot="{ item: setting }">
-        <list-item @click="openModal(setting)" :hidden="!setting.public">
+        <list-item :hidden="!setting.public" @click="openModal(setting)">
           {{ setting.name }}
           <small>{{ setting.value }}</small>
         </list-item>
@@ -15,28 +15,28 @@
     </PaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
-      <vs-dialog width="550px" not-center v-model="isModalActive">
+      <vs-dialog v-model="isModalActive" width="550px" not-center>
         <template #header>
           <h4>{{ editedItem.id ? 'Edycja ustawienie' : 'Nowe ustawienie' }}</h4>
         </template>
         <modal-form>
           <validated-input
-            rules="required|letters-only"
             v-model="editedItem.name"
+            rules="required|letters-only"
             label="Klucz"
             :disabled="editedItem.permanent || !canModify"
           />
 
           <validated-input
+            v-model="editedItem.value"
             :disabled="!canModify"
             rules="required"
-            v-model="editedItem.value"
             label="Wartość"
           />
 
           <SwitchInput
-            :disabled="!canModify"
             v-model="editedItem.public"
+            :disabled="!canModify"
             label="Wartość publiczna"
             horizontal
           />
@@ -47,16 +47,16 @@
               Zapisz
             </vs-button>
             <pop-confirm
-              title="Czy na pewno chcesz usunąć to ustawienie?"
-              v-can="$p.Settings.Remove"
-              okText="Usuń"
-              cancelText="Anuluj"
-              @confirm="deleteItem"
               v-slot="{ open }"
+              v-can="$p.Settings.Remove"
+              title="Czy na pewno chcesz usunąć to ustawienie?"
+              ok-text="Usuń"
+              cancel-text="Anuluj"
+              @confirm="deleteItem"
             >
               <vs-button
-                v-can="$p.Settings.Remove"
                 v-if="editedItem.id"
+                v-can="$p.Settings.Remove"
                 color="danger"
                 :disabled="editedItem.permanent"
                 @click="open"

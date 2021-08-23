@@ -1,5 +1,5 @@
 <template>
-  <div @click.stop="toggleChildrenVisibility" class="product-set">
+  <div class="product-set" @click.stop="toggleChildrenVisibility">
     <div class="product-set__content">
       <vs-button transparent icon size="mini" dark :disabled="!children.length">
         <i v-if="areChildrenVisible" class="bx bx-minus"></i>
@@ -25,18 +25,18 @@
             <i class="bx bx-menu"></i>
           </vs-button>
           <template #tooltip>
-            <vs-button @click.stop="create" v-can="$p.ProductSets.Add" shadow>
+            <vs-button v-can="$p.ProductSets.Add" shadow @click.stop="create">
               <i class="bx bx-plus"></i> &nbsp; Dodaj subkolekcje
             </vs-button>
             <vs-button
-              @click.stop="showProducts"
               v-can="$p.ProductSets.ShowDetails"
               shadow
               color="success"
+              @click.stop="showProducts"
             >
               <i class="bx bx-customize"></i> &nbsp; Zobacz produkty w kolekcji
             </vs-button>
-            <vs-button @click.stop="edit" v-can="$p.ProductSets.ShowDetails" shadow color="dark">
+            <vs-button v-can="$p.ProductSets.ShowDetails" shadow color="dark" @click.stop="edit">
               <i class="bx bx-edit"></i> &nbsp; Edytuj kolekcję
             </vs-button>
           </template>
@@ -44,12 +44,12 @@
       </div>
     </div>
 
-    <div class="product-set__children" v-show="areChildrenVisible">
+    <div v-show="areChildrenVisible" class="product-set__children">
       <Draggable v-model="children">
         <product-set
           v-for="child in children"
-          :set="{ ...child, parent: set }"
           :key="child.id"
+          :set="{ ...child, parent: set }"
           v-on="$listeners"
         />
       </Draggable>

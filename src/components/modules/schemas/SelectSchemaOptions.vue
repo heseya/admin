@@ -7,37 +7,37 @@
       </vs-button>
     </template>
 
-    <div class="select-schema-options__option" v-for="(option, i) in options" :key="i">
-      <validation-provider class="input" v-slot="{ errors }" rules="required">
-        <vs-input :disabled="disabled" v-model="option.name" label="Nazwa">
+    <div v-for="(option, i) in options" :key="i" class="select-schema-options__option">
+      <validation-provider v-slot="{ errors }" class="input" rules="required">
+        <vs-input v-model="option.name" :disabled="disabled" label="Nazwa">
           <template #message-danger>{{ errors[0] }}</template>
         </vs-input>
       </validation-provider>
-      <vs-input :disabled="disabled" v-model="option.price" type="number" label="Cena"></vs-input>
+      <vs-input v-model="option.price" :disabled="disabled" type="number" label="Cena"></vs-input>
       <Autocomplete
+        v-model="options[i].items"
         :disabled="disabled"
         class="input"
         type="products"
         label="Przedmioty z magazynu"
-        v-model="options[i].items"
       />
-      <SwitchInput :disabled="disabled" v-model="option.disabled">
+      <SwitchInput v-model="option.disabled" :disabled="disabled">
         <template #title>Disabled</template>
       </SwitchInput>
-      <vs-radio :disabled="disabled" :value="defaultOption" @input="setDefault" :val="i" dark>
+      <vs-radio :disabled="disabled" :value="defaultOption" :val="i" dark @input="setDefault">
         Domyślny
       </vs-radio>
       <vs-button
         size="small"
         danger
         icon
-        @click.stop="removeOption(i)"
         :disabled="options.length === 1 || disabled"
+        @click.stop="removeOption(i)"
       >
         <i class="bx bx-trash"></i>
       </vs-button>
     </div>
-    <vs-button size="small" transparent @click.stop="addOption" :disabled="disabled">
+    <vs-button size="small" transparent :disabled="disabled" @click.stop="addOption">
       <i class="bx bx-plus"></i> Dodaj
     </vs-button>
   </Zone>

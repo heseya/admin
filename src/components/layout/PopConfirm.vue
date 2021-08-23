@@ -5,10 +5,10 @@
       <div class="content-tooltip">
         <p>{{ title }}</p>
         <footer>
-          <vs-button @click="confirm" danger block>
+          <vs-button danger block @click="confirm">
             {{ okText }}
           </vs-button>
-          <vs-button @click="cancel" transparent dark block>
+          <vs-button transparent dark block @click="cancel">
             {{ cancelText }}
           </vs-button>
         </footer>
@@ -21,9 +21,6 @@
 import Vue from 'vue'
 export default Vue.extend({
   name: 'PopConfirm',
-  data: () => ({
-    visible: false,
-  }),
   props: {
     title: {
       type: String,
@@ -38,6 +35,9 @@ export default Vue.extend({
       default: 'Nie',
     },
   },
+  data: () => ({
+    visible: false,
+  }),
   methods: {
     setVisible(newValue: boolean) {
       this.visible = !!newValue

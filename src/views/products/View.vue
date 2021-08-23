@@ -4,10 +4,10 @@
       <pop-confirm
         v-if="!isNew"
         v-slot="{ open }"
-        title="Czy na pewno chcesz usunąć ten produkt?"
         v-can="$p.Products.Remove"
-        okText="Usuń"
-        cancelText="Anuluj"
+        title="Czy na pewno chcesz usunąć ten produkt?"
+        ok-text="Usuń"
+        cancel-text="Anuluj"
         @confirm="deleteProduct"
       >
         <vs-button dark icon @click="open">
@@ -23,7 +23,7 @@
         <card>
           <flex-input>
             <label class="title">Widoczność produktu</label>
-            <vs-switch success v-model="form.public" :disabled="!canModify">
+            <vs-switch v-model="form.public" success :disabled="!canModify">
               <template #off>
                 <i class="bx bx-x"></i>
               </template>
@@ -62,8 +62,8 @@
                 />
                 <br /><br />
                 <validated-input
-                  rules="required|slug"
                   v-model="form.slug"
+                  rules="required|slug"
                   label="Link"
                   :disabled="!canModify"
                 />

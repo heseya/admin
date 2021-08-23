@@ -15,8 +15,8 @@
 import Vue from 'vue'
 export default Vue.extend({
   props: {
-    title: String,
-    subtitle: String,
+    title: { type: String, default: '' },
+    subtitle: { type: String, default: '' },
   },
 })
 </script>

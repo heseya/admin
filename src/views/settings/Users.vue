@@ -1,13 +1,13 @@
 <template>
   <div>
-    <PaginatedList title="Użytkownicy" storeKey="users">
+    <PaginatedList title="Użytkownicy" store-key="users">
       <template #nav>
-        <vs-button v-can="$p.Users.Add" @click="openModal()" color="dark" icon>
+        <vs-button v-can="$p.Users.Add" color="dark" icon @click="openModal()">
           <i class="bx bx-plus"></i>
         </vs-button>
       </template>
       <template v-slot="{ item: user }">
-        <list-item @click="openModal(user.id)" :key="user.id">
+        <list-item :key="user.id" @click="openModal(user.id)">
           <template #avatar>
             <vs-avatar>
               <img :src="user.avatar" alt="" />
@@ -20,12 +20,12 @@
     </PaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
-      <vs-dialog width="550px" not-center v-model="isModalActive">
+      <vs-dialog v-model="isModalActive" width="550px" not-center>
         <template #header>
           <h4>{{ isNewUser(editedUser) ? 'Nowy użytkownik' : 'Edycja użytkownika' }}</h4>
         </template>
 
-        <UserForm :disabled="!canModify" v-model="editedUser" />
+        <UserForm v-model="editedUser" :disabled="!canModify" />
 
         <template #footer>
           <div class="row">
@@ -33,12 +33,12 @@
               Zapisz
             </vs-button>
             <pop-confirm
-              title="Czy na pewno chcesz usunąć tego użytkownika?"
-              v-can="$p.Users.Remove"
-              okText="Usuń"
-              cancelText="Anuluj"
-              @confirm="deleteItem"
               v-slot="{ open }"
+              v-can="$p.Users.Remove"
+              title="Czy na pewno chcesz usunąć tego użytkownika?"
+              ok-text="Usuń"
+              cancel-text="Anuluj"
+              @confirm="deleteItem"
             >
               <vs-button
                 v-if="!isNewUser(editedUser)"

@@ -1,8 +1,8 @@
 <template>
   <div>
-    <PaginatedList title="Aplikacje" storeKey="apps">
+    <PaginatedList title="Aplikacje" store-key="apps">
       <template #nav>
-        <vs-button @click="openModal()" color="dark" icon>
+        <vs-button color="dark" icon @click="openModal()">
           <i class="bx bx-plus"></i>
         </vs-button>
       </template>
@@ -20,12 +20,12 @@
     </PaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
-      <vs-dialog width="550px" not-center v-model="isModalActive">
+      <vs-dialog v-model="isModalActive" width="550px" not-center>
         <template #header>
           <h4>Dodaj Aplikacje</h4>
         </template>
         <modal-form>
-          <validated-input rules="required" v-model="editedItem.url" label="URL" />
+          <validated-input v-model="editedItem.url" rules="required" label="URL" />
         </modal-form>
         <template #footer>
           <div class="row">

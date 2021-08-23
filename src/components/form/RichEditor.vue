@@ -3,9 +3,9 @@
     <quill-editor
       ref="editor"
       :value="value"
-      @input="onInput"
       :options="editorOption"
       :disabled="disabled"
+      @input="onInput"
     />
   </div>
 </template>
@@ -17,6 +17,20 @@ import { uploadMedia } from '@/services/uploadMedia'
 import { QuillOptionsStatic } from 'quill'
 
 export default Vue.extend({
+  props: {
+    value: {
+      type: String,
+      default: '',
+    },
+    height: {
+      type: String,
+      default: '400px',
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data: () => ({
     editorOption: {
       theme: 'snow',
@@ -50,20 +64,6 @@ export default Vue.extend({
       },
     } as QuillOptionsStatic,
   }),
-  props: {
-    value: {
-      type: String,
-      default: '',
-    },
-    height: {
-      type: String,
-      default: '400px',
-    },
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
-  },
   methods: {
     onInput(value: string) {
       this.$emit('input', value)

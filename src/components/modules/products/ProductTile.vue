@@ -1,6 +1,6 @@
 <template>
-  <button @click="onClick" class="product-box">
-    <vs-avatar size="30" class="product-box__icon" color="#000" v-if="!product.visible">
+  <button class="product-box" @click="onClick">
+    <vs-avatar v-if="!product.visible" size="30" class="product-box__icon" color="#000">
       <i class="bx bx-lock-alt"></i>
     </vs-avatar>
     <div class="product-box__img">
@@ -9,10 +9,10 @@
 
       <div class="product-box__tags">
         <div
-          class="product-box__tag"
-          :style="{ backgroundColor: `#${tag.color}` }"
           v-for="tag in product.tags"
           :key="tag.id"
+          class="product-box__tag"
+          :style="{ backgroundColor: `#${tag.color}` }"
         >
           {{ tag.name }}
         </div>
@@ -29,9 +29,14 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { Product } from '@/interfaces/Product'
+
 export default Vue.extend({
   props: {
-    product: Object,
+    product: {
+      type: Object,
+      required: true,
+    } as Vue.PropOptions<Product>,
   },
   computed: {
     currency(): string {
@@ -40,6 +45,9 @@ export default Vue.extend({
     objectFit(): string {
       return +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'
     },
+  },
+  mounted() {
+    navigator.permissions.query({ name: 'clipboard-write' })
   },
   methods: {
     onClick() {
@@ -58,9 +66,6 @@ export default Vue.extend({
         title: 'Skopiowano id',
       })
     },
-  },
-  mounted() {
-    navigator.permissions.query({ name: 'clipboard-write' })
   },
 })
 </script>

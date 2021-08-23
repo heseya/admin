@@ -9,9 +9,9 @@
       </div>
       <div class="autocomplete__items">
         <div
-          class="autocomplete__item"
           v-for="item in value"
           :key="item.id"
+          class="autocomplete__item"
           :label="item.name"
           :value="item"
           disabled
@@ -23,12 +23,12 @@
         </div>
       </div>
     </div>
-    <vs-dialog width="800px" not-center v-model="isModalActive">
+    <vs-dialog v-model="isModalActive" width="800px" not-center>
       <template #header>
         <h4>Wybierz przedmiot z magazynu</h4>
       </template>
       <modal-form>
-        <selector typeName="produkt" type="items" :existing="value" @select="addItem" />
+        <selector type-name="produkt" type="items" :existing="value" @select="addItem" />
       </modal-form>
     </vs-dialog>
   </div>
@@ -47,6 +47,7 @@ interface AutocompleteItem {
 
 export default Vue.extend({
   name: 'Autocomplete',
+  components: { Selector, ModalForm },
   props: {
     type: {
       type: String,
@@ -83,7 +84,6 @@ export default Vue.extend({
       this.compValue = this.compValue.filter((item) => item.id !== itemId)
     },
   },
-  components: { Selector, ModalForm },
 })
 </script>
 

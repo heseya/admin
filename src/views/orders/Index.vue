@@ -1,8 +1,8 @@
 <template>
   <div>
-    <PaginatedList title="Zamówienia" :filters="filters" storeKey="orders">
+    <PaginatedList title="Zamówienia" :filters="filters" store-key="orders">
       <template #nav>
-        <vs-button color="dark" @click="areFiltersOpen = true" icon>
+        <vs-button color="dark" icon @click="areFiltersOpen = true">
           <i class="bx bx-filter-alt"></i>
         </vs-button>
       </template>
@@ -37,7 +37,7 @@
       </template>
     </PaginatedList>
 
-    <vs-dialog width="550px" not-center v-model="areFiltersOpen">
+    <vs-dialog v-model="areFiltersOpen" width="550px" not-center>
       <template #header>
         <h4>Filtry</h4>
       </template>
@@ -77,6 +77,12 @@ export default Vue.extend({
       return this.$accessor.currency
     },
   },
+  created() {
+    this.filters.search = (this.$route.query.search as string) || ''
+    this.filters.status_id = (this.$route.query.status_id as string) || ALL_FILTER_VALUE
+    this.filters.shipping_method_id =
+      (this.$route.query.shipping_method_id as string) || ALL_FILTER_VALUE
+  },
   methods: {
     getRelativeDate(date: DateInput) {
       return getRelativeDate(date)
@@ -91,12 +97,6 @@ export default Vue.extend({
         query: { page: undefined, ...queryFilters },
       })
     },
-  },
-  created() {
-    this.filters.search = (this.$route.query.search as string) || ''
-    this.filters.status_id = (this.$route.query.status_id as string) || ALL_FILTER_VALUE
-    this.filters.shipping_method_id =
-      (this.$route.query.shipping_method_id as string) || ALL_FILTER_VALUE
   },
 })
 </script>

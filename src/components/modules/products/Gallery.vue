@@ -1,12 +1,12 @@
 <template>
   <div class="gallery">
     <draggable
-      class="gallery__images"
       v-model="images"
+      class="gallery__images"
       :options="{ filter: '.undragabble' }"
       :disabled="disabled"
     >
-      <div class="gallery__img" v-for="image in images" :key="image.url">
+      <div v-for="image in images" :key="image.url" class="gallery__img">
         <img :src="`${image.url}?w=350&h=350`" :style="{ objectFit }" />
         <div class="remove">
           <vs-button v-if="!disabled" icon color="danger" @click="onImageDelete(image.id)">
@@ -16,11 +16,11 @@
       </div>
       <app-media-uploader
         v-if="!disabled"
+        class="gallery__img add undragabble"
+        :class="{ 'add--drag': isDrag, 'add--big': images.length === 0 }"
         @dragChange="dragChange"
         @upload="onImageUpload"
         @error="onUploadError"
-        class="gallery__img add undragabble"
-        :class="{ 'add--drag': isDrag, 'add--big': images.length === 0 }"
       >
         <img src="/img/icons/plus.svg" />
       </app-media-uploader>
@@ -50,6 +50,10 @@ export default Vue.extend({
     } as Vue.PropOptions<CdnMedia[]>,
     disabled: { type: Boolean, default: false },
   },
+  data: () => ({
+    mediaToDelete: [] as UUID[],
+    isDrag: false,
+  }),
   computed: {
     images: {
       get(): CdnMedia[] {
@@ -70,10 +74,6 @@ export default Vue.extend({
     window.removeEventListener('beforeunload', this.removeTouchedFiles)
     this.removeTouchedFiles()
   },
-  data: () => ({
-    mediaToDelete: [] as UUID[],
-    isDrag: false,
-  }),
   methods: {
     dragChange(isDrag: boolean) {
       this.isDrag = isDrag

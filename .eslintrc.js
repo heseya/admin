@@ -13,8 +13,8 @@ module.exports = {
   },
 
   extends: [
-    // 'plugin:vue/recommended',
-    'plugin:vue/essential',
+    // 'plugin:vue/essential',
+    'plugin:vue/recommended',
     '@vue/typescript',
     'prettier',
     'plugin:prettier/recommended',

@@ -4,8 +4,8 @@
     <multiselect
       v-model="tags"
       tag-placeholder="Dodaj jako nowy tag"
-      selectLabel="Naciśnij enter by wybrać"
-      selectedLabel="Wybrany"
+      select-label="Naciśnij enter by wybrać"
+      selected-label="Wybrany"
       placeholder="Wyszukaj lub dodaj tagi"
       deselect-label="Usuń tag"
       label="name"
@@ -14,15 +14,15 @@
       :multiple="true"
       :taggable="true"
       :close-on-select="false"
+      class="tags__select"
       @tag="addTag"
       @search-change="onSearch"
-      class="tags__select"
     >
       <template #noOptions> Lista jest pusta </template>
       <template #tag="{ option, remove }">
         <span class="multiselect__tag" :style="{ backgroundColor: `#${option.color}` }">
           <span>{{ option.name }}</span>
-          <i aria-hidden="true" @click="remove" class="multiselect__tag-icon"></i>
+          <i aria-hidden="true" class="multiselect__tag-icon" @click="remove"></i>
         </span>
       </template>
     </multiselect>
@@ -35,6 +35,9 @@ import { debounce } from 'lodash'
 import { Tag } from '@/interfaces/Tag'
 
 export default Vue.extend({
+  components: {
+    Multiselect,
+  },
   props: {
     value: {
       type: Array,
@@ -63,9 +66,6 @@ export default Vue.extend({
       const newTag = await this.$accessor.tags.add({ name: tagName })
       if (newTag) this.tags = [...this.tags, newTag]
     },
-  },
-  components: {
-    Multiselect,
   },
 })
 </script>

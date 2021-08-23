@@ -2,21 +2,21 @@
   <div class="price-ranges-form">
     <h5 class="price-ranges-form__title">Zakresy cen</h5>
     <div class="price-ranges-form__list">
-      <div class="price-ranges-form__row" v-for="(range, i) in priceRanges" :key="`${i}`">
+      <div v-for="(range, i) in priceRanges" :key="`${i}`" class="price-ranges-form__row">
         <vs-input
+          v-model="range.start"
           label="Minimalna wartość koszyka"
           type="number"
-          v-model="range.start"
           :disabled="i === 0 || disabled"
         />
-        <vs-input :disabled="disabled" label="Stawka" type="number" v-model="range.value" />
+        <vs-input v-model="range.value" :disabled="disabled" label="Stawka" type="number" />
         <vs-button
+          v-if="i !== 0"
           :disabled="disabled"
           transparent
           danger
           icon
           @click.stop="removeRange(i)"
-          v-if="i !== 0"
         >
           <i class="bx bxs-trash"></i>
         </vs-button>
@@ -59,6 +59,9 @@ export default Vue.extend({
       },
     },
   },
+  created() {
+    if (!this.priceRanges.some((v) => v.start === 0)) this.addRange(0)
+  },
   methods: {
     addRange(start?: number) {
       const rangeStart = start ?? Math.max(...this.priceRanges.map((p) => p.start), 0)
@@ -71,9 +74,6 @@ export default Vue.extend({
         .filter((_u, i) => i !== index)
         .sort((a, b) => a.start - b.start)
     },
-  },
-  created() {
-    if (!this.priceRanges.some((v) => v.start === 0)) this.addRange(0)
   },
 })
 </script>

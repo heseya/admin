@@ -1,14 +1,14 @@
 <template>
   <div class="pagination">
-    <vs-button @click="prev" :disabled="page === 1" icon dark>
+    <vs-button :disabled="page === 1" icon dark @click="prev">
       <i class="bx bxs-chevron-left"></i>
     </vs-button>
     <vs-select :value="page" @input="onInput">
-      <vs-option v-for="page in length" :label="page" :value="page" :key="page">
-        {{ page }}
+      <vs-option v-for="pageIndex in length" :key="pageIndex" :label="pageIndex" :value="pageIndex">
+        {{ pageIndex }}
       </vs-option>
     </vs-select>
-    <vs-button @click="next" :disabled="page === length" icon dark>
+    <vs-button :disabled="page === length" icon dark @click="next">
       <i class="bx bxs-chevron-right"></i>
     </vs-button>
   </div>

@@ -1,8 +1,8 @@
 <template>
   <div class="orders-filter">
-    <vs-input type="search" v-model="search" @keydown.enter="makeSearch" label="Wyszukiwanie" />
+    <vs-input v-model="search" type="search" label="Wyszukiwanie" @keydown.enter="makeSearch" />
 
-    <vs-select v-model="status_id" label="Status" :key="'status' + statuses.length" filter>
+    <vs-select :key="'status' + statuses.length" v-model="status_id" label="Status" filter>
       <vs-option label="Wszystkie" value="_all"> Wszystkie </vs-option>
       <vs-option v-for="s in statuses" :key="s.id" :label="s.name" :value="s.id">
         {{ s.name }}
@@ -12,9 +12,9 @@
     <br />
 
     <vs-select
+      :key="'shippingMethod' + shippingMethods.length"
       v-model="shipping_method_id"
       label="Dostawa"
-      :key="'shippingMethod' + shippingMethods.length"
       filter
     >
       <vs-option label="Wszystkie" value="_all"> Wszystkie </vs-option>
@@ -30,8 +30,8 @@
 
     <br />
 
-    <vs-button @click="makeSearch" color="dark"> <i class="bx bx-search"></i> Wyszukaj </vs-button>
-    <vs-button @click="clearFilters" transparent> Wyczyść filtry </vs-button>
+    <vs-button color="dark" @click="makeSearch"> <i class="bx bx-search"></i> Wyszukaj </vs-button>
+    <vs-button transparent @click="clearFilters"> Wyczyść filtry </vs-button>
   </div>
 </template>
 
@@ -53,16 +53,24 @@ export const EMPTY_ORDER_FILTERS = {
 type OrderFilers = typeof EMPTY_ORDER_FILTERS
 
 export default Vue.extend({
-  data: () => ({
-    search: '',
-    status_id: ALL_FILTER_VALUE,
-    shipping_method_id: ALL_FILTER_VALUE,
-  }),
   props: {
     filters: {
       type: Object,
       default: () => ({ ...EMPTY_ORDER_FILTERS }),
     } as Vue.PropOptions<OrderFilers>,
+  },
+  data: () => ({
+    search: '',
+    status_id: ALL_FILTER_VALUE,
+    shipping_method_id: ALL_FILTER_VALUE,
+  }),
+  computed: {
+    statuses(): OrderStatus[] {
+      return this.$accessor.statuses.getData
+    },
+    shippingMethods(): ShippingMethod[] {
+      return this.$accessor.shippingMethods.getData
+    },
   },
   watch: {
     filters(f: OrderFilers) {
@@ -71,13 +79,14 @@ export default Vue.extend({
       this.shipping_method_id = f.shipping_method_id
     },
   },
-  computed: {
-    statuses(): OrderStatus[] {
-      return this.$accessor.statuses.getData
-    },
-    shippingMethods(): ShippingMethod[] {
-      return this.$accessor.shippingMethods.getData
-    },
+  created() {
+    this.$accessor.statuses.fetch()
+    this.$accessor.shippingMethods.fetch()
+  },
+  mounted() {
+    this.search = this.filters.search
+    this.status_id = this.filters.status_id
+    this.shipping_method_id = this.filters.shipping_method_id
   },
   methods: {
     makeSearch() {
@@ -90,15 +99,6 @@ export default Vue.extend({
     clearFilters() {
       this.$emit('search', clone(EMPTY_ORDER_FILTERS))
     },
-  },
-  created() {
-    this.$accessor.statuses.fetch()
-    this.$accessor.shippingMethods.fetch()
-  },
-  mounted() {
-    this.search = this.filters.search
-    this.status_id = this.filters.status_id
-    this.shipping_method_id = this.filters.shipping_method_id
   },
 })
 </script>

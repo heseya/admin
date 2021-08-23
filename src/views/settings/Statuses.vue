@@ -1,13 +1,13 @@
 <template>
   <div>
-    <PaginatedList title="Statusy zamówień" storeKey="statuses" draggable>
+    <PaginatedList title="Statusy zamówień" store-key="statuses" draggable>
       <template #nav>
-        <vs-button v-can="$p.Statuses.Add" @click="openModal()" color="dark" icon>
+        <vs-button v-can="$p.Statuses.Add" color="dark" icon @click="openModal()">
           <i class="bx bx-plus"></i>
         </vs-button>
       </template>
       <template v-slot="{ item: status }">
-        <list-item @click="openModal(status.id)" :key="status.id">
+        <list-item :key="status.id" @click="openModal(status.id)">
           <template #avatar>
             <vs-avatar :color="`#${status.color}`" />
           </template>
@@ -18,22 +18,22 @@
     </PaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
-      <vs-dialog width="550px" not-center v-model="isModalActive">
+      <vs-dialog v-model="isModalActive" width="550px" not-center>
         <template #header>
           <h4>{{ editedItem.id ? 'Edycja statusu' : 'Nowy status' }}</h4>
         </template>
         <modal-form>
           <validated-input
+            v-model="editedItem.name"
             :disabled="!canModify"
             rules="required"
-            v-model="editedItem.name"
             label="Nazwa"
           />
 
           <validated-input
+            v-model="editedItem.description"
             :disabled="!canModify"
             rules="required"
-            v-model="editedItem.description"
             label="Opis"
           />
 
@@ -42,13 +42,13 @@
             rules="required"
             :value="`#${editedItem.color}`"
             label="Kolor statusu"
-            @input="setColor"
             type="color"
+            @input="setColor"
           />
           <SwitchInput
+            v-model="editedItem.cancel"
             :disabled="!canModify"
             horizontal
-            v-model="editedItem.cancel"
             label="Anulowanie zamówienia"
           />
         </modal-form>
@@ -58,12 +58,12 @@
               Zapisz
             </vs-button>
             <pop-confirm
-              title="Czy na pewno chcesz usunąć ten status?"
-              v-can="$p.Statuses.Remove"
-              okText="Usuń"
-              cancelText="Anuluj"
-              @confirm="deleteItem"
               v-slot="{ open }"
+              v-can="$p.Statuses.Remove"
+              title="Czy na pewno chcesz usunąć ten status?"
+              ok-text="Usuń"
+              cancel-text="Anuluj"
+              @confirm="deleteItem"
             >
               <vs-button v-if="editedItem.id" color="danger" @click="open">Usuń</vs-button>
             </pop-confirm>

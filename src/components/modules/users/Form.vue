@@ -1,28 +1,28 @@
 <template>
   <modal-form>
-    <validated-input :disabled="disabled" rules="required" v-model="form.name" label="Nazwa" />
+    <validated-input v-model="form.name" :disabled="disabled" rules="required" label="Nazwa" />
 
     <validated-input
+      v-model="form.email"
       :disabled="disabled"
       rules="required|email"
-      v-model="form.email"
       label="Email"
     />
 
     <validated-input
-      :disabled="disabled"
       v-if="isNewUser(form)"
+      v-model="form.password"
+      :disabled="disabled"
       type="password"
       rules="required|password"
-      v-model="form.password"
       label="Hasło"
     />
 
     <vs-select
-      :disabled="disabled"
-      v-model="form.roles"
-      label="Role"
       :key="roles.length"
+      v-model="form.roles"
+      :disabled="disabled"
+      label="Role"
       filter
       multiple
       @click.native.prevent.stop
@@ -77,15 +77,15 @@ export default Vue.extend({
       return this.$accessor.roles.getData
     },
   },
-  methods: {
-    isNewUser(user: CreateUserDTO | EditUserDTO): user is CreateUserDTO {
-      return 'id' in user === false
-    },
-  },
   async created() {
     this.$accessor.startLoading()
     await this.$accessor.roles.fetch()
     this.$accessor.stopLoading()
+  },
+  methods: {
+    isNewUser(user: CreateUserDTO | EditUserDTO): user is CreateUserDTO {
+      return 'id' in user === false
+    },
   },
 })
 </script>

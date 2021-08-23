@@ -4,10 +4,10 @@
       <pop-confirm
         v-if="!isNew"
         v-slot="{ open }"
-        title="Czy na pewno chcesz usunąć tą stronę?"
         v-can="$p.Pages.Remove"
-        okText="Usuń"
-        cancelText="Anuluj"
+        title="Czy na pewno chcesz usunąć tą stronę?"
+        ok-text="Usuń"
+        cancel-text="Anuluj"
         @confirm="deletePage"
       >
         <vs-button dark icon @click="open">
@@ -21,23 +21,23 @@
         <card>
           <div class="page__info">
             <validated-input
-              rules="required"
               v-model="form.name"
-              @input="editSlug"
+              rules="required"
               label="Nazwa"
               :disabled="!canModify"
+              @input="editSlug"
             />
             <validated-input
-              rules="required|slug"
               v-model="form.slug"
+              rules="required|slug"
               label="Link"
               :disabled="!canModify"
             />
             <flex-input>
               <switch-input
+                v-model="form.public"
                 horizontal
                 label="Widoczność strony"
-                v-model="form.public"
                 :disabled="!canModify"
               />
             </flex-input>

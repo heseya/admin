@@ -1,8 +1,8 @@
 <template>
   <div class="products-filter">
-    <vs-input type="search" v-model="search" @keydown.enter="makeSearch" label="Wyszukiwanie" />
+    <vs-input v-model="search" type="search" label="Wyszukiwanie" @keydown.enter="makeSearch" />
 
-    <vs-select v-model="sets" label="Kolekcje" :key="productSets.length" filter>
+    <vs-select :key="productSets.length" v-model="sets" label="Kolekcje" filter>
       <vs-option v-for="set in productSets" :key="set.id" :label="set.name" :value="set.slug">
         {{ set.name }}
       </vs-option>
@@ -10,8 +10,8 @@
 
     <br />
 
-    <vs-button @click="makeSearch" color="dark"> <i class="bx bx-search"></i> Wyszukaj </vs-button>
-    <vs-button @click="clearFilters" transparent> Wyczyść filtry </vs-button>
+    <vs-button color="dark" @click="makeSearch"> <i class="bx bx-search"></i> Wyszukaj </vs-button>
+    <vs-button transparent @click="clearFilters"> Wyczyść filtry </vs-button>
   </div>
 </template>
 
@@ -27,15 +27,20 @@ export const EMPTY_PRODUCT_FILTERS = {
 type ProductFilers = typeof EMPTY_PRODUCT_FILTERS
 
 export default Vue.extend({
-  data: () => ({
-    search: '',
-    sets: '',
-  }),
   props: {
     filters: {
       type: Object,
       default: () => ({ ...EMPTY_PRODUCT_FILTERS }),
     } as Vue.PropOptions<ProductFilers>,
+  },
+  data: () => ({
+    search: '',
+    sets: '',
+  }),
+  computed: {
+    productSets() {
+      return this.$accessor.productSets.getData
+    },
   },
   watch: {
     filters(f: ProductFilers) {
@@ -43,10 +48,12 @@ export default Vue.extend({
       this.sets = f.sets
     },
   },
-  computed: {
-    productSets() {
-      return this.$accessor.productSets.getData
-    },
+  created() {
+    this.$accessor.productSets.fetch({ tree: undefined })
+  },
+  mounted() {
+    this.search = this.filters.search
+    this.sets = this.filters.sets
   },
   methods: {
     makeSearch() {
@@ -58,13 +65,6 @@ export default Vue.extend({
     clearFilters() {
       this.$emit('search', clone(EMPTY_PRODUCT_FILTERS))
     },
-  },
-  created() {
-    this.$accessor.productSets.fetch({ tree: undefined })
-  },
-  mounted() {
-    this.search = this.filters.search
-    this.sets = this.filters.sets
   },
 })
 </script>

@@ -1,13 +1,13 @@
 <template>
   <div class="address-form">
-    <validated-input rules="required" name="name" label="Imię i nazwisko" v-model="form.name" />
-    <validated-input rules="required" name="address" label="Adres" v-model="form.address" />
+    <validated-input v-model="form.name" rules="required" name="name" label="Imię i nazwisko" />
+    <validated-input v-model="form.address" rules="required" name="address" label="Adres" />
     <div class="address-form__row">
-      <validated-input rules="required" name="address" label="Kod pocztowy" v-model="form.zip" />
-      <validated-input rules="required" name="address" label="Miasto" v-model="form.city" />
+      <validated-input v-model="form.zip" rules="required" name="address" label="Kod pocztowy" />
+      <validated-input v-model="form.city" rules="required" name="address" label="Miasto" />
     </div>
     <ValidationProvider rules="required" tag="div" class="address-form__select">
-      <vs-select v-model="form.country" label="Kraj" :key="countries.length" filter>
+      <vs-select :key="countries.length" v-model="form.country" label="Kraj" filter>
         <vs-option
           v-for="country in countries"
           :key="country.code"
@@ -18,8 +18,8 @@
         </vs-option>
       </vs-select>
     </ValidationProvider>
-    <validated-input rules="required" name="address" label="Telefon" v-model="form.phone" />
-    <validated-input name="address" label="NIP" v-model="form.vat" />
+    <validated-input v-model="form.phone" rules="required" name="address" label="Telefon" />
+    <validated-input v-model="form.vat" name="address" label="NIP" />
   </div>
 </template>
 
@@ -34,6 +34,10 @@ import { api } from '@/api'
 
 export default Vue.extend({
   name: 'AddressForm',
+  components: {
+    ValidatedInput,
+    ValidationProvider,
+  },
   props: {
     value: {
       type: Object,
@@ -61,10 +65,6 @@ export default Vue.extend({
       data: { data: countries },
     } = await api.get('/countries')
     this.countries = countries
-  },
-  components: {
-    ValidatedInput,
-    ValidationProvider,
   },
 })
 </script>

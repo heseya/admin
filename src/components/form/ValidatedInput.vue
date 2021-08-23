@@ -1,6 +1,6 @@
 <template>
-  <validation-provider :rules="rules" :name="name" v-slot="{ errors }">
-    <vs-input v-on="$listeners" v-bind="$props">
+  <validation-provider v-slot="{ errors }" :rules="rules" :name="name">
+    <vs-input v-bind="$props" v-on="$listeners">
       <slot></slot>
       <template #message-danger>{{ errors[0] }}</template>
     </vs-input>
@@ -8,10 +8,14 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable vue/require-prop-types */
 import Vue from 'vue'
 import { ValidationProvider } from 'vee-validate'
 
 export default Vue.extend({
+  components: {
+    ValidationProvider,
+  },
   props: [
     'name',
     'value',
@@ -27,8 +31,5 @@ export default Vue.extend({
     'shadow',
     'disabled',
   ],
-  components: {
-    ValidationProvider,
-  },
 })
 </script>

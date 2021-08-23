@@ -1,19 +1,19 @@
 <template>
   <div>
-    <PaginatedList title="Schematy" :filters="filters" storeKey="schemas">
+    <PaginatedList title="Schematy" :filters="filters" store-key="schemas">
       <template #nav>
         <vs-input
+          v-model="filters.search"
           state="dark"
           type="search"
-          v-model="filters.search"
-          @keydown.enter="makeSearch"
           placeholder="Wyszukiwanie"
+          @keydown.enter="makeSearch"
         />
 
-        <vs-button @click="makeSearch" color="dark" icon>
+        <vs-button color="dark" icon @click="makeSearch">
           <i class="bx bx-search"></i>
         </vs-button>
-        <vs-button to="/schemas/create" v-can="$p.ProductSets.Add" color="dark" icon>
+        <vs-button v-can="$p.ProductSets.Add" to="/schemas/create" color="dark" icon>
           <i class="bx bx-plus"></i>
         </vs-button>
       </template>
@@ -54,6 +54,9 @@ export default Vue.extend({
       return this.$accessor.currency
     },
   },
+  created() {
+    this.filters.search = (this.$route.query.search as string) || ''
+  },
   methods: {
     makeSearch() {
       if (this.filters.search !== this.$route.query.search) {
@@ -63,9 +66,6 @@ export default Vue.extend({
         })
       }
     },
-  },
-  created() {
-    this.filters.search = (this.$route.query.search as string) || ''
   },
 })
 </script>

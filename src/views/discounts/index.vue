@@ -1,8 +1,8 @@
 <template>
   <div>
-    <PaginatedList title="Kody rabatowe" storeKey="discounts">
+    <PaginatedList title="Kody rabatowe" store-key="discounts">
       <template #nav>
-        <vs-button v-can="$p.Discounts.Add" @click="openModal()" color="dark" icon>
+        <vs-button v-can="$p.Discounts.Add" color="dark" icon @click="openModal()">
           <i class="bx bx-plus"></i>
         </vs-button>
       </template>
@@ -23,38 +23,38 @@
     </PaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
-      <vs-dialog width="550px" not-center v-model="isModalActive">
+      <vs-dialog v-model="isModalActive" width="550px" not-center>
         <template #header>
           <h4>{{ editedItem.id ? 'Edycja kodu rabatowego' : 'Nowy kod rabatowy' }}</h4>
         </template>
         <modal-form>
           <validated-input
+            v-model="editedItem.code"
             :disabled="!canModify"
             rules="required"
-            v-model="editedItem.code"
             label="Kod"
           />
           <validated-input
+            v-model="editedItem.description"
             :disabled="!canModify"
             rules="required"
-            v-model="editedItem.description"
             label="Opis"
           />
 
           <validated-input
+            v-model="editedItem.max_uses"
             :disabled="!canModify"
             rules="required"
-            v-model="editedItem.max_uses"
             label="Maksymalna ilość użyć"
           />
           <validated-input
+            v-model="editedItem.discount"
             :disabled="!canModify"
             rules="required"
-            v-model="editedItem.discount"
             label="Zniżka"
           />
-          <ValidationProvider rules="required" v-slot="{ errors }">
-            <vs-select :disabled="!canModify" v-model="editedItem.type" label="Typ">
+          <ValidationProvider v-slot="{ errors }" rules="required">
+            <vs-select v-model="editedItem.type" :disabled="!canModify" label="Typ">
               <vs-option label="Procentowy" value="0">Rabat Procentowy</vs-option>
               <vs-option label="Kwotowy" value="1">Rabat Kwotowy</vs-option>
               <template #message-danger>{{ errors[0] }}</template>

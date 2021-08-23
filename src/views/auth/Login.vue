@@ -2,16 +2,16 @@
   <central-screen-form title="Logowanie">
     <ValidationObserver v-slot="{ handleSubmit }">
       <validated-input
-        rules="required|email"
         v-model="email"
+        rules="required|email"
         label="E-mail"
         type="email"
         @keydown.enter="handleSubmit(login)"
       />
       <br /><br />
       <validated-input
-        rules="required"
         v-model="password"
+        rules="required"
         label="Hasło"
         type="password"
         @keydown.enter="handleSubmit(login)"

@@ -1,16 +1,16 @@
 <template>
   <div>
-    <PaginatedList title="Sesje użytkownika" storeKey="authSessions">
+    <PaginatedList title="Sesje użytkownika" store-key="authSessions">
       <template #nav>
         <pop-confirm
-          title="Czy na pewno chcesz wylogować wszystkie sesje użytkownika? Tylko obecna pozostanie aktywna."
-          v-can="$p.Auth.SessionsRevoke"
-          okText="Usuń"
-          cancelText="Anuluj"
-          @confirm="killAllSessions"
           v-slot="{ open }"
+          v-can="$p.Auth.SessionsRevoke"
+          title="Czy na pewno chcesz wylogować wszystkie sesje użytkownika? Tylko obecna pozostanie aktywna."
+          ok-text="Usuń"
+          cancel-text="Anuluj"
+          @confirm="killAllSessions"
         >
-          <vs-button color="danger" @click="open" :disabled="!areSessionsToKill">
+          <vs-button color="danger" :disabled="!areSessionsToKill" @click="open">
             Wyloguj wszystkie
           </vs-button>
         </pop-confirm>
@@ -34,12 +34,12 @@
           <template #action>
             <small v-if="login.current_session" class="login-item__current">To ty</small>
             <pop-confirm
-              title="Czy na pewno chcesz wylogować tę sesję użytkownika?"
-              v-can="$p.Auth.SessionsRevoke"
-              okText="Usuń"
-              cancelText="Anuluj"
-              @confirm="killSession(login.id)"
               v-slot="{ open }"
+              v-can="$p.Auth.SessionsRevoke"
+              title="Czy na pewno chcesz wylogować tę sesję użytkownika?"
+              ok-text="Usuń"
+              cancel-text="Anuluj"
+              @confirm="killSession(login.id)"
             >
               <vs-button
                 v-if="!login.revoked && !login.current_session"

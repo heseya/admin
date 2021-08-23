@@ -10,15 +10,15 @@
     <list class="configurator__schemas">
       <draggable v-model="schemas" :disabled="disabled">
         <list-item
+          v-for="schema in value"
+          :key="schema.id"
           class="configurator__schema"
           :class="{ [`configurator__schema--dep`]: schema.auto_dependecy }"
           :title="schema.auto_dependecy ? 'Schemat jest automatyczny - nie możesz go usunąć' : ''"
-          v-for="schema in value"
-          :key="schema.id"
           no-hover
           :hidden="schema.hidden"
         >
-          <i class="bx bx-network-chart" v-if="schema.auto_dependecy"></i>
+          <i v-if="schema.auto_dependecy" class="bx bx-network-chart"></i>
           {{ schema.name }}
           <small class="optional">{{ !schema.required ? '(opcjonalny)' : '' }}</small>
           <small>{{ schema.description }}</small>
@@ -31,8 +31,8 @@
                 v-if="!disabled"
                 danger
                 icon
-                @click="removeSchema(schema.id)"
                 class="schema-delete"
+                @click="removeSchema(schema.id)"
               >
                 <i class="bx bx-trash"></i>
               </vs-button>
@@ -42,21 +42,21 @@
       </draggable>
     </list>
 
-    <vs-dialog width="1000px" not-center v-model="isFormModalActive">
+    <vs-dialog v-model="isFormModalActive" width="1000px" not-center>
       <template #header>
         <h4 style="margin-bottom: 0">{{ editedSchema.id ? 'Edycja schematu' : 'Nowy schemat' }}</h4>
       </template>
       <modal-form v-if="isFormModalActive">
         <SchemaForm
           :schema="editedSchema"
-          @submit="updateSchema"
-          :currentProductSchemas="value"
+          :current-product-schemas="value"
           :disabled="disabled"
+          @submit="updateSchema"
         />
       </modal-form>
     </vs-dialog>
 
-    <vs-dialog width="800px" not-center v-model="isModalActive">
+    <vs-dialog v-model="isModalActive" width="800px" not-center>
       <template #header>
         <h4 class="flex schema-selector-title">
           Wybierz istniejący schemat lub
@@ -72,7 +72,7 @@
         </h4>
       </template>
       <modal-form>
-        <Selector @select="addSchema" type="schemas" :existing="value" />
+        <Selector type="schemas" :existing="value" @select="addSchema" />
       </modal-form>
     </vs-dialog>
   </div>
@@ -95,6 +95,15 @@ import { UUID } from '@/interfaces/UUID'
 
 export default Vue.extend({
   name: 'SchemaConfigurator',
+  components: {
+    List,
+    ListItem,
+    Empty,
+    ModalForm,
+    SchemaForm,
+    Selector,
+    Draggable,
+  },
   props: {
     value: {
       type: Array,
@@ -108,13 +117,6 @@ export default Vue.extend({
     isFormModalActive: false,
     editedSchema: {} as Schema,
   }),
-  watch: {
-    isFormModalActive() {
-      if (!this.isFormModalActive) {
-        this.editedSchema = {} as Schema
-      }
-    },
-  },
   computed: {
     schemas: {
       get(): Schema[] {
@@ -123,6 +125,13 @@ export default Vue.extend({
       set(val: Schema[]) {
         this.$emit('input', val)
       },
+    },
+  },
+  watch: {
+    isFormModalActive() {
+      if (!this.isFormModalActive) {
+        this.editedSchema = {} as Schema
+      }
     },
   },
   methods: {
@@ -152,15 +161,6 @@ export default Vue.extend({
         this.addSchema(schema)
       }
     },
-  },
-  components: {
-    List,
-    ListItem,
-    Empty,
-    ModalForm,
-    SchemaForm,
-    Selector,
-    Draggable,
   },
 })
 </script>

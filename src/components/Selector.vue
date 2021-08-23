@@ -6,7 +6,7 @@
       <empty v-if="query !== '' && list.length === 0">Nic nie znaleziono</empty>
 
       <list class="schema-selector__items">
-        <list-item class="schema-selector__item" v-for="item in list" :key="item.id" no-hover>
+        <list-item v-for="item in list" :key="item.id" class="schema-selector__item" no-hover>
           {{ item.name }}
           <small>{{ getSubText(item) }}</small>
           <template #action>
@@ -45,10 +45,11 @@ interface Item {
 
 export default Vue.extend({
   name: 'Selector',
-  data: () => ({
-    query: '',
-    data: [] as Item[],
-  }),
+  components: {
+    List,
+    ListItem,
+    Empty,
+  },
   props: {
     type: {
       type: String,
@@ -67,6 +68,10 @@ export default Vue.extend({
       default: () => [],
     } as Vue.PropOptions<Item[]>,
   },
+  data: () => ({
+    query: '',
+    data: [] as Item[],
+  }),
   computed: {
     list(): Item[] {
       return this.data.filter((x) => !this.existing.find((y) => x.id === y.id))
@@ -115,11 +120,6 @@ export default Vue.extend({
       if (this.type === 'items') return `SKU: ${item.sku}`
       return ''
     },
-  },
-  components: {
-    List,
-    ListItem,
-    Empty,
   },
 })
 </script>

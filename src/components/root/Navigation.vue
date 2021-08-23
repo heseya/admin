@@ -1,5 +1,5 @@
 <template>
-  <nav class="nav" :class="{ 'nav--hidden': isVisible }">
+  <nav class="nav" :class="{ 'nav--hidden': isHidden }">
     <router-link class="nav__link" to="/">
       <img src="/img/icons/home.svg" />
       <span class="label animated faster fadeInLeft">Strona główna</span>
@@ -37,7 +37,7 @@ import Vue from 'vue'
 export default Vue.extend({
   name: 'Navigation',
   computed: {
-    isVisible(): boolean {
+    isHidden(): boolean {
       return !!this.$route.meta?.hiddenNav || false
     },
   },
@@ -51,12 +51,11 @@ export default Vue.extend({
   bottom: 0;
   left: 0;
   height: 60px;
+  box-sizing: border-box;
   width: calc(100% - 30px);
   padding: 0 15px;
   background: #fff;
   box-shadow: $shadow;
-  border-top-left-radius: 26px;
-  border-top-right-radius: 26px;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -85,7 +84,10 @@ export default Vue.extend({
 
     .label {
       font-family: $font-sec;
-      display: none;
+      display: block;
+      animation-name: fadeInRight;
+      animation-duration: 0.5s;
+      animation-fill-mode: both;
       font-size: 20px;
       padding: 17px 10px;
       color: #000;
@@ -98,13 +100,10 @@ export default Vue.extend({
     position: fixed;
     top: 0;
     left: 0;
-    height: calc(100vh - 120px);
-    width: 60px;
+    height: 100%;
+    width: 250px;
     padding: 0;
     padding-top: 120px;
-    border-top-left-radius: 0;
-    border-top-right-radius: 26px;
-    border-bottom-right-radius: 26px;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
@@ -117,6 +116,9 @@ export default Vue.extend({
 
     &__link {
       border-radius: 12px;
+      width: 250px !important;
+      display: flex !important;
+      align-items: center;
 
       &:hover {
         background-color: $grey-light;
@@ -125,23 +127,6 @@ export default Vue.extend({
       img {
         padding: 29%;
       }
-    }
-  }
-
-  .nav:hover {
-    width: 250px;
-
-    .nav__link {
-      width: 250px;
-      display: grid;
-      grid-template-columns: 60px 190px;
-    }
-
-    .label {
-      display: inline-block;
-      animation-name: fadeInRight;
-      animation-duration: 0.5s;
-      animation-fill-mode: both;
     }
   }
 }

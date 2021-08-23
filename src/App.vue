@@ -1,8 +1,9 @@
 <template>
-  <div id="app">
-    <navigation></navigation>
+  <div id="app" class="app">
+    <AppNavigation class="app__nav"></AppNavigation>
+    <AppHeader class="app__header"></AppHeader>
 
-    <main class="main">
+    <main class="app__content">
       <transition name="fade">
         <router-view />
       </transition>
@@ -12,11 +13,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import Navigation from './components/layout/Navigation.vue'
+import AppNavigation from './components/root/Navigation.vue'
+import AppHeader from './components/root/Header.vue'
 
 export default Vue.extend({
   components: {
-    Navigation,
+    AppNavigation,
+    AppHeader,
   },
   data: () => ({
     loadingInstance: null as null | { close: () => void },
@@ -49,93 +52,26 @@ export default Vue.extend({
 })
 </script>
 
+<style lang="scss" src="@/scss/base.scss"></style>
+
 <style lang="scss">
-@font-face {
-  font-family: 'Tw Cen MT';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Tw Cen MT'), url(/fonts/TwCenMT.woff) format('woff');
-}
-
-body {
-  font-family: 'BlinkMacSystemFont', 'Roboto', sans-serif;
-  background: #f4f7f8;
-  margin: 0;
-}
-
-.vs-input-parent input {
-  width: 100% !important;
-}
-
-.vs-button--size-tiny {
-  --vs-button-padding: 8px !important;
-  margin: 0;
-}
-
-hr {
-  all: unset;
-  display: block;
-  height: 1px;
-  background-color: #eee;
-  width: 100%;
-  margin: 12px 0;
-}
-
-.main {
-  max-width: 940px;
-  padding: 0 20px;
-  margin: 0 auto;
-  margin-bottom: 80px;
-}
-
-.row {
-  display: flex;
-  justify-content: space-between;
-}
-
-.flex-column {
-  height: 100%;
+.app {
   display: flex;
   flex-direction: column;
-}
+  padding-left: 250px;
 
-.fade-enter-active,
-.fade-leave-active {
-  transition-property: opacity;
-  transition-duration: 0.25s;
-}
+  &__nav {
+  }
 
-.fade-enter-active {
-  transition-delay: 0.25s;
-}
+  &__header {
+  }
 
-.fade-enter,
-.fade-leave-active {
-  opacity: 0;
-}
-
-.label {
-  display: block;
-  margin-left: 5px;
-  margin-bottom: 3px;
-  color: #000 !important;
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
-.flex {
-  display: flex;
-}
-
-.multiselect {
-  z-index: 1000;
-}
-
-.multiselect__tag {
-  background: #000;
-}
-
-.multiselect__tag-icon::after {
-  color: #fff;
+  &__content {
+    max-width: calc(100% - 48px);
+    width: 100%;
+    box-sizing: border-box;
+    padding: 32px 24px;
+    margin: 0 auto;
+  }
 }
 </style>

@@ -23,7 +23,6 @@ export default Vue.extend({
 
 <style lang="scss">
 .top-nav {
-  margin-top: 40px;
   margin-bottom: 20px;
   display: flex;
   justify-content: space-between;

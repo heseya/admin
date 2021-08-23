@@ -1,0 +1,90 @@
+@import './01_abstracts/index.scss';
+@import './font';
+
+body {
+  font-family: 'BlinkMacSystemFont', 'Roboto', sans-serif;
+  background: #f7f8fa;
+  margin: 0;
+}
+
+.vs-input-parent input {
+  width: 100% !important;
+}
+
+.vs-button--size-tiny {
+  --vs-button-padding: 8px !important;
+  margin: 0;
+}
+
+hr {
+  all: unset;
+  display: block;
+  height: 1px;
+  background-color: #eee;
+  width: 100%;
+  margin: 12px 0;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.flex-column {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition-property: opacity;
+  transition-duration: 0.25s;
+}
+
+.fade-enter-active {
+  transition-delay: 0.25s;
+}
+
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
+}
+
+.label {
+  display: block;
+  margin-left: 5px;
+  margin-bottom: 3px;
+  color: #000 !important;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.flex {
+  display: flex;
+}
+
+.multiselect {
+  z-index: 1000;
+}
+
+.multiselect__tag {
+  background: #000;
+}
+
+.multiselect__tag-icon::after {
+  color: #fff;
+}
+
+.title {
+  font-family: $font-sec;
+  margin: 0;
+}
+
+.vs-dialog {
+  max-width: 1000px;
+}
+
+.vs-button--icon i {
+  font-size: 1.2em !important;
+}

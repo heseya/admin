@@ -31,7 +31,8 @@ export default Vue.extend({
   align-items: center;
 
   &__title {
-    @extend .title;
+    margin: 0;
+    font-family: $headerFont;
     margin-bottom: 32px;
   }
 

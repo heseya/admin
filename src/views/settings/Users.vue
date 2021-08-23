@@ -2,7 +2,7 @@
   <div>
     <PaginatedList title="Użytkownicy" storeKey="users">
       <template #nav>
-        <vs-button @click="openModal()" color="dark" icon>
+        <vs-button v-can="$p.Users.Add" @click="openModal()" color="dark" icon>
           <i class="bx bx-plus"></i>
         </vs-button>
       </template>
@@ -14,6 +14,7 @@
             </vs-avatar>
           </template>
           {{ user.name }}
+          <small>{{ user.roles.map((r) => r.name).join(', ') }}</small>
         </list-item>
       </template>
     </PaginatedList>
@@ -23,22 +24,17 @@
         <template #header>
           <h4>{{ isNewUser(editedUser) ? 'Nowy użytkownik' : 'Edycja użytkownika' }}</h4>
         </template>
-        <modal-form>
-          <validated-input rules="required" v-model="editedUser.name" label="Nazwa" />
-          <validated-input rules="required|email" v-model="editedUser.email" label="Email" />
-          <validated-input
-            v-if="isNewUser(editedUser)"
-            type="password"
-            rules="required|password"
-            v-model="editedUser.password"
-            label="Hasło"
-          />
-        </modal-form>
+
+        <UserForm :disabled="!canModify" v-model="editedUser" />
+
         <template #footer>
           <div class="row">
-            <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
+            <vs-button v-if="canModify" color="dark" @click="handleSubmit(saveModal)">
+              Zapisz
+            </vs-button>
             <pop-confirm
               title="Czy na pewno chcesz usunąć tego użytkownika?"
+              v-can="$p.Users.Remove"
               okText="Usuń"
               cancelText="Anuluj"
               @confirm="deleteItem"
@@ -66,10 +62,9 @@ import { ValidationObserver } from 'vee-validate'
 import { clone } from 'lodash'
 
 import PaginatedList from '@/components/PaginatedList.vue'
-import ModalForm from '@/components/form/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import ValidatedInput from '@/components/form/ValidatedInput.vue'
+import UserForm from '@/components/modules/users/Form.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import { CreateUserDTO, EditUserDTO } from '@/interfaces/User'
@@ -78,16 +73,16 @@ const CLEAR_USER: CreateUserDTO = {
   name: '',
   email: '',
   password: '',
+  roles: [],
 }
 
 export default Vue.extend({
   components: {
     PaginatedList,
     ListItem,
-    ModalForm,
+    UserForm,
     PopConfirm,
     ValidationObserver,
-    ValidatedInput,
   },
   data: () => ({
     isModalActive: false,
@@ -97,11 +92,24 @@ export default Vue.extend({
     isEditedUserCurrentUser(): boolean {
       return !this.isNewUser(this.editedUser) && this.editedUser.id === this.$accessor.auth.user?.id
     },
+    canModify(): boolean {
+      return this.$can(this.isNewUser(this.editedUser) ? this.$p.Users.Edit : this.$p.Users.Add)
+    },
   },
   methods: {
     openModal(id?: UUID) {
+      if (!this.$verboseCan(this.$p.Users.ShowDetails)) return
+
       this.isModalActive = true
-      this.editedUser = id ? this.$accessor.users.getFromListById(id) : clone(CLEAR_USER)
+      if (id) {
+        const user = this.$accessor.users.getFromListById(id)
+        this.editedUser = {
+          ...user,
+          roles: user.roles?.map(({ id }) => id) || [],
+        }
+      } else {
+        this.editedUser = clone(CLEAR_USER)
+      }
     },
     async saveModal() {
       this.$accessor.startLoading()
@@ -113,6 +121,10 @@ export default Vue.extend({
             item: this.editedUser,
           })
       if (updated) this.isModalActive = false
+
+      if (updated && updated?.id === this.$accessor.auth.user?.id) {
+        this.$accessor.auth.SET_USER(updated)
+      }
 
       this.$accessor.stopLoading()
     },

@@ -5,8 +5,9 @@
         v-if="!isNew"
         v-slot="{ open }"
         title="Czy na pewno chcesz usunąć tą stronę?"
-        ok-text="Usuń"
-        cancel-text="Anuluj"
+        v-can="$p.Pages.Remove"
+        okText="Usuń"
+        cancelText="Anuluj"
         @confirm="deletePage"
       >
         <vs-button dark icon @click="open">
@@ -19,17 +20,35 @@
       <validation-observer v-slot="{ handleSubmit }">
         <card>
           <div class="page__info">
-            <validated-input v-model="form.name" rules="required" label="Nazwa" @input="editSlug" />
-            <validated-input v-model="form.slug" rules="required|slug" label="Link" />
+            <validated-input
+              rules="required"
+              v-model="form.name"
+              @input="editSlug"
+              label="Nazwa"
+              :disabled="!canModify"
+            />
+            <validated-input
+              rules="required|slug"
+              v-model="form.slug"
+              label="Link"
+              :disabled="!canModify"
+            />
             <flex-input>
-              <switch-input v-model="form.public" horizontal label="Widoczność strony" />
+              <switch-input
+                horizontal
+                label="Widoczność strony"
+                v-model="form.public"
+                :disabled="!canModify"
+              />
             </flex-input>
           </div>
           <br />
           <small class="label">Treść</small>
-          <rich-editor v-if="!isLoading" v-model="form.content_html" />
+          <rich-editor v-if="!isLoading" v-model="form.content_html" :disabled="!canModify" />
           <br />
-          <vs-button color="dark" size="large" @click="handleSubmit(save)"> Zapisz </vs-button>
+          <vs-button v-if="!canModify" color="dark" size="large" @click="handleSubmit(save)">
+            Zapisz
+          </vs-button>
         </card>
       </validation-observer>
     </div>
@@ -87,6 +106,9 @@ export default Vue.extend({
     },
     isLoading(): boolean {
       return this.$accessor.pages.isLoading
+    },
+    canModify(): boolean {
+      return this.$can(this.isNew ? this.$p.Pages.Add : this.$p.Pages.Edit)
     },
   },
   watch: {

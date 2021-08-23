@@ -13,7 +13,7 @@
         <vs-button @click="makeSearch" color="dark" icon>
           <i class="bx bx-search"></i>
         </vs-button>
-        <vs-button @click="openModal()" color="dark" icon>
+        <vs-button v-can="$p.Items.Add" @click="openModal()" color="dark" icon>
           <i class="bx bx-plus"></i>
         </vs-button>
       </template>
@@ -35,10 +35,21 @@
           <h4>{{ editedItem.id ? 'Edycja' : 'Nowy' }} przedmiot</h4>
         </template>
         <modal-form>
-          <validated-input rules="required" v-model="editedItem.name" label="Nazwa" />
-
-          <validated-input rules="required" v-model="editedItem.sku" label="SKU" />
           <validated-input
+            :disabled="!canModify"
+            rules="required"
+            v-model="editedItem.name"
+            label="Nazwa"
+          />
+
+          <validated-input
+            :disabled="!canModify"
+            rules="required"
+            v-model="editedItem.sku"
+            label="SKU"
+          />
+          <validated-input
+            :disabled="!canModify"
             rules="required"
             v-if="editedItem.id"
             type="number"
@@ -48,9 +59,12 @@
         </modal-form>
         <template #footer>
           <div class="row">
-            <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
+            <vs-button v-if="canModify" color="dark" @click="handleSubmit(saveModal)">
+              Zapisz
+            </vs-button>
             <pop-confirm
               title="Czy na pewno chcesz usunąć ten przedmiot?"
+              v-can="$p.Items.Remove"
               okText="Usuń"
               cancelText="Anuluj"
               @confirm="deleteItem"
@@ -109,6 +123,9 @@ export default Vue.extend({
     currency(): string {
       return this.$accessor.currency
     },
+    canModify(): boolean {
+      return this.$can(this.editedItem.id ? this.$p.Items.Edit : this.$p.Items.Add)
+    },
   },
   watch: {
     depositsError(depositsError) {
@@ -133,6 +150,7 @@ export default Vue.extend({
     },
 
     openModal(id?: UUID) {
+      if (!this.$verboseCan(this.$p.Items.ShowDetails)) return
       this.isModalActive = true
       if (id) {
         this.editedItem = this.$accessor.items.getFromListById(id)

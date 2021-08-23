@@ -3,7 +3,9 @@
     <div class="autocomplete__input">
       <div class="autocomplete__label">
         {{ label }}
-        <button class="icon-btn" @click="isModalActive = true"><i class="bx bx-plus"></i></button>
+        <button :disabled="disabled" class="icon-btn" @click="isModalActive = true">
+          <i class="bx bx-plus"></i>
+        </button>
       </div>
       <div class="autocomplete__items">
         <div
@@ -15,7 +17,7 @@
           disabled
         >
           {{ item.name }}
-          <button class="icon-btn" @click.stop="deleteItem(item.id)">
+          <button class="icon-btn" :disabled="disabled" @click.stop="deleteItem(item.id)">
             <i class="bx bx-x"></i>
           </button>
         </div>
@@ -58,6 +60,7 @@ export default Vue.extend({
       type: Array,
       default: null,
     } as Vue.PropOptions<AutocompleteItem[]>,
+    disabled: { type: Boolean, default: false },
   },
   data: () => ({
     isModalActive: false,
@@ -121,6 +124,11 @@ export default Vue.extend({
     padding: 1px;
     cursor: pointer;
     border-radius: 3px;
+
+    &[disabled] {
+      opacity: 0.7;
+      pointer-events: none;
+    }
 
     &:hover {
       background-color: #eee;

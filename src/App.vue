@@ -44,6 +44,7 @@ export default Vue.extend({
   },
   created() {
     this.$accessor.fetchEnv()
+    if (this.$accessor.auth.isLogged) this.$accessor.auth.fetchProfile()
   },
 })
 </script>

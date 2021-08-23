@@ -5,7 +5,13 @@
         <h4>{{ form.id ? 'Edycja kolekcji' : 'Nowa kolekcja' }}</h4>
       </template>
       <modal-form class="product-set-form">
-        <validated-input rules="required" v-model="form.name" @input="editSlug" label="Nazwa" />
+        <validated-input
+          :disabled="disabled"
+          rules="required"
+          v-model="form.name"
+          @input="editSlug"
+          label="Nazwa"
+        />
 
         <div class="slug-input">
           <span class="slug-input__prefix" v-if="slugPrefix && !form.slug_override">
@@ -13,6 +19,7 @@
           </span>
 
           <validated-input
+            :disabled="disabled"
             class="slug-input__input"
             rules="required|slug"
             v-model="form.slug_suffix"
@@ -21,6 +28,7 @@
 
           <vs-tooltip bottom>
             <switch-input
+              :disabled="disabled"
               v-if="slugPrefix"
               class="slug-input__switch"
               v-model="form.slug_override"
@@ -37,21 +45,30 @@
         <div class="switches">
           <flex-input>
             <switch-input
+              :disabled="disabled"
               horizontal
               v-model="form.hide_on_index"
               label="Ukryj na stronie głównej"
             />
           </flex-input>
           <flex-input>
-            <switch-input horizontal v-model="form.public" label="Widoczność kolekcji" />
+            <switch-input
+              :disabled="disabled"
+              horizontal
+              v-model="form.public"
+              label="Widoczność kolekcji"
+            />
           </flex-input>
         </div>
       </modal-form>
       <template #footer>
         <div class="row">
-          <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
+          <vs-button v-if="!disabled" color="dark" @click="handleSubmit(saveModal)">
+            Zapisz
+          </vs-button>
           <pop-confirm
             title="Czy na pewno chcesz usunąć tę kolekcję? Wraz z nią usuniesz wszystkie jej subkolekcje!"
+            v-if="deletable"
             okText="Usuń"
             cancelText="Anuluj"
             @confirm="deleteItem"
@@ -98,6 +115,14 @@ export default Vue.extend({
       default: '',
     },
     isOpen: {
+      type: Boolean,
+      default: false,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    deletable: {
       type: Boolean,
       default: false,
     },

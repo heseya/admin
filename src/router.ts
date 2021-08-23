@@ -1,6 +1,11 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+
+import { Permission } from './interfaces/Permissions'
+
 import { accessor } from './store'
+import { hasAccess } from './utils/hasAccess'
+import { PERMISSIONS_TREE as Permissions } from './consts/permissions'
 
 Vue.use(VueRouter)
 
@@ -52,6 +57,7 @@ const router = new VueRouter({
       component: () => import('./views/items/index.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Items.Show],
       },
     },
     {
@@ -60,6 +66,7 @@ const router = new VueRouter({
       component: () => import('./views/schemas/index.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Products.Show],
       },
     },
     {
@@ -68,6 +75,7 @@ const router = new VueRouter({
       component: () => import('./views/schemas/view.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Products.ShowDetails],
       },
     },
     {
@@ -76,6 +84,7 @@ const router = new VueRouter({
       component: () => import('./views/products/Index.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Products.Show],
       },
     },
     {
@@ -84,6 +93,7 @@ const router = new VueRouter({
       component: () => import('./views/products/View.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Products.ShowDetails],
       },
     },
     {
@@ -92,6 +102,7 @@ const router = new VueRouter({
       component: () => import('./views/orders/Index.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Orders.Show],
       },
     },
     {
@@ -100,6 +111,7 @@ const router = new VueRouter({
       component: () => import('./views/orders/view.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Orders.ShowDetails],
       },
     },
     {
@@ -108,6 +120,7 @@ const router = new VueRouter({
       component: () => import('./views/discounts/index.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Discounts.Show],
       },
     },
     {
@@ -116,6 +129,7 @@ const router = new VueRouter({
       component: () => import('./views/pages/Index.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Pages.Show],
       },
     },
     {
@@ -124,6 +138,7 @@ const router = new VueRouter({
       component: () => import('./views/pages/View.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Pages.ShowDetails],
       },
     },
     {
@@ -132,6 +147,7 @@ const router = new VueRouter({
       component: () => import('./views/apps/index.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Apps.Show],
       },
     },
     {
@@ -148,6 +164,7 @@ const router = new VueRouter({
       component: () => import('./views/productSets/Index.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.ProductSets.Show],
       },
     },
     {
@@ -156,6 +173,7 @@ const router = new VueRouter({
       component: () => import('./views/settings/ShippingMethods.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.ShippingMethods.Show],
       },
     },
     {
@@ -164,6 +182,7 @@ const router = new VueRouter({
       component: () => import('./views/settings/Statuses.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Statuses.Show],
       },
     },
     {
@@ -172,6 +191,7 @@ const router = new VueRouter({
       component: () => import('./views/settings/Tags.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Tags.Show],
       },
     },
     {
@@ -180,6 +200,7 @@ const router = new VueRouter({
       component: () => import('./views/settings/PackageTemplates.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Packages.Show],
       },
     },
     {
@@ -188,6 +209,7 @@ const router = new VueRouter({
       component: () => import('./views/settings/Settings.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Settings.Show],
       },
     },
     {
@@ -196,6 +218,25 @@ const router = new VueRouter({
       component: () => import('./views/settings/Users.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Users.Show],
+      },
+    },
+    {
+      path: '/settings/roles',
+      name: 'Roles',
+      component: () => import('./views/roles/index.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Roles.Show],
+      },
+    },
+    {
+      path: '/settings/roles/:id',
+      name: 'RolesView',
+      component: () => import('./views/roles/view.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Roles.ShowDetails],
       },
     },
     {
@@ -204,6 +245,23 @@ const router = new VueRouter({
       component: () => import('./views/settings/LoginHistory.vue'),
       meta: {
         requiresAuth: true,
+        permissions: [Permissions.Auth.SessionsShow],
+      },
+    },
+    {
+      path: '/403',
+      name: 'Error403',
+      component: () => import('./views/errors/403.vue'),
+      meta: {
+        hiddenNav: true,
+      },
+    },
+    {
+      path: '/*',
+      name: 'Error404',
+      component: () => import('./views/errors/404.vue'),
+      meta: {
+        hiddenNav: true,
       },
     },
   ],
@@ -212,21 +270,27 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   window.scrollTo(0, 0)
 
-  if (to.matched.some((rec) => rec.meta.requiresAuth)) {
-    if (!accessor.auth.isLogged) {
-      // User is not logged
-      next({
-        name: 'Login',
-        params: { nextURL: to.fullPath },
-      })
-    } else {
-      // User is logged
-      next()
-    }
-  } else {
-    // Path does not requires auth
-    next()
+  const authRequired = !!to.meta?.requiresAuth || false
+  const requiredPermissions: Permission[] = to.meta?.permissions || []
+
+  if (authRequired && !accessor.auth.isLogged) {
+    accessor.auth.setPermissionsError(new Error('Not logged in'))
+    return next({
+      name: 'Login',
+      params: { nextURL: to.fullPath },
+    })
   }
+
+  if (
+    requiredPermissions.length > 0 &&
+    !hasAccess(requiredPermissions)(accessor.auth.user?.permissions || [])
+  ) {
+    accessor.auth.setPermissionsError(new Error('Not authorized'))
+    if (!from.name) next('/403')
+    return
+  }
+
+  next()
 })
 
 export default router

@@ -1,9 +1,10 @@
 <template>
   <div class="shipping-methods-form">
     <modal-form>
-      <validated-input rules="required" v-model="form.name" label="Nazwa" />
+      <validated-input :disabled="disabled" rules="required" v-model="form.name" label="Nazwa" />
       <div class="center">
         <vs-select
+          :disabled="disabled"
           v-model="form.payment_methods"
           :key="paymentMethods.length"
           multiple
@@ -25,14 +26,14 @@
       <div class="center">
         <flex-input>
           <label class="title">Widoczność opcji dostawy</label>
-          <switch-input v-model="form.public"> </switch-input>
+          <switch-input :disabled="disabled" v-model="form.public"> </switch-input>
         </flex-input>
       </div>
 
       <hr />
 
       <validation-provider ref="priceRange" rules="price-ranges-duplicates" v-slot="{ errors }">
-        <PriceRangesForm v-model="form.price_ranges" :error="errors[0]" />
+        <PriceRangesForm :disabled="disabled" v-model="form.price_ranges" :error="errors[0]" />
       </validation-provider>
 
       <hr />
@@ -41,13 +42,14 @@
       <div class="center">
         <flex-input>
           <label class="title">Biała lista</label>
-          <vs-switch color="#000" v-model="form.black_list" />
+          <vs-switch :disabled="disabled" color="#000" v-model="form.black_list" />
           <label class="title">Czarna lista</label>
         </flex-input>
       </div>
 
       <div class="center">
         <vs-select
+          :disabled="disabled"
           v-model="form.countries"
           :key="countries.length"
           multiple
@@ -93,6 +95,10 @@ export default Vue.extend({
       type: Array,
       required: true,
     } as Vue.PropOptions<ShippingMethodCountry[]>,
+    disabled: {
+      type: Boolean,
+      required: true,
+    },
   },
   computed: {
     form: {

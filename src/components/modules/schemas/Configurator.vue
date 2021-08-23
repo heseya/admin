@@ -2,11 +2,13 @@
   <div class="configurator">
     <div class="configurator__head">
       <div class="configurator__title">Schematy</div>
-      <vs-button dark icon @click="isModalActive = true"><i class="bx bx-plus"></i></vs-button>
+      <vs-button v-if="!disabled" dark icon @click="isModalActive = true">
+        <i class="bx bx-plus"></i>
+      </vs-button>
     </div>
     <empty v-if="schemas.length === 0">Ten produkt nie ma jeszcze żadnego schematu</empty>
     <list class="configurator__schemas">
-      <draggable v-model="schemas">
+      <draggable v-model="schemas" :disabled="disabled">
         <list-item
           class="configurator__schema"
           :class="{ [`configurator__schema--dep`]: schema.auto_dependecy }"
@@ -22,10 +24,16 @@
           <small>{{ schema.description }}</small>
           <template #action>
             <div class="flex">
-              <vs-button dark icon @click="editSchema(schema)"
-                ><i class="bx bx-edit"></i
-              ></vs-button>
-              <vs-button danger icon @click="removeSchema(schema.id)" class="schema-delete">
+              <vs-button dark icon @click="editSchema(schema)">
+                <i class="bx bx-edit"></i>
+              </vs-button>
+              <vs-button
+                v-if="!disabled"
+                danger
+                icon
+                @click="removeSchema(schema.id)"
+                class="schema-delete"
+              >
                 <i class="bx bx-trash"></i>
               </vs-button>
             </div>
@@ -39,7 +47,12 @@
         <h4 style="margin-bottom: 0">{{ editedSchema.id ? 'Edycja schematu' : 'Nowy schemat' }}</h4>
       </template>
       <modal-form v-if="isFormModalActive">
-        <SchemaForm :schema="editedSchema" @submit="updateSchema" :currentProductSchemas="value" />
+        <SchemaForm
+          :schema="editedSchema"
+          @submit="updateSchema"
+          :currentProductSchemas="value"
+          :disabled="disabled"
+        />
       </modal-form>
     </vs-dialog>
 
@@ -87,6 +100,7 @@ export default Vue.extend({
       type: Array,
       required: true,
     } as Vue.PropOptions<Schema[]>,
+    disabled: { type: Boolean, default: false },
   },
   data: () => ({
     SchemaTypeLabel: Object.freeze(SchemaTypeLabel),

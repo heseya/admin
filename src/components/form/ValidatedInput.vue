@@ -25,6 +25,7 @@ export default Vue.extend({
     'type',
     'border',
     'shadow',
+    'disabled',
   ],
   components: {
     ValidationProvider,

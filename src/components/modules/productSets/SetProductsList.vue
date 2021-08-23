@@ -3,7 +3,7 @@
     <template #header>
       <div class="set-products__header">
         <h4>Produkty w kolekcji {{ set && set.name }}</h4>
-        <vs-button dark @click="isSelectorActive = true">
+        <vs-button v-can="$p.ProductSets.Edit" dark @click="isSelectorActive = true">
           <i class="bx bx-plus"></i> &nbsp; Dodaj produkt do kolekcji
         </vs-button>
       </div>
@@ -24,7 +24,13 @@
           <span class="set-product-item__price">{{ product.price }} {{ currency }}</span>
         </div>
         <div class="set-product-item__actions">
-          <vs-button danger icon size="small" @click.stop="removeProduct(product.id)">
+          <vs-button
+            v-can="$p.ProductSets.Edit"
+            danger
+            icon
+            size="small"
+            @click.stop="removeProduct(product.id)"
+          >
             <i class="bx bx-trash"></i>
           </vs-button>
         </div>

@@ -2,7 +2,7 @@
   <div>
     <PaginatedList title="Kolekcje produktów" storeKey="productSets" draggable>
       <template #nav>
-        <vs-button @click="createProductSet()" color="dark" icon>
+        <vs-button v-can="$p.ProductSets.Add" @click="createProductSet()" color="dark" icon>
           <i class="bx bx-plus"></i>
         </vs-button>
       </template>
@@ -21,6 +21,8 @@
       :value="editedItem"
       :slugPrefix="editedItemSlugPrefix"
       :is-open="isFormModalActive"
+      :disabled="!$can(editedItem.id ? $p.ProductSets.Edit : $p.ProductSets.Add)"
+      :deletable="$can($p.ProductSets.Remove)"
       @close="isFormModalActive = false"
     />
 

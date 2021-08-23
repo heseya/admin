@@ -1,10 +1,21 @@
 <template>
   <validation-observer v-slot="{ handleSubmit }" class="schema-form">
-    <validated-input name="name" rules="required" v-model="form.name" label="Nazwa" />
-    <validated-input name="description" v-model="form.description" label="Opis" />
+    <validated-input
+      :disabled="disabled"
+      name="name"
+      rules="required"
+      v-model="form.name"
+      label="Nazwa"
+    />
+    <validated-input
+      :disabled="disabled"
+      name="description"
+      v-model="form.description"
+      label="Opis"
+    />
     <div class="flex">
       <validation-provider name="schema-type" rules="id-required" v-slot="{ errors }">
-        <vs-select v-model="form.type" label="Typ schematu">
+        <vs-select :disabled="disabled" v-model="form.type" label="Typ schematu">
           <vs-option
             v-for="{ value, label } in SchemaTypesOptions"
             :key="value"
@@ -19,6 +30,7 @@
 
       <validated-input
         v-if="form.type !== SchemaType.MultiplySchema"
+        :disabled="disabled"
         v-model="form.price"
         name="price"
         type="number"
@@ -27,15 +39,16 @@
       />
     </div>
     <div class="flex">
-      <SwitchInput v-model="form.hidden">
+      <SwitchInput :disabled="disabled" v-model="form.hidden">
         <template #title>Ukryty</template>
       </SwitchInput>
-      <SwitchInput v-model="form.required">
+      <SwitchInput :disabled="disabled" v-model="form.required">
         <template #title>Wymagany</template>
       </SwitchInput>
     </div>
     <div class="flex" v-if="isKindOfNumeric(form.type) || form.type === SchemaType.String">
       <validated-input
+        :disabled="disabled"
         v-model="form.min"
         default="0"
         name="min"
@@ -43,12 +56,14 @@
         :label="isKindOfNumeric(form.type) ? 'Minimalna wartość' : 'Minimalna długość'"
       />
       <validated-input
+        :disabled="disabled"
         v-model="form.max"
         type="number"
         name="max"
         :label="isKindOfNumeric(form.type) ? 'Maksymalna wartość' : 'Maksymalna długość'"
       />
       <validated-input
+        :disabled="disabled"
         v-if="isKindOfNumeric(form.type)"
         v-model="form.step"
         type="number"
@@ -57,13 +72,18 @@
       />
     </div>
     <validated-input
+      :disabled="disabled"
       v-if="isKindOfNumeric(form.type) || form.type === SchemaType.String"
       v-model="form.default"
       name="default"
       :type="isKindOfNumeric(form.type) ? 'number' : 'text'"
       label="Wartość domyślna"
     />
-    <SwitchInput v-if="form.type === SchemaType.Boolean" v-model="form.default">
+    <SwitchInput
+      :disabled="disabled"
+      v-if="form.type === SchemaType.Boolean"
+      v-model="form.default"
+    >
       <template #title>Wartość domyślna</template>
     </SwitchInput>
 
@@ -74,6 +94,7 @@
       :default-option="defaultOption"
       @setDefault="(v) => (defaultOption = v)"
       v-if="form.type === SchemaType.Select"
+      :disabled="disabled"
     />
 
     <Zone v-if="form.type === SchemaType.MultiplySchema">
@@ -103,11 +124,23 @@
     <br />
 
     <Zone title="Opcje zaawansowane" type="danger">
-      <validated-input name="pattern" v-model="form.pattern" label="Wyrażenie regularne" />
-      <validated-input name="validation" v-model="form.validation" label="Walidacja" />
+      <validated-input
+        :disabled="disabled"
+        name="pattern"
+        v-model="form.pattern"
+        label="Wyrażenie regularne"
+      />
+      <validated-input
+        :disabled="disabled"
+        name="validation"
+        v-model="form.validation"
+        label="Walidacja"
+      />
     </Zone>
     <br />
-    <vs-button color="dark" size="large" @click.stop="handleSubmit(submit)"> Zapisz </vs-button>
+    <vs-button :disabled="disabled" color="dark" size="large" @click.stop="handleSubmit(submit)">
+      Zapisz
+    </vs-button>
   </validation-observer>
 </template>
 
@@ -159,6 +192,7 @@ export default Vue.extend({
       type: Array,
       default: () => [],
     } as Vue.PropOptions<Schema[]>,
+    disabled: { type: Boolean, default: false },
   },
   computed: {
     selectableSchemas(): Schema[] {

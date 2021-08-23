@@ -5,8 +5,9 @@
         v-if="!isNew"
         v-slot="{ open }"
         title="Czy na pewno chcesz usunąć ten schemat?"
-        ok-text="Usuń"
-        cancel-text="Anuluj"
+        v-can="$p.Schemas.Remove"
+        okText="Usuń"
+        cancelText="Anuluj"
         @confirm="deleteSchema"
       >
         <vs-button dark icon @click="open">
@@ -17,7 +18,12 @@
 
     <div class="schema">
       <card>
-        <SchemaForm :key="schema.id" :schema="editedSchema" @submit="saveSchema" />
+        <SchemaForm
+          :key="schema.id"
+          :schema="editedSchema"
+          @submit="saveSchema"
+          :disabled="!$can(isNew ? $p.Products.Edit : $p.Products.Add)"
+        />
       </card>
     </div>
   </div>

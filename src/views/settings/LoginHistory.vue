@@ -4,6 +4,7 @@
       <template #nav>
         <pop-confirm
           title="Czy na pewno chcesz wylogować wszystkie sesje użytkownika? Tylko obecna pozostanie aktywna."
+          v-can="$p.Auth.SessionsRevoke"
           okText="Usuń"
           cancelText="Anuluj"
           @confirm="killAllSessions"
@@ -34,6 +35,7 @@
             <small v-if="login.current_session" class="login-item__current">To ty</small>
             <pop-confirm
               title="Czy na pewno chcesz wylogować tę sesję użytkownika?"
+              v-can="$p.Auth.SessionsRevoke"
               okText="Usuń"
               cancelText="Anuluj"
               @confirm="killSession(login.id)"

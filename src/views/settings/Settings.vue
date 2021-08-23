@@ -2,7 +2,7 @@
   <div>
     <PaginatedList title="Ustawienia zaawansowane" storeKey="settings">
       <template #nav>
-        <vs-button @click="openModal()" color="dark" icon>
+        <vs-button v-can="$p.Settings.Add" @click="openModal()" color="dark" icon>
           <i class="bx bx-plus"></i>
         </vs-button>
       </template>
@@ -24,24 +24,38 @@
             rules="required|letters-only"
             v-model="editedItem.name"
             label="Klucz"
-            :disabled="editedItem.permanent"
+            :disabled="editedItem.permanent || !canModify"
           />
 
-          <validated-input rules="required" v-model="editedItem.value" label="Wartość" />
+          <validated-input
+            :disabled="!canModify"
+            rules="required"
+            v-model="editedItem.value"
+            label="Wartość"
+          />
 
-          <SwitchInput v-model="editedItem.public" label="Wartość publiczna" horizontal />
+          <SwitchInput
+            :disabled="!canModify"
+            v-model="editedItem.public"
+            label="Wartość publiczna"
+            horizontal
+          />
         </modal-form>
         <template #footer>
           <div class="row">
-            <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
+            <vs-button v-if="canModify" color="dark" @click="handleSubmit(saveModal)">
+              Zapisz
+            </vs-button>
             <pop-confirm
               title="Czy na pewno chcesz usunąć to ustawienie?"
+              v-can="$p.Settings.Remove"
               okText="Usuń"
               cancelText="Anuluj"
               @confirm="deleteItem"
               v-slot="{ open }"
             >
               <vs-button
+                v-can="$p.Settings.Remove"
                 v-if="editedItem.id"
                 color="danger"
                 :disabled="editedItem.permanent"
@@ -93,8 +107,15 @@ export default Vue.extend({
     isModalActive: false,
     editedItem: clone(CLEAR_SETTING),
   }),
+  computed: {
+    canModify(): boolean {
+      return this.$can(this.editedItem.id ? this.$p.Settings.Edit : this.$p.Settings.Add)
+    },
+  },
   methods: {
     openModal(item?: Setting) {
+      if (!this.$verboseCan(this.$p.Settings.ShowDetails)) return
+
       this.isModalActive = true
       if (item) {
         this.editedItem = { ...clone(item), id: item.name }

@@ -5,8 +5,9 @@
         v-if="!isNew"
         v-slot="{ open }"
         title="Czy na pewno chcesz usunąć ten produkt?"
-        ok-text="Usuń"
-        cancel-text="Anuluj"
+        v-can="$p.Products.Remove"
+        okText="Usuń"
+        cancelText="Anuluj"
         @confirm="deleteProduct"
       >
         <vs-button dark icon @click="open">
@@ -16,13 +17,13 @@
     </top-nav>
 
     <div class="product">
-      <gallery ref="gallery" v-model="form.gallery" />
+      <gallery ref="gallery" v-model="form.gallery" :disabled="!canModify" />
 
       <div>
         <card>
           <flex-input>
             <label class="title">Widoczność produktu</label>
-            <vs-switch v-model="form.public" success>
+            <vs-switch success v-model="form.public" :disabled="!canModify">
               <template #off>
                 <i class="bx bx-x"></i>
               </template>
@@ -43,7 +44,7 @@
 
       <div class="product__schemas">
         <card>
-          <SchemaConfigurator v-model="form.schemas" />
+          <SchemaConfigurator v-model="form.schemas" :disabled="!canModify" />
         </card>
       </div>
 
@@ -57,10 +58,15 @@
                   v-model="form.name"
                   rules="required"
                   label="Nazwa"
-                  @input="editSlug"
+                  :disabled="!canModify"
                 />
                 <br /><br />
-                <validated-input v-model="form.slug" rules="required|slug" label="Link" />
+                <validated-input
+                  rules="required|slug"
+                  v-model="form.slug"
+                  label="Link"
+                  :disabled="!canModify"
+                />
                 <br /><br />
                 <validated-input
                   v-model="form.price"
@@ -68,6 +74,7 @@
                   type="number"
                   step="0.01"
                   label="Cena"
+                  :disabled="!canModify"
                 />
                 <br />
               </div>
@@ -82,6 +89,7 @@
                     filter
                     multiple
                     label="Kolekcje"
+                    :disabled="!canModify"
                     @click.native.prevent.stop
                   >
                     <vs-option
@@ -103,26 +111,33 @@
                   max="999999"
                   step="0.01"
                   label="Format ilości"
+                  :disabled="!canModify"
                 />
               </div>
 
               <div class="wide">
-                <tags-select v-model="form.tags" />
+                <tags-select v-model="form.tags" :disabled="!canModify" />
               </div>
 
               <div class="wide">
                 <small class="label">Opis</small>
-                <rich-editor v-if="!isLoading" v-model="form.description_html" />
+                <rich-editor
+                  v-if="!isLoading"
+                  v-model="form.description_html"
+                  :disabled="!canModify"
+                />
                 <br />
                 <div class="flex">
-                  <vs-button color="dark" size="large">Zapisz</vs-button>
+                  <vs-button v-if="canModify" color="dark" size="large">Zapisz</vs-button>
                   <vs-button
+                    v-if="canModify"
                     color="dark"
                     size="large"
                     type="button"
                     @click="handleSubmit(submitAndGoNext)"
-                    >Zapisz i dodaj następny</vs-button
                   >
+                    Zapisz i dodaj następny
+                  </vs-button>
                 </div>
               </div>
             </form>
@@ -205,6 +220,9 @@ export default Vue.extend({
     error(): any {
       // @ts-ignore // TODO: fix extended store getters typings
       return this.$accessor.products.getError || this.$accessor.products.getDepositError
+    },
+    canModify(): boolean {
+      return this.$can(this.isNew ? this.$p.Products.Add : this.$p.Products.Edit)
     },
   },
   watch: {

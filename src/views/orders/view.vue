@@ -64,7 +64,12 @@
         <card>
           <template v-if="order.status">
             <h2 class="section-title">Status</h2>
-            <vs-select :key="statuses.length" v-model="status" :loading="isLoading">
+            <vs-select
+              v-model="status"
+              :key="statuses.length"
+              :loading="isLoading"
+              :disabled="!$can($p.Orders.EditStatus)"
+            >
               <vs-option
                 v-for="status in statuses"
                 :key="status.id"
@@ -87,7 +92,14 @@
         <card class="comment">
           <template>
             <h2 class="section-title">Komentarz</h2>
-            <vs-button size="tiny" dark transparent class="comment__edit" @click="editComment">
+            <vs-button
+              v-can="$p.Orders.Edit"
+              size="tiny"
+              dark
+              transparent
+              class="comment__edit"
+              @click="editComment"
+            >
               <i class="bx bxs-pencil"></i>
             </vs-button>
             <span class="comment__content">
@@ -98,7 +110,14 @@
         <card>
           <h2 class="section-title">E-mail</h2>
           <div class="email">
-            <vs-button size="tiny" dark transparent class="email__edit" @click="editEmail">
+            <vs-button
+              v-can="$p.Orders.Edit"
+              size="tiny"
+              dark
+              transparent
+              class="email__edit"
+              @click="editEmail"
+            >
               <i class="bx bxs-pencil"></i>
             </vs-button>
             <a :href="`mailto:${order.email}`" class="email__name">{{ order.email }}</a>

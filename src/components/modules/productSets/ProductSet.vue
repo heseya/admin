@@ -13,6 +13,7 @@
 
       <div class="product-set__actions">
         <vs-tooltip
+          v-can.any="[$p.ProductSets.ShowDetails, $p.ProductSets.Add]"
           shadow
           interactivity
           bottom
@@ -24,13 +25,18 @@
             <i class="bx bx-menu"></i>
           </vs-button>
           <template #tooltip>
-            <vs-button @click.stop="create" shadow>
+            <vs-button @click.stop="create" v-can="$p.ProductSets.Add" shadow>
               <i class="bx bx-plus"></i> &nbsp; Dodaj subkolekcje
             </vs-button>
-            <vs-button @click.stop="showProducts" shadow color="success">
+            <vs-button
+              @click.stop="showProducts"
+              v-can="$p.ProductSets.ShowDetails"
+              shadow
+              color="success"
+            >
               <i class="bx bx-customize"></i> &nbsp; Zobacz produkty w kolekcji
             </vs-button>
-            <vs-button @click.stop="edit" shadow color="dark">
+            <vs-button @click.stop="edit" v-can="$p.ProductSets.ShowDetails" shadow color="dark">
               <i class="bx bx-edit"></i> &nbsp; Edytuj kolekcję
             </vs-button>
           </template>

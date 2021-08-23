@@ -1,4 +1,7 @@
 import VueRouter, { Route } from 'vue-router'
+
+import { hasUserAccess, alertIfNoAccess } from './plugins/permissions'
+import { PermissionsTree } from './consts/permissions'
 import { accessor } from './store'
 
 declare module '*.vue' {
@@ -12,5 +15,9 @@ declare module 'vue/types/vue' {
     $route: Route
     $vs: any
     $accessor: typeof accessor
+
+    $p: PermissionsTree
+    $can: typeof hasUserAccess
+    $verboseCan: typeof alertIfNoAccess
   }
 }

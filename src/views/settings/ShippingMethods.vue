@@ -2,7 +2,7 @@
   <div>
     <PaginatedList title="Opcje Dostawy" storeKey="shippingMethods" draggable>
       <template #nav>
-        <vs-button @click="openModal()" color="dark" icon>
+        <vs-button v-can="$p.ShippingMethods.Add" @click="openModal()" color="dark" icon>
           <i class="bx bx-plus"></i>
         </vs-button>
       </template>
@@ -30,12 +30,15 @@
         <template #header>
           <h4>{{ editedItem.id ? 'Edycja opcji' : 'Nowa opcja' }} dostawy</h4>
         </template>
-        <ShippingMethodsForm v-model="editedItem" :countries="countries" />
+        <ShippingMethodsForm v-model="editedItem" :countries="countries" :disabled="!canModify" />
         <template #footer>
           <div class="row">
-            <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
+            <vs-button v-if="canModify" color="dark" @click="handleSubmit(saveModal)">
+              Zapisz
+            </vs-button>
             <pop-confirm
               title="Czy na pewno chcesz usunąć tą metode dostawy?"
+              v-can="$p.ShippingMethods.Remove"
               okText="Usuń"
               cancelText="Anuluj"
               @confirm="deleteItem"
@@ -76,6 +79,13 @@ export default Vue.extend({
     editedItem: {} as ShippingMethodDTO,
     countries: [],
   }),
+  computed: {
+    canModify(): boolean {
+      return this.$can(
+        this.editedItem.id ? this.$p.ShippingMethods.Edit : this.$p.ShippingMethods.Add,
+      )
+    },
+  },
   methods: {
     openModal(id?: UUID) {
       this.isModalActive = true

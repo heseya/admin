@@ -1,7 +1,11 @@
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 
-import { User } from '@/interfaces/User'
 import { api } from '../api'
+
+import { User } from '@/interfaces/User'
+import { UUID } from '@/interfaces/UUID'
+import { ALL_PERMISSIONS, PERMISSIONS_TREE } from '@/consts/permissions'
+import { hasAccess } from '@/utils/hasAccess'
 
 const state = () => ({
   error: null as null | Error,
@@ -10,12 +14,27 @@ const state = () => ({
   token: null as null | string,
 })
 
+//! debug purpose only
+const overrideUserPermissions = (user: User): User => {
+  const OVERRIDE = false
+  const ADD_ALL = false
+  const CUSTOM = ['statuses.show', 'statuses.show_details']
+
+  return {
+    ...user,
+    permissions: !OVERRIDE ? user.permissions : ADD_ALL ? ALL_PERMISSIONS : (CUSTOM as any),
+  }
+}
+
 const getters = getterTree(state, {
   getToken(state) {
     return state.token
   },
   isLogged(state) {
     return !!state.user
+  },
+  hasRole(state) {
+    return (roleId: UUID) => !!state.user?.roles.find((r) => r.id === roleId) || false
   },
 })
 
@@ -40,9 +59,34 @@ const actions = actionTree(
     async login({ commit }, { email, password }: { email: string; password: string }) {
       commit('SET_ERROR', null)
       try {
-        const { data } = await api.post('/login', { email, password })
+        const { data } = await api.post<{ data: { user: User; token: string } }>('/login', {
+          email,
+          password,
+        })
+
+        // TODO: remove
+        data.data.user = overrideUserPermissions(data.data.user)
+
+        if (!hasAccess(PERMISSIONS_TREE.Admin.Login)(data.data.user.permissions))
+          throw new Error('Unauthorized')
+
         commit('SET_USER', data.data.user)
         commit('SET_TOKEN', data.data.token)
+        return data.data.user
+      } catch (e) {
+        commit('SET_ERROR', e)
+        return false
+      }
+    },
+    async fetchProfile({ commit, state }) {
+      commit('SET_ERROR', null)
+      try {
+        const { data } = await api.get<{ data: User }>(`/auth/profile`)
+
+        // TODO: remove
+        data.data = overrideUserPermissions(data.data)
+
+        commit('SET_USER', data.data)
       } catch (e) {
         commit('SET_ERROR', e)
       }

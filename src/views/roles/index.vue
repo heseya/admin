@@ -1,8 +1,8 @@
 <template>
   <div>
-    <PaginatedList title="Role" storeKey="roles">
+    <PaginatedList title="Role" store-key="roles">
       <template #nav>
-        <vs-button to="/settings/roles/create" v-can="$p.Roles.Add" color="dark" icon>
+        <vs-button v-can="$p.Roles.Add" to="/settings/roles/create" color="dark" icon>
           <i class="bx bx-plus"></i>
         </vs-button>
       </template>

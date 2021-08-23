@@ -16,7 +16,7 @@ const state = () => ({
 
 //! debug purpose only
 const overrideUserPermissions = (user: User): User => {
-  const OVERRIDE = true
+  const OVERRIDE = false
   const ADD_ALL = false
   const CUSTOM = ['statuses.show', 'statuses.show_details']
 

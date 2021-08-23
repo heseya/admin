@@ -1,13 +1,14 @@
 <template>
   <div class="permissions-manager">
     <span class="permissions-manager__title">Uprawnienia roli</span>
-    <div v-for="{ section, permissions } in grouped" :key="section">
+    <div v-for="{ section, permissions: groupPerms } in grouped" :key="section">
       <span class="permissions-manager__subtitle">
         <vs-button
           class="permissions-manager__btn"
           dark
           icon
           :transparent="!hasSome(section)"
+          v-bind="disabled ? { disabled: true } : {}"
           @click="() => changeAll(section)"
         >
           <i v-if="hasAll(section)" class="bx bx-check"></i>
@@ -18,12 +19,12 @@
 
       <div class="permissions-manager__content">
         <vs-checkbox
-          v-for="perm in permissions"
-          dark
+          v-for="perm in groupPerms"
           :key="perm.id"
+          dark
           :value="has(perm.name)"
-          @input="() => change(perm.name)"
           v-bind="!perm.assignable || disabled ? { disabled: true } : {}"
+          @input="() => change(perm.name)"
         >
           {{ perm.name }}
         </vs-checkbox>
@@ -72,6 +73,10 @@ export default Vue.extend({
         .sort((a, b) => (a.section > b.section ? 1 : -1))
     },
   },
+  created() {
+    // @ts-ignore // TODO: fix extended store actions typings
+    this.$accessor.roles.fetchPermissions()
+  },
   methods: {
     submit() {
       this.$emit('submit', this.form)
@@ -112,10 +117,6 @@ export default Vue.extend({
 
       this.form = [...form]
     },
-  },
-  created() {
-    // @ts-ignore // TODO: fix extended store actions typings
-    this.$accessor.roles.fetchPermissions()
   },
 })
 </script>

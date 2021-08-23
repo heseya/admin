@@ -2,12 +2,12 @@
   <validation-observer v-slot="{ handleSubmit }">
     <card>
       <br />
-      <validated-input rules="required" v-model="form.name" label="Nazwa" :disabled="disabled" />
+      <validated-input v-model="form.name" rules="required" label="Nazwa" :disabled="disabled" />
       <br />
       <br />
       <validated-input
-        rules="required"
         v-model="form.description"
+        rules="required"
         label="Opis"
         :disabled="disabled"
       />

@@ -3,12 +3,12 @@
     <top-nav :title="!isNew ? role.name : 'Nowa rola'">
       <pop-confirm
         v-if="!isNew"
-        title="Czy na pewno chcesz usunąć tą rolę?"
-        v-can="$p.Roles.Remove"
-        okText="Usuń"
-        cancelText="Anuluj"
-        @confirm="deletePage"
         v-slot="{ open }"
+        v-can="$p.Roles.Remove"
+        title="Czy na pewno chcesz usunąć tą rolę?"
+        ok-text="Usuń"
+        cancel-text="Anuluj"
+        @confirm="deletePage"
       >
         <vs-button dark icon @click="open">
           <i class="bx bx-trash"></i>
@@ -18,8 +18,8 @@
 
     <RolesForm
       v-model="form"
-      @submit="save"
       :disabled="isNew ? !$can($p.Roles.Add) : !$can($p.Roles.Edit)"
+      @submit="save"
     />
   </div>
 </template>
@@ -82,6 +82,13 @@ export default Vue.extend({
       }
     },
   },
+  async created() {
+    if (!this.isNew) {
+      this.$accessor.startLoading()
+      await this.$accessor.roles.get(this.id)
+      this.$accessor.stopLoading()
+    }
+  },
   methods: {
     async save() {
       this.$accessor.startLoading()
@@ -118,13 +125,6 @@ export default Vue.extend({
       }
       this.$accessor.stopLoading()
     },
-  },
-  async created() {
-    if (!this.isNew) {
-      this.$accessor.startLoading()
-      await this.$accessor.roles.get(this.id)
-      this.$accessor.stopLoading()
-    }
   },
 })
 </script>

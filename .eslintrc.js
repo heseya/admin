@@ -2,24 +2,19 @@ module.exports = {
   root: true,
 
   env: {
+    browser: true,
     node: true,
-  },
-
-  parserOptions: {
-    parser: '@typescript-eslint/parser',
   },
 
   rules: {
     'no-console': 'warn',
     'no-debugger': 'warn',
-    'space-before-function-paren': 'off',
-    'comma-dangle': 'off',
     camelcase: ['error', { properties: 'never' }],
   },
 
   extends: [
-    'plugin:vue/essential',
-    '@vue/standard',
+    'plugin:vue/recommended',
+    // 'plugin:vue/essential',
     '@vue/typescript',
     'prettier',
     'plugin:prettier/recommended',

@@ -4,7 +4,7 @@
 
     <div class="home">
       <div>
-        <card>
+        <card v-can="$p.Analytics.Payments">
           <div class="flex-column">
             <h2 class="section-title">Przychody</h2>
 
@@ -41,7 +41,7 @@
       </div>
 
       <div>
-        <card>
+        <card v-can="$p.Orders.Show">
           <h2 class="section-title" style="margin-bottom: 20px">Ostatnie zamówienia</h2>
           <list-item
             v-for="order in orders"

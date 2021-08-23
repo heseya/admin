@@ -5,22 +5,22 @@
       <span class="label animated faster fadeInLeft">Strona główna</span>
     </router-link>
 
-    <router-link class="nav__link" to="/products">
+    <router-link v-can="$p.Products.Show" class="nav__link" to="/products">
       <img src="/img/icons/products.svg" />
       <span class="label animated faster fadeInLeft">Asortyment</span>
     </router-link>
 
-    <router-link class="nav__link" to="/orders">
+    <router-link v-can="$p.Orders.Show" class="nav__link" to="/orders">
       <img src="/img/icons/orders.svg" />
       <span class="label animated faster fadeInLeft">Zamówienia</span>
     </router-link>
 
-    <router-link class="nav__link" to="/items">
+    <router-link v-can="$p.Items.Show" class="nav__link" to="/items">
       <img src="/img/icons/box.svg" />
       <span class="label animated faster fadeInLeft">Magazyn</span>
     </router-link>
 
-    <router-link class="nav__link" to="/discounts">
+    <router-link v-can="$p.Discounts.Show" class="nav__link" to="/discounts">
       <img src="/img/icons/coupon.svg" />
       <span class="label animated faster fadeInLeft">Kody rabatowe</span>
     </router-link>

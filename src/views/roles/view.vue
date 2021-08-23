@@ -28,7 +28,7 @@
 import Vue from 'vue'
 import { cloneDeep } from 'lodash'
 
-import TopNav from '@/layout/TopNav.vue'
+import TopNav from '@/components/layout/TopNav.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import RolesForm from '@/components/modules/roles/Form.vue'
 

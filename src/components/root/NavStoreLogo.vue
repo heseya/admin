@@ -68,7 +68,7 @@ export default Vue.extend({
   padding: 12px 8px 10px;
   border-radius: 8px;
   background-color: $background-color-500;
-  border: dashed 2px $background-color-700;
+  border: dashed 2px $primary-color-200;
   margin-bottom: 12px;
   display: flex;
   flex-direction: column;
@@ -90,6 +90,7 @@ export default Vue.extend({
   &__logo {
     width: 130px;
     max-height: 70px;
+    object-fit: contain;
     opacity: 0.4;
   }
 

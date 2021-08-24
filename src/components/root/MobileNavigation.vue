@@ -62,7 +62,7 @@ export default Vue.extend({
   box-sizing: border-box;
   width: 100vw;
   background: #fff;
-  border-top: solid 1px $background-color-700;
+  border-top: solid 1px $primary-color-200;
   display: flex;
   justify-content: space-around;
   align-items: center;

@@ -2,8 +2,8 @@
 @import './font';
 
 body {
-  font-family: 'BlinkMacSystemFont', 'Roboto', sans-serif;
-  background: #f7f8fa;
+  font-family: $primaryFont, 'BlinkMacSystemFont', sans-serif !important;
+  background: $background-color-500 !important;
   margin: 0;
 }
 

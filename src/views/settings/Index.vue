@@ -132,9 +132,7 @@ export default Vue.extend({
   },
   methods: {
     async logout() {
-      this.$accessor.startLoading()
       await this.$accessor.auth.logout()
-      this.$accessor.stopLoading()
       this.$router.push('/login')
     },
   },

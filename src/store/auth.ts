@@ -6,6 +6,7 @@ import { User } from '@/interfaces/User'
 import { UUID } from '@/interfaces/UUID'
 import { ALL_PERMISSIONS, PERMISSIONS_TREE } from '@/consts/permissions'
 import { hasAccess } from '@/utils/hasAccess'
+import { accessor } from '.'
 
 const state = () => ({
   error: null as null | Error,
@@ -92,12 +93,14 @@ const actions = actionTree(
       }
     },
     async logout({ commit, dispatch }) {
+      accessor.startLoading()
       try {
         await api.post('/auth/logout')
         dispatch('clearAuth')
       } catch (e) {
         commit('SET_ERROR', e)
       }
+      accessor.stopLoading()
     },
     clearAuth({ commit }) {
       commit('SET_ERROR', null)

@@ -10,7 +10,17 @@
 
     <div v-if="user" class="header__user user">
       <div class="user__role">{{ userRole }}</div>
-      <div class="user__email">{{ user.email }}</div>
+
+      <a-dropdown :trigger="['click']">
+        <div class="user__email">{{ user.email }}</div>
+
+        <a-menu slot="overlay">
+          <a-menu-item>
+            <router-link to="/settings">Ustawienia</router-link>
+          </a-menu-item>
+          <a-menu-item @click="logout">Wyloguj się </a-menu-item>
+        </a-menu>
+      </a-dropdown>
     </div>
   </header>
 </template>
@@ -36,6 +46,12 @@ export default Vue.extend({
     },
     userRole(): string {
       return this.user?.roles[0]?.name || ''
+    },
+  },
+  methods: {
+    async logout() {
+      await this.$accessor.auth.logout()
+      this.$router.push('/login')
     },
   },
 })
@@ -110,7 +126,7 @@ export default Vue.extend({
     font-size: 0.9em;
     line-height: 1em;
     cursor: pointer;
-    padding: 3px 12px 5px;
+    padding: 5px 12px;
     border-radius: 10px;
     transition: 0.3s;
 

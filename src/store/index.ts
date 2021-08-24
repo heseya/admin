@@ -40,10 +40,10 @@ export type RootState = ReturnType<typeof state>
 const getters = getterTree(state, {})
 
 const mutations = mutationTree(state, {
-  SET_ENV(state, newEnv) {
+  SET_ENV(state, newEnv: Record<string, string>) {
     state.env = newEnv
   },
-  SET_LOADING(state, loading) {
+  SET_LOADING(state, loading: boolean) {
     state.loading = loading
   },
 })
@@ -52,10 +52,8 @@ const actions = actionTree(
   { state, getters, mutations },
   {
     async fetchEnv({ commit }) {
-      const response = await api.get<{ data: Setting[] }>('/settings')
-      const settingsArray = response.data.data
-      const settings = Object.fromEntries(settingsArray.map(({ name, value }) => [name, value]))
-      commit('SET_ENV', settings)
+      const { data } = await api.get<Record<string, string>>('/settings?array')
+      commit('SET_ENV', data)
     },
     startLoading({ commit, state }) {
       if (!state.loading) commit('SET_LOADING', true)

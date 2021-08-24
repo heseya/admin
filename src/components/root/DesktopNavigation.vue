@@ -9,7 +9,7 @@
 
     <div class="nav__spacer"></div>
 
-    <router-link v-can="$p.Orders.Show" class="nav__link" to="/orders">
+    <router-link v-can.hide="$p.Orders.Show" class="nav__link" to="/orders">
       <img src="/img/icons/orders.svg" />
       <span class="nav__link-label">Zamówienia</span>
     </router-link>
@@ -21,22 +21,22 @@
       <span class="nav__link-label">Statystyka</span>
     </router-link>
 
-    <router-link v-can="$p.Products.Show" class="nav__link" to="/products">
+    <router-link v-can.hide="$p.Products.Show" class="nav__link" to="/products">
       <img src="/img/icons/products.svg" />
       <span class="nav__link-label">Produkty</span>
     </router-link>
 
-    <router-link v-can="$p.Products.Show" class="nav__link" to="/product-sets">
+    <router-link v-can.hide="$p.Products.Show" class="nav__link" to="/settings/product-sets">
       <img src="/img/icons/products.svg" />
       <span class="nav__link-label">Kolekcje</span>
     </router-link>
 
-    <router-link v-can="$p.Items.Show" class="nav__link" to="/items">
+    <router-link v-can.hide="$p.Items.Show" class="nav__link" to="/items">
       <img src="/img/icons/box.svg" />
       <span class="nav__link-label">Magazyn</span>
     </router-link>
 
-    <router-link v-can="$p.Discounts.Show" class="nav__link" to="/discounts">
+    <router-link v-can.hide="$p.Discounts.Show" class="nav__link" to="/discounts">
       <img src="/img/icons/coupon.svg" />
       <span class="nav__link-label">Kody rabatowe</span>
     </router-link>
@@ -113,7 +113,7 @@ export default Vue.extend({
       width: 16px;
       margin-right: 22px;
       box-sizing: border-box;
-      opacity: 0.8;
+      opacity: 0.7;
       transition: opacity 0.3s;
     }
 
@@ -134,6 +134,16 @@ export default Vue.extend({
 
   &__link-label {
     display: block;
+  }
+
+  @media screen and (max-height: 700px) {
+    &__author {
+      margin-bottom: 10px !important;
+    }
+
+    &__link {
+      padding: 8px 12px;
+    }
   }
 }
 

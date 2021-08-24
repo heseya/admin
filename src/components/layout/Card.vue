@@ -7,9 +7,9 @@
 <style lang="scss">
 .card {
   background: #fff;
-  padding: 20px;
-  border-radius: 20px;
+  padding: 12px;
+  border-radius: 7px;
+  border: solid 1px $background-color-600;
   margin-bottom: 30px;
-  box-shadow: $shadow;
 }
 </style>

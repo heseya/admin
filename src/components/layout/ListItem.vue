@@ -62,7 +62,7 @@ export default Vue.extend({
   width: 100%;
   box-sizing: border-box;
   cursor: pointer;
-  border-radius: 20px;
+  border-radius: 7px;
   padding: 15px 20px;
   min-height: 44px;
   font-family: $font-sec;

@@ -60,12 +60,19 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .header {
   box-sizing: border-box;
-  padding: 8px 24px;
-  margin-top: 30px;
+  padding: 8px;
+  margin-top: 10px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
   transition: 0.3s;
+
+  @media ($viewport-4) {
+    padding: 8px 24px;
+    margin-top: 24px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
 
   &__return-btn {
     color: #979ea0;
@@ -105,6 +112,17 @@ export default Vue.extend({
     color: $gray-color-500;
     font-weight: 300;
     font-size: 0.9em;
+  }
+
+  @media ($max-viewport-4) {
+    &__text,
+    &__return-btn {
+      display: none;
+    }
+  }
+
+  &__user {
+    margin-left: auto;
   }
 }
 

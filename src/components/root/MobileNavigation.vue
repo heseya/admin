@@ -44,7 +44,7 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .nav {
   z-index: 1000;
   position: fixed;
@@ -52,10 +52,10 @@ export default Vue.extend({
   left: 0;
   height: 60px;
   box-sizing: border-box;
-  width: calc(100% - 30px);
+  width: 100%;
   padding: 0 15px;
   background: #fff;
-  box-shadow: $shadow;
+  border-top: solid 1px $backgroundAccentColor;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -92,60 +92,6 @@ export default Vue.extend({
       padding: 17px 10px;
       color: #000;
     }
-  }
-}
-
-@media (min-width: $break) {
-  .nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 250px;
-    padding: 0;
-    padding-top: 120px;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    transition: 0.15s;
-    transition-timing-function: ease-out;
-
-    &--hidden {
-      transform: translateX(-100px);
-    }
-
-    &__link {
-      border-radius: 12px;
-      width: 250px !important;
-      display: flex !important;
-      align-items: center;
-
-      &:hover {
-        background-color: $grey-light;
-      }
-
-      img {
-        padding: 29%;
-      }
-    }
-  }
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .nav__link:hover {
-    background-color: none;
-  }
-}
-
-@keyframes fadeInRight {
-  from {
-    opacity: 0;
-    transform: translate3d(-14%, 0, 0);
-  }
-
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
   }
 }
 </style>

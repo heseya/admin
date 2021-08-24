@@ -1,6 +1,8 @@
 <template>
-  <div id="app" class="app">
-    <AppNavigation class="app__nav"></AppNavigation>
+  <div id="app" class="app" :class="{ 'app--full-width': isHidden }">
+    <DesktopNavigation class="app__nav"></DesktopNavigation>
+    <MobileNavigation class="app__mobile-nav"></MobileNavigation>
+
     <AppHeader class="app__header"></AppHeader>
 
     <main class="app__content">
@@ -13,12 +15,14 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import AppNavigation from './components/root/Navigation.vue'
+import DesktopNavigation from './components/root/DesktopNavigation.vue'
+import MobileNavigation from './components/root/MobileNavigation.vue'
 import AppHeader from './components/root/Header.vue'
 
 export default Vue.extend({
   components: {
-    AppNavigation,
+    DesktopNavigation,
+    MobileNavigation,
     AppHeader,
   },
   data: () => ({
@@ -27,6 +31,9 @@ export default Vue.extend({
   computed: {
     isLoading(): boolean {
       return this.$accessor.loading
+    },
+    isHidden(): boolean {
+      return !!this.$route.meta?.hiddenNav || false
     },
   },
   watch: {
@@ -58,9 +65,26 @@ export default Vue.extend({
 .app {
   display: flex;
   flex-direction: column;
-  padding-left: 250px;
+  transition: padding 0.3s;
+
+  @media ($viewport-11) {
+    padding-left: $navWidth;
+  }
+
+  &--full-width {
+    padding-left: 0 !important;
+  }
 
   &__nav {
+    @media ($max-viewport-11) {
+      display: none !important;
+    }
+  }
+
+  &__mobile-nav {
+    @media ($viewport-11) {
+      display: none !important;
+    }
   }
 
   &__header {

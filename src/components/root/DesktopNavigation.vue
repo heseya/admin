@@ -3,48 +3,51 @@
     <nav-store-logo />
 
     <router-link class="nav__link" to="/">
-      <img src="/img/icons/home.svg" />
+      <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/dashboard-icon.svg')" />
       <span class="nav__link-label">Dashboard</span>
     </router-link>
 
     <div class="nav__spacer"></div>
 
     <router-link v-can.hide="$p.Orders.Show" class="nav__link" to="/orders">
-      <img src="/img/icons/orders.svg" />
+      <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/orders-icon.svg')" />
       <span class="nav__link-label">Zamówienia</span>
     </router-link>
 
     <div class="nav__spacer"></div>
 
     <router-link class="nav__link" to="/">
-      <img src="/img/icons/home.svg" />
+      <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/stats-icon.svg')" />
       <span class="nav__link-label">Statystyka</span>
     </router-link>
 
     <router-link v-can.hide="$p.Products.Show" class="nav__link" to="/products">
-      <img src="/img/icons/products.svg" />
+      <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/products-icon.svg')" />
       <span class="nav__link-label">Produkty</span>
     </router-link>
 
     <router-link v-can.hide="$p.Products.Show" class="nav__link" to="/settings/product-sets">
-      <img src="/img/icons/products.svg" />
+      <InlineSvg
+        class="nav-link-img"
+        :src="require('@/assets/images/icons/collections-icon.svg')"
+      />
       <span class="nav__link-label">Kolekcje</span>
     </router-link>
 
     <router-link v-can.hide="$p.Items.Show" class="nav__link" to="/items">
-      <img src="/img/icons/box.svg" />
+      <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/warehouse-icon.svg')" />
       <span class="nav__link-label">Magazyn</span>
     </router-link>
 
     <router-link v-can.hide="$p.Discounts.Show" class="nav__link" to="/discounts">
-      <img src="/img/icons/coupon.svg" />
+      <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/discounts-icon.svg')" />
       <span class="nav__link-label">Kody rabatowe</span>
     </router-link>
 
     <div class="nav__spacer"></div>
 
     <router-link class="nav__link" to="/settings">
-      <img src="/img/icons/settings.svg" />
+      <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/settings-icon.svg')" />
       <span class="nav__link-label">Ustawienia</span>
     </router-link>
 
@@ -57,11 +60,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
+// @ts-ignore
+import InlineSvg from 'vue-inline-svg'
 import NavStoreLogo from './NavStoreLogo.vue'
 
 export default Vue.extend({
   name: 'Navigation',
-  components: { NavStoreLogo },
+  components: { NavStoreLogo, InlineSvg },
   computed: {
     isHidden(): boolean {
       return !!this.$route.meta?.hiddenNav || false
@@ -109,26 +114,32 @@ export default Vue.extend({
     color: #000;
     transition: background-color 0.3s;
 
-    img {
-      width: 16px;
-      margin-right: 22px;
+    .nav-link-img {
+      color: #9ea5b4;
+      display: block;
+      width: 18px;
+      height: 18px;
+      margin-right: 16px;
       box-sizing: border-box;
       opacity: 0.5;
-      transition: opacity 0.3s;
+      transition: color 0.3s;
+    }
+
+    &:hover {
+      background-color: #f7f8fa;
+
+      .nav-link-img {
+        color: #000;
+      }
     }
 
     &.router-link-exact-active {
       color: $primaryColor;
       background-color: #e3f0fd;
-    }
 
-    &:hover {
-      background-color: #f7f8fa;
-    }
-
-    &.router-link-exact-active img,
-    &:hover img {
-      opacity: 1;
+      .nav-link-img {
+        color: $primaryColor;
+      }
     }
   }
 

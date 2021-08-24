@@ -23,13 +23,12 @@ export const alertIfNoAccess = (required: Permission | Permission[], anyOfRequir
 
 // This directive is used to hide the element if the user doesn't have the permission to it
 Vue.directive('can', function (el, binding, vnode) {
-  const behaviour = binding.modifiers.hide
-    ? 'hide'
+  const anyOfRequired = !!binding.modifiers.any
+  const behaviour = binding.modifiers.remove
+    ? 'remove'
     : binding.modifiers.disable
     ? 'disable'
-    : 'remove'
-
-  const anyOfRequired = !!binding.modifiers.any
+    : 'hide'
 
   if (!hasUserAccess(binding.value, anyOfRequired)) {
     switch (behaviour) {
@@ -43,6 +42,19 @@ Vue.directive('can', function (el, binding, vnode) {
       case 'remove':
       default:
         commentNode(el, vnode)
+    }
+  } else {
+    switch (behaviour) {
+      case 'disable':
+        // @ts-ignore
+        el.disabled = false
+        break
+      case 'hide':
+        el.style.display = ''
+        break
+      case 'remove':
+      default:
+      // TODO: Uncomment node (?)
     }
   }
 })

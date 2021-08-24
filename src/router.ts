@@ -74,6 +74,7 @@ const router = new VueRouter({
       name: 'SchemaCiew',
       component: () => import('./views/schemas/view.vue'),
       meta: {
+        returnUrl: '/schemas',
         requiresAuth: true,
         permissions: [Permissions.Products.ShowDetails],
       },
@@ -92,6 +93,7 @@ const router = new VueRouter({
       name: 'ProductsView',
       component: () => import('./views/products/View.vue'),
       meta: {
+        returnUrl: '/products',
         requiresAuth: true,
         permissions: [Permissions.Products.ShowDetails],
       },
@@ -110,6 +112,7 @@ const router = new VueRouter({
       name: 'OrdersView',
       component: () => import('./views/orders/view.vue'),
       meta: {
+        returnUrl: '/orders',
         requiresAuth: true,
         permissions: [Permissions.Orders.ShowDetails],
       },
@@ -137,6 +140,7 @@ const router = new VueRouter({
       name: 'PagesView',
       component: () => import('./views/pages/View.vue'),
       meta: {
+        returnUrl: '/pages',
         requiresAuth: true,
         permissions: [Permissions.Pages.ShowDetails],
       },
@@ -235,6 +239,7 @@ const router = new VueRouter({
       name: 'RolesView',
       component: () => import('./views/roles/view.vue'),
       meta: {
+        returnUrl: '/settings/roles',
         requiresAuth: true,
         permissions: [Permissions.Roles.ShowDetails],
       },

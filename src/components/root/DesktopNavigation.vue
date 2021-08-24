@@ -128,7 +128,7 @@ export default Vue.extend({
     }
 
     &:hover {
-      background-color: $primary-color-100;
+      background-color: $background-color-500;
 
       .nav-link-img {
         color: #000;

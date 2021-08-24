@@ -85,7 +85,7 @@ export default Vue.extend({
   padding: 9px;
   box-sizing: border-box;
   background-color: #fff;
-  border-right: solid 1px $backgroundAccentColor;
+  border-right: solid 1px $background-color-600;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -126,7 +126,7 @@ export default Vue.extend({
     }
 
     &:hover {
-      background-color: #f7f8fa;
+      background-color: $primary-color-100;
 
       .nav-link-img {
         color: #000;
@@ -134,11 +134,11 @@ export default Vue.extend({
     }
 
     &.router-link-exact-active {
-      color: $primaryColor;
+      color: $primary-color-500;
       background-color: #e3f0fd;
 
       .nav-link-img {
-        color: $primaryColor;
+        color: $primary-color-500;
       }
     }
   }

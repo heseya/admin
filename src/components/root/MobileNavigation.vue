@@ -62,7 +62,7 @@ export default Vue.extend({
   box-sizing: border-box;
   width: 100vw;
   background: #fff;
-  border-top: solid 1px $backgroundAccentColor;
+  border-top: solid 1px $background-color-700;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -91,10 +91,10 @@ export default Vue.extend({
     }
 
     &.router-link-exact-active {
-      color: $primaryColor;
+      color: $primary-color-500;
 
       .nav-link-img {
-        color: $primaryColor;
+        color: $primary-color-500;
       }
     }
   }

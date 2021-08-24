@@ -53,7 +53,9 @@
 
     <div class="nav__author nav-author">
       <span class="nav-author__title">Powered by</span>
-      <img src="@/assets/images/heseya.svg" alt="Heseya" class="nav-author__logo" />
+      <a href="https://heseya.com" target="_blank">
+        <img src="@/assets/images/heseya.svg" alt="Heseya" class="nav-author__logo" />
+      </a>
     </div>
   </nav>
 </template>

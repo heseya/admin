@@ -118,7 +118,7 @@ export default Vue.extend({
     justify-content: center;
     align-items: center;
     color: #979ea0;
-    background-color: #eceef5;
+    background-color: $background-color-700;
   }
 
   &__link {

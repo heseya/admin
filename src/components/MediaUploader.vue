@@ -1,7 +1,7 @@
 <template>
   <div
     class="media-uploader"
-    :class="{ 'media-uploader--drag': isDrag }"
+    :class="{ 'media-uploader--drag': isDrag, 'media-uploader--disabled': disabled }"
     @click="selectFiles"
     @drop.prevent="dropFiles"
     @dragover.prevent="() => {}"
@@ -25,6 +25,10 @@ export default Vue.extend({
       type: Array,
       default: () => ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg'],
     } as Vue.PropOptions<string[]>,
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   data: () => ({
     isDrag: false,
@@ -32,6 +36,8 @@ export default Vue.extend({
   }),
   methods: {
     selectFiles() {
+      if (this.disabled) return
+
       const input = document.createElement('input')
       input.type = 'file'
 
@@ -46,6 +52,8 @@ export default Vue.extend({
       input.click()
     },
     dropFiles(e: any) {
+      if (this.disabled) return
+
       this.file = e?.dataTransfer?.files?.[0] as File
       if (this.file) {
         this.changeDrag(false)

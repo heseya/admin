@@ -113,7 +113,7 @@ export default Vue.extend({
       width: 16px;
       margin-right: 22px;
       box-sizing: border-box;
-      opacity: 0.7;
+      opacity: 0.5;
       transition: opacity 0.3s;
     }
 

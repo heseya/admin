@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="app" :class="{ 'app--full-width': isHidden }">
+  <div id="app" class="app" :class="{ 'app--full-size': isHidden }">
     <DesktopNavigation class="app__nav"></DesktopNavigation>
     <MobileNavigation class="app__mobile-nav"></MobileNavigation>
 
@@ -70,9 +70,13 @@ export default Vue.extend({
   @media ($viewport-11) {
     padding-left: $navWidth;
   }
+  @media ($max-viewport-11) {
+    padding-bottom: 60px;
+  }
 
-  &--full-width {
+  &--full-size {
     padding-left: 0 !important;
+    padding-bottom: 0 !important;
   }
 
   &__nav {
@@ -91,11 +95,14 @@ export default Vue.extend({
   }
 
   &__content {
-    max-width: calc(100% - 48px);
     width: 100%;
     box-sizing: border-box;
-    padding: 32px 24px;
+    padding: 24px 12px;
     margin: 0 auto;
+
+    @media ($viewport-7) {
+      padding: 32px 24px;
+    }
   }
 }
 </style>

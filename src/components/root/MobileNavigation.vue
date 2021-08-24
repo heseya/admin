@@ -1,41 +1,74 @@
 <template>
-  <nav class="nav" :class="{ 'nav--hidden': isHidden }">
-    <router-link class="nav__link" to="/">
-      <img src="/img/icons/home.svg" />
-      <span class="label animated faster fadeInLeft">Strona główna</span>
-    </router-link>
+  <div>
+    <div class="mobile-nav" :class="{ 'mobile-nav--hidden': isHidden }">
+      <router-link class="mobile-nav__link" to="/">
+        <img src="/img/icons/home.svg" />
+        <span class="mobile-nav__link-label">Dashboard</span>
+      </router-link>
 
-    <router-link v-can="$p.Products.Show" class="nav__link" to="/products">
-      <img src="/img/icons/products.svg" />
-      <span class="label animated faster fadeInLeft">Asortyment</span>
-    </router-link>
+      <router-link v-can="$p.Orders.Show" class="mobile-nav__link" to="/orders">
+        <img src="/img/icons/orders.svg" />
+        <span class="mobile-nav__link-label">Zamówienia</span>
+      </router-link>
 
-    <router-link v-can="$p.Orders.Show" class="nav__link" to="/orders">
-      <img src="/img/icons/orders.svg" />
-      <span class="label animated faster fadeInLeft">Zamówienia</span>
-    </router-link>
+      <router-link class="mobile-nav__link" to="/">
+        <img src="/img/icons/home.svg" />
+        <span class="mobile-nav__link-label">Statystyka</span>
+      </router-link>
 
-    <router-link v-can="$p.Items.Show" class="nav__link" to="/items">
-      <img src="/img/icons/box.svg" />
-      <span class="label animated faster fadeInLeft">Magazyn</span>
-    </router-link>
+      <button class="mobile-nav__link" @click="isMenuVisible = true">
+        <img src="/img/icons/settings.svg" />
+        <span class="mobile-nav__link-label">Więcej</span>
+      </button>
+    </div>
 
-    <router-link v-can="$p.Discounts.Show" class="nav__link" to="/discounts">
-      <img src="/img/icons/coupon.svg" />
-      <span class="label animated faster fadeInLeft">Kody rabatowe</span>
-    </router-link>
+    <div class="mobile-nav-overlay" :class="{ 'mobile-nav-overlay--visible': isMenuVisible }">
+      <button class="mobile-nav-overlay__close" @click="isMenuVisible = false">X</button>
 
-    <router-link class="nav__link" to="/settings">
-      <img src="/img/icons/settings.svg" />
-      <span class="label animated faster fadeInLeft">Ustawienia</span>
-    </router-link>
-  </nav>
+      <router-link class="mobile-nav-overlay__link" to="/">
+        <img src="/img/icons/home.svg" />
+        <span class="mobile-nav-overlay__link-label">Statystyka</span>
+      </router-link>
+
+      <router-link v-can.hide="$p.Products.Show" class="mobile-nav-overlay__link" to="/products">
+        <img src="/img/icons/products.svg" />
+        <span class="mobile-nav-overlay__link-label">Produkty</span>
+      </router-link>
+
+      <router-link
+        v-can.hide="$p.Products.Show"
+        class="mobile-nav-overlay__link"
+        to="/settings/product-sets"
+      >
+        <img src="/img/icons/products.svg" />
+        <span class="mobile-nav-overlay__link-label">Kolekcje</span>
+      </router-link>
+
+      <router-link v-can.hide="$p.Items.Show" class="mobile-nav-overlay__link" to="/items">
+        <img src="/img/icons/box.svg" />
+        <span class="mobile-nav-overlay__link-label">Magazyn</span>
+      </router-link>
+
+      <router-link v-can.hide="$p.Discounts.Show" class="mobile-nav-overlay__link" to="/discounts">
+        <img src="/img/icons/coupon.svg" />
+        <span class="mobile-nav-overlay__link-label">Kody rabatowe</span>
+      </router-link>
+
+      <router-link class="mobile-nav-overlay__link" to="/settings">
+        <img src="/img/icons/settings.svg" />
+        <span class="mobile-nav-overlay__link-label">Ustawienia</span>
+      </router-link>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 export default Vue.extend({
   name: 'Navigation',
+  data: () => ({
+    isMenuVisible: false,
+  }),
   computed: {
     isHidden(): boolean {
       return !!this.$route.meta?.hiddenNav || false
@@ -45,7 +78,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.nav {
+.mobile-nav {
   z-index: 1000;
   position: fixed;
   bottom: 0;
@@ -53,7 +86,6 @@ export default Vue.extend({
   height: 60px;
   box-sizing: border-box;
   width: 100%;
-  padding: 0 15px;
   background: #fff;
   border-top: solid 1px $backgroundAccentColor;
   display: flex;
@@ -65,32 +97,118 @@ export default Vue.extend({
     transform: translateY(60px);
   }
 
-  .nav__link {
-    text-decoration: none;
-    display: block;
-    height: 60px;
-    width: 60px;
-    border-radius: 12px;
+  &__link {
+    all: unset;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 4px 12px;
+    border-radius: 8px;
 
-    &:hover {
-      background-color: $grey-light;
+    &.router-link-exact-active {
+      color: $primaryColor;
     }
 
     img {
-      width: 60px;
-      padding: 17px;
+      width: 20px;
+      opacity: 0.5;
       box-sizing: border-box;
     }
 
-    .label {
-      font-family: $font-sec;
-      display: block;
-      animation-name: fadeInRight;
-      animation-duration: 0.5s;
-      animation-fill-mode: both;
-      font-size: 20px;
-      padding: 17px 10px;
-      color: #000;
+    &.router-link-exact-active img {
+      opacity: 1;
+    }
+  }
+
+  &__link-label {
+    font-size: 12px;
+    text-align: center;
+    margin-top: 8px;
+  }
+}
+
+.mobile-nav-overlay {
+  position: fixed;
+  top: 102vh;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  box-sizing: border-box;
+  padding: 20vh 10% 0;
+  background-color: #fff;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: 0.3s;
+
+  &--visible {
+    top: 0;
+    visibility: visible;
+    opacity: 1;
+  }
+
+  &__close {
+    all: unset;
+    display: block;
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    width: 37px;
+    height: 37px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #979ea0;
+    background-color: #eceef5;
+  }
+
+  &__link {
+    text-decoration: none;
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 7px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    color: #000;
+    transition: background-color 0.3s;
+
+    img {
+      width: 16px;
+      margin-right: 20px;
+      box-sizing: border-box;
+      opacity: 0.5;
+      transition: opacity 0.3s;
+
+      @media ($viewport-3) {
+        width: 22px;
+        margin-right: 30px;
+      }
+    }
+
+    &.router-link-exact-active {
+      color: $primaryColor;
+
+      img {
+        opacity: 1;
+      }
+    }
+  }
+
+  &__link-label {
+    font-size: 1.1em;
+
+    @media ($viewport-3) {
+      font-size: 1.2em;
     }
   }
 }

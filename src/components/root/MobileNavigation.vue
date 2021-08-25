@@ -15,10 +15,7 @@
       </router-link>
 
       <router-link class="mobile-nav__link" to="/">
-        <InlineSvg
-          class="nav-link-img"
-          :src="require('@/assets/images/icons/dashboard-icon.svg')"
-        />
+        <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/stats-icon.svg')" />
         <span class="mobile-nav__link-label">Statystyka</span>
       </router-link>
 

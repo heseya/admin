@@ -7,6 +7,13 @@ module.exports = {
           @import "@/scss/01_abstracts/_variables.scss";
         `,
       },
+      less: {
+        javascriptEnabled: true,
+        modifyVars: {
+          'primary-color': '#0879eb',
+          'link-color': '#8dc6ff',
+        },
+      },
     },
   },
   pwa: {

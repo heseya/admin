@@ -81,6 +81,7 @@ export default Vue.extend({
 
   &:hover {
     background-color: $grey-light;
+    color: black;
   }
 
   &--no-hover:hover {

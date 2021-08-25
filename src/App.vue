@@ -6,7 +6,7 @@
     <AppHeader class="app__header"></AppHeader>
 
     <main class="app__content">
-      <transition name="fade">
+      <transition name="fade" mode="out-in">
         <router-view />
       </transition>
     </main>

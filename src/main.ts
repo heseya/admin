@@ -1,7 +1,6 @@
 import Vue from 'vue'
 // @ts-ignore
 import Vuesax from 'vuesax'
-// @ts-ignore
 import AntDesign from 'ant-design-vue'
 
 // @ts-ignore
@@ -18,17 +17,17 @@ import './plugins/permissions'
 import './registerServiceWorker'
 
 import 'vuesax/dist/vuesax.css'
-import 'ant-design-vue/dist/antd.css'
+import 'ant-design-vue/dist/antd.less'
 
 Vue.config.productionTip = false
+
+Vue.use(Vuesax)
+Vue.use(AntDesign)
 
 new Vue({
   router,
   store,
   render: (h) => h(App),
 }).$mount('#app')
-
-Vue.use(Vuesax)
-Vue.use(AntDesign)
 
 disableScrollOnInput()

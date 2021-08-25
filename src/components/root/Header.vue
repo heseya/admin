@@ -1,6 +1,6 @@
 <template>
   <header class="header" :class="{ 'header--hidden': isHidden }">
-    <transition name="fade">
+    <transition name="fade" mode="out-in">
       <router-link v-if="returnUrl" :to="returnUrl" class="header__return-btn">
         <img src="@/assets/images/icons/close-icon.svg" alt="Close" />
         Wróć do listy

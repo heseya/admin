@@ -49,7 +49,7 @@ import ProductsFilter, {
 import ModalForm from '@/components/form/ModalForm.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 import { formatFilters } from '@/utils/utils'
-import IconButton from '@/components/form/IconButton.vue'
+import IconButton from '@/components/layout/IconButton.vue'
 
 const LOCAL_STORAGE_KEY = 'products-list-view'
 

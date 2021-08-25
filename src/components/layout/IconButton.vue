@@ -41,7 +41,7 @@ export default Vue.extend({
     },
     to: {
       type: String,
-      default: '/',
+      default: null,
     },
     type: {
       type: String,
@@ -54,7 +54,7 @@ export default Vue.extend({
   },
   computed: {
     component(): string {
-      return this.el || this.to ? 'router-link' : 'button'
+      return this.to ? 'router-link' : this.el || 'button'
     },
   },
 })

@@ -38,7 +38,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { User } from '@/interfaces/User'
-import IconButton from '../form/IconButton.vue'
+import IconButton from '../layout/IconButton.vue'
 
 export default Vue.extend({
   name: 'AppHeader',

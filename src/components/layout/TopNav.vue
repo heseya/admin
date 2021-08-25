@@ -1,8 +1,8 @@
 <template>
   <nav class="top-nav">
-    <div class="top-nav__title">
-      <h1 class="title">{{ title }}</h1>
-      <small>{{ subtitle }}</small>
+    <div class="top-nav__header">
+      <h1 class="top-nav__title">{{ title }}</h1>
+      <small class="top-nav__subtitle">{{ subtitle }}</small>
     </div>
 
     <div class="top-nav__buttons">
@@ -29,40 +29,21 @@ export default Vue.extend({
   align-items: center;
 
   &__title {
-    h1 {
-      display: inline-block;
-      font-size: 28px;
-      font-weight: 200;
-      margin: 0;
-    }
+    display: inline-block;
+    font-size: 28px;
+    font-weight: 600;
+    font-size: 1.7em;
+    letter-spacing: -0.48px;
+    margin: 0;
+  }
 
-    small {
-      display: block;
-      color: #888;
-    }
+  &__subtitle {
+    display: block;
+    color: #888;
   }
 
   &__buttons {
     display: flex;
-  }
-
-  &__button {
-    display: inline-block;
-    border-radius: 50%;
-    margin-left: 12px;
-    height: 28px;
-    width: 28px;
-    background-color: $grey-light;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    border: none;
-
-    img {
-      width: 15px;
-      height: 15px;
-    }
   }
 }
 </style>

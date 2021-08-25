@@ -2,21 +2,23 @@
   <div class="products-container" :class="{ 'products-container--grid-view': !listView }">
     <PaginatedList title="Asortyment" :filters="filters" store-key="products">
       <template #nav>
-        <vs-tooltip bottom>
-          <vs-button color="dark" icon @click="listView = !listView">
+        <icon-button @click="listView = !listView">
+          <template #icon>
             <i v-if="!listView" class="bx bx-list-ul"></i>
             <i v-else class="bx bx-grid"></i>
-          </vs-button>
-          <template #tooltip> Przełącz na widok {{ listView ? 'siatki' : 'listy' }} </template>
-        </vs-tooltip>
+          </template>
+          Przełącz na widok {{ listView ? 'siatki' : 'listy' }}
+        </icon-button>
 
-        <vs-button color="dark" icon @click="areFiltersOpen = true">
-          <i class="bx bx-filter-alt"></i>
-        </vs-button>
+        <icon-button @click="areFiltersOpen = true">
+          <template #icon><i class="bx bx-filter-alt"></i></template>
+          Otwórz filtry
+        </icon-button>
 
-        <vs-button to="/products/create" color="dark" icon>
-          <i class="bx bx-plus"></i>
-        </vs-button>
+        <icon-button to="/products/create">
+          <template #icon><i class="bx bx-plus"></i></template>
+          Dodaj produkt
+        </icon-button>
       </template>
 
       <template v-slot="{ item: product }">
@@ -47,6 +49,7 @@ import ProductsFilter, {
 import ModalForm from '@/components/form/ModalForm.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 import { formatFilters } from '@/utils/utils'
+import IconButton from '@/components/form/IconButton.vue'
 
 const LOCAL_STORAGE_KEY = 'products-list-view'
 
@@ -57,6 +60,7 @@ export default Vue.extend({
     ProductsFilter,
     ModalForm,
     PaginatedList,
+    IconButton,
   },
   data: () => ({
     filters: { ...EMPTY_PRODUCT_FILTERS },

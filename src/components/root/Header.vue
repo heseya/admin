@@ -1,10 +1,20 @@
 <template>
   <header class="header" :class="{ 'header--hidden': isHidden }">
     <transition name="fade" mode="out-in">
-      <router-link v-if="returnUrl" :to="returnUrl" class="header__return-btn">
-        <img src="@/assets/images/icons/close-icon.svg" alt="Close" />
+      <icon-button
+        v-if="returnUrl"
+        reversed
+        type="default"
+        size="small"
+        :to="returnUrl"
+        class="header__return-btn"
+      >
+        <template #icon>
+          <img src="@/assets/images/icons/close-icon.svg" alt="Close" />
+        </template>
         Wróć do listy
-      </router-link>
+      </icon-button>
+
       <div v-else class="header__text">{{ storeName }}</div>
     </transition>
 
@@ -28,9 +38,11 @@
 <script lang="ts">
 import Vue from 'vue'
 import { User } from '@/interfaces/User'
+import IconButton from '../form/IconButton.vue'
 
 export default Vue.extend({
   name: 'AppHeader',
+  components: { IconButton },
   computed: {
     isHidden(): boolean {
       return !!this.$route.meta?.hiddenNav || false
@@ -75,33 +87,6 @@ export default Vue.extend({
   }
 
   &__return-btn {
-    color: #979ea0;
-    text-decoration: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: 300;
-    font-size: 0.9em;
-    padding-right: 16px;
-    border-radius: 20px;
-    transition: 0.3s;
-
-    &:hover {
-      background-color: $background-color-700;
-    }
-
-    img {
-      all: unset;
-      display: block;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: $background-color-700;
-      margin-right: 6px;
-    }
   }
 
   &--hidden {

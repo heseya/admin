@@ -1,6 +1,6 @@
 <template>
   <div class="paginated-list">
-    <AppTopNav :title="title">
+    <AppTopNav :title="title" :subtitle="subtitle">
       <slot name="nav"></slot>
     </AppTopNav>
 
@@ -63,6 +63,10 @@ export default Vue.extend({
   },
   props: {
     title: {
+      type: String,
+      default: '',
+    },
+    subtitle: {
       type: String,
       default: '',
     },

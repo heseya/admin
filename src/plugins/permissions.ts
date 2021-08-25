@@ -21,14 +21,16 @@ export const alertIfNoAccess = (required: Permission | Permission[], anyOfRequir
   return true
 }
 
+const map = new Map<any, [Node, Node]>()
+
 // This directive is used to hide the element if the user doesn't have the permission to it
 Vue.directive('can', function (el, binding, vnode) {
   const anyOfRequired = !!binding.modifiers.any
-  const behaviour = binding.modifiers.remove
-    ? 'remove'
+  const behaviour = binding.modifiers.hide
+    ? 'hide'
     : binding.modifiers.disable
     ? 'disable'
-    : 'hide'
+    : 'remove'
 
   if (!hasUserAccess(binding.value, anyOfRequired)) {
     switch (behaviour) {
@@ -36,12 +38,15 @@ Vue.directive('can', function (el, binding, vnode) {
         // @ts-ignore
         el.disabled = true
         break
+      case 'remove':
+        if (el.parentNode) {
+          const comment = document.createComment(' xd ')
+          map.set(el, [el.parentNode, comment])
+          el.parentNode.replaceChild(comment, el)
+        }
+        break
       case 'hide':
         el.style.display = 'none'
-        break
-      case 'remove':
-      default:
-        commentNode(el, vnode)
     }
   } else {
     switch (behaviour) {
@@ -49,12 +54,15 @@ Vue.directive('can', function (el, binding, vnode) {
         // @ts-ignore
         el.disabled = false
         break
+      case 'remove':
+        const [parentNode, comment] = map.get(el) || []
+        if (parentNode && comment) {
+          map.delete(el)
+          parentNode.replaceChild(el, comment)
+        }
+        break
       case 'hide':
         el.style.display = ''
-        break
-      case 'remove':
-      default:
-      // TODO: Uncomment node (?)
     }
   }
 })

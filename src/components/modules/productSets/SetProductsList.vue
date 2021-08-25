@@ -60,7 +60,7 @@ import { ProductSet } from '@/interfaces/ProductSet'
 import { Product } from '@/interfaces/Product'
 import { UUID } from '@/interfaces/UUID'
 import { api } from '@/api'
-import { formatApiError } from '@/utils/errors'
+import { formatApiNotificationError } from '@/utils/errors'
 
 export default Vue.extend({
   components: { Selector, Empty },
@@ -108,10 +108,7 @@ export default Vue.extend({
         } = await api.get<{ data: Product[] }>(`/product-sets/id:${this.set.id}/products?limit=500`)
         this.products = products
       } catch (e) {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(e),
-        })
+        this.$toast.error(formatApiNotificationError(e))
       }
       this.$accessor.stopLoading()
     },
@@ -122,16 +119,10 @@ export default Vue.extend({
       try {
         const products = this.products.map((p) => p.id)
         await api.post(`/product-sets/id:${this.set.id}/products`, { products })
-        this.$vs.notification({
-          color: 'success',
-          title: 'Produkty zostały zapisane w kolekcji',
-        })
+        this.$toast.success('Produkty zostały zapisane w kolekcji')
         this.$emit('close')
       } catch (e) {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(e),
-        })
+        this.$toast.error(formatApiNotificationError(e))
       }
       this.$accessor.stopLoading()
     },

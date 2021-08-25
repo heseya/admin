@@ -89,3 +89,15 @@ hr {
 .vs-button--icon i {
   font-size: 1.2em !important;
 }
+
+.notification {
+  &__title {
+    display: block;
+    font-weight: 600;
+    font-size: 1.1em;
+  }
+
+  &__text {
+    display: block;
+  }
+}

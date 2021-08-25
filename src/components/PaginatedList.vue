@@ -49,7 +49,7 @@ import List from '@/components/layout/List.vue'
 import { ResponseMeta } from '@/interfaces/Response'
 import { formatFilters } from '@/utils/utils'
 import { debounce } from 'lodash'
-import { formatApiError } from '@/utils/errors'
+import { formatApiNotificationError } from '@/utils/errors'
 import { BaseItem } from '@/store/generator'
 
 export default Vue.extend({
@@ -126,10 +126,7 @@ export default Vue.extend({
     },
     error(error) {
       if (error) {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(error),
-        })
+        this.$toast.error(formatApiNotificationError(error))
       }
     },
     filters: debounce(function (this: any) {

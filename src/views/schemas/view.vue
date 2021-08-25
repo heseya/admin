@@ -39,7 +39,7 @@ import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import SchemaForm from '@/components/modules/schemas/Form.vue'
-import { formatApiError } from '@/utils/errors'
+import { formatApiNotificationError } from '@/utils/errors'
 
 export default Vue.extend({
   components: {
@@ -68,10 +68,7 @@ export default Vue.extend({
   watch: {
     error(error) {
       if (error) {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(error),
-        })
+        this.$toast.error(formatApiNotificationError(error))
       }
     },
     schema() {
@@ -93,10 +90,7 @@ export default Vue.extend({
       this.$accessor.startLoading()
       const success = await this.$accessor.schemas.remove(this.id)
       if (success) {
-        this.$vs.notification({
-          color: 'success',
-          title: 'Schemat został usunięty.',
-        })
+        this.$toast.success('Schemat został usunięty.')
         this.$router.push('/schemas')
       }
       this.$accessor.stopLoading()

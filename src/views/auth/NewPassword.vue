@@ -35,7 +35,7 @@ import { ValidationObserver } from 'vee-validate'
 import CentralScreenForm from '@/components/form/CentralScreenForm.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
-import { formatApiError } from '@/utils/errors'
+import { formatApiNotificationError } from '@/utils/errors'
 import { api } from '@/api'
 
 export default Vue.extend({
@@ -57,10 +57,7 @@ export default Vue.extend({
   watch: {
     error(error: any) {
       if (error) {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(error),
-        })
+        this.$toast.error(formatApiNotificationError(error))
       }
     },
   },
@@ -71,7 +68,7 @@ export default Vue.extend({
       if (!token || !email) throw new Error('Token or email does not exist')
       await api.get(`/users/reset-password?token=${token}&email=${email}`)
     } catch (e) {
-      this.$vs.notification({ color: 'danger', ...formatApiError(e) })
+      this.$toast.error(formatApiNotificationError(e))
       this.$router.replace('/login')
     }
   },
@@ -86,10 +83,7 @@ export default Vue.extend({
       this.$accessor.stopLoading()
 
       if (isSuccess) {
-        this.$vs.notification({
-          color: 'success',
-          title: 'Hasło zostało zmienione',
-        })
+        this.$toast.success('Hasło zostało zmienione')
         this.$router.push({ name: 'Login' })
       }
     },

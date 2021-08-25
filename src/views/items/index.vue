@@ -132,10 +132,7 @@ export default Vue.extend({
       if (depositsError) {
         // eslint-disable-next-line no-console
         console.error('depositsError', depositsError)
-        this.$vs.notification({
-          color: 'danger',
-          title: depositsError.message,
-        })
+        this.$toast.error(depositsError.message)
       }
     },
   },

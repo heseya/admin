@@ -57,7 +57,7 @@ export default Vue.extend({
             if (success && file) return file.url
             // eslint-disable-next-line no-console
             console.error('Failed to upload file to CDN:', error)
-            // this.$vs.notification({ color: 'danger', ...formatApiError(error) })
+            // this.$toast.error(formatApiNotificationError(error))
             return null
           },
         },

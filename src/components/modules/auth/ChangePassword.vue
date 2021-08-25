@@ -33,7 +33,7 @@
 import Vue from 'vue'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import { api } from '../../../api'
-import { formatApiError } from '@/utils/errors'
+import { formatApiNotificationError } from '@/utils/errors'
 
 export default Vue.extend({
   components: {
@@ -55,15 +55,9 @@ export default Vue.extend({
           password_new: this.passwordNew,
           password_confirmation: this.passwordConfirmation,
         })
-        this.$vs.notification({
-          color: 'success',
-          title: 'Hasło zostało zmienione',
-        })
+        this.$toast.success('Hasło zostało zmienione')
       } catch (error) {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(error),
-        })
+        this.$toast.error(formatApiNotificationError(error))
       } finally {
         this.isLoading = false
         this.$emit('close')

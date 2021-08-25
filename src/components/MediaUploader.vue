@@ -63,11 +63,9 @@ export default Vue.extend({
     },
     async upload() {
       if (!this.isFileValid()) {
-        this.$vs.notification({
-          color: 'danger',
-          title: 'Złe rozszerzenie pliku',
-          text: `Obsługiwane są tylko pliki z rozszerzeniami: ${this.extensions.join(', ')}`,
-        })
+        this.$toast.error(
+          `Obsługiwane są tylko pliki z rozszerzeniami: ${this.extensions.join(', ')}`,
+        )
         return
       }
 

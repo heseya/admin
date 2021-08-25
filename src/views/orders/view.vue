@@ -162,7 +162,7 @@ import PartialUpdateForm from '@/components/modules/orders/PartialUpdateForm.vue
 
 import { getRelativeDate, formatDate } from '@/utils/utils'
 import { createPackage } from '@/services/createPackage'
-import { formatApiError } from '@/utils/errors'
+import { formatApiNotificationError } from '@/utils/errors'
 import { Order, OrderStatus } from '@/interfaces/Order'
 import { PackageTemplate } from '@/interfaces/PackageTemplate'
 
@@ -228,7 +228,7 @@ export default Vue.extend({
       this.setStatus(status)
     },
     error(error) {
-      if (error) this.$vs.notification({ color: 'danger', ...formatApiError(error) })
+      if (error) this.$toast.error(formatApiNotificationError(error))
     },
   },
   async created() {
@@ -251,10 +251,7 @@ export default Vue.extend({
       })
 
       if (success) {
-        this.$vs.notification({
-          color: 'success',
-          title: 'Status zamówienia został zmieniony',
-        })
+        this.$toast.success('Status zamówienia został zmieniony')
       }
 
       this.isLoading = false
@@ -269,15 +266,9 @@ export default Vue.extend({
 
       if (success) {
         this.shippingNumber = shippingNumber
-        this.$vs.notification({
-          color: 'success',
-          title: 'Przesyłka utworzona poprawnie',
-        })
+        this.$toast.success('Przesyłka utworzona poprawnie')
       } else {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(error),
-        })
+        this.$toast.error(formatApiNotificationError(error))
       }
 
       this.$accessor.stopLoading()
@@ -322,10 +313,7 @@ export default Vue.extend({
       this.$accessor.startLoading()
       await this.$accessor.orders.update({ id: this.order.id, item: this.form })
       this.isModalActive = false
-      this.$vs.notification({
-        color: 'success',
-        title: 'Zamówienie zostało zaktualizowane',
-      })
+      this.$toast.success('Zamówienie zostało zaktualizowane')
       this.$accessor.stopLoading()
     },
   },

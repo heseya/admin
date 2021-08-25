@@ -13,7 +13,6 @@ declare module 'vue/types/vue' {
   interface Vue {
     $router: VueRouter
     $route: Route
-    $vs: any
     $accessor: typeof accessor
 
     $p: PermissionsTree

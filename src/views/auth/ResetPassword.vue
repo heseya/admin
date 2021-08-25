@@ -32,7 +32,7 @@ import { ValidationObserver } from 'vee-validate'
 import CentralScreenForm from '@/components/form/CentralScreenForm.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
-import { formatApiError } from '@/utils/errors'
+import { formatApiNotificationError } from '@/utils/errors'
 
 export default Vue.extend({
   components: {
@@ -52,10 +52,7 @@ export default Vue.extend({
   watch: {
     error(error: any) {
       if (error) {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(error),
-        })
+        this.$toast.error(formatApiNotificationError(error))
       }
     },
   },

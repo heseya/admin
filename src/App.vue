@@ -39,11 +39,7 @@ export default Vue.extend({
   },
   watch: {
     '$accessor.auth.permissionsError'(_permissionsError) {
-      this.$vs.notification({
-        color: 'danger',
-        title: 'Brak uprawnień',
-        text: `Nie posiadasz uprawnień do tej akcji`,
-      })
+      this.$toast.error('Nie posiadasz uprawnień do tej akcji')
     },
   },
   created() {

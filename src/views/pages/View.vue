@@ -68,7 +68,7 @@ import RichEditor from '@/components/form/RichEditor.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
-import { formatApiError } from '@/utils/errors'
+import { formatApiNotificationError } from '@/utils/errors'
 import { Page } from '@/interfaces/Page'
 
 export default Vue.extend({
@@ -119,10 +119,7 @@ export default Vue.extend({
     },
     error(error) {
       if (error) {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(error),
-        })
+        this.$toast.error(formatApiNotificationError(error))
       }
     },
   },
@@ -144,10 +141,7 @@ export default Vue.extend({
       if (this.isNew) {
         const page = await this.$accessor.pages.add(this.form)
         if (page && page.id) {
-          this.$vs.notification({
-            color: 'success',
-            title: 'Strona została utworzona.',
-          })
+          this.$toast.success('Strona została utworzona.')
           this.$router.push(`/pages/${page.id}`)
         }
       } else {
@@ -156,10 +150,7 @@ export default Vue.extend({
           item: this.form,
         })
         if (success) {
-          this.$vs.notification({
-            color: 'success',
-            title: 'Strona została zaktualizowana.',
-          })
+          this.$toast.success('Strona została zaktualizowana.')
         }
       }
       this.$accessor.stopLoading()
@@ -168,10 +159,7 @@ export default Vue.extend({
       this.$accessor.startLoading()
       const success = await this.$accessor.pages.remove(this.id)
       if (success) {
-        this.$vs.notification({
-          color: 'success',
-          title: 'Strona została usunięta.',
-        })
+        this.$toast.success('Strona została usunięta.')
         this.$router.push('/pages')
       }
       this.$accessor.stopLoading()

@@ -30,7 +30,7 @@
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import CentralScreenForm from '@/components/form/CentralScreenForm.vue'
-import { formatApiError } from '@/utils/errors'
+import { formatApiNotificationError } from '@/utils/errors'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
 const DEBUG = process.env.NODE_ENV === 'development'
@@ -53,10 +53,7 @@ export default Vue.extend({
   watch: {
     loginError(error) {
       if (error) {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(error),
-        })
+        this.$toast.error(formatApiNotificationError(e))
       }
     },
   },

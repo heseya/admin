@@ -164,7 +164,7 @@ import SchemaConfigurator from '@/components/modules/schemas/Configurator.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 import TagsSelect from '@/components/TagsSelect.vue'
 
-import { formatApiError } from '@/utils/errors'
+import { formatApiNotificationError } from '@/utils/errors'
 import { UUID } from '@/interfaces/UUID'
 import { Product, ProductDTO, ProductComponentForm } from '@/interfaces/Product'
 import { ProductSet } from '@/interfaces/ProductSet'
@@ -236,10 +236,7 @@ export default Vue.extend({
     },
     error(error) {
       if (error) {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(error),
-        })
+        this.$toast.error(formatApiNotificationError(error))
       }
     },
     async '$route.params.id'() {
@@ -271,10 +268,7 @@ export default Vue.extend({
       this.$accessor.startLoading()
       const success = await this.$accessor.products.remove(this.id)
       if (success) {
-        this.$vs.notification({
-          color: 'success',
-          title: 'Produkt został usunięty.',
-        })
+        this.$toast.success('Produkt został usunięty.')
         this.$router.push('/products')
       }
       this.$accessor.stopLoading()
@@ -302,10 +296,7 @@ export default Vue.extend({
       this.$accessor.stopLoading()
 
       if (item) {
-        this.$vs.notification({
-          color: 'success',
-          title: successMessage,
-        })
+        this.$toast.success(successMessage)
 
         if (item.id !== this.product.id) {
           this.$router.push(`/products/${item.id}`)

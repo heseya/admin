@@ -32,7 +32,7 @@ import TopNav from '@/components/layout/TopNav.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import RolesForm from '@/components/modules/roles/Form.vue'
 
-import { formatApiError } from '@/utils/errors'
+import { formatApiNotificationError } from '@/utils/errors'
 import { Role, RoleDTO } from '@/interfaces/Role'
 
 const CLEAN_FORM: RoleDTO = {
@@ -75,10 +75,7 @@ export default Vue.extend({
     },
     error(error: any) {
       if (error) {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(error),
-        })
+        this.$toast.error(formatApiNotificationError(error))
       }
     },
   },
@@ -103,10 +100,7 @@ export default Vue.extend({
       }
 
       if (role) {
-        this.$vs.notification({
-          color: 'success',
-          title: successMessage,
-        })
+        this.$toast.success(successMessage)
       }
 
       if (role && role.id !== this.id) this.$router.push(`/settings/roles/${role.id}`)
@@ -117,10 +111,7 @@ export default Vue.extend({
       this.$accessor.startLoading()
       const success = await this.$accessor.roles.remove(this.id)
       if (success) {
-        this.$vs.notification({
-          color: 'success',
-          title: 'Rola została usunięta.',
-        })
+        this.$toast.success('Rola została usunięta.')
         this.$router.push('/settings/roles')
       }
       this.$accessor.stopLoading()

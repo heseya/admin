@@ -33,7 +33,7 @@ import Vue from 'vue'
 import Draggable from 'vuedraggable'
 
 import MediaUploader from '@/components/MediaUploader.vue'
-import { formatApiError } from '@/utils/errors'
+import { formatApiNotificationError } from '@/utils/errors'
 import { UUID } from '@/interfaces/UUID'
 import { CdnMedia } from '@/interfaces/Media'
 import { removeMedia } from '@/services/uploadMedia'
@@ -91,10 +91,7 @@ export default Vue.extend({
       this.mediaToDelete = [...this.mediaToDelete, file.id]
     },
     onUploadError(error: any) {
-      this.$vs.notification({
-        color: 'danger',
-        ...formatApiError(error),
-      })
+      this.$toast.error(formatApiNotificationError(error))
     },
     clearMediaToDelete() {
       this.mediaToDelete = []

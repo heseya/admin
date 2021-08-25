@@ -30,7 +30,7 @@ import debounce from 'lodash/debounce'
 import queryString from 'query-string'
 
 import { api } from '../api'
-import { formatApiError } from '@/utils/errors'
+import { formatApiNotificationError } from '@/utils/errors'
 
 import List from '@/components/layout/List.vue'
 import Empty from '@/components/layout/Empty.vue'
@@ -103,10 +103,7 @@ export default Vue.extend({
         const { data } = await api.get(`/${this.type}?${query}`)
         this.data = data.data
       } catch (error) {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(error),
-        })
+        this.$toast.error(formatApiNotificationError(error))
       }
       this.isLoading = false
     }, 300),

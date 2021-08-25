@@ -43,3 +43,12 @@ export const formatFilters = (filters: Record<string, unknown>) => {
     Object.entries(filters).filter(([, v]) => v !== ALL_FILTER_VALUE && v !== ''),
   )
 }
+
+export const formatApiNotification = ({ title, text }: { title: string; text?: string }) => {
+  return text
+    ? `
+  <span class="notification__title">${title}</span>
+  <span class="notification__text">${text}</span>
+  `
+    : title
+}

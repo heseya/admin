@@ -61,10 +61,7 @@ export default Vue.extend({
     },
     async copyId() {
       await navigator.clipboard.writeText(this.product.id)
-      this.$vs.notification({
-        color: 'success',
-        title: 'Skopiowano id',
-      })
+      this.$toast.success('Skopiowano ID')
     },
   },
 })

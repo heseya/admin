@@ -238,10 +238,7 @@ export default Vue.extend({
     },
     async submit() {
       if (this.form.type === SchemaType.MultiplySchema && !this.form.used_schemas[0]) {
-        this.$vs.notification({
-          color: 'warning',
-          title: 'Wybierz mnożony schemat',
-        })
+        this.$toast.warning('Wybierz mnożony schemat')
         return
       }
 
@@ -260,10 +257,7 @@ export default Vue.extend({
         // @ts-ignore // TODO: Schema DTO
         const schema = await this.$accessor.schemas.add({ ...this.form, options })
         if (schema && schema.id) {
-          this.$vs.notification({
-            color: 'success',
-            title: 'Schemat został utworzony.',
-          })
+          this.$toast.warning('Schemat został utworzony.')
           id = schema.id
         }
       } else {
@@ -274,10 +268,7 @@ export default Vue.extend({
         })
         if (success) {
           id = this.form.id
-          this.$vs.notification({
-            color: 'success',
-            title: 'Schemat został zaktualizowany.',
-          })
+          this.$toast.warning('Schemat został zaktualizowany.')
         }
       }
       this.$accessor.stopLoading()

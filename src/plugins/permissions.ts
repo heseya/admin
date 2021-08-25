@@ -5,7 +5,6 @@ import { accessor } from '@/store'
 import { Permission } from '@/interfaces/Permissions'
 
 import { PERMISSIONS_TREE } from '@/consts/permissions'
-import { commentNode } from '@/utils/commentNode'
 import { hasAccess } from '@/utils/hasAccess'
 
 export const hasUserAccess = (required: Permission | Permission[], anyOfRequired = false) => {
@@ -21,10 +20,10 @@ export const alertIfNoAccess = (required: Permission | Permission[], anyOfRequir
   return true
 }
 
-const map = new Map<any, [Node, Node]>()
+const elementsMap = new Map<HTMLElement, [Node, Comment]>()
 
 // This directive is used to hide the element if the user doesn't have the permission to it
-Vue.directive('can', function (el, binding, vnode) {
+Vue.directive('can', function (el, binding) {
   const anyOfRequired = !!binding.modifiers.any
   const behaviour = binding.modifiers.hide
     ? 'hide'
@@ -32,38 +31,32 @@ Vue.directive('can', function (el, binding, vnode) {
     ? 'disable'
     : 'remove'
 
-  if (!hasUserAccess(binding.value, anyOfRequired)) {
-    switch (behaviour) {
-      case 'disable':
-        // @ts-ignore
-        el.disabled = true
-        break
-      case 'remove':
-        if (el.parentNode) {
-          const comment = document.createComment(' xd ')
-          map.set(el, [el.parentNode, comment])
-          el.parentNode.replaceChild(comment, el)
-        }
-        break
-      case 'hide':
-        el.style.display = 'none'
-    }
-  } else {
-    switch (behaviour) {
-      case 'disable':
-        // @ts-ignore
-        el.disabled = false
-        break
-      case 'remove':
-        const [parentNode, comment] = map.get(el) || []
+  const isElementVisible = hasUserAccess(binding.value, anyOfRequired)
+
+  switch (behaviour) {
+    case 'disable':
+      // @ts-ignore
+      el.disabled = !isElementVisible
+      break
+    case 'remove':
+      if (isElementVisible) {
+        const [parentNode, comment] = elementsMap.get(el) || []
         if (parentNode && comment) {
-          map.delete(el)
+          // Comment node is replaced back with original node
+          elementsMap.delete(el)
           parentNode.replaceChild(el, comment)
         }
-        break
-      case 'hide':
-        el.style.display = ''
-    }
+      } else {
+        if (el.parentNode) {
+          // Element node is replaced by a comment node
+          const comment = document.createComment(' xd ')
+          elementsMap.set(el, [el.parentNode, comment])
+          el.parentNode.replaceChild(comment, el)
+        }
+      }
+      break
+    case 'hide':
+      el.style.display = isElementVisible ? '' : 'none'
   }
 })
 

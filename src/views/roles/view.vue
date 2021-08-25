@@ -5,7 +5,7 @@
         v-if="!isNew"
         v-slot="{ open }"
         v-can="$p.Roles.Remove"
-        title="Czy na pewno chcesz usunąć tą rolę?"
+        title="Czy na pewno chcesz usunąć tę rolę?"
         ok-text="Usuń"
         cancel-text="Anuluj"
         @confirm="deletePage"

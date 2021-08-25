@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="app" :class="{ 'app--full-size': isHidden }">
+  <div id="app" class="app" :class="{ 'app--full-size': isNavHidden }">
     <DesktopNavigation class="app__nav"></DesktopNavigation>
     <MobileNavigation class="app__mobile-nav"></MobileNavigation>
 
@@ -10,6 +10,8 @@
         <router-view />
       </transition>
     </main>
+
+    <Loading :relative="false" :active="isLoading" />
   </div>
 </template>
 
@@ -18,32 +20,24 @@ import Vue from 'vue'
 import DesktopNavigation from './components/root/DesktopNavigation.vue'
 import MobileNavigation from './components/root/MobileNavigation.vue'
 import AppHeader from './components/root/Header.vue'
+import Loading from './components/layout/Loading.vue'
 
 export default Vue.extend({
   components: {
     DesktopNavigation,
     MobileNavigation,
     AppHeader,
+    Loading,
   },
-  data: () => ({
-    loadingInstance: null as null | { close: () => void },
-  }),
   computed: {
     isLoading(): boolean {
       return this.$accessor.loading
     },
-    isHidden(): boolean {
+    isNavHidden(): boolean {
       return !!this.$route.meta?.hiddenNav || false
     },
   },
   watch: {
-    isLoading(isLoading: boolean) {
-      if (isLoading) {
-        this.loadingInstance = this.$vs.loading({ color: '#000' })
-      } else if (this.loadingInstance) {
-        this.loadingInstance.close()
-      }
-    },
     '$accessor.auth.permissionsError'(_permissionsError) {
       this.$vs.notification({
         color: 'danger',

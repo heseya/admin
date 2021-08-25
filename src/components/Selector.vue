@@ -3,6 +3,8 @@
     <vs-input v-model="query" :label="`Wyszukaj ${typeName}`"></vs-input>
 
     <div ref="content" class="schema-selector__content">
+      <loading :active="isLoading" />
+
       <empty v-if="query !== '' && list.length === 0">Nic nie znaleziono</empty>
 
       <list class="schema-selector__items">
@@ -37,6 +39,7 @@ import ListItem from '@/components/layout/ListItem.vue'
 import { Schema } from '@/interfaces/Schema'
 import { SchemaTypeLabel } from '@/consts/schemaTypeLabels'
 import { UUID } from '@/interfaces/UUID'
+import Loading from './layout/Loading.vue'
 
 interface Item {
   id: UUID
@@ -49,6 +52,7 @@ export default Vue.extend({
     List,
     ListItem,
     Empty,
+    Loading,
   },
   props: {
     type: {
@@ -70,6 +74,7 @@ export default Vue.extend({
   },
   data: () => ({
     query: '',
+    isLoading: false,
     data: [] as Item[],
   }),
   computed: {
@@ -90,9 +95,7 @@ export default Vue.extend({
         return
       }
 
-      const loading = this.$vs.loading({
-        target: this.$refs.content,
-      })
+      this.isLoading = true
       try {
         const query = queryString.stringify({
           search: search,
@@ -105,7 +108,7 @@ export default Vue.extend({
           ...formatApiError(error),
         })
       }
-      loading.close()
+      this.isLoading = false
     }, 300),
     onSelect(item: Item) {
       this.$emit('select', item)

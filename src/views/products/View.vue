@@ -341,7 +341,7 @@ export default Vue.extend({
   }
 }
 
-@media (min-width: $break) {
+@media ($viewport-11) {
   .product {
     display: grid;
     grid-template-columns: 4fr 2fr;

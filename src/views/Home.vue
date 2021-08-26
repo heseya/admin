@@ -163,7 +163,7 @@ export default Vue.extend({
 }
 
 .section-title {
-  font-family: $font-sec;
+  font-family: $headerFont;
   font-weight: 300;
   margin: 0;
   font-size: 1.5em;
@@ -193,11 +193,11 @@ export default Vue.extend({
   box-shadow: $shadow;
 
   &__title {
-    font-family: $font-sec;
+    font-family: $headerFont;
   }
 
   &__value {
-    font-family: $font-sec;
+    font-family: $headerFont;
     font-size: 2.6rem;
     margin: 8px 0;
   }

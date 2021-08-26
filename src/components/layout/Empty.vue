@@ -31,7 +31,7 @@ export default Vue.extend({})
   }
 
   &__message {
-    font-family: $font-sec;
+    font-family: $headerFont;
     font-size: 1.2em;
   }
 }

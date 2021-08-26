@@ -65,7 +65,7 @@ export default Vue.extend({
   border-radius: 7px;
   padding: 15px 20px;
   min-height: 44px;
-  font-family: $font-sec;
+  font-family: $headerFont;
   font-size: 17px;
   display: flex;
   align-items: center;

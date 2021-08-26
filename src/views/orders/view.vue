@@ -328,7 +328,7 @@ export default Vue.extend({
 }
 
 .section-title {
-  font-family: $font-sec;
+  font-family: $headerFont;
   font-weight: 300;
   margin: 0;
   font-size: 1.5em;
@@ -378,7 +378,7 @@ export default Vue.extend({
 }
 
 .cart-total {
-  font-family: $font-sec;
+  font-family: $headerFont;
   font-size: 1.2em;
   margin-top: auto;
 }
@@ -399,7 +399,7 @@ export default Vue.extend({
   margin: 3px 0;
 
   &__name {
-    font-family: $font-main;
+    font-family: $primaryFont;
     margin-left: 10px;
     margin-right: 4px;
     text-transform: capitalize;

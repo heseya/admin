@@ -86,7 +86,7 @@ export default Vue.extend({
     display: flex;
     justify-content: center;
     margin-left: auto;
-    font-family: $font-sec;
+    font-family: $headerFont;
     white-space: nowrap;
   }
 }

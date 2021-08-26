@@ -36,8 +36,13 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .error-page {
   margin-top: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   &__content {
+    width: 100%;
+    max-width: 600px;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -46,7 +51,7 @@ export default Vue.extend({
 
     h1 {
       font-size: 6em;
-      font-family: $font-sec;
+      font-weight: 700;
       margin: 0;
     }
 

@@ -117,7 +117,7 @@ export default Vue.extend({
   }
 }
 
-@media (min-width: $break) {
+@media ($viewport-11) {
   .schema__info {
     grid-template-columns: 1fr 1fr 1fr;
     column-gap: 20px;

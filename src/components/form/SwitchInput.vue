@@ -49,7 +49,7 @@ export default Vue.extend({
   margin-top: 10px;
 
   &__label {
-    font-family: $font-main;
+    font-family: $primaryFont;
     font-size: 0.8em;
     margin-bottom: 3px;
   }
@@ -59,7 +59,7 @@ export default Vue.extend({
   }
   &--horizontal &__label {
     font-size: 1em;
-    font-family: $font-sec;
+    font-family: $headerFont;
     margin-right: 10px;
   }
 }

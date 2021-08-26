@@ -92,7 +92,7 @@ export default Vue.extend({
     all: unset;
     background-color: #fff;
     color: $font-color;
-    box-shadow: 0px 2px 6px #0000000b;
+    box-shadow: $shadow;
     cursor: pointer;
     padding: 8px 16px;
     margin-left: 16px;

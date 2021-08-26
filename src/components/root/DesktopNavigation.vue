@@ -16,7 +16,7 @@
 
     <div class="nav__spacer"></div>
 
-    <router-link class="nav__link" to="/">
+    <router-link class="nav__link" to="/stats">
       <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/stats-icon.svg')" />
       <span class="nav__link-label">Statystyka</span>
     </router-link>

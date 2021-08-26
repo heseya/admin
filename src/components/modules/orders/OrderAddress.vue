@@ -115,7 +115,7 @@ export default Vue.extend({
   }
 
   &__subtitle {
-    font-family: $font-sec;
+    font-family: $headerFont;
     color: #000;
     margin-top: 4px;
   }

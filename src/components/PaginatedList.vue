@@ -20,18 +20,8 @@
     </AppCard>
 
     <div v-if="meta.last_page" class="paginated-list__footer">
-      <vs-select
-        class="per-page-select"
-        :value="itemsPerPage"
-        label="Elementów na stronę"
-        @input="changePerPage"
-      >
-        <vs-option v-for="option in perPageOptions" :key="option" :label="option" :value="option">
-          {{ option }}
-        </vs-option>
-      </vs-select>
-
       <AppPagination :value="page" :length="meta.last_page" @input="changePage" />
+      <AppPerPageSelect :value="itemsPerPage" @input="changePerPage" />
     </div>
   </div>
 </template>
@@ -42,9 +32,10 @@ import Draggable from 'vuedraggable'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Empty from '@/components/layout/Empty.vue'
-import Pagination from '@/components/Pagination.vue'
+import Pagination from '@/components/cms/Pagination.vue'
 import Card from '@/components/layout/Card.vue'
 import List from '@/components/layout/List.vue'
+import PerPageSelect from '@/components/cms/PerPageSelect.vue'
 
 import { ResponseMeta } from '@/interfaces/Response'
 import { formatFilters } from '@/utils/utils'
@@ -54,12 +45,13 @@ import { BaseItem } from '@/store/generator'
 
 export default Vue.extend({
   components: {
+    Draggable,
     AppTopNav: TopNav,
     AppEmpty: Empty,
     AppPagination: Pagination,
     AppCard: Card,
     AppList: List,
-    Draggable,
+    AppPerPageSelect: PerPageSelect,
   },
   props: {
     title: {
@@ -85,11 +77,11 @@ export default Vue.extend({
     filters: {
       type: Object,
       default: () => ({}),
-    },
+    } as Vue.PropOptions<Record<string, any>>,
     params: {
       type: Object,
       default: () => ({}),
-    },
+    } as Vue.PropOptions<Record<string, any>>,
   },
   data: () => ({
     page: 1,
@@ -115,9 +107,6 @@ export default Vue.extend({
     },
     error(): any {
       return this.$store.getters[`${this.storeKey}/getError`]
-    },
-    perPageOptions(): number[] {
-      return [12, 24, 36, 48, 64, 128, 250, 500]
     },
   },
   watch: {
@@ -181,24 +170,6 @@ export default Vue.extend({
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
-  }
-}
-
-.per-page-select {
-  max-width: 140px;
-  margin: 0px 4px;
-
-  .vs-select__label {
-    color: #334656 !important;
-    font-size: 0.6em;
-  }
-
-  .vs-select__input {
-    background-color: #f0f3f4;
-  }
-
-  .vs-pagination-content {
-    margin: 10px 0px;
   }
 }
 </style>

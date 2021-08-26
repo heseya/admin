@@ -4,7 +4,7 @@
 body {
   font-family: $primaryFont, 'BlinkMacSystemFont', sans-serif !important;
   background: $background-color-500 !important;
-  color: #000 !important;
+  color: $font-color !important;
   margin: 0;
 }
 

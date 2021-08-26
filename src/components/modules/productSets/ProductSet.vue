@@ -121,7 +121,7 @@ export default Vue.extend({
 
   &.sortable-chosen,
   &:hover {
-    background-color: $grey-light;
+    background-color: $background-color-700;
   }
 
   &__hidden-icon {

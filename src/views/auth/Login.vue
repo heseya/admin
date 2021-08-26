@@ -51,9 +51,9 @@ export default Vue.extend({
     },
   },
   watch: {
-    loginError(error) {
+    loginError(error: any) {
       if (error) {
-        this.$toast.error(formatApiNotificationError(e))
+        this.$toast.error(formatApiNotificationError(error))
       }
     },
   },

@@ -38,7 +38,7 @@ export default Vue.extend({
     },
   },
   watch: {
-    filters(f: ProductFilers) {
+    filters(f: { search: string; set: string }) {
       this.search = f.search
       this.sets = f.set
     },

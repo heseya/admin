@@ -101,3 +101,11 @@ hr {
     display: block;
   }
 }
+
+.v-toast {
+  padding-bottom: 5em !important;
+
+  @media ($viewport-11) {
+    padding-bottom: inherit !important;
+  }
+}

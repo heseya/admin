@@ -1,14 +1,14 @@
 <template>
-  <vs-select
-    class="per-page-select"
-    :value="value"
-    label="Elementów na stronę"
-    @input="(v) => $emit('input', v)"
-  >
-    <vs-option v-for="option in perPageOptions" :key="option" :label="option" :value="option">
-      {{ option }}
-    </vs-option>
-  </vs-select>
+  <div class="per-page-select">
+    <label for="per-page" class="per-page-select__label">Elementów na stronę</label>
+    <div class="per-page-select__select">
+      <select id="per-page" v-model="perPage">
+        <option v-for="option in perPageOptions" :key="option" :value="option">
+          {{ option }}
+        </option>
+      </select>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -24,26 +24,53 @@ export default Vue.extend({
     perPageOptions(): number[] {
       return [12, 24, 36, 48, 64, 128, 250, 500]
     },
+    perPage: {
+      get(): number {
+        return this.value
+      },
+      set(v: number) {
+        this.$emit('input', v)
+      },
+    },
   },
 })
 </script>
 
 <style lang="scss">
 .per-page-select {
-  max-width: 140px;
-  margin: 0px 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-  .vs-select__label {
-    color: $font-color !important;
-    font-size: 0.6em;
+  &__label {
+    font-size: 0.9em;
+    margin-right: 8px;
   }
 
-  .vs-select__input {
-    background-color: #f0f3f4;
-  }
+  &__select {
+    position: relative;
 
-  .vs-pagination-content {
-    margin: 10px 0px;
+    select {
+      color: $font-color;
+      box-shadow: 0px 2px 6px #0000000b;
+      padding: 8px 6px;
+      border: none;
+      padding-right: 16px;
+      appearance: none;
+      border-radius: 4px;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 6px;
+      height: 8px;
+      pointer-events: none;
+      background-color: #d9dbe0;
+    }
   }
 }
 </style>

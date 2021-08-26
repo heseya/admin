@@ -7,7 +7,7 @@
 <style lang="scss">
 @media (min-width: $break) {
   .list {
-    padding: 10px 24px;
+    padding: 10px;
   }
 }
 </style>

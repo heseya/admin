@@ -54,13 +54,13 @@ export default Vue.extend({
       return !this.showable.includes(1)
     },
     showFirstSpacer(): boolean {
-      return !this.showable.includes(2)
+      return !this.showable.includes(Math.min(2, this.length))
     },
     showLastButton(): boolean {
       return !this.showable.includes(this.length)
     },
     showLastSpacer(): boolean {
-      return !this.showable.includes(this.length - 1)
+      return !this.showable.includes(Math.max(this.length - 1, 1))
     },
   },
   methods: {

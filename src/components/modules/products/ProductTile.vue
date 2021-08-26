@@ -85,7 +85,7 @@ export default Vue.extend({
     position: relative;
     width: 100%;
     padding-top: 100%;
-    border-radius: 20px;
+    border-radius: 8px;
     background-color: #fff;
     overflow: hidden;
     margin-bottom: 4px;
@@ -149,7 +149,7 @@ export default Vue.extend({
   }
 
   .name {
-    font-family: $font-sec;
+    font-weight: 500;
     padding: 5px;
     padding-bottom: 2px;
   }

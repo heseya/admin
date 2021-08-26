@@ -25,8 +25,13 @@ export default Vue.extend({
 .top-nav {
   margin-bottom: 20px;
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  align-items: center;
+
+  @media ($viewport-6) {
+    flex-direction: row;
+    align-items: center;
+  }
 
   &__title {
     display: inline-block;

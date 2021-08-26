@@ -111,7 +111,7 @@ export default Vue.extend({
   },
   watch: {
     '$route.query'({ page }) {
-      this.page = page || 1
+      this.page = Number(page) || 1
       if (this.meta.current_page !== page) {
         this.getItems()
         window.scrollTo(0, 0)
@@ -170,6 +170,19 @@ export default Vue.extend({
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
+    flex-direction: column;
+
+    > * {
+      margin-top: 8px;
+    }
+
+    @media ($viewport-6) {
+      flex-direction: row;
+
+      > * {
+        margin-top: 0;
+      }
+    }
   }
 }
 </style>

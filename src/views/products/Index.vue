@@ -103,28 +103,17 @@ export default Vue.extend({
       padding: 0;
       background-color: #fff0;
       box-shadow: none;
+      border: none;
     }
 
     .paginated-list__list {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       grid-gap: 22px;
       padding: 0;
       min-height: 100px;
       margin-bottom: 12px;
       align-items: start;
-    }
-
-    @media (min-width: 700px) {
-      .paginated-list__list {
-        grid-template-columns: 1fr 1fr 1fr;
-      }
-    }
-
-    @media (min-width: $break) {
-      .paginated-list__list {
-        grid-template-columns: 1fr 1fr 1fr 1fr;
-      }
     }
   }
 }

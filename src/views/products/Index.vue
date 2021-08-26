@@ -44,6 +44,7 @@ import ProductsFilter, {
 import PaginatedList from '@/components/PaginatedList.vue'
 import { formatFilters } from '@/utils/utils'
 import IconButton from '@/components/layout/IconButton.vue'
+import { ALL_FILTER_VALUE } from '@/consts/filters'
 
 const LOCAL_STORAGE_KEY = 'products-list-view'
 
@@ -66,7 +67,7 @@ export default Vue.extend({
   },
   created() {
     this.filters.search = (this.$route.query.search as string) || ''
-    this.filters.sets = (this.$route.query.set as string) || ''
+    this.filters.sets = (this.$route.query.set as string) || ALL_FILTER_VALUE
     // for future purposes, when we'll be able to filter by more than one set
     // const sets = this.$route.query.set || []
     // this.filters.sets = isArray(sets) ? (sets as string[]) : [sets]
@@ -85,7 +86,7 @@ export default Vue.extend({
       })
     },
     clearFilters() {
-      this.filters = { ...EMPTY_PRODUCT_FILTERS }
+      this.makeSearch({ ...EMPTY_PRODUCT_FILTERS })
     },
   },
 })

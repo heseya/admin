@@ -1,10 +1,13 @@
 <template>
   <div>
-    <PaginatedList title="Zamówienia" :filters="filters" store-key="orders">
-      <template #nav>
-        <vs-button color="dark" icon @click="areFiltersOpen = true">
-          <i class="bx bx-filter-alt"></i>
-        </vs-button>
+    <PaginatedList
+      title="Zamówienia"
+      :filters="filters"
+      store-key="orders"
+      @clear-filters="clearFilters"
+    >
+      <template #filters>
+        <order-filter :filters="filters" @search="makeSearch" />
       </template>
 
       <template v-slot="{ item: order }">
@@ -36,15 +39,6 @@
         </list-item>
       </template>
     </PaginatedList>
-
-    <vs-dialog v-model="areFiltersOpen" width="550px" not-center>
-      <template #header>
-        <h4>Filtry</h4>
-      </template>
-      <modal-form>
-        <order-filter :filters="filters" @search="makeSearch" />
-      </modal-form>
-    </vs-dialog>
   </div>
 </template>
 
@@ -56,21 +50,18 @@ import { ALL_FILTER_VALUE } from '@/consts/filters'
 
 import ListItem from '@/components/layout/ListItem.vue'
 import OrderFilter, { EMPTY_ORDER_FILTERS } from '@/components/modules/orders/OrderFilter.vue'
-import ModalForm from '@/components/form/ModalForm.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 
 type OrderFilersType = typeof EMPTY_ORDER_FILTERS
 
 export default Vue.extend({
   components: {
-    ModalForm,
     OrderFilter,
     ListItem,
     PaginatedList,
   },
   data: () => ({
     filters: { ...EMPTY_ORDER_FILTERS } as OrderFilersType,
-    areFiltersOpen: false,
   }),
   computed: {
     currency(): string {
@@ -96,6 +87,9 @@ export default Vue.extend({
         path: 'orders',
         query: { page: undefined, ...queryFilters },
       })
+    },
+    clearFilters() {
+      this.makeSearch({ ...EMPTY_ORDER_FILTERS })
     },
   },
 })

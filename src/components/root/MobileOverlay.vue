@@ -149,7 +149,7 @@ export default Vue.extend({
       }
     }
 
-    &.router-link-exact-active {
+    &.router-link-active {
       color: $primary-color-500;
 
       .nav-link-img {

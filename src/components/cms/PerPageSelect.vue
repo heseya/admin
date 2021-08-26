@@ -61,15 +61,18 @@ export default Vue.extend({
     }
 
     &::after {
-      content: '';
+      content: '\ea27';
+      font-family: boxicons !important;
+      font-weight: 400;
+      color: #d9dbe0;
       position: absolute;
-      right: 8px;
+      right: 10px;
       top: 50%;
+      line-height: 0.8em;
       transform: translateY(-50%);
-      width: 6px;
+      width: 8px;
       height: 8px;
       pointer-events: none;
-      background-color: #d9dbe0;
     }
   }
 }

@@ -1,21 +1,26 @@
 <template>
   <div class="orders-filter">
-    <vs-input v-model="search" type="search" label="Wyszukiwanie" @keydown.enter="makeSearch" />
+    <vs-input v-model="search" type="search" label="Wyszukiwanie" @input="debouncedSearch" />
 
-    <vs-select :key="'status' + statuses.length" v-model="status_id" label="Status" filter>
+    <vs-select
+      :key="'status' + statuses.length"
+      v-model="status_id"
+      label="Status"
+      filter
+      @input="debouncedSearch"
+    >
       <vs-option label="Wszystkie" value="_all"> Wszystkie </vs-option>
       <vs-option v-for="s in statuses" :key="s.id" :label="s.name" :value="s.id">
         {{ s.name }}
       </vs-option>
     </vs-select>
 
-    <br />
-
     <vs-select
       :key="'shippingMethod' + shippingMethods.length"
       v-model="shipping_method_id"
       label="Dostawa"
       filter
+      @input="debouncedSearch"
     >
       <vs-option label="Wszystkie" value="_all"> Wszystkie </vs-option>
       <vs-option
@@ -27,17 +32,13 @@
         {{ method.name }}
       </vs-option>
     </vs-select>
-
-    <br />
-
-    <vs-button color="dark" @click="makeSearch"> <i class="bx bx-search"></i> Wyszukaj </vs-button>
-    <vs-button transparent @click="clearFilters"> Wyczyść filtry </vs-button>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import clone from 'lodash/clone'
+import { debounce } from 'lodash'
 
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 
@@ -96,14 +97,20 @@ export default Vue.extend({
         shipping_method_id: this.shipping_method_id,
       })
     },
-    clearFilters() {
-      this.$emit('search', clone(EMPTY_ORDER_FILTERS))
-    },
+
+    debouncedSearch: debounce(function (this: any) {
+      this.$nextTick(() => {
+        this.makeSearch()
+      })
+    }, 300),
   },
 })
 </script>
 
 <style lang="scss" scoped>
 .orders-filter {
+  & *:first-child {
+    grid-column: 1 / span 2;
+  }
 }
 </style>

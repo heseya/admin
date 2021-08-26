@@ -6,7 +6,12 @@
           Filtry
           <div v-if="filtersCount" class="cms-filters__badge">{{ filtersCount }}</div>
         </div>
-        <icon-button type="default" size="small" @click="$emit('clear-filters')">
+        <icon-button
+          :disabled="filtersCount === 0"
+          type="default"
+          size="small"
+          @click="$emit('clear-filters')"
+        >
           <template #icon>
             <img src="@/assets/images/icons/close-icon.svg" alt="Close" />
           </template>
@@ -53,10 +58,13 @@ export default Vue.extend({
 .cms-filters {
   display: flex;
   padding: 0;
+  position: sticky;
+  top: 16px;
+  z-index: 100;
 
   &__wrapper {
     width: 100%;
-    padding: 8px;
+    padding: 14px;
   }
 
   &__header {
@@ -115,6 +123,13 @@ export default Vue.extend({
 
   &--expanded &__content {
     max-height: 64px * 4;
+  }
+
+  ::v-deep {
+    .vs-select-content {
+      width: 100%;
+      max-width: 100%;
+    }
   }
 }
 </style>

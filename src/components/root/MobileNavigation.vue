@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="mobile-nav" :class="{ 'mobile-nav--hidden': isHidden }">
-      <router-link class="mobile-nav__link" to="/">
+      <router-link class="mobile-nav__link" to="/" exact>
         <InlineSvg
           class="nav-link-img"
           :src="require('@/assets/images/icons/dashboard-icon.svg')"
@@ -87,7 +87,7 @@ export default Vue.extend({
       box-sizing: border-box;
     }
 
-    &.router-link-exact-active {
+    &.router-link-active {
       color: $primary-color-500;
 
       .nav-link-img {

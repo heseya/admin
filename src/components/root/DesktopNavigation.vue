@@ -2,7 +2,7 @@
   <nav class="nav" :class="{ 'nav--hidden': isHidden }">
     <nav-store-logo />
 
-    <router-link class="nav__link" to="/">
+    <router-link class="nav__link" to="/" exact>
       <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/dashboard-icon.svg')" />
       <span class="nav__link-label">Dashboard</span>
     </router-link>
@@ -135,7 +135,7 @@ export default Vue.extend({
       }
     }
 
-    &.router-link-exact-active {
+    &.router-link-active {
       color: $primary-color-500;
       background-color: $primary-color-200;
 

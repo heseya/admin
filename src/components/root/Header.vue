@@ -10,7 +10,7 @@
         class="header__return-btn"
       >
         <template #icon>
-          <img src="@/assets/images/icons/close-icon.svg" alt="Close" />
+          <i class="bx bx-left-arrow-alt"></i>
         </template>
         Wróć do listy
       </icon-button>
@@ -19,7 +19,7 @@
     </transition>
 
     <div v-if="user" class="header__user user">
-      <div class="user__role">{{ userRole }}</div>
+      <div class="user__role"><i class="bx bx-user"></i> {{ userRole }}</div>
 
       <a-dropdown :trigger="['click']">
         <div class="user__email">{{ user.email }}</div>

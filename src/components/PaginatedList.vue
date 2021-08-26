@@ -47,10 +47,12 @@ import PerPageSelect from '@/components/cms/PerPageSelect.vue'
 import CmsFilters from '@/components/cms/CmsFilters.vue'
 
 import { ResponseMeta } from '@/interfaces/Response'
-import { formatFilters } from '@/utils/utils'
-import { debounce } from 'lodash'
-import { formatApiNotificationError } from '@/utils/errors'
 import { BaseItem } from '@/store/generator'
+
+import { formatFilters } from '@/utils/utils'
+import { formatApiNotificationError } from '@/utils/errors'
+
+import { ALL_FILTER_VALUE } from '@/consts/filters'
 
 export default Vue.extend({
   components: {
@@ -113,7 +115,7 @@ export default Vue.extend({
       },
     },
     filtersCount(): number {
-      return Object.values(this.filters).filter((v) => !!v).length
+      return Object.values(this.filters).filter((v) => !!v && v !== ALL_FILTER_VALUE).length
     },
     meta(): ResponseMeta {
       return this.$store.getters[`${this.storeKey}/getMeta`]
@@ -135,9 +137,6 @@ export default Vue.extend({
         this.$toast.error(formatApiNotificationError(error))
       }
     },
-    filters: debounce(function (this: any) {
-      this.getItems()
-    }, 300),
   },
   beforeMount() {
     this.page = Number(this.$route.query.page) || 1
@@ -179,6 +178,8 @@ export default Vue.extend({
 
 <style lang="scss">
 .paginated-list {
+  position: relative;
+
   &__footer {
     display: flex;
     align-items: flex-end;

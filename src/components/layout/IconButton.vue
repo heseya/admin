@@ -12,6 +12,7 @@
         'icon-button--no-text': !$slots.default,
       },
     ]"
+    :disabled="disabled"
     @click="(e) => $emit('click', e)"
   >
     <div class="icon-button__text">
@@ -106,6 +107,10 @@ export default Vue.extend({
       width: 100%;
       height: 100%;
     }
+  }
+
+  &--disabled {
+    cursor: not-allowed;
   }
 
   &--reversed {

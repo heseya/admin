@@ -3,6 +3,7 @@
     <vs-input :value="search" type="search" label="Wyszukiwanie" @input="setSearch" />
 
     <vs-select :key="productSets.length" :value="sets" label="Kolekcja" filter @input="setSet">
+      <vs-option label="Wszystkie" value="_all"> Wszystkie </vs-option>
       <vs-option v-for="set in productSets" :key="set.id" :label="set.name" :value="set.slug">
         {{ set.name }}
       </vs-option>
@@ -14,9 +15,11 @@
 import Vue from 'vue'
 import { debounce } from 'lodash'
 
+import { ALL_FILTER_VALUE } from '@/consts/filters'
+
 export const EMPTY_PRODUCT_FILTERS = {
   search: '',
-  sets: '',
+  sets: ALL_FILTER_VALUE,
 }
 
 type ProductFilers = typeof EMPTY_PRODUCT_FILTERS
@@ -30,7 +33,7 @@ export default Vue.extend({
   },
   data: () => ({
     search: '',
-    sets: '',
+    sets: ALL_FILTER_VALUE,
   }),
   computed: {
     productSets() {

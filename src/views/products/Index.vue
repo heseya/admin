@@ -1,6 +1,11 @@
 <template>
   <div class="products-container" :class="{ 'products-container--grid-view': !listView }">
-    <PaginatedList title="Asortyment" :filters="filters" store-key="products">
+    <PaginatedList
+      title="Asortyment"
+      :filters="filters"
+      store-key="products"
+      @clear-filters="clearFilters"
+    >
       <template #nav>
         <icon-button @click="listView = !listView">
           <template #icon>
@@ -10,15 +15,14 @@
           Przełącz na widok {{ listView ? 'siatki' : 'listy' }}
         </icon-button>
 
-        <icon-button @click="areFiltersOpen = true">
-          <template #icon><i class="bx bx-filter-alt"></i></template>
-          Otwórz filtry
-        </icon-button>
-
         <icon-button to="/products/create">
           <template #icon><i class="bx bx-plus"></i></template>
           Dodaj produkt
         </icon-button>
+      </template>
+
+      <template #filters>
+        <products-filter :filters="filters" @search="makeSearch" />
       </template>
 
       <template v-slot="{ item: product }">
@@ -26,15 +30,6 @@
         <ProductListItem v-else :product="product" />
       </template>
     </PaginatedList>
-
-    <vs-dialog v-model="areFiltersOpen" width="550px" not-center>
-      <template #header>
-        <h4>Filtry</h4>
-      </template>
-      <modal-form>
-        <products-filter :filters="filters" @search="makeSearch" />
-      </modal-form>
-    </vs-dialog>
   </div>
 </template>
 
@@ -46,7 +41,6 @@ import ProductListItem from '@/components/modules/products/ProductListItem.vue'
 import ProductsFilter, {
   EMPTY_PRODUCT_FILTERS,
 } from '@/components/modules/products/ProductsFilter.vue'
-import ModalForm from '@/components/form/ModalForm.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 import { formatFilters } from '@/utils/utils'
 import IconButton from '@/components/layout/IconButton.vue'
@@ -58,13 +52,11 @@ export default Vue.extend({
     ProductTile,
     ProductListItem,
     ProductsFilter,
-    ModalForm,
     PaginatedList,
     IconButton,
   },
   data: () => ({
     filters: { ...EMPTY_PRODUCT_FILTERS },
-    areFiltersOpen: false,
     listView: false,
   }),
   watch: {
@@ -92,6 +84,9 @@ export default Vue.extend({
         query: { page: undefined, ...queryFilters },
       })
     },
+    clearFilters() {
+      this.filters = { ...EMPTY_PRODUCT_FILTERS }
+    },
   },
 })
 </script>
@@ -99,7 +94,7 @@ export default Vue.extend({
 <style lang="scss">
 .products-container {
   &--grid-view {
-    .card {
+    .paginated-list__content {
       padding: 0;
       background-color: #fff0;
       box-shadow: none;
@@ -108,7 +103,7 @@ export default Vue.extend({
 
     .paginated-list__list {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       grid-gap: 22px;
       padding: 0;
       min-height: 100px;

@@ -4,7 +4,15 @@
       <slot name="nav"></slot>
     </AppTopNav>
 
-    <AppCard>
+    <AppCmsFilters
+      v-if="$slots.filters"
+      :filters-count="filtersCount"
+      @clear-filters="$emit('clear-filters')"
+    >
+      <slot name="filters"></slot>
+    </AppCmsFilters>
+
+    <AppCard class="paginated-list__content">
       <AppEmpty v-if="!items.length">{{ emptyText }}</AppEmpty>
       <AppList class="paginated-list__list">
         <Draggable v-if="draggable" v-model="items">
@@ -36,6 +44,7 @@ import Pagination from '@/components/cms/Pagination.vue'
 import Card from '@/components/layout/Card.vue'
 import List from '@/components/layout/List.vue'
 import PerPageSelect from '@/components/cms/PerPageSelect.vue'
+import CmsFilters from '@/components/cms/CmsFilters.vue'
 
 import { ResponseMeta } from '@/interfaces/Response'
 import { formatFilters } from '@/utils/utils'
@@ -52,6 +61,7 @@ export default Vue.extend({
     AppCard: Card,
     AppList: List,
     AppPerPageSelect: PerPageSelect,
+    AppCmsFilters: CmsFilters,
   },
   props: {
     title: {
@@ -101,6 +111,9 @@ export default Vue.extend({
         await this.getItems()
         this.$accessor.stopLoading()
       },
+    },
+    filtersCount(): number {
+      return Object.values(this.filters).filter((v) => !!v).length
     },
     meta(): ResponseMeta {
       return this.$store.getters[`${this.storeKey}/getMeta`]

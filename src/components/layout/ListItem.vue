@@ -65,14 +65,16 @@ export default Vue.extend({
   border-radius: 7px;
   padding: 8px 12px;
   min-height: 32px;
-  font-family: $headerFont;
-  font-size: 17px;
   display: flex;
   align-items: center;
   text-decoration: none;
   color: black;
   transition: 0.3s;
   text-align: left;
+
+  &__content {
+    font-weight: 600;
+  }
 
   &__hidden-icon {
     font-size: 0.9em;

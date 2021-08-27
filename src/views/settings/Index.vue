@@ -170,13 +170,13 @@ export default Vue.extend({
     font-weight: 300;
     margin-right: 8px;
     font-size: 1.2em;
-    font-family: $headerFont;
+    font-weight: 600;
   }
 }
 
 .section-title {
-  font-family: $headerFont;
-  font-weight: 400;
+  font-weight: 600;
   margin-bottom: 5px;
+  margin-top: 16px;
 }
 </style>

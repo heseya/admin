@@ -61,7 +61,7 @@ export default Vue.extend({
     width: 100%;
     text-align: right;
     color: #333;
-    font-family: $headerFont;
+    font-weight: 600;
     font-size: 0.7em;
 
     i {

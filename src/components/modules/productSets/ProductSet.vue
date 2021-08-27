@@ -138,8 +138,11 @@ export default Vue.extend({
   }
 
   &__name {
-    font-family: $headerFont;
-    font-weight: 500;
+    font-weight: 600;
+
+    small {
+      font-weight: 400;
+    }
   }
 
   &__actions {

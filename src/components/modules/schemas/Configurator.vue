@@ -173,7 +173,7 @@ export default Vue.extend({
 
   &__title {
     font-size: 1.3em;
-    font-family: $headerFont;
+    font-weight: 600;
   }
 
   &__schemas {

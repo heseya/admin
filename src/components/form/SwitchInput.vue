@@ -59,7 +59,7 @@ export default Vue.extend({
   }
   &--horizontal &__label {
     font-size: 1em;
-    font-family: $headerFont;
+    font-weight: 600;
     margin-right: 10px;
   }
 }

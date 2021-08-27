@@ -162,7 +162,7 @@ export default Vue.extend({
 
   &__name {
     display: block;
-    font-family: $headerFont;
+    font-weight: 600;
   }
 
   &__price {

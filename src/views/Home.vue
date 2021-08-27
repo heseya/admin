@@ -9,32 +9,32 @@
             <h2 class="section-title">Przychody</h2>
 
             <div class="incomes">
-              <div class="income-box">
+              <card class="income-box">
                 <div class="income-box__title">W tym tygodniu</div>
                 <div class="income-box__value">
                   {{ currentWeekIncome.toFixed(2) }} {{ currency }}
                 </div>
                 <div class="income-box__orders">{{ currentWeekOrdersCount }} zamówień</div>
-              </div>
-              <div class="income-box">
+              </card>
+              <card class="income-box">
                 <div class="income-box__title">W tym miesiącu</div>
                 <div class="income-box__value">
                   {{ currentMonthIncome.toFixed(2) }} {{ currency }}
                 </div>
                 <div class="income-box__orders">{{ currentMonthOrdersCount }} zamówień</div>
-              </div>
-              <div class="income-box">
+              </card>
+              <card class="income-box">
                 <div class="income-box__title">W tym roku</div>
                 <div class="income-box__value">
                   {{ currentYearIncome.toFixed(2) }} {{ currency }}
                 </div>
                 <div class="income-box__orders">{{ currentYearOrdersCount }} zamówień</div>
-              </div>
-              <div class="income-box">
+              </card>
+              <card class="income-box">
                 <div class="income-box__title">W ubiegłym roku</div>
                 <div class="income-box__value">{{ lastYearIncome.toFixed(2) }} {{ currency }}</div>
                 <div class="income-box__orders">{{ lastYearOrdersCount }} zamówień</div>
-              </div>
+              </card>
             </div>
           </div>
         </card>
@@ -163,8 +163,7 @@ export default Vue.extend({
 }
 
 .section-title {
-  font-family: $headerFont;
-  font-weight: 300;
+  font-weight: 600;
   margin: 0;
   font-size: 1.5em;
   display: flex;
@@ -188,17 +187,17 @@ export default Vue.extend({
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 16px;
-  border-radius: 16px;
-  box-shadow: $shadow;
+  margin-bottom: 0;
+  padding: 32px 16px;
 
   &__title {
-    font-family: $headerFont;
+    font-weight: 600;
   }
 
   &__value {
-    font-family: $headerFont;
+    font-weight: 600;
     font-size: 2.6rem;
+    line-height: 1em;
     margin: 8px 0;
   }
 

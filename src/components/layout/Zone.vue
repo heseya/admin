@@ -34,7 +34,7 @@ export default Vue.extend({
   }
 
   &__title {
-    font-family: $headerFont;
+    font-weight: 600;
     color: var(--zone-text-color);
     display: flex;
     align-items: center;

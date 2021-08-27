@@ -110,12 +110,14 @@ export default Vue.extend({
 
   &__name {
     font-size: 1.1em;
+    font-weight: 600;
     margin-bottom: 3px;
     color: #000;
   }
 
   &__subtitle {
-    font-family: $headerFont;
+    font-weight: 500;
+    font-size: 0.9em;
     color: #000;
     margin-top: 4px;
   }

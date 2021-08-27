@@ -127,14 +127,14 @@ export default Vue.extend({
     font-size: 1.2em;
     margin-bottom: 8px;
     display: block;
-    font-family: $headerFont;
+    font-weight: 600;
   }
 
   &__subtitle {
     margin-bottom: 4px;
     display: flex;
     align-items: center;
-    font-family: $headerFont;
+    font-weight: 600;
     text-transform: capitalize;
   }
 

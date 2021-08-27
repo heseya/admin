@@ -32,7 +32,7 @@ export default Vue.extend({
 
   &__title {
     margin: 0;
-    font-family: $headerFont;
+    font-weight: 600;
     margin-bottom: 32px;
   }
 

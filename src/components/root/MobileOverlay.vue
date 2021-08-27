@@ -10,7 +10,7 @@
     </router-link>
 
     <router-link
-      v-can.hide="$p.Products.Show"
+      v-can="$p.Products.Show"
       class="mobile-nav-overlay__link"
       to="/products"
       @click.native="close"
@@ -20,9 +20,9 @@
     </router-link>
 
     <router-link
-      v-can.hide="$p.Products.Show"
+      v-can="$p.ProductSets.Show"
       class="mobile-nav-overlay__link"
-      to="/settings/product-sets"
+      to="/collections"
       @click.native="close"
     >
       <InlineSvg
@@ -33,7 +33,7 @@
     </router-link>
 
     <router-link
-      v-can.hide="$p.Items.Show"
+      v-can="$p.Items.Show"
       class="mobile-nav-overlay__link"
       to="/items"
       @click.native="close"
@@ -43,7 +43,7 @@
     </router-link>
 
     <router-link
-      v-can.hide="$p.Discounts.Show"
+      v-can="$p.Discounts.Show"
       class="mobile-nav-overlay__link"
       to="/discounts"
       @click.native="close"

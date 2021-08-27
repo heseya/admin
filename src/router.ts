@@ -171,7 +171,7 @@ const router = new VueRouter({
       },
     },
     {
-      path: '/settings/product-sets',
+      path: '/collections',
       name: 'ProductSets',
       component: () => import('./views/productSets/Index.vue'),
       meta: {

@@ -15,15 +15,7 @@
         <h2 v-can="$p.Pages.Show" class="section-title">Sklep</h2>
         <SettingsItem v-can="$p.Pages.Show" name="Strony" url="/pages" icon="bx bxs-copy-alt" />
 
-        <h2 v-can.any="[$p.ProductSets.Show, $p.Tags.Show, $p.Products.Show]" class="section-title">
-          Produkty
-        </h2>
-        <SettingsItem
-          v-can="$p.ProductSets.Show"
-          name="Kolekcje produktów"
-          url="/settings/product-sets"
-          icon="bx bx-list-ul"
-        />
+        <h2 v-can.any="[$p.Tags.Show, $p.Products.Show]" class="section-title">Produkty</h2>
         <SettingsItem
           v-can="$p.Tags.Show"
           name="Tagi"

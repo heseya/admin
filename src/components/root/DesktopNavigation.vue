@@ -9,7 +9,7 @@
 
     <div class="nav__spacer"></div>
 
-    <router-link v-can.hide="$p.Orders.Show" class="nav__link" to="/orders">
+    <router-link v-can="$p.Orders.Show" class="nav__link" to="/orders">
       <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/orders-icon.svg')" />
       <span class="nav__link-label">Zamówienia</span>
     </router-link>
@@ -21,12 +21,12 @@
       <span class="nav__link-label">Statystyka</span>
     </router-link>
 
-    <router-link v-can.hide="$p.Products.Show" class="nav__link" to="/products">
+    <router-link v-can="$p.Products.Show" class="nav__link" to="/products">
       <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/products-icon.svg')" />
       <span class="nav__link-label">Produkty</span>
     </router-link>
 
-    <router-link v-can.hide="$p.Products.Show" class="nav__link" to="/settings/product-sets">
+    <router-link v-can="$p.ProductSets.Show" class="nav__link" to="/collections">
       <InlineSvg
         class="nav-link-img"
         :src="require('@/assets/images/icons/collections-icon.svg')"
@@ -34,12 +34,12 @@
       <span class="nav__link-label">Kolekcje</span>
     </router-link>
 
-    <router-link v-can.hide="$p.Items.Show" class="nav__link" to="/items">
+    <router-link v-can="$p.Items.Show" class="nav__link" to="/items">
       <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/warehouse-icon.svg')" />
       <span class="nav__link-label">Magazyn</span>
     </router-link>
 
-    <router-link v-can.hide="$p.Discounts.Show" class="nav__link" to="/discounts">
+    <router-link v-can="$p.Discounts.Show" class="nav__link" to="/discounts">
       <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/discounts-icon.svg')" />
       <span class="nav__link-label">Kody rabatowe</span>
     </router-link>

@@ -35,12 +35,7 @@
             rules="required"
             label="Kod"
           />
-          <validated-input
-            v-model="editedItem.description"
-            :disabled="!canModify"
-            rules="required"
-            label="Opis"
-          />
+          <validated-input v-model="editedItem.description" :disabled="!canModify" label="Opis" />
 
           <validated-input
             v-model="editedItem.max_uses"

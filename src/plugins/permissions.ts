@@ -49,12 +49,13 @@ Vue.directive('can', function (el, binding) {
       } else {
         if (el.parentNode) {
           // Element node is replaced by a comment node
-          const comment = document.createComment(' xd ')
-          elementsMap.set(el, [el.parentNode, comment])
+          const comment = document.createComment(' ')
           el.parentNode.replaceChild(comment, el)
+          elementsMap.set(el, [el.parentNode, comment])
         }
       }
-      break
+      // Fallback if parentNode doesn't exist
+      if (el.parentNode) break
     case 'hide':
       el.style.display = isElementVisible ? '' : 'none'
   }

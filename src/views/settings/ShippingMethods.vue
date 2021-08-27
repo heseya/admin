@@ -2,9 +2,12 @@
   <div>
     <PaginatedList title="Opcje Dostawy" store-key="shippingMethods" draggable>
       <template #nav>
-        <vs-button v-can="$p.ShippingMethods.Add" color="dark" icon @click="openModal()">
-          <i class="bx bx-plus"></i>
-        </vs-button>
+        <icon-button v-can="$p.ShippingMethods.Add" @click="openModal()">
+          <template #icon>
+            <i class="bx bx-plus"></i>
+          </template>
+          Dodaj opcję dostawy
+        </icon-button>
       </template>
 
       <template v-slot="{ item: shippingMethod }">
@@ -63,6 +66,7 @@ import PaginatedList from '@/components/PaginatedList.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ShippingMethodsForm from '@/components/modules/shippingMethods/Index.vue'
+import IconButton from '@/components/layout/IconButton.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import { ShippingMethodDTO } from '@/interfaces/ShippingMethod'
@@ -74,6 +78,7 @@ export default Vue.extend({
     ValidationObserver,
     PaginatedList,
     ShippingMethodsForm,
+    IconButton,
   },
   data: () => ({
     isModalActive: false,

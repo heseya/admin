@@ -2,9 +2,12 @@
   <div>
     <PaginatedList title="Kolekcje produktów" store-key="productSets" draggable>
       <template #nav>
-        <vs-button v-can="$p.ProductSets.Add" color="dark" icon @click="createProductSet()">
-          <i class="bx bx-plus"></i>
-        </vs-button>
+        <icon-button v-can="$p.ProductSets.Add" @click="createProductSet()">
+          <template #icon>
+            <i class="bx bx-plus"></i>
+          </template>
+          Dodaj kolekcję
+        </icon-button>
       </template>
 
       <template v-slot="{ item: set }">
@@ -38,6 +41,7 @@ import PaginatedList from '@/components/PaginatedList.vue'
 import ProductSetForm from '@/components/modules/productSets/Form.vue'
 import ProductSetComponent from '@/components/modules/productSets/ProductSet.vue'
 import SetProductsList from '@/components/modules/productSets/SetProductsList.vue'
+import IconButton from '@/components/layout/IconButton.vue'
 
 import { ProductSet, ProductSetDTO } from '@/interfaces/ProductSet'
 
@@ -58,6 +62,7 @@ export default Vue.extend({
     ProductSetForm,
     ProductSet: ProductSetComponent,
     SetProductsList,
+    IconButton,
   },
   data: () => ({
     isFormModalActive: false,

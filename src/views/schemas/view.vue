@@ -10,9 +10,12 @@
         cancel-text="Anuluj"
         @confirm="deleteSchema"
       >
-        <vs-button dark icon @click="open">
-          <i class="bx bx-trash"></i>
-        </vs-button>
+        <icon-button type="danger" @click="open">
+          <template #icon>
+            <i class="bx bx-trash"></i>
+          </template>
+          Usuń
+        </icon-button>
       </pop-confirm>
     </top-nav>
 
@@ -39,6 +42,8 @@ import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import SchemaForm from '@/components/modules/schemas/Form.vue'
+import IconButton from '@/components/layout/IconButton.vue'
+
 import { formatApiNotificationError } from '@/utils/errors'
 
 export default Vue.extend({
@@ -47,6 +52,7 @@ export default Vue.extend({
     Card,
     SchemaForm,
     PopConfirm,
+    IconButton,
   },
   data: () => ({
     editedSchema: {} as Schema,

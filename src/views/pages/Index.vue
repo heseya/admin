@@ -2,9 +2,12 @@
   <div>
     <PaginatedList title="Strony" store-key="pages" draggable>
       <template #nav>
-        <vs-button to="/pages/create" color="dark" icon>
-          <i class="bx bx-plus"></i>
-        </vs-button>
+        <icon-button v-can="$p.Pages.Add" to="/pages/create">
+          <template #icon>
+            <i class="bx bx-plus"></i>
+          </template>
+          Dodaj stronę
+        </icon-button>
       </template>
 
       <template v-slot="{ item: page }">
@@ -21,11 +24,13 @@
 import Vue from 'vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
+import IconButton from '@/components/layout/IconButton.vue'
 
 export default Vue.extend({
   components: {
     ListItem,
     PaginatedList,
+    IconButton,
   },
 })
 </script>

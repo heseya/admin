@@ -2,9 +2,12 @@
   <div>
     <PaginatedList title="Szablony przesyłek" store-key="packageTemplates">
       <template #nav>
-        <vs-button v-can="$p.Packages.Add" color="dark" icon @click="openModal()">
-          <i class="bx bx-plus"></i>
-        </vs-button>
+        <icon-button v-can="$p.Packages.Add" @click="openModal()">
+          <template #icon>
+            <i class="bx bx-plus"></i>
+          </template>
+          Dodaj szablon
+        </icon-button>
       </template>
       <template v-slot="{ item: packageTemplate }">
         <list-item @click="openModal(packageTemplate.id)">
@@ -100,6 +103,7 @@ import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import { PackageTemplate } from '@/interfaces/PackageTemplate'
+import IconButton from '@/components/layout/IconButton.vue'
 
 const CLEAR_PACKAGE_TEMPALTE: PackageTemplate = {
   id: '',
@@ -118,6 +122,7 @@ export default Vue.extend({
     PopConfirm,
     ValidationObserver,
     ValidatedInput,
+    IconButton,
   },
   data: () => ({
     isModalActive: false,

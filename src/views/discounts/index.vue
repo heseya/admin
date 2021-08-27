@@ -2,9 +2,12 @@
   <div>
     <PaginatedList title="Kody rabatowe" store-key="discounts">
       <template #nav>
-        <vs-button v-can="$p.Discounts.Add" color="dark" icon @click="openModal()">
-          <i class="bx bx-plus"></i>
-        </vs-button>
+        <icon-button v-can="$p.Discounts.Add" @click="openModal()">
+          <template #icon>
+            <i class="bx bx-plus"></i>
+          </template>
+          Dodaj kod rabatowy
+        </icon-button>
       </template>
 
       <template v-slot="{ item: discount }">
@@ -86,6 +89,7 @@ import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import ModalForm from '@/components/form/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
+import IconButton from '@/components/layout/IconButton.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
 import { DiscountCode } from '@/interfaces/DiscountCode'
@@ -109,6 +113,7 @@ export default Vue.extend({
     ValidationObserver,
     PaginatedList,
     ValidatedInput,
+    IconButton,
   },
   data: () => ({
     isModalActive: false,

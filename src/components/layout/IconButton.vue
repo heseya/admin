@@ -47,7 +47,7 @@ export default Vue.extend({
     type: {
       type: String,
       default: 'primary',
-    } as Vue.PropOptions<'default' | 'primary'>,
+    } as Vue.PropOptions<'default' | 'primary' | 'danger'>,
     size: {
       type: String,
       default: 'default',
@@ -155,6 +155,19 @@ export default Vue.extend({
     &:hover {
       background-color: $primary-color-200;
       color: $primary-color-500;
+    }
+  }
+
+  &--danger {
+    color: $red-color-500;
+
+    #{$root}__icon {
+      background-color: $red-color-200;
+    }
+
+    &:hover {
+      background-color: $red-color-200;
+      color: $red-color-500;
     }
   }
 }

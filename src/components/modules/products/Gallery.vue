@@ -123,7 +123,7 @@ export default Vue.extend({
     padding-top: 100%;
     margin-bottom: 4px;
     background-color: #fff;
-    border-radius: 20px;
+    border-radius: 7px;
     box-shadow: $shadow;
 
     img {

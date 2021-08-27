@@ -10,9 +10,12 @@
         cancel-text="Anuluj"
         @confirm="deleteProduct"
       >
-        <vs-button dark icon @click="open">
-          <i class="bx bx-trash"></i>
-        </vs-button>
+        <icon-button type="danger" @click="open">
+          <template #icon>
+            <i class="bx bx-trash"></i>
+          </template>
+          Usuń
+        </icon-button>
       </pop-confirm>
     </top-nav>
 
@@ -163,6 +166,7 @@ import RichEditor from '@/components/form/RichEditor.vue'
 import SchemaConfigurator from '@/components/modules/schemas/Configurator.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 import TagsSelect from '@/components/TagsSelect.vue'
+import IconButton from '@/components/layout/IconButton.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { UUID } from '@/interfaces/UUID'
@@ -197,6 +201,7 @@ export default Vue.extend({
     RichEditor,
     TagsSelect,
     ValidatedInput,
+    IconButton,
   },
   data: () => ({
     form: cloneDeep(EMPTY_FORM),

@@ -2,9 +2,12 @@
   <div>
     <PaginatedList title="Magazyn" store-key="items" :filters="filters">
       <template #nav>
-        <vs-button v-can="$p.Items.Add" color="dark" icon @click="openModal()">
-          <i class="bx bx-plus"></i>
-        </vs-button>
+        <icon-button v-can="$p.Items.Add" @click="openModal()">
+          <template #icon>
+            <i class="bx bx-plus"></i>
+          </template>
+          Dodaj przedmiot
+        </icon-button>
       </template>
 
       <template #filters>
@@ -91,6 +94,8 @@ import ModalForm from '@/components/form/ModalForm.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
+import IconButton from '@/components/layout/IconButton.vue'
+
 import { UUID } from '@/interfaces/UUID'
 import { ProductItem } from '@/interfaces/Product'
 
@@ -109,6 +114,7 @@ export default Vue.extend({
     ValidationObserver,
     PaginatedList,
     ValidatedInput,
+    IconButton,
   },
   data: () => ({
     filters: {

@@ -1,14 +1,6 @@
 <template>
   <div class="settings-page">
-    <top-nav title="Ustawienia">
-      <div class="profile">
-        <span class="profile__name">{{ user.name }}</span>
-        <vs-avatar>
-          <img v-if="user.avatar" :src="user.avatar" />
-          <i v-else class="bx bx-user"></i>
-        </vs-avatar>
-      </div>
-    </top-nav>
+    <top-nav title="Ustawienia" />
 
     <card>
       <list>

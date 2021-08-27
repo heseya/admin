@@ -2,9 +2,12 @@
   <div>
     <PaginatedList title="Aplikacje" store-key="apps">
       <template #nav>
-        <vs-button color="dark" icon @click="openModal()">
-          <i class="bx bx-plus"></i>
-        </vs-button>
+        <icon-button @click="openModal()">
+          <template #icon>
+            <i class="bx bx-plus"></i>
+          </template>
+          Dodaj aplikacje
+        </icon-button>
       </template>
 
       <template v-slot="{ item: app }">
@@ -42,6 +45,7 @@ import ListItem from '@/components/layout/ListItem.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
+import IconButton from '@/components/layout/IconButton.vue'
 
 export default Vue.extend({
   components: {
@@ -50,6 +54,7 @@ export default Vue.extend({
     ValidationObserver,
     PaginatedList,
     ValidatedInput,
+    IconButton,
   },
   data: () => ({
     isModalActive: false,

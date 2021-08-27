@@ -2,9 +2,12 @@
   <div>
     <PaginatedList title="Użytkownicy" store-key="users">
       <template #nav>
-        <vs-button v-can="$p.Users.Add" color="dark" icon @click="openModal()">
-          <i class="bx bx-plus"></i>
-        </vs-button>
+        <icon-button v-can="$p.Users.Add" @click="openModal()">
+          <template #icon>
+            <i class="bx bx-plus"></i>
+          </template>
+          Dodaj użytkownika
+        </icon-button>
       </template>
       <template v-slot="{ item: user }">
         <list-item :key="user.id" @click="openModal(user.id)">
@@ -68,6 +71,7 @@ import UserForm from '@/components/modules/users/Form.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import { CreateUserDTO, EditUserDTO } from '@/interfaces/User'
+import IconButton from '@/components/layout/IconButton.vue'
 
 const CLEAR_USER: CreateUserDTO = {
   name: '',
@@ -83,6 +87,7 @@ export default Vue.extend({
     UserForm,
     PopConfirm,
     ValidationObserver,
+    IconButton,
   },
   data: () => ({
     isModalActive: false,

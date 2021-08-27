@@ -2,9 +2,12 @@
   <div>
     <PaginatedList title="Statusy zamówień" store-key="statuses" draggable>
       <template #nav>
-        <vs-button v-can="$p.Statuses.Add" color="dark" icon @click="openModal()">
-          <i class="bx bx-plus"></i>
-        </vs-button>
+        <icon-button v-can="$p.Statuses.Add" @click="openModal()">
+          <template #icon>
+            <i class="bx bx-plus"></i>
+          </template>
+          Dodaj status
+        </icon-button>
       </template>
       <template v-slot="{ item: status }">
         <list-item :key="status.id" @click="openModal(status.id)">
@@ -86,6 +89,7 @@ import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
+import IconButton from '@/components/layout/IconButton.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import { OrderStatus } from '@/interfaces/Order'
@@ -107,6 +111,7 @@ export default Vue.extend({
     ValidationObserver,
     SwitchInput,
     ValidatedInput,
+    IconButton,
   },
   data: () => ({
     isModalActive: false,

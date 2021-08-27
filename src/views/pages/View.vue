@@ -10,9 +10,12 @@
         cancel-text="Anuluj"
         @confirm="deletePage"
       >
-        <vs-button dark icon @click="open">
-          <i class="bx bx-trash"></i>
-        </vs-button>
+        <icon-button type="danger" @click="open">
+          <template #icon>
+            <i class="bx bx-trash"></i>
+          </template>
+          Usuń
+        </icon-button>
       </pop-confirm>
     </top-nav>
 
@@ -67,6 +70,7 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import RichEditor from '@/components/form/RichEditor.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
+import IconButton from '@/components/layout/IconButton.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { Page } from '@/interfaces/Page'
@@ -81,6 +85,7 @@ export default Vue.extend({
     ValidationObserver,
     SwitchInput,
     ValidatedInput,
+    IconButton,
   },
   data: () => ({
     form: {

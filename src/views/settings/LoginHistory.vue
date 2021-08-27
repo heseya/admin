@@ -10,9 +10,12 @@
           cancel-text="Anuluj"
           @confirm="killAllSessions"
         >
-          <vs-button color="danger" :disabled="!areSessionsToKill" @click="open">
+          <icon-button type="danger" :disabled="!areSessionsToKill" @click="open">
+            <template #icon>
+              <i class="bx bx-trash"></i>
+            </template>
             Wyloguj wszystkie
-          </vs-button>
+          </icon-button>
         </pop-confirm>
       </template>
 
@@ -41,13 +44,17 @@
               cancel-text="Anuluj"
               @confirm="killSession(login.id)"
             >
-              <vs-button
+              <icon-button
                 v-if="!login.revoked && !login.current_session"
-                color="danger"
+                type="danger"
+                size="small"
                 @click="open"
               >
+                <template #icon>
+                  <i class="bx bx-trash"></i>
+                </template>
                 Wyloguj
-              </vs-button>
+              </icon-button>
             </pop-confirm>
           </template>
         </list-item>
@@ -63,12 +70,14 @@ import PaginatedList from '@/components/PaginatedList.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import { UUID } from '@/interfaces/UUID'
+import IconButton from '@/components/layout/IconButton.vue'
 
 export default Vue.extend({
   components: {
     PaginatedList,
     ListItem,
     PopConfirm,
+    IconButton,
   },
   computed: {
     areSessionsToKill(): boolean {
@@ -102,7 +111,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .login-item {
-  $activeColor: #158a15;
+  $activeColor: $green-color-500;
 
   &__active {
     color: $activeColor;
@@ -112,7 +121,7 @@ export default Vue.extend({
     width: 70px;
     margin-right: 5px;
     box-sizing: border-box;
-    background-color: lighten($activeColor, 60%);
+    background-color: lighten($activeColor, 50%);
     text-align: center;
     color: $activeColor;
     border: dashed 1px $activeColor;

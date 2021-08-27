@@ -2,9 +2,12 @@
   <div>
     <PaginatedList title="Ustawienia zaawansowane" store-key="settings">
       <template #nav>
-        <vs-button v-can="$p.Settings.Add" color="dark" icon @click="openModal()">
-          <i class="bx bx-plus"></i>
-        </vs-button>
+        <icon-button v-can="$p.Settings.Add" @click="openModal()">
+          <template #icon>
+            <i class="bx bx-plus"></i>
+          </template>
+          Dodaj ustawienie
+        </icon-button>
       </template>
       <template v-slot="{ item: setting }">
         <list-item :hidden="!setting.public" @click="openModal(setting)">
@@ -83,6 +86,7 @@ import ListItem from '@/components/layout/ListItem.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
+import IconButton from '@/components/layout/IconButton.vue'
 
 import { Setting } from '@/interfaces/Settings'
 
@@ -103,6 +107,7 @@ export default Vue.extend({
     ValidationObserver,
     SwitchInput,
     ValidatedInput,
+    IconButton,
   },
   data: () => ({
     isModalActive: false,

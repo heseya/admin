@@ -2,9 +2,12 @@
   <div>
     <PaginatedList title="Tagi" store-key="tags">
       <template #nav>
-        <vs-button v-can="$p.Tags.Add" color="dark" icon @click="openModal()">
-          <i class="bx bx-plus"></i>
-        </vs-button>
+        <icon-button v-can="$p.Tags.Add" @click="openModal()">
+          <template #icon>
+            <i class="bx bx-plus"></i>
+          </template>
+          Dodaj tag
+        </icon-button>
       </template>
       <template v-slot="{ item: tag }">
         <list-item :key="tag.id" @click="openModal(tag.id)">
@@ -70,6 +73,7 @@ import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
+import IconButton from '@/components/layout/IconButton.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
 import { UUID } from '@/interfaces/UUID'
@@ -89,6 +93,7 @@ export default Vue.extend({
     PopConfirm,
     ValidationObserver,
     ValidatedInput,
+    IconButton,
   },
   data: () => ({
     isModalActive: false,

@@ -115,13 +115,13 @@ export default Vue.extend({
   border-radius: 0;
   padding: 2px 8px;
   padding-right: 0;
-  border-bottom: solid 1px #ccc;
+  border-bottom: solid 1px $background-color-700;
   cursor: grab;
   transition: 0.3s;
 
   &.sortable-chosen,
   &:hover {
-    background-color: $background-color-700;
+    background-color: $background-color-500;
   }
 
   &__hidden-icon {

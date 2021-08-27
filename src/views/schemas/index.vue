@@ -2,9 +2,12 @@
   <div>
     <PaginatedList title="Schematy" :filters="filters" store-key="schemas">
       <template #nav>
-        <vs-button v-can="$p.ProductSets.Add" to="/schemas/create" color="dark" icon>
-          <i class="bx bx-plus"></i>
-        </vs-button>
+        <icon-button v-can="$p.ProductSets.Add" to="/schemas/create">
+          <template #icon>
+            <i class="bx bx-plus"></i>
+          </template>
+          Dodaj schemat
+        </icon-button>
       </template>
 
       <template #filters>
@@ -38,6 +41,7 @@ import { debounce } from 'lodash'
 
 import ListItem from '@/components/layout/ListItem.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
+import IconButton from '@/components/layout/IconButton.vue'
 
 import { SchemaTypeLabel } from '@/consts/schemaTypeLabels'
 
@@ -45,6 +49,7 @@ export default Vue.extend({
   components: {
     PaginatedList,
     ListItem,
+    IconButton,
   },
   data: () => ({
     filters: {

@@ -26,10 +26,11 @@
     </PaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
-      <vs-dialog v-model="isModalActive" width="660px" not-center>
-        <template #header>
-          <h4>{{ editedItem.id ? 'Edycja opcji' : 'Nowa opcja' }} dostawy</h4>
-        </template>
+      <a-modal
+        v-model="isModalActive"
+        width="660px"
+        :title="editedItem.id ? 'Edycja opcji dostawy' : 'Nowa opcja dostawy'"
+      >
         <ShippingMethodsForm v-model="editedItem" :countries="countries" :disabled="!canModify" />
         <template #footer>
           <div class="row">
@@ -48,7 +49,7 @@
             </pop-confirm>
           </div>
         </template>
-      </vs-dialog>
+      </a-modal>
     </validation-observer>
   </div>
 </template>

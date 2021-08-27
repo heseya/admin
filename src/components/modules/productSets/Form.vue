@@ -1,9 +1,10 @@
 <template>
   <validation-observer v-slot="{ handleSubmit }" class="product-set-form">
-    <vs-dialog width="550px" not-center :value="isOpen" @input="$emit('close')">
-      <template #header>
-        <h4>{{ form.id ? 'Edycja kolekcji' : 'Nowa kolekcja' }}</h4>
-      </template>
+    <a-modal
+      :title="form.id ? 'Edycja kolekcji' : 'Nowa kolekcja'"
+      :visible="isOpen"
+      @cancel="$emit('close')"
+    >
       <modal-form class="product-set-form">
         <validated-input
           v-model="form.name"
@@ -78,7 +79,7 @@
           </pop-confirm>
         </div>
       </template>
-    </vs-dialog>
+    </a-modal>
   </validation-observer>
 </template>
 

@@ -23,14 +23,16 @@
         </div>
       </div>
     </div>
-    <vs-dialog v-model="isModalActive" width="800px" not-center>
-      <template #header>
-        <h4>Wybierz przedmiot z magazynu</h4>
-      </template>
+    <a-modal
+      v-model="isModalActive"
+      width="800px"
+      title="Wybierz przedmiot z magazynu"
+      :footer="null"
+    >
       <modal-form>
         <selector type-name="produkt" type="items" :existing="value" @select="addItem" />
       </modal-form>
-    </vs-dialog>
+    </a-modal>
   </div>
 </template>
 

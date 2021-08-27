@@ -23,10 +23,11 @@
     </PaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
-      <vs-dialog v-model="isModalActive" width="550px" not-center>
-        <template #header>
-          <h4>{{ editedItem.id ? 'Edycja kodu rabatowego' : 'Nowy kod rabatowy' }}</h4>
-        </template>
+      <a-modal
+        v-model="isModalActive"
+        width="550px"
+        :title="editedItem.id ? 'Edycja kodu rabatowego' : 'Nowy kod rabatowy'"
+      >
         <modal-form>
           <validated-input
             v-model="editedItem.code"
@@ -78,7 +79,7 @@
             <!--            </pop-confirm>-->
           </div>
         </template>
-      </vs-dialog>
+      </a-modal>
     </validation-observer>
   </div>
 </template>

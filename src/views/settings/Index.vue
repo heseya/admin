@@ -96,12 +96,9 @@
       </list>
     </card>
 
-    <vs-dialog v-model="isChangePasswordModal" width="350px" not-center>
-      <template #header>
-        <h4>Zmiana hasła</h4>
-      </template>
+    <a-modal v-model="isChangePasswordModal" width="350px" :footer="null" title="Zmiana hasła">
       <ChangePasswordForm @close="isChangePasswordModal = false" />
-    </vs-dialog>
+    </a-modal>
   </div>
 </template>
 

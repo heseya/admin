@@ -20,10 +20,7 @@
     </PaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
-      <vs-dialog v-model="isModalActive" width="550px" not-center>
-        <template #header>
-          <h4>Dodaj Aplikacje</h4>
-        </template>
+      <a-modal v-model="isModalActive" width="550px" title="Dodaj Aplikacje">
         <modal-form>
           <validated-input v-model="editedItem.url" rules="required" label="URL" />
         </modal-form>
@@ -32,7 +29,7 @@
             <vs-button color="dark" @click="handleSubmit(saveModal)">Dodaj</vs-button>
           </div>
         </template>
-      </vs-dialog>
+      </a-modal>
     </validation-observer>
   </div>
 </template>

@@ -17,6 +17,7 @@ export default Vue.extend({
   flex-direction: column;
   align-items: stretch;
   justify-content: stretch;
+  padding-top: 24px;
 
   .vs-input-parent {
     margin-bottom: 32px;

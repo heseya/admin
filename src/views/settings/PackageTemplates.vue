@@ -19,10 +19,11 @@
     </PaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
-      <vs-dialog v-model="isModalActive" width="550px" not-center>
-        <template #header>
-          <h4>{{ editedItem.id ? 'Edycja szablony' : 'Nowy szablon' }}</h4>
-        </template>
+      <a-modal
+        v-model="isModalActive"
+        width="550px"
+        :title="editedItem.id ? 'Edycja szablony' : 'Nowy szablon'"
+      >
         <modal-form>
           <validated-input
             v-model="editedItem.name"
@@ -81,7 +82,7 @@
             </pop-confirm>
           </div>
         </template>
-      </vs-dialog>
+      </a-modal>
     </validation-observer>
   </div>
 </template>

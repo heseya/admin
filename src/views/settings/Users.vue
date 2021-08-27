@@ -20,11 +20,11 @@
     </PaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
-      <vs-dialog v-model="isModalActive" width="550px" not-center>
-        <template #header>
-          <h4>{{ isNewUser(editedUser) ? 'Nowy użytkownik' : 'Edycja użytkownika' }}</h4>
-        </template>
-
+      <a-modal
+        v-model="isModalActive"
+        width="550px"
+        :title="isNewUser(editedUser) ? 'Nowy użytkownik' : 'Edycja użytkownika'"
+      >
         <UserForm v-model="editedUser" :disabled="!canModify" />
 
         <template #footer>
@@ -51,7 +51,7 @@
             </pop-confirm>
           </div>
         </template>
-      </vs-dialog>
+      </a-modal>
     </validation-observer>
   </div>
 </template>

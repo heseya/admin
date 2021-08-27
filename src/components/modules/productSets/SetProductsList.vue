@@ -1,6 +1,6 @@
 <template>
-  <vs-dialog width="900px" class="set-products" not-center :value="isOpen" @input="$emit('close')">
-    <template #header>
+  <a-modal width="900px" class="set-products" :visible="isOpen" @cancel="$emit('close')">
+    <template #title>
       <div class="set-products__header">
         <h4>Produkty w kolekcji {{ set && set.name }}</h4>
         <vs-button v-can="$p.ProductSets.Edit" dark @click="isSelectorActive = true">
@@ -39,15 +39,14 @@
 
     <empty v-else>Ta kolekcja nie zawiera produktów</empty>
 
-    <vs-button success @click="save">Zapisz</vs-button>
+    <template #footer>
+      <vs-button success @click="save">Zapisz</vs-button>
+    </template>
 
-    <vs-dialog v-model="isSelectorActive" width="800px" not-center>
-      <template #header>
-        <h4>Wybierz produkt</h4>
-      </template>
+    <a-modal v-model="isSelectorActive" width="800px" title="Wybierz produkt" :footer="null">
       <selector type-name="produkt" type="products" :existing="products" @select="addProduct" />
-    </vs-dialog>
-  </vs-dialog>
+    </a-modal>
+  </a-modal>
 </template>
 
 <script lang="ts">
@@ -136,6 +135,11 @@ export default Vue.extend({
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding-right: 24px;
+
+    h4 {
+      margin-bottom: 0;
+    }
   }
 
   &__list {

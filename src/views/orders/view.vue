@@ -139,14 +139,16 @@
       </div>
     </div>
 
-    <vs-dialog v-model="isModalActive" width="800px" not-center>
-      <template #header>
-        <h4>Edytuj {{ modalFormTitle }}</h4>
-      </template>
+    <a-modal
+      v-model="isModalActive"
+      width="800px"
+      :footer="null"
+      :title="`Edytuj ${modalFormTitle}`"
+    >
       <modal-form>
         <partial-update-form v-model="form" @save="saveForm" />
       </modal-form>
-    </vs-dialog>
+    </a-modal>
   </div>
 </template>
 

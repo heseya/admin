@@ -106,10 +106,12 @@
         <vs-button @click="isUsedSchemaModalActive = true">Zmień</vs-button>
       </div>
 
-      <vs-dialog v-model="isUsedSchemaModalActive" width="800px" not-center>
-        <template #header>
-          <h4 class="flex schema-selector-title">Wybierz istniejący schemat</h4>
-        </template>
+      <a-modal
+        v-model="isUsedSchemaModalActive"
+        width="800px"
+        title="Wybierz istniejący schemat"
+        :footer="null"
+      >
         <modal-form>
           <selector
             type="schemas"
@@ -118,7 +120,7 @@
             @select="selectUsedSchema"
           />
         </modal-form>
-      </vs-dialog>
+      </a-modal>
     </Zone>
 
     <br />

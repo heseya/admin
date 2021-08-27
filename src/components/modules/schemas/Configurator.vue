@@ -42,10 +42,12 @@
       </draggable>
     </list>
 
-    <vs-dialog v-model="isFormModalActive" width="1000px" not-center>
-      <template #header>
-        <h4 style="margin-bottom: 0">{{ editedSchema.id ? 'Edycja schematu' : 'Nowy schemat' }}</h4>
-      </template>
+    <a-modal
+      v-model="isFormModalActive"
+      width="1000px"
+      :footer="null"
+      :title="editedSchema.id ? 'Edycja schematu' : 'Nowy schemat'"
+    >
       <modal-form v-if="isFormModalActive">
         <SchemaForm
           :schema="editedSchema"
@@ -54,10 +56,10 @@
           @submit="updateSchema"
         />
       </modal-form>
-    </vs-dialog>
+    </a-modal>
 
-    <vs-dialog v-model="isModalActive" width="800px" not-center>
-      <template #header>
+    <a-modal v-model="isModalActive" width="800px" :footer="null">
+      <template #title>
         <h4 class="flex schema-selector-title">
           Wybierz istniejący schemat lub
           <vs-button
@@ -74,7 +76,7 @@
       <modal-form>
         <Selector type="schemas" :existing="value" @select="addSchema" />
       </modal-form>
-    </vs-dialog>
+    </a-modal>
   </div>
 </template>
 

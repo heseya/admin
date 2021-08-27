@@ -156,7 +156,6 @@ import Zone from '@/components/layout/Zone.vue'
 import SelectSchemaOptions from '@/components/modules/schemas/SelectSchemaOptions.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import Selector from '@/components/Selector.vue'
-import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
 import { Schema, SchemaType } from '@/interfaces/Schema'
 import { SchemaTypeLabel } from '@/consts/schemaTypeLabels'
@@ -172,7 +171,6 @@ export default Vue.extend({
     SelectSchemaOptions,
     ModalForm,
     Selector,
-    ValidatedInput,
   },
   props: {
     schema: {

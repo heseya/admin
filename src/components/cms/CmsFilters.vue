@@ -1,7 +1,11 @@
 <template>
   <card class="cms-filters" :class="{ 'cms-filters--expanded': isExpanded }">
     <div class="cms-filters__wrapper">
-      <cms-filters-header class="cms-filters__header" />
+      <cms-filters-header
+        class="cms-filters__header"
+        :filters-count="filtersCount"
+        @clear-filters="$emit('clear-filters')"
+      />
       <div class="cms-filters__content">
         <slot></slot>
       </div>
@@ -13,7 +17,7 @@
         <button class="cms-filters__close-btn" @click="isModalOpen = false">
           <img src="@/assets/images/icons/close-icon.svg" alt="Close" />
         </button>
-        <cms-filters-header />
+        <cms-filters-header :filters-count="filtersCount" @clear-filters="$emit('clear-filters')" />
         <div class="cms-filters__mobile-content">
           <slot></slot>
         </div>
@@ -74,7 +78,7 @@ export default Vue.extend({
 
   &__content {
     position: static;
-    padding-top: 24px;
+    padding-top: 8px;
     max-height: 64px;
     overflow: hidden;
     transition: 0.3s;
@@ -123,6 +127,10 @@ export default Vue.extend({
 
     @media ($viewport-10) {
       display: none !important;
+    }
+
+    ::v-deep .app-input {
+      margin-bottom: 16px;
     }
   }
 

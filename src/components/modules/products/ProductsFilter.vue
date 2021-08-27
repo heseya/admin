@@ -1,19 +1,19 @@
 <template>
   <div class="products-filter">
-    <vs-input
+    <app-input
+      v-model="search"
       class="span-2"
-      :value="search"
       type="search"
       label="Wyszukiwanie"
-      @input="setSearch"
+      allow-clear
+      @input="debouncedSearch"
     />
 
-    <vs-select :key="productSets.length" :value="sets" label="Kolekcja" filter @input="setSet">
-      <vs-option label="Wszystkie" value="_all"> Wszystkie </vs-option>
-      <vs-option v-for="set in productSets" :key="set.id" :label="set.name" :value="set.slug">
+    <app-select v-model="sets" label="Kolekcja" add-all @change="debouncedSearch">
+      <a-select-option v-for="set in productSets" :key="set.id" :label="set.name" :value="set.slug">
         {{ set.name }}
-      </vs-option>
-    </vs-select>
+      </a-select-option>
+    </app-select>
   </div>
 </template>
 
@@ -60,15 +60,6 @@ export default Vue.extend({
     this.sets = this.filters.sets
   },
   methods: {
-    setSearch(search: string) {
-      this.search = search
-      this.debouncedSearch()
-    },
-    setSet(sets: string) {
-      this.sets = sets
-      this.debouncedSearch()
-    },
-
     makeSearch() {
       this.$emit('search', {
         search: this.search,

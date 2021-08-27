@@ -42,7 +42,6 @@ import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import SchemaForm from '@/components/modules/schemas/Form.vue'
-import IconButton from '@/components/layout/IconButton.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 
@@ -52,7 +51,6 @@ export default Vue.extend({
     Card,
     SchemaForm,
     PopConfirm,
-    IconButton,
   },
   data: () => ({
     editedSchema: {} as Schema,

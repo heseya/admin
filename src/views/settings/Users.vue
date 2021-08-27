@@ -71,7 +71,6 @@ import UserForm from '@/components/modules/users/Form.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import { CreateUserDTO, EditUserDTO } from '@/interfaces/User'
-import IconButton from '@/components/layout/IconButton.vue'
 
 const CLEAR_USER: CreateUserDTO = {
   name: '',
@@ -87,7 +86,6 @@ export default Vue.extend({
     UserForm,
     PopConfirm,
     ValidationObserver,
-    IconButton,
   },
   data: () => ({
     isModalActive: false,

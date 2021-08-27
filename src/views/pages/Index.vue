@@ -24,13 +24,11 @@
 import Vue from 'vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
-import IconButton from '@/components/layout/IconButton.vue'
 
 export default Vue.extend({
   components: {
     ListItem,
     PaginatedList,
-    IconButton,
   },
 })
 </script>

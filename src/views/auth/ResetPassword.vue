@@ -30,14 +30,12 @@ import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 
 import CentralScreenForm from '@/components/form/CentralScreenForm.vue'
-import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 
 export default Vue.extend({
   components: {
     CentralScreenForm,
-    ValidatedInput,
     ValidationObserver,
   },
   data: () => ({

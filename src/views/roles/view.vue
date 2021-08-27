@@ -34,7 +34,6 @@ import { cloneDeep } from 'lodash'
 import TopNav from '@/components/layout/TopNav.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import RolesForm from '@/components/modules/roles/Form.vue'
-import IconButton from '@/components/layout/IconButton.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { Role, RoleDTO } from '@/interfaces/Role'
@@ -50,7 +49,6 @@ export default Vue.extend({
     TopNav,
     PopConfirm,
     RolesForm,
-    IconButton,
   },
   data: () => ({
     form: cloneDeep(CLEAN_FORM),

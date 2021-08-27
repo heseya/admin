@@ -14,6 +14,7 @@ import './plugins/quill'
 import './plugins/validation-rules'
 import './plugins/slugify'
 import './plugins/permissions'
+import './plugins/globalComponents'
 
 import './registerServiceWorker'
 

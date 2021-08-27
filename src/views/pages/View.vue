@@ -69,8 +69,6 @@ import FlexInput from '@/components/layout/FlexInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import RichEditor from '@/components/form/RichEditor.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
-import ValidatedInput from '@/components/form/ValidatedInput.vue'
-import IconButton from '@/components/layout/IconButton.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { Page } from '@/interfaces/Page'
@@ -84,8 +82,6 @@ export default Vue.extend({
     RichEditor,
     ValidationObserver,
     SwitchInput,
-    ValidatedInput,
-    IconButton,
   },
   data: () => ({
     form: {

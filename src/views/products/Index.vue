@@ -42,8 +42,8 @@ import ProductsFilter, {
   EMPTY_PRODUCT_FILTERS,
 } from '@/components/modules/products/ProductsFilter.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
+
 import { formatFilters } from '@/utils/utils'
-import IconButton from '@/components/layout/IconButton.vue'
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 
 const LOCAL_STORAGE_KEY = 'products-list-view'
@@ -54,7 +54,6 @@ export default Vue.extend({
     ProductListItem,
     ProductsFilter,
     PaginatedList,
-    IconButton,
   },
   data: () => ({
     filters: { ...EMPTY_PRODUCT_FILTERS },

@@ -1,6 +1,11 @@
 <template>
   <div>
-    <PaginatedList title="Schematy" :filters="filters" store-key="schemas">
+    <PaginatedList
+      title="Schematy"
+      :filters="filters"
+      store-key="schemas"
+      @clear-filters="clearFilters"
+    >
       <template #nav>
         <icon-button v-can="$p.ProductSets.Add" to="/schemas/create">
           <template #icon>
@@ -12,11 +17,12 @@
 
       <template #filters>
         <div>
-          <vs-input
+          <app-input
             v-model="filters.search"
             class="span-2"
             type="search"
             label="Wyszukiwanie"
+            allow-clear
             @input="debouncedSearch"
           />
         </div>
@@ -41,7 +47,6 @@ import { debounce } from 'lodash'
 
 import ListItem from '@/components/layout/ListItem.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
-import IconButton from '@/components/layout/IconButton.vue'
 
 import { SchemaTypeLabel } from '@/consts/schemaTypeLabels'
 
@@ -49,7 +54,6 @@ export default Vue.extend({
   components: {
     PaginatedList,
     ListItem,
-    IconButton,
   },
   data: () => ({
     filters: {
@@ -79,6 +83,10 @@ export default Vue.extend({
         this.makeSearch()
       })
     }, 300),
+    clearFilters() {
+      this.filters.search = ''
+      this.makeSearch()
+    },
   },
 })
 </script>

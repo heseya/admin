@@ -66,7 +66,6 @@ import PaginatedList from '@/components/PaginatedList.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ShippingMethodsForm from '@/components/modules/shippingMethods/Index.vue'
-import IconButton from '@/components/layout/IconButton.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import { ShippingMethodDTO } from '@/interfaces/ShippingMethod'
@@ -78,7 +77,6 @@ export default Vue.extend({
     ValidationObserver,
     PaginatedList,
     ShippingMethodsForm,
-    IconButton,
   },
   data: () => ({
     isModalActive: false,

@@ -44,7 +44,6 @@
 import Vue from 'vue'
 
 import ModalForm from '@/components/form/ModalForm.vue'
-import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
 import { CreateUserDTO, EditUserDTO } from '@/interfaces/User'
 import { Role } from '@/interfaces/Role'
@@ -52,7 +51,6 @@ import { Role } from '@/interfaces/Role'
 export default Vue.extend({
   components: {
     ModalForm,
-    ValidatedInput,
   },
   props: {
     value: {

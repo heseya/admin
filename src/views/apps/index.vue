@@ -44,8 +44,6 @@ import { ValidationObserver } from 'vee-validate'
 import ListItem from '@/components/layout/ListItem.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
-import ValidatedInput from '@/components/form/ValidatedInput.vue'
-import IconButton from '@/components/layout/IconButton.vue'
 
 export default Vue.extend({
   components: {
@@ -53,8 +51,6 @@ export default Vue.extend({
     ModalForm,
     ValidationObserver,
     PaginatedList,
-    ValidatedInput,
-    IconButton,
   },
   data: () => ({
     isModalActive: false,

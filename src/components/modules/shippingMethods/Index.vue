@@ -82,7 +82,6 @@ import FlexInput from '@/components/layout/FlexInput.vue'
 import { ShippingMethodCountry, ShippingMethodDTO } from '@/interfaces/ShippingMethod'
 import { PaymentMethod } from '@/interfaces/PaymentMethod'
 import PriceRangesForm from './PriceRangesForm.vue'
-import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
 export default Vue.extend({
   name: 'ShippingMethodsForm',
@@ -92,7 +91,6 @@ export default Vue.extend({
     ValidationProvider,
     SwitchInput,
     PriceRangesForm,
-    ValidatedInput,
   },
   props: {
     value: {

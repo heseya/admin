@@ -85,8 +85,6 @@ import ModalForm from '@/components/form/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import ValidatedInput from '@/components/form/ValidatedInput.vue'
-import IconButton from '@/components/layout/IconButton.vue'
 
 import { Setting } from '@/interfaces/Settings'
 
@@ -106,8 +104,6 @@ export default Vue.extend({
     PopConfirm,
     ValidationObserver,
     SwitchInput,
-    ValidatedInput,
-    IconButton,
   },
   data: () => ({
     isModalActive: false,

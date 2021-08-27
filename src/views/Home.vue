@@ -150,11 +150,11 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .home {
   display: grid;
-  grid-template-columns: 1fr 300px;
+  grid-template-columns: 1fr;
   grid-gap: 32px;
 
-  @media screen and (max-width: 780px) {
-    grid-template-columns: 1fr;
+  @media ($viewport-10) {
+    grid-template-columns: 1fr 0.6fr;
   }
 
   .order {
@@ -177,15 +177,20 @@ export default Vue.extend({
 
 .incomes {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   grid-gap: 16px;
   padding: 16px 0;
+
+  @media ($viewport-6) {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 .income-box {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  text-align: center;
   align-items: center;
   margin-bottom: 0;
   padding: 32px 16px;

@@ -70,14 +70,12 @@ import PaginatedList from '@/components/PaginatedList.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import { UUID } from '@/interfaces/UUID'
-import IconButton from '@/components/layout/IconButton.vue'
 
 export default Vue.extend({
   components: {
     PaginatedList,
     ListItem,
     PopConfirm,
-    IconButton,
   },
   computed: {
     areSessionsToKill(): boolean {

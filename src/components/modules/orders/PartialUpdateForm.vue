@@ -33,11 +33,10 @@ import { ValidationObserver } from 'vee-validate'
 
 import { Order } from '@/interfaces/Order'
 import AddressForm from './AddressForm.vue'
-import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
 export default Vue.extend({
   name: 'PartialUpdateForm',
-  components: { AddressForm, ValidationObserver, ValidatedInput },
+  components: { AddressForm, ValidationObserver },
   props: {
     value: {
       type: Object,

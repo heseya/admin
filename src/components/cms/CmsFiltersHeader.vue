@@ -21,10 +21,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import IconButton from '@/components/layout/IconButton.vue'
 
 export default Vue.extend({
-  components: { IconButton },
   props: {
     filtersCount: {
       type: Number,

@@ -1,6 +1,11 @@
 <template>
   <div>
-    <PaginatedList title="Magazyn" store-key="items" :filters="filters">
+    <PaginatedList
+      title="Magazyn"
+      store-key="items"
+      :filters="filters"
+      @clear-filters="clearFilters"
+    >
       <template #nav>
         <icon-button v-can="$p.Items.Add" @click="openModal()">
           <template #icon>
@@ -12,11 +17,12 @@
 
       <template #filters>
         <div>
-          <vs-input
+          <app-input
             v-model="filters.search"
             class="span-2"
             type="search"
             label="Wyszukiwanie"
+            allow-clear
             @input="debouncedSearch"
           />
         </div>
@@ -93,8 +99,6 @@ import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
-import ValidatedInput from '@/components/form/ValidatedInput.vue'
-import IconButton from '@/components/layout/IconButton.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import { ProductItem } from '@/interfaces/Product'
@@ -113,8 +117,6 @@ export default Vue.extend({
     PopConfirm,
     ValidationObserver,
     PaginatedList,
-    ValidatedInput,
-    IconButton,
   },
   data: () => ({
     filters: {
@@ -162,6 +164,10 @@ export default Vue.extend({
         this.makeSearch()
       })
     }, 300),
+    clearFilters() {
+      this.filters.search = ''
+      this.makeSearch()
+    },
 
     openModal(id?: UUID) {
       if (!this.$verboseCan(this.$p.Items.ShowDetails)) return

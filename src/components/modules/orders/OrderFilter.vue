@@ -1,43 +1,25 @@
 <template>
   <div class="orders-filter">
-    <vs-input
+    <app-input
       v-model="search"
       class="span-2"
       type="search"
       label="Wyszukiwanie"
+      allow-clear
       @input="debouncedSearch"
     />
 
-    <vs-select
-      :key="'status' + statuses.length"
-      v-model="status_id"
-      label="Status"
-      filter
-      @input="debouncedSearch"
-    >
-      <vs-option label="Wszystkie" value="_all"> Wszystkie </vs-option>
-      <vs-option v-for="s in statuses" :key="s.id" :label="s.name" :value="s.id">
+    <app-select v-model="status_id" label="Status" add-all @change="debouncedSearch">
+      <a-select-option v-for="s in statuses" :key="s.id" :value="s.id">
         {{ s.name }}
-      </vs-option>
-    </vs-select>
+      </a-select-option>
+    </app-select>
 
-    <vs-select
-      :key="'shippingMethod' + shippingMethods.length"
-      v-model="shipping_method_id"
-      label="Dostawa"
-      filter
-      @input="debouncedSearch"
-    >
-      <vs-option label="Wszystkie" value="_all"> Wszystkie </vs-option>
-      <vs-option
-        v-for="method in shippingMethods"
-        :key="method.id"
-        :label="method.name"
-        :value="method.id"
-      >
+    <app-select v-model="shipping_method_id" label="Dostawa" add-all @change="debouncedSearch">
+      <a-select-option v-for="method in shippingMethods" :key="method.id" :value="method.id">
         {{ method.name }}
-      </vs-option>
-    </vs-select>
+      </a-select-option>
+    </app-select>
   </div>
 </template>
 

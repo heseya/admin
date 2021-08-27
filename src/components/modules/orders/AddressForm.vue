@@ -29,13 +29,11 @@ import { ValidationProvider } from 'vee-validate'
 
 import { Address } from '@/interfaces/Address'
 import { Country } from '@/interfaces/Country'
-import ValidatedInput from '@/components/form/ValidatedInput.vue'
 import { api } from '@/api'
 
 export default Vue.extend({
   name: 'AddressForm',
   components: {
-    ValidatedInput,
     ValidationProvider,
   },
   props: {

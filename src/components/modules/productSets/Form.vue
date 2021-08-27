@@ -92,7 +92,6 @@ import { ValidationObserver } from 'vee-validate'
 import ModalForm from '@/components/form/ModalForm.vue'
 import FlexInput from '@/components/layout/FlexInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import ValidatedInput from '@/components/form/ValidatedInput.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 
 import { ProductSetDTO } from '@/interfaces/ProductSet'
@@ -103,7 +102,6 @@ export default Vue.extend({
     PopConfirm,
     FlexInput,
     ValidationObserver,
-    ValidatedInput,
     SwitchInput,
   },
   props: {

@@ -25,14 +25,13 @@
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 
-import ValidatedInput from '@/components/form/ValidatedInput.vue'
 import Card from '@/components/layout/Card.vue'
 import PermissionsManager from './PermissionsManager.vue'
 
 import { RoleDTO } from '@/interfaces/Role'
 
 export default Vue.extend({
-  components: { ValidationObserver, ValidatedInput, Card, PermissionsManager },
+  components: { ValidationObserver, Card, PermissionsManager },
   props: {
     value: {
       type: Object,

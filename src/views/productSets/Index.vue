@@ -41,7 +41,6 @@ import PaginatedList from '@/components/PaginatedList.vue'
 import ProductSetForm from '@/components/modules/productSets/Form.vue'
 import ProductSetComponent from '@/components/modules/productSets/ProductSet.vue'
 import SetProductsList from '@/components/modules/productSets/SetProductsList.vue'
-import IconButton from '@/components/layout/IconButton.vue'
 
 import { ProductSet, ProductSetDTO } from '@/interfaces/ProductSet'
 
@@ -62,7 +61,6 @@ export default Vue.extend({
     ProductSetForm,
     ProductSet: ProductSetComponent,
     SetProductsList,
-    IconButton,
   },
   data: () => ({
     isFormModalActive: false,

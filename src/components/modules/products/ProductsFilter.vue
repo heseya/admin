@@ -1,6 +1,12 @@
 <template>
   <div class="products-filter">
-    <vs-input :value="search" type="search" label="Wyszukiwanie" @input="setSearch" />
+    <vs-input
+      class="span-2"
+      :value="search"
+      type="search"
+      label="Wyszukiwanie"
+      @input="setSearch"
+    />
 
     <vs-select :key="productSets.length" :value="sets" label="Kolekcja" filter @input="setSet">
       <vs-option label="Wszystkie" value="_all"> Wszystkie </vs-option>
@@ -78,11 +84,3 @@ export default Vue.extend({
   },
 })
 </script>
-
-<style lang="scss" scoped>
-.products-filter {
-  & *:first-child {
-    grid-column: 1 / span 2;
-  }
-}
-</style>

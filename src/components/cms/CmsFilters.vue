@@ -102,6 +102,18 @@ export default Vue.extend({
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       grid-gap: 10px;
     }
+
+    & ::v-deep {
+      .span-2 {
+        grid-column: span 2;
+      }
+      .span-3 {
+        grid-column: span 3;
+      }
+      .span-4 {
+        grid-column: span 4;
+      }
+    }
   }
 
   &__more-btn {

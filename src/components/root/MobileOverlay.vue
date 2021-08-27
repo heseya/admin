@@ -4,7 +4,7 @@
       <img src="@/assets/images/icons/close-icon.svg" alt="Close" />
     </button>
 
-    <router-link class="mobile-nav-overlay__link" to="/stats" @click.native="close">
+    <router-link class="mobile-nav-overlay__link" to="/analytics" @click.native="close">
       <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/stats-icon.svg')" />
       <span class="mobile-nav-overlay__link-label">Statystyka</span>
     </router-link>

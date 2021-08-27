@@ -63,8 +63,8 @@ export default Vue.extend({
   box-sizing: border-box;
   cursor: pointer;
   border-radius: 7px;
-  padding: 15px 20px;
-  min-height: 44px;
+  padding: 8px 12px;
+  min-height: 32px;
   font-family: $headerFont;
   font-size: 17px;
   display: flex;

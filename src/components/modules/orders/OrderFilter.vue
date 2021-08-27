@@ -1,6 +1,12 @@
 <template>
   <div class="orders-filter">
-    <vs-input v-model="search" type="search" label="Wyszukiwanie" @input="debouncedSearch" />
+    <vs-input
+      v-model="search"
+      class="span-2"
+      type="search"
+      label="Wyszukiwanie"
+      @input="debouncedSearch"
+    />
 
     <vs-select
       :key="'status' + statuses.length"
@@ -37,7 +43,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import clone from 'lodash/clone'
 import { debounce } from 'lodash'
 
 import { ALL_FILTER_VALUE } from '@/consts/filters'
@@ -106,11 +111,3 @@ export default Vue.extend({
   },
 })
 </script>
-
-<style lang="scss" scoped>
-.orders-filter {
-  & *:first-child {
-    grid-column: 1 / span 2;
-  }
-}
-</style>

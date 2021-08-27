@@ -13,8 +13,10 @@
     </AppCmsFilters>
 
     <AppCard class="paginated-list__content">
-      <AppEmpty v-if="!items.length">{{ emptyText }}</AppEmpty>
-      <AppList class="paginated-list__list">
+      <AppEmpty v-if="!items.length || isLoading">{{ emptyText }}</AppEmpty>
+      <Loading :active="isLoading"></Loading>
+
+      <AppList v-if="!isLoading" class="paginated-list__list">
         <Draggable v-if="draggable" v-model="items">
           <template v-for="item in items">
             <slot :item="item" />
@@ -53,6 +55,7 @@ import { formatFilters } from '@/utils/utils'
 import { formatApiNotificationError } from '@/utils/errors'
 
 import { ALL_FILTER_VALUE } from '@/consts/filters'
+import Loading from './layout/Loading.vue'
 
 export default Vue.extend({
   components: {
@@ -64,6 +67,7 @@ export default Vue.extend({
     AppList: List,
     AppPerPageSelect: PerPageSelect,
     AppCmsFilters: CmsFilters,
+    Loading,
   },
   props: {
     title: {
@@ -97,6 +101,7 @@ export default Vue.extend({
   },
   data: () => ({
     page: 1,
+    isLoading: false,
     itemsPerPage: 24,
   }),
   computed: {
@@ -105,13 +110,13 @@ export default Vue.extend({
         return this.$store.getters[`${this.storeKey}/getData`]
       },
       async set(items: BaseItem[]) {
-        this.$accessor.startLoading()
+        this.isLoading = true
         await this.$store.dispatch(
           `${this.storeKey}/reorder`,
           items.map(({ id }) => id),
         )
         await this.getItems()
-        this.$accessor.stopLoading()
+        this.isLoading = false
       },
     },
     filtersCount(): number {
@@ -160,7 +165,7 @@ export default Vue.extend({
       else this.$router.push({ path: this.$route.path, query: { ...this.$route.query, page: '1' } })
     },
     async getItems() {
-      this.$accessor.startLoading()
+      this.isLoading = true
 
       const queryFilters = formatFilters(this.filters)
       await this.$store.dispatch(`${this.storeKey}/fetch`, {
@@ -170,7 +175,7 @@ export default Vue.extend({
         ...this.params,
       })
 
-      this.$accessor.stopLoading()
+      this.isLoading = false
     },
   },
 })
@@ -179,6 +184,10 @@ export default Vue.extend({
 <style lang="scss">
 .paginated-list {
   position: relative;
+
+  &__content {
+    position: relative;
+  }
 
   &__footer {
     display: flex;

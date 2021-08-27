@@ -2,20 +2,21 @@
   <div>
     <PaginatedList title="Magazyn" store-key="items" :filters="filters">
       <template #nav>
-        <vs-input
-          v-model="filters.search"
-          state="dark"
-          type="search"
-          placeholder="Wyszukiwanie"
-          @keydown.enter="makeSearch"
-        />
-
-        <vs-button color="dark" icon @click="makeSearch">
-          <i class="bx bx-search"></i>
-        </vs-button>
         <vs-button v-can="$p.Items.Add" color="dark" icon @click="openModal()">
           <i class="bx bx-plus"></i>
         </vs-button>
+      </template>
+
+      <template #filters>
+        <div>
+          <vs-input
+            v-model="filters.search"
+            class="span-2"
+            type="search"
+            label="Wyszukiwanie"
+            @input="debouncedSearch"
+          />
+        </div>
       </template>
 
       <template v-slot="{ item }">
@@ -81,6 +82,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { debounce } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
 
 import PaginatedList from '@/components/PaginatedList.vue'
@@ -148,6 +150,11 @@ export default Vue.extend({
         })
       }
     },
+    debouncedSearch: debounce(function (this: any) {
+      this.$nextTick(() => {
+        this.makeSearch()
+      })
+    }, 300),
 
     openModal(id?: UUID) {
       if (!this.$verboseCan(this.$p.Items.ShowDetails)) return

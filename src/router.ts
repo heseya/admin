@@ -52,6 +52,14 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/analytics',
+      name: 'Analytics',
+      component: () => import('./views/Analytics.vue'),
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
       path: '/items',
       name: 'Items',
       component: () => import('./views/items/index.vue'),

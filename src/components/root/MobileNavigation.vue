@@ -14,7 +14,7 @@
         <span class="mobile-nav__link-label">Zamówienia</span>
       </router-link>
 
-      <router-link class="mobile-nav__link" to="/">
+      <router-link class="mobile-nav__link" to="/analytics">
         <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/stats-icon.svg')" />
         <span class="mobile-nav__link-label">Statystyka</span>
       </router-link>
@@ -51,7 +51,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .mobile-nav {
-  z-index: 1000;
+  z-index: $mobile-nav-z-index;
   position: fixed;
   bottom: 0;
   left: 0;

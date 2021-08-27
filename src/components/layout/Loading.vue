@@ -36,7 +36,7 @@ $loader-color: $font-color;
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 2000;
+  z-index: $loading-z-index;
   opacity: 0;
   visibility: hidden;
   transition: 0.3s;

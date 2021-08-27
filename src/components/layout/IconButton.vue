@@ -84,7 +84,7 @@ export default Vue.extend({
   padding-left: $side-padding;
   border-radius: 20px;
   transition: 0.3s;
-  margin: 0 3px;
+  margin: 3px;
 
   &:hover {
     background-color: $background-color-700;

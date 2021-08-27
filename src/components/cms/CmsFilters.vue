@@ -1,30 +1,30 @@
 <template>
   <card class="cms-filters" :class="{ 'cms-filters--expanded': isExpanded }">
     <div class="cms-filters__wrapper">
-      <div class="cms-filters__header">
-        <div class="cms-filters__title">
-          Filtry
-          <div v-if="filtersCount" class="cms-filters__badge">{{ filtersCount }}</div>
-        </div>
-        <icon-button
-          :disabled="filtersCount === 0"
-          type="default"
-          size="small"
-          @click="$emit('clear-filters')"
-        >
-          <template #icon>
-            <img src="@/assets/images/icons/close-icon.svg" alt="Close" />
-          </template>
-          Wyczyść ustawione filtry
-        </icon-button>
-      </div>
-      <div ref="content" class="cms-filters__content">
+      <cms-filters-header class="cms-filters__header" />
+      <div class="cms-filters__content">
         <slot></slot>
+      </div>
+
+      <div
+        class="cms-filters__mobile-wrapper"
+        :class="{ 'cms-filters__mobile-wrapper--open': isModalOpen }"
+      >
+        <button class="cms-filters__close-btn" @click="isModalOpen = false">
+          <img src="@/assets/images/icons/close-icon.svg" alt="Close" />
+        </button>
+        <cms-filters-header />
+        <div class="cms-filters__mobile-content">
+          <slot></slot>
+        </div>
       </div>
     </div>
     <button v-if="isExpandable" class="cms-filters__more-btn" @click="isExpanded = !isExpanded">
       <i v-if="!isExpanded" class="bx bx-chevrons-down"></i>
       <i v-else class="bx bx-chevrons-up"></i>
+    </button>
+    <button class="cms-filters__mobile-btn" @click="isModalOpen = true">
+      <i class="bx bxs-filter-alt"></i>
     </button>
   </card>
 </template>
@@ -32,10 +32,10 @@
 <script lang="ts">
 import Vue from 'vue'
 import Card from '../layout/Card.vue'
-import IconButton from '@/components/layout/IconButton.vue'
+import CmsFiltersHeader from './CmsFiltersHeader.vue'
 
 export default Vue.extend({
-  components: { IconButton, Card },
+  components: { Card, CmsFiltersHeader },
   props: {
     filtersCount: {
       type: Number,
@@ -44,6 +44,7 @@ export default Vue.extend({
   },
   data: () => ({
     isExpanded: false,
+    isModalOpen: false,
   }),
   computed: {
     isExpandable(): boolean {
@@ -60,42 +61,27 @@ export default Vue.extend({
   padding: 0;
   position: sticky;
   top: 16px;
-  z-index: 100;
+  z-index: $desktop-filters-z-index;
 
   &__wrapper {
     width: 100%;
-    padding: 14px;
-  }
+    padding: 8px;
 
-  &__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  &__title {
-    font-size: 1.1em;
-    font-weight: 600;
-    display: flex;
-    align-items: flex-start;
-  }
-
-  &__badge {
-    background-color: $green-color-500;
-    color: #fff;
-    font-size: 0.8rem;
-    line-height: 0.7rem;
-    font-weight: 300;
-    padding: 3px 4px;
-    border-radius: 3px;
-    margin-left: 4px;
+    @media ($viewport-4) {
+      padding: 14px;
+    }
   }
 
   &__content {
+    position: static;
     padding-top: 24px;
     max-height: 64px;
     overflow: hidden;
     transition: 0.3s;
+
+    @media ($max-viewport-10) {
+      display: none;
+    }
 
     & > ::v-deep *:first-child {
       display: grid;
@@ -116,7 +102,39 @@ export default Vue.extend({
     }
   }
 
-  &__more-btn {
+  &__mobile-wrapper {
+    position: fixed;
+    left: 0;
+    top: 102vh;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    padding: 80px 32px 16px;
+    z-index: $mobile-filters-z-index;
+    transition: 0.3s;
+    opacity: 0;
+    visibility: hidden;
+
+    &--open {
+      top: 0;
+      opacity: 1;
+      visibility: visible;
+    }
+
+    @media ($viewport-10) {
+      display: none !important;
+    }
+  }
+
+  &__mobile-content {
+    margin-top: 32px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__more-btn,
+  &__mobile-btn,
+  &__close-btn {
     all: unset;
     display: block;
     cursor: pointer;
@@ -131,6 +149,31 @@ export default Vue.extend({
     &:hover {
       background-color: $background-color-600;
     }
+  }
+
+  &__more-btn {
+    display: none;
+    @media ($viewport-10) {
+      display: block;
+    }
+  }
+
+  &__mobile-btn {
+    @media ($viewport-10) {
+      display: none;
+    }
+  }
+
+  &__close-btn {
+    position: absolute;
+    top: 30px;
+    right: 32px;
+    width: 37px;
+    height: 37px;
+    padding: 0;
+    border-radius: 50%;
+    color: #979ea0;
+    background-color: $background-color-700;
   }
 
   &--expanded &__content {

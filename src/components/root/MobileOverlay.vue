@@ -91,7 +91,7 @@ export default Vue.extend({
   box-sizing: border-box;
   padding: 20vh 10% 0;
   background-color: #fff;
-  z-index: 1000;
+  z-index: $mobile-nav-overlay-z-index;
   display: flex;
   flex-direction: column;
   align-items: center;

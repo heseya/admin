@@ -33,6 +33,17 @@ export default Vue.extend({
     align-items: center;
   }
 
+  &__header {
+    margin-right: auto;
+  }
+
+  &__buttons {
+    margin-left: auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
   &__title {
     display: inline-block;
     font-size: 28px;

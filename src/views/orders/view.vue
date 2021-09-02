@@ -6,6 +6,9 @@
           <i class="bx bxs-dollar-circle"></i>
         </vs-button>
       </a>
+      <vs-button color="dark" icon @click="downloadAudits">
+        <i class="bx bx-history"></i>
+      </vs-button>
     </top-nav>
 
     <div class="order">
@@ -165,6 +168,7 @@ import { createPackage } from '@/services/createPackage'
 import { formatApiError } from '@/utils/errors'
 import { Order, OrderStatus } from '@/interfaces/Order'
 import { PackageTemplate } from '@/interfaces/PackageTemplate'
+import { downloadJsonAsFile } from '@/utils/download'
 
 const DEFAULT_FORM = {
   address: '',
@@ -327,6 +331,11 @@ export default Vue.extend({
         title: 'Zamówienie zostało zaktualizowane',
       })
       this.$accessor.stopLoading()
+    },
+
+    async downloadAudits() {
+      const data = await this.$accessor.orders.fetchAudits(this.order.id)
+      downloadJsonAsFile(data, 'orders-history')
     },
   },
 })

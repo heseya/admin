@@ -1,17 +1,17 @@
 <template>
   <div class="permissions-manager">
     <span class="permissions-manager__title">Uprawnienia roli</span>
-    <div v-for="{ section, permissions: groupPerms } in grouped" :key="section">
+    <div v-for="{ section, permissions: groupPerms, isAssignable } in grouped" :key="section">
       <span class="permissions-manager__subtitle">
         <vs-button
           class="permissions-manager__btn"
           dark
           icon
           :transparent="!hasSome(section)"
-          v-bind="disabled ? { disabled: true } : {}"
+          v-bind="disabled || !isAssignable ? { disabled: true } : {}"
           @click="() => changeAll(section)"
         >
-          <i v-if="hasAll(section)" class="bx bx-check"></i>
+          <i v-if="hasAll(section) && isAssignable" class="bx bx-check"></i>
           <i v-else class="bx bx-minus"></i>
         </vs-button>
         {{ section.replaceAll('_', ' ') }}
@@ -41,6 +41,8 @@ import { groupBy } from 'lodash'
 interface GroupedPermissions {
   section: string
   permissions: PermissionObject[]
+  assignablePermissions: PermissionObject[]
+  isAssignable: boolean
 }
 
 export default Vue.extend({
@@ -69,7 +71,12 @@ export default Vue.extend({
     grouped(): GroupedPermissions[] {
       const grouped = groupBy(this.permissions, (p) => p.name.split('.')[0])
       return Object.keys(grouped)
-        .map((section) => ({ section, permissions: grouped[section] }))
+        .map((section) => ({
+          section,
+          permissions: grouped[section],
+          assignablePermissions: grouped[section].filter((p) => p.assignable),
+          isAssignable: grouped[section].some((p) => p.assignable),
+        }))
         .sort((a, b) => (a.section > b.section ? 1 : -1))
     },
   },
@@ -98,21 +105,23 @@ export default Vue.extend({
 
     hasAll(section: string): boolean {
       const group = this.getGroup(section)
-      return group.permissions.every((p) => this.has(p.name))
+      return group.assignablePermissions.every((p) => this.has(p.name))
     },
     hasSome(section: string): boolean {
       const group = this.getGroup(section)
-      return group.permissions.some((p) => this.has(p.name))
+      return group.assignablePermissions.some((p) => this.has(p.name))
     },
     changeAll(section: string) {
       const group = this.getGroup(section)
       let form = [...this.form]
 
       // take back all group permissions
-      form = this.form.filter((p) => !group.permissions.find((g) => g.name === p))
+      form = this.form.filter((p) => !group.assignablePermissions.find((g) => g.name === p))
       if (!this.hasAll(section)) {
         // add all group permissions
-        form = this.form.concat(group.permissions.map((p) => p.name))
+        form = this.form.concat(
+          group.assignablePermissions.filter((p) => p.assignable).map((p) => p.name),
+        )
       }
 
       this.form = [...form]

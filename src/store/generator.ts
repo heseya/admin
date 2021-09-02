@@ -8,6 +8,7 @@ import { api } from '../api'
 import { RootState } from '.'
 import { ResponseMeta } from '@/interfaces/Response'
 import { UUID } from '@/interfaces/UUID'
+import { AuditEntry } from '@/interfaces/AuditEntry'
 
 type QueryPayload = Record<string, any>
 
@@ -293,6 +294,25 @@ export const createVuexCRUD =
             return false
           }
         },
+
+        // Audits
+        async fetchAudits({ commit }, id: UUID) {
+          commit(StoreMutations.SetError, null)
+          commit(StoreMutations.SetLoading, true)
+          try {
+            const stringQuery = queryString.stringify(params.get || {})
+            const { data } = await api.get<{ data: AuditEntry[] }>(
+              `/audits/${endpoint}/id:${id}?${stringQuery}`,
+            )
+            commit(StoreMutations.SetLoading, false)
+            return data.data
+          } catch (error) {
+            commit(StoreMutations.SetError, error)
+            commit(StoreMutations.SetLoading, false)
+            return []
+          }
+        },
+
         ...(extend?.actions || {}),
       },
     )

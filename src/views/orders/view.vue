@@ -50,7 +50,7 @@
                   {{ template.name }}
                 </vs-option>
               </vs-select>
-              <vs-button color="dark" @click="createPackage">Utwórz&nbsp;przesyłkę</vs-button>
+              <app-button @click="createPackage">Utwórz&nbsp;przesyłkę</app-button>
             </div>
             <small v-else>
               <i class="bx bxs-check-circle"></i> Przesyłka została już zamówiona (Numer śledzenia:

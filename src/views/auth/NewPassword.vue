@@ -22,7 +22,7 @@
       <br />
 
       <div class="central-screen-form__row">
-        <vs-button dark @click="handleSubmit(changePassword)"> Zmień hasło </vs-button>
+        <app-button @click="handleSubmit(changePassword)"> Zmień hasło </app-button>
       </div>
     </ValidationObserver>
   </central-screen-form>

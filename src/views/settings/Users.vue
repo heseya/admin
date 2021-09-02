@@ -32,9 +32,7 @@
 
         <template #footer>
           <div class="row">
-            <vs-button v-if="canModify" color="dark" @click="handleSubmit(saveModal)">
-              Zapisz
-            </vs-button>
+            <app-button v-if="canModify" @click="handleSubmit(saveModal)"> Zapisz </app-button>
             <pop-confirm
               v-slot="{ open }"
               v-can="$p.Users.Remove"
@@ -43,14 +41,14 @@
               cancel-text="Anuluj"
               @confirm="deleteItem"
             >
-              <vs-button
+              <app-button
                 v-if="!isNewUser(editedUser)"
                 :disabled="isEditedUserCurrentUser"
-                color="danger"
+                type="danger"
                 @click="open"
               >
                 Usuń
-              </vs-button>
+              </app-button>
             </pop-confirm>
           </div>
         </template>

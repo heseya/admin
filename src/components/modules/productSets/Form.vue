@@ -64,9 +64,7 @@
       </modal-form>
       <template #footer>
         <div class="row">
-          <vs-button v-if="!disabled" color="dark" @click="handleSubmit(saveModal)">
-            Zapisz
-          </vs-button>
+          <app-button v-if="!disabled" @click="handleSubmit(saveModal)"> Zapisz </app-button>
           <pop-confirm
             v-if="deletable"
             v-slot="{ open }"
@@ -75,7 +73,7 @@
             cancel-text="Anuluj"
             @confirm="deleteItem"
           >
-            <vs-button v-if="form.id" color="danger" @click="open">Usuń</vs-button>
+            <app-button v-if="form.id" type="danger" @click="open">Usuń</app-button>
           </pop-confirm>
         </div>
       </template>

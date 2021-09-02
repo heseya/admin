@@ -12,15 +12,15 @@
         <br />
 
         <div class="central-screen-form__row">
-          <vs-button dark @click="handleSubmit(sendResetRequest)"> Resetuj hasło </vs-button>
-          <vs-button transparent dark to="/login"> Wróć do strony logowania </vs-button>
+          <app-button @click="handleSubmit(sendResetRequest)"> Resetuj hasło </app-button>
+          <app-button type="white" to="/login"> Wróć do strony logowania </app-button>
         </div>
       </ValidationObserver>
     </template>
     <template v-else>
       <p>Prośba resetu hasła została wysłana. Sprawdź swoją skrzynkę pocztową!</p>
       <br />
-      <vs-button dark to="/login"> Wróć do strony logowania </vs-button>
+      <app-button to="/login"> Wróć do strony logowania </app-button>
     </template>
   </central-screen-form>
 </template>

@@ -103,7 +103,7 @@
           <small>Mnożony schemat</small><br />
           <b>{{ usedSchemaName || '-- wybierz --' }}</b>
         </div>
-        <vs-button @click="isUsedSchemaModalActive = true">Zmień</vs-button>
+        <app-button @click="isUsedSchemaModalActive = true">Zmień</app-button>
       </div>
 
       <a-modal
@@ -140,9 +140,7 @@
       />
     </Zone>
     <br />
-    <vs-button :disabled="disabled" color="dark" size="large" @click.stop="handleSubmit(submit)">
-      Zapisz
-    </vs-button>
+    <app-button :disabled="disabled" @click.stop="handleSubmit(submit)"> Zapisz </app-button>
   </validation-observer>
 </template>
 

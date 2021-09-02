@@ -5,12 +5,12 @@
       <div class="content-tooltip">
         <p>{{ title }}</p>
         <footer>
-          <vs-button danger block @click="confirm">
+          <app-button type="danger" size="small" @click="confirm">
             {{ okText }}
-          </vs-button>
-          <vs-button transparent dark block @click="cancel">
+          </app-button>
+          <app-button size="small" @click="cancel">
             {{ cancelText }}
-          </vs-button>
+          </app-button>
         </footer>
       </div>
     </template>
@@ -68,7 +68,7 @@ export default Vue.extend({
   footer {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
   }
 }
 </style>

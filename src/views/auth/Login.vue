@@ -19,8 +19,8 @@
       <br />
 
       <div class="central-screen-form__row">
-        <vs-button dark @click="handleSubmit(login)"> Zaloguj </vs-button>
-        <vs-button transparent dark to="/reset-password"> Zapomniałeś hasła? </vs-button>
+        <app-button @click="handleSubmit(login)"> Zaloguj </app-button>
+        <app-button type="white" to="/reset-password"> Zapomniałeś hasła? </app-button>
       </div>
     </ValidationObserver>
   </central-screen-form>

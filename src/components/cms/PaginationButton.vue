@@ -34,7 +34,7 @@ export default Vue.extend({
   background-color: $background-color-700;
   color: $font-color;
   transition: 0.3s;
-  margin-right: 3px;
+  margin-right: 4px;
 
   &:hover {
     background-color: darken($background-color-700, 2);

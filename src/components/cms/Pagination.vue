@@ -12,9 +12,18 @@
       {{ length }}
     </p-button>
 
-    <button v-if="page !== length" class="pagination__next-button" @click="next">
-      Następna <i class="bx bxs-chevron-right"></i>
-    </button>
+    <app-button
+      v-if="page !== length"
+      class="pagination__next-button"
+      type="white"
+      shadow
+      @click="next"
+    >
+      Następna
+      <template #icon>
+        <i class="bx bxs-chevron-right"></i>
+      </template>
+    </app-button>
   </div>
 </template>
 
@@ -89,22 +98,7 @@ export default Vue.extend({
   }
 
   &__next-button {
-    all: unset;
-    background-color: #fff;
-    color: $font-color;
-    box-shadow: $shadow;
-    cursor: pointer;
-    padding: 8px 16px;
     margin-left: 16px;
-    transition: 0.3s;
-
-    &:hover {
-      background-color: $background-color-700;
-    }
-
-    i {
-      margin-left: 12px;
-    }
   }
 }
 </style>

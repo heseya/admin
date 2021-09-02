@@ -29,7 +29,7 @@
         </modal-form>
         <template #footer>
           <div class="row">
-            <vs-button color="dark" @click="handleSubmit(saveModal)">Dodaj</vs-button>
+            <app-button @click="handleSubmit(saveModal)">Dodaj</app-button>
           </div>
         </template>
       </a-modal>

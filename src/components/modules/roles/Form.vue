@@ -14,9 +14,7 @@
       <br />
       <permissions-manager v-model="form.permissions" :disabled="disabled" />
       <br />
-      <vs-button v-if="!disabled" color="dark" size="large" @click="handleSubmit(submit)">
-        Zapisz
-      </vs-button>
+      <app-button v-if="!disabled" @click="handleSubmit(submit)"> Zapisz </app-button>
     </card>
   </validation-observer>
 </template>

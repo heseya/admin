@@ -37,9 +37,7 @@
         <ShippingMethodsForm v-model="editedItem" :countries="countries" :disabled="!canModify" />
         <template #footer>
           <div class="row">
-            <vs-button v-if="canModify" color="dark" @click="handleSubmit(saveModal)">
-              Zapisz
-            </vs-button>
+            <app-button v-if="canModify" @click="handleSubmit(saveModal)"> Zapisz </app-button>
             <pop-confirm
               v-slot="{ open }"
               v-can="$p.ShippingMethods.Remove"
@@ -48,7 +46,7 @@
               cancel-text="Anuluj"
               @confirm="deleteItem"
             >
-              <vs-button v-if="editedItem.id" color="danger" @click="open">Usuń</vs-button>
+              <app-button v-if="editedItem.id" type="danger" @click="open">Usuń</app-button>
             </pop-confirm>
           </div>
         </template>

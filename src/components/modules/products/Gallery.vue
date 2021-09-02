@@ -204,14 +204,5 @@ export default Vue.extend({
       transform: scale(1.1);
     }
   }
-
-  @keyframes spin {
-    from {
-      transform: translate(-50%, -50%) rotate(0deg);
-    }
-    to {
-      transform: translate(-50%, -50%) rotate(360deg);
-    }
-  }
 }
 </style>

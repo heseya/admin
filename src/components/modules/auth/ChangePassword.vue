@@ -22,9 +22,9 @@
     </validation-provider>
     <br />
     <div class="center">
-      <vs-button color="dark" :loading="isLoading" @click="handleSubmit(changePassword)">
+      <app-button :loading="isLoading" @click="handleSubmit(changePassword)">
         Zmień hasło
-      </vs-button>
+      </app-button>
     </div>
   </validation-observer>
 </template>

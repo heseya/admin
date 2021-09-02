@@ -13,9 +13,9 @@
           <small>{{ getSubText(item) }}</small>
           <template #action>
             <div class="flex">
-              <vs-button success icon @click.stop.prevent="onSelect(item)">
+              <app-button type="success" size="small" @click="onSelect(item)">
                 {{ addText }}
-              </vs-button>
+              </app-button>
             </div>
           </template>
         </list-item>

@@ -3,7 +3,7 @@
     <card class="error-page__content">
       <h1>{{ title }}</h1>
       <p>{{ description }}</p>
-      <vs-button v-if="!hideReturn" dark to="/">Wróć na stronę główną</vs-button>
+      <app-button v-if="!hideReturn" to="/">Wróć na stronę główną</app-button>
     </card>
   </div>
 </template>

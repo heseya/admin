@@ -22,7 +22,7 @@
           label="Komentarz do zamówienia"
         />
       </div>
-      <vs-button dark @click="handleSubmit(save)">Zapisz</vs-button>
+      <app-button @click="handleSubmit(save)">Zapisz</app-button>
     </ValidationObserver>
   </div>
 </template>

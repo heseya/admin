@@ -131,16 +131,10 @@
                 />
                 <br />
                 <div class="flex">
-                  <vs-button v-if="canModify" color="dark" size="large">Zapisz</vs-button>
-                  <vs-button
-                    v-if="canModify"
-                    color="dark"
-                    size="large"
-                    type="button"
-                    @click="handleSubmit(submitAndGoNext)"
-                  >
+                  <app-button v-if="canModify">Zapisz</app-button>
+                  <app-button v-if="canModify" @click="handleSubmit(submitAndGoNext)">
                     Zapisz i dodaj następny
-                  </vs-button>
+                  </app-button>
                 </div>
               </div>
             </form>

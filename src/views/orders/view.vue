@@ -9,6 +9,19 @@
       <vs-button color="dark" icon @click="downloadAudits">
         <i class="bx bx-history"></i>
       </vs-button>
+      <pop-confirm
+        v-if="order.payable"
+        v-slot="{ open }"
+        title="Czy na pewno chcesz ręcznie oznaczyć zamówienie jako opłacone? (Np. przelewem tradycyjnym lub gotówką)"
+        ok-text="Opłać"
+        ok-color="success"
+        cancel-text="Anuluj"
+        @confirm="payOffline"
+      >
+        <vs-button color="dark" icon @click="open">
+          <i class="bx bxs-diamond"></i>
+        </vs-button>
+      </pop-confirm>
     </top-nav>
 
     <div class="order">
@@ -164,6 +177,7 @@ import Address from '@/components/modules/orders/OrderAddress.vue'
 import CartItem from '@/components/layout/CartItem.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import PartialUpdateForm from '@/components/modules/orders/PartialUpdateForm.vue'
+import PopConfirm from '@/components/layout/PopConfirm.vue'
 
 import { getRelativeDate, formatDate } from '@/utils/utils'
 import { createPackage } from '@/services/createPackage'
@@ -171,6 +185,7 @@ import { formatApiNotificationError } from '@/utils/errors'
 import { Order, OrderStatus } from '@/interfaces/Order'
 import { PackageTemplate } from '@/interfaces/PackageTemplate'
 import { downloadJsonAsFile } from '@/utils/download'
+import { api } from '@/api'
 
 const DEFAULT_FORM = {
   address: '',
@@ -191,6 +206,7 @@ export default Vue.extend({
     appCartItem: CartItem,
     ModalForm,
     PartialUpdateForm,
+    PopConfirm,
   },
   data: () => ({
     status: '',
@@ -326,6 +342,26 @@ export default Vue.extend({
     async downloadAudits() {
       const data = await this.$accessor.orders.fetchAudits(this.order.id)
       downloadJsonAsFile(data, 'orders-history')
+    },
+
+    async payOffline() {
+      this.$accessor.startLoading()
+      try {
+        await api.post(`/orders/${this.order.code}/pay/offline`)
+
+        this.$vs.notification({
+          color: 'success',
+          title: 'Zamówienie zostało opłacone',
+        })
+      } catch {
+        this.$vs.notification({
+          color: 'danger',
+          title: 'Nie udało się opłacić zamówienia',
+        })
+      }
+
+      await this.$accessor.orders.get(this.$route.params.id)
+      this.$accessor.stopLoading()
     },
   },
 })

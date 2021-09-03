@@ -5,7 +5,7 @@
       <div class="content-tooltip">
         <p>{{ title }}</p>
         <footer>
-          <app-button type="danger" size="small" @click="confirm">
+          <app-button :type="okColor" size="small" @click="confirm">
             {{ okText }}
           </app-button>
           <app-button size="small" @click="cancel">
@@ -29,6 +29,10 @@ export default Vue.extend({
     okText: {
       type: String,
       default: 'Tak',
+    },
+    okColor: {
+      type: String,
+      default: 'danger',
     },
     cancelText: {
       type: String,

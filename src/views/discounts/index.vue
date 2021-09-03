@@ -11,13 +11,25 @@
       <template #default="{ item: discount }">
         <list-item @click="openModal(discount.id)">
           {{ discount.code }}
-          <small>{{ discount.description }}</small>
+          <small>
+            <template v-if="discount.starts_at || discount.expires_at">
+              Ważny
+              <template v-if="discount.starts_at">
+                od {{ formatDateTime(discount.starts_at) }}
+              </template>
+              <template v-if="discount.expires_at">
+                do {{ formatDateTime(discount.expires_at) }}
+              </template>
+              <template v-if="discount.description">|</template>
+            </template>
+            {{ discount.description }}
+          </small>
 
           <template #action>
             -{{ discount.type === 0 ? `${discount.discount}%` : formatCurrency(discount.discount) }}
-            <small style="white-space: nowrap"
-              >wykorzystano {{ discount.uses }} z {{ discount.max_uses }}</small
-            >
+            <small style="white-space: nowrap">
+              wykorzystano {{ discount.uses }} z {{ discount.max_uses }}
+            </small>
           </template>
         </list-item>
       </template>
@@ -38,12 +50,8 @@
           />
           <validated-input v-model="editedItem.description" :disabled="!canModify" label="Opis" />
 
-          <validated-input
-            v-model="editedItem.max_uses"
-            :disabled="!canModify"
-            rules="required"
-            label="Maksymalna ilość użyć"
-          />
+          <hr />
+
           <validated-input
             v-model="editedItem.discount"
             :disabled="!canModify"
@@ -57,6 +65,37 @@
               <template #error>{{ errors[0] }}</template>
             </app-select>
           </ValidationProvider>
+
+          <hr />
+
+          <validated-input
+            v-model="editedItem.max_uses"
+            :disabled="!canModify"
+            rules="required"
+            label="Maksymalna ilość użyć"
+          />
+
+          <hr />
+
+          <validated-input
+            v-model="editedItem.starts_at"
+            rules="date-before:@expires_at"
+            type="datetime-local"
+            allow-clear
+            :disabled="!canModify"
+            label="Ważny od"
+          />
+          <validated-input
+            v-model="editedItem.expires_at"
+            name="expires_at"
+            type="datetime-local"
+            allow-clear
+            :disabled="!canModify"
+            label="Ważny do"
+          />
+          <small>
+            W przypadku braku podania dat, kod rabatowy będzie ważny bez ograniczeń czasowych.
+          </small>
         </modal-form>
         <template #footer>
           <div class="row">
@@ -91,6 +130,7 @@ import { DiscountCode } from '@/interfaces/DiscountCode'
 import { UUID } from '@/interfaces/UUID'
 
 import { formatCurrency } from '@/utils/currency'
+import { format } from 'date-fns'
 
 const EMPTY_DISCOUNT_CODE: DiscountCode = {
   id: '',
@@ -100,6 +140,8 @@ const EMPTY_DISCOUNT_CODE: DiscountCode = {
   max_uses: 1,
   available: true,
   uses: 0,
+  starts_at: null,
+  expires_at: null,
 }
 
 export default Vue.extend({
@@ -136,11 +178,19 @@ export default Vue.extend({
     formatCurrency(amount: number) {
       return formatCurrency(amount, this.$accessor.currency)
     },
+    formatDateTime(date: string) {
+      return format(new Date(date), 'yyyy-MM-dd HH:mm')
+    },
     openModal(id?: UUID) {
       if (!this.$verboseCan(this.$p.Discounts.ShowDetails)) return
       this.isModalActive = true
       if (id) {
-        this.editedItem = this.$accessor.discounts.getFromListById(id)
+        const item = this.$accessor.discounts.getFromListById(id)
+        this.editedItem = {
+          ...item,
+          starts_at: item.starts_at && format(new Date(item.starts_at), "yyyy-MM-dd'T'HH:mm"),
+          expires_at: item.expires_at && format(new Date(item.expires_at), "yyyy-MM-dd'T'HH:mm"),
+        }
       } else {
         this.editedItem = {
           ...EMPTY_DISCOUNT_CODE,

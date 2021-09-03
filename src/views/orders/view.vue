@@ -348,19 +348,12 @@ export default Vue.extend({
       this.$accessor.startLoading()
       try {
         await api.post(`/orders/${this.order.code}/pay/offline`)
-
-        this.$vs.notification({
-          color: 'success',
-          title: 'Zamówienie zostało opłacone',
-        })
+        await this.$accessor.orders.get(this.$route.params.id)
+        this.$toast.success('Zamówienie zostało opłacone')
       } catch {
-        this.$vs.notification({
-          color: 'danger',
-          title: 'Nie udało się opłacić zamówienia',
-        })
+        this.$toast.error('Nie udało się opłacić zamówienia')
       }
 
-      await this.$accessor.orders.get(this.$route.params.id)
       this.$accessor.stopLoading()
     },
   },

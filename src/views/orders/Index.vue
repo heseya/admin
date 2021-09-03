@@ -3,6 +3,7 @@
     <PaginatedList
       title="Zamówienia"
       :filters="filters"
+      :table="tableLabels"
       store-key="orders"
       @clear-filters="clearFilters"
     >
@@ -11,7 +12,10 @@
       </template>
 
       <template v-slot="{ item: order }">
-        <list-item :key="order.id" :url="`/orders/${order.id}`">
+        <cms-table-row :item="order" :labels="tableLabels" :to="`/orders/${order.id}`">
+          <template v-slot:code="{ value }"> custom:{{ value }} </template>
+        </cms-table-row>
+        <!-- <list-item :key="order.id" :url="`/orders/${order.id}`">
           <template #avatar>
             <vs-avatar :success="order.payed" :danger="!order.payed">
               <i class="bx bx-dollar"></i>
@@ -36,7 +40,7 @@
               </div>
             </div>
           </template>
-        </list-item>
+        </list-item> -->
       </template>
     </PaginatedList>
   </div>
@@ -44,21 +48,22 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { format } from 'date-fns'
 
 import { DateInput, formatFilters, getRelativeDate } from '@/utils/utils'
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 
-import ListItem from '@/components/layout/ListItem.vue'
 import OrderFilter, { EMPTY_ORDER_FILTERS } from '@/components/modules/orders/OrderFilter.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
+import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 
 type OrderFilersType = typeof EMPTY_ORDER_FILTERS
 
 export default Vue.extend({
   components: {
     OrderFilter,
-    ListItem,
     PaginatedList,
+    CmsTableRow,
   },
   data: () => ({
     filters: { ...EMPTY_ORDER_FILTERS } as OrderFilersType,
@@ -66,6 +71,17 @@ export default Vue.extend({
   computed: {
     currency(): string {
       return this.$accessor.currency
+    },
+    tableLabels(): any {
+      return [
+        { key: 'code', label: 'Kod zamówienia' },
+        { key: 'created_at', label: 'Data', render: (v: any) => format(new Date(v), 'dd-MM-yyyy') },
+        { key: 'summary', label: 'Wartość' },
+        { key: 'payed', label: 'Płatność', render: (v: any) => (v ? 'Opłacone' : 'Nieopłacone') },
+        { key: 'status', label: 'Status', render: (v: any) => v.name },
+        { key: 'shipping_method', label: 'Przesyłka', render: () => 'DHL' },
+        { key: 'email', label: 'Klient' },
+      ]
     },
   },
   created() {

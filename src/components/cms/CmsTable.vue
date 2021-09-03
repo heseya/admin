@@ -1,12 +1,17 @@
 <template>
-  <div class="cms-table">
+  <div class="cms-table" :style="{ '--table-cols': gridColumns }">
     <cms-table-header class="cms-table__header" :headers="config.headers" />
 
     <component :is="draggable ? 'Draggable' : 'div'" v-model="items">
       <template v-if="shouldRenderList">
         <template v-for="item in items">
           <slot :item="item">
-            <cms-table-row :item="item" :headers="config.headers" />
+            <cms-table-row
+              :item="item"
+              :headers="config.headers"
+              :to="config.rowUrlBuilder ? config.rowUrlBuilder(item) : null"
+              @click="config.rowOnClick"
+            />
           </slot>
         </template>
       </template>
@@ -51,7 +56,10 @@ export default Vue.extend({
       },
     },
     shouldRenderList(): boolean {
-      return this.$slots?.default?.length === 1
+      return !this.$slots.default || this.$slots.default?.length === 1
+    },
+    gridColumns(): string {
+      return this.config.headers.map((header) => header.width || '1fr').join(' ')
     },
   },
   methods: {

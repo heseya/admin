@@ -18,6 +18,19 @@ body {
   margin: 0;
 }
 
+.uppercase {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.danger-text {
+  color: $red-color-500;
+}
+
+.success-text {
+  color: $green-color-500;
+}
+
 hr {
   all: unset;
   display: block;

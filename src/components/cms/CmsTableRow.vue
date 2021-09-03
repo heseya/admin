@@ -4,14 +4,13 @@
     :to="to"
     class="cms-table-row"
     :class="{ 'cms-table-row--no-hover': noHover }"
-    :style="{ '--cols': `repeat(${headers.length}, 1fr)` }"
     @click.stop="click"
   >
-    <div v-for="{ key, label, render } in headers" :key="key" class="cms-table-row__col">
+    <div v-for="{ key, label, value, rawValue } in values" :key="key" class="cms-table-row__col">
       <span class="cms-table-row__col-label">{{ label }}</span>
       <span class="cms-table-row__col-value">
-        <slot :name="key" v-bind="{ key, label, value: item[key] }">
-          {{ render ? render(item[key]) : item[key] }}
+        <slot :name="key" v-bind="{ key, label, value, rawValue, item }">
+          {{ value }}
         </slot>
       </span>
     </div>
@@ -20,7 +19,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { TableHeader } from '@/interfaces/CmsTable'
+import get from 'lodash/get'
+
+import { TableHeader, TableValue } from '@/interfaces/CmsTable'
 
 export default Vue.extend({
   props: {
@@ -54,6 +55,17 @@ export default Vue.extend({
       if (this.to) return 'router-link'
       return this.el
     },
+    values(): TableValue[] {
+      return this.headers.map(({ key, label, render }) => {
+        const rawValue = get(this.item, key)
+        return {
+          key,
+          label,
+          value: render?.(rawValue) ?? rawValue,
+          rawValue,
+        }
+      })
+    },
   },
   methods: {
     click() {
@@ -72,16 +84,22 @@ export default Vue.extend({
   cursor: pointer;
   transition: 0.3s;
   margin-bottom: 16px;
+  text-align: left;
 
   @media ($viewport-5) {
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
 
   @media ($viewport-11) {
-    grid-template-columns: var(--cols);
-    padding: 0;
+    grid-template-columns: var(--table-cols);
+    padding: 0 16px;
     border: none;
+    border-radius: 0;
     margin-bottom: 0;
+
+    &:not(:last-of-type) {
+      border-bottom: solid 1px $background-color-700;
+    }
   }
 
   &:hover {

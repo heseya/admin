@@ -5,6 +5,7 @@
       :filters="filters"
       :table="tableConfig"
       store-key="orders"
+      class="orders-list"
       @clear-filters="clearFilters"
     >
       <template #filters>
@@ -13,7 +14,20 @@
 
       <template v-slot="{ item: order }">
         <cms-table-row :item="order" :headers="tableConfig.headers" :to="`/orders/${order.id}`">
-          <template v-slot:code="{ value }"> custom:{{ value }} </template>
+          <template #code="{ value, item }">
+            {{ value }}
+            <a-tooltip v-if="item.comment">
+              <template slot="title"> {{ item.comment }} </template>
+              <span class="order-icon"> <i class="bx bxs-comment-detail"></i> </span>
+            </a-tooltip>
+          </template>
+          <template #payed="{ rawValue }">
+            <span v-if="rawValue" class="order-tag success-text">Opłacone</span>
+            <span v-else class="order-tag danger-text">Nieopłacone</span>
+          </template>
+          <template #status="{ rawValue: { name, color } }">
+            <span class="order-tag" :style="{ color: `#${color}` }"> {{ name }} </span>
+          </template>
         </cms-table-row>
         <!-- <list-item :key="order.id" :url="`/orders/${order.id}`">
           <template #avatar>
@@ -48,15 +62,16 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { format } from 'date-fns'
 
 import { DateInput, formatFilters, getRelativeDate } from '@/utils/utils'
+import { formatCurrency } from '@/utils/currency'
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 
 import OrderFilter, { EMPTY_ORDER_FILTERS } from '@/components/modules/orders/OrderFilter.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 import { TableConfig } from '@/interfaces/CmsTable'
+import { Order } from '@/interfaces/Order'
 
 type OrderFilersType = typeof EMPTY_ORDER_FILTERS
 
@@ -73,20 +88,22 @@ export default Vue.extend({
     currency(): string {
       return this.$accessor.currency
     },
-    tableConfig(): TableConfig {
+    tableConfig(): TableConfig<Order> {
       return {
+        rowUrlBuilder: (order) => `/orders/${order.id}`,
         headers: [
           { key: 'code', label: 'Kod zamówienia' },
           {
             key: 'created_at',
             label: 'Data',
-            render: (v: any) => format(new Date(v), 'dd-MM-yyyy'),
+            sortable: true,
+            render: (v) => getRelativeDate(v),
           },
-          { key: 'summary', label: 'Wartość' },
-          { key: 'payed', label: 'Płatność', render: (v: any) => (v ? 'Opłacone' : 'Nieopłacone') },
-          { key: 'status', label: 'Status', render: (v: any) => v.name },
-          { key: 'shipping_method', label: 'Przesyłka', render: () => 'DHL' },
-          { key: 'email', label: 'Klient' },
+          { key: 'summary', label: 'Wartość', render: (v) => formatCurrency(v, 'PLN') },
+          { key: 'payed', label: 'Płatność', width: '0.8fr' },
+          { key: 'status', label: 'Status', width: '0.8fr' },
+          { key: 'shipping_method', label: 'Przesyłka', render: () => 'DHL kurier' },
+          { key: 'email', label: 'Klient', width: '2fr' },
         ],
       }
     },
@@ -119,12 +136,23 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.list-item__action--orders {
-  display: flex;
-  align-items: center;
+.orders-list {
+  .order-tag {
+    text-transform: uppercase;
+    font-size: 0.8em;
+    letter-spacing: 1px;
+  }
 
-  .bx-comment {
-    margin: 0 12px;
+  .order-icon {
+    display: inline-block;
+    background-color: #000;
+    padding: 3px 4px 2px;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 0.6em;
+    margin-left: 4px;
+    position: relative;
+    top: -3px;
   }
 }
 </style>

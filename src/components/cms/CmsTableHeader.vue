@@ -1,12 +1,14 @@
 <template>
-  <div
-    class="cms-table-header"
-    :style="{ gridTemplateColumns: `repeat(${headers.length}, 1fr)` }"
-    @click.stop="click"
-  >
-    <div v-for="{ key, label } in headers" :key="key" class="cms-table-header__col">
-      {{ label }}
-    </div>
+  <div class="cms-table-header">
+    <button
+      v-for="{ key, label, sortable } in headers"
+      :key="key"
+      class="cms-table-header__col"
+      :class="{ 'cms-table-header__col--sortable': sortable }"
+      @click="sort(key)"
+    >
+      {{ label }} <i v-if="sortable" class="bx bx-down-arrow-alt"></i>
+    </button>
   </div>
 </template>
 
@@ -22,8 +24,9 @@ export default Vue.extend({
     } as Vue.PropOptions<TableHeader[]>,
   },
   methods: {
-    click() {
-      this.$emit('click')
+    sort(key: string) {
+      // eslint-disable-next-line no-console
+      console.log('sort', key)
     },
   },
 })
@@ -33,14 +36,25 @@ export default Vue.extend({
 .cms-table-header {
   all: unset;
   display: grid;
-  // grid-template-columns: 1fr 1fr 1fr 1fr;
-  border-bottom: 2px solid #eceef5;
+  padding: 0 16px;
+  grid-template-columns: var(--table-cols);
+  border-bottom: 2px solid $background-color-700;
 
   &__col {
+    all: unset;
     padding: 12px 16px;
     text-transform: uppercase;
     color: #7b8589;
     font-size: 0.8em;
+    transition: 0.3s;
+
+    &--sortable {
+      cursor: pointer;
+
+      &:hover {
+        background-color: #f3f9ff;
+      }
+    }
   }
 }
 </style>

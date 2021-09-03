@@ -1,13 +1,22 @@
 export interface TableHeader {
   key: string
   label: string
+  width?: string
+  sortable?: boolean
   render?: (v: any) => any
 }
 
-export interface TableConfig {
+export interface TableValue {
+  key: string
+  label: string
+  value: any
+  rawValue: any
+}
+
+export interface TableConfig<T = any> {
   headers: TableHeader[]
-  rowOnClick?: (item: any) => void
-  rowUrlBuilder?: (item: any) => string
+  rowOnClick?: (item: T) => void
+  rowUrlBuilder?: (item: T) => string
 }
 
 export interface TableRow {}

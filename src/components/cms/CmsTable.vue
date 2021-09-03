@@ -1,13 +1,17 @@
 <template>
   <div class="cms-table">
-    <cms-table-header class="cms-table__header" :labels="labels" />
+    <cms-table-header class="cms-table__header" :headers="config.headers" />
 
     <component :is="draggable ? 'Draggable' : 'div'" v-model="items">
-      <template v-for="item in items">
-        <slot :item="item">
-          <cms-table-row :item="item" :labels="labels" />
-        </slot>
+      <template v-if="shouldRenderList">
+        <template v-for="item in items">
+          <slot :item="item">
+            <cms-table-row :item="item" :headers="config.headers" />
+          </slot>
+        </template>
       </template>
+
+      <slot v-else></slot>
     </component>
   </div>
 </template>
@@ -19,7 +23,7 @@ import Draggable from 'vuedraggable'
 import { BaseItem } from '@/store/generator'
 import CmsTableHeader from './CmsTableHeader.vue'
 import CmsTableRow from './CmsTableRow.vue'
-import { TableHeader } from '@/interfaces/CmsTable'
+import { TableConfig } from '@/interfaces/CmsTable'
 
 export default Vue.extend({
   components: { CmsTableHeader, Draggable, CmsTableRow },
@@ -28,10 +32,10 @@ export default Vue.extend({
       type: Array,
       required: true,
     } as Vue.PropOptions<BaseItem[]>,
-    labels: {
-      type: Array,
+    config: {
+      type: Object,
       required: true,
-    } as Vue.PropOptions<TableHeader[]>,
+    } as Vue.PropOptions<TableConfig>,
     draggable: {
       type: Boolean,
       default: false,
@@ -45,6 +49,9 @@ export default Vue.extend({
       async set(items: BaseItem[]) {
         this.$emit('input', items)
       },
+    },
+    shouldRenderList(): boolean {
+      return this.$slots?.default?.length === 1
     },
   },
   methods: {

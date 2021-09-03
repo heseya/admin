@@ -1,10 +1,10 @@
 <template>
   <div
     class="cms-table-header"
-    :style="{ gridTemplateColumns: `repeat(${labels.length}, 1fr)` }"
+    :style="{ gridTemplateColumns: `repeat(${headers.length}, 1fr)` }"
     @click.stop="click"
   >
-    <div v-for="{ key, label } in labels" :key="key" class="cms-table-header__col">
+    <div v-for="{ key, label } in headers" :key="key" class="cms-table-header__col">
       {{ label }}
     </div>
   </div>
@@ -12,13 +12,14 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { TableHeader } from '@/interfaces/CmsTable'
 
 export default Vue.extend({
   props: {
-    labels: {
+    headers: {
       type: Array,
       required: true,
-    } as Vue.PropOptions<{ key: string; label: string }[]>,
+    } as Vue.PropOptions<TableHeader[]>,
   },
   methods: {
     click() {

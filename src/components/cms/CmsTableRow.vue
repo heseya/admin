@@ -3,11 +3,11 @@
     :is="component"
     :to="to"
     class="cms-table-row"
-    :style="{ '--cols': `repeat(${labels.length}, 1fr)` }"
     :class="{ 'cms-table-row--no-hover': noHover }"
+    :style="{ '--cols': `repeat(${headers.length}, 1fr)` }"
     @click.stop="click"
   >
-    <div v-for="{ key, label, render } in labels" :key="key" class="cms-table-row__col">
+    <div v-for="{ key, label, render } in headers" :key="key" class="cms-table-row__col">
       <span class="cms-table-row__col-label">{{ label }}</span>
       <span class="cms-table-row__col-value">
         <slot :name="key" v-bind="{ key, label, value: item[key] }">
@@ -44,7 +44,7 @@ export default Vue.extend({
       type: Object,
       required: true,
     } as Vue.PropOptions<Record<string, any>>,
-    labels: {
+    headers: {
       type: Array,
       required: true,
     } as Vue.PropOptions<TableHeader[]>,
@@ -65,16 +65,22 @@ export default Vue.extend({
 
 <style lang="scss">
 .cms-table-row {
-  all: unset;
+  @extend %card;
   display: grid;
   width: 100%;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   cursor: pointer;
   transition: 0.3s;
   margin-bottom: 16px;
 
+  @media ($viewport-5) {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+
   @media ($viewport-11) {
     grid-template-columns: var(--cols);
+    padding: 0;
+    border: none;
     margin-bottom: 0;
   }
 

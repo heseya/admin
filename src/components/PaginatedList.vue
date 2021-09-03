@@ -1,5 +1,5 @@
 <template>
-  <div class="paginated-list">
+  <div class="paginated-list" :class="{ 'paginated-list--table': !!table }">
     <AppTopNav :title="title" :subtitle="subtitle">
       <slot name="nav"></slot>
     </AppTopNav>
@@ -12,7 +12,7 @@
       <slot name="filters"></slot>
     </AppCmsFilters>
 
-    <AppCard class="paginated-list__content" :class="{ 'paginated-list__content--table': !!table }">
+    <AppCard class="paginated-list__content">
       <AppEmpty v-if="!items.length || isLoading">{{ emptyText }}</AppEmpty>
       <Loading :active="isLoading"></Loading>
 
@@ -20,7 +20,7 @@
         :is="contentComponent"
         v-if="!isLoading"
         v-model="items"
-        v-bind="!!table ? { labels: table, draggable } : {}"
+        v-bind="!!table ? { config: table, draggable } : {}"
         class="paginated-list__list"
       >
         <template v-for="item in items">
@@ -56,7 +56,7 @@ import { formatApiNotificationError } from '@/utils/errors'
 
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 import Loading from './layout/Loading.vue'
-import { TableHeader } from '@/interfaces/CmsTable'
+import { TableConfig } from '@/interfaces/CmsTable'
 
 export default Vue.extend({
   components: {
@@ -96,9 +96,9 @@ export default Vue.extend({
       default: () => ({}),
     } as Vue.PropOptions<Record<string, any>>,
     table: {
-      type: Array,
+      type: Object,
       default: null,
-    } as Vue.PropOptions<TableHeader[]>,
+    } as Vue.PropOptions<TableConfig>,
     params: {
       type: Object,
       default: () => ({}),
@@ -200,10 +200,6 @@ export default Vue.extend({
 
   &__content {
     position: relative;
-
-    &--table {
-      padding: 0;
-    }
   }
 
   &__footer {
@@ -222,6 +218,14 @@ export default Vue.extend({
       > * {
         margin-top: 0;
       }
+    }
+  }
+
+  &--table &__content {
+    padding: 0;
+
+    @media ($max-viewport-11) {
+      all: unset;
     }
   }
 }

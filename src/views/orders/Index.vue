@@ -37,15 +37,17 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import { DateInput, formatFilters, getRelativeDate } from '@/utils/utils'
-import { formatCurrency } from '@/utils/currency'
-import { ALL_FILTER_VALUE } from '@/consts/filters'
-
-import OrderFilter, { EMPTY_ORDER_FILTERS } from '@/components/modules/orders/OrderFilter.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
+import OrderFilter, { EMPTY_ORDER_FILTERS } from '@/components/modules/orders/OrderFilter.vue'
+
+import { ALL_FILTER_VALUE } from '@/consts/filters'
+
 import { TableConfig } from '@/interfaces/CmsTable'
 import { Order } from '@/interfaces/Order'
+
+import { formatFilters, getRelativeDate } from '@/utils/utils'
+import { formatCurrency } from '@/utils/currency'
 
 type OrderFilersType = typeof EMPTY_ORDER_FILTERS
 

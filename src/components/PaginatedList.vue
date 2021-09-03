@@ -50,7 +50,6 @@ import { BaseItem } from '@/store/generator'
 import { formatFilters } from '@/utils/utils'
 import { formatApiNotificationError } from '@/utils/errors'
 
-import { ALL_FILTER_VALUE } from '@/consts/filters'
 import Loading from './layout/Loading.vue'
 import { TableConfig } from '@/interfaces/CmsTable'
 

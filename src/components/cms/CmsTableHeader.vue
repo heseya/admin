@@ -15,6 +15,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+
 import { TableHeader } from '@/interfaces/CmsTable'
 
 export default Vue.extend({
@@ -26,7 +27,9 @@ export default Vue.extend({
   },
   methods: {
     sort(key: string) {
-      console.log('TODO: sort', key)
+      // TODO: implement sorting
+      // eslint-disable-next-line no-console
+      console.log('sort by:', key)
     },
   },
 })

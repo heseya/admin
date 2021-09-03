@@ -30,9 +30,10 @@ import Vue from 'vue'
 import Draggable from 'vuedraggable'
 
 import { BaseItem } from '@/store/generator'
-import CmsTableHeader from './CmsTableHeader.vue'
-import CmsTableRow from './CmsTableRow.vue'
 import { TableConfig } from '@/interfaces/CmsTable'
+
+import CmsTableHeader from '@/components/cms/CmsTableHeader.vue'
+import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 
 export default Vue.extend({
   components: { CmsTableHeader, Draggable, CmsTableRow },

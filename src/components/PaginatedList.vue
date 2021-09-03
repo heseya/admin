@@ -4,11 +4,7 @@
       <slot name="nav"></slot>
     </AppTopNav>
 
-    <AppCmsFilters
-      v-if="$slots.filters"
-      :filters-count="filtersCount"
-      @clear-filters="$emit('clear-filters')"
-    >
+    <AppCmsFilters v-if="$slots.filters" :filters="filters" @clear-filters="$emit('clear-filters')">
       <slot name="filters"></slot>
     </AppCmsFilters>
 
@@ -124,18 +120,15 @@ export default Vue.extend({
         this.isLoading = false
       },
     },
-    contentComponent(): string {
-      if (this.table) return 'CmsTable'
-      return this.draggable ? 'Draggable' : 'div'
-    },
-    filtersCount(): number {
-      return Object.values(this.filters).filter((v) => !!v && v !== ALL_FILTER_VALUE).length
-    },
     meta(): ResponseMeta {
       return this.$store.getters[`${this.storeKey}/getMeta`]
     },
     error(): any {
       return this.$store.getters[`${this.storeKey}/getError`]
+    },
+    contentComponent(): string {
+      if (this.table) return 'CmsTable'
+      return this.draggable ? 'Draggable' : 'div'
     },
   },
   watch: {

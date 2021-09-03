@@ -33,10 +33,6 @@ export default Vue.extend({
       type: String,
       default: 'button',
     },
-    hidden: {
-      type: Boolean,
-      default: false,
-    },
     noHover: {
       type: Boolean,
       default: false,
@@ -75,7 +71,7 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .cms-table-row {
   @extend %card;
   display: grid;
@@ -105,6 +101,9 @@ export default Vue.extend({
   &:hover {
     background-color: #f3f9ff;
   }
+  &--no-hover:hover {
+    background-color: #fff0;
+  }
 
   &__col {
     padding: 8px;
@@ -119,7 +118,7 @@ export default Vue.extend({
 
   &__col-label {
     text-transform: uppercase;
-    color: #7b8589;
+    color: $gray-color-600;
     font-size: 0.8em;
     margin-bottom: 4px;
 

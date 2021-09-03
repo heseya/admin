@@ -13,10 +13,10 @@ export interface TableValue {
   rawValue: any
 }
 
-export interface TableConfig<T = any> {
+export interface TableConfig<Item = any> {
   headers: TableHeader[]
-  rowOnClick?: (item: T) => void
-  rowUrlBuilder?: (item: T) => string
+  rowOnClick?: (item: Item) => void
+  rowUrlBuilder?: (item: Item) => string
 }
 
 export interface TableRow {}

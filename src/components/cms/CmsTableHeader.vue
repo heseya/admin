@@ -7,7 +7,8 @@
       :class="{ 'cms-table-header__col--sortable': sortable }"
       @click="sort(key)"
     >
-      {{ label }} <i v-if="sortable" class="bx bx-down-arrow-alt"></i>
+      {{ label }}
+      <i v-if="sortable" class="bx bx-down-arrow-alt"></i>
     </button>
   </div>
 </template>
@@ -25,14 +26,13 @@ export default Vue.extend({
   },
   methods: {
     sort(key: string) {
-      // eslint-disable-next-line no-console
-      console.log('sort', key)
+      console.log('TODO: sort', key)
     },
   },
 })
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .cms-table-header {
   all: unset;
   display: grid;
@@ -44,7 +44,7 @@ export default Vue.extend({
     all: unset;
     padding: 12px 16px;
     text-transform: uppercase;
-    color: #7b8589;
+    color: $gray-color-600;
     font-size: 0.8em;
     transition: 0.3s;
 

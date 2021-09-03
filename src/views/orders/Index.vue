@@ -29,32 +29,6 @@
             <span class="order-tag" :style="{ color: `#${color}` }"> {{ name }} </span>
           </template>
         </cms-table-row>
-        <!-- <list-item :key="order.id" :url="`/orders/${order.id}`">
-          <template #avatar>
-            <vs-avatar :success="order.payed" :danger="!order.payed">
-              <i class="bx bx-dollar"></i>
-            </vs-avatar>
-          </template>
-          {{ order.code }}
-          <span v-if="order.delivery_address"> - {{ order.delivery_address.name }}</span>
-          <small>{{ order.summary }} {{ currency }}</small>
-          <template #action>
-            <div class="list-item__action--orders">
-              <vs-tooltip>
-                <div v-if="order.comment">
-                  <i class="bx bx-comment"></i>
-                </div>
-                <template #tooltip>
-                  {{ order.comment }}
-                </template>
-              </vs-tooltip>
-              <div>
-                <div :style="{ color: `#${order.status.color}` }">{{ order.status.name }}</div>
-                <div>{{ getRelativeDate(order.created_at) }}</div>
-              </div>
-            </div>
-          </template>
-        </list-item> -->
       </template>
     </PaginatedList>
   </div>
@@ -85,9 +59,6 @@ export default Vue.extend({
     filters: { ...EMPTY_ORDER_FILTERS } as OrderFilersType,
   }),
   computed: {
-    currency(): string {
-      return this.$accessor.currency
-    },
     tableConfig(): TableConfig<Order> {
       return {
         rowUrlBuilder: (order) => `/orders/${order.id}`,
@@ -99,7 +70,11 @@ export default Vue.extend({
             sortable: true,
             render: (v) => getRelativeDate(v),
           },
-          { key: 'summary', label: 'Wartość', render: (v) => formatCurrency(v, 'PLN') },
+          {
+            key: 'summary',
+            label: 'Wartość',
+            render: (v) => formatCurrency(v, this.$accessor.currency),
+          },
           { key: 'payed', label: 'Płatność', width: '0.8fr' },
           { key: 'status', label: 'Status', width: '0.8fr' },
           { key: 'shipping_method', label: 'Przesyłka', render: () => 'DHL kurier' },
@@ -115,9 +90,6 @@ export default Vue.extend({
       (this.$route.query.shipping_method_id as string) || ALL_FILTER_VALUE
   },
   methods: {
-    getRelativeDate(date: DateInput) {
-      return getRelativeDate(date)
-    },
     makeSearch(filters: OrderFilersType) {
       this.filters = filters
 

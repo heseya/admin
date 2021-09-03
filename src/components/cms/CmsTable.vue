@@ -1,5 +1,9 @@
 <template>
-  <div class="cms-table" :style="{ '--table-cols': gridColumns }">
+  <div
+    class="cms-table"
+    :class="{ 'cms-table--draggable': draggable }"
+    :style="{ '--table-cols': gridColumns }"
+  >
     <cms-table-header class="cms-table__header" :headers="config.headers" />
 
     <component :is="draggable ? 'Draggable' : 'div'" v-model="items">
@@ -75,6 +79,34 @@ export default Vue.extend({
   &__header {
     @media ($max-viewport-11) {
       display: none;
+    }
+  }
+
+  &--draggable {
+    @media ($viewport-11) {
+      .cms-table-header {
+        padding-left: 30px;
+      }
+
+      .cms-table-row {
+        padding-left: 30px !important;
+        position: relative;
+
+        &::before {
+          font-family: boxicons !important;
+          font-weight: 400;
+          content: '\ed61';
+          position: absolute;
+          left: 0px;
+          top: 50%;
+          font-size: 1.1em;
+          line-height: 1em;
+          padding: 6px 13px;
+          cursor: move;
+          transform: translateY(-50%);
+          color: lighten($gray-color-600, 20%);
+        }
+      }
     }
   }
 }

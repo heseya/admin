@@ -35,16 +35,19 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import Card from '../layout/Card.vue'
-import CmsFiltersHeader from './CmsFiltersHeader.vue'
+
+import Card from '@/components/layout/Card.vue'
+import CmsFiltersHeader from '@/components/cms/CmsFiltersHeader.vue'
+
+import { ALL_FILTER_VALUE } from '@/consts/filters'
 
 export default Vue.extend({
   components: { Card, CmsFiltersHeader },
   props: {
-    filtersCount: {
-      type: Number,
-      default: 0,
-    },
+    filters: {
+      type: Object,
+      default: () => ({}),
+    } as Vue.PropOptions<Record<string, any>>,
   },
   data: () => ({
     isExpanded: false,
@@ -54,6 +57,9 @@ export default Vue.extend({
     isExpandable(): boolean {
       // TODO: add logic to determine if filters are expandable
       return false
+    },
+    filtersCount(): number {
+      return Object.values(this.filters).filter((v) => !!v && v !== ALL_FILTER_VALUE).length
     },
   },
 })

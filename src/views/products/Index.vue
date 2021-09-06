@@ -38,6 +38,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { isArray } from 'lodash'
 
 import ProductTile from '@/components/modules/products/ProductTile.vue'
 import ProductListItem from '@/components/modules/products/ProductListItem.vue'
@@ -47,6 +48,7 @@ import ProductsFilter, {
 import ModalForm from '@/components/form/ModalForm.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 import { formatFilters } from '@/utils/utils'
+import { ALL_FILTER_VALUE } from '@/consts/filters'
 
 const LOCAL_STORAGE_KEY = 'products-list-view'
 
@@ -68,6 +70,7 @@ export default Vue.extend({
       this.filters = filters
 
       const queryFilters = formatFilters(filters)
+      console.log('🚀 ~ file: Index.vue ~ line 73 ~ makeSearch ~ queryFilters', queryFilters)
 
       this.$router.push({
         path: 'products',
@@ -82,10 +85,8 @@ export default Vue.extend({
   },
   created() {
     this.filters.search = (this.$route.query.search as string) || ''
-    this.filters.sets = (this.$route.query.set as string) || ''
-    // for future purposes, when we'll be able to filter by more than one set
-    // const sets = this.$route.query.set || []
-    // this.filters.sets = isArray(sets) ? (sets as string[]) : [sets]
+    const sets = this.$route.query.sets || [ALL_FILTER_VALUE]
+    this.filters.sets = isArray(sets) ? (sets as string[]) : [sets]
 
     this.listView = !!+(window.localStorage.getItem(LOCAL_STORAGE_KEY) || 0)
   },

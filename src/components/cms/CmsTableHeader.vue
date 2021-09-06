@@ -55,7 +55,7 @@ export default Vue.extend({
       cursor: pointer;
 
       &:hover {
-        background-color: #f3f9ff;
+        background-color: $primary-color-100;
       }
     }
   }

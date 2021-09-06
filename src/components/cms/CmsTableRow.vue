@@ -99,7 +99,7 @@ export default Vue.extend({
   }
 
   &:hover {
-    background-color: #f3f9ff;
+    background-color: $primary-color-100;
   }
   &--no-hover:hover {
     background-color: #ffffff00;

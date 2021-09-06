@@ -61,11 +61,6 @@ export default Vue.extend({
     },
     SchemaTypeLabel: Object.freeze(SchemaTypeLabel),
   }),
-  computed: {
-    currency(): string {
-      return this.$accessor.currency
-    },
-  },
   created() {
     this.filters.search = (this.$route.query.search as string) || ''
   },

@@ -12,7 +12,7 @@
     </template>
 
     {{ product.name }}
-    <small>{{ product.price }} {{ currency }}</small>
+    <small>{{ formatCurrency(product.price) }}</small>
 
     <template #action>
       <div class="product-list-item__tags">
@@ -35,8 +35,10 @@
 
 <script lang="ts">
 import Vue from 'vue'
+
 import ListItem from '@/components/layout/ListItem.vue'
 import { Product } from '@/interfaces/Product'
+import { formatCurrency } from '@/utils/currency'
 
 export default Vue.extend({
   components: { ListItem },
@@ -47,9 +49,6 @@ export default Vue.extend({
     } as Vue.PropOptions<Product>,
   },
   computed: {
-    currency(): string {
-      return this.$accessor.currency
-    },
     objectFit(): string {
       return +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'
     },
@@ -58,6 +57,9 @@ export default Vue.extend({
     navigator.permissions.query({ name: 'clipboard-write' as PermissionName })
   },
   methods: {
+    formatCurrency(amount: number) {
+      return formatCurrency(amount, this.$accessor.currency)
+    },
     onClick() {
       // @ts-ignore
       if (window.copyIdMode === true) {

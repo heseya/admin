@@ -16,7 +16,7 @@
           <small>{{ discount.description }}</small>
 
           <template #action>
-            -{{ discount.discount }} {{ discount.type === 0 ? '%' : currency }}
+            -{{ discount.type === 0 ? `${discount.discount}%` : formatCurrency(discount.discount) }}
             <small style="white-space: nowrap"
               >wykorzystano {{ discount.uses }} z {{ discount.max_uses }}</small
             >
@@ -91,6 +91,8 @@ import PaginatedList from '@/components/PaginatedList.vue'
 import { DiscountCode } from '@/interfaces/DiscountCode'
 import { UUID } from '@/interfaces/UUID'
 
+import { formatCurrency } from '@/utils/currency'
+
 const EMPTY_DISCOUNT_CODE: DiscountCode = {
   id: '',
   type: 0,
@@ -116,14 +118,14 @@ export default Vue.extend({
     } as DiscountCode,
   }),
   computed: {
-    currency(): string {
-      return this.$accessor.currency
-    },
     canModify(): boolean {
       return this.$can(this.editedItem.id ? this.$p.Discounts.Edit : this.$p.Discounts.Add)
     },
   },
   methods: {
+    formatCurrency(amount: number) {
+      return formatCurrency(amount, this.$accessor.currency)
+    },
     openModal(id?: UUID) {
       if (!this.$verboseCan(this.$p.Discounts.ShowDetails)) return
       this.isModalActive = true

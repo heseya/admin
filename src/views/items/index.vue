@@ -129,9 +129,6 @@ export default Vue.extend({
       // @ts-ignore // TODO: fix extended store getters typings
       return this.$accessor.items.getDepositError
     },
-    currency(): string {
-      return this.$accessor.currency
-    },
     canModify(): boolean {
       return this.$can(this.editedItem.id ? this.$p.Items.Edit : this.$p.Items.Add)
     },

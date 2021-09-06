@@ -12,27 +12,27 @@
               <card class="income-box">
                 <div class="income-box__title">W tym tygodniu</div>
                 <div class="income-box__value">
-                  {{ currentWeekIncome.toFixed(2) }} {{ currency }}
+                  {{ formatCurrency(currentWeekIncome) }}
                 </div>
                 <div class="income-box__orders">{{ currentWeekOrdersCount }} zamówień</div>
               </card>
               <card class="income-box">
                 <div class="income-box__title">W tym miesiącu</div>
                 <div class="income-box__value">
-                  {{ currentMonthIncome.toFixed(2) }} {{ currency }}
+                  {{ formatCurrency(currentMonthIncome) }}
                 </div>
                 <div class="income-box__orders">{{ currentMonthOrdersCount }} zamówień</div>
               </card>
               <card class="income-box">
                 <div class="income-box__title">W tym roku</div>
                 <div class="income-box__value">
-                  {{ currentYearIncome.toFixed(2) }} {{ currency }}
+                  {{ formatCurrency(currentYearIncome) }}
                 </div>
                 <div class="income-box__orders">{{ currentYearOrdersCount }} zamówień</div>
               </card>
               <card class="income-box">
                 <div class="income-box__title">W ubiegłym roku</div>
-                <div class="income-box__value">{{ lastYearIncome.toFixed(2) }} {{ currency }}</div>
+                <div class="income-box__value">{{ formatCurrency(lastYearIncome) }}</div>
                 <div class="income-box__orders">{{ lastYearOrdersCount }} zamówień</div>
               </card>
             </div>
@@ -53,7 +53,7 @@
             <small>{{ getRelativeDate(order.created_at) }}</small>
 
             <template #action>
-              <div>{{ order.summary }} {{ currency }}</div>
+              <div>{{ formatCurrency(order.summary) }}</div>
             </template>
           </list-item>
         </card>
@@ -71,6 +71,7 @@ import startOfYear from 'date-fns/startOfYear'
 
 import { getPaymentsCount } from '@/services/statistics'
 import { DateInput, getRelativeDate } from '@/utils/utils'
+import { formatCurrency } from '@/utils/currency'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
@@ -100,9 +101,6 @@ export default Vue.extend({
     },
     orders(): Order[] {
       return this.$accessor.orders.getData
-    },
-    currency(): string {
-      return this.$accessor.currency
     },
   },
   async created() {
@@ -136,6 +134,9 @@ export default Vue.extend({
   methods: {
     getRelativeDate(date: DateInput) {
       return getRelativeDate(date)
+    },
+    formatCurrency(amount: number) {
+      return formatCurrency(amount, this.$accessor.currency)
     },
     async getOrders() {
       await this.$accessor.orders.fetch({

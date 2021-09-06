@@ -35,14 +35,20 @@
               <div class="cart-item__content">
                 <span>Dostawa {{ order.shipping_method && order.shipping_method.name }}</span>
               </div>
-              <span class="cart-item__price">{{ order.shipping_price }} {{ currency }}</span>
+              <span class="cart-item__price">{{ formatCurrency(order.shipping_price) }}</span>
             </div>
             <div class="cart-total">
               <div v-for="discount in order.discounts" :key="discount.id">
                 Rabat {{ discount.code }}:
-                <b>- {{ discount.discount }} {{ discount.type === 0 ? '%' : currency }}</b>
+                <b
+                  >-{{
+                    discount.type === 0
+                      ? `${discount.discount}%`
+                      : formatCurrency(discount.discount)
+                  }}</b
+                >
               </div>
-              Łącznie: <b>{{ order.summary }} {{ currency }}</b>
+              Łącznie: <b>{{ formatCurrency(order.summary) }}</b>
             </div>
           </div>
         </card>
@@ -102,7 +108,7 @@
             <i v-if="payment.payed" class="bx bxs-check-circle payment-method__success"></i>
             <i v-if="!payment.payed" class="bx bxs-x-circle payment-method__failed"></i>
             <span class="payment-method__name">{{ payment.method }}</span>
-            <span class="payment-method__amount">({{ payment.amount }} {{ currency }})</span>
+            <span class="payment-method__amount">({{ formatCurrency(payment.amount) }})</span>
           </div>
         </card>
         <card class="comment">
@@ -179,12 +185,14 @@ import ModalForm from '@/components/form/ModalForm.vue'
 import PartialUpdateForm from '@/components/modules/orders/PartialUpdateForm.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 
+import { Order, OrderStatus } from '@/interfaces/Order'
 import { getRelativeDate, formatDate } from '@/utils/utils'
+
 import { createPackage } from '@/services/createPackage'
 import { formatApiNotificationError } from '@/utils/errors'
-import { Order, OrderStatus } from '@/interfaces/Order'
 import { PackageTemplate } from '@/interfaces/PackageTemplate'
 import { downloadJsonAsFile } from '@/utils/download'
+import { formatCurrency } from '@/utils/currency'
 import { api } from '@/api'
 
 const DEFAULT_FORM = {
@@ -218,9 +226,6 @@ export default Vue.extend({
     isModalActive: false,
   }),
   computed: {
-    currency(): string {
-      return this.$accessor.currency
-    },
     error(): any {
       return this.$accessor.orders.getError
     },
@@ -263,6 +268,9 @@ export default Vue.extend({
     this.$accessor.stopLoading()
   },
   methods: {
+    formatCurrency(amount: number) {
+      return formatCurrency(amount, this.$accessor.currency)
+    },
     async setStatus(newStatus: OrderStatus) {
       this.isLoading = true
 

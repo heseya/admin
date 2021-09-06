@@ -21,7 +21,7 @@
     <div class="flex">
       <div class="name">
         {{ product.name }}<br />
-        <small>{{ product.price }} {{ currency }}</small>
+        <small>{{ formatCurrency(product.price) }}</small>
       </div>
     </div>
   </button>
@@ -29,7 +29,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
+
 import { Product } from '@/interfaces/Product'
+import { formatCurrency } from '@/utils/currency'
 
 export default Vue.extend({
   props: {
@@ -39,9 +41,6 @@ export default Vue.extend({
     } as Vue.PropOptions<Product>,
   },
   computed: {
-    currency(): string {
-      return this.$accessor.currency
-    },
     objectFit(): string {
       return +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'
     },
@@ -50,6 +49,9 @@ export default Vue.extend({
     navigator.permissions.query({ name: 'clipboard-write' as PermissionName })
   },
   methods: {
+    formatCurrency(amount: number) {
+      return formatCurrency(amount, this.$accessor.currency)
+    },
     onClick() {
       // @ts-ignore
       if (window.copyIdMode === true) {

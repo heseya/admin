@@ -21,7 +21,7 @@
         </vs-avatar>
         <div class="set-product-item__main">
           <span class="set-product-item__name">{{ product.name }}</span>
-          <span class="set-product-item__price">{{ product.price }} {{ currency }}</span>
+          <span class="set-product-item__price">{{ formatCurrency(product.price) }}</span>
         </div>
         <div class="set-product-item__actions">
           <vs-button
@@ -58,7 +58,9 @@ import Empty from '@/components/layout/Empty.vue'
 import { ProductSet } from '@/interfaces/ProductSet'
 import { Product } from '@/interfaces/Product'
 import { UUID } from '@/interfaces/UUID'
+
 import { api } from '@/api'
+import { formatCurrency } from '@/utils/currency'
 import { formatApiNotificationError } from '@/utils/errors'
 
 export default Vue.extend({
@@ -78,9 +80,6 @@ export default Vue.extend({
     products: [] as Product[],
   }),
   computed: {
-    currency(): string {
-      return this.$accessor.currency
-    },
     objectFit(): string {
       return +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'
     },
@@ -91,6 +90,9 @@ export default Vue.extend({
     },
   },
   methods: {
+    formatCurrency(amount: number) {
+      return formatCurrency(amount, this.$accessor.currency)
+    },
     addProduct(product: Product) {
       this.products.push(product)
     },

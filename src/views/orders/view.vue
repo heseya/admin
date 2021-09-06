@@ -57,21 +57,19 @@
           <div class="flex-column send-package">
             <h2 class="section-title">Wyślij przesyłkę</h2>
             <div v-if="!shippingNumber" class="flex">
-              <vs-select
-                :key="packageTemplates.length"
+              <app-select
                 v-model="packageTemplateId"
                 label="Szablon przesyłki"
                 placeholder="-- Wybierz szablon --"
               >
-                <vs-option
+                <a-select-option
                   v-for="template in packageTemplates"
                   :key="template.id"
-                  :label="template.name"
                   :value="template.id"
                 >
                   {{ template.name }}
-                </vs-option>
-              </vs-select>
+                </a-select-option>
+              </app-select>
               <app-button @click="createPackage">Utwórz&nbsp;przesyłkę</app-button>
             </div>
             <small v-else>
@@ -86,21 +84,15 @@
         <card>
           <template v-if="order.status">
             <h2 class="section-title">Status</h2>
-            <vs-select
-              :key="statuses.length"
+            <app-select
               v-model="status"
               :loading="isLoading"
               :disabled="!$can($p.Orders.EditStatus)"
             >
-              <vs-option
-                v-for="status in statuses"
-                :key="status.id"
-                :label="status.name"
-                :value="status.id"
-              >
+              <a-select-option v-for="status in statuses" :key="status.id" :value="status.id">
                 {{ status.name }}
-              </vs-option>
-            </vs-select>
+              </a-select-option>
+            </app-select>
           </template>
           <br />
           <h2 class="section-title">Próby płatności</h2>

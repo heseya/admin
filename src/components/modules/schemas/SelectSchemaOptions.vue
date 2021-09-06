@@ -10,12 +10,13 @@
     <draggable v-model="options" :disabled="disabled" handle=".drag-icon">
       <div v-for="(option, i) in options" :key="i" class="select-schema-options__option">
         <i class="bx bx-grid-vertical drag-icon" :class="{ 'drag-icon--disabled': disabled }"></i>
-        <validation-provider v-slot="{ errors }" class="input" rules="required">
-          <vs-input v-model="option.name" :disabled="disabled" label="Nazwa">
-            <template #message-danger>{{ errors[0] }}</template>
-          </vs-input>
-        </validation-provider>
-        <vs-input v-model="option.price" :disabled="disabled" type="number" label="Cena"></vs-input>
+        <validated-input
+          v-model="option.name"
+          :disabled="disabled"
+          rules="required"
+          label="Nazwa"
+        />
+        <app-input v-model="option.price" :disabled="disabled" type="number" label="Cena" />
         <Autocomplete
           v-model="options[i].items"
           :disabled="disabled"
@@ -49,7 +50,6 @@
 <script lang="ts">
 import Vue from 'vue'
 import Draggable from 'vuedraggable'
-import { ValidationProvider } from 'vee-validate'
 import cloneDeep from 'lodash/cloneDeep'
 
 import Zone from '@/components/layout/Zone.vue'
@@ -70,7 +70,6 @@ const CLEAR_OPTION: SchemaOption = {
 export default Vue.extend({
   name: 'SelectSchemaOptions',
   components: {
-    ValidationProvider,
     Zone,
     Autocomplete,
     SwitchInput,

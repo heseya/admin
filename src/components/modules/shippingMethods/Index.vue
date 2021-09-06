@@ -3,24 +3,16 @@
     <modal-form>
       <validated-input v-model="form.name" :disabled="disabled" rules="required" label="Nazwa" />
       <div class="center">
-        <vs-select
-          :key="paymentMethods.length"
+        <a-select
           v-model="form.payment_methods"
           :disabled="disabled"
-          multiple
-          filter
-          collapse-chips
+          mode="multiple"
           label="Dostępne metody płatności"
         >
-          <vs-option
-            v-for="method in paymentMethods"
-            :key="method.id"
-            :value="method.id"
-            :label="method.name"
-          >
+          <a-select-option v-for="method in paymentMethods" :key="method.id" :value="method.id">
             {{ method.name }}
-          </vs-option>
-        </vs-select>
+          </a-select-option>
+        </a-select>
       </div>
       <br />
       <div class="center">
@@ -48,24 +40,11 @@
       </div>
 
       <div class="center">
-        <vs-select
-          :key="countries.length"
-          v-model="form.countries"
-          :disabled="disabled"
-          multiple
-          filter
-          collapse-chips
-          label="Kraje"
-        >
-          <vs-option
-            v-for="country in countries"
-            :key="country.code"
-            :value="country.code"
-            :label="country.name"
-          >
+        <a-select v-model="form.countries" :disabled="disabled" mode="multiple" label="Kraje">
+          <a-select-option v-for="country in countries" :key="country.code" :value="country.code">
             {{ country.name }}
-          </vs-option>
-        </vs-select>
+          </a-select-option>
+        </a-select>
       </div>
     </modal-form>
   </div>

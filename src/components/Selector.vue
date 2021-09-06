@@ -1,6 +1,6 @@
 <template>
   <div class="schema-selector">
-    <vs-input v-model="query" :label="`Wyszukaj ${typeName}`"></vs-input>
+    <app-input v-model="query" :label="`Wyszukaj ${typeName}`"></app-input>
 
     <div ref="content" class="schema-selector__content">
       <loading :active="isLoading" />

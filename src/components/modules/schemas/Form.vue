@@ -15,17 +15,16 @@
     />
     <div class="flex">
       <validation-provider v-slot="{ errors }" name="schema-type" rules="id-required">
-        <vs-select v-model="form.type" :disabled="disabled" label="Typ schematu">
-          <vs-option
+        <app-select v-model="form.type" :disabled="disabled" label="Typ schematu">
+          <a-select-option
             v-for="{ value, label } in SchemaTypesOptions"
             :key="value"
-            :label="label"
             :value="value"
           >
             {{ label }}
-          </vs-option>
+          </a-select-option>
           <template #message-danger>{{ errors[0] }}</template>
-        </vs-select>
+        </app-select>
       </validation-provider>
 
       <validated-input

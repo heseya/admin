@@ -1,25 +1,29 @@
 <template>
   <validation-observer v-slot="{ handleSubmit }">
-    <validation-provider v-slot="{ errors }" rules="required">
-      <vs-input v-model="password" icon-after label="Obecne hasło" type="password">
-        <template #message-danger>{{ errors[0] }}</template>
-        <template #icon><i class="bx bx-lock-open-alt"></i></template>
-      </vs-input>
-    </validation-provider>
-    <br />
-    <br />
-    <validation-provider v-slot="{ errors }" rules="required|password" vid="passwordNew">
-      <vs-input v-model="passwordNew" label="Nowe hasło" type="password">
-        <template #message-danger>{{ errors[0] }}</template>
-      </vs-input>
-    </validation-provider>
-    <br />
-    <br />
-    <validation-provider v-slot="{ errors }" rules="required|repeatPassword:@passwordNew">
-      <vs-input v-model="passwordConfirmation" label="Powtórz nowe hasło" type="password">
-        <template #message-danger>{{ errors[0] }}</template>
-      </vs-input>
-    </validation-provider>
+    <validated-input
+      v-model="password"
+      icon-after
+      label="Obecne hasło"
+      type="password"
+      rules="required"
+    >
+      <template #icon><i class="bx bx-lock-open-alt"></i></template>
+    </validated-input>
+    <validated-input
+      v-model="passwordNew"
+      label="Nowe hasło"
+      type="password"
+      rules="required|password"
+      name="passwordNew"
+    >
+    </validated-input>
+    <validated-input
+      v-model="passwordConfirmation"
+      label="Powtórz nowe hasło"
+      type="password"
+      rules="required|repeatPassword:@passwordNew"
+    >
+    </validated-input>
     <br />
     <div class="center">
       <app-button :loading="isLoading" @click="handleSubmit(changePassword)">
@@ -31,13 +35,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { ValidationProvider, ValidationObserver } from 'vee-validate'
+import { ValidationObserver } from 'vee-validate'
 import { api } from '../../../api'
 import { formatApiNotificationError } from '@/utils/errors'
 
 export default Vue.extend({
   components: {
-    ValidationProvider,
     ValidationObserver,
   },
   data: () => ({

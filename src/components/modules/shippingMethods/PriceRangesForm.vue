@@ -3,13 +3,13 @@
     <h5 class="price-ranges-form__title">Zakresy cen</h5>
     <div class="price-ranges-form__list">
       <div v-for="(range, i) in priceRanges" :key="`${i}`" class="price-ranges-form__row">
-        <vs-input
+        <app-input
           v-model="range.start"
           label="Minimalna wartość koszyka"
           type="number"
           :disabled="i === 0 || disabled"
         />
-        <vs-input v-model="range.value" :disabled="disabled" label="Stawka" type="number" />
+        <app-input v-model="range.value" :disabled="disabled" label="Stawka" type="number" />
         <vs-button
           v-if="i !== 0"
           :disabled="disabled"

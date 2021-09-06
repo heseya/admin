@@ -53,11 +53,11 @@
             label="Zniżka"
           />
           <ValidationProvider v-slot="{ errors }" rules="required">
-            <vs-select v-model="editedItem.type" :disabled="!canModify" label="Typ">
-              <vs-option label="Procentowy" value="0">Rabat Procentowy</vs-option>
-              <vs-option label="Kwotowy" value="1">Rabat Kwotowy</vs-option>
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-select>
+            <app-select v-model="editedItem.type" :disabled="!canModify" label="Typ">
+              <a-select-option :value="0">Rabat Procentowy</a-select-option>
+              <a-select-option :value="1">Rabat Kwotowy</a-select-option>
+              <template #error>{{ errors[0] }}</template>
+            </app-select>
           </ValidationProvider>
         </modal-form>
         <template #footer>

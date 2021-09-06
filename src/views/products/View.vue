@@ -37,10 +37,12 @@
           </flex-input>
           <template v-if="!product.visible && product.public">
             <br />
-            <vs-alert color="warn">
-              <template #title>Produkt wciąż jest ukryty</template>
-              Produkt jest niewidoczny ponieważ jego marka lub kategoria jest ukryta.
-            </vs-alert>
+            <a-alert
+              message="Produkt wciąż jest ukryty"
+              description="Produkt jest niewidoczny ponieważ jego marka lub kategoria jest ukryta."
+              show-icon
+              type="warning"
+            />
           </template>
         </card>
       </div>
@@ -63,14 +65,12 @@
                   label="Nazwa"
                   :disabled="!canModify"
                 />
-                <br /><br />
                 <validated-input
                   v-model="form.slug"
                   rules="required|slug"
                   label="Link"
                   :disabled="!canModify"
                 />
-                <br /><br />
                 <validated-input
                   v-model="form.price"
                   rules="required"
@@ -79,34 +79,24 @@
                   label="Cena"
                   :disabled="!canModify"
                 />
-                <br />
               </div>
 
               <div>
                 <br />
                 <validation-provider v-slot="{ errors }">
-                  <vs-select
-                    :key="productSets.length"
+                  <app-select
                     v-model="form.sets"
                     placeholder="Wybierz kolekcje"
-                    filter
-                    multiple
+                    mode="multiple"
                     label="Kolekcje"
                     :disabled="!canModify"
-                    @click.native.prevent.stop
                   >
-                    <vs-option
-                      v-for="set in productSets"
-                      :key="set.id"
-                      :label="set.name"
-                      :value="set.id"
-                    >
+                    <a-select-option v-for="set in productSets" :key="set.id" :value="set.id">
                       <i v-if="!set.public" class="bx bx-lock"></i> {{ set.name }}
-                    </vs-option>
+                    </a-select-option>
                     <template #message-danger>{{ errors[0] }}</template>
-                  </vs-select>
+                  </app-select>
                 </validation-provider>
-                <br /><br />
                 <validated-input
                   v-model="form.quantity_step"
                   rules="required"

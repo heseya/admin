@@ -7,16 +7,11 @@
       <validated-input v-model="form.city" rules="required" name="address" label="Miasto" />
     </div>
     <ValidationProvider rules="required" tag="div" class="address-form__select">
-      <vs-select :key="countries.length" v-model="form.country" label="Kraj" filter>
-        <vs-option
-          v-for="country in countries"
-          :key="country.code"
-          :label="country.name"
-          :value="country.code"
-        >
+      <app-select v-model="form.country" label="Kraj" show-search>
+        <a-select-option v-for="country in countries" :key="country.code" :value="country.code">
           {{ country.name }}
-        </vs-option>
-      </vs-select>
+        </a-select-option>
+      </app-select>
     </ValidationProvider>
     <validated-input v-model="form.phone" rules="required" name="address" label="Telefon" />
     <validated-input v-model="form.vat" name="address" label="NIP" />

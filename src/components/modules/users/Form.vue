@@ -18,25 +18,16 @@
       label="Hasło"
     />
 
-    <vs-select
-      :key="roles.length"
-      v-model="form.roles"
-      :disabled="disabled"
-      label="Role"
-      filter
-      multiple
-      @click.native.prevent.stop
-    >
-      <vs-option
+    <app-select v-model="form.roles" :disabled="disabled" label="Role" mode="multiple">
+      <a-select-option
         v-for="role in roles"
         :key="role.id"
-        :label="role.name"
         :value="role.id"
         :disabled="!role.assignable"
       >
         {{ role.name }}
-      </vs-option>
-    </vs-select>
+      </a-select-option>
+    </app-select>
   </modal-form>
 </template>
 

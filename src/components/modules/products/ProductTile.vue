@@ -81,7 +81,7 @@ export default Vue.extend({
   cursor: pointer;
 
   &__icon {
-    position: absolute;
+    position: absolute !important;
     top: -10px;
     left: -10px;
     z-index: 100;

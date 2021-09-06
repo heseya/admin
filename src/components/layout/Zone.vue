@@ -29,8 +29,8 @@ export default Vue.extend({
   --zone-text-color: #333333;
 
   &--danger {
-    --zone-text-color: $red-color-500;
-    --zone-border-color: $red-color-500;
+    --zone-text-color: #{$red-color-500};
+    --zone-border-color: #{$red-color-500};
   }
 
   &__title {
@@ -38,10 +38,12 @@ export default Vue.extend({
     color: var(--zone-text-color);
     display: flex;
     align-items: center;
+    margin-top: -4px;
+    margin-bottom: 4px;
   }
 
-  padding: 12px;
-  border-radius: 12px;
+  padding: 8px;
+  border-radius: 6px;
   border: solid 1px var(--zone-border-color);
 }
 </style>

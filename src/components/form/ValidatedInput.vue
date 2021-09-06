@@ -1,9 +1,9 @@
 <template>
   <validation-provider v-slot="{ errors }" :rules="rules" :name="name">
-    <vs-input v-bind="$props" v-on="$listeners">
+    <app-input v-bind="$props" v-on="$listeners">
       <slot></slot>
-      <template #message-danger>{{ errors[0] }}</template>
-    </vs-input>
+      <template #error>{{ errors[0] }}</template>
+    </app-input>
   </validation-provider>
 </template>
 

@@ -25,16 +25,19 @@ import Vue from 'vue'
 export default Vue.extend({
   name: 'AppSelect',
   props: {
-    value: [String, Number],
+    value: [String, Number, Array],
     label: String,
     placeholder: String,
     name: String,
     error: String,
     type: String,
+    mode: String,
     size: String,
     allowClear: Boolean,
+    loading: Boolean,
     disabled: Boolean,
     addAll: Boolean,
+    showSearch: Boolean,
   },
   computed: {
     innerValue: {

@@ -1,5 +1,7 @@
-import { ALL_FILTER_VALUE } from '../consts/filters'
 import format from 'date-fns/format'
+import queryString from 'query-string'
+
+import { ALL_FILTER_VALUE } from '../consts/filters'
 
 /**
  * Returns last element of the given array
@@ -43,3 +45,6 @@ export const formatFilters = (filters: Record<string, unknown>) => {
     Object.entries(filters).filter(([, v]) => v !== ALL_FILTER_VALUE && v !== ''),
   )
 }
+
+export const stringifyQuery = (payload: Record<string, any>) =>
+  queryString.stringify(payload, { arrayFormat: 'bracket' })

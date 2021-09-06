@@ -1,9 +1,9 @@
-import queryString from 'query-string'
 import { cloneDeep, isNil } from 'lodash'
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 import { ActionTree, GetterTree, MutationTree } from 'vuex'
 
 import { api } from '../api'
+import { stringifyQuery } from '@/utils/utils'
 
 import { RootState } from '.'
 import { ResponseMeta } from '@/interfaces/Response'
@@ -156,7 +156,7 @@ export const createVuexCRUD =
               ),
             )
 
-            const stringQuery = queryString.stringify(filteredQuery)
+            const stringQuery = stringifyQuery(filteredQuery)
 
             const { data } = await api.get<{ data: Item[]; meta: ResponseMeta }>(
               `/${endpoint}?${stringQuery}`,
@@ -175,7 +175,7 @@ export const createVuexCRUD =
           commit(StoreMutations.SetError, null)
           commit(StoreMutations.SetLoading, true)
           try {
-            const stringQuery = queryString.stringify(params.get || {})
+            const stringQuery = stringifyQuery(params.get || {})
             const { data } = await api.get<{ data: Item }>(`/${endpoint}/id:${id}?${stringQuery}`)
             // @ts-ignore type is correct, but TS is screaming
             commit(StoreMutations.SetSelected, data.data)
@@ -192,7 +192,7 @@ export const createVuexCRUD =
           commit(StoreMutations.SetError, null)
           commit(StoreMutations.SetLoading, true)
           try {
-            const stringQuery = queryString.stringify(params.add || {})
+            const stringQuery = stringifyQuery(params.add || {})
             const { data } = await api.post<{ data: Item }>(`/${endpoint}?${stringQuery}`, item)
             // @ts-ignore type is correct, but TS is screaming
             commit(StoreMutations.AddData, data.data)
@@ -209,7 +209,7 @@ export const createVuexCRUD =
           commit(StoreMutations.SetLoading, true)
           commit(StoreMutations.SetError, null)
           try {
-            const stringQuery = queryString.stringify(params.edit || {})
+            const stringQuery = stringifyQuery(params.edit || {})
             const { data } = await api.put<{ data: Item }>(
               `/${endpoint}/id:${id}?${stringQuery}`,
               item,
@@ -228,7 +228,7 @@ export const createVuexCRUD =
           commit(StoreMutations.SetLoading, true)
           commit(StoreMutations.SetError, null)
           try {
-            const stringQuery = queryString.stringify(params.update || {})
+            const stringQuery = stringifyQuery(params.update || {})
             const { data } = await api.patch<{ data: Item }>(
               `/${endpoint}/id:${id}?${stringQuery}`,
               item,
@@ -249,7 +249,7 @@ export const createVuexCRUD =
           commit(StoreMutations.SetLoading, true)
           commit(StoreMutations.SetError, null)
           try {
-            const stringQuery = queryString.stringify(params.update || {})
+            const stringQuery = stringifyQuery(params.update || {})
             const { data } = await api.patch<{ data: Item }>(
               `/${endpoint}/${value}?${stringQuery}`,
               item,
@@ -268,7 +268,7 @@ export const createVuexCRUD =
           commit(StoreMutations.SetLoading, true)
           commit(StoreMutations.SetError, null)
           try {
-            const stringQuery = queryString.stringify(params.remove || {})
+            const stringQuery = stringifyQuery(params.remove || {})
             await api.delete(`/${endpoint}/id:${id}?${stringQuery}`)
             commit(StoreMutations.RemoveData, { key: 'id', value: id })
             commit(StoreMutations.SetLoading, false)
@@ -283,7 +283,7 @@ export const createVuexCRUD =
           commit(StoreMutations.SetLoading, true)
           commit(StoreMutations.SetError, null)
           try {
-            const stringQuery = queryString.stringify(params.remove || {})
+            const stringQuery = stringifyQuery(params.remove || {})
             await api.delete(`/${endpoint}/${value}?${stringQuery}`)
             commit(StoreMutations.RemoveData, { key, value })
             commit(StoreMutations.SetLoading, false)

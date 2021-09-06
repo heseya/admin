@@ -95,7 +95,7 @@ export default Vue.extend({
   }
 
   &--exist {
-    background-color: #fff0;
+    background-color: #ffffff00;
     border: none;
   }
 

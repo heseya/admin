@@ -122,7 +122,7 @@ export default Vue.extend({
     width: 100%;
     padding-top: 100%;
     margin-bottom: 4px;
-    background-color: #fff;
+    background-color: #ffffff;
     border-radius: 7px;
     box-shadow: $shadow;
 
@@ -133,7 +133,7 @@ export default Vue.extend({
       height: 100%;
       width: 100%;
       object-fit: cover;
-      background-color: #fff;
+      background-color: #ffffff;
       border-radius: 20px;
     }
 
@@ -193,8 +193,8 @@ export default Vue.extend({
       width: 20%;
       animation: spin 1s infinite;
       background-color: transparent;
-      border: 6px solid #fff;
-      border-color: #fff transparent transparent transparent;
+      border: 6px solid #ffffff;
+      border-color: #ffffff transparent transparent transparent;
       box-shadow: none;
       z-index: 4;
     }

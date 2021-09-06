@@ -95,7 +95,7 @@ export default Vue.extend({
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 2em;
-    color: #999;
+    color: #999999;
 
     &::after {
       content: '';
@@ -120,9 +120,9 @@ export default Vue.extend({
     display: inline-block;
     margin-right: 3px;
     margin-top: 3px;
-    background-color: #000;
+    background-color: #000000;
     padding: 3px 6px;
-    color: #fff;
+    color: #ffffff;
     font-size: 0.7em;
     border-radius: 3px;
   }

@@ -31,7 +31,7 @@ Vue.use(Vuex)
 
 const state = () => ({
   loading: false,
-  currency: 'zł',
+  currency: 'PLN',
   env: {} as Record<string, string>,
 })
 

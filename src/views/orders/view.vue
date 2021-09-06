@@ -384,7 +384,7 @@ export default Vue.extend({
   display: flex;
   flex-direction: column;
   margin-top: 8px;
-  color: #444;
+  color: #444444;
   position: relative;
 
   &__edit {
@@ -396,7 +396,7 @@ export default Vue.extend({
   &__name {
     font-size: 1em;
     margin-bottom: 3px;
-    color: #111;
+    color: #111111;
   }
 }
 

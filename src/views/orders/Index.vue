@@ -3,7 +3,9 @@
     <PaginatedList
       title="Zamówienia"
       :filters="filters"
+      :table="tableConfig"
       store-key="orders"
+      class="orders-list"
       @clear-filters="clearFilters"
     >
       <template #filters>
@@ -11,32 +13,22 @@
       </template>
 
       <template v-slot="{ item: order }">
-        <list-item :key="order.id" :url="`/orders/${order.id}`">
-          <template #avatar>
-            <vs-avatar :success="order.payed" :danger="!order.payed">
-              <i class="bx bx-dollar"></i>
-            </vs-avatar>
+        <cms-table-row :item="order" :headers="tableConfig.headers" :to="`/orders/${order.id}`">
+          <template #code="{ value, item }">
+            {{ value }}
+            <a-tooltip v-if="item.comment">
+              <template slot="title"> {{ item.comment }} </template>
+              <span class="order-icon"> <i class="bx bxs-comment-detail"></i> </span>
+            </a-tooltip>
           </template>
-          {{ order.code }}
-          <span v-if="order.delivery_address"> - {{ order.delivery_address.name }}</span>
-          <small>{{ order.summary }} {{ currency }}</small>
-          <template #action>
-            <div class="list-item__action--orders">
-              <vs-tooltip>
-                <div v-if="order.comment">
-                  <i class="bx bx-comment"></i>
-                </div>
-                <template #tooltip>
-                  {{ order.comment }}
-                </template>
-              </vs-tooltip>
-              <div>
-                <div :style="{ color: `#${order.status.color}` }">{{ order.status.name }}</div>
-                <div>{{ getRelativeDate(order.created_at) }}</div>
-              </div>
-            </div>
+          <template #payed="{ rawValue }">
+            <span v-if="rawValue" class="order-tag success-text">Opłacone</span>
+            <span v-else class="order-tag danger-text">Nieopłacone</span>
           </template>
-        </list-item>
+          <template #status="{ rawValue: { name, color } }">
+            <span class="order-tag" :style="{ color: `#${color}` }"> {{ name }} </span>
+          </template>
+        </cms-table-row>
       </template>
     </PaginatedList>
   </div>
@@ -45,27 +37,52 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import { DateInput, formatFilters, getRelativeDate } from '@/utils/utils'
+import PaginatedList from '@/components/PaginatedList.vue'
+import CmsTableRow from '@/components/cms/CmsTableRow.vue'
+import OrderFilter, { EMPTY_ORDER_FILTERS } from '@/components/modules/orders/OrderFilter.vue'
+
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 
-import ListItem from '@/components/layout/ListItem.vue'
-import OrderFilter, { EMPTY_ORDER_FILTERS } from '@/components/modules/orders/OrderFilter.vue'
-import PaginatedList from '@/components/PaginatedList.vue'
+import { TableConfig } from '@/interfaces/CmsTable'
+import { Order } from '@/interfaces/Order'
+
+import { formatFilters, getRelativeDate } from '@/utils/utils'
+import { formatCurrency } from '@/utils/currency'
 
 type OrderFilersType = typeof EMPTY_ORDER_FILTERS
 
 export default Vue.extend({
   components: {
     OrderFilter,
-    ListItem,
     PaginatedList,
+    CmsTableRow,
   },
   data: () => ({
     filters: { ...EMPTY_ORDER_FILTERS } as OrderFilersType,
   }),
   computed: {
-    currency(): string {
-      return this.$accessor.currency
+    tableConfig(): TableConfig<Order> {
+      return {
+        rowUrlBuilder: (order) => `/orders/${order.id}`,
+        headers: [
+          { key: 'code', label: 'Kod zamówienia' },
+          {
+            key: 'created_at',
+            label: 'Data',
+            sortable: true,
+            render: (v) => getRelativeDate(v),
+          },
+          {
+            key: 'summary',
+            label: 'Wartość',
+            render: (v) => formatCurrency(v, this.$accessor.currency),
+          },
+          { key: 'payed', label: 'Płatność', width: '0.8fr' },
+          { key: 'status', label: 'Status', width: '0.8fr' },
+          { key: 'shipping_method', label: 'Przesyłka', render: () => 'DHL kurier' },
+          { key: 'email', label: 'Klient', width: '2fr' },
+        ],
+      }
     },
   },
   created() {
@@ -75,9 +92,6 @@ export default Vue.extend({
       (this.$route.query.shipping_method_id as string) || ALL_FILTER_VALUE
   },
   methods: {
-    getRelativeDate(date: DateInput) {
-      return getRelativeDate(date)
-    },
     makeSearch(filters: OrderFilersType) {
       this.filters = filters
 
@@ -96,12 +110,23 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.list-item__action--orders {
-  display: flex;
-  align-items: center;
+.orders-list {
+  .order-tag {
+    text-transform: uppercase;
+    font-size: 0.8em;
+    letter-spacing: 1px;
+  }
 
-  .bx-comment {
-    margin: 0 12px;
+  .order-icon {
+    display: inline-block;
+    background-color: #000000;
+    padding: 3px 4px 2px;
+    border-radius: 50%;
+    color: #ffffff;
+    font-size: 0.6em;
+    margin-left: 4px;
+    position: relative;
+    top: -3px;
   }
 }
 </style>

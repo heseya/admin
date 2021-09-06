@@ -87,16 +87,16 @@ export default Vue.extend({
   }
 
   &--no-hover:hover {
-    background-color: #fff0;
+    background-color: #ffffff00;
     cursor: default;
   }
 
   small {
     display: block;
-    color: #aaa;
+    color: #aaaaaa;
 
     b {
-      color: #666;
+      color: #666666;
     }
   }
 
@@ -112,7 +112,7 @@ export default Vue.extend({
 
 @media (hover: hover) and (pointer: fine) {
   .list__item:hover {
-    background-color: #fff0;
+    background-color: #ffffff00;
   }
 }
 </style>

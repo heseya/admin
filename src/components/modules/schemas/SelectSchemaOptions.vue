@@ -131,10 +131,10 @@ export default Vue.extend({
 
   .drag-icon {
     cursor: move;
-    color: #bbb;
+    color: #bbbbbb;
 
     &--disabled {
-      color: #ddd;
+      color: #dddddd;
       cursor: not-allowed;
     }
   }

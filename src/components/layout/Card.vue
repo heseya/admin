@@ -6,10 +6,7 @@
 
 <style lang="scss">
 .card {
-  background: #fff;
-  padding: 12px;
-  border-radius: 7px;
-  border: solid 1px $background-color-600;
+  @extend %card;
   margin-bottom: 30px;
 }
 </style>

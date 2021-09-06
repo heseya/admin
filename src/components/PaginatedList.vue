@@ -1,14 +1,10 @@
 <template>
-  <div class="paginated-list">
+  <div class="paginated-list" :class="{ 'paginated-list--table': !!table }">
     <AppTopNav :title="title" :subtitle="subtitle">
       <slot name="nav"></slot>
     </AppTopNav>
 
-    <AppCmsFilters
-      v-if="$slots.filters"
-      :filters-count="filtersCount"
-      @clear-filters="$emit('clear-filters')"
-    >
+    <AppCmsFilters v-if="$slots.filters" :filters="filters" @clear-filters="$emit('clear-filters')">
       <slot name="filters"></slot>
     </AppCmsFilters>
 
@@ -16,17 +12,17 @@
       <AppEmpty v-if="!items.length || isLoading">{{ emptyText }}</AppEmpty>
       <Loading :active="isLoading"></Loading>
 
-      <AppList v-if="!isLoading" class="paginated-list__list">
-        <Draggable v-if="draggable" v-model="items">
-          <template v-for="item in items">
-            <slot :item="item" />
-          </template>
-        </Draggable>
-
-        <template v-for="item in items" v-else>
+      <component
+        :is="contentComponent"
+        v-if="!isLoading"
+        v-model="items"
+        v-bind="!!table ? { config: table, draggable } : {}"
+        class="paginated-list__list"
+      >
+        <template v-for="item in items">
           <slot :item="item" />
         </template>
-      </AppList>
+      </component>
     </AppCard>
 
     <div v-if="meta.last_page" class="paginated-list__footer">
@@ -44,9 +40,9 @@ import TopNav from '@/components/layout/TopNav.vue'
 import Empty from '@/components/layout/Empty.vue'
 import Pagination from '@/components/cms/Pagination.vue'
 import Card from '@/components/layout/Card.vue'
-import List from '@/components/layout/List.vue'
 import PerPageSelect from '@/components/cms/PerPageSelect.vue'
 import CmsFilters from '@/components/cms/CmsFilters.vue'
+import CmsTable from './cms/CmsTable.vue'
 
 import { ResponseMeta } from '@/interfaces/Response'
 import { BaseItem } from '@/store/generator'
@@ -54,8 +50,8 @@ import { BaseItem } from '@/store/generator'
 import { formatFilters } from '@/utils/utils'
 import { formatApiNotificationError } from '@/utils/errors'
 
-import { ALL_FILTER_VALUE } from '@/consts/filters'
 import Loading from './layout/Loading.vue'
+import { TableConfig } from '@/interfaces/CmsTable'
 
 export default Vue.extend({
   components: {
@@ -64,10 +60,10 @@ export default Vue.extend({
     AppEmpty: Empty,
     AppPagination: Pagination,
     AppCard: Card,
-    AppList: List,
     AppPerPageSelect: PerPageSelect,
     AppCmsFilters: CmsFilters,
     Loading,
+    CmsTable,
   },
   props: {
     title: {
@@ -94,6 +90,10 @@ export default Vue.extend({
       type: Object,
       default: () => ({}),
     } as Vue.PropOptions<Record<string, any>>,
+    table: {
+      type: Object,
+      default: null,
+    } as Vue.PropOptions<TableConfig>,
     params: {
       type: Object,
       default: () => ({}),
@@ -119,14 +119,15 @@ export default Vue.extend({
         this.isLoading = false
       },
     },
-    filtersCount(): number {
-      return Object.values(this.filters).filter((v) => !!v && v !== ALL_FILTER_VALUE).length
-    },
     meta(): ResponseMeta {
       return this.$store.getters[`${this.storeKey}/getMeta`]
     },
     error(): any {
       return this.$store.getters[`${this.storeKey}/getError`]
+    },
+    contentComponent(): string {
+      if (this.table) return 'CmsTable'
+      return this.draggable ? 'Draggable' : 'div'
     },
   },
   watch: {
@@ -185,6 +186,10 @@ export default Vue.extend({
 .paginated-list {
   position: relative;
 
+  &__list {
+    padding: 0;
+  }
+
   &__content {
     position: relative;
   }
@@ -205,6 +210,14 @@ export default Vue.extend({
       > * {
         margin-top: 0;
       }
+    }
+  }
+
+  &--table &__content {
+    padding: 0;
+
+    @media ($max-viewport-11) {
+      all: unset;
     }
   }
 }

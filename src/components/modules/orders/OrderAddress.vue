@@ -91,7 +91,7 @@ export default Vue.extend({
   display: flex;
   flex-direction: column;
   margin-top: 8px;
-  color: #666;
+  color: #666666;
   position: relative;
 
   &__btn {
@@ -112,18 +112,18 @@ export default Vue.extend({
     font-size: 1.1em;
     font-weight: 600;
     margin-bottom: 3px;
-    color: #000;
+    color: #000000;
   }
 
   &__subtitle {
     font-weight: 500;
     font-size: 0.9em;
-    color: #000;
+    color: #000000;
     margin-top: 4px;
   }
 
   &__error {
-    counter-reset: #ccc;
+    counter-reset: #cccccc;
     font-weight: 300;
   }
 }

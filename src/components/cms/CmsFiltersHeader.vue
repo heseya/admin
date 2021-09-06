@@ -47,7 +47,7 @@ export default Vue.extend({
 
   &__badge {
     background-color: $green-color-500;
-    color: #fff;
+    color: #ffffff;
     font-size: 0.8rem;
     line-height: 0.7rem;
     font-weight: 300;

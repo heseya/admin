@@ -60,7 +60,7 @@ export default Vue.extend({
     display: block;
     width: 100%;
     text-align: right;
-    color: #333;
+    color: #333333;
     font-weight: 600;
     font-size: 0.7em;
 

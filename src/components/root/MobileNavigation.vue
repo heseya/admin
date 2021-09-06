@@ -58,7 +58,7 @@ export default Vue.extend({
   height: 60px;
   box-sizing: border-box;
   width: 100vw;
-  background: #fff;
+  background: #ffffff;
   border-top: solid 1px $primary-color-200;
   display: flex;
   justify-content: space-around;

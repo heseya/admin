@@ -13,7 +13,7 @@ export const orders = createVuexCRUD<Order>()('orders', {
       try {
         const { status } = await api.post(`/orders/id:${orderId}/status`, { status_id: statusId })
         return status === 204
-      } catch (error) {
+      } catch (error: any) {
         commit(StoreMutations.SetError, error)
         return false
       }

@@ -47,7 +47,7 @@ export default Vue.extend({
     },
   },
   mounted() {
-    navigator.permissions.query({ name: 'clipboard-write' })
+    navigator.permissions.query({ name: 'clipboard-write' as PermissionName })
   },
   methods: {
     onClick() {

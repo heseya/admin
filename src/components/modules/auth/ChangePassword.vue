@@ -59,7 +59,7 @@ export default Vue.extend({
           color: 'success',
           title: 'Hasło zostało zmienione',
         })
-      } catch (error) {
+      } catch (error: any) {
         this.$vs.notification({
           color: 'danger',
           ...formatApiError(error),

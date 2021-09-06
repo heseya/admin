@@ -107,7 +107,7 @@ export default Vue.extend({
           data: { data: products },
         } = await api.get<{ data: Product[] }>(`/product-sets/id:${this.set.id}/products?limit=500`)
         this.products = products
-      } catch (e) {
+      } catch (e: any) {
         this.$vs.notification({
           color: 'danger',
           ...formatApiError(e),
@@ -127,7 +127,7 @@ export default Vue.extend({
           title: 'Produkty zostały zapisane w kolekcji',
         })
         this.$emit('close')
-      } catch (e) {
+      } catch (e: any) {
         this.$vs.notification({
           color: 'danger',
           ...formatApiError(e),

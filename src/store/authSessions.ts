@@ -24,7 +24,7 @@ export const authSessions = createVuexCRUD<AuthSession>()('auth/login-history', 
 
         commit(StoreMutations.SetLoading, false)
         return true
-      } catch (error) {
+      } catch (error: any) {
         commit(StoreMutations.SetError, error)
         commit(StoreMutations.SetLoading, false)
         return false
@@ -43,7 +43,7 @@ export const authSessions = createVuexCRUD<AuthSession>()('auth/login-history', 
 
         commit(StoreMutations.SetLoading, false)
         return true
-      } catch (error) {
+      } catch (error: any) {
         commit(StoreMutations.SetError, error)
         commit(StoreMutations.SetLoading, false)
         return false

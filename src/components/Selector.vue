@@ -99,7 +99,7 @@ export default Vue.extend({
         })
         const { data } = await api.get(`/${this.type}?${query}`)
         this.data = data.data
-      } catch (error) {
+      } catch (error: any) {
         this.$vs.notification({
           color: 'danger',
           ...formatApiError(error),

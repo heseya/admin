@@ -21,7 +21,7 @@ export const roles = createVuexCRUD<Role, RoleDTO, RoleDTO>()('roles', {
         const response = await api.get<{ data: PermissionObject[] }>('/permissions')
         commit('SET_PERMISSIONS', response.data.data)
         commit(StoreMutations.SetError, null)
-      } catch (e) {
+      } catch (e: any) {
         commit(StoreMutations.SetError, e)
       }
       commit(StoreMutations.SetLoading, false)

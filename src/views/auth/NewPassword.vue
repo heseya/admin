@@ -70,7 +70,7 @@ export default Vue.extend({
     try {
       if (!token || !email) throw new Error('Token or email does not exist')
       await api.get(`/users/reset-password?token=${token}&email=${email}`)
-    } catch (e) {
+    } catch (e: any) {
       this.$vs.notification({ color: 'danger', ...formatApiError(e) })
       this.$router.replace('/login')
     }

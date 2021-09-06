@@ -165,7 +165,7 @@ export const createVuexCRUD =
             commit(StoreMutations.SetData, data.data)
             commit(StoreMutations.SetLoading, false)
             return true
-          } catch (error) {
+          } catch (error: any) {
             commit(StoreMutations.SetError, error)
             commit(StoreMutations.SetLoading, false)
             return false
@@ -181,7 +181,7 @@ export const createVuexCRUD =
             commit(StoreMutations.SetSelected, data.data)
             commit(StoreMutations.SetLoading, false)
             return true
-          } catch (error) {
+          } catch (error: any) {
             commit(StoreMutations.SetError, error)
             commit(StoreMutations.SetLoading, false)
             return false
@@ -198,7 +198,7 @@ export const createVuexCRUD =
             commit(StoreMutations.AddData, data.data)
             commit(StoreMutations.SetLoading, false)
             return data.data
-          } catch (error) {
+          } catch (error: any) {
             commit(StoreMutations.SetError, error)
             commit(StoreMutations.SetLoading, false)
             return false
@@ -217,7 +217,7 @@ export const createVuexCRUD =
             commit(StoreMutations.EditData, { key: 'id', value: id, item: data.data })
             commit(StoreMutations.SetLoading, false)
             return data.data
-          } catch (error) {
+          } catch (error: any) {
             commit(StoreMutations.SetError, error)
             commit(StoreMutations.SetLoading, false)
             return false
@@ -236,7 +236,7 @@ export const createVuexCRUD =
             commit(StoreMutations.EditData, { key: 'id', value: id, item: data.data })
             commit(StoreMutations.SetLoading, false)
             return data.data
-          } catch (error) {
+          } catch (error: any) {
             commit(StoreMutations.SetError, error)
             commit(StoreMutations.SetLoading, false)
             return false
@@ -257,7 +257,7 @@ export const createVuexCRUD =
             commit(StoreMutations.EditData, { key, value, item: data.data })
             commit(StoreMutations.SetLoading, false)
             return data.data
-          } catch (error) {
+          } catch (error: any) {
             commit(StoreMutations.SetError, error)
             commit(StoreMutations.SetLoading, false)
             return false
@@ -273,7 +273,7 @@ export const createVuexCRUD =
             commit(StoreMutations.RemoveData, { key: 'id', value: id })
             commit(StoreMutations.SetLoading, false)
             return true
-          } catch (error) {
+          } catch (error: any) {
             commit(StoreMutations.SetError, error)
             commit(StoreMutations.SetLoading, false)
             return false
@@ -288,7 +288,7 @@ export const createVuexCRUD =
             commit(StoreMutations.RemoveData, { key, value })
             commit(StoreMutations.SetLoading, false)
             return true
-          } catch (error) {
+          } catch (error: any) {
             commit(StoreMutations.SetError, error)
             commit(StoreMutations.SetLoading, false)
             return false
@@ -306,7 +306,7 @@ export const createVuexCRUD =
             )
             commit(StoreMutations.SetLoading, false)
             return data.data
-          } catch (error) {
+          } catch (error: any) {
             commit(StoreMutations.SetError, error)
             commit(StoreMutations.SetLoading, false)
             return []

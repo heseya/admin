@@ -11,7 +11,7 @@ export const apps = createVuexCRUD<App>()('apps', {
       try {
         const { data } = await api.post('/apps', { url })
         return data
-      } catch (error) {
+      } catch (error: any) {
         return false
       }
     },

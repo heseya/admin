@@ -106,7 +106,7 @@ export default Vue.extend({
           data: { data: products },
         } = await api.get<{ data: Product[] }>(`/product-sets/id:${this.set.id}/products?limit=500`)
         this.products = products
-      } catch (e) {
+      } catch (e: any) {
         this.$toast.error(formatApiNotificationError(e))
       }
       this.$accessor.stopLoading()
@@ -120,7 +120,7 @@ export default Vue.extend({
         await api.post(`/product-sets/id:${this.set.id}/products`, { products })
         this.$toast.success('Produkty zostały zapisane w kolekcji')
         this.$emit('close')
-      } catch (e) {
+      } catch (e: any) {
         this.$toast.error(formatApiNotificationError(e))
       }
       this.$accessor.stopLoading()

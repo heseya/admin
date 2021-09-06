@@ -15,7 +15,7 @@ export const createPackage = async (orderId: string, packageTemplateId: string) 
       success: true,
       shippingNumber: data.shipping_number,
     }
-  } catch (error) {
+  } catch (error: any) {
     return {
       success: false,
       error,

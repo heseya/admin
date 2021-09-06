@@ -56,7 +56,7 @@ export default Vue.extend({
           password_confirmation: this.passwordConfirmation,
         })
         this.$toast.success('Hasło zostało zmienione')
-      } catch (error) {
+      } catch (error: any) {
         this.$toast.error(formatApiNotificationError(error))
       } finally {
         this.isLoading = false

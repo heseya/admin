@@ -74,7 +74,7 @@ const actions = actionTree(
         commit('SET_USER', data.data.user)
         commit('SET_TOKEN', data.data.token)
         return data.data.user
-      } catch (e) {
+      } catch (e: any) {
         commit('SET_ERROR', e)
         return false
       }
@@ -88,7 +88,7 @@ const actions = actionTree(
         data.data = overrideUserPermissions(data.data)
 
         commit('SET_USER', data.data)
-      } catch (e) {
+      } catch (e: any) {
         commit('SET_ERROR', e)
       }
     },
@@ -97,7 +97,7 @@ const actions = actionTree(
       try {
         await api.post('/auth/logout')
         dispatch('clearAuth')
-      } catch (e) {
+      } catch (e: any) {
         commit('SET_ERROR', e)
       }
       accessor.stopLoading()
@@ -116,7 +116,7 @@ const actions = actionTree(
       try {
         await api.post('/users/reset-password', { email })
         return true
-      } catch (e) {
+      } catch (e: any) {
         commit('SET_ERROR', e)
         return false
       }
@@ -126,7 +126,7 @@ const actions = actionTree(
       try {
         await api.patch('/users/save-reset-password', payload)
         return true
-      } catch (e) {
+      } catch (e: any) {
         commit('SET_ERROR', e)
         return false
       }

@@ -102,7 +102,7 @@ export default Vue.extend({
         })
         const { data } = await api.get(`/${this.type}?${query}`)
         this.data = data.data
-      } catch (error) {
+      } catch (error: any) {
         this.$toast.error(formatApiNotificationError(error))
       }
       this.isLoading = false

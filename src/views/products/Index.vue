@@ -70,7 +70,6 @@ export default Vue.extend({
       this.filters = filters
 
       const queryFilters = formatFilters(filters)
-      console.log('🚀 ~ file: Index.vue ~ line 73 ~ makeSearch ~ queryFilters', queryFilters)
 
       this.$router.push({
         path: 'products',

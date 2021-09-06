@@ -50,7 +50,7 @@ export default Vue.extend({
   display: flex;
   align-items: center;
   justify-content: center;
-  zindex: 100;
+  position: relative;
 
   &--small {
     width: 32px;
@@ -65,6 +65,8 @@ export default Vue.extend({
   }
 
   img {
+    left: 0;
+    top: 0;
     position: absolute;
     width: 100%;
     height: 100%;

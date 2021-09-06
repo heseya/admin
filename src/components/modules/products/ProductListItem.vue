@@ -1,14 +1,14 @@
 <template>
   <list-item class="product-list-item" @click="onClick">
     <template #avatar>
-      <vs-avatar color="#eee">
+      <avatar color="#eee">
         <img
           v-if="product.cover"
           :src="`${product.cover.url}?w=100&h=100`"
           :style="{ objectFit }"
         />
         <i v-else class="product-list-item__img-icon bx bx-image"></i>
-      </vs-avatar>
+      </avatar>
     </template>
 
     {{ product.name }}
@@ -26,9 +26,9 @@
         </div>
       </div>
 
-      <vs-avatar v-if="!product.visible" size="22" class="product-list-item__icon" color="#000">
+      <avatar v-if="!product.visible" tiny class="product-list-item__icon" color="#000">
         <i class="bx bx-lock-alt"></i>
-      </vs-avatar>
+      </avatar>
     </template>
   </list-item>
 </template>
@@ -37,11 +37,13 @@
 import Vue from 'vue'
 
 import ListItem from '@/components/layout/ListItem.vue'
+import Avatar from '@/components/layout/Avatar.vue'
+
 import { Product } from '@/interfaces/Product'
 import { formatCurrency } from '@/utils/currency'
 
 export default Vue.extend({
-  components: { ListItem },
+  components: { ListItem, Avatar },
   props: {
     product: {
       type: Object,

@@ -12,7 +12,7 @@
       <template v-slot="{ item: tag }">
         <list-item :key="tag.id" @click="openModal(tag.id)">
           <template #avatar>
-            <vs-avatar :key="tag.color" :color="`#${tag.color}`" />
+            <avatar :key="tag.color" :color="`#${tag.color}`" />
           </template>
           {{ tag.name }}
         </list-item>
@@ -71,6 +71,7 @@ import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
+import Avatar from '@/components/layout/Avatar.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import { Tag } from '@/interfaces/Tag'
@@ -89,6 +90,7 @@ export default Vue.extend({
     ModalForm,
     PopConfirm,
     ValidationObserver,
+    Avatar,
   },
   data: () => ({
     isModalActive: false,

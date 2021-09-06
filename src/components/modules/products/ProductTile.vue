@@ -1,8 +1,8 @@
 <template>
   <button class="product-box" @click="onClick">
-    <vs-avatar v-if="!product.visible" size="30" class="product-box__icon" color="#000">
+    <avatar v-if="!product.visible" small class="product-box__icon">
       <i class="bx bx-lock-alt"></i>
-    </vs-avatar>
+    </avatar>
     <div class="product-box__img">
       <img v-if="product.cover" :src="`${product.cover.url}?w=350&h=350`" :style="{ objectFit }" />
       <i v-else class="product-box__img-icon bx bx-image"></i>
@@ -30,10 +30,13 @@
 <script lang="ts">
 import Vue from 'vue'
 
+import Avatar from '@/components/layout/Avatar.vue'
+
 import { Product } from '@/interfaces/Product'
 import { formatCurrency } from '@/utils/currency'
 
 export default Vue.extend({
+  components: { Avatar },
   props: {
     product: {
       type: Object,
@@ -81,6 +84,7 @@ export default Vue.extend({
     position: absolute;
     top: -10px;
     left: -10px;
+    z-index: 100;
   }
 
   &__img {

@@ -22,9 +22,7 @@
       <template v-slot="{ item: login }">
         <list-item class="login-item" no-hover>
           <template #avatar>
-            <vs-avatar dark>
-              <i :class="getBrowserIcon(login.browser)"></i>
-            </vs-avatar>
+            <avatar> <i :class="getBrowserIcon(login.browser)"></i> </avatar>
           </template>
           <span v-if="login.platform">
             {{ login.platform + ' ' + login.browser + ' ' + login.browser_ver }}
@@ -70,6 +68,7 @@ import PaginatedList from '@/components/PaginatedList.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import { UUID } from '@/interfaces/UUID'
+import Avatar from '@/components/layout/Avatar.vue'
 
 export default Vue.extend({
   metaInfo: { title: 'Sesje użytkownika' },
@@ -77,6 +76,7 @@ export default Vue.extend({
     PaginatedList,
     ListItem,
     PopConfirm,
+    Avatar,
   },
   computed: {
     areSessionsToKill(): boolean {

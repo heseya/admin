@@ -11,14 +11,14 @@
 
     <div v-if="products.length" class="set-products__list">
       <div v-for="product in products" :key="product.id" class="set-product-item">
-        <vs-avatar color="#eee">
+        <avatar color="#eee">
           <img
             v-if="product.cover"
             :src="`${product.cover.url}?w=100&h=100`"
             :style="{ objectFit }"
           />
           <i v-else class="product-list-item__img-icon bx bx-image"></i>
-        </vs-avatar>
+        </avatar>
         <div class="set-product-item__main">
           <span class="set-product-item__name">{{ product.name }}</span>
           <span class="set-product-item__price">{{ formatCurrency(product.price) }}</span>
@@ -54,6 +54,7 @@ import Vue from 'vue'
 
 import Selector from '@/components/Selector.vue'
 import Empty from '@/components/layout/Empty.vue'
+import Avatar from '@/components/layout/Avatar.vue'
 
 import { ProductSet } from '@/interfaces/ProductSet'
 import { Product } from '@/interfaces/Product'
@@ -64,7 +65,7 @@ import { formatCurrency } from '@/utils/currency'
 import { formatApiNotificationError } from '@/utils/errors'
 
 export default Vue.extend({
-  components: { Selector, Empty },
+  components: { Selector, Empty, Avatar },
   props: {
     set: {
       type: Object,

@@ -12,9 +12,9 @@
       <template v-slot="{ item: user }">
         <list-item :key="user.id" @click="openModal(user.id)">
           <template #avatar>
-            <vs-avatar>
+            <avatar>
               <img :src="user.avatar" alt="" />
-            </vs-avatar>
+            </avatar>
           </template>
           {{ user.name }}
           <small>{{ user.roles.map((r) => r.name).join(', ') }}</small>
@@ -66,6 +66,7 @@ import PaginatedList from '@/components/PaginatedList.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import UserForm from '@/components/modules/users/Form.vue'
+import Avatar from '@/components/layout/Avatar.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import { CreateUserDTO, EditUserDTO } from '@/interfaces/User'
@@ -85,6 +86,7 @@ export default Vue.extend({
     UserForm,
     PopConfirm,
     ValidationObserver,
+    Avatar,
   },
   data: () => ({
     isModalActive: false,

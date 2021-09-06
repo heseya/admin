@@ -12,7 +12,7 @@
       <template v-slot="{ item: status }">
         <list-item :key="status.id" @click="openModal(status.id)">
           <template #avatar>
-            <vs-avatar :color="`#${status.color}`" />
+            <avatar :color="`#${status.color}`" />
           </template>
           {{ status.name }}
           <small>{{ status.description }}</small>
@@ -86,6 +86,7 @@ import ModalForm from '@/components/form/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
+import Avatar from '@/components/layout/Avatar.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import { OrderStatus } from '@/interfaces/Order'
@@ -107,6 +108,7 @@ export default Vue.extend({
     PopConfirm,
     ValidationObserver,
     SwitchInput,
+    Avatar,
   },
   data: () => ({
     isModalActive: false,

@@ -13,9 +13,7 @@
       <template v-slot="{ item: app }">
         <list-item no-hover>
           <template #avatar>
-            <vs-avatar dark>
-              <i class="bx bxs-extension"></i>
-            </vs-avatar>
+            <avatar> <i class="bx bxs-extension"></i> </avatar>
           </template>
           {{ app.name }}
         </list-item>

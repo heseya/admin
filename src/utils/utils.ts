@@ -1,5 +1,7 @@
-import { ALL_FILTER_VALUE } from '../consts/filters'
 import format from 'date-fns/format'
+import queryString from 'query-string'
+
+import { ALL_FILTER_VALUE } from '../consts/filters'
 
 /**
  * Returns last element of the given array
@@ -52,3 +54,6 @@ export const formatApiNotification = ({ title, text }: { title: string; text?: s
   `
     : title
 }
+
+export const stringifyQuery = (payload: Record<string, any>) =>
+  queryString.stringify(payload, { arrayFormat: 'bracket' })

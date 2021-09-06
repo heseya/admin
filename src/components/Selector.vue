@@ -27,10 +27,10 @@
 <script lang="ts">
 import Vue from 'vue'
 import debounce from 'lodash/debounce'
-import queryString from 'query-string'
 
 import { api } from '../api'
 import { formatApiNotificationError } from '@/utils/errors'
+import { stringifyQuery } from '@/utils/utils'
 
 import List from '@/components/layout/List.vue'
 import Empty from '@/components/layout/Empty.vue'
@@ -97,9 +97,7 @@ export default Vue.extend({
 
       this.isLoading = true
       try {
-        const query = queryString.stringify({
-          search: search,
-        })
+        const query = stringifyQuery({ search })
         const { data } = await api.get(`/${this.type}?${query}`)
         this.data = data.data
       } catch (error: any) {

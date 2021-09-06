@@ -9,7 +9,7 @@
       @input="debouncedSearch"
     />
 
-    <app-select v-model="sets" label="Kolekcja" add-all @change="debouncedSearch">
+    <app-select v-model="sets[0]" label="Kolekcja" add-all @change="debouncedSearch">
       <a-select-option v-for="set in productSets" :key="set.id" :label="set.name" :value="set.slug">
         {{ set.name }}
       </a-select-option>
@@ -20,27 +20,27 @@
 <script lang="ts">
 import Vue from 'vue'
 import { debounce } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 
 export const EMPTY_PRODUCT_FILTERS = {
   search: '',
-  sets: ALL_FILTER_VALUE,
+  sets: [ALL_FILTER_VALUE],
 }
 
 type ProductFilers = typeof EMPTY_PRODUCT_FILTERS
 
 export default Vue.extend({
+  data: () => ({
+    ...cloneDeep(EMPTY_PRODUCT_FILTERS),
+  }),
   props: {
     filters: {
       type: Object,
       default: () => ({ ...EMPTY_PRODUCT_FILTERS }),
     } as Vue.PropOptions<ProductFilers>,
   },
-  data: () => ({
-    search: '',
-    sets: ALL_FILTER_VALUE,
-  }),
   computed: {
     productSets() {
       return this.$accessor.productSets.getData
@@ -63,7 +63,7 @@ export default Vue.extend({
     makeSearch() {
       this.$emit('search', {
         search: this.search,
-        set: this.sets,
+        sets: this.sets,
       })
     },
 
@@ -72,6 +72,9 @@ export default Vue.extend({
         this.makeSearch()
       })
     }, 300),
+    clearFilters() {
+      this.$emit('search', cloneDeep(EMPTY_PRODUCT_FILTERS))
+    },
   },
 })
 </script>

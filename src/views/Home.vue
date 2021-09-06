@@ -208,7 +208,7 @@ export default Vue.extend({
 
   &__orders {
     font-size: 0.9rem;
-    color: #aaa;
+    color: #aaaaaa;
   }
 }
 </style>

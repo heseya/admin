@@ -343,7 +343,7 @@ export default Vue.extend({
     gap: 35px;
 
     small {
-      color: #aaa;
+      color: #aaaaaa;
     }
 
     &__info {

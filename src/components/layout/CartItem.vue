@@ -59,7 +59,7 @@ export default Vue.extend({
     height: 48px;
     object-fit: cover;
     border-radius: 12px;
-    background-color: #eee;
+    background-color: #eeeeee;
     text-indent: -10000px;
   }
 
@@ -70,14 +70,14 @@ export default Vue.extend({
     margin-left: 12px;
 
     small {
-      color: #aaa;
+      color: #aaaaaa;
 
       span {
-        color: #333;
+        color: #333333;
       }
 
       small {
-        color: #ccc;
+        color: #cccccc;
       }
     }
   }

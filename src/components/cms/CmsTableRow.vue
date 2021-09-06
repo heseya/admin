@@ -102,7 +102,7 @@ export default Vue.extend({
     background-color: #f3f9ff;
   }
   &--no-hover:hover {
-    background-color: #fff0;
+    background-color: #ffffff00;
   }
 
   &__col {

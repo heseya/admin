@@ -70,7 +70,7 @@ export default Vue.extend({
 <style lang="scss">
 .product-box {
   all: unset;
-  color: #000;
+  color: #000000;
   text-decoration: none;
   position: relative;
   cursor: pointer;
@@ -86,7 +86,7 @@ export default Vue.extend({
     width: 100%;
     padding-top: 100%;
     border-radius: 8px;
-    background-color: #fff;
+    background-color: #ffffff;
     overflow: hidden;
     margin-bottom: 4px;
     box-shadow: $shadow;
@@ -116,9 +116,9 @@ export default Vue.extend({
     display: inline-block;
     margin-right: 3px;
     margin-top: 3px;
-    background-color: #000;
+    background-color: #000000;
     padding: 3px 6px;
-    color: #fff;
+    color: #ffffff;
     font-size: 0.7em;
     border-radius: 3px;
   }
@@ -133,7 +133,7 @@ export default Vue.extend({
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 2em;
-    color: #ccc;
+    color: #cccccc;
 
     &::after {
       content: '';
@@ -155,7 +155,7 @@ export default Vue.extend({
   }
 
   small {
-    color: #777;
+    color: #777777;
   }
 
   .price {

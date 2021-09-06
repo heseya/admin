@@ -114,7 +114,7 @@ export default Vue.extend({
   align-items: center;
 
   &__role {
-    background-color: #fff;
+    background-color: #ffffff;
     padding: 4px 8px;
     border-radius: 20px;
     color: $primary-color-500;

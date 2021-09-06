@@ -35,7 +35,7 @@ hr {
   all: unset;
   display: block;
   height: 1px;
-  background-color: #eee;
+  background-color: #eeeeee;
   width: 100%;
   margin: 12px 0;
 }
@@ -70,7 +70,7 @@ hr {
   display: block;
   margin-left: 5px;
   margin-bottom: 3px;
-  color: #000 !important;
+  color: #000000 !important;
   font-size: 0.75rem;
   font-weight: 500;
 }
@@ -84,11 +84,11 @@ hr {
 }
 
 .multiselect__tag {
-  background: #000;
+  background: #000000;
 }
 
 .multiselect__tag-icon::after {
-  color: #fff;
+  color: #ffffff;
 }
 
 .title {

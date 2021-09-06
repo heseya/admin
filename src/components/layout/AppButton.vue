@@ -74,7 +74,7 @@ export default Vue.extend({
 
   all: unset;
   background-color: #2d2e31;
-  color: #fff;
+  color: #ffffff;
   cursor: pointer;
   padding: 8px 16px;
   line-height: 1em;
@@ -87,7 +87,7 @@ export default Vue.extend({
 
   &:hover {
     background-color: #45464a;
-    color: #fff;
+    color: #ffffff;
   }
 
   &::before,

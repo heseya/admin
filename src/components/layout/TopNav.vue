@@ -55,7 +55,7 @@ export default Vue.extend({
 
   &__subtitle {
     display: block;
-    color: #888;
+    color: #888888;
   }
 
   &__buttons {

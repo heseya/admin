@@ -300,7 +300,7 @@ export const createVuexCRUD =
           commit(StoreMutations.SetError, null)
           commit(StoreMutations.SetLoading, true)
           try {
-            const stringQuery = queryString.stringify(params.get || {})
+            const stringQuery = stringifyQuery(params.get || {})
             const { data } = await api.get<{ data: AuditEntry[] }>(
               `/audits/${endpoint}/id:${id}?${stringQuery}`,
             )

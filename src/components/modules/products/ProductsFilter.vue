@@ -2,7 +2,7 @@
   <div class="products-filter">
     <vs-input v-model="search" type="search" label="Wyszukiwanie" @keydown.enter="makeSearch" />
 
-    <vs-select v-model="sets[0]" label="Kolekcje" :key="productSets.length" filter>
+    <vs-select :key="productSets.length" v-model="sets[0]" label="Kolekcje" filter>
       <vs-option label="Wszystkie" value="_all"> Wszystkie </vs-option>
       <vs-option v-for="set in productSets" :key="set.id" :label="set.name" :value="set.slug">
         {{ set.name }}
@@ -29,15 +29,15 @@ export const EMPTY_PRODUCT_FILTERS = {
 type ProductFilers = typeof EMPTY_PRODUCT_FILTERS
 
 export default Vue.extend({
-  data: () => ({
-    ...cloneDeep(EMPTY_PRODUCT_FILTERS),
-  }),
   props: {
     filters: {
       type: Object,
       default: () => ({ ...EMPTY_PRODUCT_FILTERS }),
     } as Vue.PropOptions<ProductFilers>,
   },
+  data: () => ({
+    ...cloneDeep(EMPTY_PRODUCT_FILTERS),
+  }),
   computed: {
     productSets() {
       return this.$accessor.productSets.getData

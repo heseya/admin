@@ -1,4 +1,5 @@
 import format from 'date-fns/format'
+import { isArray } from 'lodash'
 import queryString from 'query-string'
 
 import { ALL_FILTER_VALUE } from '../consts/filters'
@@ -42,7 +43,10 @@ export const formatDate = (date: DateInput) => {
 
 export const formatFilters = (filters: Record<string, unknown>) => {
   return Object.fromEntries(
-    Object.entries(filters).filter(([, v]) => v !== ALL_FILTER_VALUE && v !== ''),
+    Object.entries(filters).filter(([, v]) => {
+      if (isArray(v)) return v.filter((x) => x !== ALL_FILTER_VALUE).length > 0
+      return v !== ALL_FILTER_VALUE && v !== ''
+    }),
   )
 }
 

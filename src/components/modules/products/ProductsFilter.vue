@@ -32,24 +32,24 @@ export const EMPTY_PRODUCT_FILTERS = {
 type ProductFilers = typeof EMPTY_PRODUCT_FILTERS
 
 export default Vue.extend({
-  data: () => ({
-    ...cloneDeep(EMPTY_PRODUCT_FILTERS),
-  }),
   props: {
     filters: {
       type: Object,
       default: () => ({ ...EMPTY_PRODUCT_FILTERS }),
     } as Vue.PropOptions<ProductFilers>,
   },
+  data: () => ({
+    ...cloneDeep(EMPTY_PRODUCT_FILTERS),
+  }),
   computed: {
     productSets() {
       return this.$accessor.productSets.getData
     },
   },
   watch: {
-    filters(f: { search: string; set: string }) {
+    filters(f: ProductFilers) {
       this.search = f.search
-      this.sets = f.set
+      this.sets = f.sets
     },
   },
   created() {

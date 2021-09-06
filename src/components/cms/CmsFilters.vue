@@ -3,7 +3,7 @@
     <div class="cms-filters__wrapper">
       <cms-filters-header
         class="cms-filters__header"
-        :filters-count="filtersCount"
+        :filters="filters"
         @clear-filters="$emit('clear-filters')"
       />
       <div class="cms-filters__content">
@@ -17,7 +17,7 @@
         <button class="cms-filters__close-btn" @click="isModalOpen = false">
           <img src="@/assets/images/icons/close-icon.svg" alt="Close" />
         </button>
-        <cms-filters-header :filters-count="filtersCount" @clear-filters="$emit('clear-filters')" />
+        <cms-filters-header :filters="filters" @clear-filters="$emit('clear-filters')" />
         <div class="cms-filters__mobile-content">
           <slot></slot>
         </div>
@@ -39,8 +39,6 @@ import Vue from 'vue'
 import Card from '@/components/layout/Card.vue'
 import CmsFiltersHeader from '@/components/cms/CmsFiltersHeader.vue'
 
-import { ALL_FILTER_VALUE } from '@/consts/filters'
-
 export default Vue.extend({
   components: { Card, CmsFiltersHeader },
   props: {
@@ -57,9 +55,6 @@ export default Vue.extend({
     isExpandable(): boolean {
       // TODO: add logic to determine if filters are expandable
       return false
-    },
-    filtersCount(): number {
-      return Object.values(this.filters).filter((v) => !!v && v !== ALL_FILTER_VALUE).length
     },
   },
 })

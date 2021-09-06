@@ -78,6 +78,7 @@ const CLEAR_USER: CreateUserDTO = {
 }
 
 export default Vue.extend({
+  metaInfo: { title: 'Użytkownicy' },
   components: {
     PaginatedList,
     ListItem,

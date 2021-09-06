@@ -34,6 +34,7 @@ import CentralScreenForm from '@/components/form/CentralScreenForm.vue'
 import { formatApiNotificationError } from '@/utils/errors'
 
 export default Vue.extend({
+  metaInfo: { title: 'Resetowanie hasła' },
   components: {
     CentralScreenForm,
     ValidationObserver,

@@ -38,6 +38,7 @@ import { formatApiNotificationError } from '@/utils/errors'
 import { api } from '@/api'
 
 export default Vue.extend({
+  metaInfo: { title: 'Nowe hasło' },
   components: {
     CentralScreenForm,
     ValidationObserver,

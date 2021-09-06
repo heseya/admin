@@ -82,6 +82,7 @@ const CLEAR_TAG: Tag = {
 }
 
 export default Vue.extend({
+  metaInfo: { title: 'Tagi' },
   components: {
     PaginatedList,
     ListItem,

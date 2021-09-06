@@ -45,6 +45,9 @@ const CLEAN_FORM: RoleDTO = {
 }
 
 export default Vue.extend({
+  metaInfo(): any {
+    return { title: this.role?.name || 'Nowa rola' }
+  },
   components: {
     TopNav,
     PopConfirm,

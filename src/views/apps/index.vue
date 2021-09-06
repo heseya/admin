@@ -46,6 +46,7 @@ import ModalForm from '@/components/form/ModalForm.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 
 export default Vue.extend({
+  metaInfo: { title: 'Aplikacje' },
   components: {
     ListItem,
     ModalForm,

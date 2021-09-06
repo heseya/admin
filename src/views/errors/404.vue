@@ -7,6 +7,7 @@ import Vue from 'vue'
 import ErrorPage from '@/components/layout/ErrorPage.vue'
 
 export default Vue.extend({
+  metaInfo: { title: 'Błąd 404' },
   components: {
     ErrorPage,
   },

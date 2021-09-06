@@ -22,11 +22,18 @@
 <script lang="ts">
 import Vue from 'vue'
 
+import { formatFilters } from '@/utils/utils'
+
 export default Vue.extend({
   props: {
-    filtersCount: {
-      type: Number,
-      default: 0,
+    filters: {
+      type: Object,
+      default: () => ({}),
+    } as Vue.PropOptions<Record<string, any>>,
+  },
+  computed: {
+    filtersCount(): number {
+      return Object.values(formatFilters(this.filters)).filter((v) => !!v).length
     },
   },
 })

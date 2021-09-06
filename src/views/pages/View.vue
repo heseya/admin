@@ -72,6 +72,9 @@ import { formatApiNotificationError } from '@/utils/errors'
 import { Page } from '@/interfaces/Page'
 
 export default Vue.extend({
+  metaInfo(): any {
+    return { title: this.page?.name || 'Nowa strona' }
+  },
   components: {
     TopNav,
     Card,

@@ -52,6 +52,7 @@ import { formatCurrency } from '@/utils/currency'
 type OrderFilersType = typeof EMPTY_ORDER_FILTERS
 
 export default Vue.extend({
+  metaInfo: { title: 'Zamówienia' },
   components: {
     OrderFilter,
     PaginatedList,

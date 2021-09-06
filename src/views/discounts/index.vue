@@ -104,6 +104,7 @@ const EMPTY_DISCOUNT_CODE: DiscountCode = {
 }
 
 export default Vue.extend({
+  metaInfo: { title: 'Kody rabatowe' },
   components: {
     ListItem,
     ModalForm,

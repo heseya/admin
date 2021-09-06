@@ -95,6 +95,7 @@ const CLEAR_SETTING: Setting = {
 }
 
 export default Vue.extend({
+  metaInfo: { title: 'Ustawienia zaawansowane' },
   components: {
     PaginatedList,
     ListItem,

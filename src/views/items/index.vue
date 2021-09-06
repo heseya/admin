@@ -109,6 +109,7 @@ const EMPTY_FORM: ProductItem = {
 }
 
 export default Vue.extend({
+  metaInfo: { title: 'Magazyn' },
   components: {
     ListItem,
     ModalForm,

@@ -46,6 +46,9 @@ import SchemaForm from '@/components/modules/schemas/Form.vue'
 import { formatApiNotificationError } from '@/utils/errors'
 
 export default Vue.extend({
+  metaInfo(): any {
+    return { title: this.schema?.name || 'Nowy schemat' }
+  },
   components: {
     TopNav,
     Card,

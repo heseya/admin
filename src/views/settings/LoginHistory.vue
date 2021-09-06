@@ -72,6 +72,7 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import { UUID } from '@/interfaces/UUID'
 
 export default Vue.extend({
+  metaInfo: { title: 'Sesje użytkownika' },
   components: {
     PaginatedList,
     ListItem,

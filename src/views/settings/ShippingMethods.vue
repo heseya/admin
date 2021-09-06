@@ -69,6 +69,7 @@ import { UUID } from '@/interfaces/UUID'
 import { ShippingMethodDTO } from '@/interfaces/ShippingMethod'
 
 export default Vue.extend({
+  metaInfo: { title: 'Metody dostawy' },
   components: {
     ListItem,
     PopConfirm,

@@ -25,6 +25,7 @@
     "vee-validate": "^3.4.12",
     "vue": "^2.6.14",
     "vue-inline-svg": "^2.0.0",
+    "vue-meta": "^2.4.0",
     "vue-multiselect": "^2.1.6",
     "vue-quill-editor": "^3.0.6",
     "vue-router": "^3.5.2",

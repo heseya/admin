@@ -99,6 +99,7 @@ const CLEAR_STATUS: OrderStatus = {
 }
 
 export default Vue.extend({
+  metaInfo: { title: 'Statusy zamówień' },
   components: {
     PaginatedList,
     ListItem,

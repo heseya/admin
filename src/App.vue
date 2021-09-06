@@ -23,6 +23,12 @@ import AppHeader from './components/root/Header.vue'
 import Loading from './components/layout/Loading.vue'
 
 export default Vue.extend({
+  metaInfo: {
+    // if no subcomponents specify a metaInfo.title, this title will be used
+    title: 'Admin',
+    // all titles will be injected into this template
+    titleTemplate: '%s | Heseya Shop System',
+  },
   components: {
     DesktopNavigation,
     MobileNavigation,

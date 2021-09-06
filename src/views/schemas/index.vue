@@ -51,6 +51,7 @@ import PaginatedList from '@/components/PaginatedList.vue'
 import { SchemaTypeLabel } from '@/consts/schemaTypeLabels'
 
 export default Vue.extend({
+  metaInfo: { title: 'Schematy' },
   components: {
     PaginatedList,
     ListItem,

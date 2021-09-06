@@ -96,6 +96,7 @@ import { User } from '@/interfaces/User'
 import SettingsItem from '@/components/modules/settings/SettingsItem.vue'
 
 export default Vue.extend({
+  metaInfo: { title: 'Ustawienia' },
   components: {
     TopNav,
     Card,

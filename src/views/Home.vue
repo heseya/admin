@@ -80,6 +80,7 @@ import ListItem from '@/components/layout/ListItem.vue'
 import { Order } from '@/interfaces/Order'
 
 export default Vue.extend({
+  metaInfo: { title: 'Dashboard' },
   components: {
     ListItem,
     TopNav,

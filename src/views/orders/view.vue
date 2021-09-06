@@ -207,6 +207,9 @@ const DEFAULT_FORM = {
 }
 
 export default Vue.extend({
+  metaInfo(): any {
+    return { title: `Zamówienie ${this.order?.code}` }
+  },
   components: {
     TopNav,
     Card,

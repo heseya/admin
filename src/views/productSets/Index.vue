@@ -56,6 +56,7 @@ const CLEAR_FORM: ProductSetDTO = {
 }
 
 export default Vue.extend({
+  metaInfo: { title: 'Kolekcje' },
   components: {
     PaginatedList,
     ProductSetForm,

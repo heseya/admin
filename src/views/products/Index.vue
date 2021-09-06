@@ -50,6 +50,7 @@ import { ALL_FILTER_VALUE } from '@/consts/filters'
 const LOCAL_STORAGE_KEY = 'products-list-view'
 
 export default Vue.extend({
+  metaInfo: { title: 'Produkty' },
   components: {
     ProductTile,
     ProductListItem,

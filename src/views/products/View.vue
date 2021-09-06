@@ -181,6 +181,9 @@ const EMPTY_FORM: ProductComponentForm = {
 }
 
 export default Vue.extend({
+  metaInfo(): any {
+    return { title: this.product?.name || 'Nowy produkt' }
+  },
   components: {
     TopNav,
     Gallery,

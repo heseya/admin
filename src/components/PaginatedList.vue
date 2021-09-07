@@ -9,12 +9,12 @@
     </AppCmsFilters>
 
     <AppCard class="paginated-list__content">
-      <AppEmpty v-if="!items.length || isLoading">{{ emptyText }}</AppEmpty>
       <Loading :active="isLoading"></Loading>
 
+      <AppEmpty v-if="!items.length || isLoading">{{ emptyText }}</AppEmpty>
       <component
         :is="contentComponent"
-        v-if="!isLoading"
+        v-else
         v-model="items"
         v-bind="!!table ? { config: table, draggable } : {}"
         class="paginated-list__list"

@@ -41,10 +41,10 @@ export default Vue.extend({
   },
   computed: {
     innerValue: {
-      get(): string | number {
+      get(): string | number | unknown[] {
         return this.value
       },
-      set(v: string | number) {
+      set(v: string | number | unknown[]) {
         this.$emit('input', v)
       },
     },

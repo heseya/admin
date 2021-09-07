@@ -79,7 +79,7 @@ export default Vue.extend({
 .cms-table {
   &__header {
     @media ($max-viewport-11) {
-      display: none;
+      display: none !important;
     }
   }
 

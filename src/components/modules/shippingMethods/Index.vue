@@ -3,7 +3,7 @@
     <modal-form>
       <validated-input v-model="form.name" :disabled="disabled" rules="required" label="Nazwa" />
       <div class="center">
-        <a-select
+        <app-select
           v-model="form.payment_methods"
           :disabled="disabled"
           mode="multiple"
@@ -12,9 +12,9 @@
           <a-select-option v-for="method in paymentMethods" :key="method.id" :value="method.id">
             {{ method.name }}
           </a-select-option>
-        </a-select>
+        </app-select>
       </div>
-      <br />
+
       <div class="center">
         <flex-input>
           <label class="title">Widoczność opcji dostawy</label>
@@ -40,11 +40,11 @@
       </div>
 
       <div class="center">
-        <a-select v-model="form.countries" :disabled="disabled" mode="multiple" label="Kraje">
+        <app-select v-model="form.countries" :disabled="disabled" mode="multiple" label="Kraje">
           <a-select-option v-for="country in countries" :key="country.code" :value="country.code">
             {{ country.name }}
           </a-select-option>
-        </a-select>
+        </app-select>
       </div>
     </modal-form>
   </div>
@@ -112,12 +112,6 @@ export default Vue.extend({
 
 <style lang="scss">
 .shipping-methods-form {
-  margin-bottom: 24px;
-
-  .flex-input {
-    margin-bottom: 12px;
-  }
-
   .switch-input {
     margin-top: 0;
   }

@@ -34,8 +34,8 @@ body {
 hr {
   all: unset;
   display: block;
-  height: 1px;
-  background-color: #eeeeee;
+  height: 1px !important;
+  background-color: $background-color-700;
   width: 100%;
   margin: 12px 0;
 }

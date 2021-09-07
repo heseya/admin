@@ -91,8 +91,6 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .autocomplete {
-  margin-top: 8px;
-
   &__label {
     font-size: 0.8em;
     padding-left: 8px;

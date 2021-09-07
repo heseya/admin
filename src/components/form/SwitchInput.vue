@@ -46,7 +46,6 @@ export default Vue.extend({
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 10px;
 
   &__label {
     font-family: $primaryFont;

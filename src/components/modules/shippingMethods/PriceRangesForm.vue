@@ -11,8 +11,7 @@
         />
         <app-input v-model="range.value" :disabled="disabled" label="Stawka" type="number" />
         <icon-button
-          v-if="i !== 0"
-          :disabled="disabled"
+          :disabled="disabled || i === 0"
           type="transparent"
           @click.stop="removeRange(i)"
         >
@@ -21,7 +20,7 @@
       </div>
     </div>
     <small class="price-ranges-form__error">{{ error }}</small>
-    <icon-button :disabled="disabled" color="#000" size="small" @click="addRange">
+    <icon-button class="price-ranges-form__btn" :disabled="disabled" size="small" @click="addRange">
       <template #icon><i class="bx bx-plus"></i></template>
       Dodaj zakres
     </icon-button>
@@ -79,18 +78,18 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .price-ranges-form {
-  &__title {
-    margin-bottom: 32px;
-  }
-
   &__list {
     margin-bottom: -20px;
+  }
+
+  &__btn {
+    margin-top: 24px;
   }
 
   &__row {
     display: grid;
     grid-template-columns: 1fr 1fr 32px;
-    align-items: start;
+    align-items: center;
     grid-gap: 12px;
 
     .vs-button {

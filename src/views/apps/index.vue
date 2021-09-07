@@ -42,6 +42,7 @@ import { ValidationObserver } from 'vee-validate'
 import ListItem from '@/components/layout/ListItem.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
+import Avatar from '@/components/layout/Avatar.vue'
 
 export default Vue.extend({
   metaInfo: { title: 'Aplikacje' },
@@ -50,6 +51,7 @@ export default Vue.extend({
     ModalForm,
     ValidationObserver,
     PaginatedList,
+    Avatar,
   },
   data: () => ({
     isModalActive: false,

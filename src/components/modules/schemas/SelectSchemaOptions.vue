@@ -118,7 +118,7 @@ export default Vue.extend({
     align-items: center;
     justify-items: center;
 
-    .input {
+    > * {
       width: 100%;
     }
 

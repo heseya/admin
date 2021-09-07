@@ -3,14 +3,10 @@
     <label class="switch-input__label">
       <slot name="title">{{ label }}</slot>
     </label>
-    <vs-switch success :value="value" :disabled="disabled" @input="onInput">
-      <template #off>
-        <i class="bx bx-x"></i>
-      </template>
-      <template #on>
-        <i class="bx bx-check"></i>
-      </template>
-    </vs-switch>
+    <a-switch :value="value" :disabled="disabled" @input="onInput">
+      <i slot="unCheckedChildren" class="bx bx-x"></i>
+      <i slot="checkedChildren" class="bx bx-check"></i>
+    </a-switch>
   </div>
 </template>
 
@@ -60,6 +56,22 @@ export default Vue.extend({
     font-size: 1em;
     font-weight: 600;
     margin-right: 10px;
+  }
+
+  .ant-switch {
+    background-color: $background-color-600;
+
+    i {
+      margin-top: 4px;
+      color: $font-color;
+    }
+  }
+  .ant-switch-checked {
+    background-color: $green-color-500;
+
+    i {
+      color: #ffffff;
+    }
   }
 }
 </style>

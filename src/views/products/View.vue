@@ -24,17 +24,12 @@
 
       <div>
         <card>
-          <flex-input>
-            <label class="title">Widoczność produktu</label>
-            <vs-switch v-model="form.public" success :disabled="!canModify">
-              <template #off>
-                <i class="bx bx-x"></i>
-              </template>
-              <template #on>
-                <i class="bx bx-check"></i>
-              </template>
-            </vs-switch>
-          </flex-input>
+          <switch-input
+            v-model="form.public"
+            horizontal
+            :disabled="!canModify"
+            label="Widoczność produktu"
+          />
           <template v-if="!product.visible && product.public">
             <br />
             <a-alert
@@ -144,7 +139,6 @@ import cloneDeep from 'lodash/cloneDeep'
 import TopNav from '@/components/layout/TopNav.vue'
 import Gallery from '@/components/modules/products/Gallery.vue'
 import Card from '@/components/layout/Card.vue'
-import FlexInput from '@/components/layout/FlexInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import RichEditor from '@/components/form/RichEditor.vue'
 import SchemaConfigurator from '@/components/modules/schemas/Configurator.vue'
@@ -178,7 +172,6 @@ export default Vue.extend({
     TopNav,
     Gallery,
     Card,
-    FlexInput,
     PopConfirm,
     ValidationProvider,
     ValidationObserver,

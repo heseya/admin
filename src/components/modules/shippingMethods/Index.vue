@@ -34,7 +34,7 @@
       <div class="center">
         <flex-input>
           <label class="title">Biała lista</label>
-          <vs-switch v-model="form.black_list" :disabled="disabled" color="#000" />
+          <a-switch v-model="form.black_list" :disabled="disabled" />
           <label class="title">Czarna lista</label>
         </flex-input>
       </div>
@@ -118,6 +118,13 @@ export default Vue.extend({
 
   label.title {
     margin: 0 6px;
+  }
+
+  .ant-switch {
+    background-color: $background-color-600;
+  }
+  .ant-switch-checked {
+    background-color: #000000;
   }
 }
 </style>

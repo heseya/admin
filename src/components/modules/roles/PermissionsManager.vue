@@ -3,32 +3,26 @@
     <span class="permissions-manager__title">Uprawnienia roli</span>
     <div v-for="{ section, permissions: groupPerms, isAssignable } in grouped" :key="section">
       <span class="permissions-manager__subtitle">
-        <icon-button
-          class="permissions-manager__btn"
-          size="small"
-          :type="!hasSome(section) ? 'transparent' : 'black'"
+        <a-checkbox
+          :checked="hasAll(section) && isAssignable"
           :disabled="disabled || !isAssignable"
-          @click="() => changeAll(section)"
+          :indeterminate="hasSome(section) && !(hasAll(section) && isAssignable)"
+          @change="() => changeAll(section)"
         >
-          <template #icon>
-            <i v-if="hasAll(section) && isAssignable" class="bx bx-check"></i>
-            <i v-else class="bx bx-minus"></i>
-          </template>
-        </icon-button>
-        {{ section.replaceAll('_', ' ') }}
+          {{ section.replaceAll('_', ' ') }}
+        </a-checkbox>
       </span>
 
       <div class="permissions-manager__content">
-        <vs-checkbox
+        <a-checkbox
           v-for="perm in groupPerms"
           :key="perm.id"
-          dark
-          :value="has(perm.name)"
-          v-bind="!perm.assignable || disabled ? { disabled: true } : {}"
-          @input="() => change(perm.name)"
+          :checked="has(perm.name)"
+          :disabled="!perm.assignable || disabled"
+          @change="() => change(perm.name)"
         >
           {{ perm.name }}
-        </vs-checkbox>
+        </a-checkbox>
       </div>
     </div>
   </div>
@@ -146,14 +140,9 @@ export default Vue.extend({
     align-items: center;
     font-weight: 600;
     text-transform: capitalize;
-  }
 
-  &__btn {
-    border-radius: 50%;
-    margin-left: 0;
-
-    & ::v-deep .vs-button__content {
-      padding: 4px;
+    > * {
+      color: $font-color;
     }
   }
 
@@ -163,8 +152,41 @@ export default Vue.extend({
 
   &__content {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr;
     margin-bottom: 24px;
+
+    @media ($viewport-4) {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @media ($viewport-8) {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    @media ($viewport-11) {
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
+  }
+
+  ::v-deep {
+    .ant-checkbox-wrapper {
+      margin-left: 0 !important;
+
+      .ant-checkbox::after,
+      &:hover .ant-checkbox-inner,
+      &:focus-within .ant-checkbox-inner {
+        border-color: #000000 !important;
+      }
+
+      .ant-checkbox-checked .ant-checkbox-inner {
+        border-color: #000000 !important;
+        background-color: #000000 !important;
+      }
+
+      .ant-checkbox-indeterminate .ant-checkbox-inner::after {
+        background-color: #000000 !important;
+      }
+    }
   }
 }
 </style>

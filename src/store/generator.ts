@@ -101,7 +101,7 @@ export const createVuexCRUD =
         state.isLoading = isLoading
       },
       [StoreMutations.SetMeta](state, newMeta: ResponseMeta) {
-        state.meta = newMeta
+        state.meta = newMeta || {}
       },
       [StoreMutations.SetData](state, newData: Item[] = []) {
         state.data = newData

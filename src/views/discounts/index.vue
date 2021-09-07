@@ -63,7 +63,7 @@
         <template #footer>
           <div class="row">
             <app-button v-if="canModify" @click="handleSubmit(saveModal)"> Zapisz </app-button>
-            <!--            <pop-confirm-->
+            <!-- <pop-confirm-->
             <!--              title="Czy na pewno chcesz usunąć ten kod?"-->
             <!--              v-can="$p.Discounts.Remove"-->
             <!--              okText="Usuń"-->
@@ -71,8 +71,8 @@
             <!--              @confirm="deleteItem"-->
             <!--              v-slot="{ open }"-->
             <!--            >-->
-            <!--              <vs-button v-if="editedItem.id" color="danger" @click="open">Usuń</vs-button>-->
-            <!--            </pop-confirm>-->
+            <!-- <app-button v-if="editedItem.id" type="danger" @click="open">Usuń</app-button> -->
+            <!--            </pop-confirm> -->
           </div>
         </template>
       </a-modal>

@@ -9,9 +9,9 @@
       <div v-for="image in images" :key="image.url" class="gallery__img">
         <img :src="`${image.url}?w=350&h=350`" :style="{ objectFit }" />
         <div class="remove">
-          <vs-button v-if="!disabled" icon color="danger" @click="onImageDelete(image.id)">
-            <i class="bx bx-trash"></i>
-          </vs-button>
+          <icon-button v-if="!disabled" type="danger" @click="onImageDelete(image.id)">
+            <template #icon><i class="bx bx-trash"></i></template>
+          </icon-button>
         </div>
       </div>
       <app-media-uploader

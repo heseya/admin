@@ -3,9 +3,10 @@
     <template #title>
       <div class="set-products__header">
         <h4>Produkty w kolekcji {{ set && set.name }}</h4>
-        <vs-button v-can="$p.ProductSets.Edit" dark @click="isSelectorActive = true">
-          <i class="bx bx-plus"></i> &nbsp; Dodaj produkt do kolekcji
-        </vs-button>
+        <icon-button v-can="$p.ProductSets.Edit" size="small" dark @click="isSelectorActive = true">
+          <template #icon> <i class="bx bx-plus"></i> </template>
+          Dodaj produkt do kolekcji
+        </icon-button>
       </div>
     </template>
 
@@ -24,15 +25,14 @@
           <span class="set-product-item__price">{{ formatCurrency(product.price) }}</span>
         </div>
         <div class="set-product-item__actions">
-          <vs-button
+          <icon-button
             v-can="$p.ProductSets.Edit"
-            danger
-            icon
             size="small"
+            type="danger"
             @click.stop="removeProduct(product.id)"
           >
-            <i class="bx bx-trash"></i>
-          </vs-button>
+            <template #icon> <i class="bx bx-trash"></i> </template>
+          </icon-button>
         </div>
       </div>
     </div>
@@ -40,7 +40,7 @@
     <empty v-else>Ta kolekcja nie zawiera produktów</empty>
 
     <template #footer>
-      <vs-button success @click="save">Zapisz</vs-button>
+      <app-button type="success" @click="save">Zapisz</app-button>
     </template>
 
     <a-modal v-model="isSelectorActive" width="800px" title="Wybierz produkt" :footer="null">

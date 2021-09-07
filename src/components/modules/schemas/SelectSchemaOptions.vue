@@ -2,9 +2,9 @@
   <Zone class="select-schema-options">
     <template #title>
       Opcje do wyboru
-      <vs-button :disabled="disabled" size="small" transparent @click.stop="addOption">
-        <i class="bx bx-plus"></i> Dodaj
-      </vs-button>
+      <icon-button :disabled="disabled" size="small" reversed @click="addOption">
+        <template #icon><i class="bx bx-plus"></i></template> Dodaj
+      </icon-button>
     </template>
 
     <draggable v-model="options" :disabled="disabled" handle=".drag-icon">
@@ -30,20 +30,19 @@
         <vs-radio :disabled="disabled" :value="defaultOption" :val="i" dark @input="setDefault">
           Domyślny
         </vs-radio>
-        <vs-button
+        <icon-button
           size="small"
-          danger
-          icon
+          type="danger"
           :disabled="options.length === 1 || disabled"
-          @click.stop="removeOption(i)"
+          @click="removeOption(i)"
         >
-          <i class="bx bx-trash"></i>
-        </vs-button>
+          <template #icon><i class="bx bx-trash"></i></template>
+        </icon-button>
       </div>
     </draggable>
-    <vs-button size="small" transparent :disabled="disabled" @click.stop="addOption">
-      <i class="bx bx-plus"></i> Dodaj
-    </vs-button>
+    <icon-button :disabled="disabled" size="small" reversed @click="addOption">
+      <template #icon><i class="bx bx-plus"></i></template> Dodaj
+    </icon-button>
   </Zone>
 </template>
 

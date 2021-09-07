@@ -1,14 +1,18 @@
 <template>
   <div>
     <top-nav :title="`Zamówienie ${order.code}`" :subtitle="`z dnia ${formattedDate}`">
+      <icon-button @click="downloadAudits">
+        <template #icon><i class="bx bx-history"></i></template>
+        Pobierz historię zmian
+      </icon-button>
       <a :href="`https://***REMOVED***.eu/payment/${order.code}`" target="_blank">
-        <vs-button color="dark" icon>
-          <i class="bx bxs-dollar-circle"></i>
-        </vs-button>
+        <icon-button>
+          <template #icon>
+            <i class="bx bxs-dollar-circle"></i>
+          </template>
+          Przejdź do płatności
+        </icon-button>
       </a>
-      <vs-button color="dark" icon @click="downloadAudits">
-        <i class="bx bx-history"></i>
-      </vs-button>
       <pop-confirm
         v-if="order.payable"
         v-slot="{ open }"
@@ -18,9 +22,10 @@
         cancel-text="Anuluj"
         @confirm="payOffline"
       >
-        <vs-button color="dark" icon @click="open">
-          <i class="bx bxs-diamond"></i>
-        </vs-button>
+        <icon-button @click="open">
+          <template #icon><i class="bx bxs-diamond"></i></template>
+          Opłać zamówienie
+        </icon-button>
       </pop-confirm>
     </top-nav>
 
@@ -106,16 +111,15 @@
         <card class="comment">
           <template>
             <h2 class="section-title">Komentarz</h2>
-            <vs-button
+            <icon-button
               v-can="$p.Orders.Edit"
-              size="tiny"
-              dark
-              transparent
+              size="small"
+              type="transparent"
               class="comment__edit"
               @click="editComment"
             >
-              <i class="bx bxs-pencil"></i>
-            </vs-button>
+              <template #icon><i class="bx bxs-pencil"></i></template>
+            </icon-button>
             <span class="comment__content">
               {{ order.comment || 'Brak komentarza do zamówienia' }}
             </span>
@@ -124,16 +128,15 @@
         <card>
           <h2 class="section-title">E-mail</h2>
           <div class="email">
-            <vs-button
+            <icon-button
               v-can="$p.Orders.Edit"
-              size="tiny"
-              dark
-              transparent
+              size="small"
+              type="transparent"
               class="email__edit"
               @click="editEmail"
             >
-              <i class="bx bxs-pencil"></i>
-            </vs-button>
+              <template #icon><i class="bx bxs-pencil"></i></template>
+            </icon-button>
             <a :href="`mailto:${order.email}`" class="email__name">{{ order.email }}</a>
           </div>
           <br />

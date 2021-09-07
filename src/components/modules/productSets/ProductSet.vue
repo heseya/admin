@@ -1,10 +1,12 @@
 <template>
   <div class="product-set" @click.stop="toggleChildrenVisibility">
     <div class="product-set__content">
-      <vs-button transparent icon size="mini" dark :disabled="!children.length">
-        <i v-if="areChildrenVisible" class="bx bx-minus"></i>
-        <i v-else class="bx bx-plus"></i>
-      </vs-button>
+      <icon-button type="transparent" size="small" :disabled="!children.length">
+        <template #icon>
+          <i v-if="areChildrenVisible" class="bx bx-minus"></i>
+          <i v-else class="bx bx-plus"></i>
+        </template>
+      </icon-button>
 
       <span class="product-set__name">
         <i v-if="!set.public" class="product-set__hidden-icon bx bx-low-vision"></i>
@@ -12,35 +14,26 @@
       </span>
 
       <div class="product-set__actions">
-        <vs-tooltip
+        <a-dropdown
           v-can.any="[$p.ProductSets.ShowDetails, $p.ProductSets.Add]"
-          shadow
-          interactivity
-          bottom
-          not-hover
-          :value="isMenuVisible"
-          @input="(v) => (isMenuVisible = v)"
+          :trigger="['click']"
         >
-          <vs-button size="small" color="dark" icon transparent @click.stop="isMenuVisible = true">
-            <i class="bx bx-menu"></i>
-          </vs-button>
-          <template #tooltip>
-            <vs-button v-can="$p.ProductSets.Add" shadow @click.stop="create">
+          <icon-button type="transparent" size="small" @click.stop>
+            <template #icon> <i class="bx bx-menu"></i> </template>
+          </icon-button>
+
+          <a-menu slot="overlay">
+            <a-menu-item v-can="$p.ProductSets.Add" @click="create">
               <i class="bx bx-plus"></i> &nbsp; Dodaj subkolekcje
-            </vs-button>
-            <vs-button
-              v-can="$p.ProductSets.ShowDetails"
-              shadow
-              color="success"
-              @click.stop="showProducts"
-            >
+            </a-menu-item>
+            <a-menu-item v-can="$p.ProductSets.ShowDetails" @click="showProducts">
               <i class="bx bx-customize"></i> &nbsp; Zobacz produkty w kolekcji
-            </vs-button>
-            <vs-button v-can="$p.ProductSets.ShowDetails" shadow color="dark" @click.stop="edit">
+            </a-menu-item>
+            <a-menu-item v-can="$p.ProductSets.ShowDetails" @click="edit">
               <i class="bx bx-edit"></i> &nbsp; Edytuj kolekcję
-            </vs-button>
-          </template>
-        </vs-tooltip>
+            </a-menu-item>
+          </a-menu>
+        </a-dropdown>
       </div>
     </div>
 
@@ -74,7 +67,6 @@ export default Vue.extend({
   },
   data: () => ({
     areChildrenVisible: false,
-    isMenuVisible: false,
   }),
   computed: {
     children: {

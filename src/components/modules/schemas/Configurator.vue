@@ -2,9 +2,10 @@
   <div class="configurator">
     <div class="configurator__head">
       <div class="configurator__title">Schematy</div>
-      <vs-button v-if="!disabled" dark icon @click="isModalActive = true">
-        <i class="bx bx-plus"></i>
-      </vs-button>
+      <icon-button v-if="!disabled" @click="isModalActive = true">
+        <template #icon> <i class="bx bx-plus"></i> </template>
+        Dodaj schemat do produktu
+      </icon-button>
     </div>
     <empty v-if="schemas.length === 0">Ten produkt nie ma jeszcze żadnego schematu</empty>
     <list class="configurator__schemas">
@@ -24,18 +25,17 @@
           <small>{{ schema.description }}</small>
           <template #action>
             <div class="flex">
-              <vs-button dark icon @click="editSchema(schema)">
-                <i class="bx bx-edit"></i>
-              </vs-button>
-              <vs-button
+              <icon-button @click="editSchema(schema)">
+                <template #icon> <i class="bx bx-edit"></i> </template>
+              </icon-button>
+              <icon-button
                 v-if="!disabled"
-                danger
-                icon
+                type="danger"
                 class="schema-delete"
                 @click="removeSchema(schema.id)"
               >
-                <i class="bx bx-trash"></i>
-              </vs-button>
+                <template #icon> <i class="bx bx-trash"></i> </template>
+              </icon-button>
             </div>
           </template>
         </list-item>
@@ -62,15 +62,16 @@
       <template #title>
         <h4 class="flex schema-selector-title">
           Wybierz istniejący schemat lub
-          <vs-button
-            transparent
+          <icon-button
+            reversed
+            size="small"
             @click="
               isModalActive = false
               isFormModalActive = true
             "
           >
-            <i class="bx bx-plus"></i> Utwórz nowy
-          </vs-button>
+            <template #icon> <i class="bx bx-plus"></i> </template> Utwórz nowy
+          </icon-button>
         </h4>
       </template>
       <modal-form>

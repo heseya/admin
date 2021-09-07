@@ -10,22 +10,21 @@
           :disabled="i === 0 || disabled"
         />
         <app-input v-model="range.value" :disabled="disabled" label="Stawka" type="number" />
-        <vs-button
+        <icon-button
           v-if="i !== 0"
           :disabled="disabled"
-          transparent
-          danger
-          icon
+          type="transparent"
           @click.stop="removeRange(i)"
         >
-          <i class="bx bxs-trash"></i>
-        </vs-button>
+          <template #icon><i class="bx bxs-trash"></i></template>
+        </icon-button>
       </div>
     </div>
     <small class="price-ranges-form__error">{{ error }}</small>
-    <vs-button :disabled="disabled" color="#000" size="small" @click="addRange">
-      <i class="bx bx-plus"></i> &nbsp;&nbsp; Dodaj zakres
-    </vs-button>
+    <icon-button :disabled="disabled" color="#000" size="small" @click="addRange">
+      <template #icon><i class="bx bx-plus"></i></template>
+      Dodaj zakres
+    </icon-button>
   </div>
 </template>
 

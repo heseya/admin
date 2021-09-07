@@ -1,16 +1,15 @@
 <template>
   <div class="address">
-    <vs-button
+    <icon-button
       v-if="!hideEdit"
       v-can="$p.Orders.Edit"
-      size="tiny"
-      dark
-      transparent
+      size="small"
+      type="transparent"
       class="address__btn address__btn--edit"
       @click="edit"
     >
-      <i class="bx bxs-pencil"></i>
-    </vs-button>
+      <template #icon><i class="bx bxs-pencil"></i></template>
+    </icon-button>
     <pop-confirm
       v-if="!hideRemove && address"
       v-slot="{ open }"
@@ -20,15 +19,14 @@
       cancel-text="Anuluj"
       @confirm="remove"
     >
-      <vs-button
-        size="tiny"
-        dark
-        transparent
+      <icon-button
+        size="small"
+        type="transparent"
         class="address__btn address__btn--remove"
         @click="open"
       >
-        <i class="bx bxs-trash"></i>
-      </vs-button>
+        <template #icon><i class="bx bxs-trash"></i></template>
+      </icon-button>
     </pop-confirm>
 
     <template v-if="address">

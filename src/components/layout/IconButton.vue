@@ -47,7 +47,7 @@ export default Vue.extend({
     type: {
       type: String,
       default: 'primary',
-    } as Vue.PropOptions<'default' | 'primary' | 'danger'>,
+    } as Vue.PropOptions<'default' | 'primary' | 'danger' | 'transparent' | 'success' | 'black'>,
     size: {
       type: String,
       default: 'default',
@@ -158,6 +158,19 @@ export default Vue.extend({
     }
   }
 
+  &--transparent {
+    color: $font-color;
+
+    #{$root}__icon {
+      background-color: #ffffff00;
+    }
+
+    &:hover {
+      background-color: $background-color-600;
+      color: $font-color;
+    }
+  }
+
   &--danger {
     color: $red-color-500;
 
@@ -168,6 +181,32 @@ export default Vue.extend({
     &:hover {
       background-color: $red-color-200;
       color: $red-color-500;
+    }
+  }
+
+  &--success {
+    color: $green-color-500;
+
+    #{$root}__icon {
+      background-color: $green-color-200;
+    }
+
+    &:hover {
+      background-color: $green-color-200;
+      color: $green-color-500;
+    }
+  }
+
+  &--black {
+    color: #ffffff;
+
+    #{$root}__icon {
+      background-color: $font-color;
+    }
+
+    &:hover {
+      background-color: $font-color;
+      color: #ffffff;
     }
   }
 }

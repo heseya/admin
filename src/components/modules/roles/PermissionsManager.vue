@@ -3,17 +3,18 @@
     <span class="permissions-manager__title">Uprawnienia roli</span>
     <div v-for="{ section, permissions: groupPerms, isAssignable } in grouped" :key="section">
       <span class="permissions-manager__subtitle">
-        <vs-button
+        <icon-button
           class="permissions-manager__btn"
-          dark
-          icon
-          :transparent="!hasSome(section)"
-          v-bind="disabled || !isAssignable ? { disabled: true } : {}"
+          size="small"
+          :type="!hasSome(section) ? 'transparent' : 'black'"
+          :disabled="disabled || !isAssignable"
           @click="() => changeAll(section)"
         >
-          <i v-if="hasAll(section) && isAssignable" class="bx bx-check"></i>
-          <i v-else class="bx bx-minus"></i>
-        </vs-button>
+          <template #icon>
+            <i v-if="hasAll(section) && isAssignable" class="bx bx-check"></i>
+            <i v-else class="bx bx-minus"></i>
+          </template>
+        </icon-button>
         {{ section.replaceAll('_', ' ') }}
       </span>
 

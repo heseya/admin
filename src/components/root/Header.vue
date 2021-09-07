@@ -9,9 +9,7 @@
         :to="returnUrl"
         class="header__return-btn"
       >
-        <template #icon>
-          <i class="bx bx-left-arrow-alt"></i>
-        </template>
+        <i slot="icon" class="bx bx-left-arrow-alt"></i>
         Wróć do listy
       </icon-button>
 

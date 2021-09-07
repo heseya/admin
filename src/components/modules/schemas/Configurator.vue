@@ -3,7 +3,7 @@
     <div class="configurator__head">
       <div class="configurator__title">Schematy</div>
       <icon-button v-if="!disabled" @click="isModalActive = true">
-        <template #icon> <i class="bx bx-plus"></i> </template>
+        <i slot="icon" class="bx bx-plus"></i>
         Dodaj schemat do produktu
       </icon-button>
     </div>
@@ -26,7 +26,7 @@
           <template #action>
             <div class="flex">
               <icon-button @click="editSchema(schema)">
-                <template #icon> <i class="bx bx-edit"></i> </template>
+                <i slot="icon" class="bx bx-edit"></i>
               </icon-button>
               <icon-button
                 v-if="!disabled"
@@ -34,7 +34,7 @@
                 class="schema-delete"
                 @click="removeSchema(schema.id)"
               >
-                <template #icon> <i class="bx bx-trash"></i> </template>
+                <i slot="icon" class="bx bx-trash"></i>
               </icon-button>
             </div>
           </template>
@@ -70,7 +70,7 @@
               isFormModalActive = true
             "
           >
-            <template #icon> <i class="bx bx-plus"></i> </template> Utwórz nowy
+            <i slot="icon" class="bx bx-plus"></i> Utwórz nowy
           </icon-button>
         </h4>
       </template>

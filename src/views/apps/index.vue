@@ -3,9 +3,7 @@
     <PaginatedList title="Aplikacje" store-key="apps">
       <template #nav>
         <icon-button @click="openModal()">
-          <template #icon>
-            <i class="bx bx-plus"></i>
-          </template>
+          <i slot="icon" class="bx bx-plus"></i>
           Dodaj aplikacje
         </icon-button>
       </template>

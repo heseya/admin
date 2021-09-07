@@ -2,14 +2,12 @@
   <div>
     <top-nav :title="`Zamówienie ${order.code}`" :subtitle="`z dnia ${formattedDate}`">
       <icon-button @click="downloadAudits">
-        <template #icon><i class="bx bx-history"></i></template>
+        <i slot="icon" class="bx bx-history"></i>
         Pobierz historię zmian
       </icon-button>
       <a :href="`https://***REMOVED***.eu/payment/${order.code}`" target="_blank">
         <icon-button>
-          <template #icon>
-            <i class="bx bxs-dollar-circle"></i>
-          </template>
+          <i slot="icon" class="bx bxs-dollar-circle"></i>
           Przejdź do płatności
         </icon-button>
       </a>
@@ -23,7 +21,7 @@
         @confirm="payOffline"
       >
         <icon-button @click="open">
-          <template #icon><i class="bx bxs-diamond"></i></template>
+          <i slot="icon" class="bx bxs-diamond"></i>
           Opłać zamówienie
         </icon-button>
       </pop-confirm>
@@ -118,7 +116,7 @@
               class="comment__edit"
               @click="editComment"
             >
-              <template #icon><i class="bx bxs-pencil"></i></template>
+              <i slot="icon" class="bx bxs-pencil"></i>
             </icon-button>
             <span class="comment__content">
               {{ order.comment || 'Brak komentarza do zamówienia' }}
@@ -135,7 +133,7 @@
               class="email__edit"
               @click="editEmail"
             >
-              <template #icon><i class="bx bxs-pencil"></i></template>
+              <i slot="icon" class="bx bxs-pencil"></i>
             </icon-button>
             <a :href="`mailto:${order.email}`" class="email__name">{{ order.email }}</a>
           </div>

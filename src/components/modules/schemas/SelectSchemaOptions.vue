@@ -3,7 +3,7 @@
     <template #title>
       Opcje do wyboru
       <icon-button :disabled="disabled" size="small" reversed @click="addOption">
-        <template #icon><i class="bx bx-plus"></i></template> Dodaj
+        <i slot="icon" class="bx bx-plus"></i> Dodaj
       </icon-button>
     </template>
 
@@ -36,12 +36,12 @@
           :disabled="options.length === 1 || disabled"
           @click="removeOption(i)"
         >
-          <template #icon><i class="bx bx-trash"></i></template>
+          <i slot="icon" class="bx bx-trash"></i>
         </icon-button>
       </div>
     </draggable>
     <icon-button :disabled="disabled" size="small" reversed @click="addOption">
-      <template #icon><i class="bx bx-plus"></i></template> Dodaj
+      <i slot="icon" class="bx bx-plus"></i> Dodaj
     </icon-button>
   </Zone>
 </template>

@@ -3,9 +3,7 @@
     <PaginatedList title="Użytkownicy" store-key="users">
       <template #nav>
         <icon-button v-can="$p.Users.Add" @click="openModal()">
-          <template #icon>
-            <i class="bx bx-plus"></i>
-          </template>
+          <i slot="icon" class="bx bx-plus"></i>
           Dodaj użytkownika
         </icon-button>
       </template>

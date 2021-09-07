@@ -19,7 +19,7 @@
           :trigger="['click']"
         >
           <icon-button type="transparent" size="small" @click.stop>
-            <template #icon> <i class="bx bx-menu"></i> </template>
+            <i slot="icon" class="bx bx-menu"></i>
           </icon-button>
 
           <a-menu slot="overlay">

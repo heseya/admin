@@ -3,9 +3,7 @@
     <PaginatedList title="Kody rabatowe" store-key="discounts">
       <template #nav>
         <icon-button v-can="$p.Discounts.Add" @click="openModal()">
-          <template #icon>
-            <i class="bx bx-plus"></i>
-          </template>
+          <i slot="icon" class="bx bx-plus"></i>
           Dodaj kod rabatowy
         </icon-button>
       </template>

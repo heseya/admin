@@ -10,7 +10,7 @@
         <img :src="`${image.url}?w=350&h=350`" :style="{ objectFit }" />
         <div class="remove">
           <icon-button v-if="!disabled" type="danger" @click="onImageDelete(image.id)">
-            <template #icon><i class="bx bx-trash"></i></template>
+            <i slot="icon" class="bx bx-trash"></i>
           </icon-button>
         </div>
       </div>

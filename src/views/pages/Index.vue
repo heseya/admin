@@ -3,9 +3,7 @@
     <PaginatedList title="Strony" store-key="pages" draggable>
       <template #nav>
         <icon-button v-can="$p.Pages.Add" to="/pages/create">
-          <template #icon>
-            <i class="bx bx-plus"></i>
-          </template>
+          <i slot="icon" class="bx bx-plus"></i>
           Dodaj stronę
         </icon-button>
       </template>

@@ -11,9 +11,7 @@
           @confirm="killAllSessions"
         >
           <icon-button type="danger" :disabled="!areSessionsToKill" @click="open">
-            <template #icon>
-              <i class="bx bx-trash"></i>
-            </template>
+            <i slot="icon" class="bx bx-trash"></i>
             Wyloguj wszystkie
           </icon-button>
         </pop-confirm>
@@ -48,9 +46,7 @@
                 size="small"
                 @click="open"
               >
-                <template #icon>
-                  <i class="bx bx-trash"></i>
-                </template>
+                <i slot="icon" class="bx bx-trash"></i>
                 Wyloguj
               </icon-button>
             </pop-confirm>

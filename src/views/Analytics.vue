@@ -6,23 +6,17 @@
 
     <app-button type="primary" loading>
       Text
-      <template #icon>
-        <i class="bx bxs-chevron-right"></i>
-      </template>
+      <i slot="icon" class="bx bxs-chevron-right"></i>
     </app-button>
 
     <app-button type="white">
       Text
-      <template #icon>
-        <i class="bx bxs-chevron-right"></i>
-      </template>
+      <i slot="icon" class="bx bxs-chevron-right"></i>
     </app-button>
 
     <app-button type="danger">
       Text
-      <template #icon>
-        <i class="bx bxs-chevron-right"></i>
-      </template>
+      <i slot="icon" class="bx bxs-chevron-right"></i>
     </app-button>
   </div>
 </template>

@@ -11,9 +11,7 @@
         @confirm="deletePage"
       >
         <icon-button type="danger" @click="open">
-          <template #icon>
-            <i class="bx bx-trash"></i>
-          </template>
+          <i slot="icon" class="bx bx-trash"></i>
           Usuń
         </icon-button>
       </pop-confirm>

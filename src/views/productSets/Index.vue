@@ -3,9 +3,7 @@
     <PaginatedList title="Kolekcje produktów" store-key="productSets" draggable>
       <template #nav>
         <icon-button v-can="$p.ProductSets.Add" @click="createProductSet()">
-          <template #icon>
-            <i class="bx bx-plus"></i>
-          </template>
+          <i slot="icon" class="bx bx-plus"></i>
           Dodaj kolekcję
         </icon-button>
       </template>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PaginatedList title="Strony" storeKey="pages">
+    <PaginatedList title="Strony" storeKey="pages" draggable>
       <template #nav>
         <vs-button to="/pages/create" color="dark" icon>
           <i class="bx bx-plus"></i>
@@ -17,14 +17,15 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 
-export default {
+export default Vue.extend({
   components: {
     ListItem,
     PaginatedList,
   },
-}
+})
 </script>

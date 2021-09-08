@@ -34,18 +34,18 @@
         <card>
           <div class="flex-column send-package">
             <h2 class="section-title">Wyślij przesyłkę</h2>
-            <div class="flex" v-if="!shippingNumber">
+            <div v-if="!shippingNumber" class="flex">
               <vs-select
-                label="Szablon przesyłki"
-                placeholder="-- Wybierz szablon --"
                 :key="packageTemplates.length"
                 v-model="packageTemplateId"
+                label="Szablon przesyłki"
+                placeholder="-- Wybierz szablon --"
               >
                 <vs-option
                   v-for="template in packageTemplates"
+                  :key="template.id"
                   :label="template.name"
                   :value="template.id"
-                  :key="template.id"
                 >
                   {{ template.name }}
                 </vs-option>
@@ -64,12 +64,12 @@
         <card>
           <template v-if="order.status">
             <h2 class="section-title">Status</h2>
-            <vs-select v-model="status" :key="statuses.length" :loading="isLoading">
+            <vs-select :key="statuses.length" v-model="status" :loading="isLoading">
               <vs-option
                 v-for="status in statuses"
+                :key="status.id"
                 :label="status.name"
                 :value="status.id"
-                :key="status.id"
               >
                 {{ status.name }}
               </vs-option>
@@ -78,8 +78,8 @@
           <br />
           <h2 class="section-title">Próby płatności</h2>
           <div v-for="payment in order.payments" :key="payment.id" class="payment-method">
-            <i class="bx bxs-check-circle payment-method__success" v-if="payment.payed"></i>
-            <i class="bx bxs-x-circle payment-method__failed" v-if="!payment.payed"></i>
+            <i v-if="payment.payed" class="bx bxs-check-circle payment-method__success"></i>
+            <i v-if="!payment.payed" class="bx bxs-x-circle payment-method__failed"></i>
             <span class="payment-method__name">{{ payment.method }}</span>
             <span class="payment-method__amount">({{ payment.amount }} {{ currency }})</span>
           </div>
@@ -105,7 +105,7 @@
           </div>
           <br />
           <h2 class="section-title">Adres dostawy</h2>
-          <app-address :address="order.delivery_address" @edit="editDeliveryAddress" hideRemove />
+          <app-address :address="order.delivery_address" hide-remove @edit="editDeliveryAddress" />
         </card>
         <card>
           <template>
@@ -120,7 +120,7 @@
       </div>
     </div>
 
-    <vs-dialog width="800px" not-center v-model="isModalActive">
+    <vs-dialog v-model="isModalActive" width="800px" not-center>
       <template #header>
         <h4>Edytuj {{ modalFormTitle }}</h4>
       </template>
@@ -131,16 +131,21 @@
   </div>
 </template>
 
-<script>
-import TopNav from '@/layout/TopNav.vue'
+<script lang="ts">
+import Vue from 'vue'
+
+import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
-import Address from '@/components/Address.vue'
+import Address from '@/components/modules/orders/OrderAddress.vue'
 import CartItem from '@/components/layout/CartItem.vue'
+import ModalForm from '@/components/form/ModalForm.vue'
+import PartialUpdateForm from '@/components/modules/orders/PartialUpdateForm.vue'
+
 import { getRelativeDate, formatDate } from '@/utils/utils'
 import { createPackage } from '@/services/createPackage'
 import { formatApiError } from '@/utils/errors'
-import ModalForm from '@/components/ModalForm.vue'
-import PartialUpdateForm from '@/components/forms/orders/PartialUpdateForm.vue'
+import { Order, OrderStatus } from '@/interfaces/Order'
+import { PackageTemplate } from '@/interfaces/PackageTemplate'
 
 const DEFAULT_FORM = {
   address: '',
@@ -153,7 +158,7 @@ const DEFAULT_FORM = {
   zip: '',
 }
 
-export default {
+export default Vue.extend({
   components: {
     TopNav,
     Card,
@@ -167,52 +172,61 @@ export default {
     packageTemplateId: '',
     shippingNumber: '',
     isLoading: false,
-
     modalFormTitle: '',
     form: {},
     isModalActive: false,
   }),
   computed: {
-    currency() {
-      return this.$store.state.currency
+    currency(): string {
+      return this.$accessor.currency
     },
-    error() {
-      return this.$store.getters['orders/getError']
+    error(): any {
+      return this.$accessor.orders.getError
     },
-    order() {
-      return this.$store.getters['orders/getSelected']
+    order(): Order {
+      return this.$accessor.orders.getSelected
     },
-    statuses() {
-      return this.$store.getters['statuses/getData']
+    statuses(): OrderStatus[] {
+      return this.$accessor.statuses.getData
     },
-    packageTemplates() {
-      return this.$store.getters['packageTemplates/getData']
+    packageTemplates(): PackageTemplate[] {
+      return this.$accessor.packageTemplates.getData
     },
-    relativeOrderedDate() {
+    relativeOrderedDate(): string {
       return this.order.created_at && getRelativeDate(this.order.created_at)
     },
-    formattedDate() {
+    formattedDate(): string {
       return this.order.created_at && formatDate(this.order.created_at)
     },
   },
   watch: {
-    order(order) {
+    order(order: Order) {
       this.status = order?.status?.id
-      this.shippingNumber = order.shipping_number
+      this.shippingNumber = order.shipping_number || ''
     },
-    status(status, prevStatus) {
-      if (prevStatus === '') return
+    status(status: OrderStatus, prevStatus: OrderStatus) {
+      if (!prevStatus) return
       this.setStatus(status)
     },
     error(error) {
       if (error) this.$vs.notification({ color: 'danger', ...formatApiError(error) })
     },
   },
+  async created() {
+    this.$accessor.startLoading()
+    await Promise.all([
+      this.$accessor.orders.get(this.$route.params.id),
+      this.$accessor.statuses.fetch(),
+      this.$accessor.packageTemplates.fetch(),
+    ])
+    this.$accessor.stopLoading()
+  },
   methods: {
-    async setStatus(newStatus) {
+    async setStatus(newStatus: OrderStatus) {
       this.isLoading = true
 
-      const success = await this.$store.dispatch('orders/changeStatus', {
+      // @ts-ignore // TODO: fix extended store actions typings
+      const success = await this.$accessor.orders.changeStatus({
         orderId: this.order.id,
         statusId: newStatus,
       })
@@ -296,16 +310,7 @@ export default {
       this.$accessor.stopLoading()
     },
   },
-  async created() {
-    this.$accessor.startLoading()
-    await Promise.all([
-      this.$store.dispatch('orders/get', this.$route.params.id),
-      this.$store.dispatch('statuses/fetch'),
-      this.$store.dispatch('packageTemplates/fetch'),
-    ])
-    this.$accessor.stopLoading()
-  },
-}
+})
 </script>
 
 <style lang="scss" scoped>

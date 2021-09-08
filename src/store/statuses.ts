@@ -1,18 +1,14 @@
 import { createVuexCRUD } from './generator'
-import { api } from '@/api'
+import { OrderStatus } from '@/interfaces/Order'
+import { reorderCollection } from '@/services/reorderCollection'
 
-export const statuses = createVuexCRUD('STATUSES', 'statuses', {
+export const statuses = createVuexCRUD<OrderStatus>()('statuses', {
   state: {},
   getters: {},
   mutations: {},
   actions: {
-    async setOrder({ commit }, statuses) {
-      try {
-        const { data } = await api.post('/statuses/order', { statuses })
-        return data
-      } catch (error) {
-        return false
-      }
+    async reorder({ commit }, statuses) {
+      await reorderCollection('statuses', 'statuses', 'order')(statuses)
     },
   },
 })

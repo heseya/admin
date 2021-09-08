@@ -9,22 +9,22 @@ import { api } from '../api'
 import { Setting } from '@/interfaces/Settings'
 
 import { auth } from './auth'
+import { users } from './users'
 import { items } from './items'
 import { products } from './products'
 import { schemas } from './schemas'
 import { pages } from './pages'
-import { brands } from './brands'
-import { categories } from './categories'
 import { orders } from './orders'
 import { statuses } from './statuses'
 import { shippingMethods } from './shippingMethods'
 import { paymentMethods } from './paymentMethods'
 import { packageTemplates } from './packageTemplates'
 import { settings } from './settings'
-import { loginHistory } from './loginHistory'
+import { authSessions } from './authSessions'
 import { apps } from './apps'
 import { discounts } from './discounts'
 import { tags } from './tags'
+import { productSets } from './productSets'
 
 Vue.use(Vuex)
 
@@ -72,12 +72,11 @@ const storePattern = {
   actions,
   modules: {
     auth,
+    users,
     items,
     schemas,
     products,
     pages,
-    brands,
-    categories,
     orders,
     shippingMethods,
     statuses,
@@ -85,9 +84,10 @@ const storePattern = {
     packageTemplates,
     settings,
     discounts,
-    loginHistory,
+    authSessions,
     apps,
     tags,
+    productSets,
   },
 }
 

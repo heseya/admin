@@ -3,11 +3,11 @@
     <top-nav :title="!isNew ? product.name : 'Nowy produkt'">
       <pop-confirm
         v-if="!isNew"
-        title="Czy na pewno chcesz usunąć ten produkt?"
-        okText="Usuń"
-        cancelText="Anuluj"
-        @confirm="deleteProduct"
         v-slot="{ open }"
+        title="Czy na pewno chcesz usunąć ten produkt?"
+        ok-text="Usuń"
+        cancel-text="Anuluj"
+        @confirm="deleteProduct"
       >
         <vs-button dark icon @click="open">
           <i class="bx bx-trash"></i>
@@ -16,13 +16,13 @@
     </top-nav>
 
     <div class="product">
-      <gallery v-model="form.gallery" />
+      <gallery ref="gallery" v-model="form.gallery" />
 
       <div>
         <card>
           <flex-input>
             <label class="title">Widoczność produktu</label>
-            <vs-switch success v-model="form.public">
+            <vs-switch v-model="form.public" success>
               <template #off>
                 <i class="bx bx-x"></i>
               </template>
@@ -50,21 +50,21 @@
       <div class="product__details">
         <card>
           <validation-observer v-slot="{ handleSubmit }">
-            <form @submit.prevent="handleSubmit(saveProduct)" class="product__info">
+            <form class="product__info" @submit.prevent="handleSubmit(saveProduct)">
               <div>
                 <br />
                 <validated-input
-                  rules="required"
                   v-model="form.name"
-                  @input="editSlug"
+                  rules="required"
                   label="Nazwa"
+                  @input="editSlug"
                 />
                 <br /><br />
-                <validated-input rules="required|slug" v-model="form.slug" label="Link" />
+                <validated-input v-model="form.slug" rules="required|slug" label="Link" />
                 <br /><br />
                 <validated-input
-                  rules="required"
                   v-model="form.price"
+                  rules="required"
                   type="number"
                   step="0.01"
                   label="Cena"
@@ -74,49 +74,31 @@
 
               <div>
                 <br />
-                <validation-provider rules="id-required" v-slot="{ errors }">
+                <validation-provider v-slot="{ errors }">
                   <vs-select
-                    v-model="form.brand_id"
-                    placeholder="Wybierz markę"
-                    :key="brands.length"
+                    :key="productSets.length"
+                    v-model="form.sets"
+                    placeholder="Wybierz kolekcje"
                     filter
-                    label="Marka"
+                    multiple
+                    label="Kolekcje"
+                    @click.native.prevent.stop
                   >
                     <vs-option
-                      v-for="brand in brands"
-                      :key="brand.id"
-                      :label="brand.name"
-                      :value="brand.id"
+                      v-for="set in productSets"
+                      :key="set.id"
+                      :label="set.name"
+                      :value="set.id"
                     >
-                      <i class="bx bx-lock" v-if="!brand.public"></i> {{ brand.name }}
-                    </vs-option>
-                    <template #message-danger>{{ errors[0] }}</template>
-                  </vs-select>
-                </validation-provider>
-                <br /><br />
-                <validation-provider rules="id-required" v-slot="{ errors }">
-                  <vs-select
-                    v-model="form.category_id"
-                    :key="categories.length"
-                    filter
-                    placeholder="Wybierz kategorię"
-                    label="Kategoria"
-                  >
-                    <vs-option
-                      v-for="category in categories"
-                      :key="category.id"
-                      :label="category.name"
-                      :value="category.id"
-                    >
-                      <i class="bx bx-lock" v-if="!category.public"></i> {{ category.name }}
+                      <i v-if="!set.public" class="bx bx-lock"></i> {{ set.name }}
                     </vs-option>
                     <template #message-danger>{{ errors[0] }}</template>
                   </vs-select>
                 </validation-provider>
                 <br /><br />
                 <validated-input
-                  rules="required"
                   v-model="form.quantity_step"
+                  rules="required"
                   type="number"
                   max="999999"
                   step="0.01"
@@ -151,136 +133,86 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import slugify from 'slugify'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import cloneDeep from 'lodash/cloneDeep'
 
-import TopNav from '@/layout/TopNav.vue'
-import Gallery from '@/components/Gallery.vue'
+import TopNav from '@/components/layout/TopNav.vue'
+import Gallery from '@/components/modules/products/Gallery.vue'
 import Card from '@/components/layout/Card.vue'
 import FlexInput from '@/components/layout/FlexInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import RichEditor from '@/components/RichEditor.vue'
-import SchemaConfigurator from '@/components/schema/Configurator.vue'
-import { formatApiError } from '@/utils/errors'
+import RichEditor from '@/components/form/RichEditor.vue'
+import SchemaConfigurator from '@/components/modules/schemas/Configurator.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 import TagsSelect from '@/components/TagsSelect.vue'
 
-const EMPTY_FORM = {
+import { formatApiError } from '@/utils/errors'
+import { UUID } from '@/interfaces/UUID'
+import { Product, ProductDTO, ProductComponentForm } from '@/interfaces/Product'
+import { ProductSet } from '@/interfaces/ProductSet'
+
+const EMPTY_FORM: ProductComponentForm = {
+  id: '',
   name: '',
   slug: '',
   price: 0,
   description_html: '',
   digital: false,
   public: true,
-  brand_id: 0,
-  category_id: 0,
+  sets: [],
   quantity_step: 1,
   schemas: [],
   gallery: [],
-  media: [],
   tags: [],
 }
 
-export default {
-  data() {
-    return {
-      form: cloneDeep(EMPTY_FORM),
-    }
+export default Vue.extend({
+  components: {
+    TopNav,
+    Gallery,
+    Card,
+    FlexInput,
+    PopConfirm,
+    ValidationProvider,
+    ValidationObserver,
+    SchemaConfigurator,
+    RichEditor,
+    TagsSelect,
+    ValidatedInput,
   },
+  data: () => ({
+    form: cloneDeep(EMPTY_FORM),
+  }),
   computed: {
-    id() {
+    id(): UUID {
       return this.$route.params.id
     },
-    isLoading() {
-      return this.$store.state.products.isLoading
+    isLoading(): boolean {
+      return this.$accessor.products.isLoading
     },
-    isNew() {
+    isNew(): boolean {
       return this.id === 'create'
     },
-    product() {
-      return this.$store.getters['products/getSelected']
+    product(): Product {
+      return this.$accessor.products.getSelected
     },
-    brands() {
-      return this.$store.getters['brands/getData']
+    productSets(): ProductSet[] {
+      return this.$accessor.productSets.getData
     },
-    categories() {
-      return this.$store.getters['categories/getData']
-    },
-    error() {
-      return (
-        this.$store.getters['products/getError'] || this.$store.getters['products/getDepositError']
-      )
-    },
-  },
-  methods: {
-    async fetch() {
-      this.form = cloneDeep(EMPTY_FORM)
-      if (this.isNew) return
-      return this.$store.dispatch('products/get', this.$route.params.id)
-    },
-    editSlug() {
-      if (this.isNew) {
-        this.form.slug = slugify(this.form.name, { lower: true, remove: /[.]/g })
-      }
-    },
-    async deleteProduct() {
-      this.$accessor.startLoading()
-      const success = await this.$store.dispatch('products/remove', this.id)
-      if (success) {
-        this.$vs.notification({
-          color: 'success',
-          title: 'Produkt został usunięty.',
-        })
-        this.$router.push('/products')
-      }
-      this.$accessor.stopLoading()
-    },
-    async saveProduct() {
-      const apiPayload = {
-        ...this.form,
-        tags: this.form.tags.map(({ id }) => id),
-        media: this.form.gallery.map(({ id }) => id),
-        schemas: this.form.schemas.map(({ id }) => id),
-      }
-      this.$accessor.startLoading()
-
-      const successMessage = this.isNew
-        ? 'Produkt został utworzony'
-        : 'Produkt został zaktualizowany'
-
-      const actionPayload = this.isNew ? apiPayload : { id: this.id, item: apiPayload }
-
-      const { id: newID } = await this.$store.dispatch(
-        this.isNew ? 'products/add' : 'products/update',
-        actionPayload,
-      )
-
-      this.$vs.notification({
-        color: 'success',
-        title: successMessage,
-      })
-
-      if (newID !== this.product.id) {
-        this.$router.push(`/products/${newID}`)
-      }
-
-      this.$accessor.stopLoading()
-    },
-    async submitAndGoNext() {
-      await this.saveProduct()
-      this.$router.push('/products/create')
+    error(): any {
+      // @ts-ignore // TODO: fix extended store getters typings
+      return this.$accessor.products.getError || this.$accessor.products.getDepositError
     },
   },
   watch: {
-    product(product) {
+    product(product: Product) {
       if (!this.isNew) {
         this.form = {
           ...product,
-          brand_id: product.brand.id,
-          category_id: product.category.id,
-          media: [],
+          sets: product.sets?.map(({ id }) => id) || [],
         }
       }
     },
@@ -300,28 +232,76 @@ export default {
   },
   async created() {
     this.$accessor.startLoading()
-    await Promise.all([
-      this.$store.dispatch('categories/fetch'),
-      this.$store.dispatch('brands/fetch'),
-    ])
+    this.$accessor.productSets.fetch({ tree: undefined })
     await this.fetch()
     this.$accessor.stopLoading()
   },
-  components: {
-    TopNav,
-    Gallery,
-    Card,
-    FlexInput,
-    PopConfirm,
-    ValidationProvider,
-    ValidationObserver,
-    SchemaConfigurator,
-    RichEditor,
-    TagsSelect,
-    ValidatedInput,
+  methods: {
+    async fetch() {
+      this.form = cloneDeep(EMPTY_FORM)
+      if (this.isNew) return
+      this.$accessor.startLoading()
+      await this.$accessor.products.get(this.$route.params.id)
+      this.$accessor.stopLoading()
+    },
+    editSlug() {
+      if (this.isNew) {
+        this.form.slug = slugify(this.form.name, { lower: true, remove: /[.]/g })
+      }
+    },
+    async deleteProduct() {
+      this.$accessor.startLoading()
+      const success = await this.$accessor.products.remove(this.id)
+      if (success) {
+        this.$vs.notification({
+          color: 'success',
+          title: 'Produkt został usunięty.',
+        })
+        this.$router.push('/products')
+      }
+      this.$accessor.stopLoading()
+    },
+    async saveProduct() {
+      const apiPayload: ProductDTO = {
+        ...this.form,
+        media: this.form.gallery.map(({ id }) => id),
+        tags: this.form.tags.map(({ id }) => id),
+        schemas: this.form.schemas.map(({ id }) => id),
+      }
+
+      this.$accessor.startLoading()
+
+      const successMessage = this.isNew
+        ? 'Produkt został utworzony'
+        : 'Produkt został zaktualizowany'
+
+      const item = this.isNew
+        ? await this.$accessor.products.add(apiPayload)
+        : await this.$accessor.products.update({ id: this.id, item: apiPayload })
+
+      ;(this.$refs.gallery as any).clearMediaToDelete()
+
+      this.$accessor.stopLoading()
+
+      if (item) {
+        this.$vs.notification({
+          color: 'success',
+          title: successMessage,
+        })
+
+        if (item.id !== this.product.id) {
+          this.$router.push(`/products/${item.id}`)
+        }
+      }
+    },
+    async submitAndGoNext() {
+      await this.saveProduct()
+      this.$router.push('/products/create')
+    },
   },
-}
+})
 </script>
+
 <style lang="scss">
 .product {
   &__info {

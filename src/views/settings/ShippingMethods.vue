@@ -50,17 +50,20 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
+import { api } from '../../api'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import ShippingMethodsForm from '@/components/forms/shippingMethods/Index.vue'
+import ShippingMethodsForm from '@/components/modules/shippingMethods/Index.vue'
 
-import { api } from '../../api'
+import { UUID } from '@/interfaces/UUID'
+import { ShippingMethodDTO } from '@/interfaces/ShippingMethod'
 
-export default {
+export default Vue.extend({
   components: {
     ListItem,
     PopConfirm,
@@ -70,14 +73,14 @@ export default {
   },
   data: () => ({
     isModalActive: false,
-    editedItem: {},
+    editedItem: {} as ShippingMethodDTO,
     countries: [],
   }),
   methods: {
-    openModal(id) {
+    openModal(id?: UUID) {
       this.isModalActive = true
       if (id) {
-        const item = this.$store.getters['shippingMethods/getFromListById'](id)
+        const item = this.$accessor.shippingMethods.getFromListById(id)
         this.editedItem = {
           ...item,
           payment_methods: item.payment_methods.map(({ id }) => id),
@@ -106,26 +109,27 @@ export default {
     async saveModal() {
       this.$accessor.startLoading()
       if (this.editedItem.id) {
-        await this.$store.dispatch('shippingMethods/update', {
+        await this.$accessor.shippingMethods.update({
           id: this.editedItem.id,
           item: this.editedItem,
         })
       } else {
-        await this.$store.dispatch('shippingMethods/add', this.editedItem)
+        await this.$accessor.shippingMethods.add(this.editedItem)
       }
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
     async deleteItem() {
+      if (!this.editedItem.id) return
       this.$accessor.startLoading()
-      await this.$store.dispatch('shippingMethods/remove', this.editedItem.id)
+      await this.$accessor.shippingMethods.remove(this.editedItem.id)
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
   },
   async created() {
     this.$accessor.startLoading()
-    this.$store.dispatch('paymentMethods/fetch')
+    this.$accessor.paymentMethods.fetch()
     const { data } = await api.get('countries')
     this.countries = data.data
     this.$accessor.stopLoading()
@@ -138,7 +142,7 @@ export default {
       next()
     }
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

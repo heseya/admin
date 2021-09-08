@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import store, { accessor } from './store'
+import { accessor } from './store'
 
 Vue.use(VueRouter)
 
@@ -12,7 +12,27 @@ const router = new VueRouter({
       path: '/login',
       name: 'Login',
       props: true,
-      component: () => import('./views/Login.vue'),
+      component: () => import('./views/auth/Login.vue'),
+      meta: {
+        hiddenNav: true,
+        recaptchaAlert: true,
+      },
+    },
+    {
+      path: '/reset-password',
+      name: 'ResetPassword',
+      props: true,
+      component: () => import('./views/auth/ResetPassword.vue'),
+      meta: {
+        hiddenNav: true,
+        recaptchaAlert: true,
+      },
+    },
+    {
+      path: '/new-password',
+      name: 'NewPassword',
+      props: true,
+      component: () => import('./views/auth/NewPassword.vue'),
       meta: {
         hiddenNav: true,
         recaptchaAlert: true,
@@ -123,17 +143,9 @@ const router = new VueRouter({
       },
     },
     {
-      path: '/settings/brands',
-      name: 'Brands',
-      component: () => import('./views/settings/Brands.vue'),
-      meta: {
-        requiresAuth: true,
-      },
-    },
-    {
-      path: '/settings/categories',
-      name: 'Categories',
-      component: () => import('./views/settings/Categories.vue'),
+      path: '/settings/product-sets',
+      name: 'ProductSets',
+      component: () => import('./views/productSets/Index.vue'),
       meta: {
         requiresAuth: true,
       },
@@ -174,6 +186,14 @@ const router = new VueRouter({
       path: '/settings/advanced',
       name: 'PageSettings',
       component: () => import('./views/settings/Settings.vue'),
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: '/settings/users',
+      name: 'Users',
+      component: () => import('./views/settings/Users.vue'),
       meta: {
         requiresAuth: true,
       },

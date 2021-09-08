@@ -12,40 +12,46 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
+
 import { getLastElement } from '@/utils/utils'
 import { uploadMedia } from '@/services/uploadMedia'
 
-export default {
+export default Vue.extend({
   name: 'MediaUploader',
   data: () => ({
     isDrag: false,
-    file: null,
+    file: null as null | File,
   }),
   props: {
     extensions: {
       type: Array,
       default: () => ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg'],
-    },
+    } as Vue.PropOptions<string[]>,
   },
   methods: {
     selectFiles() {
       const input = document.createElement('input')
       input.type = 'file'
 
-      input.onchange = (e) => {
-        this.file = e.target.files[0]
-        this.$emit('drop', this.file)
-        this.upload()
+      input.onchange = (e: any) => {
+        this.file = e?.target?.files?.[0]
+        if (this.file) {
+          this.$emit('drop', this.file)
+          this.upload()
+        }
       }
 
       input.click()
     },
-    dropFiles(e) {
-      this.file = e.dataTransfer.files[0]
-      this.changeDrag(false)
-      this.$emit('drop', this.file)
-      this.upload()
+    dropFiles(e: any) {
+      this.file = e?.dataTransfer?.files?.[0] as File
+      if (this.file) {
+        this.changeDrag(false)
+        this.$emit('drop', this.file)
+        this.upload()
+      }
     },
     async upload() {
       if (!this.isFileValid()) {
@@ -59,8 +65,8 @@ export default {
 
       this.$accessor.startLoading()
 
-      const { success, file, error } = await uploadMedia(this.file)
-      if (success) {
+      const { success, file, error } = await uploadMedia(this.file!)
+      if (success && file) {
         this.$emit('upload', file)
         this.file = null
       } else {
@@ -71,15 +77,15 @@ export default {
     },
     isFileValid() {
       if (!this.file) return false
-      const extension = getLastElement(this.file.name.split('.')).toLowerCase()
+      const extension = getLastElement(this.file.name.split('.'))?.toLowerCase()
       return this.extensions.some((ext) => ext === extension)
     },
-    changeDrag(isDrag) {
+    changeDrag(isDrag: boolean) {
       this.isDrag = isDrag
       this.$emit('dragChange', isDrag)
     },
   },
-}
+})
 </script>
 
 <style lang="scss">

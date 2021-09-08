@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import Navigation from './layout/Navigation.vue'
+import Navigation from './components/layout/Navigation.vue'
 
 export default Vue.extend({
   components: {
@@ -23,7 +23,7 @@ export default Vue.extend({
   }),
   computed: {
     isLoading(): boolean {
-      return this.$store.state.loading
+      return this.$accessor.loading
     },
   },
   watch: {
@@ -33,6 +33,13 @@ export default Vue.extend({
       } else if (this.loadingInstance) {
         this.loadingInstance.close()
       }
+    },
+    '$accessor.auth.permissionsError'(_permissionsError) {
+      this.$vs.notification({
+        color: 'danger',
+        title: 'Brak uprawnień',
+        text: `Nie posiadasz uprawnień do tej akcji`,
+      })
     },
   },
   created() {

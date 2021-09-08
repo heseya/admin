@@ -1,0 +1,177 @@
+<template>
+  <validation-observer v-slot="{ handleSubmit }" class="product-set-form">
+    <vs-dialog width="550px" not-center :value="isOpen" @input="$emit('close')">
+      <template #header>
+        <h4>{{ form.id ? 'Edycja kolekcji' : 'Nowa kolekcja' }}</h4>
+      </template>
+      <modal-form class="product-set-form">
+        <validated-input rules="required" v-model="form.name" @input="editSlug" label="Nazwa" />
+
+        <div class="slug-input">
+          <span class="slug-input__prefix" v-if="slugPrefix && !form.slug_override">
+            {{ slugPrefix }}-
+          </span>
+
+          <validated-input
+            class="slug-input__input"
+            rules="required|slug"
+            v-model="form.slug_suffix"
+            label="Link"
+          />
+
+          <vs-tooltip bottom>
+            <switch-input
+              v-if="slugPrefix"
+              class="slug-input__switch"
+              v-model="form.slug_override"
+              label="Nadpisz link"
+            />
+
+            <template #tooltip>
+              Domyślnie, początek linku wynika z linku kolekcji-rodzica. Nadpisując link, sprawiamy,
+              że link będzie dokładnie taki jaki zostanie wpisany.
+            </template>
+          </vs-tooltip>
+        </div>
+
+        <div class="switches">
+          <flex-input>
+            <switch-input
+              horizontal
+              v-model="form.hide_on_index"
+              label="Ukryj na stronie głównej"
+            />
+          </flex-input>
+          <flex-input>
+            <switch-input horizontal v-model="form.public" label="Widoczność kolekcji" />
+          </flex-input>
+        </div>
+      </modal-form>
+      <template #footer>
+        <div class="row">
+          <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
+          <pop-confirm
+            title="Czy na pewno chcesz usunąć tę kolekcję? Wraz z nią usuniesz wszystkie jej subkolekcje!"
+            okText="Usuń"
+            cancelText="Anuluj"
+            @confirm="deleteItem"
+            v-slot="{ open }"
+          >
+            <vs-button v-if="form.id" color="danger" @click="open">Usuń</vs-button>
+          </pop-confirm>
+        </div>
+      </template>
+    </vs-dialog>
+  </validation-observer>
+</template>
+
+<script lang="ts">
+import Vue from 'vue'
+import slugify from 'slugify'
+import { cloneDeep } from 'lodash'
+import { ValidationObserver } from 'vee-validate'
+
+import ModalForm from '@/components/form/ModalForm.vue'
+import FlexInput from '@/components/layout/FlexInput.vue'
+import PopConfirm from '@/components/layout/PopConfirm.vue'
+import ValidatedInput from '@/components/form/ValidatedInput.vue'
+import SwitchInput from '@/components/form/SwitchInput.vue'
+
+import { ProductSetDTO } from '@/interfaces/ProductSet'
+
+export default Vue.extend({
+  components: {
+    ModalForm,
+    PopConfirm,
+    FlexInput,
+    ValidationObserver,
+    ValidatedInput,
+    SwitchInput,
+  },
+  props: {
+    value: {
+      type: Object,
+      required: true,
+    } as Vue.PropOptions<ProductSetDTO>,
+    slugPrefix: {
+      type: String,
+      default: '',
+    },
+    isOpen: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  data: () => ({
+    form: {} as ProductSetDTO,
+  }),
+  watch: {
+    value(value: ProductSetDTO) {
+      this.form = cloneDeep(value)
+    },
+  },
+  methods: {
+    editSlug() {
+      if (!this.form.id) {
+        this.form.slug_suffix = slugify(this.form.name, { lower: true, remove: /[.]/g })
+      }
+    },
+    async saveModal() {
+      this.$accessor.startLoading()
+      if (this.form.id) {
+        await this.$accessor.productSets.update({
+          id: this.form.id,
+          item: this.form,
+        })
+      } else {
+        await this.$accessor.productSets.add(this.form)
+      }
+      this.$accessor.stopLoading()
+      this.$emit('close')
+    },
+    async deleteItem() {
+      if (!this.form.id) return
+      this.$accessor.startLoading()
+      await this.$accessor.productSets.remove(this.form.id)
+      this.$accessor.stopLoading()
+      this.$emit('close')
+    },
+  },
+})
+</script>
+
+<style lang="scss">
+.product-set-form {
+  .switches {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    padding: 0 10px;
+  }
+
+  .slug-input {
+    display: flex;
+    align-items: center;
+
+    &__prefix {
+      font-size: 0.85em;
+      white-space: nowrap;
+    }
+
+    &__input {
+      width: 100%;
+
+      > * {
+        margin-bottom: 0 !important;
+      }
+    }
+
+    &__switch {
+      width: 130px;
+      margin-top: -20px;
+      margin-left: 10px;
+      text-align: center;
+    }
+  }
+}
+</style>

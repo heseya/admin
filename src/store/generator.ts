@@ -1,17 +1,52 @@
-import queryString from 'query-string'
+import { cloneDeep, isNil } from 'lodash'
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 import { ActionTree, GetterTree, MutationTree } from 'vuex'
 
-import { ResponseMeta } from '@/interfaces/Response'
-import { RootState } from '.'
 import { api } from '../api'
-import { cloneDeep } from 'lodash'
+import { stringifyQuery } from '@/utils/utils'
 
-export interface ExtendStore<S> {
-  state: S
-  getters: GetterTree<S, RootState>
-  mutations: MutationTree<S>
-  actions: ActionTree<S, RootState>
+import { RootState } from '.'
+import { ResponseMeta } from '@/interfaces/Response'
+import { UUID } from '@/interfaces/UUID'
+
+type QueryPayload = Record<string, any>
+
+export interface BaseItem {
+  id: UUID
+}
+
+export enum StoreMutations {
+  SetError = 'SET_ERROR',
+  SetMeta = 'SET_META',
+  SetData = 'SET_DATA',
+  AddData = 'ADD_DATA',
+  EditData = 'EDIT_DATA',
+  RemoveData = 'REMOVE_DATA',
+  SetSelected = 'SET_SELECTED',
+  SetLoading = 'SET_LOADING',
+}
+
+interface DefaultStore<Item extends BaseItem> {
+  error: null | Error
+  isLoading: boolean
+  meta: ResponseMeta
+  data: Item[]
+  selected: Item
+}
+
+interface ExtendStore<State, Item extends BaseItem> {
+  state: State
+  getters: GetterTree<State & DefaultStore<Item>, RootState>
+  mutations: MutationTree<State & DefaultStore<Item>>
+  actions: ActionTree<State & DefaultStore<Item>, RootState>
+}
+
+interface CrudParams {
+  get?: QueryPayload
+  add?: QueryPayload
+  edit?: QueryPayload
+  update?: QueryPayload
+  remove?: QueryPayload
 }
 
 /**
@@ -19,240 +54,257 @@ export interface ExtendStore<S> {
  * @param name - uppercased string to be used in mutation names
  * @param endpoint - CRUD API endoint for given entity type
  * @param extend - custom state, actions, mutations and getters. Are merged with genereted ones
+ * @param params - fixed Query params for requests in scope
  */
-export const createVuexCRUD = <Item extends { id: string }, S extends {} = {}>(
-  name: string,
-  endpoint: string,
-  extend: ExtendStore<S>,
-) => {
-  const upperCaseName = name.toUpperCase()
+export const createVuexCRUD =
+  <Item extends BaseItem, CreateItemDTO = Partial<Item>, UpdateItemDTO = Partial<Item>>() =>
+  <State>(endpoint: string, extend: ExtendStore<State, Item>, params: CrudParams = {}) => {
+    const moduleState = () =>
+      ({
+        error: null as null | Error,
+        isLoading: false,
+        meta: {} as ResponseMeta,
+        data: [] as Item[],
+        selected: {} as Item,
+        ...(extend?.state || {}),
+      } as DefaultStore<Item> & State)
 
-  const mutationsNames = {
-    SET_ERROR: `${upperCaseName}_SET_ERROR`,
-    SET_META: `${upperCaseName}_SET_META`,
-    SET_DATA: `${upperCaseName}_SET_DATA`,
-    ADD_DATA: `${upperCaseName}_ADD_DATA`,
-    EDIT_DATA: `${upperCaseName}_EDIT_DATA`,
-    REMOVE_DATA: `${upperCaseName}_REMOVE_DATA`,
-    SET_SELECTED: `${upperCaseName}_SET_SELECTED`,
-    SET_LOADING: `${upperCaseName}_SET_LOADING`,
-  }
+    const moduleGetters = getterTree(moduleState, {
+      getError(state) {
+        return state.error
+      },
+      getIsLoading(state) {
+        return state.isLoading
+      },
+      getMeta(state) {
+        return state.meta
+      },
+      getSelected(state) {
+        return state.selected
+      },
+      getData(state) {
+        return state.data
+      },
+      getFromListById(state) {
+        return (searchedId: string) =>
+          ({ ...state.data.find(({ id }) => id === searchedId) } as Item)
+      },
+      ...(extend?.getters || {}),
+    })
 
-  const moduleState = () => ({
-    ...(extend?.state || {}),
-    error: null as null | Error,
-    isLoading: false,
-    meta: {} as ResponseMeta,
-    data: [] as Item[],
-    selected: {} as Item,
-  })
-
-  const moduleGetters = getterTree(moduleState, {
-    ...(extend?.getters || {}),
-    getError(state) {
-      return state.error
-    },
-    getIsLoading(state) {
-      return state.isLoading
-    },
-    getMeta(state) {
-      return state.meta
-    },
-    getSelected(state) {
-      return state.selected
-    },
-    getData(state) {
-      return state.data
-    },
-    getFromListById(state) {
-      return (searchedId: string) => ({ ...state.data.find(({ id }) => id === searchedId) })
-    },
-  })
-
-  // @ts-ignore
-  const moduleMutations = mutationTree(moduleState, {
-    ...(extend?.mutations || {}),
-    [mutationsNames.SET_ERROR](state, newError: Error) {
-      state.error = newError
-    },
-    [mutationsNames.SET_LOADING](state, isLoading: boolean) {
-      state.isLoading = isLoading
-    },
-    [mutationsNames.SET_META](state, newMeta: ResponseMeta) {
-      state.meta = newMeta
-    },
-    [mutationsNames.SET_DATA](state, newData: Item[] = []) {
-      state.data = newData
-    },
-    [mutationsNames.ADD_DATA](state, newItem: Item) {
-      state.data = [...state.data, newItem]
-    },
-    [mutationsNames.EDIT_DATA](
-      state,
-      { key, value, item: editedItem }: { key: keyof Item; value: unknown; item: Item },
-    ) {
-      const editedItemIndex = state.data.findIndex((item) => item[key] === value)
-      if (editedItemIndex >= 0) {
-        // Edits any item on the list
-        const copy = cloneDeep(state.data)
-        copy[editedItemIndex] = editedItem
-        state.data = copy
-      } else if (state.selected[key] === value) {
-        // Edits selected item
-        state.selected = editedItem
-      } else {
-        // appends new item
-        state.data = [...state.data, editedItem]
-      }
-    },
-    [mutationsNames.REMOVE_DATA](state, { key, value }: { key: keyof Item; value: unknown }) {
-      state.data = state.data.filter((item) => item[key] !== value)
-    },
-    [mutationsNames.SET_SELECTED](state, newSelected: Item) {
-      state.selected = newSelected
-    },
-  })
-
-  const moduleActions = actionTree(
-    { state: moduleState, getters: moduleGetters, mutations: moduleMutations },
-    {
-      ...(extend?.actions || {}),
-      async fetch({ commit }, query: Record<string, any>) {
-        commit(mutationsNames.SET_ERROR, null)
-        commit(mutationsNames.SET_LOADING, true)
-        try {
-          const filteredQuery = query
-            ? Object.fromEntries(Object.entries(query).filter(([key, value]) => !!value))
-            : {}
-          const stringQuery = queryString.stringify(filteredQuery)
-
-          const { data } = await api.get(`/${endpoint}?${stringQuery}`)
-          commit(mutationsNames.SET_META, data.meta)
-          commit(mutationsNames.SET_DATA, data.data)
-          commit(mutationsNames.SET_LOADING, false)
-          return true
-        } catch (error) {
-          commit(mutationsNames.SET_ERROR, error)
-          commit(mutationsNames.SET_LOADING, false)
-          return false
-        }
+    const moduleMutations = mutationTree(moduleState, {
+      [StoreMutations.SetError](state, newError: Error | null) {
+        state.error = newError
       },
-      clearData({ commit }) {
-        commit(mutationsNames.SET_META, {})
-        commit(mutationsNames.SET_DATA, [])
+      [StoreMutations.SetLoading](state, isLoading: boolean) {
+        state.isLoading = isLoading
       },
-      async get({ commit }, id: string) {
-        commit(mutationsNames.SET_ERROR, null)
-        commit(mutationsNames.SET_LOADING, true)
-        try {
-          const { data: responseData } = await api.get(`/${endpoint}/id:${id}`)
-          commit(mutationsNames.SET_SELECTED, responseData.data)
-          commit(mutationsNames.SET_LOADING, false)
-          return true
-        } catch (error) {
-          commit(mutationsNames.SET_ERROR, error)
-          commit(mutationsNames.SET_LOADING, false)
-          return false
-        }
+      [StoreMutations.SetMeta](state, newMeta: ResponseMeta) {
+        state.meta = newMeta
       },
-      async add({ commit }, item: Partial<Item>) {
-        commit(mutationsNames.SET_ERROR, null)
-        commit(mutationsNames.SET_LOADING, true)
-        try {
-          const { data } = await api.post(`/${endpoint}`, item)
-          commit(mutationsNames.ADD_DATA, data.data)
-          commit(mutationsNames.SET_LOADING, false)
-          return data.data
-        } catch (error) {
-          commit(mutationsNames.SET_ERROR, error)
-          commit(mutationsNames.SET_LOADING, false)
-          return false
-        }
+      [StoreMutations.SetData](state, newData: Item[] = []) {
+        state.data = newData
       },
-      async edit({ commit }, { id, item }: { id: string; item: Partial<Item> }) {
-        commit(mutationsNames.SET_LOADING, true)
-        commit(mutationsNames.SET_ERROR, null)
-        try {
-          const { data } = await api.put(`/${endpoint}/id:${id}`, item)
-          commit(mutationsNames.EDIT_DATA, { key: 'id', value: id, item: data.data })
-          commit(mutationsNames.SET_LOADING, false)
-          return data.data
-        } catch (error) {
-          commit(mutationsNames.SET_ERROR, error)
-          commit(mutationsNames.SET_LOADING, false)
-          return false
-        }
+      [StoreMutations.AddData](state, newItem: Item) {
+        state.data = [...state.data, newItem]
       },
-      async update({ commit }, { id, item }: { id: string; item: Partial<Item> }) {
-        commit(mutationsNames.SET_LOADING, true)
-        commit(mutationsNames.SET_ERROR, null)
-        try {
-          const { data } = await api.patch(`/${endpoint}/id:${id}`, item)
-          commit(mutationsNames.EDIT_DATA, { key: 'id', value: id, item: data.data })
-          commit(mutationsNames.SET_LOADING, false)
-          return data.data
-        } catch (error) {
-          commit(mutationsNames.SET_ERROR, error)
-          commit(mutationsNames.SET_LOADING, false)
-          return false
-        }
-      },
-      async updateByKey(
-        { commit },
-        { key, value, item }: { key: keyof Item; value: unknown; item: Partial<Item> },
+      [StoreMutations.EditData](
+        state,
+        { key, value, item: editedItem }: { key: keyof Item; value: unknown; item: Item },
       ) {
-        commit(mutationsNames.SET_LOADING, true)
-        commit(mutationsNames.SET_ERROR, null)
-        try {
-          const { data } = await api.patch(`/${endpoint}/${value}`, item)
-          commit(mutationsNames.EDIT_DATA, { key, value, item: data.data })
-          commit(mutationsNames.SET_LOADING, false)
-          return data.data
-        } catch (error) {
-          commit(mutationsNames.SET_ERROR, error)
-          commit(mutationsNames.SET_LOADING, false)
-          return false
+        if (state.selected[key] === value) {
+          // Edits selected item
+          state.selected = editedItem
         }
-      },
-      async remove({ commit }, id: string) {
-        commit(mutationsNames.SET_LOADING, true)
-        commit(mutationsNames.SET_ERROR, null)
-        try {
-          await api.delete(`/${endpoint}/id:${id}`)
-          commit(mutationsNames.REMOVE_DATA, { key: 'id', value: id })
-          commit(mutationsNames.SET_LOADING, false)
-          return true
-        } catch (error) {
-          commit(mutationsNames.SET_ERROR, error)
-          commit(mutationsNames.SET_LOADING, false)
-          return false
-        }
-      },
-      async removeByKey({ commit }, { key, value }: { key: keyof Item; value: unknown }) {
-        commit(mutationsNames.SET_LOADING, true)
-        commit(mutationsNames.SET_ERROR, null)
-        try {
-          await api.delete(`/${endpoint}/${value}`)
-          commit(mutationsNames.REMOVE_DATA, { key, value })
-          commit(mutationsNames.SET_LOADING, false)
-          return true
-        } catch (error) {
-          commit(mutationsNames.SET_ERROR, error)
-          commit(mutationsNames.SET_LOADING, false)
-          return false
-        }
-      },
-    },
-  )
 
-  return {
-    namespaced: true,
-    state: moduleState,
-    getters: moduleGetters,
-    mutations: moduleMutations,
-    actions: moduleActions,
+        const editedItemIndex = state.data.findIndex((item) => item[key] === value)
+        if (editedItemIndex >= 0) {
+          // Edits any item on the list
+          const copy = cloneDeep(state.data)
+          copy[editedItemIndex] = editedItem
+          state.data = copy
+        } else {
+          // appends new item
+          state.data = [...state.data, editedItem]
+        }
+      },
+      [StoreMutations.RemoveData](state, { key, value }: { key: keyof Item; value: unknown }) {
+        state.data = state.data.filter((item) => item[key] !== value)
+      },
+      [StoreMutations.SetSelected](state, newSelected: Item) {
+        state.selected = newSelected
+      },
+      ...(extend?.mutations || {}),
+    })
+
+    const moduleActions = actionTree(
+      { state: moduleState, getters: moduleGetters, mutations: moduleMutations },
+      {
+        clearData({ commit }) {
+          commit(StoreMutations.SetMeta, {} as ResponseMeta)
+          commit(StoreMutations.SetData, [])
+        },
+
+        async fetch({ commit }, query?: QueryPayload) {
+          commit(StoreMutations.SetError, null)
+          commit(StoreMutations.SetLoading, true)
+          try {
+            const filteredQuery = Object.fromEntries(
+              Object.entries({ ...(params.get || {}), ...(query || {}) }).filter(
+                ([_key, value]) => !isNil(value),
+              ),
+            )
+
+            const stringQuery = stringifyQuery(filteredQuery)
+
+            const { data } = await api.get<{ data: Item[]; meta: ResponseMeta }>(
+              `/${endpoint}?${stringQuery}`,
+            )
+            commit(StoreMutations.SetMeta, data.meta)
+            commit(StoreMutations.SetData, data.data)
+            commit(StoreMutations.SetLoading, false)
+            return true
+          } catch (error) {
+            commit(StoreMutations.SetError, error)
+            commit(StoreMutations.SetLoading, false)
+            return false
+          }
+        },
+        async get({ commit }, id: string) {
+          commit(StoreMutations.SetError, null)
+          commit(StoreMutations.SetLoading, true)
+          try {
+            const stringQuery = stringifyQuery(params.get || {})
+            const { data } = await api.get<{ data: Item }>(`/${endpoint}/id:${id}?${stringQuery}`)
+            // @ts-ignore type is correct, but TS is screaming
+            commit(StoreMutations.SetSelected, data.data)
+            commit(StoreMutations.SetLoading, false)
+            return true
+          } catch (error) {
+            commit(StoreMutations.SetError, error)
+            commit(StoreMutations.SetLoading, false)
+            return false
+          }
+        },
+
+        async add({ commit }, item: CreateItemDTO) {
+          commit(StoreMutations.SetError, null)
+          commit(StoreMutations.SetLoading, true)
+          try {
+            const stringQuery = stringifyQuery(params.add || {})
+            const { data } = await api.post<{ data: Item }>(`/${endpoint}?${stringQuery}`, item)
+            // @ts-ignore type is correct, but TS is screaming
+            commit(StoreMutations.AddData, data.data)
+            commit(StoreMutations.SetLoading, false)
+            return data.data
+          } catch (error) {
+            commit(StoreMutations.SetError, error)
+            commit(StoreMutations.SetLoading, false)
+            return false
+          }
+        },
+
+        async edit({ commit }, { id, item }: { id: string; item: UpdateItemDTO }) {
+          commit(StoreMutations.SetLoading, true)
+          commit(StoreMutations.SetError, null)
+          try {
+            const stringQuery = stringifyQuery(params.edit || {})
+            const { data } = await api.put<{ data: Item }>(
+              `/${endpoint}/id:${id}?${stringQuery}`,
+              item,
+            )
+            commit(StoreMutations.EditData, { key: 'id', value: id, item: data.data })
+            commit(StoreMutations.SetLoading, false)
+            return data.data
+          } catch (error) {
+            commit(StoreMutations.SetError, error)
+            commit(StoreMutations.SetLoading, false)
+            return false
+          }
+        },
+
+        async update({ commit }, { id, item }: { id: string; item: Partial<UpdateItemDTO> }) {
+          commit(StoreMutations.SetLoading, true)
+          commit(StoreMutations.SetError, null)
+          try {
+            const stringQuery = stringifyQuery(params.update || {})
+            const { data } = await api.patch<{ data: Item }>(
+              `/${endpoint}/id:${id}?${stringQuery}`,
+              item,
+            )
+            commit(StoreMutations.EditData, { key: 'id', value: id, item: data.data })
+            commit(StoreMutations.SetLoading, false)
+            return data.data
+          } catch (error) {
+            commit(StoreMutations.SetError, error)
+            commit(StoreMutations.SetLoading, false)
+            return false
+          }
+        },
+        async updateByKey(
+          { commit },
+          { key, value, item }: { key: keyof Item; value: unknown; item: Partial<UpdateItemDTO> },
+        ) {
+          commit(StoreMutations.SetLoading, true)
+          commit(StoreMutations.SetError, null)
+          try {
+            const stringQuery = stringifyQuery(params.update || {})
+            const { data } = await api.patch<{ data: Item }>(
+              `/${endpoint}/${value}?${stringQuery}`,
+              item,
+            )
+            commit(StoreMutations.EditData, { key, value, item: data.data })
+            commit(StoreMutations.SetLoading, false)
+            return data.data
+          } catch (error) {
+            commit(StoreMutations.SetError, error)
+            commit(StoreMutations.SetLoading, false)
+            return false
+          }
+        },
+
+        async remove({ commit }, id: string) {
+          commit(StoreMutations.SetLoading, true)
+          commit(StoreMutations.SetError, null)
+          try {
+            const stringQuery = stringifyQuery(params.remove || {})
+            await api.delete(`/${endpoint}/id:${id}?${stringQuery}`)
+            commit(StoreMutations.RemoveData, { key: 'id', value: id })
+            commit(StoreMutations.SetLoading, false)
+            return true
+          } catch (error) {
+            commit(StoreMutations.SetError, error)
+            commit(StoreMutations.SetLoading, false)
+            return false
+          }
+        },
+        async removeByKey({ commit }, { key, value }: { key: keyof Item; value: unknown }) {
+          commit(StoreMutations.SetLoading, true)
+          commit(StoreMutations.SetError, null)
+          try {
+            const stringQuery = stringifyQuery(params.remove || {})
+            await api.delete(`/${endpoint}/${value}?${stringQuery}`)
+            commit(StoreMutations.RemoveData, { key, value })
+            commit(StoreMutations.SetLoading, false)
+            return true
+          } catch (error) {
+            commit(StoreMutations.SetError, error)
+            commit(StoreMutations.SetLoading, false)
+            return false
+          }
+        },
+        ...(extend?.actions || {}),
+      },
+    )
+
+    return {
+      namespaced: true,
+      state: moduleState,
+      getters: moduleGetters,
+      mutations: moduleMutations,
+      actions: moduleActions,
+    }
   }
-}
 
 export default {
   createVuexCRUD,

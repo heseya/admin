@@ -6,12 +6,11 @@ import Vuesax from 'vuesax'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import { disableScrollOnInput } from './utils/disableScrollOnInput'
 
+import { disableScrollOnInput } from './plugins/disableScrollOnInput'
 import './plugins/quill'
-
-import './utils/rules'
-import './utils/slugs'
+import './plugins/validation-rules'
+import './plugins/slugify'
 
 import './registerServiceWorker'
 

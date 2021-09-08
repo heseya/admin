@@ -4,13 +4,13 @@
     :to="url"
     class="list-item"
     :class="{ 'list-item--no-hover': noHover }"
-    @click="click"
+    @click.stop="click"
   >
     <div v-if="!!$slots.avatar" class="list-item__avatar">
       <slot name="avatar"></slot>
     </div>
-    <div>
-      <i v-if="hidden" class="bx bx-lock-alt"></i>
+    <div class="list-item__content">
+      <i v-if="hidden" class="list-item__hidden-icon bx bx-low-vision"></i>
       <slot></slot>
     </div>
     <div class="list-item__action">
@@ -73,6 +73,11 @@ export default Vue.extend({
   color: black;
   transition: 0.3s;
   text-align: left;
+
+  &__hidden-icon {
+    font-size: 0.9em;
+    margin-right: 6px;
+  }
 
   &:hover {
     background-color: $grey-light;

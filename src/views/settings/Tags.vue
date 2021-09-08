@@ -51,15 +51,27 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
+import { clone } from 'lodash'
+
 import PaginatedList from '@/components/PaginatedList.vue'
-import ModalForm from '@/components/ModalForm.vue'
+import ModalForm from '@/components/form/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
-export default {
+import { UUID } from '@/interfaces/UUID'
+import { Tag } from '@/interfaces/Tag'
+
+const CLEAR_TAG: Tag = {
+  id: '',
+  name: '',
+  color: '000000',
+}
+
+export default Vue.extend({
   components: {
     PaginatedList,
     ListItem,
@@ -70,43 +82,37 @@ export default {
   },
   data: () => ({
     isModalActive: false,
-    editedItem: {
-      name: '',
-      color: '',
-    },
+    editedItem: clone(CLEAR_TAG) as Tag,
   }),
   methods: {
-    setColor(color) {
+    setColor(color: string) {
       this.editedItem.color = color.split('#')[1] ?? color
     },
-    openModal(id) {
+    openModal(id?: UUID) {
       this.isModalActive = true
       if (id) {
-        this.editedItem = this.$store.getters['tags/getFromListById'](id)
+        this.editedItem = this.$accessor.tags.getFromListById(id)
         this.setColor(this.editedItem.color)
       } else {
-        this.editedItem = {
-          name: '',
-          color: '000000',
-        }
+        this.editedItem = clone(CLEAR_TAG)
       }
     },
     async saveModal() {
       this.$accessor.startLoading()
       if (this.editedItem.id) {
-        await this.$store.dispatch('tags/update', {
+        await this.$accessor.tags.update({
           id: this.editedItem.id,
           item: this.editedItem,
         })
       } else {
-        await this.$store.dispatch('tags/add', this.editedItem)
+        await this.$accessor.tags.add(this.editedItem)
       }
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
     async deleteItem() {
       this.$accessor.startLoading()
-      await this.$store.dispatch('tags/remove', this.editedItem.id)
+      await this.$accessor.tags.remove(this.editedItem.id)
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
@@ -119,7 +125,7 @@ export default {
       next()
     }
   },
-}
+})
 </script>
 
 <style lang="scss">

@@ -36,7 +36,7 @@ import Vue from 'vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 
-import { SchemaTypeLabel } from '@/interfaces/SchemaType'
+import { SchemaTypeLabel } from '@/consts/schemaTypeLabels'
 
 export default Vue.extend({
   components: {
@@ -51,7 +51,7 @@ export default Vue.extend({
   }),
   computed: {
     currency(): string {
-      return this.$store.state.currency
+      return this.$accessor.currency
     },
   },
   methods: {

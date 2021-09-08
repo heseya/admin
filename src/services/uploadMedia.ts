@@ -1,17 +1,13 @@
 import { api } from '@/api'
-
-interface CdnFile {
-  id: string
-  type: 'photo'
-  url: string
-}
+import { UUID } from '@/interfaces/UUID'
+import { CdnMedia } from '@/interfaces/Media'
 
 export const uploadMedia = async (file: File) => {
   try {
     const form = new FormData()
     form.append('file', file)
 
-    const { data } = await api.post<{ data: CdnFile }>('/media', form)
+    const { data } = await api.post<{ data: CdnMedia }>('/media', form)
 
     return {
       success: true,
@@ -22,5 +18,14 @@ export const uploadMedia = async (file: File) => {
       success: false,
       error,
     }
+  }
+}
+
+export const removeMedia = async (fileId: UUID): Promise<true | Error> => {
+  try {
+    await api.delete<null>(`/media/id:${fileId}`)
+    return true
+  } catch (error) {
+    return error
   }
 }

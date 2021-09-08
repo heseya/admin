@@ -8,7 +8,7 @@
       </template>
 
       <template v-slot="{ item: app }">
-        <list-item class="app">
+        <list-item no-hover>
           <template #avatar>
             <vs-avatar dark>
               <i class="bx bxs-extension"></i>
@@ -37,14 +37,16 @@
   </div>
 </template>
 
-<script>
-import ListItem from '@/components/layout/ListItem.vue'
+<script lang="ts">
+import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
-import ModalForm from '@/components/ModalForm'
+
+import ListItem from '@/components/layout/ListItem.vue'
+import ModalForm from '@/components/form/ModalForm.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
-export default {
+export default Vue.extend({
   components: {
     ListItem,
     ModalForm,
@@ -64,21 +66,11 @@ export default {
     },
     async saveModal() {
       this.$accessor.startLoading()
-      await this.$store.dispatch('apps/add', this.editedItem)
-      await this.$store.dispatch('apps/fetch')
+      await this.$accessor.apps.add(this.editedItem)
+      // await this.$accessor.apps.fetch()
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
   },
-}
+})
 </script>
-
-<style lang="scss" scoped>
-.app {
-  cursor: default;
-
-  &:hover {
-    background: none;
-  }
-}
-</style>

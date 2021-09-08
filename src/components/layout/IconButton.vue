@@ -111,6 +111,7 @@ export default Vue.extend({
 
   &--disabled {
     cursor: not-allowed;
+    opacity: 0.5;
   }
 
   &--reversed {

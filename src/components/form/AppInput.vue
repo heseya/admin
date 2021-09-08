@@ -26,6 +26,7 @@ export default Vue.extend({
     'size',
     'allowClear',
     'disabled',
+    'addonBefore',
   ],
   computed: {
     innerValue: {

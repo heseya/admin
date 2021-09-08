@@ -113,7 +113,7 @@
                 />
                 <br />
                 <div class="flex">
-                  <app-button v-if="canModify">Zapisz</app-button>
+                  <app-button v-if="canModify" style="margin-right: 12px">Zapisz</app-button>
                   <app-button v-if="canModify" @click="handleSubmit(submitAndGoNext)">
                     Zapisz i dodaj następny
                   </app-button>

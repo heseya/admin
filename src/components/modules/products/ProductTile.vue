@@ -84,7 +84,7 @@ export default Vue.extend({
     position: absolute !important;
     top: -10px;
     left: -10px;
-    z-index: 100;
+    z-index: 1;
   }
 
   &__img {

@@ -57,8 +57,8 @@
 
         <card>
           <div class="flex-column send-package">
-            <h2 class="section-title">Wyślij przesyłkę</h2>
-            <div v-if="!shippingNumber" class="flex">
+            <h2 class="section-title send-package__title">Wyślij przesyłkę</h2>
+            <div v-if="!shippingNumber" class="send-package__content">
               <app-select
                 v-model="packageTemplateId"
                 label="Szablon przesyłki"
@@ -417,7 +417,7 @@ export default Vue.extend({
 
 .order {
   display: grid;
-  grid-template-columns: 1fr 300px;
+  grid-template-columns: 1fr 400px;
   grid-gap: 32px;
 
   @media screen and (max-width: 780px) {
@@ -457,8 +457,17 @@ export default Vue.extend({
 }
 
 .send-package {
-  .section-title {
-    margin-bottom: 24px;
+  &__title {
+    margin-bottom: 8px;
+  }
+
+  &__content {
+    display: flex;
+    align-items: center;
+
+    > *:first-child {
+      margin-right: 8px;
+    }
   }
 }
 </style>

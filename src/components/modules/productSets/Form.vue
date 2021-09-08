@@ -15,13 +15,10 @@
         />
 
         <div class="slug-input">
-          <span v-if="slugPrefix && !form.slug_override" class="slug-input__prefix">
-            {{ slugPrefix }}-
-          </span>
-
           <validated-input
             v-model="form.slug_suffix"
             :disabled="disabled"
+            :addon-before="slugPrefix && !form.slug_override ? `${slugPrefix}-` : ''"
             class="slug-input__input"
             rules="required|slug"
             label="Link"
@@ -166,18 +163,13 @@ export default Vue.extend({
   .switches {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 12px;
+    margin-top: 12px;
     padding: 0 10px;
   }
 
   .slug-input {
     display: flex;
     align-items: center;
-
-    &__prefix {
-      font-size: 0.85em;
-      white-space: nowrap;
-    }
 
     &__input {
       width: 100%;
@@ -189,7 +181,6 @@ export default Vue.extend({
 
     &__switch {
       width: 130px;
-      margin-top: -20px;
       margin-left: 10px;
       text-align: center;
     }

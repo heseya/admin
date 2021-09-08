@@ -30,6 +30,7 @@ export default Vue.extend({
     'border',
     'shadow',
     'disabled',
+    'addonBefore',
   ],
 })
 </script>

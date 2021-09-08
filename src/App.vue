@@ -44,6 +44,7 @@ export default Vue.extend({
     },
   },
   watch: {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     '$accessor.auth.permissionsError'(_permissionsError) {
       this.$toast.error('Nie posiadasz uprawnień do tej akcji')
     },
@@ -85,9 +86,6 @@ export default Vue.extend({
     @media ($viewport-11) {
       display: none !important;
     }
-  }
-
-  &__header {
   }
 
   &__content {

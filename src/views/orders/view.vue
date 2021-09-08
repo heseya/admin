@@ -91,8 +91,8 @@
               :loading="isLoading"
               :disabled="!$can($p.Orders.EditStatus)"
             >
-              <a-select-option v-for="status in statuses" :key="status.id" :value="status.id">
-                {{ status.name }}
+              <a-select-option v-for="{ id, name } in statuses" :key="id" :value="id">
+                {{ name }}
               </a-select-option>
             </app-select>
           </template>
@@ -106,21 +106,19 @@
           </div>
         </card>
         <card class="comment">
-          <template>
-            <h2 class="section-title">Komentarz</h2>
-            <icon-button
-              v-can="$p.Orders.Edit"
-              size="small"
-              type="transparent"
-              class="comment__edit"
-              @click="editComment"
-            >
-              <i slot="icon" class="bx bxs-pencil"></i>
-            </icon-button>
-            <span class="comment__content">
-              {{ order.comment || 'Brak komentarza do zamówienia' }}
-            </span>
-          </template>
+          <h2 class="section-title">Komentarz</h2>
+          <icon-button
+            v-can="$p.Orders.Edit"
+            size="small"
+            type="transparent"
+            class="comment__edit"
+            @click="editComment"
+          >
+            <i slot="icon" class="bx bxs-pencil"></i>
+          </icon-button>
+          <span class="comment__content">
+            {{ order.comment || 'Brak komentarza do zamówienia' }}
+          </span>
         </card>
         <card>
           <h2 class="section-title">E-mail</h2>
@@ -141,14 +139,12 @@
           <app-address :address="order.delivery_address" hide-remove @edit="editDeliveryAddress" />
         </card>
         <card>
-          <template>
-            <h2 class="section-title">Adres rozliczeniowy</h2>
-            <app-address
-              :address="order.invoice_address"
-              @edit="editInvoiceAddress"
-              @remove="removeInvoiceAddress"
-            />
-          </template>
+          <h2 class="section-title">Adres rozliczeniowy</h2>
+          <app-address
+            :address="order.invoice_address"
+            @edit="editInvoiceAddress"
+            @remove="removeInvoiceAddress"
+          />
         </card>
       </div>
     </div>

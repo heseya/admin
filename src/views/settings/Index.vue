@@ -104,6 +104,14 @@ export default Vue.extend({
     SettingsItem,
     ChangePasswordForm,
   },
+  beforeRouteLeave(to, from, next) {
+    if (this.isChangePasswordModal) {
+      this.isChangePasswordModal = false
+      next(false)
+    } else {
+      next()
+    }
+  },
   data: () => ({
     isChangePasswordModal: false,
   }),
@@ -117,14 +125,6 @@ export default Vue.extend({
       await this.$accessor.auth.logout()
       this.$router.push('/login')
     },
-  },
-  beforeRouteLeave(to, from, next) {
-    if (this.isChangePasswordModal) {
-      this.isChangePasswordModal = false
-      next(false)
-    } else {
-      next()
-    }
   },
 })
 </script>

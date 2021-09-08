@@ -8,7 +8,7 @@
         </icon-button>
       </template>
 
-      <template v-slot="{ item: shippingMethod }">
+      <template #default="{ item: shippingMethod }">
         <list-item :hidden="!shippingMethod.public" @click="openModal(shippingMethod.id)">
           {{ shippingMethod.name }}
           <small v-if="shippingMethod.countries.length">
@@ -73,6 +73,14 @@ export default Vue.extend({
     ValidationObserver,
     PaginatedList,
     ShippingMethodsForm,
+  },
+  beforeRouteLeave(to, from, next) {
+    if (this.isModalActive) {
+      this.isModalActive = false
+      next(false)
+    } else {
+      next()
+    }
   },
   data: () => ({
     isModalActive: false,
@@ -143,14 +151,6 @@ export default Vue.extend({
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
-  },
-  beforeRouteLeave(to, from, next) {
-    if (this.isModalActive) {
-      this.isModalActive = false
-      next(false)
-    } else {
-      next()
-    }
   },
 })
 </script>

@@ -25,7 +25,7 @@
         <products-filter :filters="filters" @search="makeSearch" />
       </template>
 
-      <template v-slot="{ item: product }">
+      <template #default="{ item: product }">
         <ProductTile v-if="!listView" :product="product" />
         <ProductListItem v-else :product="product" />
       </template>

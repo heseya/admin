@@ -26,7 +26,7 @@
         </div>
       </template>
 
-      <template v-slot="{ item }">
+      <template #default="{ item }">
         <list-item :url="`/schemas/${item.id}`">
           {{ item.name }}
           <small>{{ item.description }}</small>

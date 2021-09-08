@@ -7,7 +7,7 @@
           Dodaj tag
         </icon-button>
       </template>
-      <template v-slot="{ item: tag }">
+      <template #default="{ item: tag }">
         <list-item :key="tag.id" @click="openModal(tag.id)">
           <template #avatar>
             <avatar :key="tag.color" :color="`#${tag.color}`" />
@@ -89,6 +89,14 @@ export default Vue.extend({
     ValidationObserver,
     Avatar,
   },
+  beforeRouteLeave(to, from, next) {
+    if (this.isModalActive) {
+      this.isModalActive = false
+      next(false)
+    } else {
+      next()
+    }
+  },
   data: () => ({
     isModalActive: false,
     editedItem: clone(CLEAR_TAG) as Tag,
@@ -130,14 +138,6 @@ export default Vue.extend({
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
-  },
-  beforeRouteLeave(to, from, next) {
-    if (this.isModalActive) {
-      this.isModalActive = false
-      next(false)
-    } else {
-      next()
-    }
   },
 })
 </script>

@@ -6,8 +6,6 @@ import { useAccessor, getterTree, mutationTree, actionTree } from 'typed-vuex'
 
 import { api } from '../api'
 
-import { Setting } from '@/interfaces/Settings'
-
 import { auth } from './auth'
 import { users } from './users'
 import { roles } from './roles'

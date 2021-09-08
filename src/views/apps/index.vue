@@ -8,7 +8,7 @@
         </icon-button>
       </template>
 
-      <template v-slot="{ item: app }">
+      <template #default="{ item: app }">
         <list-item no-hover>
           <template #avatar>
             <avatar> <i class="bx bxs-extension"></i> </avatar>

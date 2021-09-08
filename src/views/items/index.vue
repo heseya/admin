@@ -26,7 +26,7 @@
         </div>
       </template>
 
-      <template v-slot="{ item }">
+      <template #default="{ item }">
         <list-item @click="openModal(item.id)">
           {{ item.name }}
           <small>{{ item.sku }}</small>
@@ -113,6 +113,14 @@ export default Vue.extend({
     PopConfirm,
     ValidationObserver,
     PaginatedList,
+  },
+  beforeRouteLeave(to, from, next) {
+    if (this.isModalActive) {
+      this.isModalActive = false
+      next(false)
+    } else {
+      next()
+    }
   },
   data: () => ({
     filters: {
@@ -204,14 +212,6 @@ export default Vue.extend({
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
-  },
-  beforeRouteLeave(to, from, next) {
-    if (this.isModalActive) {
-      this.isModalActive = false
-      next(false)
-    } else {
-      next()
-    }
   },
 })
 </script>

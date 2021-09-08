@@ -152,7 +152,7 @@ export const createVuexCRUD =
           try {
             const filteredQuery = Object.fromEntries(
               Object.entries({ ...(params.get || {}), ...(query || {}) }).filter(
-                ([_key, value]) => !isNil(value),
+                ([, value]) => !isNil(value),
               ),
             )
 

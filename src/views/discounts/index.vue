@@ -8,7 +8,7 @@
         </icon-button>
       </template>
 
-      <template v-slot="{ item: discount }">
+      <template #default="{ item: discount }">
         <list-item @click="openModal(discount.id)">
           {{ discount.code }}
           <small>{{ discount.description }}</small>
@@ -109,6 +109,14 @@ export default Vue.extend({
     ValidationObserver,
     PaginatedList,
   },
+  beforeRouteLeave(to, from, next) {
+    if (this.isModalActive) {
+      this.isModalActive = false
+      next(false)
+    } else {
+      next()
+    }
+  },
   data: () => ({
     isModalActive: false,
     editedItem: {
@@ -154,14 +162,6 @@ export default Vue.extend({
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
-  },
-  beforeRouteLeave(to, from, next) {
-    if (this.isModalActive) {
-      this.isModalActive = false
-      next(false)
-    } else {
-      next()
-    }
   },
 })
 </script>

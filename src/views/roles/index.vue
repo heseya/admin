@@ -8,7 +8,7 @@
         </icon-button>
       </template>
 
-      <template v-slot="{ item: role }">
+      <template #default="{ item: role }">
         <list-item :url="`/settings/roles/${role.id}`">
           {{ role.name }}
           <small>{{ role.description }}</small>

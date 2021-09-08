@@ -7,7 +7,7 @@
           Dodaj użytkownika
         </icon-button>
       </template>
-      <template v-slot="{ item: user }">
+      <template #default="{ item: user }">
         <list-item :key="user.id" @click="openModal(user.id)">
           <template #avatar>
             <avatar>
@@ -84,6 +84,14 @@ export default Vue.extend({
     ValidationObserver,
     Avatar,
   },
+  beforeRouteLeave(_to, _from, next) {
+    if (this.isModalActive) {
+      this.isModalActive = false
+      next(false)
+    } else {
+      next()
+    }
+  },
   data: () => ({
     isModalActive: false,
     editedUser: clone(CLEAR_USER) as CreateUserDTO | EditUserDTO,
@@ -140,14 +148,6 @@ export default Vue.extend({
     isNewUser(user: CreateUserDTO | EditUserDTO): user is CreateUserDTO {
       return 'id' in user === false
     },
-  },
-  beforeRouteLeave(_to, _from, next) {
-    if (this.isModalActive) {
-      this.isModalActive = false
-      next(false)
-    } else {
-      next()
-    }
   },
 })
 </script>

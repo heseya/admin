@@ -1,7 +1,6 @@
 import { createVuexCRUD, StoreMutations } from './generator'
 import { api } from '../api'
 import { Order } from '@/interfaces/Order'
-import { downloadJsonAsFile } from '@/utils/download'
 
 export const orders = createVuexCRUD<Order>()('orders', {
   state: {},

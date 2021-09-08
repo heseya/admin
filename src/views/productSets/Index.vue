@@ -8,7 +8,7 @@
         </icon-button>
       </template>
 
-      <template v-slot="{ item: set }">
+      <template #default="{ item: set }">
         <ProductSet
           :set="set"
           @edit="editProductSet"
@@ -61,6 +61,14 @@ export default Vue.extend({
     ProductSet: ProductSetComponent,
     SetProductsList,
   },
+  beforeRouteLeave(to, from, next) {
+    if (this.isFormModalActive) {
+      this.isFormModalActive = false
+      next(false)
+    } else {
+      next()
+    }
+  },
   data: () => ({
     isFormModalActive: false,
     selectedSet: null as null | ProductSet,
@@ -88,14 +96,6 @@ export default Vue.extend({
     showSetProducts(set: ProductSet) {
       this.selectedSet = set
     },
-  },
-  beforeRouteLeave(to, from, next) {
-    if (this.isFormModalActive) {
-      this.isFormModalActive = false
-      next(false)
-    } else {
-      next()
-    }
   },
 })
 </script>

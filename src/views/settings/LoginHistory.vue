@@ -16,7 +16,7 @@
         </pop-confirm>
       </template>
 
-      <template v-slot="{ item: login }">
+      <template #default="{ item: login }">
         <list-item class="login-item" no-hover>
           <template #avatar>
             <avatar> <i :class="getBrowserIcon(login.browser)"></i> </avatar>

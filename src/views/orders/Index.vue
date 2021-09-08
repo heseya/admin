@@ -12,7 +12,7 @@
         <order-filter :filters="filters" @search="makeSearch" />
       </template>
 
-      <template v-slot="{ item: order }">
+      <template #default="{ item: order }">
         <cms-table-row :item="order" :headers="tableConfig.headers" :to="`/orders/${order.id}`">
           <template #code="{ value, item }">
             {{ value }}

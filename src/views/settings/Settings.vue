@@ -7,7 +7,7 @@
           Dodaj ustawienie
         </icon-button>
       </template>
-      <template v-slot="{ item: setting }">
+      <template #default="{ item: setting }">
         <list-item :hidden="!setting.public" @click="openModal(setting)">
           {{ setting.name }}
           <small>{{ setting.value }}</small>
@@ -100,6 +100,14 @@ export default Vue.extend({
     ValidationObserver,
     SwitchInput,
   },
+  beforeRouteLeave(to, from, next) {
+    if (this.isModalActive) {
+      this.isModalActive = false
+      next(false)
+    } else {
+      next()
+    }
+  },
   data: () => ({
     isModalActive: false,
     editedItem: clone(CLEAR_SETTING),
@@ -141,14 +149,6 @@ export default Vue.extend({
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
-  },
-  beforeRouteLeave(to, from, next) {
-    if (this.isModalActive) {
-      this.isModalActive = false
-      next(false)
-    } else {
-      next()
-    }
   },
 })
 </script>

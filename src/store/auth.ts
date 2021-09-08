@@ -79,7 +79,7 @@ const actions = actionTree(
         return false
       }
     },
-    async fetchProfile({ commit, state }) {
+    async fetchProfile({ commit }) {
       commit('SET_ERROR', null)
       try {
         const { data } = await api.get<{ data: User }>(`/auth/profile`)

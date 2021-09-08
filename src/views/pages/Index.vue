@@ -8,7 +8,7 @@
         </icon-button>
       </template>
 
-      <template v-slot="{ item: page }">
+      <template #default="{ item: page }">
         <list-item :url="`/pages/${page.id}`" :hidden="!page.public">
           {{ page.name }}
           <small>/{{ page.slug }}</small>

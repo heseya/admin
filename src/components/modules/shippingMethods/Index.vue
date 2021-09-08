@@ -101,7 +101,7 @@ export default Vue.extend({
   watch: {
     'form.price_ranges': {
       deep: true,
-      handler(v) {
+      handler() {
         // @ts-ignore
         this.$refs.priceRange.validate()
       },

@@ -7,7 +7,7 @@
           Dodaj szablon
         </icon-button>
       </template>
-      <template v-slot="{ item: packageTemplate }">
+      <template #default="{ item: packageTemplate }">
         <list-item @click="openModal(packageTemplate.id)">
           {{ packageTemplate.name }}
           <small>
@@ -116,6 +116,14 @@ export default Vue.extend({
     PopConfirm,
     ValidationObserver,
   },
+  beforeRouteLeave(to, from, next) {
+    if (this.isModalActive) {
+      this.isModalActive = false
+      next(false)
+    } else {
+      next()
+    }
+  },
   data: () => ({
     isModalActive: false,
     editedItem: clone(CLEAR_PACKAGE_TEMPALTE),
@@ -154,14 +162,6 @@ export default Vue.extend({
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
-  },
-  beforeRouteLeave(to, from, next) {
-    if (this.isModalActive) {
-      this.isModalActive = false
-      next(false)
-    } else {
-      next()
-    }
   },
 })
 </script>

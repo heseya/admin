@@ -37,14 +37,13 @@
           <div class="row">
             <app-button v-if="canModify" @click="handleSubmit(saveModal)"> Zapisz </app-button>
             <pop-confirm
-              v-slot="{ open }"
               v-can="$p.ShippingMethods.Remove"
               title="Czy na pewno chcesz usunąć tą metode dostawy?"
               ok-text="Usuń"
               cancel-text="Anuluj"
               @confirm="deleteItem"
             >
-              <app-button v-if="editedItem.id" type="danger" @click="open">Usuń</app-button>
+              <app-button v-if="editedItem.id" type="danger">Usuń</app-button>
             </pop-confirm>
           </div>
         </template>

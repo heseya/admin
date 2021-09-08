@@ -3,14 +3,13 @@
     <PaginatedList title="Sesje użytkownika" store-key="authSessions">
       <template #nav>
         <pop-confirm
-          v-slot="{ open }"
           v-can="$p.Auth.SessionsRevoke"
           title="Czy na pewno chcesz wylogować wszystkie sesje użytkownika? Tylko obecna pozostanie aktywna."
           ok-text="Usuń"
           cancel-text="Anuluj"
           @confirm="killAllSessions"
         >
-          <icon-button type="danger" :disabled="!areSessionsToKill" @click="open">
+          <icon-button type="danger" :disabled="!areSessionsToKill">
             <i slot="icon" class="bx bx-trash"></i>
             Wyloguj wszystkie
           </icon-button>
@@ -33,7 +32,6 @@
           <template #action>
             <small v-if="login.current_session" class="login-item__current">To ty</small>
             <pop-confirm
-              v-slot="{ open }"
               v-can="$p.Auth.SessionsRevoke"
               title="Czy na pewno chcesz wylogować tę sesję użytkownika?"
               ok-text="Usuń"
@@ -44,7 +42,6 @@
                 v-if="!login.revoked && !login.current_session"
                 type="danger"
                 size="small"
-                @click="open"
               >
                 <i slot="icon" class="bx bx-trash"></i>
                 Wyloguj

@@ -67,9 +67,8 @@
             <!--              okText="Usuń"-->
             <!--              cancelText="Anuluj"-->
             <!--              @confirm="deleteItem"-->
-            <!--              v-slot="{ open }"-->
             <!--            >-->
-            <!-- <app-button v-if="editedItem.id" type="danger" @click="open">Usuń</app-button> -->
+            <!-- <app-button v-if="editedItem.id" type="danger" >Usuń</app-button> -->
             <!--            </pop-confirm> -->
           </div>
         </template>

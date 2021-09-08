@@ -3,14 +3,13 @@
     <top-nav :title="!isNew ? product.name : 'Nowy produkt'">
       <pop-confirm
         v-if="!isNew"
-        v-slot="{ open }"
         v-can="$p.Products.Remove"
         title="Czy na pewno chcesz usunąć ten produkt?"
         ok-text="Usuń"
         cancel-text="Anuluj"
         @confirm="deleteProduct"
       >
-        <icon-button type="danger" @click="open">
+        <icon-button type="danger">
           <i slot="icon" class="bx bx-trash"></i>
           Usuń
         </icon-button>

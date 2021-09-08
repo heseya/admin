@@ -13,14 +13,13 @@
       </a>
       <pop-confirm
         v-if="order.payable"
-        v-slot="{ open }"
         title="Czy na pewno chcesz ręcznie oznaczyć zamówienie jako opłacone? (Np. przelewem tradycyjnym lub gotówką)"
         ok-text="Opłać"
         ok-color="success"
         cancel-text="Anuluj"
         @confirm="payOffline"
       >
-        <icon-button @click="open">
+        <icon-button>
           <i slot="icon" class="bx bxs-diamond"></i>
           Opłać zamówienie
         </icon-button>

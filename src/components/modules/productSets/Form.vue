@@ -67,13 +67,12 @@
           <app-button v-if="!disabled" @click="handleSubmit(saveModal)"> Zapisz </app-button>
           <pop-confirm
             v-if="deletable"
-            v-slot="{ open }"
             title="Czy na pewno chcesz usunąć tę kolekcję? Wraz z nią usuniesz wszystkie jej subkolekcje!"
             ok-text="Usuń"
             cancel-text="Anuluj"
             @confirm="deleteItem"
           >
-            <app-button v-if="form.id" type="danger" @click="open">Usuń</app-button>
+            <app-button v-if="form.id" type="danger">Usuń</app-button>
           </pop-confirm>
         </div>
       </template>

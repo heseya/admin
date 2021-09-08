@@ -12,19 +12,13 @@
     </icon-button>
     <pop-confirm
       v-if="!hideRemove && address"
-      v-slot="{ open }"
       v-can="$p.Orders.Edit"
       title="Czy na pewno chcesz usunąć adres?"
       ok-text="Usuń"
       cancel-text="Anuluj"
       @confirm="remove"
     >
-      <icon-button
-        size="small"
-        type="transparent"
-        class="address__btn address__btn--remove"
-        @click="open"
-      >
+      <icon-button size="small" type="transparent" class="address__btn address__btn--remove">
         <i slot="icon" class="bx bxs-trash"></i>
       </icon-button>
     </pop-confirm>

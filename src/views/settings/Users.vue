@@ -32,7 +32,6 @@
           <div class="row">
             <app-button v-if="canModify" @click="handleSubmit(saveModal)"> Zapisz </app-button>
             <pop-confirm
-              v-slot="{ open }"
               v-can="$p.Users.Remove"
               title="Czy na pewno chcesz usunąć tego użytkownika?"
               ok-text="Usuń"
@@ -43,7 +42,6 @@
                 v-if="!isNewUser(editedUser)"
                 :disabled="isEditedUserCurrentUser"
                 type="danger"
-                @click="open"
               >
                 Usuń
               </app-button>

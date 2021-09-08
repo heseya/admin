@@ -3,14 +3,13 @@
     <top-nav :title="!isNew ? role.name : 'Nowa rola'">
       <pop-confirm
         v-if="!isNew"
-        v-slot="{ open }"
         v-can="$p.Roles.Remove"
         title="Czy na pewno chcesz usunąć tę rolę?"
         ok-text="Usuń"
         cancel-text="Anuluj"
         @confirm="deletePage"
       >
-        <icon-button type="danger" @click="open">
+        <icon-button type="danger">
           <i slot="icon" class="bx bx-trash"></i>
           Usuń
         </icon-button>

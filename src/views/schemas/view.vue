@@ -3,14 +3,13 @@
     <top-nav :title="!isNew ? schema.name : 'Nowy schemat'">
       <pop-confirm
         v-if="!isNew"
-        v-slot="{ open }"
         v-can="$p.Schemas.Remove"
         title="Czy na pewno chcesz usunąć ten schemat?"
         ok-text="Usuń"
         cancel-text="Anuluj"
         @confirm="deleteSchema"
       >
-        <icon-button type="danger" @click="open">
+        <icon-button type="danger">
           <i slot="icon" class="bx bx-trash"></i>
           Usuń
         </icon-button>

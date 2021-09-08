@@ -3,14 +3,13 @@
     <top-nav :title="!isNew ? page.name : 'Nowa strona'">
       <pop-confirm
         v-if="!isNew"
-        v-slot="{ open }"
         v-can="$p.Pages.Remove"
         title="Czy na pewno chcesz usunąć tą stronę?"
         ok-text="Usuń"
         cancel-text="Anuluj"
         @confirm="deletePage"
       >
-        <icon-button type="danger" @click="open">
+        <icon-button type="danger">
           <i slot="icon" class="bx bx-trash"></i>
           Usuń
         </icon-button>

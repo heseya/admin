@@ -47,7 +47,6 @@
           <div class="row">
             <app-button v-if="canModify" @click="handleSubmit(saveModal)"> Zapisz </app-button>
             <pop-confirm
-              v-slot="{ open }"
               v-can="$p.Settings.Remove"
               title="Czy na pewno chcesz usunąć to ustawienie?"
               ok-text="Usuń"
@@ -59,7 +58,6 @@
                 v-can="$p.Settings.Remove"
                 type="danger"
                 :disabled="editedItem.permanent"
-                @click="open"
               >
                 Usuń
               </app-button>

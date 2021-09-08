@@ -7,17 +7,26 @@
 
       <slot></slot>
     </card>
+
+    <div class="central-screen-form__footer">&copy; Heseya | v{{ version }}</div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import { version } from '../../../package.json'
 import Card from '../layout/Card.vue'
+
 export default Vue.extend({
   name: 'CentralScreenForm',
   components: { Card },
   props: {
     title: { type: String, default: '' },
+  },
+  computed: {
+    version(): string {
+      return version
+    },
   },
 })
 </script>
@@ -52,6 +61,15 @@ export default Vue.extend({
   &__row {
     display: flex;
     justify-content: space-between;
+  }
+
+  &__footer {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    text-align: center;
+    font-size: 0.7em;
+    color: #aaa;
   }
 }
 </style>

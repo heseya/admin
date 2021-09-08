@@ -42,11 +42,11 @@ export default Vue.extend({
   &__title {
     margin: 0;
     font-weight: 600;
-    margin-bottom: 32px;
+    margin-bottom: 12px;
   }
 
   &__card {
-    width: 300px;
+    width: 400px;
 
     input {
       width: 100%;
@@ -70,7 +70,7 @@ export default Vue.extend({
     right: 10px;
     text-align: center;
     font-size: 0.7em;
-    color: #aaa;
+    color: $gray-color-600;
   }
 }
 </style>

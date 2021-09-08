@@ -9,8 +9,6 @@
         type="password"
         @keydown.enter="handleSubmit(changePassword)"
       />
-      <br />
-      <br />
       <validated-input
         v-model="repeatPassword"
         name="repeatPassword"

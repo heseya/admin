@@ -8,7 +8,7 @@
         type="email"
         @keydown.enter="handleSubmit(login)"
       />
-      <br /><br />
+
       <validated-input
         v-model="password"
         rules="required"

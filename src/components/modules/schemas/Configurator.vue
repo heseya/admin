@@ -198,11 +198,6 @@ export default Vue.extend({
   align-items: center;
   margin-top: 0;
   margin-bottom: 0;
-
-  .vs-button {
-    font-weight: 700;
-    // font-size: 1em;
-  }
 }
 
 .optional {

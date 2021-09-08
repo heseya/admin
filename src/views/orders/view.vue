@@ -365,12 +365,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.vs-select,
-.vs-select-content {
-  max-width: 100%;
-  width: 100%;
-}
-
 .section-title {
   font-weight: 600;
   margin: 0;
@@ -470,11 +464,6 @@ export default Vue.extend({
 .send-package {
   .section-title {
     margin-bottom: 24px;
-  }
-
-  .vs-button {
-    white-space: nowrap;
-    flex-shrink: 0;
   }
 }
 </style>

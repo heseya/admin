@@ -146,10 +146,6 @@ export default Vue.extend({
     }
   }
 
-  ::v-deep .vs-checkbox-label {
-    color: #666666;
-  }
-
   &__content {
     display: grid;
     grid-template-columns: 1fr;

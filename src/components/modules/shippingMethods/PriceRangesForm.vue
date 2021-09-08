@@ -91,11 +91,6 @@ export default Vue.extend({
     grid-template-columns: 1fr 1fr 32px;
     align-items: center;
     grid-gap: 12px;
-
-    .vs-button {
-      margin: 0;
-      transform: scale(0.7);
-    }
   }
 
   &__error {

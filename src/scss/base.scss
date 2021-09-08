@@ -9,15 +9,6 @@ body {
   margin: 0;
 }
 
-.vs-input-parent input {
-  width: 100% !important;
-}
-
-.vs-button--size-tiny {
-  --vs-button-padding: 8px !important;
-  margin: 0;
-}
-
 .uppercase {
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -96,14 +87,6 @@ hr {
   margin: 0;
 }
 
-.vs-dialog {
-  max-width: 1000px;
-}
-
-.vs-button--icon i {
-  font-size: 1.2em !important;
-}
-
 .notification {
   &__title {
     display: block;
@@ -122,10 +105,6 @@ hr {
   @media ($viewport-11) {
     padding-bottom: inherit !important;
   }
-}
-
-.vs-avatar-content {
-  border-radius: 7px !important;
 }
 
 @keyframes spin {

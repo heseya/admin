@@ -7,39 +7,43 @@
       </icon-button>
     </template>
 
-    <draggable v-model="options" :disabled="disabled" handle=".drag-icon">
-      <div v-for="(option, i) in options" :key="i" class="select-schema-options__option">
-        <i class="bx bx-grid-vertical drag-icon" :class="{ 'drag-icon--disabled': disabled }"></i>
-        <validated-input
-          v-model="option.name"
-          :disabled="disabled"
-          rules="required"
-          label="Nazwa"
-        />
-        <app-input v-model="option.price" :disabled="disabled" type="number" label="Cena" />
-        <Autocomplete
-          v-model="options[i].items"
-          :disabled="disabled"
-          class="input"
-          type="products"
-          label="Przedmioty z magazynu"
-        />
-        <SwitchInput v-model="option.disabled" :disabled="disabled">
-          <template #title>Disabled</template>
-        </SwitchInput>
-        <vs-radio :disabled="disabled" :value="defaultOption" :val="i" dark @input="setDefault">
-          Domyślny
-        </vs-radio>
-        <icon-button
-          size="small"
-          type="danger"
-          :disabled="options.length === 1 || disabled"
-          @click="removeOption(i)"
-        >
-          <i slot="icon" class="bx bx-trash"></i>
-        </icon-button>
-      </div>
-    </draggable>
+    <a-radio-group
+      :value="defaultOption"
+      class="select-schema-options__content"
+      @input="setDefault"
+    >
+      <draggable v-model="options" :disabled="disabled" handle=".drag-icon">
+        <div v-for="(option, i) in options" :key="i" class="select-schema-options__option">
+          <i class="bx bx-grid-vertical drag-icon" :class="{ 'drag-icon--disabled': disabled }"></i>
+          <validated-input
+            v-model="option.name"
+            :disabled="disabled"
+            rules="required"
+            label="Nazwa"
+          />
+          <app-input v-model="option.price" :disabled="disabled" type="number" label="Cena" />
+          <Autocomplete
+            v-model="options[i].items"
+            :disabled="disabled"
+            class="input"
+            type="products"
+            label="Przedmioty z magazynu"
+          />
+          <SwitchInput v-model="option.disabled" :disabled="disabled">
+            <template #title>Disabled</template>
+          </SwitchInput>
+          <a-radio :disabled="disabled" :value="i"> Domyślny </a-radio>
+          <icon-button
+            size="small"
+            type="danger"
+            :disabled="options.length === 1 || disabled"
+            @click="removeOption(i)"
+          >
+            <i slot="icon" class="bx bx-trash"></i>
+          </icon-button>
+        </div>
+      </draggable>
+    </a-radio-group>
     <icon-button :disabled="disabled" size="small" reversed @click="addOption">
       <i slot="icon" class="bx bx-plus"></i> Dodaj
     </icon-button>
@@ -111,19 +115,31 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .select-schema-options {
+  &__content {
+    width: 100%;
+  }
+
   &__option {
     display: grid;
     grid-gap: 8px;
     grid-template-columns: 20px 1fr 100px 1fr 64px 64px 64px;
     align-items: center;
     justify-items: center;
+    margin-bottom: 8px;
+
+    ::v-deep .app-input {
+      margin-bottom: 0;
+    }
 
     > * {
       width: 100%;
     }
 
-    .vs-radio-content {
-      flex-direction: column;
+    .ant-radio-wrapper {
+      display: flex;
+      align-items: center;
+      flex-direction: column-reverse;
+      font-size: 0.8em;
     }
   }
 

@@ -81,10 +81,6 @@ export default Vue.extend({
   &__select {
     position: relative;
     margin-bottom: 32px;
-
-    ::v-deep .vs-select__label--label {
-      transform: translateY(-28px) !important;
-    }
   }
 }
 </style>

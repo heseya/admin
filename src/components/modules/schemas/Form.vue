@@ -254,7 +254,7 @@ export default Vue.extend({
         // @ts-ignore // TODO: Schema DTO
         const schema = await this.$accessor.schemas.add({ ...this.form, options })
         if (schema && schema.id) {
-          this.$toast.warning('Schemat został utworzony.')
+          this.$toast.success('Schemat został utworzony.')
           id = schema.id
         }
       } else {
@@ -265,7 +265,7 @@ export default Vue.extend({
         })
         if (success) {
           id = this.form.id
-          this.$toast.warning('Schemat został zaktualizowany.')
+          this.$toast.success('Schemat został zaktualizowany.')
         }
       }
       this.$accessor.stopLoading()
@@ -277,17 +277,6 @@ export default Vue.extend({
 
 <style lang="scss">
 .schema-form {
-  .vs-input-parent {
-    margin-top: 24px;
-    margin-bottom: 0 !important;
-  }
-
-  .vs-select-content {
-    width: 100%;
-    margin-top: 20px;
-    max-width: 1000px;
-  }
-
   .flex {
     display: flex;
 
@@ -304,14 +293,6 @@ export default Vue.extend({
   .used-schema {
     display: flex;
     justify-content: space-between;
-  }
-
-  .vs-radio__label {
-    font-size: 0.6em;
-  }
-
-  .vs-select__label {
-    padding-left: 8px;
   }
 }
 </style>

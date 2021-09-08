@@ -180,10 +180,6 @@ export default Vue.extend({
   input {
     width: 100%;
   }
-
-  .vs-select-content {
-    max-width: none;
-  }
 }
 
 @media ($viewport-11) {

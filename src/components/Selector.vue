@@ -124,10 +124,6 @@ export default Vue.extend({
 
 <style lang="scss">
 .schema-selector {
-  .vs-input-parent {
-    margin-bottom: 0;
-  }
-
   &__content {
     position: relative;
   }

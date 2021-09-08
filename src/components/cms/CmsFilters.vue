@@ -188,12 +188,5 @@ export default Vue.extend({
   &--expanded &__content {
     max-height: 64px * 4;
   }
-
-  ::v-deep {
-    .vs-select-content {
-      width: 100%;
-      max-width: 100%;
-    }
-  }
 }
 </style>

@@ -93,14 +93,14 @@ export default Vue.extend({
 .autocomplete {
   &__label {
     font-size: 0.8em;
-    padding-left: 8px;
   }
 
   &__items {
     display: flex;
     flex-wrap: wrap;
-    background-color: #f4f7f8;
-    border-radius: 12px;
+    background-color: #ffffff;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
     padding: 4px;
     box-sizing: border-box;
     min-height: 33px;

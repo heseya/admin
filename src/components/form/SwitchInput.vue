@@ -3,7 +3,7 @@
     <label class="switch-input__label">
       <slot name="title">{{ label }}</slot>
     </label>
-    <a-switch :value="value" :disabled="disabled" @input="onInput">
+    <a-switch :checked="value" :disabled="disabled" @change="onInput">
       <i slot="unCheckedChildren" class="bx bx-x"></i>
       <i slot="checkedChildren" class="bx bx-check"></i>
     </a-switch>
@@ -16,7 +16,7 @@ export default Vue.extend({
   props: {
     value: {
       type: Boolean,
-      default: false,
+      required: true,
     },
     disabled: {
       type: Boolean,

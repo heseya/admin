@@ -145,6 +145,7 @@ import { formatApiNotificationError } from '@/utils/errors'
 import { UUID } from '@/interfaces/UUID'
 import { Product, ProductDTO, ProductComponentForm } from '@/interfaces/Product'
 import { ProductSet } from '@/interfaces/ProductSet'
+import SwitchInput from '@/components/form/SwitchInput.vue'
 
 const EMPTY_FORM: ProductComponentForm = {
   id: '',
@@ -175,6 +176,7 @@ export default Vue.extend({
     SchemaConfigurator,
     RichEditor,
     TagsSelect,
+    SwitchInput,
   },
   data: () => ({
     form: cloneDeep(EMPTY_FORM),

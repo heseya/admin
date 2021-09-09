@@ -24,6 +24,7 @@ export default Vue.extend({
     'error',
     'type',
     'size',
+    'step',
     'allowClear',
     'disabled',
     'addonBefore',

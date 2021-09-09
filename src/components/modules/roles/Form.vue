@@ -5,12 +5,7 @@
       <validated-input v-model="form.name" rules="required" label="Nazwa" :disabled="disabled" />
       <br />
       <br />
-      <validated-input
-        v-model="form.description"
-        rules="required"
-        label="Opis"
-        :disabled="disabled"
-      />
+      <validated-input v-model="form.description" label="Opis" :disabled="disabled" />
       <br />
       <permissions-manager v-model="form.permissions" :disabled="disabled" />
       <br />

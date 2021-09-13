@@ -5,7 +5,7 @@
       <div class="content-tooltip">
         <p>{{ title }}</p>
         <footer>
-          <vs-button @click="confirm" danger block>
+          <vs-button :color="okColor" block @click="confirm">
             {{ okText }}
           </vs-button>
           <vs-button @click="cancel" transparent dark block>
@@ -32,6 +32,10 @@ export default Vue.extend({
     okText: {
       type: String,
       default: 'Tak',
+    },
+    okColor: {
+      type: String,
+      default: 'danger',
     },
     cancelText: {
       type: String,

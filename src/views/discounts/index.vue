@@ -61,15 +61,15 @@
         <template #footer>
           <div class="row">
             <app-button v-if="canModify" @click="handleSubmit(saveModal)"> Zapisz </app-button>
-            <!-- <pop-confirm-->
-            <!--              title="Czy na pewno chcesz usunąć ten kod?"-->
-            <!--              v-can="$p.Discounts.Remove"-->
-            <!--              okText="Usuń"-->
-            <!--              cancelText="Anuluj"-->
-            <!--              @confirm="deleteItem"-->
-            <!--            >-->
-            <!-- <app-button v-if="editedItem.id" type="danger" >Usuń</app-button> -->
-            <!--            </pop-confirm> -->
+            <pop-confirm
+              v-can="$p.Discounts.Remove"
+              title="Czy na pewno chcesz usunąć ten kod?"
+              ok-text="Usuń"
+              cancel-text="Anuluj"
+              @confirm="deleteItem"
+            >
+              <app-button v-if="editedItem.id" type="danger">Usuń</app-button>
+            </pop-confirm>
           </div>
         </template>
       </a-modal>
@@ -84,6 +84,8 @@ import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import ModalForm from '@/components/form/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
+import ValidatedInput from '@/components/form/ValidatedInput.vue'
+import PopConfirm from '@/components/layout/PopConfirm.vue'
 
 import { DiscountCode } from '@/interfaces/DiscountCode'
 import { UUID } from '@/interfaces/UUID'
@@ -108,6 +110,8 @@ export default Vue.extend({
     ValidationProvider,
     ValidationObserver,
     PaginatedList,
+    ValidatedInput,
+    PopConfirm,
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {

@@ -58,19 +58,19 @@
         </modal-form>
         <template #footer>
           <div class="row">
-            <vs-button v-if="canModify" color="dark" @click="handleSubmit(saveModal)"
-              >Zapisz</vs-button
+            <vs-button v-if="canModify" color="dark" @click="handleSubmit(saveModal)">
+              Zapisz
+            </vs-button>
+            <pop-confirm
+              v-slot="{ open }"
+              v-can="$p.Discounts.Remove"
+              title="Czy na pewno chcesz usunąć ten kod?"
+              ok-text="Usuń"
+              cancel-text="Anuluj"
+              @confirm="deleteItem"
             >
-            <!--            <pop-confirm-->
-            <!--              title="Czy na pewno chcesz usunąć ten kod?"-->
-            <!--              v-can="$p.Discounts.Remove"-->
-            <!--              okText="Usuń"-->
-            <!--              cancelText="Anuluj"-->
-            <!--              @confirm="deleteItem"-->
-            <!--              v-slot="{ open }"-->
-            <!--            >-->
-            <!--              <vs-button v-if="editedItem.id" color="danger" @click="open">Usuń</vs-button>-->
-            <!--            </pop-confirm>-->
+              <vs-button v-if="editedItem.id" color="danger" @click="open">Usuń</vs-button>
+            </pop-confirm>
           </div>
         </template>
       </vs-dialog>
@@ -86,6 +86,7 @@ import ModalForm from '@/components/form/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
+import PopConfirm from '@/components/layout/PopConfirm.vue'
 
 import { DiscountCode } from '@/interfaces/DiscountCode'
 import { UUID } from '@/interfaces/UUID'
@@ -108,6 +109,15 @@ export default Vue.extend({
     ValidationObserver,
     PaginatedList,
     ValidatedInput,
+    PopConfirm,
+  },
+  beforeRouteLeave(to, from, next) {
+    if (this.isModalActive) {
+      this.isModalActive = false
+      next(false)
+    } else {
+      next()
+    }
   },
   data: () => ({
     isModalActive: false,
@@ -154,14 +164,6 @@ export default Vue.extend({
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
-  },
-  beforeRouteLeave(to, from, next) {
-    if (this.isModalActive) {
-      this.isModalActive = false
-      next(false)
-    } else {
-      next()
-    }
   },
 })
 </script>

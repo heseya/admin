@@ -27,6 +27,7 @@ export default Vue.extend({
     'step',
     'allowClear',
     'disabled',
+    'loading',
     'addonBefore',
   ],
   computed: {

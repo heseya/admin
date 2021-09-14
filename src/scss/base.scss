@@ -115,3 +115,9 @@ hr {
     transform: translate(-50%, -50%) rotate(360deg);
   }
 }
+
+code {
+  background-color: $background-color-700;
+  padding: 2px 4px;
+  border-radius: 3px;
+}

@@ -1,8 +1,8 @@
 import { createVuexCRUD } from './generator'
 import { api } from '@/api'
-import { App } from '@/interfaces/App'
+import { App, CreateAppDto } from '@/interfaces/App'
 
-export const apps = createVuexCRUD<App>()('apps', {
+export const apps = createVuexCRUD<App, CreateAppDto, CreateAppDto>()('apps', {
   state: {},
   getters: {},
   mutations: {},

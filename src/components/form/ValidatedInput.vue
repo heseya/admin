@@ -25,7 +25,7 @@ export default Vue.extend({
     'color',
     'state',
     'progress',
-    'lodaing',
+    'loading',
     'type',
     'step',
     'border',

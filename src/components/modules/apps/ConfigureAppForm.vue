@@ -31,11 +31,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
-import axios from 'axios'
+import { AxiosInstance } from 'axios'
 
 import { App } from '@/interfaces/App'
 import { formatApiNotification } from '@/utils/utils'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
+import { createApiInstance } from '@/api'
 
 interface AppConfigField {
   key: string
@@ -62,6 +63,11 @@ export default Vue.extend({
     isError: false,
     isLoading: false,
   }),
+  computed: {
+    appApi(): AxiosInstance {
+      return createApiInstance(this.app.url, false)
+    },
+  },
   watch: {
     app() {
       this.fetchAppConfigFields()
@@ -77,7 +83,7 @@ export default Vue.extend({
       try {
         this.isLoading = true
 
-        const { data } = await axios.get<AppConfigField[]>(`${this.app.url}/config`)
+        const { data } = await this.appApi.get<AppConfigField[]>('/config')
 
         this.fields = data
         this.form = this.fields.reduce(
@@ -85,10 +91,12 @@ export default Vue.extend({
           {},
         )
       } catch (e) {
-        formatApiNotification({
-          title: 'Nie udało się pobrać konfiguracji aplikacji',
-          text: e.message,
-        })
+        this.$toast.error(
+          formatApiNotification({
+            title: 'Nie udało się pobrać konfiguracji aplikacji',
+            text: e.message,
+          }),
+        )
         this.$emit('close')
       }
       this.isLoading = false
@@ -97,7 +105,7 @@ export default Vue.extend({
       try {
         this.isLoading = true
 
-        await axios.post(`${this.app.url}/config`, this.form)
+        await this.appApi.post('/config', this.form)
 
         this.$toast.success('Konfiguracja została zapisana')
         this.$emit('close')

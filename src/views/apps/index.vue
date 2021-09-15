@@ -33,10 +33,14 @@
     <a-modal
       v-model="isConfigureModalActive"
       width="550px"
-      :title="`Konfiguracja ${configuratedApp.name}`"
+      :title="`Konfiguracja aplikacji ${configuratedApp.name}`"
       footer=""
     >
-      <configure-app-form :app="configuratedApp" @close="isConfigureModalActive = false" />
+      <configure-app-form
+        :app="configuratedApp"
+        @close="isConfigureModalActive = false"
+        @uninstall="uninstallApp"
+      />
     </a-modal>
   </div>
 </template>
@@ -85,6 +89,12 @@ export default Vue.extend({
     openConfigureModal(app: App) {
       this.isConfigureModalActive = true
       this.configuratedApp = app
+
+      // TODO: temporary
+      this.configuratedApp = {
+        name: 'Telegram',
+        url: 'http://localhost:3000',
+      }
     },
 
     async installApplication() {
@@ -92,6 +102,16 @@ export default Vue.extend({
       await this.$accessor.apps.add(this.installForm)
       this.$accessor.stopLoading()
       this.isInstallModalActive = false
+    },
+
+    async uninstallApp() {
+      const success = await this.$accessor.apps.remove(this.configuratedApp.id)
+      if (success) {
+        this.isConfigureModalActive = false
+        this.$toast.success('Aplikacja została odinstalowana')
+      } else {
+        this.$toast.error('Aplikacji nie udało się odinstalować')
+      }
     },
   },
 })

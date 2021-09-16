@@ -90,7 +90,7 @@ export default Vue.extend({
           (acc, field) => ({ ...acc, [field.key]: field.value || field.default_value }),
           {},
         )
-      } catch (e) {
+      } catch (e: any) {
         this.$toast.error(
           formatApiNotification({
             title: 'Nie udało się pobrać konfiguracji aplikacji',
@@ -109,7 +109,7 @@ export default Vue.extend({
 
         this.$toast.success('Konfiguracja została zapisana')
         this.$emit('close')
-      } catch (e) {
+      } catch (e: any) {
         this.$toast.error(
           formatApiNotification({
             title: 'Wystąpił błąd podczas zapisywania konfiguracji',

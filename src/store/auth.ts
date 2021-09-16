@@ -114,10 +114,14 @@ const actions = actionTree(
         commit('SET_IDENTITY_TOKEN', data.identity_token)
         commit('SET_REFRESH_TOKEN', data.refresh_token)
 
-        return { success: true, accessToken: data.token, identityToken: data.identity_token }
+        return {
+          success: true as const,
+          accessToken: data.token,
+          identityToken: data.identity_token,
+        }
       } catch (e: any) {
         commit('SET_ERROR', e)
-        return { success: false }
+        return { success: false as const }
       }
     },
 

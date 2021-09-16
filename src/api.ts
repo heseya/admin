@@ -5,14 +5,29 @@ import { accessor } from './store/index'
 import router from './router'
 import { getApiURL } from './utils/api'
 
+type OnRefreshFunction = (
+  tokens: { success: true; accessToken: string; identityToken: string } | { success: false },
+) => void
+
 export const createApiInstance = (baseURL: string, useAccessToken = true) => {
   const apiInstance = axios.create({ baseURL })
+
+  let isRefreshing = false
+  let subscribers: OnRefreshFunction[] = []
+
+  const subscribeTokenRefresh = (cb: OnRefreshFunction) => {
+    subscribers.push(cb)
+  }
+
+  const onRefreshed: OnRefreshFunction = (tokens) => {
+    subscribers.map((cb) => cb(tokens))
+  }
 
   apiInstance.interceptors.request.use((config) => {
     const token = useAccessToken ? accessor.auth.getAccessToken : accessor.auth.getIdentityToken
 
     if (!isNull(token)) {
-      config.headers.Authorization = `Bearer ${token}`
+      if (config.url !== '/auth/refresh') config.headers.Authorization = `Bearer ${token}`
       config.headers['x-language'] = 'pl'
     }
 
@@ -24,23 +39,44 @@ export const createApiInstance = (baseURL: string, useAccessToken = true) => {
       accessor.auth.setPermissionsError(error.response.data)
     }
 
-    if (error.response?.status === 401 && !error.request.url?.includes('auth')) {
-      const { accessToken, identityToken } = await accessor.auth.refreshToken()
+    // Refreshing the token
+    const requestUrl = error.response?.config.url
+    const originalRequest = error.config
 
-      const token = useAccessToken ? accessToken : identityToken
+    if (
+      error.response?.status === 401 &&
+      requestUrl !== '/auth/refresh' &&
+      !originalRequest._retry
+    ) {
+      // ? This wil prevent the second refresh if request fails twice
+      originalRequest._retry = true
 
-      error.config.headers = {
-        ...(error.config?.headers || {}),
-        Authorization: `Bearer ${token}`,
+      if (!isRefreshing) {
+        isRefreshing = true
+        accessor.auth.refreshToken().then((refreshedTokens) => {
+          isRefreshing = false
+          onRefreshed(refreshedTokens)
+          subscribers = []
+        })
       }
 
-      // ? If refreshed sucessfully, retry last request
-      if (token) return apiInstance.request(error.config)
+      return new Promise((resolve) => {
+        subscribeTokenRefresh((refreshedTokens) => {
+          // ? If token not refreshed, logout & redirect to login
+          if (!refreshedTokens.success) {
+            accessor.auth.clearAuth()
+            accessor.stopLoading()
+            router.push('/login')
+            throw error
+          }
 
-      // ? If not, logout & redirect to login
-      accessor.auth.clearAuth()
-      accessor.stopLoading()
-      router.push('/login')
+          const token = useAccessToken ? refreshedTokens.accessToken : refreshedTokens.identityToken
+          originalRequest.headers.Authorization = `Bearer ${token}`
+
+          // ? Retry last request
+          resolve(apiInstance.request(error.config))
+        })
+      })
     }
 
     throw error

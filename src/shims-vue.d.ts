@@ -20,3 +20,9 @@ declare module 'vue/types/vue' {
     $verboseCan: typeof alertIfNoAccess
   }
 }
+
+declare module 'axios' {
+  interface AxiosRequestConfig {
+    _retry?: boolean
+  }
+}

@@ -87,10 +87,11 @@ export default Vue.extend({
     },
   },
   created() {
-    this.filters.search = (this.$route.query.search as string) || ''
-    this.filters.status_id = (this.$route.query.status_id as string) || ALL_FILTER_VALUE
-    this.filters.shipping_method_id =
-      (this.$route.query.shipping_method_id as string) || ALL_FILTER_VALUE
+    this.filters = {
+      search: (this.$route.query.search as string) || '',
+      status_id: (this.$route.query.status_id as string) || ALL_FILTER_VALUE,
+      shipping_method_id: (this.$route.query.shipping_method_id as string) || ALL_FILTER_VALUE,
+    }
   },
   methods: {
     makeSearch(filters: OrderFilersType) {

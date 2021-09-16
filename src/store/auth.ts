@@ -1,38 +1,45 @@
+/* eslint-disable camelcase */
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 
 import { api } from '../api'
 
 import { User } from '@/interfaces/User'
 import { UUID } from '@/interfaces/UUID'
-import { ALL_PERMISSIONS, PERMISSIONS_TREE } from '@/consts/permissions'
+import { PERMISSIONS_TREE } from '@/consts/permissions'
 import { hasAccess } from '@/utils/hasAccess'
 import { accessor } from '.'
+
+interface AuthResponse {
+  user: User
+  token: string
+  identity_token: string
+  refresh_token: string
+}
 
 const state = () => ({
   error: null as null | Error,
   permissionsError: null as null | Error,
   user: null as null | User,
-  token: null as null | string,
+
+  tokens: {
+    accessToken: null as null | string,
+    identityToken: null as null | string,
+    refreshToken: null as null | string,
+  },
 })
 
-//! debug purpose only
-const overrideUserPermissions = (user: User): User => {
-  const OVERRIDE = false
-  const ADD_ALL = false
-  const CUSTOM = ['statuses.show', 'statuses.show_details']
-
-  return {
-    ...user,
-    permissions: !OVERRIDE ? user.permissions : ADD_ALL ? ALL_PERMISSIONS : (CUSTOM as any),
-  }
-}
-
 const getters = getterTree(state, {
-  getToken(state) {
-    return state.token
+  getAccessToken(state) {
+    return state.tokens.accessToken
   },
-  isLogged(state) {
-    return !!state.user
+  getIdentityToken(state) {
+    return state.tokens.identityToken
+  },
+  getRefreshToken(state) {
+    return state.tokens.refreshToken
+  },
+  isLogged(state, get) {
+    return !!state.user && !!get.getAccessToken
   },
   hasRole(state) {
     return (roleId: UUID) => !!state.user?.roles.find((r) => r.id === roleId) || false
@@ -40,12 +47,20 @@ const getters = getterTree(state, {
 })
 
 const mutations = mutationTree(state, {
-  SET_TOKEN(state, newToken) {
-    state.token = newToken
-  },
   SET_USER(state, newUser) {
     state.user = newUser
   },
+
+  SET_ACCESS_TOKEN(state, newToken = null) {
+    state.tokens.accessToken = newToken
+  },
+  SET_IDENTITY_TOKEN(state, newToken = null) {
+    state.tokens.identityToken = newToken
+  },
+  SET_REFRESH_TOKEN(state, newToken = null) {
+    state.tokens.refreshToken = newToken
+  },
+
   SET_ERROR(state, newError) {
     state.error = newError
   },
@@ -60,38 +75,67 @@ const actions = actionTree(
     async login({ commit }, { email, password }: { email: string; password: string }) {
       commit('SET_ERROR', null)
       try {
-        const { data } = await api.post<{ data: { user: User; token: string } }>('/login', {
+        const {
+          data: { data },
+        } = await api.post<{ data: AuthResponse }>('/login', {
           email,
           password,
         })
 
-        // TODO: remove
-        data.data.user = overrideUserPermissions(data.data.user)
-
-        if (!hasAccess(PERMISSIONS_TREE.Admin.Login)(data.data.user.permissions))
+        if (!hasAccess(PERMISSIONS_TREE.Admin.Login)(data.user.permissions))
           throw new Error('Unauthorized')
 
-        commit('SET_USER', data.data.user)
-        commit('SET_TOKEN', data.data.token)
-        return data.data.user
+        commit('SET_USER', data.user)
+
+        commit('SET_ACCESS_TOKEN', data.token)
+        commit('SET_IDENTITY_TOKEN', data.identity_token)
+        commit('SET_REFRESH_TOKEN', data.refresh_token)
+
+        return data.user
       } catch (e: any) {
         commit('SET_ERROR', e)
         return false
       }
     },
+
+    async refreshToken({ commit, getters: get }) {
+      commit('SET_ERROR', null)
+
+      try {
+        if (!get.getRefreshToken) throw new Error('Refresh Token does not exist')
+
+        const {
+          data: { data },
+        } = await api.post<{ data: AuthResponse }>('/auth/refresh', {
+          refresh_token: get.getRefreshToken,
+        })
+
+        commit('SET_ACCESS_TOKEN', data.token)
+        commit('SET_IDENTITY_TOKEN', data.identity_token)
+        commit('SET_REFRESH_TOKEN', data.refresh_token)
+
+        return {
+          success: true as const,
+          accessToken: data.token,
+          identityToken: data.identity_token,
+        }
+      } catch (e: any) {
+        commit('SET_ERROR', e)
+        return { success: false as const }
+      }
+    },
+
     async fetchProfile({ commit }) {
       commit('SET_ERROR', null)
       try {
         const { data } = await api.get<{ data: User }>(`/auth/profile`)
-
-        // TODO: remove
-        data.data = overrideUserPermissions(data.data)
 
         commit('SET_USER', data.data)
       } catch (e: any) {
         commit('SET_ERROR', e)
       }
     },
+
     async logout({ commit, dispatch }) {
       accessor.startLoading()
       try {
@@ -102,11 +146,16 @@ const actions = actionTree(
       }
       accessor.stopLoading()
     },
+
     clearAuth({ commit }) {
       commit('SET_ERROR', null)
       commit('SET_USER', null)
-      commit('SET_TOKEN', null)
+
+      commit('SET_ACCESS_TOKEN', null)
+      commit('SET_IDENTITY_TOKEN', null)
+      commit('SET_REFRESH_TOKEN', null)
     },
+
     setPermissionsError({ commit }, error: Error) {
       commit('SET_PERMISSIONS_ERROR', error)
     },

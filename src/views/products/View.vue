@@ -90,7 +90,8 @@
                       :label="set.name"
                       :value="set.id"
                     >
-                      <i v-if="!set.public" class="bx bx-lock"></i> {{ set.name }}
+                      <i v-if="!set.public" class="bx bx-lock"></i>
+                      {{ set.name }} &nbsp; <small>(/{{ set.slug }})</small>
                     </vs-option>
                     <template #message-danger>{{ errors[0] }}</template>
                   </vs-select>

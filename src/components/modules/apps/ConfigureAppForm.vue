@@ -31,7 +31,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
-import { AxiosInstance } from 'axios'
+import { AxiosError, AxiosInstance } from 'axios'
 
 import { App } from '@/interfaces/App'
 import { formatApiNotification } from '@/utils/utils'
@@ -90,11 +90,11 @@ export default Vue.extend({
           (acc, field) => ({ ...acc, [field.key]: field.value || field.default_value }),
           {},
         )
-      } catch (e: any) {
+      } catch (e: unknown) {
         this.$toast.error(
           formatApiNotification({
             title: 'Nie udało się pobrać konfiguracji aplikacji',
-            text: e.message,
+            text: (e as AxiosError)?.message,
           }),
         )
         this.$emit('close')
@@ -109,11 +109,11 @@ export default Vue.extend({
 
         this.$toast.success('Konfiguracja została zapisana')
         this.$emit('close')
-      } catch (e: any) {
+      } catch (e: unknown) {
         this.$toast.error(
           formatApiNotification({
             title: 'Wystąpił błąd podczas zapisywania konfiguracji',
-            text: e.message,
+            text: (e as AxiosError)?.message,
           }),
         )
       }

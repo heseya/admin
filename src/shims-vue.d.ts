@@ -23,6 +23,6 @@ declare module 'vue/types/vue' {
 
 declare module 'axios' {
   interface AxiosRequestConfig {
-    _retry?: boolean
+    _retried?: boolean
   }
 }

@@ -1,9 +1,11 @@
 import axios, { AxiosError } from 'axios'
-import { isNull } from 'lodash'
+import isNull from 'lodash/isNull'
 
 import { accessor } from './store/index'
 import router from './router'
 import { getApiURL } from './utils/api'
+
+const REFRESH_URL = '/auth/refresh'
 
 type OnRefreshFunction = (
   tokens: { success: true; accessToken: string; identityToken: string } | { success: false },
@@ -27,7 +29,7 @@ export const createApiInstance = (baseURL: string, useAccessToken = true) => {
     const token = useAccessToken ? accessor.auth.getAccessToken : accessor.auth.getIdentityToken
 
     if (!isNull(token)) {
-      if (config.url !== '/auth/refresh') config.headers.Authorization = `Bearer ${token}`
+      if (config.url !== REFRESH_URL) config.headers.Authorization = `Bearer ${token}`
       config.headers['x-language'] = 'pl'
     }
 
@@ -35,21 +37,18 @@ export const createApiInstance = (baseURL: string, useAccessToken = true) => {
   })
 
   apiInstance.interceptors.response.use(undefined, async (error: AxiosError) => {
+    const originalRequest = error.config
+
     if (error.response?.status === 403) {
       accessor.auth.setPermissionsError(error.response.data)
     }
 
     // Refreshing the token
     const requestUrl = error.response?.config.url
-    const originalRequest = error.config
 
-    if (
-      error.response?.status === 401 &&
-      requestUrl !== '/auth/refresh' &&
-      !originalRequest._retry
-    ) {
+    if (error.response?.status === 401 && requestUrl !== REFRESH_URL && !originalRequest._retried) {
       // ? This wil prevent the second refresh if request fails twice
-      originalRequest._retry = true
+      originalRequest._retried = true
 
       if (!isRefreshing) {
         isRefreshing = true
@@ -74,7 +73,7 @@ export const createApiInstance = (baseURL: string, useAccessToken = true) => {
           originalRequest.headers.Authorization = `Bearer ${token}`
 
           // ? Retry last request
-          resolve(apiInstance.request(error.config))
+          resolve(apiInstance.request(originalRequest))
         })
       })
     }

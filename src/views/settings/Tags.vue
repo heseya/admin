@@ -1,15 +1,16 @@
 <template>
   <div>
-    <PaginatedList title="Tagi" storeKey="tags">
+    <PaginatedList title="Tagi" store-key="tags">
       <template #nav>
-        <vs-button @click="openModal()" color="dark" icon>
-          <i class="bx bx-plus"></i>
-        </vs-button>
+        <icon-button v-can="$p.Tags.Add" @click="openModal()">
+          <i slot="icon" class="bx bx-plus"></i>
+          Dodaj tag
+        </icon-button>
       </template>
-      <template v-slot="{ item: tag }">
-        <list-item @click="openModal(tag.id)" :key="tag.id">
+      <template #default="{ item: tag }">
+        <list-item :key="tag.id" @click="openModal(tag.id)">
           <template #avatar>
-            <vs-avatar :color="`#${tag.color}`" :key="tag.color" />
+            <avatar :key="tag.color" :color="`#${tag.color}`" />
           </template>
           {{ tag.name }}
         </list-item>
@@ -17,36 +18,43 @@
     </PaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
-      <vs-dialog width="550px" not-center v-model="isModalActive">
-        <template #header>
-          <h4>{{ editedItem.id ? 'Edycja taga' : 'Nowy tag' }}</h4>
-        </template>
+      <a-modal
+        v-model="isModalActive"
+        width="550px"
+        :title="editedItem.id ? 'Edycja taga' : 'Nowy tag'"
+      >
         <modal-form>
-          <validated-input rules="required" v-model="editedItem.name" label="Nazwa" />
+          <validated-input
+            v-model="editedItem.name"
+            :disabled="!canModify"
+            rules="required"
+            label="Nazwa"
+          />
 
           <validated-input
+            :disabled="!canModify"
             rules="required"
             :value="`#${editedItem.color}`"
             label="Kolor"
-            @input="setColor"
             type="color"
+            @input="setColor"
           />
         </modal-form>
         <template #footer>
           <div class="row">
-            <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
+            <app-button v-if="canModify" @click="handleSubmit(saveModal)"> Zapisz </app-button>
             <pop-confirm
+              v-can="$p.Tags.Remove"
               title="Czy na pewno chcesz usunąć ten tag?"
-              okText="Usuń"
-              cancelText="Anuluj"
+              ok-text="Usuń"
+              cancel-text="Anuluj"
               @confirm="deleteItem"
-              v-slot="{ open }"
             >
-              <vs-button v-if="editedItem.id" color="danger" @click="open">Usuń</vs-button>
+              <app-button v-if="editedItem.id" type="danger">Usuń</app-button>
             </pop-confirm>
           </div>
         </template>
-      </vs-dialog>
+      </a-modal>
     </validation-observer>
   </div>
 </template>
@@ -60,7 +68,7 @@ import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import ValidatedInput from '@/components/form/ValidatedInput.vue'
+import Avatar from '@/components/layout/Avatar.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import { Tag } from '@/interfaces/Tag'
@@ -72,18 +80,32 @@ const CLEAR_TAG: Tag = {
 }
 
 export default Vue.extend({
+  metaInfo: { title: 'Tagi' },
   components: {
     PaginatedList,
     ListItem,
     ModalForm,
     PopConfirm,
     ValidationObserver,
-    ValidatedInput,
+    Avatar,
+  },
+  beforeRouteLeave(to, from, next) {
+    if (this.isModalActive) {
+      this.isModalActive = false
+      next(false)
+    } else {
+      next()
+    }
   },
   data: () => ({
     isModalActive: false,
     editedItem: clone(CLEAR_TAG) as Tag,
   }),
+  computed: {
+    canModify(): boolean {
+      return this.$can(this.editedItem.id ? this.$p.Tags.Edit : this.$p.Tags.Add)
+    },
+  },
   methods: {
     setColor(color: string) {
       this.editedItem.color = color.split('#')[1] ?? color
@@ -116,14 +138,6 @@ export default Vue.extend({
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
-  },
-  beforeRouteLeave(to, from, next) {
-    if (this.isModalActive) {
-      this.isModalActive = false
-      next(false)
-    } else {
-      next()
-    }
   },
 })
 </script>

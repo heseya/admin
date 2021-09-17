@@ -3,126 +3,120 @@
     <top-nav :title="!isNew ? product.name : 'Nowy produkt'">
       <pop-confirm
         v-if="!isNew"
+        v-can="$p.Products.Remove"
         title="Czy na pewno chcesz usunąć ten produkt?"
-        okText="Usuń"
-        cancelText="Anuluj"
+        ok-text="Usuń"
+        cancel-text="Anuluj"
         @confirm="deleteProduct"
-        v-slot="{ open }"
       >
-        <vs-button dark icon @click="open">
-          <i class="bx bx-trash"></i>
-        </vs-button>
+        <icon-button type="danger">
+          <i slot="icon" class="bx bx-trash"></i>
+          Usuń
+        </icon-button>
       </pop-confirm>
     </top-nav>
 
     <div class="product">
-      <gallery ref="gallery" v-model="form.gallery" />
+      <gallery ref="gallery" v-model="form.gallery" :disabled="!canModify" />
 
       <div>
         <card>
-          <flex-input>
-            <label class="title">Widoczność produktu</label>
-            <vs-switch success v-model="form.public">
-              <template #off>
-                <i class="bx bx-x"></i>
-              </template>
-              <template #on>
-                <i class="bx bx-check"></i>
-              </template>
-            </vs-switch>
-          </flex-input>
+          <switch-input
+            v-model="form.public"
+            horizontal
+            :disabled="!canModify"
+            label="Widoczność produktu"
+          />
           <template v-if="!product.visible && product.public">
             <br />
-            <vs-alert color="warn">
-              <template #title>Produkt wciąż jest ukryty</template>
-              Produkt jest niewidoczny ponieważ jego marka lub kategoria jest ukryta.
-            </vs-alert>
+            <a-alert
+              message="Produkt wciąż jest ukryty"
+              description="Produkt jest niewidoczny ponieważ jego marka lub kategoria jest ukryta."
+              show-icon
+              type="warning"
+            />
           </template>
         </card>
       </div>
 
       <div class="product__schemas">
         <card>
-          <SchemaConfigurator v-model="form.schemas" />
+          <SchemaConfigurator v-model="form.schemas" :disabled="!canModify" />
         </card>
       </div>
 
       <div class="product__details">
         <card>
           <validation-observer v-slot="{ handleSubmit }">
-            <form @submit.prevent="handleSubmit(saveProduct)" class="product__info">
+            <form class="product__info" @submit.prevent="handleSubmit(saveProduct)">
               <div>
                 <br />
                 <validated-input
-                  rules="required"
                   v-model="form.name"
-                  @input="editSlug"
-                  label="Nazwa"
-                />
-                <br /><br />
-                <validated-input rules="required|slug" v-model="form.slug" label="Link" />
-                <br /><br />
-                <validated-input
                   rules="required"
+                  label="Nazwa"
+                  :disabled="!canModify"
+                />
+                <validated-input
+                  v-model="form.slug"
+                  rules="required|slug"
+                  label="Link"
+                  :disabled="!canModify"
+                />
+                <validated-input
                   v-model="form.price"
+                  rules="required"
                   type="number"
                   step="0.01"
                   label="Cena"
+                  :disabled="!canModify"
                 />
-                <br />
               </div>
 
               <div>
                 <br />
                 <validation-provider v-slot="{ errors }">
-                  <vs-select
+                  <app-select
                     v-model="form.sets"
                     placeholder="Wybierz kolekcje"
-                    :key="productSets.length"
-                    filter
-                    multiple
+                    mode="multiple"
                     label="Kolekcje"
-                    @click.native.prevent.stop
+                    :disabled="!canModify"
                   >
-                    <vs-option
-                      v-for="set in productSets"
-                      :key="set.id"
-                      :label="set.name"
-                      :value="set.id"
-                    >
-                      <i class="bx bx-lock" v-if="!set.public"></i> {{ set.name }}
-                    </vs-option>
+                    <a-select-option v-for="set in productSets" :key="set.id" :value="set.id">
+                      <i v-if="!set.public" class="bx bx-lock"></i> {{ set.name }}
+                    </a-select-option>
                     <template #message-danger>{{ errors[0] }}</template>
-                  </vs-select>
+                  </app-select>
                 </validation-provider>
-                <br /><br />
                 <validated-input
-                  rules="required"
                   v-model="form.quantity_step"
+                  rules="required"
                   type="number"
                   max="999999"
                   step="0.01"
                   label="Format ilości"
+                  :disabled="!canModify"
                 />
               </div>
 
               <div class="wide">
-                <tags-select v-model="form.tags" />
+                <tags-select v-model="form.tags" :disabled="!canModify" />
               </div>
 
               <div class="wide">
                 <small class="label">Opis</small>
-                <rich-editor v-if="!isLoading" v-model="form.description_html" />
+                <rich-editor
+                  v-if="!isLoading"
+                  v-model="form.description_html"
+                  :disabled="!canModify"
+                />
                 <br />
                 <div class="flex">
-                  <vs-button color="dark" size="large">Zapisz</vs-button>
-                  <vs-button
-                    color="dark"
-                    size="large"
-                    type="button"
-                    @click="handleSubmit(submitAndGoNext)"
-                    >Zapisz i dodaj następny</vs-button
-                  >
+                  <app-button v-if="canModify" style="margin-right: 12px">Zapisz</app-button>
+                  <app-button v-if="canModify" @click="handleSubmit(submitAndGoNext)">
+                    Zapisz i dodaj następny
+                  </app-button>
                 </div>
               </div>
             </form>
@@ -139,20 +133,19 @@ import slugify from 'slugify'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import cloneDeep from 'lodash/cloneDeep'
 
-import TopNav from '@/layout/TopNav.vue'
+import TopNav from '@/components/layout/TopNav.vue'
 import Gallery from '@/components/modules/products/Gallery.vue'
 import Card from '@/components/layout/Card.vue'
-import FlexInput from '@/components/layout/FlexInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import RichEditor from '@/components/form/RichEditor.vue'
 import SchemaConfigurator from '@/components/modules/schemas/Configurator.vue'
-import ValidatedInput from '@/components/form/ValidatedInput.vue'
 import TagsSelect from '@/components/TagsSelect.vue'
 
-import { formatApiError } from '@/utils/errors'
+import { formatApiNotificationError } from '@/utils/errors'
 import { UUID } from '@/interfaces/UUID'
 import { Product, ProductDTO, ProductComponentForm } from '@/interfaces/Product'
 import { ProductSet } from '@/interfaces/ProductSet'
+import SwitchInput from '@/components/form/SwitchInput.vue'
 
 const EMPTY_FORM: ProductComponentForm = {
   id: '',
@@ -170,11 +163,24 @@ const EMPTY_FORM: ProductComponentForm = {
 }
 
 export default Vue.extend({
-  data() {
-    return {
-      form: cloneDeep(EMPTY_FORM),
-    }
+  metaInfo(): any {
+    return { title: this.product?.name || 'Nowy produkt' }
   },
+  components: {
+    TopNav,
+    Gallery,
+    Card,
+    PopConfirm,
+    ValidationProvider,
+    ValidationObserver,
+    SchemaConfigurator,
+    RichEditor,
+    TagsSelect,
+    SwitchInput,
+  },
+  data: () => ({
+    form: cloneDeep(EMPTY_FORM),
+  }),
   computed: {
     id(): UUID {
       return this.$route.params.id
@@ -195,6 +201,35 @@ export default Vue.extend({
       // @ts-ignore // TODO: fix extended store getters typings
       return this.$accessor.products.getError || this.$accessor.products.getDepositError
     },
+    canModify(): boolean {
+      return this.$can(this.isNew ? this.$p.Products.Add : this.$p.Products.Edit)
+    },
+  },
+  watch: {
+    product(product: Product) {
+      if (!this.isNew) {
+        this.form = {
+          ...product,
+          sets: product.sets?.map(({ id }) => id) || [],
+        }
+      }
+    },
+    error(error) {
+      if (error) {
+        this.$toast.error(formatApiNotificationError(error))
+      }
+    },
+    async '$route.params.id'() {
+      this.$accessor.startLoading()
+      await this.fetch()
+      this.$accessor.stopLoading()
+    },
+  },
+  async created() {
+    this.$accessor.startLoading()
+    this.$accessor.productSets.fetch({ tree: undefined })
+    await this.fetch()
+    this.$accessor.stopLoading()
   },
   methods: {
     async fetch() {
@@ -213,10 +248,7 @@ export default Vue.extend({
       this.$accessor.startLoading()
       const success = await this.$accessor.products.remove(this.id)
       if (success) {
-        this.$vs.notification({
-          color: 'success',
-          title: 'Produkt został usunięty.',
-        })
+        this.$toast.success('Produkt został usunięty.')
         this.$router.push('/products')
       }
       this.$accessor.stopLoading()
@@ -244,10 +276,7 @@ export default Vue.extend({
       this.$accessor.stopLoading()
 
       if (item) {
-        this.$vs.notification({
-          color: 'success',
-          title: successMessage,
-        })
+        this.$toast.success(successMessage)
 
         if (item.id !== this.product.id) {
           this.$router.push(`/products/${item.id}`)
@@ -259,48 +288,6 @@ export default Vue.extend({
       this.$router.push('/products/create')
     },
   },
-  watch: {
-    product(product: Product) {
-      if (!this.isNew) {
-        this.form = {
-          ...product,
-          sets: product.sets?.map(({ id }) => id) || [],
-        }
-      }
-    },
-    error(error) {
-      if (error) {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(error),
-        })
-      }
-    },
-    async '$route.params.id'() {
-      this.$accessor.startLoading()
-      await this.fetch()
-      this.$accessor.stopLoading()
-    },
-  },
-  async created() {
-    this.$accessor.startLoading()
-    this.$accessor.productSets.fetch({ tree: undefined })
-    await this.fetch()
-    this.$accessor.stopLoading()
-  },
-  components: {
-    TopNav,
-    Gallery,
-    Card,
-    FlexInput,
-    PopConfirm,
-    ValidationProvider,
-    ValidationObserver,
-    SchemaConfigurator,
-    RichEditor,
-    TagsSelect,
-    ValidatedInput,
-  },
 })
 </script>
 
@@ -309,10 +296,6 @@ export default Vue.extend({
   &__info {
     input {
       width: 100%;
-    }
-
-    .vs-select-content {
-      max-width: none;
     }
   }
 
@@ -334,14 +317,14 @@ export default Vue.extend({
   }
 }
 
-@media (min-width: $break) {
+@media ($viewport-11) {
   .product {
     display: grid;
     grid-template-columns: 4fr 2fr;
     gap: 35px;
 
     small {
-      color: #aaa;
+      color: #aaaaaa;
     }
 
     &__info {

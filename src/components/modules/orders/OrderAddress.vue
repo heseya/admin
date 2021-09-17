@@ -1,32 +1,26 @@
 <template>
   <div class="address">
-    <vs-button
+    <icon-button
       v-if="!hideEdit"
-      size="tiny"
-      dark
-      transparent
+      v-can="$p.Orders.Edit"
+      size="small"
+      type="transparent"
       class="address__btn address__btn--edit"
       @click="edit"
     >
-      <i class="bx bxs-pencil"></i>
-    </vs-button>
+      <i slot="icon" class="bx bxs-pencil"></i>
+    </icon-button>
     <pop-confirm
       v-if="!hideRemove && address"
+      v-can="$p.Orders.Edit"
       title="Czy na pewno chcesz usunąć adres?"
-      okText="Usuń"
-      cancelText="Anuluj"
+      ok-text="Usuń"
+      cancel-text="Anuluj"
       @confirm="remove"
-      v-slot="{ open }"
     >
-      <vs-button
-        size="tiny"
-        dark
-        transparent
-        class="address__btn address__btn--remove"
-        @click="open"
-      >
-        <i class="bx bxs-trash"></i>
-      </vs-button>
+      <icon-button size="small" type="transparent" class="address__btn address__btn--remove">
+        <i slot="icon" class="bx bxs-trash"></i>
+      </icon-button>
     </pop-confirm>
 
     <template v-if="address">
@@ -57,8 +51,8 @@ import Vue from 'vue'
 import PopConfirm from '../../layout/PopConfirm.vue'
 
 export default Vue.extend({
-  components: { PopConfirm },
   name: 'Address',
+  components: { PopConfirm },
   props: {
     address: {
       type: Object,
@@ -89,7 +83,7 @@ export default Vue.extend({
   display: flex;
   flex-direction: column;
   margin-top: 8px;
-  color: #666;
+  color: #666666;
   position: relative;
 
   &__btn {
@@ -108,18 +102,20 @@ export default Vue.extend({
 
   &__name {
     font-size: 1.1em;
+    font-weight: 600;
     margin-bottom: 3px;
-    color: #000;
+    color: #000000;
   }
 
   &__subtitle {
-    font-family: $font-sec;
-    color: #000;
+    font-weight: 500;
+    font-size: 0.9em;
+    color: #000000;
     margin-top: 4px;
   }
 
   &__error {
-    counter-reset: #ccc;
+    counter-reset: #cccccc;
     font-weight: 300;
   }
 }

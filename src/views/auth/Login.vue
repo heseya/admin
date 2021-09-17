@@ -2,16 +2,16 @@
   <central-screen-form title="Logowanie">
     <ValidationObserver v-slot="{ handleSubmit }">
       <validated-input
-        rules="required|email"
         v-model="email"
+        rules="required|email"
         label="E-mail"
         type="email"
         @keydown.enter="handleSubmit(login)"
       />
-      <br /><br />
+
       <validated-input
-        rules="required"
         v-model="password"
+        rules="required"
         label="Hasło"
         type="password"
         @keydown.enter="handleSubmit(login)"
@@ -19,8 +19,8 @@
       <br />
 
       <div class="central-screen-form__row">
-        <vs-button dark @click="handleSubmit(login)"> Zaloguj </vs-button>
-        <vs-button transparent dark to="/reset-password"> Zapomniałeś hasła? </vs-button>
+        <app-button @click="handleSubmit(login)"> Zaloguj </app-button>
+        <app-button type="white" to="/reset-password"> Zapomniałeś hasła? </app-button>
       </div>
     </ValidationObserver>
   </central-screen-form>
@@ -30,47 +30,41 @@
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import CentralScreenForm from '@/components/form/CentralScreenForm.vue'
-import { formatApiError } from '@/utils/errors'
-import ValidatedInput from '@/components/form/ValidatedInput.vue'
+import { formatApiNotificationError } from '@/utils/errors'
 
 const DEBUG = process.env.NODE_ENV === 'development'
 
 export default Vue.extend({
+  metaInfo: { title: 'Logowanie' },
   components: {
     CentralScreenForm,
-    ValidatedInput,
     ValidationObserver,
   },
-  data() {
-    return {
-      email: DEBUG ? '***REMOVED***' : '',
-      password: DEBUG ? '***REMOVED***' : '',
-    }
-  },
+  data: () => ({
+    email: DEBUG ? '***REMOVED***' : '',
+    password: DEBUG ? '***REMOVED***' : '',
+  }),
   computed: {
     loginError() {
       return this.$accessor.auth.error
     },
   },
   watch: {
-    loginError(error) {
+    loginError(error: any) {
       if (error) {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(error),
-        })
+        this.$toast.error(formatApiNotificationError(error))
       }
     },
   },
   methods: {
     async login() {
       this.$accessor.startLoading()
-      await this.$accessor.auth.login({
+      const success = await this.$accessor.auth.login({
         email: this.email,
         password: this.password,
       })
+      if (success) this.$router.push({ name: 'Home' })
       this.$accessor.stopLoading()
-      this.$router.push({ name: 'Home' })
     },
   },
 })

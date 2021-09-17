@@ -1,75 +1,117 @@
 <template>
   <div>
-    <PaginatedList title="Aplikacje" storeKey="apps">
+    <PaginatedList title="Aplikacje" store-key="apps">
       <template #nav>
-        <vs-button @click="openModal()" color="dark" icon>
-          <i class="bx bx-plus"></i>
-        </vs-button>
+        <icon-button @click="openInstallModal()">
+          <i slot="icon" class="bx bx-plus"></i>
+          Dodaj aplikacje
+        </icon-button>
       </template>
 
-      <template v-slot="{ item: app }">
-        <list-item no-hover>
+      <template #default="{ item: app }">
+        <list-item @click="openConfigureModal(app)">
           <template #avatar>
-            <vs-avatar dark>
-              <i class="bx bxs-extension"></i>
-            </vs-avatar>
+            <avatar>
+              <img v-if="app.icon" :src="`${app.url}${app.icon}`" />
+              <i v-else class="bx bxs-extension" />
+            </avatar>
           </template>
           {{ app.name }}
+          <small>{{ app.description }}</small>
+
+          <small slot="action">{{ app.author }} | v{{ app.version }}</small>
         </list-item>
       </template>
     </PaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
-      <vs-dialog width="550px" not-center v-model="isModalActive">
-        <template #header>
-          <h4>Dodaj Aplikacje</h4>
-        </template>
-        <modal-form>
-          <validated-input rules="required" v-model="editedItem.url" label="URL" />
-        </modal-form>
-        <template #footer>
-          <div class="row">
-            <vs-button color="dark" @click="handleSubmit(saveModal)">Dodaj</vs-button>
-          </div>
-        </template>
-      </vs-dialog>
+      <a-modal v-model="isInstallModalActive" width="550px" title="Dodaj aplikacje" footer="">
+        <add-app-form v-model="installForm" @submit="handleSubmit(installApplication)" />
+      </a-modal>
     </validation-observer>
+
+    <a-modal
+      v-model="isConfigureModalActive"
+      width="550px"
+      :title="`Konfiguracja aplikacji ${configuratedApp.name}`"
+      footer=""
+    >
+      <configure-app-form
+        :app="configuratedApp"
+        @close="isConfigureModalActive = false"
+        @uninstall="uninstallApp"
+      />
+    </a-modal>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import { cloneDeep } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
 
 import ListItem from '@/components/layout/ListItem.vue'
-import ModalForm from '@/components/form/ModalForm.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
-import ValidatedInput from '@/components/form/ValidatedInput.vue'
+import Avatar from '@/components/layout/Avatar.vue'
+import AddForm from '@/components/modules/apps/AddForm.vue'
+import ConfigureAppForm from '@/components/modules/apps/ConfigureAppForm.vue'
+
+import { App, CreateAppDto } from '@/interfaces/App'
+
+const CLEAN_FORM: CreateAppDto = {
+  app_url: '',
+  app_name: '',
+  licence_key: '',
+  allowed_permissions: [],
+}
 
 export default Vue.extend({
+  metaInfo: { title: 'Aplikacje' },
   components: {
     ListItem,
-    ModalForm,
     ValidationObserver,
     PaginatedList,
-    ValidatedInput,
+    Avatar,
+    AddAppForm: AddForm,
+    ConfigureAppForm,
   },
   data: () => ({
-    isModalActive: false,
-    editedItem: {
-      url: '',
-    },
+    isInstallModalActive: false,
+    isConfigureModalActive: false,
+    installForm: cloneDeep(CLEAN_FORM),
+    configuratedApp: {} as Record<string, any>,
   }),
   methods: {
-    openModal() {
-      this.isModalActive = true
+    openInstallModal() {
+      this.isInstallModalActive = true
+      this.installForm = cloneDeep(CLEAN_FORM)
     },
-    async saveModal() {
+    openConfigureModal(app: App) {
+      this.isConfigureModalActive = true
+      this.configuratedApp = app
+
+      // TODO: temporary
+      this.configuratedApp = {
+        name: 'Telegram',
+        url: 'http://localhost:3000',
+      }
+    },
+
+    async installApplication() {
       this.$accessor.startLoading()
-      await this.$accessor.apps.add(this.editedItem)
-      // await this.$accessor.apps.fetch()
+      await this.$accessor.apps.add(this.installForm)
       this.$accessor.stopLoading()
-      this.isModalActive = false
+      this.isInstallModalActive = false
+    },
+
+    async uninstallApp() {
+      const success = await this.$accessor.apps.remove(this.configuratedApp.id)
+      if (success) {
+        this.isConfigureModalActive = false
+        this.$toast.success('Aplikacja została odinstalowana')
+      } else {
+        this.$toast.error('Aplikacji nie udało się odinstalować')
+      }
     },
   },
 })

@@ -14,16 +14,18 @@
       </span>
       <small v-for="schema in item.schemas" :key="schema.id">
         <span>{{ schema.name }}:</span> {{ schema.value }}
-        <small v-if="schema.price !== 0">(+ {{ schema.price }} {{ currency }})</small>
+        <small v-if="schema.price !== 0">(+ {{ formatCurrency(schema.price) }} )</small>
       </small>
     </div>
-    <span class="cart-item__price">{{ item.price }} {{ currency }}</span>
+    <span class="cart-item__price">{{ formatCurrency(item.price) }} </span>
   </div>
 </template>
 
 <script lang="ts">
-import { CartItem } from '@/interfaces/CartItem'
 import Vue from 'vue'
+
+import { CartItem } from '@/interfaces/CartItem'
+import { formatCurrency } from '@/utils/currency'
 
 export default Vue.extend({
   props: {
@@ -36,11 +38,13 @@ export default Vue.extend({
     coverUrl(): string {
       return this.item?.product?.cover?.url
     },
-    currency(): string {
-      return this.$accessor.currency
-    },
     objectFit(): string {
       return +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'
+    },
+  },
+  methods: {
+    formatCurrency(amount: number) {
+      return formatCurrency(amount, this.$accessor.currency)
     },
   },
 })
@@ -59,7 +63,7 @@ export default Vue.extend({
     height: 48px;
     object-fit: cover;
     border-radius: 12px;
-    background-color: #eee;
+    background-color: #eeeeee;
     text-indent: -10000px;
   }
 
@@ -70,14 +74,14 @@ export default Vue.extend({
     margin-left: 12px;
 
     small {
-      color: #aaa;
+      color: #aaaaaa;
 
       span {
-        color: #333;
+        color: #333333;
       }
 
       small {
-        color: #ccc;
+        color: #cccccc;
       }
     }
   }
@@ -86,7 +90,7 @@ export default Vue.extend({
     display: flex;
     justify-content: center;
     margin-left: auto;
-    font-family: $font-sec;
+    font-weight: 600;
     white-space: nowrap;
   }
 }

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="37" height="37" viewBox="0 0 37 37">
+  <defs>
+    <style>
+      .cls-1 {
+        clip-path: url(#clip-Artboard_2);
+      }
+
+      .cls-3 {
+        fill: #979ea0;
+      }
+
+      .cls-4 {
+        fill: #fff0;
+      }
+    </style>
+    <clipPath id="clip-Artboard_2">
+      <rect width="37" height="37"/>
+    </clipPath>
+  </defs>
+  <g id="Artboard_2" data-name="Artboard – 2" class="cls-1">
+    <rect class="cls-4" width="37" height="37"/>
+    <g id="Group_234" data-name="Group 234" transform="translate(3 3)">
+      <path id="Union_1" data-name="Union 1" class="cls-3" d="M7.141,15.48V9.526H1.191a1.191,1.191,0,1,1,0-2.381H7.141V1.19a1.19,1.19,0,0,1,2.381,0V7.144h5.951a1.191,1.191,0,0,1,0,2.381H9.522V15.48a1.19,1.19,0,1,1-2.381,0Z" transform="translate(15.386 3.832) rotate(45)"/>
+    </g>
+  </g>
+</svg>

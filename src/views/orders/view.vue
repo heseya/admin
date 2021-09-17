@@ -1,11 +1,29 @@
 <template>
   <div>
     <top-nav :title="`Zamówienie ${order.code}`" :subtitle="`z dnia ${formattedDate}`">
+      <icon-button @click="downloadAudits">
+        <i slot="icon" class="bx bx-history"></i>
+        Pobierz historię zmian
+      </icon-button>
       <a :href="`https://***REMOVED***.eu/payment/${order.code}`" target="_blank">
-        <vs-button color="dark" icon>
-          <i class="bx bxs-dollar-circle"></i>
-        </vs-button>
+        <icon-button>
+          <i slot="icon" class="bx bxs-dollar-circle"></i>
+          Przejdź do płatności
+        </icon-button>
       </a>
+      <pop-confirm
+        v-if="order.payable"
+        title="Czy na pewno chcesz ręcznie oznaczyć zamówienie jako opłacone? (Np. przelewem tradycyjnym lub gotówką)"
+        ok-text="Opłać"
+        ok-color="success"
+        cancel-text="Anuluj"
+        @confirm="payOffline"
+      >
+        <icon-button>
+          <i slot="icon" class="bx bxs-diamond"></i>
+          Opłać zamówienie
+        </icon-button>
+      </pop-confirm>
     </top-nav>
 
     <div class="order">
@@ -19,38 +37,42 @@
               <div class="cart-item__content">
                 <span>Dostawa {{ order.shipping_method && order.shipping_method.name }}</span>
               </div>
-              <span class="cart-item__price">{{ order.shipping_price }} {{ currency }}</span>
+              <span class="cart-item__price">{{ formatCurrency(order.shipping_price) }}</span>
             </div>
             <div class="cart-total">
               <div v-for="discount in order.discounts" :key="discount.id">
                 Rabat {{ discount.code }}:
-                <b>- {{ discount.discount }} {{ discount.type === 0 ? '%' : currency }}</b>
+                <b
+                  >-{{
+                    discount.type === 0
+                      ? `${discount.discount}%`
+                      : formatCurrency(discount.discount)
+                  }}</b
+                >
               </div>
-              Łącznie: <b>{{ order.summary }} {{ currency }}</b>
+              Łącznie: <b>{{ formatCurrency(order.summary) }}</b>
             </div>
           </div>
         </card>
 
         <card>
           <div class="flex-column send-package">
-            <h2 class="section-title">Wyślij przesyłkę</h2>
-            <div class="flex" v-if="!shippingNumber">
-              <vs-select
+            <h2 class="section-title send-package__title">Wyślij przesyłkę</h2>
+            <div v-if="!shippingNumber" class="send-package__content">
+              <app-select
+                v-model="packageTemplateId"
                 label="Szablon przesyłki"
                 placeholder="-- Wybierz szablon --"
-                :key="packageTemplates.length"
-                v-model="packageTemplateId"
               >
-                <vs-option
+                <a-select-option
                   v-for="template in packageTemplates"
-                  :label="template.name"
-                  :value="template.id"
                   :key="template.id"
+                  :value="template.id"
                 >
                   {{ template.name }}
-                </vs-option>
-              </vs-select>
-              <vs-button color="dark" @click="createPackage">Utwórz&nbsp;przesyłkę</vs-button>
+                </a-select-option>
+              </app-select>
+              <app-button @click="createPackage">Utwórz&nbsp;przesyłkę</app-button>
             </div>
             <small v-else>
               <i class="bx bxs-check-circle"></i> Przesyłka została już zamówiona (Numer śledzenia:
@@ -64,88 +86,102 @@
         <card>
           <template v-if="order.status">
             <h2 class="section-title">Status</h2>
-            <vs-select v-model="status" :key="statuses.length" :loading="isLoading">
-              <vs-option
-                v-for="status in statuses"
-                :label="status.name"
-                :value="status.id"
-                :key="status.id"
-              >
-                {{ status.name }}
-              </vs-option>
-            </vs-select>
+            <app-select
+              v-model="status"
+              :loading="isLoading"
+              :disabled="!$can($p.Orders.EditStatus)"
+            >
+              <a-select-option v-for="{ id, name } in statuses" :key="id" :value="id">
+                {{ name }}
+              </a-select-option>
+            </app-select>
           </template>
           <br />
           <h2 class="section-title">Próby płatności</h2>
           <div v-for="payment in order.payments" :key="payment.id" class="payment-method">
-            <i class="bx bxs-check-circle payment-method__success" v-if="payment.payed"></i>
-            <i class="bx bxs-x-circle payment-method__failed" v-if="!payment.payed"></i>
+            <i v-if="payment.payed" class="bx bxs-check-circle payment-method__success"></i>
+            <i v-if="!payment.payed" class="bx bxs-x-circle payment-method__failed"></i>
             <span class="payment-method__name">{{ payment.method }}</span>
-            <span class="payment-method__amount">({{ payment.amount }} {{ currency }})</span>
+            <span class="payment-method__amount">({{ formatCurrency(payment.amount) }})</span>
           </div>
         </card>
         <card class="comment">
-          <template>
-            <h2 class="section-title">Komentarz</h2>
-            <vs-button size="tiny" dark transparent class="comment__edit" @click="editComment">
-              <i class="bx bxs-pencil"></i>
-            </vs-button>
-            <span class="comment__content">
-              {{ order.comment || 'Brak komentarza do zamówienia' }}
-            </span>
-          </template>
+          <h2 class="section-title">Komentarz</h2>
+          <icon-button
+            v-can="$p.Orders.Edit"
+            size="small"
+            type="transparent"
+            class="comment__edit"
+            @click="editComment"
+          >
+            <i slot="icon" class="bx bxs-pencil"></i>
+          </icon-button>
+          <span class="comment__content">
+            {{ order.comment || 'Brak komentarza do zamówienia' }}
+          </span>
         </card>
         <card>
           <h2 class="section-title">E-mail</h2>
           <div class="email">
-            <vs-button size="tiny" dark transparent class="email__edit" @click="editEmail">
-              <i class="bx bxs-pencil"></i>
-            </vs-button>
+            <icon-button
+              v-can="$p.Orders.Edit"
+              size="small"
+              type="transparent"
+              class="email__edit"
+              @click="editEmail"
+            >
+              <i slot="icon" class="bx bxs-pencil"></i>
+            </icon-button>
             <a :href="`mailto:${order.email}`" class="email__name">{{ order.email }}</a>
           </div>
           <br />
           <h2 class="section-title">Adres dostawy</h2>
-          <app-address :address="order.delivery_address" @edit="editDeliveryAddress" hideRemove />
+          <app-address :address="order.delivery_address" hide-remove @edit="editDeliveryAddress" />
         </card>
         <card>
-          <template>
-            <h2 class="section-title">Adres rozliczeniowy</h2>
-            <app-address
-              :address="order.invoice_address"
-              @edit="editInvoiceAddress"
-              @remove="removeInvoiceAddress"
-            />
-          </template>
+          <h2 class="section-title">Adres rozliczeniowy</h2>
+          <app-address
+            :address="order.invoice_address"
+            @edit="editInvoiceAddress"
+            @remove="removeInvoiceAddress"
+          />
         </card>
       </div>
     </div>
 
-    <vs-dialog width="800px" not-center v-model="isModalActive">
-      <template #header>
-        <h4>Edytuj {{ modalFormTitle }}</h4>
-      </template>
+    <a-modal
+      v-model="isModalActive"
+      width="800px"
+      :footer="null"
+      :title="`Edytuj ${modalFormTitle}`"
+    >
       <modal-form>
         <partial-update-form v-model="form" @save="saveForm" />
       </modal-form>
-    </vs-dialog>
+    </a-modal>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 
-import TopNav from '@/layout/TopNav.vue'
+import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import Address from '@/components/modules/orders/OrderAddress.vue'
 import CartItem from '@/components/layout/CartItem.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import PartialUpdateForm from '@/components/modules/orders/PartialUpdateForm.vue'
+import PopConfirm from '@/components/layout/PopConfirm.vue'
 
-import { getRelativeDate, formatDate } from '@/utils/utils'
-import { createPackage } from '@/services/createPackage'
-import { formatApiError } from '@/utils/errors'
 import { Order, OrderStatus } from '@/interfaces/Order'
+import { getRelativeDate, formatDate } from '@/utils/utils'
+
+import { createPackage } from '@/services/createPackage'
+import { formatApiNotificationError } from '@/utils/errors'
 import { PackageTemplate } from '@/interfaces/PackageTemplate'
+import { downloadJsonAsFile } from '@/utils/download'
+import { formatCurrency } from '@/utils/currency'
+import { api } from '@/api'
 
 const DEFAULT_FORM = {
   address: '',
@@ -159,6 +195,9 @@ const DEFAULT_FORM = {
 }
 
 export default Vue.extend({
+  metaInfo(): any {
+    return { title: `Zamówienie ${this.order?.code}` }
+  },
   components: {
     TopNav,
     Card,
@@ -166,6 +205,7 @@ export default Vue.extend({
     appCartItem: CartItem,
     ModalForm,
     PartialUpdateForm,
+    PopConfirm,
   },
   data: () => ({
     status: '',
@@ -177,9 +217,6 @@ export default Vue.extend({
     isModalActive: false,
   }),
   computed: {
-    currency(): string {
-      return this.$accessor.currency
-    },
     error(): any {
       return this.$accessor.orders.getError
     },
@@ -209,10 +246,22 @@ export default Vue.extend({
       this.setStatus(status)
     },
     error(error) {
-      if (error) this.$vs.notification({ color: 'danger', ...formatApiError(error) })
+      if (error) this.$toast.error(formatApiNotificationError(error))
     },
   },
+  async created() {
+    this.$accessor.startLoading()
+    await Promise.all([
+      this.$accessor.orders.get(this.$route.params.id),
+      this.$accessor.statuses.fetch(),
+      this.$accessor.packageTemplates.fetch(),
+    ])
+    this.$accessor.stopLoading()
+  },
   methods: {
+    formatCurrency(amount: number) {
+      return formatCurrency(amount, this.$accessor.currency)
+    },
     async setStatus(newStatus: OrderStatus) {
       this.isLoading = true
 
@@ -223,10 +272,7 @@ export default Vue.extend({
       })
 
       if (success) {
-        this.$vs.notification({
-          color: 'success',
-          title: 'Status zamówienia został zmieniony',
-        })
+        this.$toast.success('Status zamówienia został zmieniony')
       }
 
       this.isLoading = false
@@ -241,15 +287,9 @@ export default Vue.extend({
 
       if (success) {
         this.shippingNumber = shippingNumber
-        this.$vs.notification({
-          color: 'success',
-          title: 'Przesyłka utworzona poprawnie',
-        })
+        this.$toast.success('Przesyłka utworzona poprawnie')
       } else {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(error),
-        })
+        this.$toast.error(formatApiNotificationError(error))
       }
 
       this.$accessor.stopLoading()
@@ -294,35 +334,34 @@ export default Vue.extend({
       this.$accessor.startLoading()
       await this.$accessor.orders.update({ id: this.order.id, item: this.form })
       this.isModalActive = false
-      this.$vs.notification({
-        color: 'success',
-        title: 'Zamówienie zostało zaktualizowane',
-      })
+      this.$toast.success('Zamówienie zostało zaktualizowane')
       this.$accessor.stopLoading()
     },
-  },
-  async created() {
-    this.$accessor.startLoading()
-    await Promise.all([
-      this.$accessor.orders.get(this.$route.params.id),
-      this.$accessor.statuses.fetch(),
-      this.$accessor.packageTemplates.fetch(),
-    ])
-    this.$accessor.stopLoading()
+
+    async downloadAudits() {
+      const data = await this.$accessor.orders.fetchAudits(this.order.id)
+      downloadJsonAsFile(data, 'orders-history')
+    },
+
+    async payOffline() {
+      this.$accessor.startLoading()
+      try {
+        await api.post(`/orders/${this.order.code}/pay/offline`)
+        await this.$accessor.orders.get(this.$route.params.id)
+        this.$toast.success('Zamówienie zostało opłacone')
+      } catch {
+        this.$toast.error('Nie udało się opłacić zamówienia')
+      }
+
+      this.$accessor.stopLoading()
+    },
   },
 })
 </script>
 
 <style lang="scss" scoped>
-.vs-select,
-.vs-select-content {
-  max-width: 100%;
-  width: 100%;
-}
-
 .section-title {
-  font-family: $font-sec;
-  font-weight: 300;
+  font-weight: 600;
   margin: 0;
   font-size: 1.5em;
   display: flex;
@@ -338,7 +377,7 @@ export default Vue.extend({
   display: flex;
   flex-direction: column;
   margin-top: 8px;
-  color: #444;
+  color: #444444;
   position: relative;
 
   &__edit {
@@ -350,7 +389,7 @@ export default Vue.extend({
   &__name {
     font-size: 1em;
     margin-bottom: 3px;
-    color: #111;
+    color: #111111;
   }
 }
 
@@ -371,14 +410,14 @@ export default Vue.extend({
 }
 
 .cart-total {
-  font-family: $font-sec;
+  font-weight: 600;
   font-size: 1.2em;
   margin-top: auto;
 }
 
 .order {
   display: grid;
-  grid-template-columns: 1fr 300px;
+  grid-template-columns: 1fr 400px;
   grid-gap: 32px;
 
   @media screen and (max-width: 780px) {
@@ -392,7 +431,7 @@ export default Vue.extend({
   margin: 3px 0;
 
   &__name {
-    font-family: $font-main;
+    font-family: $primaryFont;
     margin-left: 10px;
     margin-right: 4px;
     text-transform: capitalize;
@@ -418,13 +457,17 @@ export default Vue.extend({
 }
 
 .send-package {
-  .section-title {
-    margin-bottom: 24px;
+  &__title {
+    margin-bottom: 8px;
   }
 
-  .vs-button {
-    white-space: nowrap;
-    flex-shrink: 0;
+  &__content {
+    display: flex;
+    align-items: center;
+
+    > *:first-child {
+      margin-right: 8px;
+    }
   }
 }
 </style>

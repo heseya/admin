@@ -1,15 +1,16 @@
 <template>
   <div>
-    <PaginatedList title="Statusy zamówień" storeKey="statuses" draggable>
+    <PaginatedList title="Statusy zamówień" store-key="statuses" draggable>
       <template #nav>
-        <vs-button @click="openModal()" color="dark" icon>
-          <i class="bx bx-plus"></i>
-        </vs-button>
+        <icon-button v-can="$p.Statuses.Add" @click="openModal()">
+          <i slot="icon" class="bx bx-plus"></i>
+          Dodaj status
+        </icon-button>
       </template>
-      <template v-slot="{ item: status }">
-        <list-item @click="openModal(status.id)" :key="status.id">
+      <template #default="{ item: status }">
+        <list-item :key="status.id" @click="openModal(status.id)">
           <template #avatar>
-            <vs-avatar :color="`#${status.color}`" />
+            <avatar :color="`#${status.color}`" />
           </template>
           {{ status.name }}
           <small>{{ status.description }}</small>
@@ -18,39 +19,56 @@
     </PaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
-      <vs-dialog width="550px" not-center v-model="isModalActive">
-        <template #header>
-          <h4>{{ editedItem.id ? 'Edycja statusu' : 'Nowy status' }}</h4>
-        </template>
+      <a-modal
+        v-model="isModalActive"
+        width="550px"
+        :title="editedItem.id ? 'Edycja statusu' : 'Nowy status'"
+      >
         <modal-form>
-          <validated-input rules="required" v-model="editedItem.name" label="Nazwa" />
-
-          <validated-input rules="required" v-model="editedItem.description" label="Opis" />
+          <validated-input
+            v-model="editedItem.name"
+            :disabled="!canModify"
+            rules="required"
+            label="Nazwa"
+          />
 
           <validated-input
+            v-model="editedItem.description"
+            :disabled="!canModify"
+            rules="required"
+            label="Opis"
+          />
+
+          <validated-input
+            :disabled="!canModify"
             rules="required"
             :value="`#${editedItem.color}`"
             label="Kolor statusu"
-            @input="setColor"
             type="color"
+            @input="setColor"
           />
-          <SwitchInput horizontal v-model="editedItem.cancel" label="Anulowanie zamówienia" />
+          <SwitchInput
+            v-model="editedItem.cancel"
+            :disabled="!canModify"
+            horizontal
+            label="Anulowanie zamówienia"
+          />
         </modal-form>
         <template #footer>
           <div class="row">
-            <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
+            <app-button v-if="canModify" @click="handleSubmit(saveModal)"> Zapisz </app-button>
             <pop-confirm
+              v-can="$p.Statuses.Remove"
               title="Czy na pewno chcesz usunąć ten status?"
-              okText="Usuń"
-              cancelText="Anuluj"
+              ok-text="Usuń"
+              cancel-text="Anuluj"
               @confirm="deleteItem"
-              v-slot="{ open }"
             >
-              <vs-button v-if="editedItem.id" color="danger" @click="open">Usuń</vs-button>
+              <app-button v-if="editedItem.id" type="danger">Usuń</app-button>
             </pop-confirm>
           </div>
         </template>
-      </vs-dialog>
+      </a-modal>
     </validation-observer>
   </div>
 </template>
@@ -65,7 +83,7 @@ import ModalForm from '@/components/form/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
-import ValidatedInput from '@/components/form/ValidatedInput.vue'
+import Avatar from '@/components/layout/Avatar.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import { OrderStatus } from '@/interfaces/Order'
@@ -79,6 +97,7 @@ const CLEAR_STATUS: OrderStatus = {
 }
 
 export default Vue.extend({
+  metaInfo: { title: 'Statusy zamówień' },
   components: {
     PaginatedList,
     ListItem,
@@ -86,12 +105,25 @@ export default Vue.extend({
     PopConfirm,
     ValidationObserver,
     SwitchInput,
-    ValidatedInput,
+    Avatar,
+  },
+  beforeRouteLeave(to, from, next) {
+    if (this.isModalActive) {
+      this.isModalActive = false
+      next(false)
+    } else {
+      next()
+    }
   },
   data: () => ({
     isModalActive: false,
     editedItem: clone(CLEAR_STATUS) as OrderStatus,
   }),
+  computed: {
+    canModify(): boolean {
+      return this.$can(this.editedItem.id ? this.$p.Statuses.Edit : this.$p.Statuses.Add)
+    },
+  },
   methods: {
     setColor(color: string) {
       this.editedItem.color = color.split('#')[1] ?? color
@@ -124,14 +156,6 @@ export default Vue.extend({
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
-  },
-  beforeRouteLeave(to, from, next) {
-    if (this.isModalActive) {
-      this.isModalActive = false
-      next(false)
-    } else {
-      next()
-    }
   },
 })
 </script>

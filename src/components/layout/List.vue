@@ -5,9 +5,9 @@
 </template>
 
 <style lang="scss">
-@media (min-width: $break) {
+@media ($viewport-11) {
   .list {
-    padding: 10px 24px;
+    padding: 10px;
   }
 }
 </style>

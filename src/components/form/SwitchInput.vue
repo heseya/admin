@@ -3,14 +3,10 @@
     <label class="switch-input__label">
       <slot name="title">{{ label }}</slot>
     </label>
-    <vs-switch success :value="value" @input="onInput">
-      <template #off>
-        <i class="bx bx-x"></i>
-      </template>
-      <template #on>
-        <i class="bx bx-check"></i>
-      </template>
-    </vs-switch>
+    <a-switch :checked="value" :disabled="disabled" @change="onInput">
+      <i slot="unCheckedChildren" class="bx bx-x"></i>
+      <i slot="checkedChildren" class="bx bx-check"></i>
+    </a-switch>
   </div>
 </template>
 
@@ -20,13 +16,17 @@ export default Vue.extend({
   props: {
     value: {
       type: Boolean,
+      required: true,
+    },
+    disabled: {
+      type: Boolean,
       default: false,
     },
     horizontal: {
       type: Boolean,
       default: false,
     },
-    label: String,
+    label: { type: String, default: '' },
   },
   methods: {
     onInput(v: boolean) {
@@ -42,10 +42,9 @@ export default Vue.extend({
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 10px;
 
   &__label {
-    font-family: $font-main;
+    font-family: $primaryFont;
     font-size: 0.8em;
     margin-bottom: 3px;
   }
@@ -55,8 +54,24 @@ export default Vue.extend({
   }
   &--horizontal &__label {
     font-size: 1em;
-    font-family: $font-sec;
+    font-weight: 600;
     margin-right: 10px;
+  }
+
+  .ant-switch {
+    background-color: $background-color-600;
+
+    i {
+      margin-top: 4px;
+      color: $font-color;
+    }
+  }
+  .ant-switch-checked {
+    background-color: $green-color-500;
+
+    i {
+      color: #ffffff;
+    }
   }
 }
 </style>

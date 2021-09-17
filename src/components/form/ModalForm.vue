@@ -18,26 +18,6 @@ export default Vue.extend({
   align-items: stretch;
   justify-content: stretch;
 
-  .vs-input-parent {
-    margin-bottom: 32px;
-  }
-
-  .vs-input-parent,
-  .vs-input {
-    width: 100%;
-  }
-
-  .vs-select-content,
-  .vs-select {
-    max-width: 100%;
-    width: 100%;
-  }
-
-  .vs-select__chips {
-    display: flex;
-    align-items: center;
-  }
-
   .center {
     display: flex;
     justify-content: center;

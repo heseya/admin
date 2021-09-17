@@ -1,56 +1,67 @@
 <template>
-  <list-item @click="onClick" class="product-list-item">
+  <list-item class="product-list-item" @click="onClick">
     <template #avatar>
-      <vs-avatar color="#eee">
+      <avatar color="#eee">
         <img
           v-if="product.cover"
           :src="`${product.cover.url}?w=100&h=100`"
           :style="{ objectFit }"
         />
         <i v-else class="product-list-item__img-icon bx bx-image"></i>
-      </vs-avatar>
+      </avatar>
     </template>
 
     {{ product.name }}
-    <small>{{ product.price }} {{ currency }}</small>
+    <small>{{ formatCurrency(product.price) }}</small>
 
     <template #action>
       <div class="product-list-item__tags">
         <div
-          class="product-list-item__tag"
-          :style="{ backgroundColor: `#${tag.color}` }"
           v-for="tag in product.tags"
           :key="tag.id"
+          class="product-list-item__tag"
+          :style="{ backgroundColor: `#${tag.color}` }"
         >
           {{ tag.name }}
         </div>
       </div>
 
-      <vs-avatar size="22" class="product-list-item__icon" color="#000" v-if="!product.visible">
+      <avatar v-if="!product.visible" tiny class="product-list-item__icon" color="#000">
         <i class="bx bx-lock-alt"></i>
-      </vs-avatar>
+      </avatar>
     </template>
   </list-item>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import ListItem from '../../layout/ListItem.vue'
+
+import ListItem from '@/components/layout/ListItem.vue'
+import Avatar from '@/components/layout/Avatar.vue'
+
+import { Product } from '@/interfaces/Product'
+import { formatCurrency } from '@/utils/currency'
 
 export default Vue.extend({
-  components: { ListItem },
+  components: { ListItem, Avatar },
   props: {
-    product: Object,
+    product: {
+      type: Object,
+      required: true,
+    } as Vue.PropOptions<Product>,
   },
   computed: {
-    currency(): string {
-      return this.$accessor.currency
-    },
     objectFit(): string {
       return +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'
     },
   },
+  mounted() {
+    navigator.permissions.query({ name: 'clipboard-write' as PermissionName })
+  },
   methods: {
+    formatCurrency(amount: number) {
+      return formatCurrency(amount, this.$accessor.currency)
+    },
     onClick() {
       // @ts-ignore
       if (window.copyIdMode === true) {
@@ -62,14 +73,8 @@ export default Vue.extend({
     },
     async copyId() {
       await navigator.clipboard.writeText(this.product.id)
-      this.$vs.notification({
-        color: 'success',
-        title: 'Skopiowano id',
-      })
+      this.$toast.success('Skopiowano ID')
     },
-  },
-  mounted() {
-    navigator.permissions.query({ name: 'clipboard-write' })
   },
 })
 </script>
@@ -94,7 +99,7 @@ export default Vue.extend({
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 2em;
-    color: #999;
+    color: #999999;
 
     &::after {
       content: '';
@@ -119,9 +124,9 @@ export default Vue.extend({
     display: inline-block;
     margin-right: 3px;
     margin-top: 3px;
-    background-color: #000;
+    background-color: #000000;
     padding: 3px 6px;
-    color: #fff;
+    color: #ffffff;
     font-size: 0.7em;
     border-radius: 3px;
   }

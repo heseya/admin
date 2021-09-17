@@ -9,8 +9,6 @@
         type="password"
         @keydown.enter="handleSubmit(changePassword)"
       />
-      <br />
-      <br />
       <validated-input
         v-model="repeatPassword"
         name="repeatPassword"
@@ -22,7 +20,7 @@
       <br />
 
       <div class="central-screen-form__row">
-        <vs-button dark @click="handleSubmit(changePassword)"> Zmień hasło </vs-button>
+        <app-button @click="handleSubmit(changePassword)"> Zmień hasło </app-button>
       </div>
     </ValidationObserver>
   </central-screen-form>
@@ -33,24 +31,21 @@ import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 
 import CentralScreenForm from '@/components/form/CentralScreenForm.vue'
-import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
-import { formatApiError } from '@/utils/errors'
+import { formatApiNotificationError } from '@/utils/errors'
 import { api } from '@/api'
 
 export default Vue.extend({
+  metaInfo: { title: 'Nowe hasło' },
   components: {
     CentralScreenForm,
-    ValidatedInput,
     ValidationObserver,
   },
-  data() {
-    return {
-      password: '',
-      repeatPassword: '',
-      isSuccess: false,
-    }
-  },
+  data: () => ({
+    password: '',
+    repeatPassword: '',
+    isSuccess: false,
+  }),
   computed: {
     error(): any {
       return this.$accessor.auth.error
@@ -59,10 +54,7 @@ export default Vue.extend({
   watch: {
     error(error: any) {
       if (error) {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(error),
-        })
+        this.$toast.error(formatApiNotificationError(error))
       }
     },
   },
@@ -72,8 +64,8 @@ export default Vue.extend({
     try {
       if (!token || !email) throw new Error('Token or email does not exist')
       await api.get(`/users/reset-password?token=${token}&email=${email}`)
-    } catch (e) {
-      this.$vs.notification({ color: 'danger', ...formatApiError(e) })
+    } catch (e: any) {
+      this.$toast.error(formatApiNotificationError(e))
       this.$router.replace('/login')
     }
   },
@@ -88,10 +80,7 @@ export default Vue.extend({
       this.$accessor.stopLoading()
 
       if (isSuccess) {
-        this.$vs.notification({
-          color: 'success',
-          title: 'Hasło zostało zmienione',
-        })
+        this.$toast.success('Hasło zostało zmienione')
         this.$router.push({ name: 'Login' })
       }
     },

@@ -1,12 +1,17 @@
 <template>
-  <div id="app">
-    <navigation></navigation>
+  <div id="app" class="app" :class="{ 'app--full-size': isNavHidden }">
+    <DesktopNavigation class="app__nav"></DesktopNavigation>
+    <MobileNavigation class="app__mobile-nav"></MobileNavigation>
 
-    <main class="main">
-      <transition name="fade">
+    <AppHeader class="app__header"></AppHeader>
+
+    <main class="app__content">
+      <transition name="fade" mode="out-in">
         <router-view />
       </transition>
     </main>
+
+    <Loading :relative="false" :active="isLoading" />
   </div>
 </template>
 
@@ -14,39 +19,42 @@
 import Vue from 'vue'
 import { init as initMicroApps, onMounted } from 'microfront-lib'
 
-import Navigation from './layout/Navigation.vue'
+import DesktopNavigation from './components/root/DesktopNavigation.vue'
+import MobileNavigation from './components/root/MobileNavigation.vue'
+import AppHeader from './components/root/Header.vue'
+import Loading from './components/layout/Loading.vue'
 
 export default Vue.extend({
-  components: {
-    Navigation,
+  metaInfo: {
+    // if no subcomponents specify a metaInfo.title, this title will be used
+    title: 'Admin',
+    // all titles will be injected into this template
+    titleTemplate: '%s | Heseya Shop System',
   },
-  data: () => ({
-    loadingInstance: null as null | { close: () => void },
-  }),
+  components: {
+    DesktopNavigation,
+    MobileNavigation,
+    AppHeader,
+    Loading,
+  },
   computed: {
     isLoading(): boolean {
       return this.$accessor.loading
     },
+    isNavHidden(): boolean {
+      return !!this.$route.meta?.hiddenNav || false
+    },
   },
   watch: {
-    isLoading(isLoading: boolean) {
-      if (isLoading) {
-        this.loadingInstance = this.$vs.loading({ color: '#000' })
-      } else if (this.loadingInstance) {
-        this.loadingInstance.close()
-      }
-    },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     '$accessor.auth.permissionsError'(_permissionsError) {
-      this.$vs.notification({
-        color: 'danger',
-        title: 'Brak uprawnień',
-        text: `Nie posiadasz uprawnień do tej akcji`,
-      })
+      this.$toast.error('Nie posiadasz uprawnień do tej akcji')
     },
   },
   created() {
     initMicroApps()
     this.$accessor.fetchEnv()
+    if (this.$accessor.auth.isLogged) this.$accessor.auth.fetchProfile()
 
     const tokenChannel = new BroadcastChannel('token')
 
@@ -57,93 +65,47 @@ export default Vue.extend({
 })
 </script>
 
+<style lang="scss" src="@/scss/base.scss"></style>
+
 <style lang="scss">
-@font-face {
-  font-family: 'Tw Cen MT';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Tw Cen MT'), url(/fonts/TwCenMT.woff) format('woff');
-}
-
-body {
-  font-family: 'BlinkMacSystemFont', 'Roboto', sans-serif;
-  background: #f4f7f8;
-  margin: 0;
-}
-
-.vs-input-parent input {
-  width: 100% !important;
-}
-
-.vs-button--size-tiny {
-  --vs-button-padding: 8px !important;
-  margin: 0;
-}
-
-hr {
-  all: unset;
-  display: block;
-  height: 1px;
-  background-color: #eee;
-  width: 100%;
-  margin: 12px 0;
-}
-
-.main {
-  max-width: 940px;
-  padding: 0 20px;
-  margin: 0 auto;
-  margin-bottom: 80px;
-}
-
-.row {
-  display: flex;
-  justify-content: space-between;
-}
-
-.flex-column {
-  height: 100%;
+.app {
   display: flex;
   flex-direction: column;
-}
+  transition: padding 0.3s;
 
-.fade-enter-active,
-.fade-leave-active {
-  transition-property: opacity;
-  transition-duration: 0.25s;
-}
+  @media ($viewport-11) {
+    padding-left: $navWidth;
+  }
+  @media ($max-viewport-11) {
+    padding-bottom: 60px;
+  }
 
-.fade-enter-active {
-  transition-delay: 0.25s;
-}
+  &--full-size {
+    padding-left: 0 !important;
+    padding-bottom: 0 !important;
+  }
 
-.fade-enter,
-.fade-leave-active {
-  opacity: 0;
-}
+  &__nav {
+    @media ($max-viewport-11) {
+      display: none !important;
+    }
+  }
 
-.label {
-  display: block;
-  margin-left: 5px;
-  margin-bottom: 3px;
-  color: #000 !important;
-  font-size: 0.75rem;
-  font-weight: 500;
-}
+  &__mobile-nav {
+    @media ($viewport-11) {
+      display: none !important;
+    }
+  }
 
-.flex {
-  display: flex;
-}
+  &__content {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 24px 12px;
+    margin: 0 auto;
 
-.multiselect {
-  z-index: 1000;
-}
-
-.multiselect__tag {
-  background: #000;
-}
-
-.multiselect__tag-icon::after {
-  color: #fff;
+    @media ($viewport-7) {
+      padding: 32px 24px;
+    }
+  }
 }
 </style>

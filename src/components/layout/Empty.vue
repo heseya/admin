@@ -17,6 +17,8 @@ export default Vue.extend({})
 </script>
 
 <style lang="scss">
+$color: lighten($font-color, 50%);
+
 .empty {
   display: flex;
   flex-direction: column;
@@ -25,14 +27,16 @@ export default Vue.extend({})
   padding: 24px 12px;
 
   &__icon {
-    font-size: 3em;
-    margin-bottom: 12px;
-    color: #aaa;
+    font-size: 4em;
+    line-height: 1em;
+    color: $color;
   }
 
   &__message {
-    font-family: $font-sec;
-    font-size: 1.2em;
+    font-family: $primaryFont;
+    color: $color;
+    font-weight: 600;
+    font-size: 1.3em;
   }
 }
 </style>

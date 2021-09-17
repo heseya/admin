@@ -3,9 +3,16 @@ module.exports = {
     loaderOptions: {
       sass: {
         prependData: `
-          @import "@/scss/_variables.scss";
-          @import "@/scss/_title.scss";
+          @import "@/scss/_font.scss";
+          @import "@/scss/01_abstracts/index.scss";
         `,
+      },
+      less: {
+        javascriptEnabled: true,
+        modifyVars: {
+          'primary-color': '#0879eb',
+          'link-color': '#8dc6ff',
+        },
       },
     },
   },

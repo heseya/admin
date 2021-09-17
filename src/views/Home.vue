@@ -4,56 +4,56 @@
 
     <div class="home">
       <div>
-        <card>
+        <card v-can="$p.Analytics.Payments">
           <div class="flex-column">
             <h2 class="section-title">Przychody</h2>
 
             <div class="incomes">
-              <div class="income-box">
+              <card class="income-box">
                 <div class="income-box__title">W tym tygodniu</div>
                 <div class="income-box__value">
-                  {{ currentWeekIncome.toFixed(2) }} {{ currency }}
+                  {{ formatCurrency(currentWeekIncome) }}
                 </div>
                 <div class="income-box__orders">{{ currentWeekOrdersCount }} zamówień</div>
-              </div>
-              <div class="income-box">
+              </card>
+              <card class="income-box">
                 <div class="income-box__title">W tym miesiącu</div>
                 <div class="income-box__value">
-                  {{ currentMonthIncome.toFixed(2) }} {{ currency }}
+                  {{ formatCurrency(currentMonthIncome) }}
                 </div>
                 <div class="income-box__orders">{{ currentMonthOrdersCount }} zamówień</div>
-              </div>
-              <div class="income-box">
+              </card>
+              <card class="income-box">
                 <div class="income-box__title">W tym roku</div>
                 <div class="income-box__value">
-                  {{ currentYearIncome.toFixed(2) }} {{ currency }}
+                  {{ formatCurrency(currentYearIncome) }}
                 </div>
                 <div class="income-box__orders">{{ currentYearOrdersCount }} zamówień</div>
-              </div>
-              <div class="income-box">
+              </card>
+              <card class="income-box">
                 <div class="income-box__title">W ubiegłym roku</div>
-                <div class="income-box__value">{{ lastYearIncome.toFixed(2) }} {{ currency }}</div>
+                <div class="income-box__value">{{ formatCurrency(lastYearIncome) }}</div>
                 <div class="income-box__orders">{{ lastYearOrdersCount }} zamówień</div>
-              </div>
+              </card>
             </div>
           </div>
         </card>
       </div>
 
       <div>
-        <card>
+        <card v-can="$p.Orders.Show">
           <h2 class="section-title" style="margin-bottom: 20px">Ostatnie zamówienia</h2>
           <list-item
-            class="order"
             v-for="order in orders"
             :key="order.id"
+            class="order"
             :url="`/orders/${order.id}`"
           >
             <div>{{ order.code }}</div>
             <small>{{ getRelativeDate(order.created_at) }}</small>
 
             <template #action>
-              <div>{{ order.summary }} {{ currency }}</div>
+              <div>{{ formatCurrency(order.summary) }}</div>
             </template>
           </list-item>
         </card>
@@ -71,14 +71,16 @@ import startOfYear from 'date-fns/startOfYear'
 
 import { getPaymentsCount } from '@/services/statistics'
 import { DateInput, getRelativeDate } from '@/utils/utils'
+import { formatCurrency } from '@/utils/currency'
 
-import TopNav from '@/layout/TopNav.vue'
+import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 
 import { Order } from '@/interfaces/Order'
 
 export default Vue.extend({
+  metaInfo: { title: 'Dashboard' },
   components: {
     ListItem,
     TopNav,
@@ -100,20 +102,6 @@ export default Vue.extend({
     },
     orders(): Order[] {
       return this.$accessor.orders.getData
-    },
-    currency(): string {
-      return this.$accessor.currency
-    },
-  },
-  methods: {
-    getRelativeDate(date: DateInput) {
-      return getRelativeDate(date)
-    },
-    async getOrders() {
-      await this.$accessor.orders.fetch({
-        page: 1,
-        limit: 6,
-      })
     },
   },
   async created() {
@@ -144,17 +132,31 @@ export default Vue.extend({
 
     this.$accessor.stopLoading()
   },
+  methods: {
+    getRelativeDate(date: DateInput) {
+      return getRelativeDate(date)
+    },
+    formatCurrency(amount: number) {
+      return formatCurrency(amount, this.$accessor.currency)
+    },
+    async getOrders() {
+      await this.$accessor.orders.fetch({
+        page: 1,
+        limit: 6,
+      })
+    },
+  },
 })
 </script>
 
 <style lang="scss" scoped>
 .home {
   display: grid;
-  grid-template-columns: 1fr 300px;
+  grid-template-columns: 1fr;
   grid-gap: 32px;
 
-  @media screen and (max-width: 780px) {
-    grid-template-columns: 1fr;
+  @media ($viewport-10) {
+    grid-template-columns: 1fr 0.6fr;
   }
 
   .order {
@@ -163,8 +165,7 @@ export default Vue.extend({
 }
 
 .section-title {
-  font-family: $font-sec;
-  font-weight: 300;
+  font-weight: 600;
   margin: 0;
   font-size: 1.5em;
   display: flex;
@@ -178,33 +179,38 @@ export default Vue.extend({
 
 .incomes {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   grid-gap: 16px;
   padding: 16px 0;
+
+  @media ($viewport-6) {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 .income-box {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  text-align: center;
   align-items: center;
-  padding: 16px;
-  border-radius: 16px;
-  box-shadow: $shadow;
+  margin-bottom: 0;
+  padding: 32px 16px;
 
   &__title {
-    font-family: $font-sec;
+    font-weight: 600;
   }
 
   &__value {
-    font-family: $font-sec;
+    font-weight: 600;
     font-size: 2.6rem;
+    line-height: 1em;
     margin: 8px 0;
   }
 
   &__orders {
     font-size: 0.9rem;
-    color: #aaa;
+    color: #aaaaaa;
   }
 }
 </style>

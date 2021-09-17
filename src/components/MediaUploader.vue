@@ -1,7 +1,7 @@
 <template>
   <div
     class="media-uploader"
-    :class="{ 'media-uploader--drag': isDrag }"
+    :class="{ 'media-uploader--drag': isDrag, 'media-uploader--disabled': disabled }"
     @click="selectFiles"
     @drop.prevent="dropFiles"
     @dragover.prevent="() => {}"
@@ -20,18 +20,24 @@ import { uploadMedia } from '@/services/uploadMedia'
 
 export default Vue.extend({
   name: 'MediaUploader',
-  data: () => ({
-    isDrag: false,
-    file: null as null | File,
-  }),
   props: {
     extensions: {
       type: Array,
       default: () => ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg'],
     } as Vue.PropOptions<string[]>,
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
+  data: () => ({
+    isDrag: false,
+    file: null as null | File,
+  }),
   methods: {
     selectFiles() {
+      if (this.disabled) return
+
       const input = document.createElement('input')
       input.type = 'file'
 
@@ -46,6 +52,8 @@ export default Vue.extend({
       input.click()
     },
     dropFiles(e: any) {
+      if (this.disabled) return
+
       this.file = e?.dataTransfer?.files?.[0] as File
       if (this.file) {
         this.changeDrag(false)
@@ -55,11 +63,9 @@ export default Vue.extend({
     },
     async upload() {
       if (!this.isFileValid()) {
-        this.$vs.notification({
-          color: 'danger',
-          title: 'Złe rozszerzenie pliku',
-          text: `Obsługiwane są tylko pliki z rozszerzeniami: ${this.extensions.join(', ')}`,
-        })
+        this.$toast.error(
+          `Obsługiwane są tylko pliki z rozszerzeniami: ${this.extensions.join(', ')}`,
+        )
         return
       }
 

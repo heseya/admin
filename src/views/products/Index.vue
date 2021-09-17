@@ -1,68 +1,78 @@
 <template>
   <div class="products-container" :class="{ 'products-container--grid-view': !listView }">
-    <PaginatedList title="Asortyment" :filters="filters" storeKey="products">
+    <PaginatedList
+      title="Asortyment"
+      :filters="filters"
+      store-key="products"
+      @clear-filters="clearFilters"
+    >
       <template #nav>
-        <vs-tooltip bottom>
-          <vs-button color="dark" @click="listView = !listView" icon>
+        <icon-button @click="listView = !listView">
+          <template #icon>
             <i v-if="!listView" class="bx bx-list-ul"></i>
             <i v-else class="bx bx-grid"></i>
-          </vs-button>
-          <template #tooltip> Przełącz na widok {{ listView ? 'siatki' : 'listy' }} </template>
-        </vs-tooltip>
+          </template>
+          Przełącz na widok {{ listView ? 'siatki' : 'listy' }}
+        </icon-button>
 
-        <vs-button color="dark" @click="areFiltersOpen = true" icon>
-          <i class="bx bx-filter-alt"></i>
-        </vs-button>
-
-        <vs-button to="/products/create" color="dark" icon>
-          <i class="bx bx-plus"></i>
-        </vs-button>
+        <icon-button to="/products/create">
+          <i slot="icon" class="bx bx-plus"></i>
+          Dodaj produkt
+        </icon-button>
       </template>
 
-      <template v-slot="{ item: product }">
+      <template #filters>
+        <products-filter :filters="filters" @search="makeSearch" />
+      </template>
+
+      <template #default="{ item: product }">
         <ProductTile v-if="!listView" :product="product" />
         <ProductListItem v-else :product="product" />
       </template>
     </PaginatedList>
-
-    <vs-dialog width="550px" not-center v-model="areFiltersOpen">
-      <template #header>
-        <h4>Filtry</h4>
-      </template>
-      <modal-form>
-        <products-filter :filters="filters" @search="makeSearch" />
-      </modal-form>
-    </vs-dialog>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import { isArray } from 'lodash'
 
 import ProductTile from '@/components/modules/products/ProductTile.vue'
 import ProductListItem from '@/components/modules/products/ProductListItem.vue'
 import ProductsFilter, {
   EMPTY_PRODUCT_FILTERS,
 } from '@/components/modules/products/ProductsFilter.vue'
-import ModalForm from '@/components/form/ModalForm.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
+
 import { formatFilters } from '@/utils/utils'
+import { ALL_FILTER_VALUE } from '@/consts/filters'
 
 const LOCAL_STORAGE_KEY = 'products-list-view'
 
 export default Vue.extend({
+  metaInfo: { title: 'Produkty' },
   components: {
     ProductTile,
     ProductListItem,
     ProductsFilter,
-    ModalForm,
     PaginatedList,
   },
   data: () => ({
     filters: { ...EMPTY_PRODUCT_FILTERS },
-    areFiltersOpen: false,
     listView: false,
   }),
+  watch: {
+    listView(listView: boolean) {
+      window.localStorage.setItem(LOCAL_STORAGE_KEY, String(Number(listView)))
+    },
+  },
+  created() {
+    this.filters.search = (this.$route.query.search as string) || ''
+    const sets = this.$route.query.sets || [ALL_FILTER_VALUE]
+    this.filters.sets = isArray(sets) ? (sets as string[]) : [sets]
+
+    this.listView = !!+(window.localStorage.getItem(LOCAL_STORAGE_KEY) || 0)
+  },
   methods: {
     makeSearch(filters: typeof EMPTY_PRODUCT_FILTERS) {
       this.filters = filters
@@ -74,20 +84,9 @@ export default Vue.extend({
         query: { page: undefined, ...queryFilters },
       })
     },
-  },
-  watch: {
-    listView(listView: boolean) {
-      window.localStorage.setItem(LOCAL_STORAGE_KEY, String(Number(listView)))
+    clearFilters() {
+      this.makeSearch({ ...EMPTY_PRODUCT_FILTERS })
     },
-  },
-  created() {
-    this.filters.search = (this.$route.query.search as string) || ''
-    this.filters.sets = (this.$route.query.set as string) || ''
-    // for future purposes, when we'll be able to filter by more than one set
-    // const sets = this.$route.query.set || []
-    // this.filters.sets = isArray(sets) ? (sets as string[]) : [sets]
-
-    this.listView = !!+(window.localStorage.getItem(LOCAL_STORAGE_KEY) || 0)
   },
 })
 </script>
@@ -95,32 +94,21 @@ export default Vue.extend({
 <style lang="scss">
 .products-container {
   &--grid-view {
-    .card {
+    .paginated-list__content {
       padding: 0;
-      background-color: #fff0;
+      background-color: #ffffff00;
       box-shadow: none;
+      border: none;
     }
 
     .paginated-list__list {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       grid-gap: 22px;
       padding: 0;
       min-height: 100px;
       margin-bottom: 12px;
       align-items: start;
-    }
-
-    @media (min-width: 700px) {
-      .paginated-list__list {
-        grid-template-columns: 1fr 1fr 1fr;
-      }
-    }
-
-    @media (min-width: $break) {
-      .paginated-list__list {
-        grid-template-columns: 1fr 1fr 1fr 1fr;
-      }
     }
   }
 }

@@ -3,15 +3,16 @@
     <top-nav :title="!isNew ? page.name : 'Nowa strona'">
       <pop-confirm
         v-if="!isNew"
+        v-can="$p.Pages.Remove"
         title="Czy na pewno chcesz usunąć tą stronę?"
-        okText="Usuń"
-        cancelText="Anuluj"
+        ok-text="Usuń"
+        cancel-text="Anuluj"
         @confirm="deletePage"
-        v-slot="{ open }"
       >
-        <vs-button dark icon @click="open">
-          <i class="bx bx-trash"></i>
-        </vs-button>
+        <icon-button type="danger">
+          <i slot="icon" class="bx bx-trash"></i>
+          Usuń
+        </icon-button>
       </pop-confirm>
     </top-nav>
 
@@ -19,17 +20,33 @@
       <validation-observer v-slot="{ handleSubmit }">
         <card>
           <div class="page__info">
-            <validated-input rules="required" v-model="form.name" @input="editSlug" label="Nazwa" />
-            <validated-input rules="required|slug" v-model="form.slug" label="Link" />
+            <validated-input
+              v-model="form.name"
+              rules="required"
+              label="Nazwa"
+              :disabled="!canModify"
+              @input="editSlug"
+            />
+            <validated-input
+              v-model="form.slug"
+              rules="required|slug"
+              label="Link"
+              :disabled="!canModify"
+            />
             <flex-input>
-              <switch-input horizontal label="Widoczność strony" v-model="form.public" />
+              <switch-input
+                v-model="form.public"
+                horizontal
+                label="Widoczność strony"
+                :disabled="!canModify"
+              />
             </flex-input>
           </div>
           <br />
           <small class="label">Treść</small>
-          <rich-editor v-if="!isLoading" v-model="form.content_html" />
+          <rich-editor v-if="!isLoading" v-model="form.content_html" :disabled="!canModify" />
           <br />
-          <vs-button color="dark" size="large" @click="handleSubmit(save)"> Zapisz </vs-button>
+          <app-button v-if="canModify" @click="handleSubmit(save)"> Zapisz </app-button>
         </card>
       </validation-observer>
     </div>
@@ -41,18 +58,20 @@ import Vue from 'vue'
 import slugify from 'slugify'
 import { ValidationObserver } from 'vee-validate'
 
-import TopNav from '@/layout/TopNav.vue'
+import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import FlexInput from '@/components/layout/FlexInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import RichEditor from '@/components/form/RichEditor.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
-import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
-import { formatApiError } from '@/utils/errors'
+import { formatApiNotificationError } from '@/utils/errors'
 import { Page } from '@/interfaces/Page'
 
 export default Vue.extend({
+  metaInfo(): any {
+    return { title: this.page?.name || 'Nowa strona' }
+  },
   components: {
     TopNav,
     Card,
@@ -61,19 +80,16 @@ export default Vue.extend({
     RichEditor,
     ValidationObserver,
     SwitchInput,
-    ValidatedInput,
   },
-  data() {
-    return {
-      form: {
-        name: '',
-        slug: '',
-        content_md: '',
-        content_html: '',
-        public: true,
-      },
-    }
-  },
+  data: () => ({
+    form: {
+      name: '',
+      slug: '',
+      content_md: '',
+      content_html: '',
+      public: true,
+    },
+  }),
   computed: {
     id(): string {
       return this.$route.params.id
@@ -90,6 +106,9 @@ export default Vue.extend({
     isLoading(): boolean {
       return this.$accessor.pages.isLoading
     },
+    canModify(): boolean {
+      return this.$can(this.isNew ? this.$p.Pages.Add : this.$p.Pages.Edit)
+    },
   },
   watch: {
     page(page: Page) {
@@ -99,12 +118,16 @@ export default Vue.extend({
     },
     error(error) {
       if (error) {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(error),
-        })
+        this.$toast.error(formatApiNotificationError(error))
       }
     },
+  },
+  async created() {
+    if (!this.isNew) {
+      this.$accessor.startLoading()
+      await this.$accessor.pages.get(this.id)
+      this.$accessor.stopLoading()
+    }
   },
   methods: {
     editSlug() {
@@ -117,10 +140,7 @@ export default Vue.extend({
       if (this.isNew) {
         const page = await this.$accessor.pages.add(this.form)
         if (page && page.id) {
-          this.$vs.notification({
-            color: 'success',
-            title: 'Strona została utworzona.',
-          })
+          this.$toast.success('Strona została utworzona.')
           this.$router.push(`/pages/${page.id}`)
         }
       } else {
@@ -129,10 +149,7 @@ export default Vue.extend({
           item: this.form,
         })
         if (success) {
-          this.$vs.notification({
-            color: 'success',
-            title: 'Strona została zaktualizowana.',
-          })
+          this.$toast.success('Strona została zaktualizowana.')
         }
       }
       this.$accessor.stopLoading()
@@ -141,21 +158,11 @@ export default Vue.extend({
       this.$accessor.startLoading()
       const success = await this.$accessor.pages.remove(this.id)
       if (success) {
-        this.$vs.notification({
-          color: 'success',
-          title: 'Strona została usunięta.',
-        })
+        this.$toast.success('Strona została usunięta.')
         this.$router.push('/pages')
       }
       this.$accessor.stopLoading()
     },
-  },
-  async created() {
-    if (!this.isNew) {
-      this.$accessor.startLoading()
-      await this.$accessor.pages.get(this.id)
-      this.$accessor.stopLoading()
-    }
   },
 })
 </script>
@@ -172,13 +179,9 @@ export default Vue.extend({
   input {
     width: 100%;
   }
-
-  .vs-select-content {
-    max-width: none;
-  }
 }
 
-@media (min-width: $break) {
+@media ($viewport-11) {
   .page__info {
     grid-template-columns: 1fr 1fr 1fr;
     column-gap: 20px;

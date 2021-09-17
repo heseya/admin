@@ -4,6 +4,7 @@ import { required, email } from 'vee-validate/dist/rules'
 import { ShippingMethodPriceRangeDTO } from '@/interfaces/ShippingMethod'
 
 import { ONLY_LETTERS_REGEX, PASSWORD_REGEX, SLUG_REGEX } from '@/consts/regexes'
+import { isBefore } from 'date-fns'
 
 extend('required', {
   ...required,
@@ -61,6 +62,14 @@ extend('letters-only', {
   message: 'Wartość może składać się tylko z liter i podkreślników (_)',
   validate: (value) => {
     return ONLY_LETTERS_REGEX.test(value)
+  },
+})
+
+extend('date-before', {
+  message: 'Data zakończenia musi być przed datą startu',
+  params: ['target'],
+  validate(date, { target }: Record<string, any>) {
+    return target ? isBefore(new Date(date), new Date(target)) : true
   },
 })
 

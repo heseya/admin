@@ -7,7 +7,7 @@ export const statuses = createVuexCRUD<OrderStatus>()('statuses', {
   getters: {},
   mutations: {},
   actions: {
-    async reorder({ commit }, statuses) {
+    async reorder(_u, statuses) {
       await reorderCollection('statuses', 'statuses', 'order')(statuses)
     },
   },

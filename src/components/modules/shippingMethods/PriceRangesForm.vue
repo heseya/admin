@@ -2,23 +2,28 @@
   <div class="price-ranges-form">
     <h5 class="price-ranges-form__title">Zakresy cen</h5>
     <div class="price-ranges-form__list">
-      <div class="price-ranges-form__row" v-for="(range, i) in priceRanges" :key="`${i}`">
-        <vs-input
+      <div v-for="(range, i) in priceRanges" :key="`${i}`" class="price-ranges-form__row">
+        <app-input
+          v-model="range.start"
           label="Minimalna wartość koszyka"
           type="number"
-          v-model="range.start"
-          :disabled="i === 0"
+          :disabled="i === 0 || disabled"
         />
-        <vs-input label="Stawka" type="number" v-model="range.value" />
-        <vs-button transparent danger icon @click.stop="removeRange(i)" v-if="i !== 0">
-          <i class="bx bxs-trash"></i>
-        </vs-button>
+        <app-input v-model="range.value" :disabled="disabled" label="Stawka" type="number" />
+        <icon-button
+          :disabled="disabled || i === 0"
+          type="transparent"
+          @click.stop="removeRange(i)"
+        >
+          <i slot="icon" class="bx bxs-trash"></i>
+        </icon-button>
       </div>
     </div>
     <small class="price-ranges-form__error">{{ error }}</small>
-    <vs-button color="#000" size="small" @click="addRange">
-      <i class="bx bx-plus"></i> &nbsp;&nbsp; Dodaj zakres
-    </vs-button>
+    <icon-button class="price-ranges-form__btn" :disabled="disabled" size="small" @click="addRange">
+      <i slot="icon" class="bx bx-plus"></i>
+      Dodaj zakres
+    </icon-button>
   </div>
 </template>
 
@@ -37,6 +42,10 @@ export default Vue.extend({
       type: String,
       default: '',
     },
+    disabled: {
+      type: Boolean,
+      required: true,
+    },
   },
   computed: {
     priceRanges: {
@@ -47,6 +56,9 @@ export default Vue.extend({
         this.$emit('input', v)
       },
     },
+  },
+  created() {
+    if (!this.priceRanges.some((v) => v.start === 0)) this.addRange(0)
   },
   methods: {
     addRange(start?: number) {
@@ -61,32 +73,24 @@ export default Vue.extend({
         .sort((a, b) => a.start - b.start)
     },
   },
-  created() {
-    if (!this.priceRanges.some((v) => v.start === 0)) this.addRange(0)
-  },
 })
 </script>
 
 <style lang="scss" scoped>
 .price-ranges-form {
-  &__title {
-    margin-bottom: 32px;
-  }
-
   &__list {
     margin-bottom: -20px;
+  }
+
+  &__btn {
+    margin-top: 24px;
   }
 
   &__row {
     display: grid;
     grid-template-columns: 1fr 1fr 32px;
-    align-items: start;
+    align-items: center;
     grid-gap: 12px;
-
-    .vs-button {
-      margin: 0;
-      transform: scale(0.7);
-    }
   }
 
   &__error {

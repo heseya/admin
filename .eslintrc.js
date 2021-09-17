@@ -2,6 +2,7 @@ module.exports = {
   root: true,
 
   env: {
+    browser: true,
     node: true,
   },
 
@@ -15,14 +16,13 @@ module.exports = {
   rules: {
     'no-console': 'warn',
     'no-debugger': 'warn',
-    'space-before-function-paren': 'off',
-    'comma-dangle': 'off',
+    '@typescript-eslint/no-unused-vars': 'warn',
     camelcase: ['error', { properties: 'never' }],
   },
 
   extends: [
-    'plugin:vue/essential',
-    '@vue/standard',
+    // 'plugin:vue/essential',
+    'plugin:vue/recommended',
     '@vue/typescript',
     'prettier',
     'plugin:prettier/recommended',

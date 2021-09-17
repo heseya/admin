@@ -1,6 +1,12 @@
 <template>
   <div class="rich-editor" :style="{ '--height': height }">
-    <quill-editor ref="editor" :value="value" @input="onInput" :options="editorOption" />
+    <quill-editor
+      ref="editor"
+      :value="value"
+      :options="editorOption"
+      :disabled="disabled"
+      @input="onInput"
+    />
   </div>
 </template>
 
@@ -11,6 +17,20 @@ import { uploadMedia } from '@/services/uploadMedia'
 import { QuillOptionsStatic } from 'quill'
 
 export default Vue.extend({
+  props: {
+    value: {
+      type: String,
+      default: '',
+    },
+    height: {
+      type: String,
+      default: '400px',
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data: () => ({
     editorOption: {
       theme: 'snow',
@@ -37,23 +57,13 @@ export default Vue.extend({
             if (success && file) return file.url
             // eslint-disable-next-line no-console
             console.error('Failed to upload file to CDN:', error)
-            // this.$vs.notification({ color: 'danger', ...formatApiError(error) })
+            // this.$toast.error(formatApiNotificationError(error))
             return null
           },
         },
       },
     } as QuillOptionsStatic,
   }),
-  props: {
-    value: {
-      type: String,
-      default: '',
-    },
-    height: {
-      type: String,
-      default: '400px',
-    },
-  },
   methods: {
     onInput(value: string) {
       this.$emit('input', value)

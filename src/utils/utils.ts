@@ -1,5 +1,8 @@
-import { ALL_FILTER_VALUE } from '../consts/filters'
 import format from 'date-fns/format'
+import { isArray } from 'lodash'
+import queryString from 'query-string'
+
+import { ALL_FILTER_VALUE } from '../consts/filters'
 
 /**
  * Returns last element of the given array
@@ -40,6 +43,21 @@ export const formatDate = (date: DateInput) => {
 
 export const formatFilters = (filters: Record<string, unknown>) => {
   return Object.fromEntries(
-    Object.entries(filters).filter(([, v]) => v !== ALL_FILTER_VALUE && v !== ''),
+    Object.entries(filters).filter(([, v]) => {
+      if (isArray(v)) return v.filter((x) => x !== ALL_FILTER_VALUE).length > 0
+      return v !== ALL_FILTER_VALUE && v !== ''
+    }),
   )
 }
+
+export const formatApiNotification = ({ title, text }: { title: string; text?: string }) => {
+  return text
+    ? `
+  <span class="notification__title">${title}</span>
+  <span class="notification__text">${text}</span>
+  `
+    : title
+}
+
+export const stringifyQuery = (payload: Record<string, any>) =>
+  queryString.stringify(payload, { arrayFormat: 'bracket' })

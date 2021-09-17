@@ -1,7 +1,7 @@
 <template>
   <div class="zone" :class="`zone--${type}`">
-    <div class="zone__title" v-if="title">{{ title }}</div>
-    <div class="zone__title" v-else><slot name="title"></slot></div>
+    <div v-if="title" class="zone__title">{{ title }}</div>
+    <div v-else class="zone__title"><slot name="title"></slot></div>
     <slot></slot>
   </div>
 </template>
@@ -25,23 +25,25 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .zone {
-  --zone-border-color: #eee;
-  --zone-text-color: #333;
+  --zone-border-color: #eeeeee;
+  --zone-text-color: #333333;
 
   &--danger {
-    --zone-text-color: #f54758;
-    --zone-border-color: #f54758;
+    --zone-text-color: #{$red-color-500};
+    --zone-border-color: #{$red-color-500};
   }
 
   &__title {
-    font-family: $font-sec;
+    font-weight: 600;
     color: var(--zone-text-color);
     display: flex;
     align-items: center;
+    margin-top: -4px;
+    margin-bottom: 4px;
   }
 
-  padding: 12px;
-  border-radius: 12px;
+  padding: 8px;
+  border-radius: 6px;
   border: solid 1px var(--zone-border-color);
 }
 </style>

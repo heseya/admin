@@ -1,43 +1,46 @@
 <template>
   <validation-observer v-slot="{ handleSubmit }">
-    <validation-provider rules="required" v-slot="{ errors }">
-      <vs-input v-model="password" icon-after label="Obecne hasło" type="password">
-        <template #message-danger>{{ errors[0] }}</template>
-        <template #icon><i class="bx bx-lock-open-alt"></i></template>
-      </vs-input>
-    </validation-provider>
-    <br />
-    <br />
-    <validation-provider rules="required|password" vid="passwordNew" v-slot="{ errors }">
-      <vs-input v-model="passwordNew" label="Nowe hasło" type="password">
-        <template #message-danger>{{ errors[0] }}</template>
-      </vs-input>
-    </validation-provider>
-    <br />
-    <br />
-    <validation-provider rules="required|repeatPassword:@passwordNew" v-slot="{ errors }">
-      <vs-input v-model="passwordConfirmation" label="Powtórz nowe hasło" type="password">
-        <template #message-danger>{{ errors[0] }}</template>
-      </vs-input>
-    </validation-provider>
+    <validated-input
+      v-model="password"
+      icon-after
+      label="Obecne hasło"
+      type="password"
+      rules="required"
+    >
+      <i slot="icon" class="bx bx-lock-open-alt"></i>
+    </validated-input>
+    <validated-input
+      v-model="passwordNew"
+      label="Nowe hasło"
+      type="password"
+      rules="required|password"
+      name="passwordNew"
+    >
+    </validated-input>
+    <validated-input
+      v-model="passwordConfirmation"
+      label="Powtórz nowe hasło"
+      type="password"
+      rules="required|repeatPassword:@passwordNew"
+    >
+    </validated-input>
     <br />
     <div class="center">
-      <vs-button @click="handleSubmit(changePassword)" color="dark" :loading="isLoading">
+      <app-button :loading="isLoading" @click="handleSubmit(changePassword)">
         Zmień hasło
-      </vs-button>
+      </app-button>
     </div>
   </validation-observer>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { ValidationProvider, ValidationObserver } from 'vee-validate'
+import { ValidationObserver } from 'vee-validate'
 import { api } from '../../../api'
-import { formatApiError } from '@/utils/errors'
+import { formatApiNotificationError } from '@/utils/errors'
 
 export default Vue.extend({
   components: {
-    ValidationProvider,
     ValidationObserver,
   },
   data: () => ({
@@ -55,15 +58,9 @@ export default Vue.extend({
           password_new: this.passwordNew,
           password_confirmation: this.passwordConfirmation,
         })
-        this.$vs.notification({
-          color: 'success',
-          title: 'Hasło zostało zmienione',
-        })
-      } catch (error) {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(error),
-        })
+        this.$toast.success('Hasło zostało zmienione')
+      } catch (error: any) {
+        this.$toast.error(formatApiNotificationError(error))
       } finally {
         this.isLoading = false
         this.$emit('close')

@@ -43,7 +43,7 @@ export default Vue.extend({
     padding: 7px 13px;
     padding-left: 10px;
     border: none;
-    font-family: $font-main;
+    font-family: $primaryFont;
     transition: 0.3s;
     min-height: 100px;
     height: 200px;
@@ -60,8 +60,8 @@ export default Vue.extend({
     display: block;
     width: 100%;
     text-align: right;
-    color: #333;
-    font-family: $font-sec;
+    color: #333333;
+    font-weight: 600;
     font-size: 0.7em;
 
     i {

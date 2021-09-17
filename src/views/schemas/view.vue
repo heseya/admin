@@ -3,21 +3,27 @@
     <top-nav :title="!isNew ? schema.name : 'Nowy schemat'">
       <pop-confirm
         v-if="!isNew"
+        v-can="$p.Schemas.Remove"
         title="Czy na pewno chcesz usunąć ten schemat?"
-        okText="Usuń"
-        cancelText="Anuluj"
+        ok-text="Usuń"
+        cancel-text="Anuluj"
         @confirm="deleteSchema"
-        v-slot="{ open }"
       >
-        <vs-button dark icon @click="open">
-          <i class="bx bx-trash"></i>
-        </vs-button>
+        <icon-button type="danger">
+          <i slot="icon" class="bx bx-trash"></i>
+          Usuń
+        </icon-button>
       </pop-confirm>
     </top-nav>
 
     <div class="schema">
       <card>
-        <SchemaForm :key="schema.id" :schema="editedSchema" @submit="saveSchema" />
+        <SchemaForm
+          :key="schema.id"
+          :schema="editedSchema"
+          :disabled="!$can(isNew ? $p.Products.Edit : $p.Products.Add)"
+          @submit="saveSchema"
+        />
       </card>
     </div>
   </div>
@@ -29,13 +35,17 @@ import { cloneDeep } from 'lodash'
 
 import { Schema } from '@/interfaces/Schema'
 
-import TopNav from '@/layout/TopNav.vue'
+import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import SchemaForm from '@/components/modules/schemas/Form.vue'
-import { formatApiError } from '@/utils/errors'
+
+import { formatApiNotificationError } from '@/utils/errors'
 
 export default Vue.extend({
+  metaInfo(): any {
+    return { title: this.schema?.name || 'Nowy schemat' }
+  },
   components: {
     TopNav,
     Card,
@@ -62,15 +72,19 @@ export default Vue.extend({
   watch: {
     error(error) {
       if (error) {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(error),
-        })
+        this.$toast.error(formatApiNotificationError(error))
       }
     },
     schema() {
       this.editedSchema = cloneDeep(this.schema)
     },
+  },
+  async created() {
+    if (!this.isNew) {
+      this.$accessor.startLoading()
+      await this.$accessor.schemas.get(this.id)
+      this.$accessor.stopLoading()
+    }
   },
   methods: {
     async saveSchema(schema: Schema) {
@@ -80,21 +94,11 @@ export default Vue.extend({
       this.$accessor.startLoading()
       const success = await this.$accessor.schemas.remove(this.id)
       if (success) {
-        this.$vs.notification({
-          color: 'success',
-          title: 'Schemat został usunięty.',
-        })
+        this.$toast.success('Schemat został usunięty.')
         this.$router.push('/schemas')
       }
       this.$accessor.stopLoading()
     },
-  },
-  async created() {
-    if (!this.isNew) {
-      this.$accessor.startLoading()
-      await this.$accessor.schemas.get(this.id)
-      this.$accessor.stopLoading()
-    }
   },
 })
 </script>
@@ -111,13 +115,9 @@ export default Vue.extend({
   input {
     width: 100%;
   }
-
-  .vs-select-content {
-    max-width: none;
-  }
 }
 
-@media (min-width: $break) {
+@media ($viewport-11) {
   .schema__info {
     grid-template-columns: 1fr 1fr 1fr;
     column-gap: 20px;

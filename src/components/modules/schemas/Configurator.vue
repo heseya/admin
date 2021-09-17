@@ -2,66 +2,82 @@
   <div class="configurator">
     <div class="configurator__head">
       <div class="configurator__title">Schematy</div>
-      <vs-button dark icon @click="isModalActive = true"><i class="bx bx-plus"></i></vs-button>
+      <icon-button v-if="!disabled" @click="isModalActive = true">
+        <i slot="icon" class="bx bx-plus"></i>
+        Dodaj schemat do produktu
+      </icon-button>
     </div>
     <empty v-if="schemas.length === 0">Ten produkt nie ma jeszcze żadnego schematu</empty>
     <list class="configurator__schemas">
-      <draggable v-model="schemas">
+      <draggable v-model="schemas" :disabled="disabled">
         <list-item
+          v-for="schema in value"
+          :key="schema.id"
           class="configurator__schema"
           :class="{ [`configurator__schema--dep`]: schema.auto_dependecy }"
           :title="schema.auto_dependecy ? 'Schemat jest automatyczny - nie możesz go usunąć' : ''"
-          v-for="schema in value"
-          :key="schema.id"
           no-hover
           :hidden="schema.hidden"
         >
-          <i class="bx bx-network-chart" v-if="schema.auto_dependecy"></i>
+          <i v-if="schema.auto_dependecy" class="bx bx-network-chart"></i>
           {{ schema.name }}
           <small class="optional">{{ !schema.required ? '(opcjonalny)' : '' }}</small>
           <small>{{ schema.description }}</small>
           <template #action>
             <div class="flex">
-              <vs-button dark icon @click="editSchema(schema)"
-                ><i class="bx bx-edit"></i
-              ></vs-button>
-              <vs-button danger icon @click="removeSchema(schema.id)" class="schema-delete">
-                <i class="bx bx-trash"></i>
-              </vs-button>
+              <icon-button @click="editSchema(schema)">
+                <i slot="icon" class="bx bx-edit"></i>
+              </icon-button>
+              <icon-button
+                v-if="!disabled"
+                type="danger"
+                class="schema-delete"
+                @click="removeSchema(schema.id)"
+              >
+                <i slot="icon" class="bx bx-trash"></i>
+              </icon-button>
             </div>
           </template>
         </list-item>
       </draggable>
     </list>
 
-    <vs-dialog width="1000px" not-center v-model="isFormModalActive">
-      <template #header>
-        <h4 style="margin-bottom: 0">{{ editedSchema.id ? 'Edycja schematu' : 'Nowy schemat' }}</h4>
-      </template>
+    <a-modal
+      v-model="isFormModalActive"
+      width="1000px"
+      :footer="null"
+      :title="editedSchema.id ? 'Edycja schematu' : 'Nowy schemat'"
+    >
       <modal-form v-if="isFormModalActive">
-        <SchemaForm :schema="editedSchema" @submit="updateSchema" :currentProductSchemas="value" />
+        <SchemaForm
+          :schema="editedSchema"
+          :current-product-schemas="value"
+          :disabled="disabled"
+          @submit="updateSchema"
+        />
       </modal-form>
-    </vs-dialog>
+    </a-modal>
 
-    <vs-dialog width="800px" not-center v-model="isModalActive">
-      <template #header>
+    <a-modal v-model="isModalActive" width="800px" :footer="null">
+      <template #title>
         <h4 class="flex schema-selector-title">
           Wybierz istniejący schemat lub
-          <vs-button
-            transparent
+          <icon-button
+            reversed
+            size="small"
             @click="
               isModalActive = false
               isFormModalActive = true
             "
           >
-            <i class="bx bx-plus"></i> Utwórz nowy
-          </vs-button>
+            <i slot="icon" class="bx bx-plus"></i> Utwórz nowy
+          </icon-button>
         </h4>
       </template>
       <modal-form>
-        <Selector @select="addSchema" type="schemas" :existing="value" />
+        <Selector type="schemas" :existing="value" @select="addSchema" />
       </modal-form>
-    </vs-dialog>
+    </a-modal>
   </div>
 </template>
 
@@ -82,11 +98,21 @@ import { UUID } from '@/interfaces/UUID'
 
 export default Vue.extend({
   name: 'SchemaConfigurator',
+  components: {
+    List,
+    ListItem,
+    Empty,
+    ModalForm,
+    SchemaForm,
+    Selector,
+    Draggable,
+  },
   props: {
     value: {
       type: Array,
       required: true,
     } as Vue.PropOptions<Schema[]>,
+    disabled: { type: Boolean, default: false },
   },
   data: () => ({
     SchemaTypeLabel: Object.freeze(SchemaTypeLabel),
@@ -94,13 +120,6 @@ export default Vue.extend({
     isFormModalActive: false,
     editedSchema: {} as Schema,
   }),
-  watch: {
-    isFormModalActive() {
-      if (!this.isFormModalActive) {
-        this.editedSchema = {} as Schema
-      }
-    },
-  },
   computed: {
     schemas: {
       get(): Schema[] {
@@ -109,6 +128,13 @@ export default Vue.extend({
       set(val: Schema[]) {
         this.$emit('input', val)
       },
+    },
+  },
+  watch: {
+    isFormModalActive() {
+      if (!this.isFormModalActive) {
+        this.editedSchema = {} as Schema
+      }
     },
   },
   methods: {
@@ -139,15 +165,6 @@ export default Vue.extend({
       }
     },
   },
-  components: {
-    List,
-    ListItem,
-    Empty,
-    ModalForm,
-    SchemaForm,
-    Selector,
-    Draggable,
-  },
 })
 </script>
 <style lang="scss" scoped>
@@ -159,7 +176,7 @@ export default Vue.extend({
 
   &__title {
     font-size: 1.3em;
-    font-family: $font-sec;
+    font-weight: 600;
   }
 
   &__schemas {
@@ -181,11 +198,6 @@ export default Vue.extend({
   align-items: center;
   margin-top: 0;
   margin-bottom: 0;
-
-  .vs-button {
-    font-weight: 700;
-    // font-size: 1em;
-  }
 }
 
 .optional {

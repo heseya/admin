@@ -1,24 +1,32 @@
 <template>
   <div>
-    <PaginatedList title="Schematy" :filters="filters" storeKey="schemas">
+    <PaginatedList
+      title="Schematy"
+      :filters="filters"
+      store-key="schemas"
+      @clear-filters="clearFilters"
+    >
       <template #nav>
-        <vs-input
-          state="dark"
-          type="search"
-          v-model="filters.search"
-          @keydown.enter="makeSearch"
-          placeholder="Wyszukiwanie"
-        />
-
-        <vs-button @click="makeSearch" color="dark" icon>
-          <i class="bx bx-search"></i>
-        </vs-button>
-        <vs-button to="/schemas/create" color="dark" icon>
-          <i class="bx bx-plus"></i>
-        </vs-button>
+        <icon-button v-can="$p.ProductSets.Add" to="/schemas/create">
+          <i slot="icon" class="bx bx-plus"></i>
+          Dodaj schemat
+        </icon-button>
       </template>
 
-      <template v-slot="{ item }">
+      <template #filters>
+        <div>
+          <app-input
+            v-model="filters.search"
+            class="span-2"
+            type="search"
+            label="Wyszukiwanie"
+            allow-clear
+            @input="debouncedSearch"
+          />
+        </div>
+      </template>
+
+      <template #default="{ item }">
         <list-item :url="`/schemas/${item.id}`">
           {{ item.name }}
           <small>{{ item.description }}</small>
@@ -33,12 +41,15 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { debounce } from 'lodash'
+
 import ListItem from '@/components/layout/ListItem.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 
 import { SchemaTypeLabel } from '@/consts/schemaTypeLabels'
 
 export default Vue.extend({
+  metaInfo: { title: 'Schematy' },
   components: {
     PaginatedList,
     ListItem,
@@ -49,10 +60,8 @@ export default Vue.extend({
     },
     SchemaTypeLabel: Object.freeze(SchemaTypeLabel),
   }),
-  computed: {
-    currency(): string {
-      return this.$accessor.currency
-    },
+  created() {
+    this.filters.search = (this.$route.query.search as string) || ''
   },
   methods: {
     makeSearch() {
@@ -63,9 +72,15 @@ export default Vue.extend({
         })
       }
     },
-  },
-  created() {
-    this.filters.search = (this.$route.query.search as string) || ''
+    debouncedSearch: debounce(function (this: any) {
+      this.$nextTick(() => {
+        this.makeSearch()
+      })
+    }, 300),
+    clearFilters() {
+      this.filters.search = ''
+      this.makeSearch()
+    },
   },
 })
 </script>

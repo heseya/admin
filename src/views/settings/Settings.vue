@@ -1,13 +1,14 @@
 <template>
   <div>
-    <PaginatedList title="Ustawienia zaawansowane" storeKey="settings">
+    <PaginatedList title="Ustawienia zaawansowane" store-key="settings">
       <template #nav>
-        <vs-button @click="openModal()" color="dark" icon>
-          <i class="bx bx-plus"></i>
-        </vs-button>
+        <icon-button v-can="$p.Settings.Add" @click="openModal()">
+          <i slot="icon" class="bx bx-plus"></i>
+          Dodaj ustawienie
+        </icon-button>
       </template>
-      <template v-slot="{ item: setting }">
-        <list-item @click="openModal(setting)" :hidden="!setting.public">
+      <template #default="{ item: setting }">
+        <list-item :hidden="!setting.public" @click="openModal(setting)">
           {{ setting.name }}
           <small>{{ setting.value }}</small>
         </list-item>
@@ -15,44 +16,55 @@
     </PaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
-      <vs-dialog width="550px" not-center v-model="isModalActive">
-        <template #header>
-          <h4>{{ editedItem.id ? 'Edycja ustawienie' : 'Nowe ustawienie' }}</h4>
-        </template>
+      <a-modal
+        v-model="isModalActive"
+        width="550px"
+        :title="editedItem.id ? 'Edycja ustawienie' : 'Nowe ustawienie'"
+      >
         <modal-form>
           <validated-input
-            rules="required|letters-only"
             v-model="editedItem.name"
+            rules="required|letters-only"
             label="Klucz"
-            :disabled="editedItem.permanent"
+            :disabled="editedItem.permanent || !canModify"
           />
 
-          <validated-input rules="required" v-model="editedItem.value" label="Wartość" />
+          <validated-input
+            v-model="editedItem.value"
+            :disabled="!canModify"
+            rules="required"
+            label="Wartość"
+          />
 
-          <SwitchInput v-model="editedItem.public" label="Wartość publiczna" horizontal />
+          <SwitchInput
+            v-model="editedItem.public"
+            :disabled="!canModify"
+            label="Wartość publiczna"
+            horizontal
+          />
         </modal-form>
         <template #footer>
           <div class="row">
-            <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
+            <app-button v-if="canModify" @click="handleSubmit(saveModal)"> Zapisz </app-button>
             <pop-confirm
+              v-can="$p.Settings.Remove"
               title="Czy na pewno chcesz usunąć to ustawienie?"
-              okText="Usuń"
-              cancelText="Anuluj"
+              ok-text="Usuń"
+              cancel-text="Anuluj"
               @confirm="deleteItem"
-              v-slot="{ open }"
             >
-              <vs-button
+              <app-button
                 v-if="editedItem.id"
-                color="danger"
+                v-can="$p.Settings.Remove"
+                type="danger"
                 :disabled="editedItem.permanent"
-                @click="open"
               >
                 Usuń
-              </vs-button>
+              </app-button>
             </pop-confirm>
           </div>
         </template>
-      </vs-dialog>
+      </a-modal>
     </validation-observer>
   </div>
 </template>
@@ -67,7 +79,6 @@ import ModalForm from '@/components/form/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
 import { Setting } from '@/interfaces/Settings'
 
@@ -80,6 +91,7 @@ const CLEAR_SETTING: Setting = {
 }
 
 export default Vue.extend({
+  metaInfo: { title: 'Ustawienia zaawansowane' },
   components: {
     PaginatedList,
     ListItem,
@@ -87,14 +99,28 @@ export default Vue.extend({
     PopConfirm,
     ValidationObserver,
     SwitchInput,
-    ValidatedInput,
+  },
+  beforeRouteLeave(to, from, next) {
+    if (this.isModalActive) {
+      this.isModalActive = false
+      next(false)
+    } else {
+      next()
+    }
   },
   data: () => ({
     isModalActive: false,
     editedItem: clone(CLEAR_SETTING),
   }),
+  computed: {
+    canModify(): boolean {
+      return this.$can(this.editedItem.id ? this.$p.Settings.Edit : this.$p.Settings.Add)
+    },
+  },
   methods: {
     openModal(item?: Setting) {
+      if (!this.$verboseCan(this.$p.Settings.ShowDetails)) return
+
       this.isModalActive = true
       if (item) {
         this.editedItem = { ...clone(item), id: item.name }
@@ -123,14 +149,6 @@ export default Vue.extend({
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
-  },
-  beforeRouteLeave(to, from, next) {
-    if (this.isModalActive) {
-      this.isModalActive = false
-      next(false)
-    } else {
-      next()
-    }
   },
 })
 </script>

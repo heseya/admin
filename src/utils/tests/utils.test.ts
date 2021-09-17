@@ -1,4 +1,4 @@
-import { getLastElement, getDaysDiff, formatDate } from '../utils'
+import { getLastElement, getDaysDiff } from '../utils'
 
 describe('Utils: getLastElement', () => {
   it('should return the last element of an array', () => {

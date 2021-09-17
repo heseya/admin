@@ -12,15 +12,15 @@
         <br />
 
         <div class="central-screen-form__row">
-          <vs-button dark @click="handleSubmit(sendResetRequest)"> Resetuj hasło </vs-button>
-          <vs-button transparent dark to="/login"> Wróć do strony logowania </vs-button>
+          <app-button @click="handleSubmit(sendResetRequest)"> Resetuj hasło </app-button>
+          <app-button type="white" to="/login"> Wróć do strony logowania </app-button>
         </div>
       </ValidationObserver>
     </template>
     <template v-else>
       <p>Prośba resetu hasła została wysłana. Sprawdź swoją skrzynkę pocztową!</p>
       <br />
-      <vs-button dark to="/login"> Wróć do strony logowania </vs-button>
+      <app-button to="/login"> Wróć do strony logowania </app-button>
     </template>
   </central-screen-form>
 </template>
@@ -30,22 +30,19 @@ import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 
 import CentralScreenForm from '@/components/form/CentralScreenForm.vue'
-import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
-import { formatApiError } from '@/utils/errors'
+import { formatApiNotificationError } from '@/utils/errors'
 
 export default Vue.extend({
+  metaInfo: { title: 'Resetowanie hasła' },
   components: {
     CentralScreenForm,
-    ValidatedInput,
     ValidationObserver,
   },
-  data() {
-    return {
-      email: '',
-      isSuccess: false,
-    }
-  },
+  data: () => ({
+    email: '',
+    isSuccess: false,
+  }),
   computed: {
     error(): any {
       return this.$accessor.auth.error
@@ -54,10 +51,7 @@ export default Vue.extend({
   watch: {
     error(error: any) {
       if (error) {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(error),
-        })
+        this.$toast.error(formatApiNotificationError(error))
       }
     },
   },

@@ -60,8 +60,8 @@ import ConfigureAppForm from '@/components/modules/apps/ConfigureAppForm.vue'
 import { App, CreateAppDto } from '@/interfaces/App'
 
 const CLEAN_FORM: CreateAppDto = {
-  app_url: '',
-  app_name: '',
+  url: '',
+  name: '',
   licence_key: '',
   allowed_permissions: [],
 }

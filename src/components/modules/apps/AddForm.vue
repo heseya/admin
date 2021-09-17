@@ -1,7 +1,7 @@
 <template>
   <div class="add-app-form">
     <validated-input
-      v-model="form.app_url"
+      v-model="form.url"
       rules="required"
       label="Link do aplikacji"
       :loading="isLoading"
@@ -12,14 +12,14 @@
     </div>
 
     <a-alert
-      v-else-if="isError && form.app_url"
+      v-else-if="isError && form.url"
       type="error"
       show-icon
       message="Nie udało się pobrać informacji o aplikacji"
       description="Aplikacja którą próbujesz dodać nie istnieje, albo powoduje błąd. Nie można jej obecnie zainstalować."
     />
 
-    <template v-else-if="appInfo && form.app_url">
+    <template v-else-if="appInfo && form.url">
       <hr />
       <div class="add-app-form__row">
         <img v-if="appInfo.icon" :src="appInfo.icon" alt="" class="app-icon" />
@@ -94,7 +94,7 @@ export default Vue.extend({
     },
   },
   watch: {
-    ['form.app_url']() {
+    ['form.url']() {
       this.debouncedFetch()
       this.appInfo = null
     },
@@ -104,16 +104,16 @@ export default Vue.extend({
       this.fetchAppInfo()
     }, 500),
     async fetchAppInfo() {
-      if (!this.form.app_url) return
+      if (!this.form.url) return
 
       try {
         this.isLoading = true
         this.isError = false
 
-        const { data } = await axios.get<IntegrationInfo>(this.form.app_url)
+        const { data } = await axios.get<IntegrationInfo>(this.form.url)
 
         this.appInfo = data
-        this.form.app_name = data.name
+        this.form.name = data.name
         this.form.allowed_permissions = data.required_permissions
       } catch (e) {
         this.isError = true

@@ -5,9 +5,9 @@ import { UUID } from './UUID'
 
 export interface App {
   id: UUID
+  name: string
   url: string
   microfrontend_url?: string
-  name: string
   slug: string
   version: string
   description?: string
@@ -17,8 +17,8 @@ export interface App {
 }
 
 export interface CreateAppDto {
-  app_url: string
-  app_name?: string // [TODO]
+  url: string
+  name?: string // [TODO]
   licence_key: string
   allowed_permissions: string[]
 }

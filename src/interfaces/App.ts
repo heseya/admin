@@ -6,6 +6,7 @@ import { UUID } from './UUID'
 export interface App {
   id: UUID
   url: string
+  microfrontend_url?: string
   name: string
   slug: string
   version: string
@@ -26,6 +27,7 @@ export interface IntegrationInfo {
   name: string
   author: string
   version: string
+  microfrontend_url?: string
   api_version: string // '^1.2.0' [TODO]
   description: string
   icon: string

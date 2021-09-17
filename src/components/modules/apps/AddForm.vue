@@ -22,7 +22,7 @@
     <template v-else-if="appInfo && form.app_url">
       <hr />
       <div class="add-app-form__row">
-        <img v-if="appInfo.icon" :src="`${form.app_url}${appInfo.icon}`" alt="" class="app-icon" />
+        <img v-if="appInfo.icon" :src="appInfo.icon" alt="" class="app-icon" />
         <div class="field">
           <div class="field__label">Nazwa</div>
           <div class="field__value">

@@ -31,6 +31,7 @@
     </validation-observer>
 
     <a-modal
+      v-if="configuratedApp"
       v-model="isConfigureModalActive"
       width="550px"
       :title="`Konfiguracja aplikacji ${configuratedApp.name}`"
@@ -79,7 +80,7 @@ export default Vue.extend({
     isInstallModalActive: false,
     isConfigureModalActive: false,
     installForm: cloneDeep(CLEAN_FORM),
-    configuratedApp: {} as Record<string, any>,
+    configuratedApp: null as App | null,
   }),
   methods: {
     openInstallModal() {
@@ -87,14 +88,19 @@ export default Vue.extend({
       this.installForm = cloneDeep(CLEAN_FORM)
     },
     openConfigureModal(app: App) {
-      this.isConfigureModalActive = true
-      this.configuratedApp = app
-
       // TODO: temporary
-      this.configuratedApp = {
+      app = {
         name: 'Telegram',
         url: 'http://localhost:3000',
+      } as any
+
+      if (app.microfrontend_url) {
+        this.$router.push(`/apps/${app.id}/`)
+        return
       }
+
+      this.isConfigureModalActive = true
+      this.configuratedApp = app
     },
 
     async installApplication() {
@@ -105,6 +111,8 @@ export default Vue.extend({
     },
 
     async uninstallApp() {
+      if (!this.configuratedApp) return
+
       const success = await this.$accessor.apps.remove(this.configuratedApp.id)
       if (success) {
         this.isConfigureModalActive = false

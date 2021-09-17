@@ -8,7 +8,21 @@ import { findAppByHost, installApp } from 'microfront-lib'
 
 export default Vue.extend({
   name: 'MicroFrontend',
-  props: ['appKey', 'host'],
+  props: {
+    appKey: {
+      type: String,
+      required: true,
+    },
+    host: {
+      type: String,
+      required: true,
+    },
+  },
+  computed: {
+    containerId(): string {
+      return `${this.appKey}-container`
+    },
+  },
   async mounted() {
     if (findAppByHost(this.host)) {
       this.mountApp()
@@ -19,11 +33,6 @@ export default Vue.extend({
   },
   beforeDestroy() {
     this.unmountApp()
-  },
-  computed: {
-    containerId(): string {
-      return `${this.appKey}-container`
-    },
   },
   methods: {
     mountApp() {

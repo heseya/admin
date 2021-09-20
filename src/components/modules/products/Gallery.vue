@@ -124,7 +124,6 @@ export default Vue.extend({
     padding-top: 100%;
     margin-bottom: 4px;
     background-color: #ffffff;
-    border-radius: 7px;
     box-shadow: $shadow;
 
     img,
@@ -136,7 +135,7 @@ export default Vue.extend({
       width: 100%;
       object-fit: cover;
       background-color: #ffffff;
-      border-radius: 20px;
+      border-radius: 7px;
     }
 
     .remove {

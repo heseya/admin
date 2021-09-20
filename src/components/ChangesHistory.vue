@@ -5,7 +5,7 @@
       Rejestr zmian
     </icon-button>
 
-    <a-modal :visible="isModalOpen" width="800px" :footer="null" @cancel="isModalOpen = false">
+    <a-modal :visible="isModalOpen" width="750px" :footer="null" @cancel="isModalOpen = false">
       <div slot="title" class="changes-history__header">
         <span>Rejestr wprowadzonych zmian</span>
 
@@ -38,24 +38,38 @@
             <span>{{ formatDateTime(entry.created_at) }}</span>
           </div>
 
-          <p>{{ entry }}</p>
+          <cms-table
+            class="audit-entry__table"
+            :value="getValues(entry)"
+            :config="tableConfig"
+            no-hover
+            row-el="div"
+          />
         </a-collapse-panel>
       </a-collapse>
+
+      <empty v-else> Nie zarejestrowano żadnych zmian dla tego obiektu </empty>
     </a-modal>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import capitalize from 'lodash/capitalize'
 import format from 'date-fns/format'
+
+import CmsTable from './cms/CmsTable.vue'
+import Empty from './layout/Empty.vue'
 
 import { downloadJsonAsFile } from '@/utils/download'
 
 import { UUID } from '@/interfaces/UUID'
 import { StoreModulesKeys } from '@/store'
 import { AuditEntry } from '@/interfaces/AuditEntry'
+import { TableConfig } from '@/interfaces/CmsTable'
 
 export default Vue.extend({
+  components: { CmsTable, Empty },
   props: {
     model: {
       type: String,
@@ -71,6 +85,17 @@ export default Vue.extend({
     isLoading: false,
     audits: [] as AuditEntry[],
   }),
+  computed: {
+    tableConfig(): TableConfig {
+      return {
+        headers: [
+          { key: 'name', label: 'Nazwa' },
+          { key: 'old', label: 'Nowa wartość' },
+          { key: 'new', label: 'Stara wartość' },
+        ],
+      }
+    },
+  },
   methods: {
     openModal() {
       this.isModalOpen = true
@@ -78,6 +103,20 @@ export default Vue.extend({
     },
     formatDateTime(date: string) {
       return format(new Date(date), 'dd-MM-yyyy HH:mm')
+    },
+
+    getValues(audit: AuditEntry): { key: string; old: any; new: any }[] {
+      // Makes sure, that there is no key that exists only in one of the objects
+      const keys = [
+        ...new Set([...Object.keys(audit.old_values), ...Object.keys(audit.new_values)]),
+      ]
+
+      return keys.map((key) => ({
+        key,
+        name: capitalize(key.split('_').join(' ')),
+        old: audit.old_values[key],
+        new: audit.new_values[key],
+      }))
     },
 
     async fetchAudits() {
@@ -116,6 +155,18 @@ export default Vue.extend({
 
     > *:not(:last-child) {
       margin-right: 12px;
+    }
+  }
+
+  &__table ::v-deep {
+    .cms-table-row__col,
+    .cms-table-header__col {
+      padding: 5px 8px;
+    }
+
+    .cms-table-header,
+    .cms-table-row {
+      padding: 0;
     }
   }
 

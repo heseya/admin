@@ -1,10 +1,7 @@
 <template>
   <div>
     <top-nav :title="`Zamówienie ${order.code}`" :subtitle="`z dnia ${formattedDate}`">
-      <icon-button @click="downloadAudits">
-        <i slot="icon" class="bx bx-history"></i>
-        Pobierz historię zmian
-      </icon-button>
+      <changes-history :id="order.id" model="orders" />
       <a :href="`https://***REMOVED***.eu/payment/${order.code}`" target="_blank">
         <icon-button>
           <i slot="icon" class="bx bxs-dollar-circle"></i>
@@ -172,6 +169,7 @@ import CartItem from '@/components/layout/CartItem.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import PartialUpdateForm from '@/components/modules/orders/PartialUpdateForm.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
+import ChangesHistory from '@/components/ChangesHistory.vue'
 
 import { Order, OrderStatus } from '@/interfaces/Order'
 import { getRelativeDate, formatDate } from '@/utils/utils'
@@ -179,7 +177,6 @@ import { getRelativeDate, formatDate } from '@/utils/utils'
 import { createPackage } from '@/services/createPackage'
 import { formatApiNotificationError } from '@/utils/errors'
 import { PackageTemplate } from '@/interfaces/PackageTemplate'
-import { downloadJsonAsFile } from '@/utils/download'
 import { formatCurrency } from '@/utils/currency'
 import { api } from '@/api'
 
@@ -206,6 +203,7 @@ export default Vue.extend({
     ModalForm,
     PartialUpdateForm,
     PopConfirm,
+    ChangesHistory,
   },
   data: () => ({
     status: '',
@@ -336,11 +334,6 @@ export default Vue.extend({
       this.isModalActive = false
       this.$toast.success('Zamówienie zostało zaktualizowane')
       this.$accessor.stopLoading()
-    },
-
-    async downloadAudits() {
-      const data = await this.$accessor.orders.fetchAudits(this.order.id)
-      downloadJsonAsFile(data, 'orders-history')
     },
 
     async payOffline() {

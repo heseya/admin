@@ -43,15 +43,15 @@ import Card from '@/components/layout/Card.vue'
 import PerPageSelect from '@/components/cms/PerPageSelect.vue'
 import CmsFilters from '@/components/cms/CmsFilters.vue'
 import CmsTable from './cms/CmsTable.vue'
+import Loading from './layout/Loading.vue'
 
 import { ResponseMeta } from '@/interfaces/Response'
+import { TableConfig } from '@/interfaces/CmsTable'
+import { StoreModulesKeys } from '@/store'
 import { BaseItem } from '@/store/generator'
 
 import { formatFilters } from '@/utils/utils'
 import { formatApiNotificationError } from '@/utils/errors'
-
-import Loading from './layout/Loading.vue'
-import { TableConfig } from '@/interfaces/CmsTable'
 
 export default Vue.extend({
   components: {
@@ -77,7 +77,7 @@ export default Vue.extend({
     storeKey: {
       type: String,
       required: true,
-    },
+    } as Vue.PropOptions<Exclude<StoreModulesKeys, 'auth'>>,
     draggable: {
       type: Boolean,
       default: false,

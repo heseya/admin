@@ -15,6 +15,8 @@
         </icon-button>
       </div>
 
+      <loading :active="isLoading" />
+
       <a-collapse
         v-if="audits && audits[0]"
         :default-active-key="audits[0].id"
@@ -60,6 +62,7 @@ import format from 'date-fns/format'
 
 import CmsTable from './cms/CmsTable.vue'
 import Empty from './layout/Empty.vue'
+import Loading from './layout/Loading.vue'
 
 import { downloadJsonAsFile } from '@/utils/download'
 
@@ -69,7 +72,7 @@ import { AuditEntry } from '@/interfaces/AuditEntry'
 import { TableConfig } from '@/interfaces/CmsTable'
 
 export default Vue.extend({
-  components: { CmsTable, Empty },
+  components: { CmsTable, Empty, Loading },
   props: {
     model: {
       type: String,

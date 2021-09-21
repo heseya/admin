@@ -34,3 +34,26 @@ export interface IntegrationInfo {
   required_permissions: string[]
   internal_permissions: Permission[]
 }
+
+//  CONFIG
+
+interface AppConfigBase {
+  key: string
+  label: string
+  placeholder: string
+  type: string
+  // eslint-disable-next-line camelcase
+  default_value: any
+  required: boolean
+  value?: any
+}
+interface AppConfigInput extends AppConfigBase {
+  type: 'text' | 'number' | 'color' | 'date' | 'datetime-local'
+}
+
+interface AppConfigSelect extends AppConfigBase {
+  type: 'select'
+  options: { value: string; label: string }[]
+}
+
+export type AppConfigField = AppConfigSelect | AppConfigInput

@@ -3,15 +3,28 @@
     <div class="configure-app-form">
       <loading :active="isLoading" />
 
-      <validated-input
-        v-for="field in fields"
-        :key="field.key"
-        v-model="form[field.key]"
-        :label="field.label"
-        :type="field.type"
-        :placeholder="field.placeholder"
-        :rules="field.required ? 'required' : null"
-      />
+      <template v-for="field in fields">
+        <app-select
+          v-if="field.type === 'select'"
+          :key="field.key"
+          v-model="form[field.key]"
+          :label="field.label"
+        >
+          <a-select-option v-for="{ value, label } in field.options" :key="value" :value="value">
+            {{ label }}
+          </a-select-option>
+        </app-select>
+
+        <validated-input
+          v-else
+          :key="field.key"
+          v-model="form[field.key]"
+          :label="field.label"
+          :type="field.type"
+          :placeholder="field.placeholder"
+          :rules="field.required ? 'required' : null"
+        />
+      </template>
 
       <br />
 
@@ -38,24 +51,14 @@ import { AxiosError, AxiosInstance } from 'axios'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import Loading from '@/components/layout/Loading.vue'
 
-import { App } from '@/interfaces/App'
+import { App, AppConfigField } from '@/interfaces/App'
 
 import { formatApiNotification } from '@/utils/utils'
 import { createApiInstance } from '@/api'
-
-interface AppConfigField {
-  key: string
-  label: string
-  placeholder: string
-  type: 'text' | 'number' | 'color' | 'date' | 'datetime-local'
-  // eslint-disable-next-line camelcase
-  default_value: any
-  required: boolean
-  value?: any
-}
+import AppSelect from '@/components/form/AppSelect.vue'
 
 export default Vue.extend({
-  components: { ValidationObserver, PopConfirm, Loading },
+  components: { ValidationObserver, PopConfirm, Loading, AppSelect },
   props: {
     app: {
       type: Object,
@@ -117,10 +120,13 @@ export default Vue.extend({
         this.$toast.success('Konfiguracja została zapisana')
         this.$emit('close')
       } catch (e: unknown) {
+        const error = e as AxiosError
+        const message = error.response?.data?.message || error.message
+
         this.$toast.error(
           formatApiNotification({
             title: 'Wystąpił błąd podczas zapisywania konfiguracji',
-            text: (e as AxiosError)?.message,
+            text: message,
           }),
         )
       }

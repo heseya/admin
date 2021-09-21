@@ -3,7 +3,6 @@
     "target": "ES2016",
     "module": "esnext",
     "strict": true,
-    "jsx": "preserve",
     "importHelpers": true,
     "moduleResolution": "node",
     "allowJs": true,

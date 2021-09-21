@@ -59,8 +59,8 @@ export default Vue.extend({
   props: {
     app: {
       type: Object,
-      required: true,
-    } as Vue.PropOptions<App>,
+      default: null,
+    } as Vue.PropOptions<App | null>,
   },
   data: () => ({
     form: {} as Record<string, any>,
@@ -69,8 +69,8 @@ export default Vue.extend({
     isLoading: false,
   }),
   computed: {
-    appApi(): AxiosInstance {
-      return createApiInstance(this.app.url, false)
+    appApi(): AxiosInstance | null {
+      return this.app ? createApiInstance(this.app.url, false) : null
     },
   },
   watch: {
@@ -83,7 +83,7 @@ export default Vue.extend({
   },
   methods: {
     async fetchAppConfigFields() {
-      if (!this.app) return
+      if (!this.app || !this.appApi) return
 
       try {
         this.isLoading = true
@@ -107,6 +107,8 @@ export default Vue.extend({
       this.isLoading = false
     },
     async changeAppConfig() {
+      if (!this.appApi) return
+
       try {
         this.isLoading = true
 

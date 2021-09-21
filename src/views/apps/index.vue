@@ -12,7 +12,7 @@
         <list-item @click="openConfigureModal(app)">
           <template #avatar>
             <avatar>
-              <img v-if="app.icon" :src="`${app.url}${app.icon}`" />
+              <img v-if="app.icon" :src="app.icon" />
               <i v-else class="bx bxs-extension" />
             </avatar>
           </template>
@@ -31,15 +31,15 @@
     </validation-observer>
 
     <a-modal
-      v-if="configuratedApp"
-      v-model="isConfigureModalActive"
+      :visible="isConfigureModalActive"
       width="550px"
-      :title="`Konfiguracja aplikacji ${configuratedApp.name}`"
+      :title="`Konfiguracja aplikacji ${configuratedApp && configuratedApp.name}`"
       footer=""
+      @cancel="closeConfigurationModal"
     >
       <configure-app-form
         :app="configuratedApp"
-        @close="isConfigureModalActive = false"
+        @close="closeConfigurationModal"
         @uninstall="uninstallApp"
       />
     </a-modal>
@@ -98,6 +98,12 @@ export default Vue.extend({
 
       this.isConfigureModalActive = true
       this.configuratedApp = app
+    },
+    closeConfigurationModal() {
+      this.configuratedApp = null
+      this.$nextTick(() => {
+        this.isConfigureModalActive = false
+      })
     },
 
     async installApplication() {

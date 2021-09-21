@@ -28,6 +28,7 @@ export default Vue.extend({
     'loading',
     'type',
     'step',
+    'rows',
     'border',
     'shadow',
     'disabled',

@@ -35,6 +35,8 @@
           <validated-input
             v-model="editedItem.description"
             :disabled="!canModify"
+            type="textarea"
+            rows="5"
             rules="required"
             label="Opis"
           />
@@ -43,15 +45,18 @@
             :disabled="!canModify"
             rules="required"
             :value="`#${editedItem.color}`"
-            label="Kolor statusu"
+            label="Kolor"
             type="color"
             @input="setColor"
           />
+
+          <br />
+
           <SwitchInput
             v-model="editedItem.cancel"
             :disabled="!canModify"
             horizontal
-            label="Anulowanie zamówienia"
+            label="Przywracanie stanów magazynowych"
           />
         </modal-form>
         <template #footer>

@@ -3,7 +3,15 @@
     <label class="app-input__label">
       <slot name="label"> {{ label }} </slot>
     </label>
-    <a-input v-model="innerValue" class="app-input__input" v-bind="$props" />
+
+    <a-textarea
+      v-if="type === 'textarea'"
+      v-model="innerValue"
+      class="app-input__input"
+      v-bind="$props"
+    />
+    <a-input v-else v-model="innerValue" class="app-input__input" v-bind="$props" />
+
     <span class="app-input__error">
       <slot name="error"> {{ error }} </slot>
     </span>
@@ -27,6 +35,7 @@ export default Vue.extend({
     'step',
     'allowClear',
     'disabled',
+    'rows',
     'loading',
     'addonBefore',
   ],

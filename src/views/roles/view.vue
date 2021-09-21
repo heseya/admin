@@ -1,6 +1,7 @@
 <template>
   <div>
     <top-nav :title="!isNew ? role.name : 'Nowa rola'">
+      <changes-history :id="role.id" model="roles" />
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Roles.Remove"
@@ -30,6 +31,7 @@ import { cloneDeep } from 'lodash'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
+import ChangesHistory from '@/components/ChangesHistory.vue'
 import RolesForm from '@/components/modules/roles/Form.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
@@ -49,6 +51,7 @@ export default Vue.extend({
     TopNav,
     PopConfirm,
     RolesForm,
+    ChangesHistory,
   },
   data: () => ({
     form: cloneDeep(CLEAN_FORM),

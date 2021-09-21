@@ -74,6 +74,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .cms-table-row {
   @extend %card;
+  background-color: #fff0;
   display: grid;
   width: 100%;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -101,8 +102,13 @@ export default Vue.extend({
   &:hover {
     background-color: $primary-color-100;
   }
-  &--no-hover:hover {
-    background-color: #ffffff00;
+
+  &--no-hover {
+    cursor: default;
+
+    &:hover {
+      background-color: #ffffff00;
+    }
   }
 
   &__col {

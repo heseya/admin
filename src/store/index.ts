@@ -62,31 +62,33 @@ const actions = actionTree(
   },
 )
 
+const storeModules = {
+  auth,
+  users,
+  roles,
+  items,
+  schemas,
+  products,
+  pages,
+  orders,
+  shippingMethods,
+  statuses,
+  paymentMethods,
+  packageTemplates,
+  settings,
+  discounts,
+  authSessions,
+  apps,
+  tags,
+  productSets,
+}
+
 const storePattern = {
   state,
   getters,
   mutations,
   actions,
-  modules: {
-    auth,
-    users,
-    roles,
-    items,
-    schemas,
-    products,
-    pages,
-    orders,
-    shippingMethods,
-    statuses,
-    paymentMethods,
-    packageTemplates,
-    settings,
-    discounts,
-    authSessions,
-    apps,
-    tags,
-    productSets,
-  },
+  modules: storeModules,
 }
 
 const store = new Vuex.Store({
@@ -95,6 +97,9 @@ const store = new Vuex.Store({
 })
 
 export const accessor = useAccessor(store, storePattern)
+
+export type AccessorType = typeof accessor
+export type StoreModulesKeys = keyof typeof storeModules
 
 Vue.prototype.$accessor = accessor
 

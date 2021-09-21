@@ -1,0 +1,59 @@
+.ant-collapse {
+  background-color: #fff !important;
+
+  .ant-collapse-header {
+    position: relative;
+    padding-left: 16px !important;
+    padding-right: 44px !important;
+  }
+
+  .ant-collapse-item {
+    margin-bottom: 8px;
+    background-color: #f6f6f7;
+    border-radius: 5px;
+    border-bottom: none !important;
+  }
+
+  .ant-collapse-arrow {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background-color: #979ea0;
+    font-size: 1.4em !important;
+    color: #fff !important;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    right: 12px !important;
+    left: auto !important;
+  }
+}
+
+.ant-modal {
+  .ant-modal-content {
+    border-radius: 7px !important;
+
+    .ant-modal-close {
+      width: 26px !important;
+      height: 26px !important;
+      background-color: $primary-color-500;
+      font-size: 0.9em !important;
+      border-radius: 50%;
+      top: -12px !important;
+      right: -12px !important;
+
+      @media (max-width: 767px) {
+        right: 10px !important;
+      }
+    }
+
+    .ant-modal-close-x {
+      width: 100% !important;
+      height: 100% !important;
+      font-size: 0.9rem !important;
+      line-height: 26px !important;
+      color: #fff !important;
+    }
+  }
+}

@@ -80,7 +80,7 @@ export default Vue.extend({
   align-items: center;
   box-sizing: border-box;
   font-weight: 300;
-  font-size: 0.95em;
+  font-size: 0.85rem;
   padding-left: $side-padding;
   border-radius: 20px;
   transition: 0.3s;
@@ -138,7 +138,7 @@ export default Vue.extend({
   }
 
   &--small {
-    font-size: 0.9em;
+    font-size: 0.8rem;
 
     #{$root}__icon {
       width: $small-icon-size;

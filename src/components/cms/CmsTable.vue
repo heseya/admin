@@ -14,7 +14,9 @@
               :item="item"
               :headers="config.headers"
               :to="config.rowUrlBuilder ? config.rowUrlBuilder(item) : null"
-              @click="config.rowOnClick"
+              :no-hover="noHover"
+              :el="rowEl"
+              @click="config.rowOnClick || (() => {})"
             />
           </slot>
         </template>
@@ -49,6 +51,14 @@ export default Vue.extend({
     draggable: {
       type: Boolean,
       default: false,
+    },
+    noHover: {
+      type: Boolean,
+      default: false,
+    },
+    rowEl: {
+      type: String,
+      default: null,
     },
   },
   computed: {

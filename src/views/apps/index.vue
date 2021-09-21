@@ -88,11 +88,8 @@ export default Vue.extend({
       this.installForm = cloneDeep(CLEAN_FORM)
     },
     openConfigureModal(app: App) {
-      // TODO: temporary
-      app = {
-        name: 'Telegram',
-        url: 'http://localhost:3000',
-      } as any
+      // ? Only to allow local apps to work on docker
+      app.url = app.url.replace('host.docker.internal', 'localhost')
 
       if (app.microfrontend_url) {
         this.$router.push(`/apps/${app.id}/`)
@@ -105,7 +102,12 @@ export default Vue.extend({
 
     async installApplication() {
       this.$accessor.startLoading()
-      await this.$accessor.apps.add(this.installForm)
+
+      await this.$accessor.apps.add({
+        ...this.installForm,
+        // ? Only to allow local apps to work on docker
+        url: this.installForm.url.replace('localhost', 'host.docker.internal'),
+      })
       this.$accessor.stopLoading()
       this.isInstallModalActive = false
     },

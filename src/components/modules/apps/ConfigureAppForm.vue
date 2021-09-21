@@ -1,6 +1,8 @@
 <template>
   <validation-observer v-slot="{ handleSubmit }">
     <div class="configure-app-form">
+      <loading :active="isLoading" />
+
       <validated-input
         v-for="field in fields"
         :key="field.key"
@@ -33,9 +35,12 @@ import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { AxiosError, AxiosInstance } from 'axios'
 
-import { App } from '@/interfaces/App'
-import { formatApiNotification } from '@/utils/utils'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
+import Loading from '@/components/layout/Loading.vue'
+
+import { App } from '@/interfaces/App'
+
+import { formatApiNotification } from '@/utils/utils'
 import { createApiInstance } from '@/api'
 
 interface AppConfigField {
@@ -50,7 +55,7 @@ interface AppConfigField {
 }
 
 export default Vue.extend({
-  components: { ValidationObserver, PopConfirm },
+  components: { ValidationObserver, PopConfirm, Loading },
   props: {
     app: {
       type: Object,

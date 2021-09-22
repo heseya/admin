@@ -97,7 +97,6 @@ export default Vue.extend({
     isFileValid() {
       if (!this.file) return false
       const extension = getLastElement(this.file.name.split('.'))?.toLowerCase()
-      console.log('🚀 ~ file: MediaUploader.vue ~ line 100 ~ isFileValid ~ extension', extension)
       return this.extensions.some((ext) => ext === extension)
     },
     changeDrag(isDrag: boolean) {

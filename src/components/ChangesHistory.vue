@@ -93,8 +93,8 @@ export default Vue.extend({
       return {
         headers: [
           { key: 'name', label: 'Nazwa' },
-          { key: 'old', label: 'Nowa wartość' },
-          { key: 'new', label: 'Stara wartość' },
+          { key: 'new', label: 'Nowa wartość' },
+          { key: 'old', label: 'Stara wartość' },
         ],
       }
     },

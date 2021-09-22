@@ -8,7 +8,7 @@
     >
       <div v-for="image in images" :key="image.url" class="gallery__img">
         <img v-if="image.type === 1" :src="`${image.url}?w=350&h=350`" :style="{ objectFit }" />
-        <video v-if="image.type === 2" :src="image.url" autoplay loop />
+        <video v-if="image.type === 2" :src="image.url" autoplay loop muted />
         <div class="remove">
           <icon-button v-if="!disabled" type="danger" @click="onImageDelete(image.id)">
             <i slot="icon" class="bx bx-trash"></i>

@@ -19,5 +19,5 @@ export const apps = createVuexCRUD<App, CreateAppDto, CreateAppDto>()(
       },
     },
   },
-  { remove: { force: 1 } },
+  // { remove: { force: 1 } },
 )

@@ -3,6 +3,14 @@
     <div class="configure-app-form">
       <loading :active="isLoading" />
 
+      <a-alert
+        v-if="error"
+        type="error"
+        show-icon
+        message="Nie udało się pobrać konfiguracji aplikacji"
+        :description="error.message"
+      />
+
       <template v-for="field in fields">
         <app-select
           v-if="field.type === 'select'"
@@ -29,7 +37,9 @@
       <br />
 
       <div class="configure-app-form__btns">
-        <app-button @click="handleSubmit(changeAppConfig)">Zapisz konfiguracje</app-button>
+        <app-button :disabled="!!error" @click="handleSubmit(changeAppConfig)">
+          Zapisz konfiguracje
+        </app-button>
         <pop-confirm
           title="Czy na pewno chcesz odinstalować tę aplikację?"
           ok-text="Usuń"
@@ -68,7 +78,7 @@ export default Vue.extend({
   data: () => ({
     form: {} as Record<string, any>,
     fields: [] as AppConfigField[],
-    isError: false,
+    error: null as null | Error,
     isLoading: false,
   }),
   computed: {
@@ -99,13 +109,7 @@ export default Vue.extend({
           {},
         )
       } catch (e: unknown) {
-        this.$toast.error(
-          formatApiNotification({
-            title: 'Nie udało się pobrać konfiguracji aplikacji',
-            text: (e as AxiosError)?.message,
-          }),
-        )
-        this.$emit('close')
+        this.error = e as AxiosError
       }
       this.isLoading = false
     },

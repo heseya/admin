@@ -118,15 +118,34 @@ export default Vue.extend({
       this.isInstallModalActive = false
     },
 
-    async uninstallApp() {
-      if (!this.configuratedApp) return
+    async uninstallApp(force = false) {
+      const app = this.configuratedApp
+      if (!app) return
 
-      const success = await this.$accessor.apps.remove(this.configuratedApp.id)
+      this.$accessor.startLoading()
+
+      const success = await this.$accessor.apps.remove({
+        value: app.id,
+        params: { force: force ? 1 : undefined },
+      })
+
+      this.$accessor.stopLoading()
+
       if (success) {
-        this.isConfigureModalActive = false
         this.$toast.success('Aplikacja została odinstalowana')
+        this.isConfigureModalActive = false
       } else {
-        this.$toast.error('Aplikacji nie udało się odinstalować')
+        if (!force)
+          this.$confirm({
+            title:
+              'Aplikacji nie udało się odinstalować, ponieważ nie odpowiada. Czy chcesz ją usunąć siłą?',
+            okText: 'Odinstaluj',
+            okType: 'danger',
+            onOk: () => {
+              this.uninstallApp(true)
+            },
+          })
+        else this.$toast.error('Aplikacja nie może zostać odinstalowana')
       }
     },
   },

@@ -59,5 +59,7 @@ export const formatApiNotification = ({ title, text }: { title: string; text?: s
     : title
 }
 
-export const stringifyQuery = (payload: Record<string, any>) =>
-  queryString.stringify(payload, { arrayFormat: 'bracket' })
+export const stringifyQuery = (payload: Record<string, any>) => {
+  const query = queryString.stringify(payload, { arrayFormat: 'bracket' })
+  return query ? `?${query}` : ''
+}

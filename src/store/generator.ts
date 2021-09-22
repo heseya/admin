@@ -1,4 +1,5 @@
-import { cloneDeep, isNil } from 'lodash'
+/* eslint-disable camelcase */
+import { assign, cloneDeep, isNil } from 'lodash'
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 import { ActionTree, GetterTree, MutationTree } from 'vuex'
 
@@ -59,7 +60,7 @@ interface CrudParams {
  */
 export const createVuexCRUD =
   <Item extends BaseItem, CreateItemDTO = Partial<Item>, UpdateItemDTO = Partial<Item>>() =>
-  <State>(endpoint: string, extend: ExtendStore<State, Item>, params: CrudParams = {}) => {
+  <State>(endpoint: string, extend: ExtendStore<State, Item>, queryParams: CrudParams = {}) => {
     const moduleState = () =>
       ({
         error: null as null | Error,
@@ -151,7 +152,7 @@ export const createVuexCRUD =
           commit(StoreMutations.SetLoading, true)
           try {
             const filteredQuery = Object.fromEntries(
-              Object.entries({ ...(params.get || {}), ...(query || {}) }).filter(
+              Object.entries({ ...(queryParams.get || {}), ...(query || {}) }).filter(
                 ([, value]) => !isNil(value),
               ),
             )
@@ -159,7 +160,7 @@ export const createVuexCRUD =
             const stringQuery = stringifyQuery(filteredQuery)
 
             const { data } = await api.get<{ data: Item[]; meta: ResponseMeta }>(
-              `/${endpoint}?${stringQuery}`,
+              `/${endpoint}${stringQuery}`,
             )
             commit(StoreMutations.SetMeta, data.meta)
             commit(StoreMutations.SetData, data.data)
@@ -175,8 +176,8 @@ export const createVuexCRUD =
           commit(StoreMutations.SetError, null)
           commit(StoreMutations.SetLoading, true)
           try {
-            const stringQuery = stringifyQuery(params.get || {})
-            const { data } = await api.get<{ data: Item }>(`/${endpoint}/id:${id}?${stringQuery}`)
+            const stringQuery = stringifyQuery(queryParams.get || {})
+            const { data } = await api.get<{ data: Item }>(`/${endpoint}/id:${id}${stringQuery}`)
             // @ts-ignore type is correct, but TS is screaming
             commit(StoreMutations.SetSelected, data.data)
             commit(StoreMutations.SetLoading, false)
@@ -192,8 +193,8 @@ export const createVuexCRUD =
           commit(StoreMutations.SetError, null)
           commit(StoreMutations.SetLoading, true)
           try {
-            const stringQuery = stringifyQuery(params.add || {})
-            const { data } = await api.post<{ data: Item }>(`/${endpoint}?${stringQuery}`, item)
+            const stringQuery = stringifyQuery(queryParams.add || {})
+            const { data } = await api.post<{ data: Item }>(`/${endpoint}${stringQuery}`, item)
             // @ts-ignore type is correct, but TS is screaming
             commit(StoreMutations.AddData, data.data)
             commit(StoreMutations.SetLoading, false)
@@ -209,9 +210,9 @@ export const createVuexCRUD =
           commit(StoreMutations.SetLoading, true)
           commit(StoreMutations.SetError, null)
           try {
-            const stringQuery = stringifyQuery(params.edit || {})
+            const stringQuery = stringifyQuery(queryParams.edit || {})
             const { data } = await api.put<{ data: Item }>(
-              `/${endpoint}/id:${id}?${stringQuery}`,
+              `/${endpoint}/id:${id}${stringQuery}`,
               item,
             )
             commit(StoreMutations.EditData, { key: 'id', value: id, item: data.data })
@@ -228,9 +229,9 @@ export const createVuexCRUD =
           commit(StoreMutations.SetLoading, true)
           commit(StoreMutations.SetError, null)
           try {
-            const stringQuery = stringifyQuery(params.update || {})
+            const stringQuery = stringifyQuery(queryParams.update || {})
             const { data } = await api.patch<{ data: Item }>(
-              `/${endpoint}/id:${id}?${stringQuery}`,
+              `/${endpoint}/id:${id}${stringQuery}`,
               item,
             )
             commit(StoreMutations.EditData, { key: 'id', value: id, item: data.data })
@@ -249,9 +250,9 @@ export const createVuexCRUD =
           commit(StoreMutations.SetLoading, true)
           commit(StoreMutations.SetError, null)
           try {
-            const stringQuery = stringifyQuery(params.update || {})
+            const stringQuery = stringifyQuery(queryParams.update || {})
             const { data } = await api.patch<{ data: Item }>(
-              `/${endpoint}/${value}?${stringQuery}`,
+              `/${endpoint}/${value}${stringQuery}`,
               item,
             )
             commit(StoreMutations.EditData, { key, value, item: data.data })
@@ -264,12 +265,18 @@ export const createVuexCRUD =
           }
         },
 
-        async remove({ commit }, id: string) {
+        async remove({ commit }, payload: string | { value: string; params: QueryPayload }) {
           commit(StoreMutations.SetLoading, true)
           commit(StoreMutations.SetError, null)
+
           try {
-            const stringQuery = stringifyQuery(params.remove || {})
-            await api.delete(`/${endpoint}/id:${id}?${stringQuery}`)
+            const id = typeof payload === 'string' ? payload : payload.value
+
+            const payloadParams = typeof payload === 'string' ? {} : payload.params || {}
+            const params = assign({}, queryParams.remove || {}, payloadParams)
+            const stringQuery = stringifyQuery(params)
+
+            await api.delete(`/${endpoint}/id:${id}${stringQuery}`)
             commit(StoreMutations.RemoveData, { key: 'id', value: id })
             commit(StoreMutations.SetLoading, false)
             return true
@@ -283,8 +290,8 @@ export const createVuexCRUD =
           commit(StoreMutations.SetLoading, true)
           commit(StoreMutations.SetError, null)
           try {
-            const stringQuery = stringifyQuery(params.remove || {})
-            await api.delete(`/${endpoint}/${value}?${stringQuery}`)
+            const stringQuery = stringifyQuery(queryParams.remove || {})
+            await api.delete(`/${endpoint}/${value}${stringQuery}`)
             commit(StoreMutations.RemoveData, { key, value })
             commit(StoreMutations.SetLoading, false)
             return true
@@ -300,9 +307,9 @@ export const createVuexCRUD =
           commit(StoreMutations.SetError, null)
           commit(StoreMutations.SetLoading, true)
           try {
-            const stringQuery = stringifyQuery(params.get || {})
+            const stringQuery = stringifyQuery(queryParams.get || {})
             const { data } = await api.get<{ data: AuditEntry[] }>(
-              `/audits/${endpoint}/id:${id}?${stringQuery}`,
+              `/audits/${endpoint}/id:${id}${stringQuery}`,
             )
             commit(StoreMutations.SetLoading, false)
             return data.data

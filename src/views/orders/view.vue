@@ -172,7 +172,8 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ChangesHistory from '@/components/ChangesHistory.vue'
 
 import { Order, OrderStatus } from '@/interfaces/Order'
-import { getRelativeDate, formatDate } from '@/utils/utils'
+import { getRelativeDate } from '@/utils/utils'
+import { formatDate } from '@/utils/dates'
 
 import { createPackage } from '@/services/createPackage'
 import { formatApiNotificationError } from '@/utils/errors'

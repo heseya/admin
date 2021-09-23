@@ -1,15 +1,13 @@
-import format from 'date-fns/format'
 import { isArray } from 'lodash'
 import queryString from 'query-string'
 
 import { ALL_FILTER_VALUE } from '../consts/filters'
+import { DateInput } from './dates'
 
 /**
  * Returns last element of the given array
  */
 export const getLastElement = <T>(array: T[] = []) => (array ? array[array.length - 1] : undefined)
-
-export type DateInput = string | number | Date
 
 export const getDaysDiff = (d1: DateInput, d2: DateInput) => {
   const diff = new Date(d2).setHours(12) - new Date(d1).setHours(12)
@@ -35,10 +33,6 @@ export const getRelativeDate = (date: DateInput, lang = 'pl') => {
   if (diff > -30) return rtf.format(diff, 'day')
   else if (diff > -356) return rtf.format(Math.floor(diff / 30), 'month')
   else return rtf.format(Math.floor(diff / 365), 'year')
-}
-
-export const formatDate = (date: DateInput) => {
-  return format(new Date(date), 'dd.MM.yyyy HH:mm:ss')
 }
 
 export const formatFilters = (filters: Record<string, unknown>) => {

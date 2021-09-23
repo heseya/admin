@@ -41,62 +41,8 @@
         width="550px"
         :title="editedItem.id ? 'Edycja kodu rabatowego' : 'Nowy kod rabatowy'"
       >
-        <modal-form>
-          <validated-input
-            v-model="editedItem.code"
-            :disabled="!canModify"
-            rules="required"
-            label="Kod"
-          />
-          <validated-input v-model="editedItem.description" :disabled="!canModify" label="Opis" />
+        <DiscountForm v-model="editedItem" :disabled="!canModify" />
 
-          <hr />
-
-          <validated-input
-            v-model="editedItem.discount"
-            :disabled="!canModify"
-            rules="required"
-            label="Zniżka"
-          />
-          <ValidationProvider v-slot="{ errors }" rules="required">
-            <app-select v-model="editedItem.type" :disabled="!canModify" label="Typ">
-              <a-select-option :value="0">Rabat Procentowy</a-select-option>
-              <a-select-option :value="1">Rabat Kwotowy</a-select-option>
-              <template #error>{{ errors[0] }}</template>
-            </app-select>
-          </ValidationProvider>
-
-          <hr />
-
-          <validated-input
-            v-model="editedItem.max_uses"
-            :disabled="!canModify"
-            rules="required"
-            label="Maksymalna ilość użyć"
-          />
-
-          <hr />
-
-          <validated-input
-            v-model="editedItem.starts_at"
-            rules="date-before:@expires_at"
-            type="datetime-local"
-            allow-clear
-            :disabled="!canModify"
-            label="Ważny od"
-          />
-          <validated-input
-            v-model="editedItem.expires_at"
-            name="expires_at"
-            type="datetime-local"
-            allow-clear
-            :disabled="!canModify"
-            label="Ważny do"
-          />
-          <small>
-            W przypadku braku podania dat, kod rabatowy będzie ważny bez ograniczeń czasowych.
-          </small>
-        </modal-form>
         <template #footer>
           <div class="row">
             <app-button v-if="canModify" @click="handleSubmit(saveModal)"> Zapisz </app-button>
@@ -118,19 +64,18 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { ValidationProvider, ValidationObserver } from 'vee-validate'
+import { ValidationObserver } from 'vee-validate'
 
-import ModalForm from '@/components/form/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
-import ValidatedInput from '@/components/form/ValidatedInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
+import DiscountForm from '@/components/modules/discounts/Form.vue'
 
 import { DiscountCode } from '@/interfaces/DiscountCode'
 import { UUID } from '@/interfaces/UUID'
 
 import { formatCurrency } from '@/utils/currency'
-import { formatUTC, formatDate, DATETIME_FORMAT } from '@/utils/dates'
+import { DATETIME_FORMAT, formatDate, formatUTC } from '@/utils/dates'
 
 const EMPTY_DISCOUNT_CODE: DiscountCode = {
   id: '',
@@ -148,11 +93,9 @@ export default Vue.extend({
   metaInfo: { title: 'Kody rabatowe' },
   components: {
     ListItem,
-    ModalForm,
-    ValidationProvider,
+    DiscountForm,
     ValidationObserver,
     PaginatedList,
-    ValidatedInput,
     PopConfirm,
   },
   beforeRouteLeave(to, from, next) {
@@ -187,7 +130,7 @@ export default Vue.extend({
       if (id) {
         const item = this.$accessor.discounts.getFromListById(id)
         this.editedItem = {
-          ...item,
+          ...(item || {}),
           starts_at: formatDate(item.starts_at, DATETIME_FORMAT),
           expires_at: formatDate(item.expires_at, DATETIME_FORMAT),
         }
@@ -198,16 +141,14 @@ export default Vue.extend({
       }
     },
     async saveModal() {
-      const item = this.editedItem
-
       this.$accessor.startLoading()
       if (this.editedItem.id) {
         await this.$accessor.discounts.update({
-          id: item.id,
+          id: this.editedItem.id,
           item: {
-            ...item,
-            starts_at: formatUTC(item.starts_at),
-            expires_at: formatUTC(item.expires_at),
+            ...this.editedItem,
+            starts_at: formatUTC(this.editedItem.starts_at),
+            expires_at: formatUTC(this.editedItem.expires_at),
           },
         })
       } else {

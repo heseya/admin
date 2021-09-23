@@ -130,7 +130,7 @@ import { DiscountCode } from '@/interfaces/DiscountCode'
 import { UUID } from '@/interfaces/UUID'
 
 import { formatCurrency } from '@/utils/currency'
-import { format } from 'date-fns'
+import { formatUTC, formatDate, DATETIME_FORMAT } from '@/utils/dates'
 
 const EMPTY_DISCOUNT_CODE: DiscountCode = {
   id: '',
@@ -179,7 +179,7 @@ export default Vue.extend({
       return formatCurrency(amount, this.$accessor.currency)
     },
     formatDateTime(date: string) {
-      return format(new Date(date), 'yyyy-MM-dd HH:mm')
+      return formatDate(date)
     },
     openModal(id?: UUID) {
       if (!this.$verboseCan(this.$p.Discounts.ShowDetails)) return
@@ -188,8 +188,8 @@ export default Vue.extend({
         const item = this.$accessor.discounts.getFromListById(id)
         this.editedItem = {
           ...item,
-          starts_at: item.starts_at && format(new Date(item.starts_at), "yyyy-MM-dd'T'HH:mm"),
-          expires_at: item.expires_at && format(new Date(item.expires_at), "yyyy-MM-dd'T'HH:mm"),
+          starts_at: formatDate(item.starts_at, DATETIME_FORMAT),
+          expires_at: formatDate(item.expires_at, DATETIME_FORMAT),
         }
       } else {
         this.editedItem = {
@@ -198,14 +198,20 @@ export default Vue.extend({
       }
     },
     async saveModal() {
+      const item = this.editedItem
+
       this.$accessor.startLoading()
       if (this.editedItem.id) {
         await this.$accessor.discounts.update({
-          id: this.editedItem.id,
-          item: this.editedItem,
+          id: item.id,
+          item: {
+            ...item,
+            starts_at: formatUTC(item.starts_at),
+            expires_at: formatUTC(item.expires_at),
+          },
         })
       } else {
-        await this.$accessor.discounts.add(this.editedItem)
+        await this.$accessor.discounts.add(item)
       }
       this.$accessor.stopLoading()
       this.isModalActive = false

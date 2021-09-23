@@ -8,7 +8,7 @@ export const pages = createVuexCRUD<Page>()('pages', {
   mutations: {},
   actions: {
     async reorder(_u, pages) {
-      await reorderCollection('pages', 'pages', 'order')(pages)
+      await reorderCollection('pages', 'pages')(pages)
     },
   },
 })

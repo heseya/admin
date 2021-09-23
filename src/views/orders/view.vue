@@ -94,7 +94,22 @@
             </app-select>
           </template>
           <br />
-          <h2 class="section-title">Próby płatności</h2>
+          <h2 class="section-title">
+            <a-tooltip v-if="order.summary_paid > order.summary">
+              <template slot="title">
+                Zamówienie zostało nadpłacone o
+                <b>{{ formatCurrency(order.summary_paid - order.summary) }}</b
+                >!
+                <br />
+                <br />
+                Klient zapłacił {{ formatCurrency(order.summary_paid) }} zamiast
+                {{ formatCurrency(order.summary) }}
+              </template>
+              <span class="overpayed-icon"> <i class="bx bxs-error"></i> </span>
+            </a-tooltip>
+
+            Próby płatności
+          </h2>
           <div v-for="payment in order.payments" :key="payment.id" class="payment-method">
             <i v-if="payment.payed" class="bx bxs-check-circle payment-method__success"></i>
             <i v-if="!payment.payed" class="bx bxs-x-circle payment-method__failed"></i>
@@ -228,10 +243,10 @@ export default Vue.extend({
     packageTemplates(): PackageTemplate[] {
       return this.$accessor.packageTemplates.getData
     },
-    relativeOrderedDate(): string {
+    relativeOrderedDate(): string | null {
       return this.order.created_at && getRelativeDate(this.order.created_at)
     },
-    formattedDate(): string {
+    formattedDate(): string | null {
       return this.order.created_at && formatDate(this.order.created_at)
     },
   },
@@ -416,6 +431,13 @@ export default Vue.extend({
 
   @media screen and (max-width: 780px) {
     grid-template-columns: 1fr;
+  }
+
+  .overpayed-icon {
+    display: flex;
+    justify-content: center;
+    color: $red-color-500;
+    margin-right: 5px;
   }
 }
 

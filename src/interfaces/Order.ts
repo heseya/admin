@@ -33,5 +33,5 @@ export interface Order {
   shipping_price: number
   status: OrderStatus
   summary: number
-  summary_payed: null // TODO
+  summary_paid: number
 }

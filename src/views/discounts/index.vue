@@ -152,7 +152,7 @@ export default Vue.extend({
           },
         })
       } else {
-        await this.$accessor.discounts.add(item)
+        await this.$accessor.discounts.add(this.editedItem)
       }
       this.$accessor.stopLoading()
       this.isModalActive = false

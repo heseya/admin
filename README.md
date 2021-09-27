@@ -8,7 +8,7 @@ $ yarn
 $ cp .env.example .env
 ```
 
-### Yarn2
+### [DISABLED] Yarn2
 
 This project uses [Yarn2](https://yarnpkg.com/getting-started/migration) to manage dependencies. If something is wrong, try use the following command:
 

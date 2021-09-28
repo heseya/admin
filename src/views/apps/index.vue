@@ -126,7 +126,7 @@ export default Vue.extend({
 
       const success = await this.$accessor.apps.remove({
         value: app.id,
-        params: { force: force ? 1 : undefined },
+        params: { force: Number(force) },
       })
 
       this.$accessor.stopLoading()

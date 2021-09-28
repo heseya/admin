@@ -51,7 +51,14 @@
       <div class="field">
         <div class="field__label">Wymagane uprawnienia</div>
         <div class="field__value">
-          <code v-for="perm in appInfo.required_permissions" :key="perm">{{ perm }}</code>
+          <code v-for="perm in requiredPermissions" :key="perm.id">
+            {{ perm.display_name || perm.name }}
+
+            <a-tooltip v-if="perm.description">
+              <template slot="title"> {{ perm.description }} </template>
+              <i class="bx bxs-info-circle"></i>
+            </a-tooltip>
+          </code>
         </div>
       </div>
 
@@ -67,8 +74,10 @@ import Vue from 'vue'
 import axios from 'axios'
 import { debounce } from 'lodash'
 
-import { CreateAppDto, IntegrationInfo } from '@/interfaces/App'
 import LoadingIndicator from '@/components/layout/LoadingIndicator.vue'
+
+import { CreateAppDto, IntegrationInfo } from '@/interfaces/App'
+import { PermissionObject } from '@/interfaces/Permissions'
 
 export default Vue.extend({
   components: { LoadingIndicator },
@@ -92,12 +101,21 @@ export default Vue.extend({
         this.$emit('input', value)
       },
     },
+    requiredPermissions(): PermissionObject[] {
+      return (this.appInfo?.required_permissions || [])
+        .map((name) => this.$accessor.roles.permissions.find((perm) => perm.name === name))
+        .filter((perm) => !!perm) as PermissionObject[]
+    },
   },
   watch: {
     ['form.url']() {
       this.debouncedFetch()
       this.appInfo = null
     },
+  },
+  created() {
+    // @ts-ignore // TODO: fix extended store actions typings
+    this.$accessor.roles.fetchPermissions()
   },
   methods: {
     debouncedFetch: debounce(function (this: any) {

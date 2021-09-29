@@ -110,7 +110,7 @@ export default Vue.extend({
       app.url = app.url.replace('host.docker.internal', 'localhost')
 
       if (app.microfrontend_url) {
-        this.$router.push(`/apps/${app.slug}/`)
+        this.$router.push(`/apps/${app.id}/`)
         return
       }
 

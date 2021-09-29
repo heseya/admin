@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { init as initMicroApps, onMounted } from 'microfront-lib'
+import { init as initMicroApps, onMounted, openCommunicationChannel } from 'microfront-lib'
 
 import DesktopNavigation from './components/root/DesktopNavigation.vue'
 import MobileNavigation from './components/root/MobileNavigation.vue'
@@ -44,11 +44,18 @@ export default Vue.extend({
     isNavHidden(): boolean {
       return !!this.$route.meta?.hiddenNav || false
     },
+    tokenChannel() {
+      return openCommunicationChannel('Token')
+    },
   },
   watch: {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     '$accessor.auth.permissionsError'(_permissionsError) {
       this.$toast.error('Nie posiadasz uprawnień do tej akcji')
+    },
+
+    '$accessor.auth.getIdentityToken'(token) {
+      this.tokenChannel.emit('set', token)
     },
   },
   created() {
@@ -56,10 +63,12 @@ export default Vue.extend({
     this.$accessor.fetchEnv()
     if (this.$accessor.auth.isLogged) this.$accessor.auth.fetchProfile()
 
-    const tokenChannel = new BroadcastChannel('token')
-
     onMounted(() => {
-      tokenChannel.postMessage(this.$store.state.auth.token)
+      this.tokenChannel.emit('set', this.$accessor.auth.getIdentityToken)
+    })
+
+    this.tokenChannel.on<undefined>('refresh', () => {
+      this.$accessor.auth.refreshToken()
     })
   },
 })

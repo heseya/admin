@@ -1,6 +1,8 @@
 <template>
   <div>
     <top-nav :title="!isNew ? page.name : 'Nowa strona'">
+      <changes-history :id="page.id" model="pages" />
+
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Pages.Remove"
@@ -64,6 +66,7 @@ import FlexInput from '@/components/layout/FlexInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import RichEditor from '@/components/form/RichEditor.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
+import ChangesHistory from '@/components/ChangesHistory.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { Page } from '@/interfaces/Page'
@@ -80,6 +83,7 @@ export default Vue.extend({
     RichEditor,
     ValidationObserver,
     SwitchInput,
+    ChangesHistory,
   },
   data: () => ({
     form: {

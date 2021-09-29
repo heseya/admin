@@ -1,10 +1,7 @@
 <template>
   <div>
     <top-nav :title="`Zamówienie ${order.code}`" :subtitle="`z dnia ${formattedDate}`">
-      <icon-button @click="downloadAudits">
-        <i slot="icon" class="bx bx-history"></i>
-        Pobierz historię zmian
-      </icon-button>
+      <changes-history :id="order.id" model="orders" />
       <a :href="`https://***REMOVED***.eu/payment/${order.code}`" target="_blank">
         <icon-button>
           <i slot="icon" class="bx bxs-dollar-circle"></i>
@@ -97,7 +94,22 @@
             </app-select>
           </template>
           <br />
-          <h2 class="section-title">Próby płatności</h2>
+          <h2 class="section-title">
+            <a-tooltip v-if="order.summary_paid > order.summary">
+              <template slot="title">
+                Zamówienie zostało nadpłacone o
+                <b>{{ formatCurrency(order.summary_paid - order.summary) }}</b
+                >!
+                <br />
+                <br />
+                Klient zapłacił {{ formatCurrency(order.summary_paid) }} zamiast
+                {{ formatCurrency(order.summary) }}
+              </template>
+              <span class="overpayed-icon"> <i class="bx bxs-error"></i> </span>
+            </a-tooltip>
+
+            Próby płatności
+          </h2>
           <div v-for="payment in order.payments" :key="payment.id" class="payment-method">
             <i v-if="payment.payed" class="bx bxs-check-circle payment-method__success"></i>
             <i v-if="!payment.payed" class="bx bxs-x-circle payment-method__failed"></i>
@@ -172,14 +184,15 @@ import CartItem from '@/components/layout/CartItem.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import PartialUpdateForm from '@/components/modules/orders/PartialUpdateForm.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
+import ChangesHistory from '@/components/ChangesHistory.vue'
 
 import { Order, OrderStatus } from '@/interfaces/Order'
-import { getRelativeDate, formatDate } from '@/utils/utils'
+import { getRelativeDate } from '@/utils/utils'
+import { formatDate } from '@/utils/dates'
 
 import { createPackage } from '@/services/createPackage'
 import { formatApiNotificationError } from '@/utils/errors'
 import { PackageTemplate } from '@/interfaces/PackageTemplate'
-import { downloadJsonAsFile } from '@/utils/download'
 import { formatCurrency } from '@/utils/currency'
 import { api } from '@/api'
 
@@ -206,6 +219,7 @@ export default Vue.extend({
     ModalForm,
     PartialUpdateForm,
     PopConfirm,
+    ChangesHistory,
   },
   data: () => ({
     status: '',
@@ -229,10 +243,10 @@ export default Vue.extend({
     packageTemplates(): PackageTemplate[] {
       return this.$accessor.packageTemplates.getData
     },
-    relativeOrderedDate(): string {
+    relativeOrderedDate(): string | null {
       return this.order.created_at && getRelativeDate(this.order.created_at)
     },
-    formattedDate(): string {
+    formattedDate(): string | null {
       return this.order.created_at && formatDate(this.order.created_at)
     },
   },
@@ -338,11 +352,6 @@ export default Vue.extend({
       this.$accessor.stopLoading()
     },
 
-    async downloadAudits() {
-      const data = await this.$accessor.orders.fetchAudits(this.order.id)
-      downloadJsonAsFile(data, 'orders-history')
-    },
-
     async payOffline() {
       this.$accessor.startLoading()
       try {
@@ -422,6 +431,13 @@ export default Vue.extend({
 
   @media screen and (max-width: 780px) {
     grid-template-columns: 1fr;
+  }
+
+  .overpayed-icon {
+    display: flex;
+    justify-content: center;
+    color: $red-color-500;
+    margin-right: 5px;
   }
 }
 

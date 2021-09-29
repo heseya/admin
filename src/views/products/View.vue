@@ -1,6 +1,8 @@
 <template>
   <div :key="$route.params.id">
     <top-nav :title="!isNew ? product.name : 'Nowy produkt'">
+      <changes-history :id="product.id" model="products" />
+
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Products.Remove"
@@ -84,7 +86,8 @@
                     :disabled="!canModify"
                   >
                     <a-select-option v-for="set in productSets" :key="set.id" :value="set.id">
-                      <i v-if="!set.public" class="bx bx-lock"></i> {{ set.name }}
+                      <i v-if="!set.public" class="bx bx-lock"></i>
+                      {{ set.name }} &nbsp; <small>(/{{ set.slug }})</small>
                     </a-select-option>
                     <template #message-danger>{{ errors[0] }}</template>
                   </app-select>
@@ -146,6 +149,7 @@ import { UUID } from '@/interfaces/UUID'
 import { Product, ProductDTO, ProductComponentForm } from '@/interfaces/Product'
 import { ProductSet } from '@/interfaces/ProductSet'
 import SwitchInput from '@/components/form/SwitchInput.vue'
+import ChangesHistory from '@/components/ChangesHistory.vue'
 
 const EMPTY_FORM: ProductComponentForm = {
   id: '',
@@ -177,6 +181,7 @@ export default Vue.extend({
     RichEditor,
     TagsSelect,
     SwitchInput,
+    ChangesHistory,
   },
   data: () => ({
     form: cloneDeep(EMPTY_FORM),

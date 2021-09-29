@@ -20,6 +20,14 @@
               <template slot="title"> {{ item.comment }} </template>
               <span class="order-icon"> <i class="bx bxs-comment-detail"></i> </span>
             </a-tooltip>
+
+            <a-tooltip v-if="item.summary_paid > item.summary">
+              <template slot="title">
+                Nadpłacono
+                <b>{{ formatCurrency(item.summary_paid - item.summary) }}</b>
+              </template>
+              <span class="order-icon"> <i class="bx bxs-error"></i> </span>
+            </a-tooltip>
           </template>
           <template #payed="{ rawValue }">
             <span v-if="rawValue" class="order-tag success-text">Opłacone</span>
@@ -76,7 +84,7 @@ export default Vue.extend({
           {
             key: 'summary',
             label: 'Wartość',
-            render: (v) => formatCurrency(v, this.$accessor.currency),
+            render: (v) => this.formatCurrency(v),
           },
           { key: 'payed', label: 'Płatność', width: '0.8fr' },
           { key: 'status', label: 'Status', width: '0.8fr' },
@@ -106,6 +114,9 @@ export default Vue.extend({
     },
     clearFilters() {
       this.makeSearch({ ...EMPTY_ORDER_FILTERS })
+    },
+    formatCurrency(value: number) {
+      return formatCurrency(value, this.$accessor.currency)
     },
   },
 })

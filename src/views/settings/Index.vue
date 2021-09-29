@@ -70,12 +70,12 @@
 
         <h2 class="section-title">Konto</h2>
         <SettingsItem name="Zmień hasło" icon="bx bxs-lock" @click="isChangePasswordModal = true" />
-        <SettingsItem
+        <!-- <SettingsItem
           v-can="$p.Auth.SessionsShow"
           name="Sesje użytkownika"
           icon="bx bx-history"
           url="/settings/login-history"
-        />
+        /> -->
         <SettingsItem name="Wyloguj" icon="bx bx-log-out-circle" @click="logout" />
       </list>
     </card>

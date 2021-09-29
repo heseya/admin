@@ -7,7 +7,8 @@
       :disabled="disabled"
     >
       <div v-for="image in images" :key="image.url" class="gallery__img">
-        <img :src="`${image.url}?w=350&h=350`" :style="{ objectFit }" />
+        <img v-if="image.type === 1" :src="`${image.url}?w=350&h=350`" :style="{ objectFit }" />
+        <video v-if="image.type === 2" :src="image.url" autoplay loop muted />
         <div class="remove">
           <icon-button v-if="!disabled" type="danger" @click="onImageDelete(image.id)">
             <i slot="icon" class="bx bx-trash"></i>
@@ -123,10 +124,10 @@ export default Vue.extend({
     padding-top: 100%;
     margin-bottom: 4px;
     background-color: #ffffff;
-    border-radius: 7px;
     box-shadow: $shadow;
 
-    img {
+    img,
+    video {
       position: absolute;
       top: 0;
       left: 0;
@@ -134,7 +135,7 @@ export default Vue.extend({
       width: 100%;
       object-fit: cover;
       background-color: #ffffff;
-      border-radius: 20px;
+      border-radius: 7px;
     }
 
     .remove {

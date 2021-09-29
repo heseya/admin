@@ -23,7 +23,20 @@ export default Vue.extend({
   props: {
     extensions: {
       type: Array,
-      default: () => ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg'],
+      default: () => [
+        'jpg',
+        'jpeg',
+        'png',
+        'gif',
+        'bmp',
+        'svg',
+        'mp4',
+        'webm',
+        // 'ogg',
+        // 'avi',
+        // 'mov',
+        // 'wmv',
+      ],
     } as Vue.PropOptions<string[]>,
     disabled: {
       type: Boolean,

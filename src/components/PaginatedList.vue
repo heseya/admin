@@ -43,15 +43,15 @@ import Card from '@/components/layout/Card.vue'
 import PerPageSelect from '@/components/cms/PerPageSelect.vue'
 import CmsFilters from '@/components/cms/CmsFilters.vue'
 import CmsTable from './cms/CmsTable.vue'
+import Loading from './layout/Loading.vue'
 
 import { ResponseMeta } from '@/interfaces/Response'
+import { TableConfig } from '@/interfaces/CmsTable'
+import { StoreModulesKeys } from '@/store'
 import { BaseItem } from '@/store/generator'
 
 import { formatFilters } from '@/utils/utils'
 import { formatApiNotificationError } from '@/utils/errors'
-
-import Loading from './layout/Loading.vue'
-import { TableConfig } from '@/interfaces/CmsTable'
 
 export default Vue.extend({
   components: {
@@ -77,7 +77,7 @@ export default Vue.extend({
     storeKey: {
       type: String,
       required: true,
-    },
+    } as Vue.PropOptions<Exclude<StoreModulesKeys, 'auth'>>,
     draggable: {
       type: Boolean,
       default: false,
@@ -107,7 +107,7 @@ export default Vue.extend({
   computed: {
     items: {
       get(): BaseItem[] {
-        return this.$store.getters[`${this.storeKey}/getData`]
+        return this.$accessor[this.storeKey].getData
       },
       async set(items: BaseItem[]) {
         this.isLoading = true
@@ -120,10 +120,10 @@ export default Vue.extend({
       },
     },
     meta(): ResponseMeta {
-      return this.$store.getters[`${this.storeKey}/getMeta`]
+      return this.$accessor[this.storeKey].getMeta
     },
     error(): any {
-      return this.$store.getters[`${this.storeKey}/getError`]
+      return this.$accessor[this.storeKey].getError
     },
     contentComponent(): string {
       if (this.table) return 'CmsTable'
@@ -169,7 +169,7 @@ export default Vue.extend({
       this.isLoading = true
 
       const queryFilters = formatFilters(this.filters)
-      await this.$store.dispatch(`${this.storeKey}/fetch`, {
+      await this.$accessor[this.storeKey].fetch({
         page: this.page,
         limit: this.itemsPerPage,
         ...queryFilters,

@@ -9,7 +9,7 @@
           :indeterminate="hasSome(section) && !(hasAll(section) && isAssignable)"
           @change="() => changeAll(section)"
         >
-          {{ section.replaceAll('_', ' ') }}
+          {{ PERMISSIONS_GROUP_LABELS[section] || section.replace(/_/g, ' ') }}
         </a-checkbox>
       </span>
 
@@ -21,7 +21,12 @@
           :disabled="!perm.assignable || disabled"
           @change="() => change(perm.name)"
         >
-          {{ perm.name }}
+          {{ perm.display_name || perm.name }}
+
+          <a-tooltip v-if="perm.description">
+            <template slot="title"> {{ perm.description }} </template>
+            <i class="bx bxs-info-circle"></i>
+          </a-tooltip>
         </a-checkbox>
       </div>
     </div>
@@ -30,8 +35,10 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Permission, PermissionObject } from '@/interfaces/Permissions'
 import { groupBy } from 'lodash'
+
+import { Permission, PermissionObject } from '@/interfaces/Permissions'
+import { PERMISSIONS_GROUP_LABELS } from '@/consts/permissions'
 
 interface GroupedPermissions {
   section: string
@@ -73,6 +80,9 @@ export default Vue.extend({
           isAssignable: grouped[section].some((p) => p.assignable),
         }))
         .sort((a, b) => (a.section > b.section ? 1 : -1))
+    },
+    PERMISSIONS_GROUP_LABELS(): typeof PERMISSIONS_GROUP_LABELS {
+      return PERMISSIONS_GROUP_LABELS
     },
   },
   created() {
@@ -139,7 +149,6 @@ export default Vue.extend({
     display: flex;
     align-items: center;
     font-weight: 600;
-    text-transform: capitalize;
 
     > * {
       color: $font-color;
@@ -161,6 +170,10 @@ export default Vue.extend({
 
     @media ($viewport-11) {
       grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
+
+    i {
+      color: $primary-color-500;
     }
   }
 

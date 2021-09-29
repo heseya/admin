@@ -53,6 +53,8 @@ export type Permission =
 export interface PermissionObject {
   id: UUID
   name: Permission
+  // eslint-disable-next-line camelcase
+  display_name: string
   description: string
   assignable: boolean
 }

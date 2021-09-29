@@ -70,7 +70,8 @@ import startOfWeek from 'date-fns/startOfWeek'
 import startOfYear from 'date-fns/startOfYear'
 
 import { getPaymentsCount } from '@/services/statistics'
-import { DateInput, getRelativeDate } from '@/utils/utils'
+import { getRelativeDate } from '@/utils/utils'
+import { DateInput } from '@/utils/dates'
 import { formatCurrency } from '@/utils/currency'
 
 import TopNav from '@/components/layout/TopNav.vue'

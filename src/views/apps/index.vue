@@ -12,7 +12,7 @@
         <list-item @click="openConfigureModal(app)">
           <template #avatar>
             <avatar>
-              <img v-if="app.icon" :src="`${app.url}${app.icon}`" />
+              <img v-if="app.icon" :src="app.icon" />
               <i v-else class="bx bxs-extension" />
             </avatar>
           </template>
@@ -31,14 +31,15 @@
     </validation-observer>
 
     <a-modal
-      v-model="isConfigureModalActive"
+      :visible="isConfigureModalActive"
       width="550px"
-      :title="`Konfiguracja aplikacji ${configuratedApp.name}`"
+      :title="`Konfiguracja aplikacji ${configuratedApp && configuratedApp.name}`"
       footer=""
+      @cancel="closeConfigurationModal"
     >
       <configure-app-form
         :app="configuratedApp"
-        @close="isConfigureModalActive = false"
+        @close="closeConfigurationModal"
         @uninstall="uninstallApp"
       />
     </a-modal>
@@ -59,8 +60,8 @@ import ConfigureAppForm from '@/components/modules/apps/ConfigureAppForm.vue'
 import { App, CreateAppDto } from '@/interfaces/App'
 
 const CLEAN_FORM: CreateAppDto = {
-  app_url: '',
-  app_name: '',
+  url: '',
+  name: '',
   licence_key: '',
   allowed_permissions: [],
 }
@@ -79,7 +80,7 @@ export default Vue.extend({
     isInstallModalActive: false,
     isConfigureModalActive: false,
     installForm: cloneDeep(CLEAN_FORM),
-    configuratedApp: {} as Record<string, any>,
+    configuratedApp: null as App | null,
   }),
   methods: {
     openInstallModal() {
@@ -87,30 +88,64 @@ export default Vue.extend({
       this.installForm = cloneDeep(CLEAN_FORM)
     },
     openConfigureModal(app: App) {
+      // ? Only to allow local apps to work on docker
+      app.url = app.url.replace('host.docker.internal', 'localhost')
+
+      if (app.microfrontend_url) {
+        this.$router.push(`/apps/${app.id}/`)
+        return
+      }
+
       this.isConfigureModalActive = true
       this.configuratedApp = app
-
-      // TODO: temporary
-      this.configuratedApp = {
-        name: 'Telegram',
-        url: 'http://localhost:3000',
-      }
+    },
+    closeConfigurationModal() {
+      this.configuratedApp = null
+      this.$nextTick(() => {
+        this.isConfigureModalActive = false
+      })
     },
 
     async installApplication() {
       this.$accessor.startLoading()
-      await this.$accessor.apps.add(this.installForm)
+
+      await this.$accessor.apps.add({
+        ...this.installForm,
+        // ? Only to allow local apps to work on docker
+        url: this.installForm.url.replace('localhost', 'host.docker.internal'),
+      })
       this.$accessor.stopLoading()
       this.isInstallModalActive = false
     },
 
-    async uninstallApp() {
-      const success = await this.$accessor.apps.remove(this.configuratedApp.id)
+    async uninstallApp(force = false) {
+      const app = this.configuratedApp
+      if (!app) return
+
+      this.$accessor.startLoading()
+
+      const success = await this.$accessor.apps.remove({
+        value: app.id,
+        params: { force: Number(force) },
+      })
+
+      this.$accessor.stopLoading()
+
       if (success) {
-        this.isConfigureModalActive = false
         this.$toast.success('Aplikacja została odinstalowana')
+        this.isConfigureModalActive = false
       } else {
-        this.$toast.error('Aplikacji nie udało się odinstalować')
+        if (!force)
+          this.$confirm({
+            title:
+              'Aplikacji nie udało się odinstalować, ponieważ nie odpowiada. Czy chcesz ją usunąć siłą?',
+            okText: 'Odinstaluj',
+            okType: 'danger',
+            onOk: () => {
+              this.uninstallApp(true)
+            },
+          })
+        else this.$toast.error('Aplikacja nie może zostać odinstalowana')
       }
     },
   },

@@ -1,20 +1,45 @@
 <template>
   <validation-observer v-slot="{ handleSubmit }">
     <div class="configure-app-form">
-      <validated-input
-        v-for="field in fields"
-        :key="field.key"
-        v-model="form[field.key]"
-        :label="field.label"
-        :type="field.type"
-        :placeholder="field.placeholder"
-        :rules="field.required ? 'required' : null"
+      <loading :active="isLoading" />
+
+      <a-alert
+        v-if="error"
+        type="error"
+        show-icon
+        message="Nie udało się pobrać konfiguracji aplikacji"
+        :description="error.message"
       />
+
+      <template v-for="field in fields">
+        <app-select
+          v-if="field.type === 'select'"
+          :key="field.key"
+          v-model="form[field.key]"
+          :label="field.label"
+        >
+          <a-select-option v-for="{ value, label } in field.options" :key="value" :value="value">
+            {{ label }}
+          </a-select-option>
+        </app-select>
+
+        <validated-input
+          v-else
+          :key="field.key"
+          v-model="form[field.key]"
+          :label="field.label"
+          :type="field.type"
+          :placeholder="field.placeholder"
+          :rules="field.required ? 'required' : null"
+        />
+      </template>
 
       <br />
 
       <div class="configure-app-form__btns">
-        <app-button @click="handleSubmit(changeAppConfig)">Zapisz konfiguracje</app-button>
+        <app-button :disabled="!!error" @click="handleSubmit(changeAppConfig)">
+          Zapisz konfiguracje
+        </app-button>
         <pop-confirm
           title="Czy na pewno chcesz odinstalować tę aplikację?"
           ok-text="Usuń"
@@ -33,39 +58,32 @@ import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { AxiosError, AxiosInstance } from 'axios'
 
-import { App } from '@/interfaces/App'
-import { formatApiNotification } from '@/utils/utils'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import { createApiInstance } from '@/api'
+import Loading from '@/components/layout/Loading.vue'
 
-interface AppConfigField {
-  key: string
-  label: string
-  placeholder: string
-  type: 'text' | 'number' | 'color' | 'date' | 'datetime-local'
-  // eslint-disable-next-line camelcase
-  default_value: any
-  required: boolean
-  value?: any
-}
+import { App, AppConfigField } from '@/interfaces/App'
+
+import { formatApiNotification } from '@/utils/utils'
+import { createApiInstance } from '@/api'
+import AppSelect from '@/components/form/AppSelect.vue'
 
 export default Vue.extend({
-  components: { ValidationObserver, PopConfirm },
+  components: { ValidationObserver, PopConfirm, Loading, AppSelect },
   props: {
     app: {
       type: Object,
-      required: true,
-    } as Vue.PropOptions<App>,
+      default: null,
+    } as Vue.PropOptions<App | null>,
   },
   data: () => ({
     form: {} as Record<string, any>,
     fields: [] as AppConfigField[],
-    isError: false,
+    error: null as null | Error,
     isLoading: false,
   }),
   computed: {
-    appApi(): AxiosInstance {
-      return createApiInstance(this.app.url, false)
+    appApi(): AxiosInstance | null {
+      return this.app ? createApiInstance(this.app.url, false) : null
     },
   },
   watch: {
@@ -78,7 +96,7 @@ export default Vue.extend({
   },
   methods: {
     async fetchAppConfigFields() {
-      if (!this.app) return
+      if (!this.app || !this.appApi) return
 
       try {
         this.isLoading = true
@@ -91,17 +109,13 @@ export default Vue.extend({
           {},
         )
       } catch (e: unknown) {
-        this.$toast.error(
-          formatApiNotification({
-            title: 'Nie udało się pobrać konfiguracji aplikacji',
-            text: (e as AxiosError)?.message,
-          }),
-        )
-        this.$emit('close')
+        this.error = e as AxiosError
       }
       this.isLoading = false
     },
     async changeAppConfig() {
+      if (!this.appApi) return
+
       try {
         this.isLoading = true
 
@@ -110,10 +124,13 @@ export default Vue.extend({
         this.$toast.success('Konfiguracja została zapisana')
         this.$emit('close')
       } catch (e: unknown) {
+        const error = e as AxiosError
+        const message = error.response?.data?.message || error.message
+
         this.$toast.error(
           formatApiNotification({
             title: 'Wystąpił błąd podczas zapisywania konfiguracji',
-            text: (e as AxiosError)?.message,
+            text: message,
           }),
         )
       }

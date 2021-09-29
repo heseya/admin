@@ -262,15 +262,15 @@ const router = new VueRouter({
         permissions: [Permissions.Roles.ShowDetails],
       },
     },
-    {
-      path: '/settings/login-history',
-      name: 'LoginHistory',
-      component: () => import('./views/settings/LoginHistory.vue'),
-      meta: {
-        requiresAuth: true,
-        permissions: [Permissions.Auth.SessionsShow],
-      },
-    },
+    // {
+    //   path: '/settings/login-history',
+    //   name: 'LoginHistory',
+    //   component: () => import('./views/settings/LoginHistory.vue'),
+    //   meta: {
+    //     requiresAuth: true,
+    //     permissions: [Permissions.Auth.SessionsShow],
+    //   },
+    // },
     {
       path: '/403',
       name: 'Error403',

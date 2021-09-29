@@ -12,6 +12,10 @@ export enum AppsPermission {
   Remove = 'apps.remove',
 }
 
+export enum AuditsPermission {
+  Show = 'audits.show',
+}
+
 export enum AuthPermission {
   Login = 'auth.login',
   Register = 'auth.register',

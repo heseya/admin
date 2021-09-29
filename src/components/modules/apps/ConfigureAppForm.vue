@@ -40,14 +40,6 @@
         <app-button :disabled="!!error" @click="handleSubmit(changeAppConfig)">
           Zapisz konfiguracje
         </app-button>
-        <pop-confirm
-          title="Czy na pewno chcesz odinstalować tę aplikację?"
-          ok-text="Usuń"
-          cancel-text="Anuluj"
-          @confirm="$emit('uninstall')"
-        >
-          <app-button type="danger">Odinstaluj</app-button>
-        </pop-confirm>
       </div>
     </div>
   </validation-observer>
@@ -58,7 +50,6 @@ import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { AxiosError, AxiosInstance } from 'axios'
 
-import PopConfirm from '@/components/layout/PopConfirm.vue'
 import Loading from '@/components/layout/Loading.vue'
 
 import { App, AppConfigField } from '@/interfaces/App'
@@ -68,7 +59,7 @@ import { createApiInstance } from '@/api'
 import AppSelect from '@/components/form/AppSelect.vue'
 
 export default Vue.extend({
-  components: { ValidationObserver, PopConfirm, Loading, AppSelect },
+  components: { ValidationObserver, Loading, AppSelect },
   props: {
     app: {
       type: Object,

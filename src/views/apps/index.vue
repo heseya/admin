@@ -2,14 +2,14 @@
   <div>
     <PaginatedList title="Aplikacje" store-key="apps">
       <template #nav>
-        <icon-button @click="openInstallModal()">
+        <icon-button v-can="$p.Apps.Install" @click="openInstallModal()">
           <i slot="icon" class="bx bx-plus"></i>
           Dodaj aplikacje
         </icon-button>
       </template>
 
       <template #default="{ item: app }">
-        <list-item @click="openConfigureModal(app)">
+        <list-item no-hover>
           <template #avatar>
             <avatar>
               <img v-if="app.icon" :src="app.icon" />
@@ -19,7 +19,27 @@
           {{ app.name }}
           <small>{{ app.description }}</small>
 
-          <small slot="action">{{ app.author }} | v{{ app.version }}</small>
+          <small slot="action">
+            <div class="app-action">
+              <span> {{ app.author }} | v{{ app.version }} </span>
+
+              <icon-button size="small" @click="openConfigureModal(app)">
+                <i slot="icon" class="bx bx-edit"></i>
+              </icon-button>
+
+              <pop-confirm
+                v-can="$p.Apps.Remove"
+                title="Czy na pewno chcesz odinstalować tę aplikację?"
+                ok-text="Usuń"
+                cancel-text="Anuluj"
+                @confirm="uninstallApp(app)"
+              >
+                <icon-button size="small" type="danger">
+                  <i slot="icon" class="bx bxs-trash"></i>
+                </icon-button>
+              </pop-confirm>
+            </div>
+          </small>
         </list-item>
       </template>
     </PaginatedList>
@@ -37,11 +57,7 @@
       footer=""
       @cancel="closeConfigurationModal"
     >
-      <configure-app-form
-        :app="configuratedApp"
-        @close="closeConfigurationModal"
-        @uninstall="uninstallApp"
-      />
+      <configure-app-form :app="configuratedApp" @close="closeConfigurationModal" />
     </a-modal>
   </div>
 </template>
@@ -56,6 +72,7 @@ import PaginatedList from '@/components/PaginatedList.vue'
 import Avatar from '@/components/layout/Avatar.vue'
 import AddForm from '@/components/modules/apps/AddForm.vue'
 import ConfigureAppForm from '@/components/modules/apps/ConfigureAppForm.vue'
+import PopConfirm from '@/components/layout/PopConfirm.vue'
 
 import { App, CreateAppDto } from '@/interfaces/App'
 
@@ -75,6 +92,7 @@ export default Vue.extend({
     Avatar,
     AddAppForm: AddForm,
     ConfigureAppForm,
+    PopConfirm,
   },
   data: () => ({
     isInstallModalActive: false,
@@ -92,7 +110,7 @@ export default Vue.extend({
       app.url = app.url.replace('host.docker.internal', 'localhost')
 
       if (app.microfrontend_url) {
-        this.$router.push(`/apps/${app.id}/`)
+        this.$router.push(`/apps/${app.slug}/`)
         return
       }
 
@@ -118,8 +136,7 @@ export default Vue.extend({
       this.isInstallModalActive = false
     },
 
-    async uninstallApp(force = false) {
-      const app = this.configuratedApp
+    async uninstallApp(app: App, force = false) {
       if (!app) return
 
       this.$accessor.startLoading()
@@ -142,7 +159,7 @@ export default Vue.extend({
             okText: 'Odinstaluj',
             okType: 'danger',
             onOk: () => {
-              this.uninstallApp(true)
+              this.uninstallApp(app, true)
             },
           })
         else this.$toast.error('Aplikacja nie może zostać odinstalowana')
@@ -151,3 +168,14 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.app-action {
+  display: flex;
+  align-items: center;
+
+  span {
+    margin-right: 8px;
+  }
+}
+</style>

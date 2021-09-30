@@ -24,7 +24,8 @@
               <span> {{ app.author }} | v{{ app.version }} </span>
 
               <icon-button size="small" @click="openConfigureModal(app)">
-                <i slot="icon" class="bx bx-edit"></i>
+                <i v-if="app.microfrontend_url" slot="icon" class="bx bx-log-in"></i>
+                <i v-else slot="icon" class="bx bx-edit"></i>
               </icon-button>
 
               <pop-confirm

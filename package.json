@@ -34,7 +34,7 @@
     "vuedraggable": "^2.24.3",
     "vuex": "^3.6.2",
     "vuex-persist": "^3.1.3",
-    "bout": "^0.1.0"
+    "bout": "^0.1.1"
   },
   "devDependencies": {
     "@types/jest": "^27.0.2",

@@ -2811,10 +2811,10 @@ boolbase@^1.0.0, boolbase@~1.0.0:
   resolved "https://registry.yarnpkg.com/boolbase/-/boolbase-1.0.0.tgz#68dff5fbe60c51eb37725ea9e3ed310dcc1e776e"
   integrity sha1-aN/1++YMUes3cl6p4+0xDcwed24=
 
-bout@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/bout/-/bout-0.1.0.tgz#93d5c241061385fe74a2b5f465330a7c02c7fea1"
-  integrity sha512-MjA0onY4ByMi1jdPE7+9gQ+VxNC8CeBKcYBajQ0DtgfKP8zPhuHR6hwPLVwPgwvLDgWUblgGJC8bNifc9Uursg==
+bout@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/bout/-/bout-0.1.1.tgz#09a8069a3024f94542637f9fee4df4035f1c9489"
+  integrity sha512-3YPLuFeLT9TUM07LC/WzMGFe6yb5NfHtXJ/JclgY5/EVIGE2BzNJjIHfibJLPmwJxXehVOQRg+8JgupXDxCpsw==
 
 brace-expansion@^1.1.7:
   version "1.1.11"

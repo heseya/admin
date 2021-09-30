@@ -2811,6 +2811,11 @@ boolbase@^1.0.0, boolbase@~1.0.0:
   resolved "https://registry.yarnpkg.com/boolbase/-/boolbase-1.0.0.tgz#68dff5fbe60c51eb37725ea9e3ed310dcc1e776e"
   integrity sha1-aN/1++YMUes3cl6p4+0xDcwed24=
 
+bout@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/bout/-/bout-0.1.0.tgz#93d5c241061385fe74a2b5f465330a7c02c7fea1"
+  integrity sha512-MjA0onY4ByMi1jdPE7+9gQ+VxNC8CeBKcYBajQ0DtgfKP8zPhuHR6hwPLVwPgwvLDgWUblgGJC8bNifc9Uursg==
+
 brace-expansion@^1.1.7:
   version "1.1.11"
   resolved "https://registry.yarnpkg.com/brace-expansion/-/brace-expansion-1.1.11.tgz#3c7fcbf529d87226f3d2f52b966ff5271eb441dd"
@@ -7496,10 +7501,6 @@ microevent.ts@~0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/microevent.ts/-/microevent.ts-0.1.1.tgz#70b09b83f43df5172d0205a63025bce0f7357fa0"
   integrity sha512-jo1OfR4TaEwd5HOrt5+tAZ9mqT4jmpNAusXtyfNzqVm9uiSYFZlKM1wYL4oU7azZW/PxQW53wM0S6OR1JHNa2g==
-
-"microfront-lib@git+https://github.com/heseya/microfront-lib.git":
-  version "0.0.1"
-  resolved "git+https://github.com/heseya/microfront-lib.git#9b27d5128bcd398513a72e942d7b98c4f2cf1f3f"
 
 micromatch@^3.1.10, micromatch@^3.1.4:
   version "3.1.10"

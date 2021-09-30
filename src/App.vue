@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { init as initMicroApps, onMounted, openCommunicationChannel } from 'microfront-lib'
+import { init as initMicroApps, onMounted, openCommunicationChannel } from 'bout'
 
 import DesktopNavigation from './components/root/DesktopNavigation.vue'
 import MobileNavigation from './components/root/MobileNavigation.vue'

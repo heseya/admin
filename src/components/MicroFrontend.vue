@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { findAppByHost, installApp } from 'microfront-lib'
+import { findAppByHost, installApp } from 'bout'
 
 export default Vue.extend({
   name: 'MicroFrontend',

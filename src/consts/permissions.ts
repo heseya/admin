@@ -24,6 +24,7 @@ import {
   TagsPermission,
   UsersPermission,
   RolesPermission,
+  WebhooksPermission,
 } from '@/enums/permissions'
 
 export const PERMISSIONS_TREE = {
@@ -51,6 +52,7 @@ export const PERMISSIONS_TREE = {
   Tags: TagsPermission,
   Users: UsersPermission,
   Roles: RolesPermission,
+  Webhooks: WebhooksPermission,
 }
 
 export const ALL_PERMISSIONS: Permission[] = Object.values(PERMISSIONS_TREE)

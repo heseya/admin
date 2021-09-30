@@ -254,6 +254,25 @@ const router = new VueRouter({
         permissions: [Permissions.Roles.ShowDetails],
       },
     },
+    {
+      path: '/webhooks',
+      name: 'WebHooks',
+      component: () => import('./views/webhooks/index.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Webhooks.Show],
+      },
+    },
+    {
+      path: '/webhooks/:id',
+      name: 'WebHooksView',
+      component: () => import('./views/webhooks/view.vue'),
+      meta: {
+        returnUrl: '/webhooks',
+        requiresAuth: true,
+        permissions: [Permissions.Webhooks.Show],
+      },
+    },
     // {
     //   path: '/settings/login-history',
     //   name: 'LoginHistory',

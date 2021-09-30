@@ -159,3 +159,10 @@ export enum RolesPermission {
   Edit = 'roles.edit',
   Remove = 'roles.remove',
 }
+
+export enum WebhooksPermission {
+  Show = 'webhooks.show',
+  Add = 'webhooks.add',
+  Edit = 'webhooks.edit',
+  Remove = 'webhooks.remove',
+}

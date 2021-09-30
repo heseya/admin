@@ -1,5 +1,5 @@
 <template>
-  <main :id="containerId" />
+  <div :id="containerId" />
 </template>
 
 <script lang="ts">
@@ -22,12 +22,15 @@ export default Vue.extend({
     containerId(): string {
       return `${this.appKey}-container`
     },
+    standardHost(): string {
+      return this.host.endsWith('/') ? this.host : `${this.host}/`
+    },
   },
   async mounted() {
-    if (findAppByHost(this.host)) {
+    if (findAppByHost(this.standardHost)) {
       this.mountApp()
     } else {
-      await installApp(this.host)
+      await installApp(this.standardHost)
       this.mountApp()
     }
   },
@@ -36,11 +39,11 @@ export default Vue.extend({
   },
   methods: {
     mountApp() {
-      const app = findAppByHost(this.host)
+      const app = findAppByHost(this.standardHost)
       if (app) app.mount(this.containerId)
     },
     unmountApp() {
-      const app = findAppByHost(this.host)
+      const app = findAppByHost(this.standardHost)
       if (app) app.unmount(this.containerId)
     },
   },

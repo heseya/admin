@@ -1,8 +1,7 @@
 <template>
   <div class="micro-app-containter">
-    <loading :active="isLoading">
-      <micro-frontend v-if="app" :app-key="app.slug" :host="app.microfrontend_url" />
-    </loading>
+    <loading :active="isLoading" />
+    <micro-frontend v-if="app && !isLoading" :app-key="app.slug" :host="app.microfrontend_url" />
   </div>
 </template>
 
@@ -31,13 +30,13 @@ export default Vue.extend({
     this.isLoading = true
     const success = await this.$accessor.apps.get(this.appId)
 
+    if (!this.app?.microfrontend_url) {
+      this.$toast.warning('Ta aplikacja nie posiada dedykowanego widoku')
+      this.$router.push('/apps')
+    }
+
     if (!success) this.$router.replace('/apps')
     this.isLoading = false
   },
 })
 </script>
-
-<style lang="scss" scoped>
-.micro-app-containter {
-}
-</style>

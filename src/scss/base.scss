@@ -121,3 +121,13 @@ code {
   padding: 2px 4px;
   border-radius: 3px;
 }
+
+.ant-tooltip {
+  line-height: 1.3 !important;
+}
+
+.narrower-page {
+  max-width: 900px;
+  display: block;
+  margin: 0 auto;
+}

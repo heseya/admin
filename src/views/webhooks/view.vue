@@ -1,5 +1,5 @@
 <template>
-  <div :key="webhook.id">
+  <div :key="webhook.id" class="narrower-page">
     <top-nav :title="!isNew ? webhook.name : 'Nowy webhook'">
       <pop-confirm
         v-if="!isNew"
@@ -31,7 +31,7 @@
 import Vue from 'vue'
 import { cloneDeep } from 'lodash'
 
-import { WebHook } from '@/interfaces/Webhook'
+import { WebHook, WebHookDto } from '@/interfaces/Webhook'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
@@ -39,6 +39,15 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import WebhookForm from '@/components/modules/webhooks/Form.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
+
+const CLEAR_FORM: WebHookDto = {
+  url: '',
+  events: [],
+  name: '',
+  secret: '',
+  with_issuer: false,
+  with_hidden: false,
+}
 
 export default Vue.extend({
   metaInfo(): any {
@@ -51,7 +60,7 @@ export default Vue.extend({
     PopConfirm,
   },
   data: () => ({
-    editedWebhook: {} as WebHook,
+    editedWebhook: cloneDeep(CLEAR_FORM),
   }),
   computed: {
     id(): string {
@@ -111,5 +120,3 @@ export default Vue.extend({
   },
 })
 </script>
-
-<style lang="scss"></style>

@@ -87,11 +87,13 @@ export default Vue.extend({
     },
   },
   async created() {
-    if (!this.isNew) {
-      this.$accessor.startLoading()
-      await this.$accessor.webhooks.get(this.id)
-      this.$accessor.stopLoading()
-    }
+    this.$accessor.startLoading()
+
+    // @ts-ignore // TODO: fix extended store actions typings
+    await this.$accessor.webhooks.fetchEvents()
+    if (!this.isNew) await this.$accessor.webhooks.get(this.id)
+
+    this.$accessor.stopLoading()
   },
   methods: {
     async saveWebhook(webhook: WebHook) {

@@ -131,3 +131,29 @@ code {
   display: block;
   margin: 0 auto;
 }
+
+.ant-checkbox-wrapper {
+  margin-left: 0 !important;
+
+  .ant-checkbox__title {
+    color: #000;
+  }
+  .ant-checkbox__description {
+    margin-left: 26px;
+  }
+
+  .ant-checkbox::after,
+  &:hover .ant-checkbox-inner,
+  &:focus-within .ant-checkbox-inner {
+    border-color: #000000 !important;
+  }
+
+  .ant-checkbox-checked .ant-checkbox-inner {
+    border-color: #000000 !important;
+    background-color: #000000 !important;
+  }
+
+  .ant-checkbox-indeterminate .ant-checkbox-inner::after {
+    background-color: #000000 !important;
+  }
+}

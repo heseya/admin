@@ -45,3 +45,9 @@ export interface WebHook {
 }
 
 export type WebHookDto = Omit<WebHook, 'id' | 'logs'>
+
+export interface WebHookEventObject {
+  key: WebHookEvent
+  name: string
+  description: string
+}

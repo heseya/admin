@@ -12,7 +12,7 @@
     <div class="webhook-form__switches">
       <switch-input v-model="form.with_issuer" horizontal :disabled="disabled">
         <template #title>
-          Z podmiotem
+          Z podmiotem akcji
           <a-tooltip>
             <small slot="title">
               Jeśli zaznaczone, żądanie będzie zawierać informacje o użytkowniku (lub aplikacji),
@@ -26,7 +26,7 @@
 
       <switch-input v-model="form.with_hidden" horizontal :disabled="disabled">
         <template #title>
-          Z ukrytymi
+          Z ukrytymi wpisami
           <a-tooltip>
             <small slot="title">
               Jeśli zaznaczone, żądanie będzie wykonywane również dla obiektów, które są w systemie
@@ -50,6 +50,22 @@
     </small>
 
     <br />
+
+    <h3>Wydarzenia wywołujące webhooka:</h3>
+    <div class="webhook-form__events">
+      <a-checkbox
+        v-for="ev in allEvents"
+        :key="ev.key"
+        :checked="has(ev.key)"
+        :disabled="disabled"
+        @change="toggle(ev.key)"
+      >
+        <span class="ant-checkbox__title">{{ ev.name || ev.key }}</span>
+        <small class="ant-checkbox__description">{{ ev.description }}</small>
+      </a-checkbox>
+    </div>
+
+    <br />
     <app-button :disabled="disabled" @click.stop="handleSubmit(submit)"> Zapisz </app-button>
   </validation-observer>
 </template>
@@ -59,7 +75,7 @@ import Vue from 'vue'
 
 import { ValidationObserver } from 'vee-validate'
 
-import { WebHookDto } from '@/interfaces/Webhook'
+import { WebHookDto, WebHookEvent, WebHookEventObject } from '@/interfaces/Webhook'
 
 export default Vue.extend({
   components: {
@@ -84,10 +100,24 @@ export default Vue.extend({
         this.$emit('input', discount)
       },
     },
+    allEvents(): WebHookEventObject[] {
+      return this.$accessor.webhooks.events
+    },
   },
   methods: {
     submit() {
       this.$emit('submit', this.form)
+    },
+    toggle(key: WebHookEvent) {
+      if (this.has(key)) {
+        this.form.events = this.form.events.filter((ev) => ev !== key)
+      } else {
+        this.form.events.push(key)
+      }
+    },
+
+    has(key: WebHookEvent) {
+      return this.form.events.includes(key)
     },
   },
 })
@@ -103,6 +133,15 @@ export default Vue.extend({
   &__switches {
     display: flex;
     justify-content: space-around;
+  }
+
+  &__events {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    @media ($max-viewport-5) {
+      grid-template-columns: 1fr;
+    }
   }
 
   .bx {

@@ -67,8 +67,9 @@ export default Vue.extend({
       this.tokenChannel.emit('set', this.$accessor.auth.getIdentityToken)
     })
 
-    this.tokenChannel.on<undefined>('refresh', () => {
-      this.$accessor.auth.refreshToken()
+    this.tokenChannel.on<undefined>('refresh', async () => {
+      const { identityToken } = await this.$accessor.auth.refreshToken()
+      return identityToken
     })
   },
 })

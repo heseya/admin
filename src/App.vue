@@ -17,6 +17,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { init as initMicroApps, onMounted, openCommunicationChannel } from 'bout'
+
 import DesktopNavigation from './components/root/DesktopNavigation.vue'
 import MobileNavigation from './components/root/MobileNavigation.vue'
 import AppHeader from './components/root/Header.vue'
@@ -42,16 +44,33 @@ export default Vue.extend({
     isNavHidden(): boolean {
       return !!this.$route.meta?.hiddenNav || false
     },
+    tokenChannel() {
+      return openCommunicationChannel('Token')
+    },
   },
   watch: {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     '$accessor.auth.permissionsError'(_permissionsError) {
       this.$toast.error('Nie posiadasz uprawnień do tej akcji')
     },
+
+    '$accessor.auth.getIdentityToken'(token) {
+      this.tokenChannel.emit('set', token)
+    },
   },
   created() {
+    initMicroApps()
     this.$accessor.fetchEnv()
     if (this.$accessor.auth.isLogged) this.$accessor.auth.fetchProfile()
+
+    onMounted(() => {
+      this.tokenChannel.emit('set', this.$accessor.auth.getIdentityToken)
+    })
+
+    this.tokenChannel.on<undefined>('refresh', async () => {
+      const { identityToken } = await this.$accessor.auth.refreshToken()
+      return identityToken
+    })
   },
 })
 </script>

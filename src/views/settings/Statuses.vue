@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="narrower-page">
     <PaginatedList title="Statusy zamówień" store-key="statuses" draggable>
       <template #nav>
         <icon-button v-can="$p.Statuses.Add" @click="openModal()">

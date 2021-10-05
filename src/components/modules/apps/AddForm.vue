@@ -59,6 +59,7 @@
               <i class="bx bxs-info-circle"></i>
             </a-tooltip>
           </code>
+          <small v-if="requiredPermissions.length === 0">Brak</small>
         </div>
       </div>
 

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="narrower-page">
     <PaginatedList title="Opcje Dostawy" store-key="shippingMethods" draggable>
       <template #nav>
         <icon-button v-can="$p.ShippingMethods.Add" @click="openModal()">

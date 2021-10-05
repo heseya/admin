@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="narrower-page">
     <PaginatedList title="Role" store-key="roles">
       <template #nav>
         <icon-button v-can="$p.Roles.Add" to="/settings/roles/create">

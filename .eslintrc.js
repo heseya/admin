@@ -6,6 +6,13 @@ module.exports = {
     node: true,
   },
 
+  parserOptions: {
+    parser: '@typescript-eslint/parser',
+    ecmaFeatures: {
+      modules: true,
+    },
+  },
+
   rules: {
     'no-console': 'warn',
     'no-debugger': 'warn',

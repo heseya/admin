@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="narrower-page">
     <PaginatedList title="Strony" store-key="pages" draggable>
       <template #nav>
         <icon-button v-can="$p.Pages.Add" to="/pages/create">

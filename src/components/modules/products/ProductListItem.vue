@@ -1,6 +1,11 @@
 <template>
-  <list-item class="product-list-item" @click="onClick">
-    <template #avatar>
+  <cms-table-row
+    class="product-list-item"
+    :item="product"
+    :headers="table.headers"
+    @click="onClick"
+  >
+    <template #cover>
       <avatar color="#eee">
         <img
           v-if="product.cover"
@@ -11,44 +16,50 @@
       </avatar>
     </template>
 
-    {{ product.name }}
-    <small>{{ formatCurrency(product.price) }}</small>
-
-    <template #action>
-      <div class="product-list-item__tags">
-        <div
-          v-for="tag in product.tags"
-          :key="tag.id"
-          class="product-list-item__tag"
-          :style="{ backgroundColor: `#${tag.color}` }"
-        >
-          {{ tag.name }}
-        </div>
-      </div>
-
-      <avatar v-if="!product.visible" tiny class="product-list-item__icon" color="#000">
-        <i class="bx bx-lock-alt"></i>
-      </avatar>
+    <template #name>
+      <b>{{ product.name }}</b>
     </template>
-  </list-item>
+
+    <span slot="price">{{ formatCurrency(product.price) }}</span>
+
+    <template #tags>
+      <div class="product-list-item__tags">
+        <tag v-for="tag in product.tags" :key="tag.id" :color="`#${tag.color}`">
+          {{ tag.name }}
+        </tag>
+        <span v-if="product.tags.length === 0">-</span>
+      </div>
+    </template>
+
+    <template #visible>
+      <tag v-if="product.visible" type="success"> <i class="bx bx-check"></i> Tak </tag>
+      <tag v-else type="error"> <i class="bx bx-x"></i> Nie </tag>
+    </template>
+  </cms-table-row>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 
-import ListItem from '@/components/layout/ListItem.vue'
 import Avatar from '@/components/layout/Avatar.vue'
 
 import { Product } from '@/interfaces/Product'
 import { formatCurrency } from '@/utils/currency'
+import CmsTableRow from '@/components/cms/CmsTableRow.vue'
+import { TableConfig } from '@/interfaces/CmsTable'
+import Tag from '@/components/Tag.vue'
 
 export default Vue.extend({
-  components: { ListItem, Avatar },
+  components: { Avatar, CmsTableRow, Tag },
   props: {
     product: {
       type: Object,
       required: true,
     } as Vue.PropOptions<Product>,
+    table: {
+      type: Object,
+      required: true,
+    } as Vue.PropOptions<TableConfig<Product>>,
   },
   computed: {
     objectFit(): string {
@@ -83,6 +94,11 @@ export default Vue.extend({
 .product-list-item {
   position: relative;
 
+  .cms-table-row__col:first-of-type {
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+
   &__icon {
     position: absolute;
     top: 8px;
@@ -116,19 +132,8 @@ export default Vue.extend({
 
   &__tags {
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
     flex-wrap: wrap;
-  }
-
-  &__tag {
-    display: inline-block;
-    margin-right: 3px;
-    margin-top: 3px;
-    background-color: #000000;
-    padding: 3px 6px;
-    color: #ffffff;
-    font-size: 0.7em;
-    border-radius: 3px;
   }
 }
 </style>

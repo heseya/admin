@@ -4,6 +4,7 @@
       title="Asortyment"
       :filters="filters"
       store-key="products"
+      :table="listView ? tableConfig : undefined"
       @clear-filters="clearFilters"
     >
       <template #nav>
@@ -27,7 +28,7 @@
 
       <template #default="{ item: product }">
         <ProductTile v-if="!listView" :product="product" />
-        <ProductListItem v-else :product="product" />
+        <ProductListItem v-else :product="product" :table="tableConfig" />
       </template>
     </PaginatedList>
   </div>
@@ -46,6 +47,8 @@ import PaginatedList from '@/components/PaginatedList.vue'
 
 import { formatFilters } from '@/utils/utils'
 import { ALL_FILTER_VALUE } from '@/consts/filters'
+import { TableConfig } from '@/interfaces/CmsTable'
+import { Product } from '@/interfaces/Product'
 
 const LOCAL_STORAGE_KEY = 'products-list-view'
 
@@ -53,14 +56,27 @@ export default Vue.extend({
   metaInfo: { title: 'Produkty' },
   components: {
     ProductTile,
-    ProductListItem,
     ProductsFilter,
     PaginatedList,
+    ProductListItem,
   },
   data: () => ({
     filters: { ...EMPTY_PRODUCT_FILTERS },
     listView: false,
   }),
+  computed: {
+    tableConfig(): TableConfig<Product> {
+      return {
+        headers: [
+          { key: 'cover', label: '', width: '60px' },
+          { key: 'name', label: 'Nazwa' },
+          { key: 'price', label: 'Cena', width: '0.5fr' },
+          { key: 'tags', label: 'Tagi' },
+          { key: 'visible', label: 'Widoczność', width: '0.5fr' },
+        ],
+      }
+    },
+  },
   watch: {
     listView(listView: boolean) {
       window.localStorage.setItem(LOCAL_STORAGE_KEY, String(Number(listView)))

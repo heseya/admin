@@ -4,6 +4,7 @@
       title="Magazyn"
       store-key="items"
       :filters="filters"
+      :table="tableConfig"
       @clear-filters="clearFilters"
     >
       <template #nav>
@@ -24,16 +25,6 @@
             @input="debouncedSearch"
           />
         </div>
-      </template>
-
-      <template #default="{ item }">
-        <list-item @click="openModal(item.id)">
-          {{ item.name }}
-          <small>{{ item.sku }}</small>
-          <template #action>
-            <small>{{ item.quantity }} sztuk</small>
-          </template>
-        </list-item>
       </template>
     </PaginatedList>
 
@@ -93,10 +84,10 @@ import { ValidationObserver } from 'vee-validate'
 import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import ListItem from '@/components/layout/ListItem.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import { ProductItem } from '@/interfaces/Product'
+import { TableConfig } from '@/interfaces/CmsTable'
 
 const EMPTY_FORM: ProductItem = {
   id: '',
@@ -108,7 +99,6 @@ const EMPTY_FORM: ProductItem = {
 export default Vue.extend({
   metaInfo: { title: 'Magazyn' },
   components: {
-    ListItem,
     ModalForm,
     PopConfirm,
     ValidationObserver,
@@ -137,6 +127,16 @@ export default Vue.extend({
     },
     canModify(): boolean {
       return this.$can(this.editedItem.id ? this.$p.Items.Edit : this.$p.Items.Add)
+    },
+    tableConfig(): TableConfig<ProductItem> {
+      return {
+        rowOnClick: (item) => this.openModal(item.id),
+        headers: [
+          { key: 'name', label: 'Nazwa' },
+          { key: 'sku', label: 'SKU', width: '0.5fr' },
+          { key: 'quantity', label: 'Ilość w magazynie', width: '0.5fr' },
+        ],
+      }
     },
   },
   watch: {

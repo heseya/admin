@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="narrower-page">
     <top-nav :title="!isNew ? page.name : 'Nowa strona'">
       <changes-history :id="page.id" model="pages" />
 

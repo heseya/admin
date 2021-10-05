@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="narrower-page">
     <PaginatedList title="Tagi" store-key="tags">
       <template #nav>
         <icon-button v-can="$p.Tags.Add" @click="openModal()">

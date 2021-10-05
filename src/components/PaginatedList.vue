@@ -20,7 +20,15 @@
         class="paginated-list__list"
       >
         <template v-for="item in items">
-          <slot :item="item" />
+          <slot :item="item">
+            <cms-table-row
+              v-if="table"
+              :item="item"
+              :headers="table.headers"
+              :to="table.rowUrlBuilder ? table.rowUrlBuilder(item) : null"
+              @click="table.rowOnClick ? table.rowOnClick(item) : null"
+            />
+          </slot>
         </template>
       </component>
     </AppCard>
@@ -43,6 +51,7 @@ import Card from '@/components/layout/Card.vue'
 import PerPageSelect from '@/components/cms/PerPageSelect.vue'
 import CmsFilters from '@/components/cms/CmsFilters.vue'
 import CmsTable from './cms/CmsTable.vue'
+import CmsTableRow from './cms/CmsTableRow.vue'
 import Loading from './layout/Loading.vue'
 
 import { ResponseMeta } from '@/interfaces/Response'
@@ -64,6 +73,7 @@ export default Vue.extend({
     AppCmsFilters: CmsFilters,
     Loading,
     CmsTable,
+    CmsTableRow,
   },
   props: {
     title: {

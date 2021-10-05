@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="narrower-page">
     <PaginatedList title="Sesje użytkownika" store-key="authSessions">
       <template #nav>
         <pop-confirm

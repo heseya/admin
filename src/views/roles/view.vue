@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="narrower-page">
     <top-nav :title="!isNew ? role.name : 'Nowa rola'">
       <changes-history :id="role.id" model="roles" />
       <pop-confirm

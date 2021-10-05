@@ -8,14 +8,9 @@
       <i v-else class="product-box__img-icon bx bx-image"></i>
 
       <div class="product-box__tags">
-        <div
-          v-for="tag in product.tags"
-          :key="tag.id"
-          class="product-box__tag"
-          :style="{ backgroundColor: `#${tag.color}` }"
-        >
+        <tag v-for="tag in product.tags" :key="tag.id" small :color="`#${tag.color}`">
           {{ tag.name }}
-        </div>
+        </tag>
       </div>
     </div>
     <div class="flex">
@@ -34,9 +29,10 @@ import Avatar from '@/components/layout/Avatar.vue'
 
 import { Product } from '@/interfaces/Product'
 import { formatCurrency } from '@/utils/currency'
+import Tag from '@/components/Tag.vue'
 
 export default Vue.extend({
-  components: { Avatar },
+  components: { Avatar, Tag },
   props: {
     product: {
       type: Object,
@@ -116,17 +112,6 @@ export default Vue.extend({
     display: flex;
     justify-content: flex-end;
     flex-wrap: wrap;
-  }
-
-  &__tag {
-    display: inline-block;
-    margin-right: 3px;
-    margin-top: 3px;
-    background-color: #000000;
-    padding: 3px 6px;
-    color: #ffffff;
-    font-size: 0.7em;
-    border-radius: 3px;
   }
 
   &:hover &__img img {

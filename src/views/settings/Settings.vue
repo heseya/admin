@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="narrower-page">
     <PaginatedList title="Ustawienia zaawansowane" store-key="settings">
       <template #nav>
         <icon-button v-can="$p.Settings.Add" @click="openModal()">

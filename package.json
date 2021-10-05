@@ -1,17 +1,17 @@
 {
   "name": "store-admin",
-  "description": "Admin panel for Heseya Store API",
   "version": "2.0.0",
   "private": true,
+  "description": "Admin panel for Heseya Store API",
   "author": "Heseya",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "test:unit": "jest ./src",
+    "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint --no-fix",
     "lint:fix": "vue-cli-service lint --fix",
-    "test:unit": "jest ./src",
-    "test:e2e": "cypress run",
-    "test": "yarn test:unit && yarn test:e2e"
+    "test": "yarn test:unit && yarn test:e2e --headless"
   },
   "dependencies": {
     "ant-design-vue": "^1.7.8",
@@ -47,6 +47,7 @@
     "@typescript-eslint/eslint-plugin": "^4.31.2",
     "@typescript-eslint/parser": "^4.31.2",
     "@vue/cli-plugin-babel": "~4.5.13",
+    "@vue/cli-plugin-e2e-cypress": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.13",
     "@vue/cli-plugin-pwa": "~4.5.13",
     "@vue/cli-plugin-router": "~4.5.13",

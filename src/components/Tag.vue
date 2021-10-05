@@ -4,7 +4,7 @@
     :class="{ 'tag--small': small, [`tag--${type}`]: true }"
     :style="{ '--bg-color': color }"
   >
-    <slot> {{ text }} </slot>
+    <slot>{{ text }}</slot>
   </div>
 </template>
 

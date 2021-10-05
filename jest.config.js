@@ -7,7 +7,6 @@ module.exports = {
     'src/**/**/*.{js,ts}',
     '!src/**/*.d.{js,ts}',
     '!src/**/*.test.{js,ts}',
-    '!src/**/*.spec.{js,ts}',
     '!src/**/*.mock.{js,ts}',
   ],
 }

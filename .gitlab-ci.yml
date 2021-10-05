@@ -5,20 +5,11 @@ stages:
   - deploy
   - postdeploy
 
-# test:
-#   stage: test
-#   image: node:alpine
-#   before_script:
-#     - yarn
-#   script:
-#     - yarn test
-#   artifacts:
-#     when: always
-#     paths:
-#       - coverage
-#     expire_in: 30 days
-#   rules:
-#     - if: $CI_COMMIT_BRANCH != "master"
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+    - .npm/
 
 lint:
   stage: test
@@ -34,6 +25,22 @@ test:
   before_script:
     - yarn
   script:
-    - yarn test
+    - yarn test:unit
   rules:
     - if: $CI_COMMIT_BRANCH != "master"
+
+e2e:
+  stage: test
+  before_script:
+    - yarn
+  script:
+    # start the server in the background
+    - yarn serve &
+    # run Cypress tests
+    - yarn test:e2e --record --key 517f7d48-5cec-4339-ae0f-83b5ddf23d6e
+  artifacts:
+    when: always
+    paths:
+      - cypress/videos/**/*.mp4
+      - cypress/screenshots/**/*.png
+    expire_in: 1 day

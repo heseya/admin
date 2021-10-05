@@ -1,0 +1,6 @@
+{
+  "projectId": "gsz6kh",
+  "componentFolder": "src",
+  "baseUrl": "http://localhost:8080",
+  "testFiles": "**/*.spec.ts"
+}

@@ -76,6 +76,7 @@ export default Vue.extend({
   @extend %card;
   background-color: #fff;
   display: grid;
+  align-items: center;
   width: 100%;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   cursor: pointer;

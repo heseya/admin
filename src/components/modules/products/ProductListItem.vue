@@ -1,6 +1,11 @@
 <template>
-  <list-item class="product-list-item" @click="onClick">
-    <template #avatar>
+  <cms-table-row
+    class="product-list-item"
+    :item="product"
+    :headers="table.headers"
+    @click="onClick"
+  >
+    <template #cover>
       <avatar color="#eee">
         <img
           v-if="product.cover"
@@ -11,10 +16,13 @@
       </avatar>
     </template>
 
-    {{ product.name }}
-    <small>{{ formatCurrency(product.price) }}</small>
+    <template #name>
+      <b>{{ product.name }}</b>
+    </template>
 
-    <template #action>
+    <span slot="price">{{ formatCurrency(product.price) }}</span>
+
+    <template #tags>
       <div class="product-list-item__tags">
         <div
           v-for="tag in product.tags"
@@ -24,31 +32,42 @@
         >
           {{ tag.name }}
         </div>
+        <span v-if="product.tags.length === 0">-</span>
       </div>
-
-      <avatar v-if="!product.visible" tiny class="product-list-item__icon" color="#000">
-        <i class="bx bx-lock-alt"></i>
-      </avatar>
     </template>
-  </list-item>
+
+    <template #visible>
+      <div v-if="product.visible" class="product-list-item__tag product-list-item__tag--success">
+        <i class="bx bx-check"></i> Tak
+      </div>
+      <div v-else class="product-list-item__tag product-list-item__tag--error">
+        <i class="bx bx-x"></i> Nie
+      </div>
+    </template>
+  </cms-table-row>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 
-import ListItem from '@/components/layout/ListItem.vue'
 import Avatar from '@/components/layout/Avatar.vue'
 
 import { Product } from '@/interfaces/Product'
 import { formatCurrency } from '@/utils/currency'
+import CmsTableRow from '@/components/cms/CmsTableRow.vue'
+import { TableConfig } from '@/interfaces/CmsTable'
 
 export default Vue.extend({
-  components: { ListItem, Avatar },
+  components: { Avatar, CmsTableRow },
   props: {
     product: {
       type: Object,
       required: true,
     } as Vue.PropOptions<Product>,
+    table: {
+      type: Object,
+      required: true,
+    } as Vue.PropOptions<TableConfig<Product>>,
   },
   computed: {
     objectFit(): string {
@@ -83,6 +102,11 @@ export default Vue.extend({
 .product-list-item {
   position: relative;
 
+  .cms-table-row__col:first-of-type {
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+
   &__icon {
     position: absolute;
     top: 8px;
@@ -116,7 +140,7 @@ export default Vue.extend({
 
   &__tags {
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
     flex-wrap: wrap;
   }
 
@@ -127,8 +151,16 @@ export default Vue.extend({
     background-color: #000000;
     padding: 3px 6px;
     color: #ffffff;
-    font-size: 0.7em;
+    font-size: 0.9em;
     border-radius: 3px;
+
+    &--success {
+      background-color: $green-color-500;
+    }
+
+    &--error {
+      background-color: $red-color-500;
+    }
   }
 }
 </style>

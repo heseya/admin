@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="narrower-page">
     <PaginatedList title="Aplikacje" store-key="apps">
       <template #nav>
         <icon-button v-can="$p.Apps.Install" @click="openInstallModal()">

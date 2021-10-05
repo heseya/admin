@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PaginatedList title="Kody rabatowe" store-key="discounts">
+    <PaginatedList title="Kody rabatowe" store-key="discounts" :table="tableConfig">
       <template #nav>
         <icon-button v-can="$p.Discounts.Add" @click="openModal()">
           <i slot="icon" class="bx bx-plus"></i>
@@ -9,29 +9,20 @@
       </template>
 
       <template #default="{ item: discount }">
-        <list-item @click="openModal(discount.id)">
-          {{ discount.code }}
-          <small>
-            <template v-if="discount.starts_at || discount.expires_at">
-              Ważny
-              <template v-if="discount.starts_at">
-                od {{ formatDateTime(discount.starts_at) }}
-              </template>
-              <template v-if="discount.expires_at">
-                do {{ formatDateTime(discount.expires_at) }}
-              </template>
-              <template v-if="discount.description">|</template>
-            </template>
-            {{ discount.description }}
-          </small>
-
-          <template #action>
-            -{{ discount.type === 0 ? `${discount.discount}%` : formatCurrency(discount.discount) }}
-            <small style="white-space: nowrap">
-              wykorzystano {{ discount.uses }} z {{ discount.max_uses }}
-            </small>
+        <cms-table-row
+          :item="discount"
+          :headers="tableConfig.headers"
+          @click="openModal(discount.id)"
+        >
+          <template #code>
+            <b>{{ discount.code }}</b>
+            <small v-if="discount.description">&nbsp;({{ discount.description }})</small>
           </template>
-        </list-item>
+          <template #discount="{ rawValue }">
+            -{{ discount.type === 0 ? `${rawValue}%` : formatCurrency(rawValue) }}
+          </template>
+          <template #uses> {{ discount.uses }} z {{ discount.max_uses }} </template>
+        </cms-table-row>
       </template>
     </PaginatedList>
 
@@ -66,16 +57,17 @@
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 
-import ListItem from '@/components/layout/ListItem.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import DiscountForm from '@/components/modules/discounts/Form.vue'
+import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 
 import { DiscountCode } from '@/interfaces/DiscountCode'
 import { UUID } from '@/interfaces/UUID'
 
 import { formatCurrency } from '@/utils/currency'
 import { DATETIME_FORMAT, formatDate, formatUTC } from '@/utils/dates'
+import { TableConfig } from '@/interfaces/CmsTable'
 
 const EMPTY_DISCOUNT_CODE: DiscountCode = {
   id: '',
@@ -92,11 +84,11 @@ const EMPTY_DISCOUNT_CODE: DiscountCode = {
 export default Vue.extend({
   metaInfo: { title: 'Kody rabatowe' },
   components: {
-    ListItem,
     DiscountForm,
     ValidationObserver,
     PaginatedList,
     PopConfirm,
+    CmsTableRow,
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {
@@ -115,6 +107,28 @@ export default Vue.extend({
   computed: {
     canModify(): boolean {
       return this.$can(this.editedItem.id ? this.$p.Discounts.Edit : this.$p.Discounts.Add)
+    },
+    tableConfig(): TableConfig<DiscountCode> {
+      return {
+        rowOnClick: (item) => this.openModal(item.id),
+        headers: [
+          { key: 'code', label: 'Kod' },
+          { key: 'discount', label: 'Rabat', width: '0.5fr' },
+          { key: 'uses', label: 'Wykorzystano', width: '0.5fr' },
+          {
+            key: 'starts_at',
+            label: 'Ważny od',
+            render: (v) => (v ? formatDate(v) : '-'),
+            width: '0.5fr',
+          },
+          {
+            key: 'expires_at',
+            label: 'Ważny do',
+            render: (v) => (v ? formatDate(v) : '-'),
+            width: '0.5fr',
+          },
+        ],
+      }
     },
   },
   methods: {

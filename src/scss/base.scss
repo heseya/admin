@@ -121,3 +121,9 @@ code {
   padding: 2px 4px;
   border-radius: 3px;
 }
+
+.narrower-page {
+  max-width: 900px;
+  display: block;
+  margin: 0 auto;
+}

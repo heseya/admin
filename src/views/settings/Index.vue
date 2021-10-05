@@ -1,5 +1,5 @@
 <template>
-  <div class="settings-page">
+  <div class="settings-page narrower-page">
     <top-nav title="Ustawienia" />
 
     <card>

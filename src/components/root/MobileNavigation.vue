@@ -14,10 +14,10 @@
         <span class="mobile-nav__link-label">Zamówienia</span>
       </router-link>
 
-      <router-link class="mobile-nav__link" to="/analytics">
+      <!-- <router-link class="mobile-nav__link" to="/analytics">
         <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/stats-icon.svg')" />
         <span class="mobile-nav__link-label">Statystyka</span>
-      </router-link>
+      </router-link> -->
 
       <button class="mobile-nav__link" @click="isMenuVisible = true">
         <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/more-icon.svg')" />

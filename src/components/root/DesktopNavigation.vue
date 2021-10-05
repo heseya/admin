@@ -16,10 +16,10 @@
 
     <div class="nav__spacer"></div>
 
-    <router-link class="nav__link" to="/analytics">
+    <!-- <router-link class="nav__link" to="/analytics">
       <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/stats-icon.svg')" />
       <span class="nav__link-label">Statystyka</span>
-    </router-link>
+    </router-link> -->
 
     <router-link v-can="$p.Products.Show" class="nav__link" to="/products">
       <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/products-icon.svg')" />

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="narrower-page">
     <PaginatedList title="Użytkownicy" store-key="users">
       <template #nav>
         <icon-button v-can="$p.Users.Add" @click="openModal()">

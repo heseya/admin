@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="narrower-page">
     <PaginatedList title="Szablony przesyłek" store-key="packageTemplates">
       <template #nav>
         <icon-button v-can="$p.Packages.Add" @click="openModal()">

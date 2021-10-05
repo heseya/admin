@@ -74,7 +74,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .cms-table-row {
   @extend %card;
-  background-color: #fff0;
+  background-color: #fff;
   display: grid;
   width: 100%;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -88,6 +88,7 @@ export default Vue.extend({
   }
 
   @media ($viewport-11) {
+    background-color: #fff0;
     grid-template-columns: var(--table-cols);
     padding: 0 16px;
     border: none;

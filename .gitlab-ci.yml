@@ -30,6 +30,7 @@ test:
     - if: $CI_COMMIT_BRANCH != "master"
 
 e2e:
+  image: cypress/browsers:node12.14.1-chrome85-ff81
   stage: test
   before_script:
     - yarn

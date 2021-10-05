@@ -24,25 +24,16 @@
 
     <template #tags>
       <div class="product-list-item__tags">
-        <div
-          v-for="tag in product.tags"
-          :key="tag.id"
-          class="product-list-item__tag"
-          :style="{ backgroundColor: `#${tag.color}` }"
-        >
+        <tag v-for="tag in product.tags" :key="tag.id" :color="`#${tag.color}`">
           {{ tag.name }}
-        </div>
+        </tag>
         <span v-if="product.tags.length === 0">-</span>
       </div>
     </template>
 
     <template #visible>
-      <div v-if="product.visible" class="product-list-item__tag product-list-item__tag--success">
-        <i class="bx bx-check"></i> Tak
-      </div>
-      <div v-else class="product-list-item__tag product-list-item__tag--error">
-        <i class="bx bx-x"></i> Nie
-      </div>
+      <tag v-if="product.visible" type="success"> <i class="bx bx-check"></i> Tak </tag>
+      <tag v-else type="error"> <i class="bx bx-x"></i> Nie </tag>
     </template>
   </cms-table-row>
 </template>
@@ -56,9 +47,10 @@ import { Product } from '@/interfaces/Product'
 import { formatCurrency } from '@/utils/currency'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 import { TableConfig } from '@/interfaces/CmsTable'
+import Tag from '@/components/Tag.vue'
 
 export default Vue.extend({
-  components: { Avatar, CmsTableRow },
+  components: { Avatar, CmsTableRow, Tag },
   props: {
     product: {
       type: Object,
@@ -142,25 +134,6 @@ export default Vue.extend({
     display: flex;
     justify-content: flex-start;
     flex-wrap: wrap;
-  }
-
-  &__tag {
-    display: inline-block;
-    margin-right: 3px;
-    margin-top: 3px;
-    background-color: #000000;
-    padding: 3px 6px;
-    color: #ffffff;
-    font-size: 0.9em;
-    border-radius: 3px;
-
-    &--success {
-      background-color: $green-color-500;
-    }
-
-    &--error {
-      background-color: $red-color-500;
-    }
   }
 }
 </style>

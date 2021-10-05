@@ -9,7 +9,6 @@ cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
     - node_modules/
-    - .npm/
 
 lint:
   stage: test
@@ -35,13 +34,12 @@ e2e:
   before_script:
     - yarn
   script:
-    # start the server in the background
-    - yarn serve &
-    # run Cypress tests
-    - yarn test:e2e --headless --record --key 517f7d48-5cec-4339-ae0f-83b5ddf23d6e
+    - yarn test:e2e --headless --record --key $CYPRESS_RECORD_KEY
   artifacts:
     when: always
     paths:
       - cypress/videos/**/*.mp4
       - cypress/screenshots/**/*.png
     expire_in: 1 day
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop" || $CI_COMMIT_BRANCH == "master"

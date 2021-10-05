@@ -164,12 +164,8 @@ export default Vue.extend({
       grid-template-columns: 1fr 1fr;
     }
 
-    @media ($viewport-8) {
+    @media ($viewport-10) {
       grid-template-columns: 1fr 1fr 1fr;
-    }
-
-    @media ($viewport-11) {
-      grid-template-columns: 1fr 1fr 1fr 1fr;
     }
 
     i {

@@ -1,5 +1,5 @@
 <template>
-  <div :key="schema.id">
+  <div :key="schema.id" class="narrower-page">
     <top-nav :title="!isNew ? schema.name : 'Nowy schemat'">
       <pop-confirm
         v-if="!isNew"

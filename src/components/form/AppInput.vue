@@ -1,6 +1,6 @@
 <template>
   <div class="app-input">
-    <label class="app-input__label">
+    <label class="app-input__label" :for="name">
       <slot name="label"> {{ label }} </slot>
     </label>
 
@@ -9,8 +9,16 @@
       v-model="innerValue"
       class="app-input__input"
       v-bind="$props"
+      :data-cy="dataCy"
     />
-    <a-input v-else v-model="innerValue" class="app-input__input" v-bind="$props" />
+    <a-input
+      v-else
+      v-bind="$props"
+      :id="name"
+      v-model="innerValue"
+      :data-cy="dataCy"
+      class="app-input__input"
+    />
 
     <span class="app-input__error">
       <slot name="error"> {{ error }} </slot>
@@ -29,6 +37,7 @@ export default Vue.extend({
     'label',
     'placeholder',
     'name',
+    'dataCy',
     'error',
     'type',
     'size',

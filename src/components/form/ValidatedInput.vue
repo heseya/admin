@@ -26,6 +26,7 @@ export default Vue.extend({
     'state',
     'progress',
     'loading',
+    'dataCy',
     'type',
     'step',
     'rows',

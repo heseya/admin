@@ -24,12 +24,26 @@
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
+const dataCyCommand = (value: string) => {
+  return cy.get(`[data-cy=${value}]`)
+}
+
+const loginCommand = (email = '***REMOVED***', password = '***REMOVED***') => {
+  cy.intercept('POST', '/login').as('login')
+
+  cy.visit('/login')
+  cy.dataCy('email').type(email)
+  cy.dataCy('password').type(password)
+  cy.dataCy('submitBtn').click()
+  cy.wait('@login')
+}
+
+Cypress.Commands.add('login', loginCommand)
+Cypress.Commands.add('dataCy', dataCyCommand)
+
 declare namespace Cypress {
   interface Chainable<Subject> {
     dataCy(value: string): Chainable<Subject>
+    login: typeof loginCommand
   }
 }
-
-Cypress.Commands.add('dataCy', (value) => {
-  return cy.get(`[data-cy=${value}]`)
-})

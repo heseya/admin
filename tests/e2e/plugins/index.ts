@@ -9,12 +9,7 @@
 // /* eslint-disable import/no-extraneous-dependencies, global-require */
 // const webpack = require('@cypress/webpack-preprocessor')
 
-/// <reference types="cypress" />
-
-/**
- * @type {Cypress.PluginConfig}
- */
-module.exports = (on: any, config: any) => {
+const BasePlugin: Cypress.PluginConfig = (on, config) => {
   // on('file:preprocessor', webpack({
   //  webpackOptions: require('@vue/cli-service/webpack.config'),
   //  watchOptions: {}
@@ -22,3 +17,5 @@ module.exports = (on: any, config: any) => {
 
   return Object.assign({}, config, {})
 }
+
+export default BasePlugin

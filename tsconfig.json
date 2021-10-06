@@ -13,12 +13,12 @@
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "baseUrl": ".",
-    "types": ["webpack-env", "jest", "cypress"],
+    "types": ["webpack-env", "jest"],
     "paths": {
       "@/*": ["src/*"]
     },
     "lib": ["es5", "esnext", "dom", "dom.iterable", "scripthost"]
   },
-  "include": ["**/*.ts", "**/*.d.ts", "**/*.vue"],
-  "exclude": ["node_modules"]
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue"],
+  "exclude": ["node_modules", "tests/e2e"]
 }

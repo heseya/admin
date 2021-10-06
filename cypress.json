@@ -3,7 +3,7 @@
   "testFiles": "**/*.spec.ts",
   "pluginsFile": "tests/e2e/plugins/index.ts",
   "supportFile": "tests/e2e/support/index.ts",
-  "fixturesFolder": "tests/e2e/fixtures",
+  "fixturesFolder": false,
   "integrationFolder": "tests/e2e/specs",
   "screenshotsFolder": "tests/e2e/screenshots",
   "videosFolder": "tests/e2e/videos"

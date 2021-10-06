@@ -23,3 +23,13 @@
 //
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+declare namespace Cypress {
+  interface Chainable<Subject> {
+    dataCy(value: string): Chainable<Subject>
+  }
+}
+
+Cypress.Commands.add('dataCy', (value) => {
+  return cy.get(`[data-cy=${value}]`)
+})

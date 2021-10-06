@@ -4,6 +4,8 @@
       <validated-input
         v-model="email"
         rules="required|email"
+        name="email"
+        data-cy="email"
         label="E-mail"
         type="email"
         @keydown.enter="handleSubmit(login)"
@@ -13,13 +15,15 @@
         v-model="password"
         rules="required"
         label="Hasło"
+        name="password"
+        data-cy="password"
         type="password"
         @keydown.enter="handleSubmit(login)"
       />
       <br />
 
       <div class="central-screen-form__row">
-        <app-button @click="handleSubmit(login)"> Zaloguj </app-button>
+        <app-button data-cy="submitBtn" @click="handleSubmit(login)"> Zaloguj </app-button>
         <app-button type="white" to="/reset-password"> Zapomniałeś hasła? </app-button>
       </div>
     </ValidationObserver>

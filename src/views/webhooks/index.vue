@@ -9,8 +9,9 @@
       </template>
 
       <template #default="{ item: webhook }">
-        <list-item :url="`/settings/webhooks/${webhook.id}`">
-          {{ webhook.url }}
+        <list-item :url="`/webhooks/${webhook.id}`">
+          <span v-if="webhook.name"> {{ webhook.name }} | {{ webhook.url }} </span>
+          <span v-else>{{ webhook.url }}</span>
           <small>{{ webhook.events.join(', ') }}</small>
         </list-item>
       </template>

@@ -98,15 +98,15 @@ export default Vue.extend({
   methods: {
     async saveWebhook(webhook: WebHook) {
       this.$accessor.startLoading()
-      const success = this.isNew
+      const newWebHook = this.isNew
         ? await this.$accessor.webhooks.add(webhook)
         : await this.$accessor.webhooks.update({ id: this.id, item: webhook })
 
-      if (success) {
+      if (newWebHook) {
         this.$toast.success(
           this.isNew ? 'Webhook został utworzony.' : 'Webhook został zaktualizowany.',
         )
-        if (this.isNew) this.$router.push(`/webhooks/${webhook.id}`)
+        if (this.isNew) this.$router.push(`/webhooks/${newWebHook.id}`)
       }
       this.$accessor.stopLoading()
     },

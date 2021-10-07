@@ -2,7 +2,7 @@
   <div class="add-app-form">
     <validated-input
       v-model="form.url"
-      rules="required"
+      rules="required|url"
       label="Link do aplikacji"
       :loading="isLoading"
     />
@@ -87,6 +87,10 @@ export default Vue.extend({
       type: Object,
       required: true,
     } as Vue.PropOptions<CreateAppDto>,
+    isValidUrl: {
+      type: Boolean,
+      default: false,
+    },
   },
   data: () => ({
     appInfo: null as IntegrationInfo | null,
@@ -110,7 +114,8 @@ export default Vue.extend({
   },
   watch: {
     ['form.url']() {
-      this.debouncedFetch()
+      if (this.isValidUrl) this.debouncedFetch()
+      this.isError = false
       this.appInfo = null
     },
   },

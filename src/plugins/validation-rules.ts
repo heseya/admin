@@ -1,5 +1,6 @@
 import { extend } from 'vee-validate'
 import { required, email } from 'vee-validate/dist/rules'
+import v from 'validator'
 
 import { ShippingMethodPriceRangeDTO } from '@/interfaces/ShippingMethod'
 
@@ -55,6 +56,17 @@ extend('slug', {
   message: 'Link może składać się tylko z małych liter, cyfr i myślników',
   validate: (value) => {
     return SLUG_REGEX.test(value)
+  },
+})
+
+extend('url', {
+  message: 'Wartość musi być poprawnym adresem URL',
+  validate: (value) => {
+    return v.isURL(value, {
+      require_tld: false,
+      require_protocol: true,
+      protocols: ['http', 'https'],
+    })
   },
 })
 

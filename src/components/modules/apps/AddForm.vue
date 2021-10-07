@@ -116,9 +116,10 @@ export default Vue.extend({
   },
   watch: {
     ['form.url']() {
-      if (this.isValidUrl) this.debouncedFetch()
-      this.isError = false
-      this.appInfo = null
+      this.urlWatcher()
+    },
+    isValidUrl() {
+      this.urlWatcher()
     },
   },
   created() {
@@ -126,6 +127,11 @@ export default Vue.extend({
     this.$accessor.roles.fetchPermissions()
   },
   methods: {
+    urlWatcher() {
+      if (this.isValidUrl) this.debouncedFetch()
+      this.isError = false
+      this.appInfo = null
+    },
     debouncedFetch: debounce(function (this: any) {
       this.fetchAppInfo()
     }, 500),

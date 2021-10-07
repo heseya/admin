@@ -5,7 +5,7 @@
       v-model="form.url"
       :disabled="disabled"
       name="url"
-      rules="required"
+      rules="required|url"
       label="Link"
     />
 

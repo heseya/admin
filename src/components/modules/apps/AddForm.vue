@@ -51,14 +51,16 @@
       <div class="field">
         <div class="field__label">Wymagane uprawnienia</div>
         <div class="field__value">
-          <code v-for="perm in requiredPermissions" :key="perm.id">
-            {{ perm.display_name || perm.name }}
+          <ul>
+            <li v-for="perm in requiredPermissions" :key="perm.id">
+              {{ perm.display_name || perm.name }}
 
-            <a-tooltip v-if="perm.description">
-              <template slot="title"> {{ perm.description }} </template>
-              <i class="bx bxs-info-circle"></i>
-            </a-tooltip>
-          </code>
+              <a-tooltip v-if="perm.description">
+                <template slot="title"> {{ perm.description }} </template>
+                <i class="bx bxs-info-circle"></i>
+              </a-tooltip>
+            </li>
+          </ul>
           <small v-if="requiredPermissions.length === 0">Brak</small>
         </div>
       </div>
@@ -174,8 +176,9 @@ export default Vue.extend({
       font-size: 1.1em;
     }
 
-    code {
-      margin-right: 6px;
+    ul {
+      padding-left: 20px;
+      list-style-type: square;
     }
   }
 

@@ -1,19 +1,22 @@
 {
   "name": "store-admin",
-  "description": "Admin panel for Heseya Store API",
   "version": "2.0.0",
   "private": true,
+  "description": "Admin panel for Heseya Store API",
   "author": "Heseya",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "test:unit": "jest ./src",
+    "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint --no-fix",
     "lint:fix": "vue-cli-service lint --fix",
-    "test": "jest"
+    "test": "yarn test:unit && yarn test:e2e --headless"
   },
   "dependencies": {
     "ant-design-vue": "^1.7.8",
     "axios": "^0.21.4",
+    "bout": "^0.1.1",
     "core-js": "^3.18.0",
     "date-fns": "^2.24.0",
     "lodash": "^4.17.21",
@@ -23,6 +26,8 @@
     "register-service-worker": "^1.7.2",
     "slugify": "^1.6.0",
     "typed-vuex": "^0.2.0",
+    "validator": "^13.6.0",
+    "validator.js": "^2.0.4",
     "vee-validate": "^3.4.13",
     "vue": "^2.6.14",
     "vue-inline-svg": "^2.0.0",
@@ -33,16 +38,19 @@
     "vue-toast-notification": "^0.6.2",
     "vuedraggable": "^2.24.3",
     "vuex": "^3.6.2",
-    "vuex-persist": "^3.1.3",
-    "bout": "^0.1.1"
+    "vuex-persist": "^3.1.3"
   },
   "devDependencies": {
+    "@cypress/vue": "^2.2.3",
+    "@cypress/webpack-dev-server": "^1.6.0",
     "@types/jest": "^27.0.2",
     "@types/lodash": "^4.14.173",
     "@types/quill": "^2.0.9",
+    "@types/validator": "^13.6.3",
     "@typescript-eslint/eslint-plugin": "^4.31.2",
     "@typescript-eslint/parser": "^4.31.2",
     "@vue/cli-plugin-babel": "~4.5.13",
+    "@vue/cli-plugin-e2e-cypress": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.13",
     "@vue/cli-plugin-pwa": "~4.5.13",
     "@vue/cli-plugin-router": "~4.5.13",
@@ -52,6 +60,7 @@
     "@vue/eslint-config-standard": "^6.1.0",
     "@vue/eslint-config-typescript": "^7.0.0",
     "babel-eslint": "^10.1.0",
+    "cypress": "^8.5.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.24.2",

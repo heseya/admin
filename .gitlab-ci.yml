@@ -5,20 +5,10 @@ stages:
   - deploy
   - postdeploy
 
-# test:
-#   stage: test
-#   image: node:alpine
-#   before_script:
-#     - yarn
-#   script:
-#     - yarn test
-#   artifacts:
-#     when: always
-#     paths:
-#       - coverage
-#     expire_in: 30 days
-#   rules:
-#     - if: $CI_COMMIT_BRANCH != "master"
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
 
 lint:
   stage: test
@@ -34,6 +24,22 @@ test:
   before_script:
     - yarn
   script:
-    - yarn test
+    - yarn test:unit
   rules:
     - if: $CI_COMMIT_BRANCH != "master"
+
+e2e:
+  image: cypress/browsers:node12.14.1-chrome85-ff81
+  stage: test
+  before_script:
+    - yarn
+  script:
+    - yarn test:e2e --headless --record --key $CYPRESS_RECORD_KEY
+  artifacts:
+    when: always
+    paths:
+      - cypress/videos/**/*.mp4
+      - cypress/screenshots/**/*.png
+    expire_in: 1 day
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop" || $CI_COMMIT_BRANCH == "master"

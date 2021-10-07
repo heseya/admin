@@ -45,9 +45,13 @@
       </template>
     </PaginatedList>
 
-    <validation-observer v-slot="{ handleSubmit }">
+    <validation-observer v-slot="{ handleSubmit, valid }">
       <a-modal v-model="isInstallModalActive" width="550px" title="Dodaj aplikacje" footer="">
-        <add-app-form v-model="installForm" @submit="handleSubmit(installApplication)" />
+        <add-app-form
+          v-model="installForm"
+          :is-valid-url="valid"
+          @submit="handleSubmit(installApplication)"
+        />
       </a-modal>
     </validation-observer>
 

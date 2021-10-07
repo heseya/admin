@@ -12,6 +12,7 @@
       },
     ]"
     :disabled="disabled"
+    :data-cy="dataCy"
     @click="(e) => !disabled && $emit('click', e)"
   >
     <div class="app-button__text">
@@ -40,6 +41,10 @@ export default Vue.extend({
     el: {
       type: String,
       default: 'button',
+    },
+    dataCy: {
+      type: String,
+      default: null,
     },
     to: {
       type: String,

@@ -64,6 +64,7 @@
         <small class="ant-checkbox__description">{{ ev.description }}</small>
       </a-checkbox>
     </div>
+    <small class="danger-text">{{ error }}</small>
 
     <br />
     <app-button :disabled="disabled" @click.stop="handleSubmit(submit)"> Zapisz </app-button>
@@ -91,6 +92,9 @@ export default Vue.extend({
       default: false,
     },
   },
+  data: () => ({
+    error: null as string | null,
+  }),
   computed: {
     form: {
       get(): WebHookDto {
@@ -104,8 +108,14 @@ export default Vue.extend({
       return this.$accessor.webhooks.events
     },
   },
+  watch: {
+    ['form.events'](events) {
+      this.error = events.length === 0 ? 'Musisz wybrać przynajmniej jedno wydarzenie' : null
+    },
+  },
   methods: {
     submit() {
+      if (this.form.events.length === 0) return
       this.$emit('submit', this.form)
     },
     toggle(key: WebHookEvent) {

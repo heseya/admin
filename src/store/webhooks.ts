@@ -2,7 +2,7 @@ import { api } from '@/api'
 import { WebHook, WebHookDto, WebHookEventObject } from '@/interfaces/Webhook'
 import { createVuexCRUD, StoreMutations } from './generator'
 
-const BASE_URL = 'web-hooks'
+const BASE_URL = 'webhooks'
 
 export const webhooks = createVuexCRUD<WebHook, WebHookDto, WebHookDto>()(BASE_URL, {
   state: {

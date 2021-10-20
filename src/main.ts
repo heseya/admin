@@ -18,6 +18,7 @@ import './registerServiceWorker'
 
 import 'ant-design-vue/dist/antd.less'
 import 'vue-toast-notification/dist/theme-sugar.css'
+import 'boxicons/css/boxicons.min.css'
 
 Vue.config.productionTip = false
 

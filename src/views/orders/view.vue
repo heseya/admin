@@ -294,16 +294,13 @@ export default Vue.extend({
     async createPackage() {
       if (!this.packageTemplateId) return
       this.$accessor.startLoading()
-      const { success, shippingNumber, error } = await createPackage(
-        this.order.id,
-        this.packageTemplateId,
-      )
+      const res = await createPackage(this.order.id, this.packageTemplateId)
 
-      if (success) {
-        this.shippingNumber = shippingNumber
+      if (res.success) {
+        this.shippingNumber = res.shippingNumber
         this.$toast.success('Przesyłka utworzona poprawnie')
       } else {
-        this.$toast.error(formatApiNotificationError(error))
+        this.$toast.error(formatApiNotificationError(res.error))
       }
 
       this.$accessor.stopLoading()

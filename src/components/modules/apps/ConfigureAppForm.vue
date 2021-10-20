@@ -115,7 +115,7 @@ export default Vue.extend({
         this.$toast.success('Konfiguracja została zapisana')
         this.$emit('close')
       } catch (e: unknown) {
-        const error = e as AxiosError
+        const error = e as AxiosError<{ message?: string }>
         const message = error.response?.data?.message || error.message
 
         this.$toast.error(

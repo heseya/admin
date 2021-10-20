@@ -29,6 +29,7 @@ export const createApiInstance = (baseURL: string, useAccessToken = true) => {
     const token = useAccessToken ? accessor.auth.getAccessToken : accessor.auth.getIdentityToken
 
     if (!isNull(token)) {
+      config.headers = { ...config.headers }
       if (config.url !== REFRESH_URL) config.headers.Authorization = `Bearer ${token}`
       config.headers['x-language'] = 'pl'
     }
@@ -40,7 +41,7 @@ export const createApiInstance = (baseURL: string, useAccessToken = true) => {
     const originalRequest = error.config
 
     if (error.response?.status === 403) {
-      accessor.auth.setPermissionsError(error.response.data)
+      accessor.auth.setPermissionsError(error.response.data as Error)
     }
 
     // Refreshing the token
@@ -70,7 +71,7 @@ export const createApiInstance = (baseURL: string, useAccessToken = true) => {
           }
 
           const token = useAccessToken ? refreshedTokens.accessToken : refreshedTokens.identityToken
-          originalRequest.headers.Authorization = `Bearer ${token}`
+          originalRequest.headers = { ...originalRequest.headers, Authorization: `Bearer ${token}` }
 
           // ? Retry last request
           resolve(apiInstance.request(originalRequest))

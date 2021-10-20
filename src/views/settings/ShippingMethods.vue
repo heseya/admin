@@ -64,6 +64,7 @@ import ShippingMethodsForm from '@/components/modules/shippingMethods/Index.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import { ShippingMethodDTO } from '@/interfaces/ShippingMethod'
+import { Country } from '@/interfaces/Country'
 
 export default Vue.extend({
   metaInfo: { title: 'Metody dostawy' },
@@ -85,7 +86,7 @@ export default Vue.extend({
   data: () => ({
     isModalActive: false,
     editedItem: {} as ShippingMethodDTO,
-    countries: [],
+    countries: [] as Country[],
   }),
   computed: {
     canModify(): boolean {
@@ -97,7 +98,7 @@ export default Vue.extend({
   async created() {
     this.$accessor.startLoading()
     this.$accessor.paymentMethods.fetch()
-    const { data } = await api.get('countries')
+    const { data } = await api.get<{ data: Country[] }>('countries')
     this.countries = data.data
     this.$accessor.stopLoading()
   },

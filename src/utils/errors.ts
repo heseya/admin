@@ -1,7 +1,9 @@
 import { AxiosError } from 'axios'
 import { formatApiNotification } from './utils'
 
-export const formatApiError = (error: AxiosError) => {
+type ApiError = AxiosError<{ message?: string; error: { message: string; errors: any[] } }>
+
+export const formatApiError = (error: ApiError) => {
   const responseData = error.response?.data
 
   return {
@@ -10,6 +12,6 @@ export const formatApiError = (error: AxiosError) => {
   }
 }
 
-export const formatApiNotificationError = (error: AxiosError) => {
+export const formatApiNotificationError = (error: ApiError) => {
   return formatApiNotification(formatApiError(error))
 }

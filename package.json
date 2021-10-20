@@ -17,6 +17,7 @@
     "ant-design-vue": "^1.7.8",
     "axios": "^0.23.0",
     "bout": "^0.1.1",
+    "boxicons": "2.0.9",
     "core-js": "^3.18.3",
     "date-fns": "^2.24.0",
     "lodash": "^4.17.21",

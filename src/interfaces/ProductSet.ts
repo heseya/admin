@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import { UUID } from './UUID'
-import { SeoMetadata } from './SeoMetadata'
+import { SeoMetadata, SeoMetadataDto } from './SeoMetadata'
 
 export interface ProductSet {
   id: UUID
@@ -25,5 +25,5 @@ export interface ProductSetDTO {
   hide_on_index: boolean
   parent_id: UUID | null
   children_ids: UUID[]
-  seo: SeoMetadata
+  seo: SeoMetadataDto
 }

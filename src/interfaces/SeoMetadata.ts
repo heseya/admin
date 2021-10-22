@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import { UUID } from './UUID'
 import { CdnMedia } from './Media'
 
 export enum TwitterCardType {
@@ -11,5 +12,13 @@ export interface SeoMetadata {
   description?: string
   keywords?: string[]
   og_image?: CdnMedia
+  twitter_card?: TwitterCardType
+}
+
+export interface SeoMetadataDto {
+  title?: string
+  description?: string
+  keywords?: string[]
+  og_image_id?: UUID
   twitter_card?: TwitterCardType
 }

@@ -56,7 +56,7 @@ export default Vue.extend({
   async created() {
     const {
       data: { data: countries },
-    } = await api.get('/countries')
+    } = await api.get<{ data: Country[] }>('/countries')
     this.countries = countries
   },
 })

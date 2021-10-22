@@ -40,8 +40,10 @@ import { groupBy } from 'lodash'
 import { Permission, PermissionObject } from '@/interfaces/Permissions'
 import { PERMISSIONS_GROUP_LABELS } from '@/consts/permissions'
 
+type SectionKey = keyof typeof PERMISSIONS_GROUP_LABELS
+
 interface GroupedPermissions {
-  section: string
+  section: SectionKey
   permissions: PermissionObject[]
   assignablePermissions: PermissionObject[]
   isAssignable: boolean
@@ -74,7 +76,7 @@ export default Vue.extend({
       const grouped = groupBy(this.permissions, (p) => p.name.split('.')[0])
       return Object.keys(grouped)
         .map((section) => ({
-          section,
+          section: section as SectionKey,
           permissions: grouped[section],
           assignablePermissions: grouped[section].filter((p) => p.assignable),
           isAssignable: grouped[section].some((p) => p.assignable),
@@ -160,12 +162,8 @@ export default Vue.extend({
     grid-template-columns: 1fr;
     margin-bottom: 24px;
 
-    @media ($viewport-4) {
+    @media ($viewport-6) {
       grid-template-columns: 1fr 1fr;
-    }
-
-    @media ($viewport-10) {
-      grid-template-columns: 1fr 1fr 1fr;
     }
 
     i {

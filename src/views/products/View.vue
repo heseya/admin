@@ -58,6 +58,7 @@
                   rules="required"
                   label="Nazwa"
                   :disabled="!canModify"
+                  @input="editSlug"
                 />
                 <validated-input
                   v-model="form.slug"
@@ -67,7 +68,7 @@
                 />
                 <validated-input
                   v-model="form.price"
-                  rules="required"
+                  rules="required|positive"
                   type="number"
                   step="0.01"
                   label="Cena"

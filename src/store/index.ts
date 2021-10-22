@@ -7,6 +7,7 @@ import { useAccessor, getterTree, mutationTree, actionTree } from 'typed-vuex'
 import { api } from '../api'
 
 import { auth } from './auth'
+import { globalSeo } from './globalSeo'
 import { users } from './users'
 import { roles } from './roles'
 import { items } from './items'
@@ -64,6 +65,7 @@ const actions = actionTree(
 
 const storeModules = {
   auth,
+  globalSeo,
   users,
   roles,
   items,
@@ -100,6 +102,7 @@ export const accessor = useAccessor(store, storePattern)
 
 export type AccessorType = typeof accessor
 export type StoreModulesKeys = keyof typeof storeModules
+export type GeneratedStoreModulesKeys = Exclude<StoreModulesKeys, 'auth' | 'globalSeo'>
 
 Vue.prototype.$accessor = accessor
 

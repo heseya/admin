@@ -67,7 +67,7 @@ import Loading from './layout/Loading.vue'
 import { downloadJsonAsFile } from '@/utils/download'
 
 import { UUID } from '@/interfaces/UUID'
-import { StoreModulesKeys } from '@/store'
+import { GeneratedStoreModulesKeys } from '@/store'
 import { AuditEntry } from '@/interfaces/AuditEntry'
 import { TableConfig } from '@/interfaces/CmsTable'
 
@@ -77,7 +77,7 @@ export default Vue.extend({
     model: {
       type: String,
       required: true,
-    } as Vue.PropOptions<Exclude<StoreModulesKeys, 'auth'>>,
+    } as Vue.PropOptions<GeneratedStoreModulesKeys>,
     id: {
       type: String,
       default: null,

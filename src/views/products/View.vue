@@ -165,6 +165,7 @@ const EMPTY_FORM: ProductComponentForm = {
   schemas: [],
   gallery: [],
   tags: [],
+  seo: {},
 }
 
 export default Vue.extend({

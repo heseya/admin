@@ -51,6 +51,7 @@ const CLEAR_FORM: ProductSetDTO = {
   hide_on_index: false,
   parent_id: null,
   children_ids: [],
+  seo: {},
 }
 
 export default Vue.extend({

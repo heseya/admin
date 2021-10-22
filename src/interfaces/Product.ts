@@ -4,6 +4,7 @@ import { Schema } from './Schema'
 import { Tag } from './Tag'
 import { CdnMedia } from './Media'
 import { ProductSet } from './ProductSet'
+import { SeoMetadata } from './SeoMetadata'
 
 export interface Product {
   id: UUID
@@ -22,6 +23,7 @@ export interface Product {
   gallery: CdnMedia[]
   cover: CdnMedia
   tags: Tag[]
+  seo: SeoMetadata
 }
 
 export interface ProductDTO {
@@ -37,6 +39,7 @@ export interface ProductDTO {
   tags: UUID[]
   schemas: UUID[]
   media: UUID[]
+  seo: SeoMetadata
 }
 
 export interface ProductComponentForm

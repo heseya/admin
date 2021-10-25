@@ -244,6 +244,15 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/settings/seo',
+      name: 'Seo',
+      component: () => import('./views/seo/index.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Seo.Show],
+      },
+    },
+    {
       path: '/settings/roles',
       name: 'Roles',
       component: () => import('./views/roles/index.vue'),

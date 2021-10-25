@@ -29,7 +29,9 @@ import { SeoMetadata, SeoMetadataDto, TwitterCardType } from '@/interfaces/SeoMe
 import { CdnMedia } from '@/interfaces/Media'
 import MediaUploadInput from '@/components/MediaUploadInput.vue'
 
-const CLEAR_FORM: SeoMetadata & SeoMetadataDto = {
+type SeoMeta = SeoMetadata & SeoMetadataDto
+
+const CLEAR_FORM: SeoMeta = {
   title: '',
   description: '',
   keywords: [],
@@ -47,7 +49,7 @@ export default Vue.extend({
     value: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<SeoMetadata>,
+    } as Vue.PropOptions<SeoMeta>,
     disabled: {
       type: Boolean,
       default: false,
@@ -55,10 +57,10 @@ export default Vue.extend({
   },
   computed: {
     form: {
-      get(): SeoMetadata {
+      get(): SeoMeta {
         return this.value
       },
-      set(v: SeoMetadata) {
+      set(v: SeoMeta) {
         this.$emit('input', { ...CLEAR_FORM, ...v })
       },
     },

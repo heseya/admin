@@ -97,7 +97,7 @@ export default Vue.extend({
       content_html: '',
       public: true,
       seo: {},
-    } as Page,
+    } as PageDto,
   }),
   computed: {
     id(): string {

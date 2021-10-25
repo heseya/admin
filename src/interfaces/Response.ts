@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import { SeoMetadata } from './SeoMetadata'
 
 export interface ResponseMeta {
   currency: { name: string; symbol: string; decimals: number }
@@ -10,4 +11,5 @@ export interface ResponseMeta {
   per_page: number
   to: number
   total: number
+  seo?: SeoMetadata
 }

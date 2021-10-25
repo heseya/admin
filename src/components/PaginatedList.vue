@@ -56,7 +56,7 @@ import Loading from './layout/Loading.vue'
 
 import { ResponseMeta } from '@/interfaces/Response'
 import { TableConfig } from '@/interfaces/CmsTable'
-import { StoreModulesKeys } from '@/store'
+import { GeneratedStoreModulesKeys } from '@/store'
 import { BaseItem } from '@/store/generator'
 
 import { formatFilters } from '@/utils/utils'
@@ -87,7 +87,7 @@ export default Vue.extend({
     storeKey: {
       type: String,
       required: true,
-    } as Vue.PropOptions<Exclude<StoreModulesKeys, 'auth'>>,
+    } as Vue.PropOptions<GeneratedStoreModulesKeys>,
     draggable: {
       type: Boolean,
       default: false,

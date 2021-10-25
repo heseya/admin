@@ -58,6 +58,10 @@
             />
           </flex-input>
         </div>
+
+        <br />
+
+        <SeoForm v-model="form.seo" :disabled="disabled" />
       </modal-form>
       <template #footer>
         <div class="row">
@@ -87,6 +91,7 @@ import ModalForm from '@/components/form/ModalForm.vue'
 import FlexInput from '@/components/layout/FlexInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
+import SeoForm from '@/components/modules/seo/Accordion.vue'
 
 import { ProductSetDTO } from '@/interfaces/ProductSet'
 
@@ -97,6 +102,7 @@ export default Vue.extend({
     FlexInput,
     ValidationObserver,
     SwitchInput,
+    SeoForm,
   },
   props: {
     value: {
@@ -125,7 +131,7 @@ export default Vue.extend({
   }),
   watch: {
     value(value: ProductSetDTO) {
-      this.form = cloneDeep(value)
+      this.form = { ...cloneDeep(value), seo: value.seo || {} }
     },
   },
   methods: {

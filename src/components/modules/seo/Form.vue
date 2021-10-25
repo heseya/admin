@@ -2,19 +2,21 @@
   <modal-form class="seo-form">
     <validated-input v-model="form.title" :disabled="disabled" label="Tytuł strony" />
     <validated-input v-model="form.description" :disabled="disabled" label="Opis strony" />
-    <validated-input v-model="form.keywords" :disabled="disabled" label="Słowa kluczowe" />
-    <validated-input v-model="form.twitter_card" :disabled="disabled" label="twitter_card" />
+    <app-select v-model="form.keywords" label="Słowa kluczowe" :disabled="disabled" mode="tags" />
 
-    <media-uploader class="seo-form__og-image" :disabled="disabled" @upload="changeMedia">
-      <template v-if="!form.og_image">
-        <img src="@/assets/images/heseya.svg" alt="Heseya" />
-        <span v-if="!disabled">Dodaj swoje logo</span>
-      </template>
-      <template v-else>
-        <img :src="form.og_image.url" alt="OG image" />
-        <span v-if="!disabled">Zmień swoje logo</span>
-      </template>
-    </media-uploader>
+    <app-select v-model="form.twitter_card" label="Typ kart Twittera" :disabled="disabled">
+      <a-select-option value="summary"> Podsumowanie (<code>summary</code>) </a-select-option>
+      <a-select-option value="summary_large_image">
+        Podsumowanie z dużym zdjęciem (<code>summary_large_image</code>)
+      </a-select-option>
+    </app-select>
+
+    <media-upload-input
+      label="Zdjęcie udostępniania w mediach społecznościowych"
+      :disabled="disabled"
+      :image="form.og_image"
+      @upload="changeMedia"
+    />
   </modal-form>
 </template>
 
@@ -23,14 +25,22 @@ import Vue from 'vue'
 
 import ModalForm from '@/components/form/ModalForm.vue'
 
-import { SeoMetadata } from '@/interfaces/SeoMetadata'
+import { SeoMetadata, TwitterCardType } from '@/interfaces/SeoMetadata'
 import { CdnMedia } from '@/interfaces/Media'
-import MediaUploader from '@/components/MediaUploader.vue'
+import MediaUploadInput from '@/components/MediaUploadInput.vue'
+
+const CLEAR_FORM: SeoMetadata = {
+  title: '',
+  description: '',
+  keywords: [],
+  twitter_card: TwitterCardType.Summary,
+  og_image: undefined,
+}
 
 export default Vue.extend({
   components: {
     ModalForm,
-    MediaUploader,
+    MediaUploadInput,
   },
   props: {
     value: {
@@ -48,10 +58,15 @@ export default Vue.extend({
         return this.value
       },
       set(v: SeoMetadata) {
-        this.$emit('input', v)
+        this.$emit('input', { ...CLEAR_FORM, ...v })
       },
     },
   },
+
+  created() {
+    this.form = { ...CLEAR_FORM, ...this.form }
+  },
+
   methods: {
     changeMedia(media: CdnMedia) {
       this.form.og_image = media

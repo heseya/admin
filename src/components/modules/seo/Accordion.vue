@@ -1,5 +1,10 @@
 <template>
-  <a-collapse accordion :bordered="false" class="seo-form-accrodion">
+  <a-collapse
+    accordion
+    :bordered="false"
+    class="seo-form-accrodion"
+    :class="{ 'seo-form-accrodion--white': white }"
+  >
     <template #expandIcon="{ isActive }">
       <div>
         <i v-if="isActive" class="bx bx-chevron-up"></i>
@@ -35,6 +40,10 @@ export default Vue.extend({
       type: Boolean,
       default: false,
     },
+    white: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     form: {
@@ -49,10 +58,14 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .seo-form-accrodion {
   &__title {
     font-weight: 600;
+  }
+
+  &--white .ant-collapse-item {
+    background-color: #fff;
   }
 }
 </style>

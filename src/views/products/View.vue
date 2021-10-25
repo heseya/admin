@@ -105,6 +105,10 @@
               </div>
 
               <div class="wide">
+                <SeoForm v-model="form.seo" />
+              </div>
+
+              <div class="wide">
                 <tags-select v-model="form.tags" :disabled="!canModify" />
               </div>
 
@@ -144,6 +148,7 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import RichEditor from '@/components/form/RichEditor.vue'
 import SchemaConfigurator from '@/components/modules/schemas/Configurator.vue'
 import TagsSelect from '@/components/TagsSelect.vue'
+import SeoForm from '@/components/modules/seo/Accordion.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { UUID } from '@/interfaces/UUID'
@@ -184,6 +189,7 @@ export default Vue.extend({
     TagsSelect,
     SwitchInput,
     ChangesHistory,
+    SeoForm,
   },
   data: () => ({
     form: cloneDeep(EMPTY_FORM),
@@ -218,6 +224,7 @@ export default Vue.extend({
         this.form = {
           ...product,
           sets: product.sets?.map(({ id }) => id) || [],
+          seo: product.seo || {},
         }
       }
     },

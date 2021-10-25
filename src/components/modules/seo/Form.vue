@@ -25,16 +25,17 @@ import Vue from 'vue'
 
 import ModalForm from '@/components/form/ModalForm.vue'
 
-import { SeoMetadata, TwitterCardType } from '@/interfaces/SeoMetadata'
+import { SeoMetadata, SeoMetadataDto, TwitterCardType } from '@/interfaces/SeoMetadata'
 import { CdnMedia } from '@/interfaces/Media'
 import MediaUploadInput from '@/components/MediaUploadInput.vue'
 
-const CLEAR_FORM: SeoMetadata = {
+const CLEAR_FORM: SeoMetadata & SeoMetadataDto = {
   title: '',
   description: '',
   keywords: [],
   twitter_card: TwitterCardType.Summary,
   og_image: undefined,
+  og_image_id: undefined,
 }
 
 export default Vue.extend({
@@ -70,6 +71,7 @@ export default Vue.extend({
   methods: {
     changeMedia(media: CdnMedia) {
       this.form.og_image = media
+      this.form.og_image_id = media.id
     },
   },
 })

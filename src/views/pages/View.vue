@@ -146,16 +146,8 @@ export default Vue.extend({
     },
     async save() {
       this.$accessor.startLoading()
-      const FORM: PageDto = {
-        ...this.form,
-        seo: {
-          ...this.form.seo,
-          og_image_id: this.form.seo?.og_image?.id,
-        },
-      }
-
       if (this.isNew) {
-        const page = await this.$accessor.pages.add(FORM)
+        const page = await this.$accessor.pages.add(this.form)
         if (page && page.id) {
           this.$toast.success('Strona została utworzona.')
           this.$router.push(`/pages/${page.id}`)
@@ -163,7 +155,7 @@ export default Vue.extend({
       } else {
         const success = await this.$accessor.pages.update({
           id: this.id,
-          item: FORM,
+          item: this.form,
         })
         if (success) {
           this.$toast.success('Strona została zaktualizowana.')

@@ -13,14 +13,16 @@
           type="danger"
           size="small"
           class="media-upload-input__delete"
-          @click.stop="$emit('upload', undefined)"
+          @click.prevent.stop="$emit('upload', undefined)"
         >
           Usuń lub zmień zdjęcie
         </AppButton>
       </template>
       <template v-else>
         <span class="media-upload-input__title">Upuść lub wybierz zdjęcie</span>
-        <AppButton type="primary"><i class="bx bx-upload"></i> Wybierz zdjęcie</AppButton>
+        <AppButton type="primary" @click.prevent>
+          <i class="bx bx-upload"></i> Wybierz zdjęcie
+        </AppButton>
       </template>
     </media-uploader>
   </div>

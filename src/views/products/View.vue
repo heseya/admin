@@ -105,7 +105,7 @@
               </div>
 
               <div class="wide">
-                <SeoForm v-model="form.seo" />
+                <SeoForm v-model="form.seo" :disabled="!canModify" />
               </div>
 
               <div class="wide">

@@ -61,7 +61,7 @@
 
         <br />
 
-        <SeoForm v-model="form.seo" />
+        <SeoForm v-model="form.seo" :disabled="disabled" />
       </modal-form>
       <template #footer>
         <div class="row">

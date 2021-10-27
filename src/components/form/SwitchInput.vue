@@ -4,8 +4,16 @@
       <slot name="title">{{ label }}</slot>
     </label>
     <a-switch :checked="value" :disabled="disabled" @change="onInput">
-      <i slot="unCheckedChildren" class="bx bx-x"></i>
-      <i slot="checkedChildren" class="bx bx-check"></i>
+      <template #unCheckedChildren>
+        <slot name="unCheckedChildren">
+          <i class="bx bx-x"></i>
+        </slot>
+      </template>
+      <template #checkedChildren>
+        <slot name="checkedChildren">
+          <i class="bx bx-check"></i>
+        </slot>
+      </template>
     </a-switch>
   </div>
 </template>
@@ -36,7 +44,7 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .switch-input {
   display: flex;
   flex-direction: column;
@@ -63,14 +71,14 @@ export default Vue.extend({
 
     i {
       margin-top: 4px;
-      color: $font-color;
+      color: $font-color !important;
     }
   }
   .ant-switch-checked {
     background-color: $green-color-500;
 
     i {
-      color: #ffffff;
+      color: #ffffff !important;
     }
   }
 }

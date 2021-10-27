@@ -3,7 +3,7 @@
 import { Permission, PermissionObject } from './Permissions'
 import { UUID } from './UUID'
 
-interface AppInternalPermission extends Omit<PermissionObject, 'name'> {
+export interface AppInternalPermission extends Omit<PermissionObject, 'name'> {
   unauthenticated?: boolean
   name: string
 }

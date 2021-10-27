@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="narrower-page">
     <top-nav :title="`Zamówienie ${order.code}`" :subtitle="`z dnia ${formattedDate}`">
       <changes-history :id="order.id" model="orders" />
       <a :href="`https://***REMOVED***.eu/payment/${order.code}`" target="_blank">

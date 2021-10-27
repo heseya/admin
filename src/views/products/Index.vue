@@ -119,12 +119,20 @@ export default Vue.extend({
 
     .paginated-list__list {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
       grid-gap: 22px;
       padding: 0;
       min-height: 100px;
       margin-bottom: 12px;
       align-items: start;
+
+      @media ($viewport-6) {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      }
+
+      @media ($viewport-10) {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      }
     }
   }
 }

@@ -1,31 +1,31 @@
 <template>
   <central-screen-form title="Logowanie">
     <ValidationObserver v-slot="{ handleSubmit }">
-      <validated-input
-        v-model="email"
-        rules="required|email"
-        name="email"
-        data-cy="email"
-        label="E-mail"
-        type="email"
-        @keydown.enter="handleSubmit(login)"
-      />
+      <form @submit.prevent.stop="handleSubmit(login)">
+        <validated-input
+          v-model="email"
+          rules="required|email"
+          name="email"
+          data-cy="email"
+          label="E-mail"
+          type="email"
+        />
 
-      <validated-input
-        v-model="password"
-        rules="required"
-        label="Hasło"
-        name="password"
-        data-cy="password"
-        type="password"
-        @keydown.enter="handleSubmit(login)"
-      />
-      <br />
+        <validated-input
+          v-model="password"
+          rules="required"
+          label="Hasło"
+          name="password"
+          data-cy="password"
+          type="password"
+        />
+        <br />
 
-      <div class="central-screen-form__row">
-        <app-button data-cy="submitBtn" @click="handleSubmit(login)"> Zaloguj </app-button>
-        <app-button type="white" to="/reset-password"> Zapomniałeś hasła? </app-button>
-      </div>
+        <div class="central-screen-form__row">
+          <app-button data-cy="submitBtn" html-type="submit"> Zaloguj </app-button>
+          <app-button type="white" to="/reset-password"> Zapomniałeś hasła? </app-button>
+        </div>
+      </form>
     </ValidationObserver>
   </central-screen-form>
 </template>

@@ -1,28 +1,24 @@
 <template>
   <div>
     <div class="mobile-nav" :class="{ 'mobile-nav--hidden': isHidden }">
-      <router-link class="mobile-nav__link" to="/" exact>
-        <InlineSvg
-          class="nav-link-img"
-          :src="require('@/assets/images/icons/dashboard-icon.svg')"
-        />
-        <span class="mobile-nav__link-label">Dashboard</span>
-      </router-link>
+      <menu-link
+        v-for="item in MENU_ITEMS"
+        :key="item.to"
+        v-can="item.can"
+        :to="item.to"
+        :exact="item.exact"
+        :label="item.label"
+        :icon="item.icon"
+        root-class="mobile-nav"
+      />
 
-      <router-link v-can="$p.Orders.Show" class="mobile-nav__link" to="/orders">
-        <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/orders-icon.svg')" />
-        <span class="mobile-nav__link-label">Zamówienia</span>
-      </router-link>
-
-      <!-- <router-link class="mobile-nav__link" to="/analytics">
-        <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/stats-icon.svg')" />
-        <span class="mobile-nav__link-label">Statystyka</span>
-      </router-link> -->
-
-      <button class="mobile-nav__link" @click="isMenuVisible = true">
-        <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/more-icon.svg')" />
-        <span class="mobile-nav__link-label">Więcej</span>
-      </button>
+      <menu-link
+        root-class="mobile-nav"
+        class="mobile-nav__more-btn"
+        icon="icons/more-icon.svg"
+        label="Więcej"
+        @click="isMenuVisible = true"
+      />
     </div>
 
     <mobile-overlay :is-visible="isMenuVisible" @close="isMenuVisible = false" />
@@ -31,13 +27,14 @@
 
 <script lang="ts">
 import Vue from 'vue'
-// @ts-ignore
-import InlineSvg from 'vue-inline-svg'
+
+import MenuLink from './MenuLink.vue'
 import MobileOverlay from './MobileOverlay.vue'
+import { MenuItem, MENU_ITEMS } from '@/consts/menuItems'
 
 export default Vue.extend({
   name: 'Navigation',
-  components: { InlineSvg, MobileOverlay },
+  components: { MobileOverlay, MenuLink },
   data: () => ({
     isMenuVisible: false,
   }),
@@ -45,11 +42,14 @@ export default Vue.extend({
     isHidden(): boolean {
       return !!this.$route.meta?.hiddenNav || false
     },
+    MENU_ITEMS(): MenuItem[] {
+      return MENU_ITEMS
+    },
   },
 })
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .mobile-nav {
   z-index: $mobile-nav-z-index;
   position: fixed;
@@ -60,7 +60,8 @@ export default Vue.extend({
   width: 100vw;
   background: #ffffff;
   border-top: solid 1px $primary-color-200;
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
   justify-content: space-around;
   align-items: center;
   transition: 0.3s;
@@ -100,6 +101,15 @@ export default Vue.extend({
     font-size: 12px;
     text-align: center;
     margin-top: 8px;
+  }
+
+  &__more-btn {
+    grid-column: -2/-1;
+    grid-row: 1/2;
+
+    @media (min-width: 770px) {
+      display: none;
+    }
   }
 }
 </style>

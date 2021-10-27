@@ -49,6 +49,13 @@
         </div>
       </div>
 
+      <validated-input
+        v-if="appInfo.licence_required"
+        v-model="form.licence_key"
+        rules="required"
+        label="Klucz licencyjny"
+      />
+
       <div class="field">
         <div class="field__label">Wymagane uprawnienia</div>
         <div class="field__value">

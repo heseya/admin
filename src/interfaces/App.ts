@@ -1,7 +1,12 @@
 /* eslint-disable camelcase */
 
-import { Permission } from './Permissions'
+import { PermissionObject } from './Permissions'
 import { UUID } from './UUID'
+
+interface AppInternalPermission extends Omit<PermissionObject, 'name'> {
+  unauthenticated?: boolean
+  name: string
+}
 
 export interface App {
   id: UUID
@@ -21,6 +26,7 @@ export interface CreateAppDto {
   name?: string // [TODO]
   licence_key: string
   allowed_permissions: string[]
+  public_app_permissions: string[]
 }
 
 export interface IntegrationInfo {
@@ -32,7 +38,7 @@ export interface IntegrationInfo {
   description: string
   icon: string
   required_permissions: string[]
-  internal_permissions: Permission[]
+  internal_permissions: AppInternalPermission[]
 }
 
 //  CONFIG

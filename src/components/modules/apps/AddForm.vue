@@ -48,6 +48,7 @@
           <div class="field__value">{{ appInfo.author }}</div>
         </div>
       </div>
+
       <div class="field">
         <div class="field__label">Wymagane uprawnienia</div>
         <div class="field__value">
@@ -62,6 +63,25 @@
             </li>
           </ul>
           <small v-if="requiredPermissions.length === 0">Brak</small>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field__label">Wewnętrzne uprawnienia aplikacji</div>
+        <div class="field__value">
+          <div class="field__value">
+            <ul>
+              <li v-for="perm in appInfo.internal_permissions" :key="perm.id">
+                {{ perm.display_name || perm.name }}
+
+                <a-tooltip v-if="perm.description">
+                  <template slot="title"> {{ perm.description }} </template>
+                  <i class="bx bxs-info-circle"></i>
+                </a-tooltip>
+              </li>
+            </ul>
+            <small v-if="requiredPermissions.length === 0">Brak</small>
+          </div>
         </div>
       </div>
 
@@ -147,6 +167,9 @@ export default Vue.extend({
         this.appInfo = data
         this.form.name = data.name
         this.form.allowed_permissions = data.required_permissions
+        this.form.public_app_permissions = data.internal_permissions
+          .filter((p) => p.unauthenticated)
+          .map((p) => p.name)
       } catch (e) {
         this.isError = true
       }

@@ -85,6 +85,7 @@ const CLEAN_FORM: CreateAppDto = {
   url: '',
   name: '',
   licence_key: '',
+  public_app_permissions: [],
   allowed_permissions: [],
 }
 

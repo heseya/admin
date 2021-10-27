@@ -1,5 +1,5 @@
 <template>
-  <validation-observer v-slot="{ handleSubmit }" class="webhook-form">
+  <validation-observer v-slot="{ handleSubmit, errors }" class="webhook-form">
     <validated-input v-model="form.name" :disabled="disabled" name="name" label="Nazwa" />
     <validated-input
       v-model="form.url"
@@ -8,6 +8,18 @@
       rules="required|url"
       label="Link"
     />
+
+    <a-alert
+      v-if="!hasHttps && form.url && errors.url && errors.url.length === 0"
+      type="warning"
+      show-icon
+      message="Link docelowy webhooka nie posiada certyfikatu SSL"
+    >
+      <template #description>
+        Może to spowodować potencjalne zagrożenie bezpieczeństwa danych, które zostaną przesłane na
+        powyższy adres. Użycie protokołu <code>https</code> jest mocno zalecane.
+      </template>
+    </a-alert>
 
     <div class="webhook-form__switches">
       <switch-input v-model="form.with_issuer" horizontal :disabled="disabled">
@@ -107,6 +119,9 @@ export default Vue.extend({
     allEvents(): WebHookEventObject[] {
       return this.$accessor.webhooks.events
     },
+    hasHttps(): boolean {
+      return this.form.url.startsWith('https://')
+    },
   },
   watch: {
     ['form.events'](events) {
@@ -152,6 +167,10 @@ export default Vue.extend({
     @media ($max-viewport-5) {
       grid-template-columns: 1fr;
     }
+  }
+
+  .ant-alert {
+    margin-bottom: 16px;
   }
 
   .bx {

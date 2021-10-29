@@ -29,7 +29,7 @@
               <span class="order-icon"> <i class="bx bxs-error"></i> </span>
             </a-tooltip>
           </template>
-          <template #payed="{ rawValue }">
+          <template #paid="{ rawValue }">
             <span v-if="rawValue" class="order-tag success-text">Opłacone</span>
             <span v-else class="order-tag danger-text">Nieopłacone</span>
           </template>
@@ -86,7 +86,7 @@ export default Vue.extend({
             label: 'Wartość',
             render: (v) => this.formatCurrency(v),
           },
-          { key: 'payed', label: 'Płatność', width: '0.8fr' },
+          { key: 'paid', label: 'Płatność', width: '0.8fr' },
           { key: 'status', label: 'Status', width: '0.8fr' },
           { key: 'shipping_method', label: 'Przesyłka', render: () => 'DHL kurier' },
           { key: 'email', label: 'Klient', width: '2fr' },

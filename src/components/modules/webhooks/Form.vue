@@ -57,8 +57,9 @@
       label="Sekretny token"
     />
     <small>
-      Użyj tego tokena do sprawdzenia poprawności otrzymanego payloadu. Jest on wysyłany wraz z
-      żądaniem w nagłówku HTTP <code>X-Heseya-Token</code>.
+      Użyj tego tokena do sprawdzenia poprawności i autentyczności otrzymanego webhooka. Zostanie
+      użyty do zahashowania (<code>sha256</code>) payloadu żądania, a następnie zostanie wysyłany
+      wraz z żądaniem w nagłówku HTTP <code>Signature</code>.
     </small>
 
     <br />

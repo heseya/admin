@@ -1,23 +1,23 @@
 import capitalize from 'lodash/capitalize'
 
+const namesMap: Record<string, string> = {
+  delivery_address_id: 'Adres dostawy',
+  invoice_address_id: 'Adres rozliczeniowy',
+  status_id: 'Status zamówienia',
+  content_html: 'Treść',
+  slug: 'Link',
+  name: 'Nazwa',
+  public: 'Widoczność',
+  price: 'Cena',
+  quantity_step: 'Format ilości',
+  description_html: 'Opis',
+}
+
 export const changeAuditKeyToName = (key: string): string => {
-  switch (key) {
-    case 'delivery_address_id':
-      return 'Adres dostawy'
-    case 'invoice_address_id':
-      return 'Adres rozliczeniowy'
-    case 'status_id':
-      return 'Status zamówienia'
-    case 'content_html':
-      return 'Treść'
-    case 'slug':
-      return 'Link'
-    case 'name':
-      return 'Nazwa'
-    case 'public':
-      return 'Widoczność'
-    default:
-      return transformKey(key)
+  try {
+    return namesMap[key] || transformKey(key)
+  } catch {
+    return key
   }
 }
 

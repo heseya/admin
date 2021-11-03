@@ -64,11 +64,11 @@
 import Vue from 'vue'
 import format from 'date-fns/format'
 
-import CmsTable from './cms/CmsTable.vue'
-import Empty from './layout/Empty.vue'
-import Loading from './layout/Loading.vue'
-import AuditFormatter from './modules/audits/AuditFormatter.vue'
-import CmsTableRow from './cms/CmsTableRow.vue'
+import CmsTable from '../../cms/CmsTable.vue'
+import Empty from '../../layout/Empty.vue'
+import Loading from '../../layout/Loading.vue'
+import AuditFormatter from './AuditFormatter.vue'
+import CmsTableRow from '../../cms/CmsTableRow.vue'
 
 import { downloadJsonAsFile } from '@/utils/download'
 import { changeAuditKeyToName } from '@/utils/auditsFieldsNames'

@@ -1,7 +1,7 @@
 <template>
   <div class="narrower-page">
     <top-nav :title="!isNew ? page.name : 'Nowa strona'">
-      <changes-history :id="page.id" model="pages" />
+      <audits-modal :id="page.id" model="pages" />
 
       <pop-confirm
         v-if="!isNew"
@@ -66,7 +66,7 @@ import FlexInput from '@/components/layout/FlexInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import RichEditor from '@/components/form/RichEditor.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
-import ChangesHistory from '@/components/ChangesHistory.vue'
+import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { Page } from '@/interfaces/Page'
@@ -83,7 +83,7 @@ export default Vue.extend({
     RichEditor,
     ValidationObserver,
     SwitchInput,
-    ChangesHistory,
+    AuditsModal,
   },
   data: () => ({
     form: {

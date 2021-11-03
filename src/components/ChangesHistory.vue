@@ -1,12 +1,12 @@
 <template>
-  <div class="changes-history">
-    <icon-button v-if="id" @click="openModal">
+  <div class="audits-modal">
+    <icon-button v-if="id" class="audits-modal__btn" @click="openModal">
       <i slot="icon" class="bx bx-history"></i>
       Rejestr zmian
     </icon-button>
 
     <a-modal :visible="isModalOpen" width="750px" :footer="null" @cancel="isModalOpen = false">
-      <div slot="title" class="changes-history__header">
+      <div slot="title" class="audits-modal__header">
         <span>Rejestr wprowadzonych zmian</span>
 
         <icon-button size="small" @click="downloadAudits">
@@ -22,7 +22,7 @@
         :default-active-key="audits[0].id"
         accordion
         :bordered="false"
-        class="changes-history__content"
+        class="audits-modal__content"
       >
         <template #expandIcon="{ isActive }">
           <div>
@@ -40,13 +40,18 @@
             <span>{{ formatDateTime(entry.created_at) }}</span>
           </div>
 
-          <cms-table
-            class="audit-entry__table"
-            :value="getValues(entry)"
-            :config="tableConfig"
-            no-hover
-            row-el="div"
-          />
+          <cms-table class="audit-entry__table" :value="getValues(entry)" :config="tableConfig">
+            <template #default="{ item: audit }">
+              <cms-table-row :item="audit" no-hover :headers="tableConfig.headers">
+                <template #new>
+                  <audit-formatter :field-key="audit.key" :value="audit.new" />
+                </template>
+                <template #old>
+                  <audit-formatter :field-key="audit.key" :value="audit.old" />
+                </template>
+              </cms-table-row>
+            </template>
+          </cms-table>
         </a-collapse-panel>
       </a-collapse>
 
@@ -57,14 +62,16 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import capitalize from 'lodash/capitalize'
 import format from 'date-fns/format'
 
 import CmsTable from './cms/CmsTable.vue'
 import Empty from './layout/Empty.vue'
 import Loading from './layout/Loading.vue'
+import AuditFormatter from './modules/audits/AuditFormatter.vue'
+import CmsTableRow from './cms/CmsTableRow.vue'
 
 import { downloadJsonAsFile } from '@/utils/download'
+import { changeAuditKeyToName } from '@/utils/auditsFieldsNames'
 
 import { UUID } from '@/interfaces/UUID'
 import { StoreModulesKeys } from '@/store'
@@ -72,7 +79,7 @@ import { AuditEntry } from '@/interfaces/AuditEntry'
 import { TableConfig } from '@/interfaces/CmsTable'
 
 export default Vue.extend({
-  components: { CmsTable, Empty, Loading },
+  components: { CmsTable, Empty, Loading, AuditFormatter, CmsTableRow },
   props: {
     model: {
       type: String,
@@ -92,9 +99,13 @@ export default Vue.extend({
     tableConfig(): TableConfig {
       return {
         headers: [
-          { key: 'name', label: 'Nazwa' },
-          { key: 'new', label: 'Nowa wartość' },
+          {
+            key: 'key',
+            label: 'Nazwa',
+            render: (key) => changeAuditKeyToName(key),
+          },
           { key: 'old', label: 'Stara wartość' },
+          { key: 'new', label: 'Nowa wartość' },
         ],
       }
     },
@@ -116,7 +127,6 @@ export default Vue.extend({
 
       return keys.map((key) => ({
         key,
-        name: capitalize(key.split('_').join(' ')),
         old: audit.old_values[key],
         new: audit.new_values[key],
       }))
@@ -139,7 +149,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.changes-history {
+.audits-modal {
   &__header {
     display: flex;
     justify-content: space-between;

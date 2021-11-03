@@ -8,7 +8,7 @@
         hide-remove
       />
     </template>
-    <template v-if="isBoolean">
+    <template v-else-if="isBoolean">
       <i v-if="value" class="bx bxs-check-circle audit-formatter__true"></i>
       <i v-else class="bx bxs-x-circle audit-formatter__false"></i>
     </template>

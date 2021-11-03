@@ -1,6 +1,6 @@
 import capitalize from 'lodash/capitalize'
 
-const namesMap: Record<string, string> = {
+const FIELDS_MAP: Record<string, string> = {
   delivery_address_id: 'Adres dostawy',
   invoice_address_id: 'Adres rozliczeniowy',
   status_id: 'Status zamówienia',
@@ -15,7 +15,7 @@ const namesMap: Record<string, string> = {
 
 export const changeAuditKeyToName = (key: string): string => {
   try {
-    return namesMap[key] || transformKey(key)
+    return FIELDS_MAP[key] || transformKey(key)
   } catch {
     return key
   }

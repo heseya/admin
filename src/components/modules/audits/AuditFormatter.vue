@@ -41,7 +41,7 @@ export default Vue.extend({
     isBoolean(): boolean {
       return this.fieldKey === 'public'
     },
-    parsedJsonValue(): object {
+    parsedJsonValue(): object | null {
       try {
         return JSON.parse(this.value)
       } catch {

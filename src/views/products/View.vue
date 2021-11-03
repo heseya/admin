@@ -1,5 +1,5 @@
 <template>
-  <div :key="$route.params.id">
+  <div :key="$route.params.id" class="narrower-page">
     <top-nav :title="!isNew ? product.name : 'Nowy produkt'">
       <changes-history :id="product.id" model="products" />
 

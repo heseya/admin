@@ -35,6 +35,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import last from 'lodash/last'
+
 import { User } from '@/interfaces/User'
 
 export default Vue.extend({
@@ -53,7 +55,7 @@ export default Vue.extend({
       return this.$accessor.auth.user
     },
     userRole(): string {
-      return this.user?.roles[0]?.name || ''
+      return last(this.user?.roles)?.name || ''
     },
   },
   methods: {

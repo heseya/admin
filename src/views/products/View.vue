@@ -1,5 +1,5 @@
 <template>
-  <div :key="$route.params.id">
+  <div :key="$route.params.id" class="narrower-page">
     <top-nav :title="!isNew ? product.name : 'Nowy produkt'">
       <changes-history :id="product.id" model="products" />
 
@@ -49,7 +49,8 @@
 
       <div class="product__details">
         <card>
-          <validation-observer v-slot="{ handleSubmit }">
+          <validation-observer v-slot="{ handleSubmit, valid }">
+            {{ valid }}
             <form class="product__info" @submit.prevent="handleSubmit(saveProduct)">
               <div>
                 <br />
@@ -121,8 +122,13 @@
                 />
                 <br />
                 <div class="flex">
-                  <app-button v-if="canModify" style="margin-right: 12px">Zapisz</app-button>
-                  <app-button v-if="canModify" @click="handleSubmit(submitAndGoNext)">
+                  <app-button v-if="canModify" html-type="submit" style="margin-right: 12px">
+                    Zapisz
+                  </app-button>
+                  <app-button
+                    v-if="canModify && isNew"
+                    @click.prevent="handleSubmit(submitAndGoNext)"
+                  >
                     Zapisz i dodaj następny
                   </app-button>
                 </div>

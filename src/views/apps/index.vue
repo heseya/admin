@@ -45,11 +45,11 @@
       </template>
     </PaginatedList>
 
-    <validation-observer v-slot="{ handleSubmit, valid }">
+    <validation-observer v-slot="{ handleSubmit, errors }">
       <a-modal v-model="isInstallModalActive" width="550px" title="Dodaj aplikacje" footer="">
         <add-app-form
           v-model="installForm"
-          :is-valid-url="valid"
+          :is-valid-url="errors.url ? errors.url.length === 0 : true"
           @submit="handleSubmit(installApplication)"
         />
       </a-modal>
@@ -85,6 +85,7 @@ const CLEAN_FORM: CreateAppDto = {
   url: '',
   name: '',
   licence_key: '',
+  public_app_permissions: [],
   allowed_permissions: [],
 }
 

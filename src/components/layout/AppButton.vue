@@ -3,6 +3,7 @@
     :is="component"
     :to="to"
     class="app-button"
+    :type="htmlType"
     :class="[
       `app-button--${type}`,
       `app-button--${size}`,
@@ -45,6 +46,10 @@ export default Vue.extend({
     dataCy: {
       type: String,
       default: null,
+    },
+    htmlType: {
+      type: String,
+      default: 'button',
     },
     to: {
       type: String,

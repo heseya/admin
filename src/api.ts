@@ -5,6 +5,8 @@ import { accessor } from './store/index'
 import router from './router'
 import { getApiURL } from './utils/api'
 
+const CORE_API_URL = getApiURL()
+
 const REFRESH_URL = '/auth/refresh'
 
 type OnRefreshFunction = (
@@ -26,13 +28,16 @@ export const createApiInstance = (baseURL: string, useAccessToken = true) => {
   }
 
   apiInstance.interceptors.request.use((config) => {
+    config.headers = { ...config.headers }
+
     const token = useAccessToken ? accessor.auth.getAccessToken : accessor.auth.getIdentityToken
 
     if (!isNull(token)) {
-      config.headers = { ...config.headers }
       if (config.url !== REFRESH_URL) config.headers.Authorization = `Bearer ${token}`
-      config.headers['x-language'] = 'pl'
+      config.headers['X-Language'] = 'pl'
     }
+
+    config.headers['X-Core-Url'] = CORE_API_URL
 
     return config
   })
@@ -85,4 +90,4 @@ export const createApiInstance = (baseURL: string, useAccessToken = true) => {
   return apiInstance
 }
 
-export const api = createApiInstance(getApiURL())
+export const api = createApiInstance(CORE_API_URL)

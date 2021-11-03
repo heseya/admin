@@ -1,7 +1,7 @@
 <template>
   <div class="narrower-page">
     <top-nav :title="`Zamówienie ${order.code}`" :subtitle="`z dnia ${formattedDate}`">
-      <changes-history :id="order.id" model="orders" />
+      <audits-modal :id="order.id" model="orders" />
       <a :href="`https://***REMOVED***.eu/payment/${order.code}`" target="_blank">
         <icon-button>
           <i slot="icon" class="bx bxs-dollar-circle"></i>
@@ -184,7 +184,7 @@ import CartItem from '@/components/layout/CartItem.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import PartialUpdateForm from '@/components/modules/orders/PartialUpdateForm.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import ChangesHistory from '@/components/ChangesHistory.vue'
+import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 
 import { Order, OrderStatus } from '@/interfaces/Order'
 import { getRelativeDate } from '@/utils/utils'
@@ -219,7 +219,7 @@ export default Vue.extend({
     ModalForm,
     PartialUpdateForm,
     PopConfirm,
-    ChangesHistory,
+    AuditsModal,
   },
   data: () => ({
     status: '',

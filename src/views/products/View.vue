@@ -1,7 +1,7 @@
 <template>
   <div :key="$route.params.id" class="narrower-page">
     <top-nav :title="!isNew ? product.name : 'Nowy produkt'">
-      <changes-history :id="product.id" model="products" />
+      <audits-modal :id="product.id" model="products" />
 
       <pop-confirm
         v-if="!isNew"
@@ -156,7 +156,7 @@ import { UUID } from '@/interfaces/UUID'
 import { Product, ProductDTO, ProductComponentForm } from '@/interfaces/Product'
 import { ProductSet } from '@/interfaces/ProductSet'
 import SwitchInput from '@/components/form/SwitchInput.vue'
-import ChangesHistory from '@/components/ChangesHistory.vue'
+import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 
 const EMPTY_FORM: ProductComponentForm = {
   id: '',
@@ -188,7 +188,7 @@ export default Vue.extend({
     RichEditor,
     TagsSelect,
     SwitchInput,
-    ChangesHistory,
+    AuditsModal,
   },
   data: () => ({
     form: cloneDeep(EMPTY_FORM),

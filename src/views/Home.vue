@@ -9,28 +9,28 @@
             <h2 class="section-title">Przychody</h2>
 
             <div class="incomes">
-              <card class="income-box">
+              <card border class="income-box">
                 <div class="income-box__title">W tym tygodniu</div>
                 <div class="income-box__value">
                   {{ formatCurrency(currentWeekIncome) }}
                 </div>
                 <div class="income-box__orders">{{ currentWeekOrdersCount }} zamówień</div>
               </card>
-              <card class="income-box">
+              <card border class="income-box">
                 <div class="income-box__title">W tym miesiącu</div>
                 <div class="income-box__value">
                   {{ formatCurrency(currentMonthIncome) }}
                 </div>
                 <div class="income-box__orders">{{ currentMonthOrdersCount }} zamówień</div>
               </card>
-              <card class="income-box">
+              <card border class="income-box">
                 <div class="income-box__title">W tym roku</div>
                 <div class="income-box__value">
                   {{ formatCurrency(currentYearIncome) }}
                 </div>
                 <div class="income-box__orders">{{ currentYearOrdersCount }} zamówień</div>
               </card>
-              <card class="income-box">
+              <card border class="income-box">
                 <div class="income-box__title">W ubiegłym roku</div>
                 <div class="income-box__value">{{ formatCurrency(lastYearIncome) }}</div>
                 <div class="income-box__orders">{{ lastYearOrdersCount }} zamówień</div>

@@ -30,7 +30,7 @@
             <h2 class="section-title">Koszyk</h2>
             <app-cart-item v-for="item in order.products" :key="item.id" :item="item" />
             <div class="cart-item">
-              <img class="cart-item__cover" src="/img/delivery.svg" />
+              <img class="cart-item__cover" src="@/assets/images/icons/delivery-icon.svg" />
               <div class="cart-item__content">
                 <span>Dostawa {{ order.shipping_method && order.shipping_method.name }}</span>
               </div>
@@ -461,11 +461,11 @@ export default Vue.extend({
   }
 
   &__failed {
-    color: #fc4757;
+    color: $red-color-400;
   }
 
   &__success {
-    color: #46ca3a;
+    color: $green-color-400;
   }
 }
 

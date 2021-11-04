@@ -65,7 +65,7 @@ export default Vue.extend({
     font-size: 0.7em;
 
     i {
-      color: #47b2f0;
+      color: $primary-color-300;
     }
   }
 }

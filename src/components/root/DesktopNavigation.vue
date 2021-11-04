@@ -137,7 +137,7 @@ export default Vue.extend({
 
     &.router-link-active {
       color: $primary-color-500;
-      background-color: $primary-color-200;
+      background-color: $primary-color-100;
 
       .nav-link-img {
         color: $primary-color-500;

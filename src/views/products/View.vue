@@ -49,8 +49,7 @@
 
       <div class="product__details">
         <card>
-          <validation-observer v-slot="{ handleSubmit, valid }">
-            {{ valid }}
+          <validation-observer v-slot="{ handleSubmit }">
             <form class="product__info" @submit.prevent="handleSubmit(saveProduct)">
               <div>
                 <br />

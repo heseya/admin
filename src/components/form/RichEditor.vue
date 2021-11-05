@@ -10,6 +10,18 @@ import Vue from 'vue'
 import { uploadMedia } from '@/services/uploadMedia'
 import { CdnMedia } from '@/interfaces/Media'
 
+const articleUpload = async (upload: any, data: { files: File[]; e: any }) => {
+  const rawFiles = Array.from(data.files)
+  const responses = await Promise.all(rawFiles.map((file: File) => uploadMedia(file)))
+  const files = responses.map((r) => (r.success ? r.file : null)).filter((v) => !!v) as CdnMedia[]
+
+  // create response
+  const uploadedFiles = files.reduce((acc, file) => ({ ...acc, [file.id]: file }), {})
+
+  // call complete
+  upload.complete(uploadedFiles, data.e)
+}
+
 export default Vue.extend({
   props: {
     value: {
@@ -28,24 +40,24 @@ export default Vue.extend({
   data: () => ({
     editorConfig: {
       css: '/article-editor/css/',
-      plugins: ['imageposition', 'imageresize', 'counter', 'underline', 'removeformat', 'reorder'],
+      plugins: [
+        'imageposition',
+        'imageresize',
+        'counter',
+        'underline',
+        'removeformat',
+        'reorder',
+        // TODO: enable when CDN will support more files
+        // 'filelink',
+      ],
       link: {
         nofollow: true,
       },
       image: {
-        async upload(upload: any, data: { files: File[]; e: any }) {
-          const rawFiles = Array.from(data.files)
-          const responses = await Promise.all(rawFiles.map((file: File) => uploadMedia(file)))
-          const files = responses
-            .map((r) => (r.success ? r.file : null))
-            .filter((v) => !!v) as CdnMedia[]
-
-          // create response
-          const uploadedFiles = files.reduce((acc, f) => ({ ...acc, [f.id]: f }), {})
-
-          // call complete
-          upload.complete(uploadedFiles, data.e)
-        },
+        upload: articleUpload,
+      },
+      filelink: {
+        upload: articleUpload,
       },
     },
   }),

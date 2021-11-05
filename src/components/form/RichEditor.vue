@@ -43,7 +43,6 @@ export default Vue.extend({
       plugins: [
         'imageposition',
         'imageresize',
-        'counter',
         'underline',
         'removeformat',
         'reorder',
@@ -78,6 +77,10 @@ export default Vue.extend({
 .rich-editor {
   .arx-editor-frame {
     min-height: var(--height) !important;
+  }
+
+  .arx-editor-container {
+    border-right-width: 2px;
   }
 }
 </style>

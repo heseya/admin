@@ -28,8 +28,12 @@ export default Vue.extend({
   data: () => ({
     editorConfig: {
       css: '/article-editor/css/',
+      plugins: ['imageposition', 'imageresize', 'counter', 'underline', 'removeformat', 'reorder'],
+      link: {
+        nofollow: true,
+      },
       image: {
-        async upload(upload, data: { files: File[]; e: any }) {
+        async upload(upload: any, data: { files: File[]; e: any }) {
           const rawFiles = Array.from(data.files)
           const responses = await Promise.all(rawFiles.map((file: File) => uploadMedia(file)))
           const files = responses
@@ -60,8 +64,8 @@ export default Vue.extend({
 
 <style lang="scss">
 .rich-editor {
-  .ql-editor {
-    height: var(--height);
+  .arx-editor-frame {
+    min-height: var(--height) !important;
   }
 }
 </style>

@@ -46,7 +46,7 @@
           </div>
           <br />
           <small class="label">Treść</small>
-          <rich-editor v-if="!isLoading" v-model="form.content_html" :disabled="!canModify" />
+          <RichEditor v-if="!isLoading" v-model="form.content_html" :disabled="!canModify" />
           <br />
           <app-button v-if="canModify" @click="handleSubmit(save)"> Zapisz </app-button>
         </card>

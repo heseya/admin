@@ -150,11 +150,11 @@ export default Vue.extend({
     color: $primary-color-500;
 
     #{$root}__icon {
-      background-color: $primary-color-200;
+      background-color: $primary-color-100;
     }
 
     &:hover {
-      background-color: $primary-color-200;
+      background-color: $primary-color-100;
       color: $primary-color-500;
     }
   }

@@ -1,7 +1,7 @@
 <template>
   <div class="narrower-page">
     <top-nav :title="`Zamówienie ${order.code}`" :subtitle="`z dnia ${formattedDate}`">
-      <changes-history :id="order.id" model="orders" />
+      <audits-modal :id="order.id" model="orders" />
       <a :href="`https://***REMOVED***.eu/payment/${order.code}`" target="_blank">
         <icon-button>
           <i slot="icon" class="bx bxs-dollar-circle"></i>
@@ -30,7 +30,7 @@
             <h2 class="section-title">Koszyk</h2>
             <app-cart-item v-for="item in order.products" :key="item.id" :item="item" />
             <div class="cart-item">
-              <img class="cart-item__cover" src="/img/delivery.svg" />
+              <img class="cart-item__cover" src="@/assets/images/icons/delivery-icon.svg" />
               <div class="cart-item__content">
                 <span>Dostawa {{ order.shipping_method && order.shipping_method.name }}</span>
               </div>
@@ -184,7 +184,7 @@ import CartItem from '@/components/layout/CartItem.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import PartialUpdateForm from '@/components/modules/orders/PartialUpdateForm.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import ChangesHistory from '@/components/ChangesHistory.vue'
+import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 
 import { Order, OrderStatus } from '@/interfaces/Order'
 import { getRelativeDate } from '@/utils/utils'
@@ -219,7 +219,7 @@ export default Vue.extend({
     ModalForm,
     PartialUpdateForm,
     PopConfirm,
-    ChangesHistory,
+    AuditsModal,
   },
   data: () => ({
     status: '',
@@ -461,11 +461,11 @@ export default Vue.extend({
   }
 
   &__failed {
-    color: #fc4757;
+    color: $red-color-400;
   }
 
   &__success {
-    color: #46ca3a;
+    color: $green-color-400;
   }
 }
 

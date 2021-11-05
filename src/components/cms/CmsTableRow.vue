@@ -73,6 +73,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .cms-table-row {
+  border: none;
   @extend %card;
   background-color: #fff;
   display: grid;

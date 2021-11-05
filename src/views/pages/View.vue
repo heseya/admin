@@ -1,7 +1,7 @@
 <template>
   <div class="narrower-page">
     <top-nav :title="!isNew ? page.name : 'Nowa strona'">
-      <changes-history :id="page.id" model="pages" />
+      <audits-modal :id="page.id" model="pages" />
 
       <pop-confirm
         v-if="!isNew"
@@ -46,7 +46,7 @@
           </div>
           <br />
           <small class="label">Treść</small>
-          <rich-editor v-if="!isLoading" v-model="form.content_html" :disabled="!canModify" />
+          <RichEditor v-if="!isLoading" v-model="form.content_html" :disabled="!canModify" />
           <br />
           <SeoForm v-model="form.seo" :disabled="!canModify" />
           <br />
@@ -70,6 +70,7 @@ import RichEditor from '@/components/form/RichEditor.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import ChangesHistory from '@/components/ChangesHistory.vue'
 import SeoForm from '@/components/modules/seo/Accordion.vue'
+import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { Page, PageDto } from '@/interfaces/Page'
@@ -88,6 +89,7 @@ export default Vue.extend({
     SwitchInput,
     ChangesHistory,
     SeoForm,
+    AuditsModal,
   },
   data: () => ({
     form: {

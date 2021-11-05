@@ -8,6 +8,7 @@
 import Vue from 'vue'
 
 import { uploadMedia } from '@/services/uploadMedia'
+import { CdnMedia } from '@/interfaces/Media'
 
 export default Vue.extend({
   props: {
@@ -27,19 +28,19 @@ export default Vue.extend({
   data: () => ({
     editorConfig: {
       css: '/article-editor/css/',
-    },
-    oldConfig: {
-      theme: 'snow',
-      modules: {
-        imageUploader: {
-          upload: async (sourceFile: File) => {
-            const { success, file, error } = await uploadMedia(sourceFile)
-            if (success && file) return file.url
-            // eslint-disable-next-line no-console
-            console.error('Failed to upload file to CDN:', error)
-            // this.$toast.error(formatApiNotificationError(error))
-            return null
-          },
+      image: {
+        async upload(upload, data: { files: File[]; e: any }) {
+          const rawFiles = Array.from(data.files)
+          const responses = await Promise.all(rawFiles.map((file: File) => uploadMedia(file)))
+          const files = responses
+            .map((r) => (r.success ? r.file : null))
+            .filter((v) => !!v) as CdnMedia[]
+
+          // create response
+          const uploadedFiles = files.reduce((acc, f) => ({ ...acc, [f.id]: f }), {})
+
+          // call complete
+          upload.complete(uploadedFiles, data.e)
         },
       },
     },

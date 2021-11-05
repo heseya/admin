@@ -25,7 +25,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-$bg-color: rgba(lighten($primary-color-200, 5), 0.6);
+$bg-color: rgba(lighten($primary-color-100, 5), 0.6);
 
 .loading {
   position: fixed;

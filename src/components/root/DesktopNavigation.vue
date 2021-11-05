@@ -54,7 +54,7 @@
     <div class="nav__author nav-author">
       <span class="nav-author__title">Powered by</span>
       <a href="https://heseya.com" target="_blank">
-        <img src="@/assets/images/heseya.svg" alt="Heseya" class="nav-author__logo" />
+        <img src="@/assets/images/heseya-primary.svg" alt="Heseya" class="nav-author__logo" />
       </a>
     </div>
   </nav>
@@ -137,7 +137,7 @@ export default Vue.extend({
 
     &.router-link-active {
       color: $primary-color-500;
-      background-color: $primary-color-200;
+      background-color: $primary-color-100;
 
       .nav-link-img {
         color: $primary-color-500;
@@ -165,17 +165,19 @@ export default Vue.extend({
   margin-top: auto;
   margin-bottom: 8vh;
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: center;
 
   &__title {
     font-size: 0.8em;
+    font-weight: 300;
     letter-spacing: -0.24px;
     color: #bec1c7;
+    margin-right: 10px;
   }
 
   &__logo {
-    width: 130px;
+    height: 22px;
   }
 }
 </style>

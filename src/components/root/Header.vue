@@ -132,7 +132,7 @@ export default Vue.extend({
     transition: 0.3s;
 
     &:hover {
-      background-color: $primary-color-200;
+      background-color: $primary-color-100;
     }
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="narrower-page">
+  <div :key="order.id" class="narrower-page">
     <top-nav :title="`Zamówienie ${order.code}`" :subtitle="`z dnia ${formattedDate}`">
       <audits-modal :id="order.id" model="orders" />
       <a :href="`https://***REMOVED***.eu/payment/${order.code}`" target="_blank">
@@ -161,6 +161,8 @@
       </div>
     </div>
 
+    <next-prev-buttons />
+
     <a-modal
       v-model="isModalActive"
       width="800px"
@@ -185,6 +187,7 @@ import ModalForm from '@/components/form/ModalForm.vue'
 import PartialUpdateForm from '@/components/modules/orders/PartialUpdateForm.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
+import NextPrevButtons from '@/components/modules/orders/NextPrevButtons.vue'
 
 import { Order, OrderStatus } from '@/interfaces/Order'
 import { getRelativeDate } from '@/utils/utils'
@@ -220,6 +223,7 @@ export default Vue.extend({
     PartialUpdateForm,
     PopConfirm,
     AuditsModal,
+    NextPrevButtons,
   },
   data: () => ({
     status: '',

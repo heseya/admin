@@ -1,6 +1,12 @@
 <template>
   <div class="rich-editor" :style="{ '--height': height }">
-    <article-editor ref="editor" v-model="innerValue" :config="editorConfig" :disabled="disabled" />
+    <quill-editor
+      ref="editor"
+      :value="value"
+      :options="editorOption"
+      :disabled="disabled"
+      @input="onInput"
+    />
   </div>
 </template>
 
@@ -8,6 +14,7 @@
 import Vue from 'vue'
 
 import { uploadMedia } from '@/services/uploadMedia'
+import { QuillOptionsStatic } from 'quill'
 
 export default Vue.extend({
   props: {
@@ -25,12 +32,25 @@ export default Vue.extend({
     },
   },
   data: () => ({
-    editorConfig: {
-      css: '/article-editor/css/',
-    },
-    oldConfig: {
+    editorOption: {
       theme: 'snow',
       modules: {
+        toolbar: [
+          ['bold', 'italic', 'underline', 'strike'], // toggled buttons
+          ['blockquote', 'code-block', 'image'],
+
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          [{ script: 'sub' }, { script: 'super' }], // superscript/subscript
+          [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
+
+          [{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
+          [{ header: [1, 2, 3, 4, 5, 6, false] }],
+
+          [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+          [{ align: [] }],
+
+          ['clean'], // remove formatting button
+        ],
         imageUploader: {
           upload: async (sourceFile: File) => {
             const { success, file, error } = await uploadMedia(sourceFile)
@@ -42,16 +62,11 @@ export default Vue.extend({
           },
         },
       },
-    },
+    } as QuillOptionsStatic,
   }),
-  computed: {
-    innerValue: {
-      get(): string {
-        return this.value
-      },
-      set(value: string) {
-        this.$emit('input', value)
-      },
+  methods: {
+    onInput(value: string) {
+      this.$emit('input', value)
     },
   },
 })

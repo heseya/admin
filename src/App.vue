@@ -7,7 +7,7 @@
 
     <main class="app__content">
       <transition name="fade" mode="out-in">
-        <router-view />
+        <router-view :key="$route.path" />
       </transition>
     </main>
 

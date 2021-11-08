@@ -1,7 +1,23 @@
 <template>
   <div class="next-prev-buttons">
-    <button v-if="prevOrder" @click="goToPrevOrder">Poprzednie</button>
-    <button v-if="nextOrder" @click="goToNextOrder">Następne</button>
+    <button
+      class="next-prev-buttons__btn"
+      :class="{ 'next-prev-buttons__btn--disabled': !prevOrder }"
+      title="Poprzednie"
+      aria-label="Poprzednie"
+      @click="goToPrevOrder"
+    >
+      <i class="bx bx-chevron-left"></i>
+    </button>
+    <button
+      class="next-prev-buttons__btn"
+      :class="{ 'next-prev-buttons__btn--disabled': !nextOrder }"
+      title="Następne"
+      aria-label="Następne"
+      @click="goToNextOrder"
+    >
+      <i class="bx bx-chevron-right"></i>
+    </button>
   </div>
 </template>
 
@@ -31,11 +47,11 @@ export default Vue.extend({
   methods: {
     goToNextOrder() {
       if (this.nextOrder?.id)
-        this.$router.push({ ...this.$route, params: { id: this.nextOrder.id } })
+        this.$router.push({ name: this.$route.name!, params: { id: this.nextOrder.id } })
     },
     goToPrevOrder() {
       if (this.prevOrder?.id)
-        this.$router.push({ ...this.$route, params: { id: this.prevOrder.id } })
+        this.$router.push({ name: this.$route.name!, params: { id: this.prevOrder.id } })
     },
   },
 })
@@ -44,7 +60,28 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .next-prev-buttons {
   position: fixed;
-  right: 20px;
-  top: 150px;
+  right: 50px;
+  bottom: 50px;
+  display: flex;
+
+  &__btn {
+    all: unset;
+    display: block;
+    padding: 0;
+    font-size: 5rem;
+    line-height: 4rem;
+    color: $primary-color-500;
+    cursor: pointer;
+    transition: 0.3s;
+
+    &:hover {
+      color: $primary-color-300;
+    }
+
+    &--disabled {
+      pointer-events: none;
+      color: $primary-color-100;
+    }
+  }
 }
 </style>

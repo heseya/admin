@@ -73,9 +73,10 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .next-prev-buttons {
+  margin-left: 12px;
+
   &__content {
     display: flex;
-    margin-left: 12px;
   }
 }
 </style>

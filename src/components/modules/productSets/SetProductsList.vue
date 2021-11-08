@@ -4,7 +4,9 @@
       <div class="set-products__header">
         <h4>Produkty w kolekcji {{ set && set.name }}</h4>
         <icon-button v-can="$p.ProductSets.Edit" size="small" dark @click="isSelectorActive = true">
-          <i slot="icon" class="bx bx-plus"></i>
+          <template #icon>
+            <i class="bx bx-plus"></i>
+          </template>
           Dodaj produkt do kolekcji
         </icon-button>
       </div>
@@ -31,7 +33,9 @@
             type="danger"
             @click.stop="removeProduct(product.id)"
           >
-            <i slot="icon" class="bx bx-trash"></i>
+            <template #icon>
+              <i class="bx bx-trash"></i>
+            </template>
           </icon-button>
         </div>
       </div>

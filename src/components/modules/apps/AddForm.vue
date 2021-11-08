@@ -64,7 +64,7 @@
               {{ perm.display_name || perm.name }}
 
               <a-tooltip v-if="perm.description">
-                <template slot="title"> {{ perm.description }} </template>
+                <template #title> {{ perm.description }} </template>
                 <i class="bx bxs-info-circle"></i>
               </a-tooltip>
             </li>
@@ -80,7 +80,7 @@
             <ul>
               <li v-for="perm in appInfo.internal_permissions" :key="perm.id" class="permission">
                 <a-tooltip>
-                  <template slot="title">
+                  <template #title>
                     Czy to uprawnienie ma zostać nadane niezalogowanym użytkownikom?
                   </template>
                   <switch-input
@@ -97,7 +97,7 @@
                 </div>
 
                 <a-tooltip v-if="perm.description">
-                  <template slot="title"> {{ perm.description }} </template>
+                  <template #title> {{ perm.description }} </template>
                   <i class="bx bxs-info-circle"></i>
                 </a-tooltip>
               </li>

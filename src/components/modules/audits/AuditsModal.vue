@@ -1,19 +1,25 @@
 <template>
   <div class="audits-modal">
     <icon-button v-if="id" class="audits-modal__btn" @click="openModal">
-      <i slot="icon" class="bx bx-history"></i>
+      <template #icon>
+        <i class="bx bx-history"></i>
+      </template>
       Rejestr zmian
     </icon-button>
 
     <a-modal :visible="isModalOpen" width="750px" :footer="null" @cancel="isModalOpen = false">
-      <div slot="title" class="audits-modal__header">
-        <span>Rejestr wprowadzonych zmian</span>
+      <template #title>
+        <div class="audits-modal__header">
+          <span>Rejestr wprowadzonych zmian</span>
 
-        <icon-button size="small" @click="downloadAudits">
-          <i slot="icon" class="bx bx-history"></i>
-          Pobierz historię zmian
-        </icon-button>
-      </div>
+          <icon-button size="small" @click="downloadAudits">
+            <template #icon>
+              <i class="bx bx-history"></i>
+            </template>
+            Pobierz historię zmian
+          </icon-button>
+        </div>
+      </template>
 
       <loading :active="isLoading" />
 
@@ -32,13 +38,15 @@
         </template>
 
         <a-collapse-panel v-for="entry in audits" :key="entry.id" class="audit-entry">
-          <div slot="header" class="audit-entry__header">
-            <span>{{ entry.user.email }}</span>
-            <span class="audit-entry__tag">
-              {{ entry.event === 'updated' ? 'zmieniono' : entry.event }}
-            </span>
-            <span>{{ formatDateTime(entry.created_at) }}</span>
-          </div>
+          <template #header>
+            <div class="audit-entry__header">
+              <span>{{ entry.user.email }}</span>
+              <span class="audit-entry__tag">
+                {{ entry.event === 'updated' ? 'zmieniono' : entry.event }}
+              </span>
+              <span>{{ formatDateTime(entry.created_at) }}</span>
+            </div>
+          </template>
 
           <cms-table class="audit-entry__table" :value="getValues(entry)" :config="tableConfig">
             <template #default="{ item: audit }">

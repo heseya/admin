@@ -3,7 +3,9 @@
     <PaginatedList title="Ustawienia zaawansowane" store-key="settings">
       <template #nav>
         <icon-button v-can="$p.Settings.Add" @click="openModal()">
-          <i slot="icon" class="bx bx-plus"></i>
+          <template #icon>
+            <i class="bx bx-plus"></i>
+          </template>
           Dodaj ustawienie
         </icon-button>
       </template>

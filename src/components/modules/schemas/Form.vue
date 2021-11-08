@@ -223,7 +223,7 @@ export default Vue.extend({
     this.initSchemaForm(this.schema)
   },
   methods: {
-    initSchemaForm(schema) {
+    initSchemaForm(schema: Schema) {
       this.form = schema.type ? cloneDeep(schema) : cloneDeep(CLEAR_FORM)
       this.defaultOption = Number(this.form.default)
     },

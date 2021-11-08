@@ -1,30 +1,46 @@
 <template>
   <div class="next-prev-buttons">
-    <button
-      class="next-prev-buttons__btn"
-      :class="{ 'next-prev-buttons__btn--disabled': !prevOrder }"
-      title="Poprzednie"
-      aria-label="Poprzednie"
-      @click="goToPrevOrder"
-    >
-      <i class="bx bx-chevron-left"></i>
-    </button>
-    <button
-      class="next-prev-buttons__btn"
-      :class="{ 'next-prev-buttons__btn--disabled': !nextOrder }"
-      title="Następne"
-      aria-label="Następne"
-      @click="goToNextOrder"
-    >
-      <i class="bx bx-chevron-right"></i>
-    </button>
+    <a-tooltip>
+      <template slot="title">
+        Użyj <code>Alt + &#8594;</code> aby przejść do kolejnego lub <code>Alt + &#8592;</code> do
+        poprzedniego zamówienia.
+      </template>
+
+      <Keypress key-event="keyup" :key-code="37" :modifiers="['altKey']" @success="goToPrevOrder" />
+      <Keypress key-event="keyup" :key-code="39" :modifiers="['altKey']" @success="goToNextOrder" />
+
+      <div class="next-prev-buttons__content">
+        <button
+          class="next-prev-buttons__btn"
+          :class="{ 'next-prev-buttons__btn--disabled': !prevOrder }"
+          title="Poprzednie zamówienie"
+          aria-label="Poprzednie zamówienie"
+          @click="goToPrevOrder"
+        >
+          <i class="bx bx-chevron-left"></i>
+        </button>
+        <button
+          class="next-prev-buttons__btn"
+          :class="{ 'next-prev-buttons__btn--disabled': !nextOrder }"
+          title="Następne zamówienie"
+          aria-label="Następne zamówienie"
+          @click="goToNextOrder"
+        >
+          <i class="bx bx-chevron-right"></i>
+        </button>
+      </div>
+    </a-tooltip>
   </div>
 </template>
 
 <script lang="ts">
-import { Order } from '@/interfaces/Order'
 import Vue from 'vue'
+import { Order } from '@/interfaces/Order'
+
 export default Vue.extend({
+  components: {
+    Keypress: () => import('vue-keypress'),
+  },
   computed: {
     queryParams(): Record<string, any> {
       return this.$accessor.orders.getQueryParams
@@ -60,16 +76,31 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .next-prev-buttons {
   position: fixed;
-  right: 50px;
-  bottom: 50px;
-  display: flex;
+  right: 20px;
+  bottom: 59px;
+  font-size: 3rem;
+  line-height: 1em;
+  background-color: #fff;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  border: solid 1px $primary-color-100;
+
+  @media ($viewport-10) {
+    font-size: 5rem;
+    right: 50px;
+    bottom: 50px;
+    border: none;
+    background-color: #fff0;
+  }
+
+  &__content {
+    display: flex;
+  }
 
   &__btn {
     all: unset;
     display: block;
     padding: 0;
-    font-size: 5rem;
-    line-height: 4rem;
     color: $primary-color-500;
     cursor: pointer;
     transition: 0.3s;

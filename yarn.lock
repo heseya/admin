@@ -12085,6 +12085,11 @@ vue-inline-svg@^2.1.0:
   resolved "https://registry.yarnpkg.com/vue-inline-svg/-/vue-inline-svg-2.1.0.tgz#45f20a34d458636c5caea5da28eef6cad9a87fcb"
   integrity sha512-80u/BGtjOzXp31yFahXsfvkBrHKHEHKyrkZ42MGoAbD6jHzWpMJLijsyRj66pps7IyKxZcnYkO3ijsJhr4zXsg==
 
+vue-keypress@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/vue-keypress/-/vue-keypress-2.1.1.tgz#b766ab52c052b28e9ea1a732a5fde0432c45c76c"
+  integrity sha512-gt/g/24m9vVKAchb762FhGs7rQNDPmuMR/skEM/G7NvyeuVs/mLO3mNnlBsf4jHSsRXy3BzFdc6GtTfylllrIQ==
+
 "vue-loader-v16@npm:vue-loader@^16.1.0":
   version "16.8.1"
   resolved "https://registry.yarnpkg.com/vue-loader/-/vue-loader-16.8.1.tgz#354f12bc0897954158b71590f800295713a7792d"

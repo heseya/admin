@@ -7,7 +7,9 @@
       type="password"
       rules="required"
     >
-      <i slot="icon" class="bx bx-lock-open-alt"></i>
+      <template #icon>
+        <i class="bx bx-lock-open-alt"></i>
+      </template>
     </validated-input>
     <validated-input
       v-model="passwordNew"

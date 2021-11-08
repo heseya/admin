@@ -17,6 +17,9 @@ module.exports = {
     'no-console': 'warn',
     'no-debugger': 'warn',
     '@typescript-eslint/no-unused-vars': 'warn',
+    // TODO
+    'vue/multi-word-component-names': 'off',
+    'vue/no-deprecated-slot-attribute': 'error',
     camelcase: ['error', { properties: 'never' }],
   },
 

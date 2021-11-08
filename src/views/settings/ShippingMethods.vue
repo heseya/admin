@@ -3,7 +3,9 @@
     <PaginatedList title="Opcje Dostawy" store-key="shippingMethods" draggable>
       <template #nav>
         <icon-button v-can="$p.ShippingMethods.Add" @click="openModal()">
-          <i slot="icon" class="bx bx-plus"></i>
+          <template #icon>
+            <i class="bx bx-plus"></i>
+          </template>
           Dodaj opcję dostawy
         </icon-button>
       </template>

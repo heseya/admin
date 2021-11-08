@@ -4,7 +4,9 @@
       <audits-modal :id="order.id" model="orders" />
       <a :href="`https://***REMOVED***.eu/payment/${order.code}`" target="_blank">
         <icon-button>
-          <i slot="icon" class="bx bxs-dollar-circle"></i>
+          <template #icon>
+            <i class="bx bxs-dollar-circle"></i>
+          </template>
           Przejdź do płatności
         </icon-button>
       </a>
@@ -17,7 +19,9 @@
         @confirm="payOffline"
       >
         <icon-button>
-          <i slot="icon" class="bx bxs-diamond"></i>
+          <template #icon>
+            <i class="bx bxs-diamond"></i>
+          </template>
           Opłać zamówienie
         </icon-button>
       </pop-confirm>
@@ -98,7 +102,7 @@
           <br />
           <h2 class="section-title">
             <a-tooltip v-if="order.summary_paid > order.summary">
-              <template slot="title">
+              <template #title>
                 Zamówienie zostało nadpłacone o
                 <b>{{ formatCurrency(order.summary_paid - order.summary) }}</b
                 >!
@@ -128,7 +132,9 @@
             class="comment__edit"
             @click="editComment"
           >
-            <i slot="icon" class="bx bxs-pencil"></i>
+            <template #icon>
+              <i class="bx bxs-pencil"></i>
+            </template>
           </icon-button>
           <span class="comment__content">
             {{ order.comment || 'Brak komentarza do zamówienia' }}
@@ -144,7 +150,9 @@
               class="email__edit"
               @click="editEmail"
             >
-              <i slot="icon" class="bx bxs-pencil"></i>
+              <template #icon>
+                <i class="bx bxs-pencil"></i>
+              </template>
             </icon-button>
             <a :href="`mailto:${order.email}`" class="email__name">{{ order.email }}</a>
           </div>

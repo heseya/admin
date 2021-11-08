@@ -20,7 +20,9 @@
       @click="next"
     >
       Następna
-      <i slot="icon" class="bx bxs-chevron-right"></i>
+      <template #icon>
+        <i class="bx bxs-chevron-right"></i>
+      </template>
     </app-button>
   </div>
 </template>

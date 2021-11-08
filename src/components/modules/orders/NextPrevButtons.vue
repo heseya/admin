@@ -1,7 +1,7 @@
 <template>
   <div class="next-prev-buttons">
     <a-tooltip>
-      <template slot="title">
+      <template #title>
         Użyj <code>Shift + &#8594;</code> aby przejść do kolejnego lub
         <code>Shift + &#8592;</code> do poprzedniego zamówienia.
       </template>
@@ -26,7 +26,9 @@
           aria-label="Poprzednie zamówienie"
           @click="goToPrevOrder"
         >
-          <i slot="icon" class="bx bxs-chevron-left"></i>
+          <template #icon>
+            <i class="bx bxs-chevron-left"></i>
+          </template>
         </icon-button>
         <icon-button
           :disabled="!nextOrder"
@@ -34,7 +36,9 @@
           aria-label="Następne zamówienie"
           @click="goToNextOrder"
         >
-          <i slot="icon" class="bx bxs-chevron-right"></i>
+          <template #icon>
+            <i class="bx bxs-chevron-right"></i>
+          </template>
         </icon-button>
       </div>
     </a-tooltip>

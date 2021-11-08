@@ -25,7 +25,7 @@ import { MenuItem, MENU_ITEMS } from '@/consts/menuItems'
 import MenuLink from './MenuLink.vue'
 
 export default Vue.extend({
-  name: 'Navigation',
+  name: 'MobileOverlay',
   components: { MenuLink },
   props: {
     isVisible: {

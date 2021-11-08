@@ -67,7 +67,7 @@ import InlineSvg from 'vue-inline-svg'
 import NavStoreLogo from './NavStoreLogo.vue'
 
 export default Vue.extend({
-  name: 'Navigation',
+  name: 'DesktopNavigation',
   components: { NavStoreLogo, InlineSvg },
   computed: {
     isHidden(): boolean {

@@ -2,12 +2,22 @@
   <div class="next-prev-buttons">
     <a-tooltip>
       <template slot="title">
-        Użyj <code>Alt + &#8594;</code> aby przejść do kolejnego lub <code>Alt + &#8592;</code> do
-        poprzedniego zamówienia.
+        Użyj <code>Shift + &#8594;</code> aby przejść do kolejnego lub
+        <code>Shift + &#8592;</code> do poprzedniego zamówienia.
       </template>
 
-      <Keypress key-event="keyup" :key-code="37" :modifiers="['altKey']" @success="goToPrevOrder" />
-      <Keypress key-event="keyup" :key-code="39" :modifiers="['altKey']" @success="goToNextOrder" />
+      <Keypress
+        key-event="keyup"
+        :key-code="37"
+        :modifiers="['shiftKey']"
+        @success="goToPrevOrder"
+      />
+      <Keypress
+        key-event="keyup"
+        :key-code="39"
+        :modifiers="['shiftKey']"
+        @success="goToNextOrder"
+      />
 
       <div class="next-prev-buttons__content">
         <icon-button

@@ -21,6 +21,8 @@
           Opłać zamówienie
         </icon-button>
       </pop-confirm>
+
+      <next-prev-buttons />
     </top-nav>
 
     <div class="order">
@@ -185,6 +187,7 @@ import ModalForm from '@/components/form/ModalForm.vue'
 import PartialUpdateForm from '@/components/modules/orders/PartialUpdateForm.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
+import NextPrevButtons from '@/components/modules/orders/NextPrevButtons.vue'
 
 import { Order, OrderStatus } from '@/interfaces/Order'
 import { getRelativeDate } from '@/utils/utils'
@@ -220,6 +223,7 @@ export default Vue.extend({
     PartialUpdateForm,
     PopConfirm,
     AuditsModal,
+    NextPrevButtons,
   },
   data: () => ({
     status: '',

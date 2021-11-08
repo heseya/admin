@@ -1,5 +1,5 @@
 <template>
-  <div :key="order.id" class="narrower-page">
+  <div class="narrower-page">
     <top-nav :title="`Zamówienie ${order.code}`" :subtitle="`z dnia ${formattedDate}`">
       <audits-modal :id="order.id" model="orders" />
       <a :href="`https://***REMOVED***.eu/payment/${order.code}`" target="_blank">
@@ -21,6 +21,8 @@
           Opłać zamówienie
         </icon-button>
       </pop-confirm>
+
+      <next-prev-buttons />
     </top-nav>
 
     <div class="order">
@@ -160,8 +162,6 @@
         </card>
       </div>
     </div>
-
-    <next-prev-buttons />
 
     <a-modal
       v-model="isModalActive"

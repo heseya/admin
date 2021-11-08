@@ -10,24 +10,22 @@
       <Keypress key-event="keyup" :key-code="39" :modifiers="['altKey']" @success="goToNextOrder" />
 
       <div class="next-prev-buttons__content">
-        <button
-          class="next-prev-buttons__btn"
-          :class="{ 'next-prev-buttons__btn--disabled': !prevOrder }"
+        <icon-button
+          :disabled="!prevOrder"
           title="Poprzednie zamówienie"
           aria-label="Poprzednie zamówienie"
           @click="goToPrevOrder"
         >
-          <i class="bx bx-chevron-left"></i>
-        </button>
-        <button
-          class="next-prev-buttons__btn"
-          :class="{ 'next-prev-buttons__btn--disabled': !nextOrder }"
+          <i slot="icon" class="bx bxs-chevron-left"></i>
+        </icon-button>
+        <icon-button
+          :disabled="!nextOrder"
           title="Następne zamówienie"
           aria-label="Następne zamówienie"
           @click="goToNextOrder"
         >
-          <i class="bx bx-chevron-right"></i>
-        </button>
+          <i slot="icon" class="bx bxs-chevron-right"></i>
+        </icon-button>
       </div>
     </a-tooltip>
   </div>
@@ -42,9 +40,6 @@ export default Vue.extend({
     Keypress: () => import('vue-keypress'),
   },
   computed: {
-    queryParams(): Record<string, any> {
-      return this.$accessor.orders.getQueryParams
-    },
     currentOrder(): Order {
       return this.$accessor.orders.getSelected
     },
@@ -59,6 +54,9 @@ export default Vue.extend({
       const currIndex = this.orders.findIndex((order) => order.id === this.currentOrder.id)
       return this.orders[currIndex - 1]
     },
+  },
+  mounted() {
+    this.$accessor.orders.fetch({ ...this.$accessor.orders.getQueryParams, page: 1, limit: 500 })
   },
   methods: {
     goToNextOrder() {
@@ -75,44 +73,9 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .next-prev-buttons {
-  position: fixed;
-  right: 20px;
-  bottom: 59px;
-  font-size: 3rem;
-  line-height: 1em;
-  background-color: #fff;
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
-  border: solid 1px $primary-color-100;
-
-  @media ($viewport-10) {
-    font-size: 5rem;
-    right: 50px;
-    bottom: 50px;
-    border: none;
-    background-color: #fff0;
-  }
-
   &__content {
     display: flex;
-  }
-
-  &__btn {
-    all: unset;
-    display: block;
-    padding: 0;
-    color: $primary-color-500;
-    cursor: pointer;
-    transition: 0.3s;
-
-    &:hover {
-      color: $primary-color-300;
-    }
-
-    &--disabled {
-      pointer-events: none;
-      color: $primary-color-100;
-    }
+    margin-left: 12px;
   }
 }
 </style>

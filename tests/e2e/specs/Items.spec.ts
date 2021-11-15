@@ -1,15 +1,13 @@
 describe('Items page', () => {
-    it('should load items page', () => {
-      cy.login()
-      cy.visit('/items')
-      cy.get('h1').should('contain', 'Magazyn')
-    })
+  it('should load items page', () => {
+    cy.login()
+    cy.visit('/items')
+    cy.get('h1').should('contain', 'Magazyn')
   })
+})
 
-  describe('add new items', () => {
-
+describe('add new items', () => {
   it('add new items', () => {
-       
     cy.get('.icon-button__text').contains('Dodaj przedmiot').click()
 
     const uuid = () => Cypress._.random(0, 1e6)
@@ -26,5 +24,4 @@ describe('Items page', () => {
     cy.get('.app-button__text').contains('Zapisz').click()
     cy.get('.app__content').contains(skuName).should('be.visible')
   })
-
 })

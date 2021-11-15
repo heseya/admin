@@ -2,17 +2,19 @@
   <a-popover v-model="visible" :placement="placement" :trigger="trigger">
     <slot></slot>
 
-    <div slot="content" class="pop-confirm">
-      <p>{{ title }}</p>
-      <footer>
-        <app-button :type="okColor" size="small" @click="confirm">
-          {{ okText }}
-        </app-button>
-        <app-button size="small" @click="cancel">
-          {{ cancelText }}
-        </app-button>
-      </footer>
-    </div>
+    <template #content>
+      <div class="pop-confirm">
+        <p>{{ title }}</p>
+        <footer>
+          <app-button :type="okColor" size="small" @click="confirm">
+            {{ okText }}
+          </app-button>
+          <app-button size="small" @click="cancel">
+            {{ cancelText }}
+          </app-button>
+        </footer>
+      </div>
+    </template>
   </a-popover>
 </template>
 

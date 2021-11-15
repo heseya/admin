@@ -33,7 +33,7 @@ import MobileOverlay from './MobileOverlay.vue'
 import { MenuItem, MENU_ITEMS } from '@/consts/menuItems'
 
 export default Vue.extend({
-  name: 'Navigation',
+  name: 'MobileNavigation',
   components: { MobileOverlay, MenuLink },
   data: () => ({
     isMenuVisible: false,
@@ -59,7 +59,7 @@ export default Vue.extend({
   box-sizing: border-box;
   width: 100vw;
   background: #ffffff;
-  border-top: solid 1px $primary-color-200;
+  border-top: solid 1px $primary-color-100;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
   justify-content: space-around;

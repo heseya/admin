@@ -3,7 +3,9 @@
     <PaginatedList title="Szablony przesyłek" store-key="packageTemplates">
       <template #nav>
         <icon-button v-can="$p.Packages.Add" @click="openModal()">
-          <i slot="icon" class="bx bx-plus"></i>
+          <template #icon>
+            <i class="bx bx-plus"></i>
+          </template>
           Dodaj szablon
         </icon-button>
       </template>

@@ -17,12 +17,12 @@
           <template #code="{ value, item }">
             {{ value }}
             <a-tooltip v-if="item.comment">
-              <template slot="title"> {{ item.comment }} </template>
+              <template #title> {{ item.comment }} </template>
               <span class="order-icon"> <i class="bx bxs-comment-detail"></i> </span>
             </a-tooltip>
 
             <a-tooltip v-if="item.summary_paid > item.summary">
-              <template slot="title">
+              <template #title>
                 Nadpłacono
                 <b>{{ formatCurrency(item.summary_paid - item.summary) }}</b>
               </template>

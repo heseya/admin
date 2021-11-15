@@ -15,13 +15,17 @@
           type="transparent"
           @click.stop="removeRange(i)"
         >
-          <i slot="icon" class="bx bxs-trash"></i>
+          <template #icon>
+            <i class="bx bxs-trash"></i>
+          </template>
         </icon-button>
       </div>
     </div>
     <small class="price-ranges-form__error">{{ error }}</small>
     <icon-button class="price-ranges-form__btn" :disabled="disabled" size="small" @click="addRange">
-      <i slot="icon" class="bx bx-plus"></i>
+      <template #icon>
+        <i class="bx bx-plus"></i>
+      </template>
       Dodaj zakres
     </icon-button>
   </div>

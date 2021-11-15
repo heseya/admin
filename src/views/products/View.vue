@@ -1,7 +1,7 @@
 <template>
   <div :key="$route.params.id" class="narrower-page">
     <top-nav :title="!isNew ? product.name : 'Nowy produkt'">
-      <changes-history :id="product.id" model="products" />
+      <audits-modal :id="product.id" model="products" />
 
       <pop-confirm
         v-if="!isNew"
@@ -12,7 +12,9 @@
         @confirm="deleteProduct"
       >
         <icon-button type="danger">
-          <i slot="icon" class="bx bx-trash"></i>
+          <template #icon>
+            <i class="bx bx-trash"></i>
+          </template>
           Usuń
         </icon-button>
       </pop-confirm>
@@ -116,9 +118,22 @@
                   :disabled="!canModify"
                 />
                 <br />
+                <small class="label">Krótki opis</small>
+                <Textarea
+                  v-if="!isLoading"
+                  v-model="form.description_short"
+                  :disabled="!canModify"
+                />
+                <br />
+                <br />
                 <div class="flex">
-                  <app-button v-if="canModify" style="margin-right: 12px">Zapisz</app-button>
-                  <app-button v-if="canModify" @click="handleSubmit(submitAndGoNext)">
+                  <app-button v-if="canModify" html-type="submit" style="margin-right: 12px">
+                    Zapisz
+                  </app-button>
+                  <app-button
+                    v-if="canModify && isNew"
+                    @click.prevent="handleSubmit(submitAndGoNext)"
+                  >
                     Zapisz i dodaj następny
                   </app-button>
                 </div>
@@ -144,13 +159,14 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import RichEditor from '@/components/form/RichEditor.vue'
 import SchemaConfigurator from '@/components/modules/schemas/Configurator.vue'
 import TagsSelect from '@/components/TagsSelect.vue'
+import SwitchInput from '@/components/form/SwitchInput.vue'
+import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
+import Textarea from '@/components/form/Textarea.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { UUID } from '@/interfaces/UUID'
 import { Product, ProductDTO, ProductComponentForm } from '@/interfaces/Product'
 import { ProductSet } from '@/interfaces/ProductSet'
-import SwitchInput from '@/components/form/SwitchInput.vue'
-import ChangesHistory from '@/components/ChangesHistory.vue'
 
 const EMPTY_FORM: ProductComponentForm = {
   id: '',
@@ -158,6 +174,7 @@ const EMPTY_FORM: ProductComponentForm = {
   slug: '',
   price: 0,
   description_html: '',
+  description_short: '',
   digital: false,
   public: true,
   sets: [],
@@ -182,7 +199,8 @@ export default Vue.extend({
     RichEditor,
     TagsSelect,
     SwitchInput,
-    ChangesHistory,
+    AuditsModal,
+    Textarea,
   },
   data: () => ({
     form: cloneDeep(EMPTY_FORM),

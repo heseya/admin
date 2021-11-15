@@ -9,7 +9,9 @@
     >
       <template #nav>
         <icon-button v-can="$p.Items.Add" @click="openModal()">
-          <i slot="icon" class="bx bx-plus"></i>
+          <template #icon>
+            <i class="bx bx-plus"></i>
+          </template>
           Dodaj przedmiot
         </icon-button>
       </template>

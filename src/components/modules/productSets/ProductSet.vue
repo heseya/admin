@@ -19,20 +19,24 @@
           :trigger="['click']"
         >
           <icon-button type="transparent" size="small" @click.stop>
-            <i slot="icon" class="bx bx-menu"></i>
+            <template #icon>
+              <i class="bx bx-menu"></i>
+            </template>
           </icon-button>
 
-          <a-menu slot="overlay">
-            <a-menu-item v-can="$p.ProductSets.Add" @click="create">
-              <i class="bx bx-plus"></i> &nbsp; Dodaj subkolekcje
-            </a-menu-item>
-            <a-menu-item v-can="$p.ProductSets.ShowDetails" @click="showProducts">
-              <i class="bx bx-customize"></i> &nbsp; Zobacz produkty w kolekcji
-            </a-menu-item>
-            <a-menu-item v-can="$p.ProductSets.ShowDetails" @click="edit">
-              <i class="bx bx-edit"></i> &nbsp; Edytuj kolekcję
-            </a-menu-item>
-          </a-menu>
+          <template #overlay>
+            <a-menu>
+              <a-menu-item v-can="$p.ProductSets.Add" @click="create">
+                <i class="bx bx-plus"></i> &nbsp; Dodaj subkolekcje
+              </a-menu-item>
+              <a-menu-item v-can="$p.ProductSets.ShowDetails" @click="showProducts">
+                <i class="bx bx-customize"></i> &nbsp; Zobacz produkty w kolekcji
+              </a-menu-item>
+              <a-menu-item v-can="$p.ProductSets.ShowDetails" @click="edit">
+                <i class="bx bx-edit"></i> &nbsp; Edytuj kolekcję
+              </a-menu-item>
+            </a-menu>
+          </template>
         </a-dropdown>
       </div>
     </div>

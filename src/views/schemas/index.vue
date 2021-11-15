@@ -8,7 +8,9 @@
     >
       <template #nav>
         <icon-button v-can="$p.ProductSets.Add" to="/schemas/create">
-          <i slot="icon" class="bx bx-plus"></i>
+          <template #icon>
+            <i class="bx bx-plus"></i>
+          </template>
           Dodaj schemat
         </icon-button>
       </template>

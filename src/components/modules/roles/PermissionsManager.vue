@@ -24,7 +24,7 @@
           {{ perm.display_name || perm.name }}
 
           <a-tooltip v-if="perm.description">
-            <template slot="title"> {{ perm.description }} </template>
+            <template #title> {{ perm.description }} </template>
             <i class="bx bxs-info-circle"></i>
           </a-tooltip>
         </a-checkbox>

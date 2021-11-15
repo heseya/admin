@@ -319,7 +319,7 @@ router.beforeEach((to, from, next) => {
     accessor.auth.setPermissionsError(new Error('Not logged in'))
     return next({
       name: 'Login',
-      params: { nextURL: to.fullPath },
+      query: { next: to.fullPath !== '/' ? to.fullPath : undefined },
     })
   }
 

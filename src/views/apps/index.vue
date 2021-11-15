@@ -3,7 +3,9 @@
     <PaginatedList title="Aplikacje" store-key="apps">
       <template #nav>
         <icon-button v-can="$p.Apps.Install" @click="openInstallModal()">
-          <i slot="icon" class="bx bx-plus"></i>
+          <template #icon>
+            <i class="bx bx-plus"></i>
+          </template>
           Dodaj aplikacje
         </icon-button>
       </template>
@@ -19,28 +21,34 @@
           {{ app.name }}
           <small>{{ app.description }}</small>
 
-          <small slot="action">
-            <div class="app-action">
-              <span> {{ app.author }} | v{{ app.version }} </span>
+          <template #action>
+            <small>
+              <div class="app-action">
+                <span> {{ app.author }} | v{{ app.version }} </span>
 
-              <icon-button size="small" @click="openConfigureModal(app)">
-                <i v-if="app.microfrontend_url" slot="icon" class="bx bx-log-in"></i>
-                <i v-else slot="icon" class="bx bx-edit"></i>
-              </icon-button>
-
-              <pop-confirm
-                v-can="$p.Apps.Remove"
-                title="Czy na pewno chcesz odinstalować tę aplikację?"
-                ok-text="Usuń"
-                cancel-text="Anuluj"
-                @confirm="uninstallApp(app)"
-              >
-                <icon-button size="small" type="danger">
-                  <i slot="icon" class="bx bxs-trash"></i>
+                <icon-button size="small" @click="openConfigureModal(app)">
+                  <template #icon>
+                    <i v-if="app.microfrontend_url" class="bx bx-log-in"></i>
+                    <i v-else class="bx bx-edit"></i>
+                  </template>
                 </icon-button>
-              </pop-confirm>
-            </div>
-          </small>
+
+                <pop-confirm
+                  v-can="$p.Apps.Remove"
+                  title="Czy na pewno chcesz odinstalować tę aplikację?"
+                  ok-text="Usuń"
+                  cancel-text="Anuluj"
+                  @confirm="uninstallApp(app)"
+                >
+                  <icon-button size="small" type="danger">
+                    <template #icon>
+                      <i class="bx bxs-trash"></i>
+                    </template>
+                  </icon-button>
+                </pop-confirm>
+              </div>
+            </small>
+          </template>
         </list-item>
       </template>
     </PaginatedList>

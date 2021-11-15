@@ -33,7 +33,7 @@ import MobileOverlay from './MobileOverlay.vue'
 import { MenuItem, MENU_ITEMS } from '@/consts/menuItems'
 
 export default Vue.extend({
-  name: 'Navigation',
+  name: 'MobileNavigation',
   components: { MobileOverlay, MenuLink },
   data: () => ({
     isMenuVisible: false,

@@ -3,7 +3,9 @@
     <PaginatedList title="Tagi" store-key="tags">
       <template #nav>
         <icon-button v-can="$p.Tags.Add" @click="openModal()">
-          <i slot="icon" class="bx bx-plus"></i>
+          <template #icon>
+            <i class="bx bx-plus"></i>
+          </template>
           Dodaj tag
         </icon-button>
       </template>

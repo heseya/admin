@@ -215,12 +215,18 @@ export default Vue.extend({
         )?.name || schema
       this.usedSchemaName = newName
     },
+    schema(schema) {
+      this.initSchemaForm(schema)
+    },
   },
   created() {
-    this.form = this.schema.type ? cloneDeep(this.schema) : cloneDeep(CLEAR_FORM)
-    this.defaultOption = Number(this.form.default)
+    this.initSchemaForm(this.schema)
   },
   methods: {
+    initSchemaForm(schema: Schema) {
+      this.form = schema.type ? cloneDeep(schema) : cloneDeep(CLEAR_FORM)
+      this.defaultOption = Number(this.form.default)
+    },
     isKindOfNumeric(type: SchemaType): boolean {
       return (
         type === SchemaType.Numeric ||

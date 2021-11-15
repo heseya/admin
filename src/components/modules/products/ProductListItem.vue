@@ -20,7 +20,9 @@
       <b>{{ product.name }}</b>
     </template>
 
-    <span slot="price">{{ formatCurrency(product.price) }}</span>
+    <template #price>
+      <span>{{ formatCurrency(product.price) }}</span>
+    </template>
 
     <template #tags>
       <div class="product-list-item__tags">

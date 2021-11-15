@@ -70,7 +70,7 @@
                 />
                 <validated-input
                   v-model="form.price"
-                  rules="required|positive"
+                  rules="required|not-negative"
                   type="number"
                   step="0.01"
                   label="Cena"

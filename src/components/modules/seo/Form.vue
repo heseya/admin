@@ -61,13 +61,20 @@ export default Vue.extend({
         return this.value
       },
       set(v: SeoMeta) {
-        this.$emit('input', { ...CLEAR_FORM, ...v })
+        this.$emit('input', v)
       },
     },
   },
 
   created() {
-    this.form = { ...CLEAR_FORM, ...this.form }
+    this.form = {
+      title: this.form.title || CLEAR_FORM.title,
+      description: this.form.description || CLEAR_FORM.description,
+      keywords: this.form.keywords || CLEAR_FORM.keywords,
+      og_image: this.form.og_image || CLEAR_FORM.og_image,
+      og_image_id: this.form.og_image?.id || CLEAR_FORM.og_image_id,
+      twitter_card: this.form.twitter_card || CLEAR_FORM.twitter_card,
+    }
   },
 
   methods: {

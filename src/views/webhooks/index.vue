@@ -3,7 +3,9 @@
     <PaginatedList title="WebHooki" store-key="webhooks">
       <template #nav>
         <icon-button v-can="$p.Webhooks.Add" to="/webhooks/create">
-          <i slot="icon" class="bx bx-plus"></i>
+          <template #icon>
+            <i class="bx bx-plus"></i>
+          </template>
           Dodaj webhook
         </icon-button>
       </template>

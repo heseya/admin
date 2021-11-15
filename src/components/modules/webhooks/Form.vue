@@ -26,11 +26,13 @@
         <template #title>
           Z podmiotem akcji
           <a-tooltip>
-            <small slot="title">
-              Jeśli zaznaczone, żądanie będzie zawierać informacje o użytkowniku (lub aplikacji),
-              który spowodował daną akcję. Np. zawarta będzie informacja o osobie która zedytowała
-              produkt.
-            </small>
+            <template #title>
+              <small>
+                Jeśli zaznaczone, żądanie będzie zawierać informacje o użytkowniku (lub aplikacji),
+                który spowodował daną akcję. Np. zawarta będzie informacja o osobie która zedytowała
+                produkt.
+              </small>
+            </template>
             <i class="bx bxs-info-circle"></i>
           </a-tooltip>
         </template>
@@ -40,10 +42,12 @@
         <template #title>
           Z ukrytymi wpisami
           <a-tooltip>
-            <small slot="title">
-              Jeśli zaznaczone, żądanie będzie wykonywane również dla obiektów, które są w systemie
-              ukryte. Np. edycja ukrytego produktu.
-            </small>
+            <template #title>
+              <small>
+                Jeśli zaznaczone, żądanie będzie wykonywane również dla obiektów, które są w
+                systemie ukryte. Np. edycja ukrytego produktu.
+              </small>
+            </template>
             <i class="bx bxs-info-circle"></i>
           </a-tooltip>
         </template>

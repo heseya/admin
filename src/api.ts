@@ -5,6 +5,8 @@ import { accessor } from './store/index'
 import router from './router'
 import { getApiURL } from './utils/api'
 
+const CORE_API_URL = getApiURL()
+
 const REFRESH_URL = '/auth/refresh'
 
 type OnRefreshFunction = (
@@ -26,12 +28,16 @@ export const createApiInstance = (baseURL: string, useAccessToken = true) => {
   }
 
   apiInstance.interceptors.request.use((config) => {
+    config.headers = { ...config.headers }
+
     const token = useAccessToken ? accessor.auth.getAccessToken : accessor.auth.getIdentityToken
 
     if (!isNull(token)) {
       if (config.url !== REFRESH_URL) config.headers.Authorization = `Bearer ${token}`
-      config.headers['x-language'] = 'pl'
+      config.headers['X-Language'] = 'pl'
     }
+
+    config.headers['X-Core-Url'] = CORE_API_URL
 
     return config
   })
@@ -40,7 +46,7 @@ export const createApiInstance = (baseURL: string, useAccessToken = true) => {
     const originalRequest = error.config
 
     if (error.response?.status === 403) {
-      accessor.auth.setPermissionsError(error.response.data)
+      accessor.auth.setPermissionsError(error.response.data as Error)
     }
 
     // Refreshing the token
@@ -70,7 +76,7 @@ export const createApiInstance = (baseURL: string, useAccessToken = true) => {
           }
 
           const token = useAccessToken ? refreshedTokens.accessToken : refreshedTokens.identityToken
-          originalRequest.headers.Authorization = `Bearer ${token}`
+          originalRequest.headers = { ...originalRequest.headers, Authorization: `Bearer ${token}` }
 
           // ? Retry last request
           resolve(apiInstance.request(originalRequest))
@@ -84,4 +90,4 @@ export const createApiInstance = (baseURL: string, useAccessToken = true) => {
   return apiInstance
 }
 
-export const api = createApiInstance(getApiURL())
+export const api = createApiInstance(CORE_API_URL)

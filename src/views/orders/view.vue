@@ -1,10 +1,12 @@
 <template>
-  <div>
+  <div class="narrower-page">
     <top-nav :title="`Zamówienie ${order.code}`" :subtitle="`z dnia ${formattedDate}`">
-      <changes-history :id="order.id" model="orders" />
+      <audits-modal :id="order.id" model="orders" />
       <a :href="`https://***REMOVED***.eu/payment/${order.code}`" target="_blank">
         <icon-button>
-          <i slot="icon" class="bx bxs-dollar-circle"></i>
+          <template #icon>
+            <i class="bx bxs-dollar-circle"></i>
+          </template>
           Przejdź do płatności
         </icon-button>
       </a>
@@ -17,10 +19,14 @@
         @confirm="payOffline"
       >
         <icon-button>
-          <i slot="icon" class="bx bxs-diamond"></i>
+          <template #icon>
+            <i class="bx bxs-diamond"></i>
+          </template>
           Opłać zamówienie
         </icon-button>
       </pop-confirm>
+
+      <next-prev-buttons />
     </top-nav>
 
     <div class="order">
@@ -30,7 +36,7 @@
             <h2 class="section-title">Koszyk</h2>
             <app-cart-item v-for="item in order.products" :key="item.id" :item="item" />
             <div class="cart-item">
-              <img class="cart-item__cover" src="/img/delivery.svg" />
+              <img class="cart-item__cover" src="@/assets/images/icons/delivery-icon.svg" />
               <div class="cart-item__content">
                 <span>Dostawa {{ order.shipping_method && order.shipping_method.name }}</span>
               </div>
@@ -96,7 +102,7 @@
           <br />
           <h2 class="section-title">
             <a-tooltip v-if="order.summary_paid > order.summary">
-              <template slot="title">
+              <template #title>
                 Zamówienie zostało nadpłacone o
                 <b>{{ formatCurrency(order.summary_paid - order.summary) }}</b
                 >!
@@ -126,7 +132,9 @@
             class="comment__edit"
             @click="editComment"
           >
-            <i slot="icon" class="bx bxs-pencil"></i>
+            <template #icon>
+              <i class="bx bxs-pencil"></i>
+            </template>
           </icon-button>
           <span class="comment__content">
             {{ order.comment || 'Brak komentarza do zamówienia' }}
@@ -142,7 +150,9 @@
               class="email__edit"
               @click="editEmail"
             >
-              <i slot="icon" class="bx bxs-pencil"></i>
+              <template #icon>
+                <i class="bx bxs-pencil"></i>
+              </template>
             </icon-button>
             <a :href="`mailto:${order.email}`" class="email__name">{{ order.email }}</a>
           </div>
@@ -184,7 +194,8 @@ import CartItem from '@/components/layout/CartItem.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import PartialUpdateForm from '@/components/modules/orders/PartialUpdateForm.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import ChangesHistory from '@/components/ChangesHistory.vue'
+import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
+import NextPrevButtons from '@/components/modules/orders/NextPrevButtons.vue'
 
 import { Order, OrderStatus } from '@/interfaces/Order'
 import { getRelativeDate } from '@/utils/utils'
@@ -219,7 +230,8 @@ export default Vue.extend({
     ModalForm,
     PartialUpdateForm,
     PopConfirm,
-    ChangesHistory,
+    AuditsModal,
+    NextPrevButtons,
   },
   data: () => ({
     status: '',
@@ -294,16 +306,13 @@ export default Vue.extend({
     async createPackage() {
       if (!this.packageTemplateId) return
       this.$accessor.startLoading()
-      const { success, shippingNumber, error } = await createPackage(
-        this.order.id,
-        this.packageTemplateId,
-      )
+      const res = await createPackage(this.order.id, this.packageTemplateId)
 
-      if (success) {
-        this.shippingNumber = shippingNumber
+      if (res.success) {
+        this.shippingNumber = res.shippingNumber
         this.$toast.success('Przesyłka utworzona poprawnie')
       } else {
-        this.$toast.error(formatApiNotificationError(error))
+        this.$toast.error(formatApiNotificationError(res.error))
       }
 
       this.$accessor.stopLoading()
@@ -464,11 +473,11 @@ export default Vue.extend({
   }
 
   &__failed {
-    color: #fc4757;
+    color: $red-color-400;
   }
 
   &__success {
-    color: #46ca3a;
+    color: $green-color-400;
   }
 }
 

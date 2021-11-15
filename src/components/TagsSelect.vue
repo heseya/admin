@@ -34,6 +34,8 @@ import Multiselect from 'vue-multiselect'
 import { debounce } from 'lodash'
 import { Tag } from '@/interfaces/Tag'
 
+import 'vue-multiselect/dist/vue-multiselect.min.css'
+
 export default Vue.extend({
   components: {
     Multiselect,

@@ -11,7 +11,9 @@
         <video v-if="image.type === 2" :src="image.url" autoplay loop muted />
         <div class="remove">
           <icon-button v-if="!disabled" type="danger" @click="onImageDelete(image.id)">
-            <i slot="icon" class="bx bx-trash"></i>
+            <template #icon>
+              <i class="bx bx-trash"></i>
+            </template>
           </icon-button>
         </div>
       </div>
@@ -23,7 +25,7 @@
         @upload="onImageUpload"
         @error="onUploadError"
       >
-        <img src="/img/icons/plus.svg" />
+        <img src="@/assets/images/icons/plus-icon.svg" />
       </app-media-uploader>
     </draggable>
   </div>

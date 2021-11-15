@@ -8,7 +8,9 @@
       class="address__btn address__btn--edit"
       @click="edit"
     >
-      <i slot="icon" class="bx bxs-pencil"></i>
+      <template #icon>
+        <i class="bx bxs-pencil"></i>
+      </template>
     </icon-button>
     <pop-confirm
       v-if="!hideRemove && address"
@@ -19,7 +21,9 @@
       @confirm="remove"
     >
       <icon-button size="small" type="transparent" class="address__btn address__btn--remove">
-        <i slot="icon" class="bx bxs-trash"></i>
+        <template #icon>
+          <i class="bx bxs-trash"></i>
+        </template>
       </icon-button>
     </pop-confirm>
 

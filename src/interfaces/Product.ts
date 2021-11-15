@@ -11,6 +11,7 @@ export interface Product {
   slug: string
   price: number
   description_html: string
+  description_short: string
   digital: boolean
   public: boolean
   visible: boolean
@@ -30,6 +31,7 @@ export interface ProductDTO {
   slug: string
   price: number
   description_html: string
+  description_short: string
   digital: boolean
   public: boolean
   quantity_step: number

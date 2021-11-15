@@ -1,31 +1,31 @@
 <template>
   <central-screen-form title="Logowanie">
     <ValidationObserver v-slot="{ handleSubmit }">
-      <validated-input
-        v-model="email"
-        rules="required|email"
-        name="email"
-        data-cy="email"
-        label="E-mail"
-        type="email"
-        @keydown.enter="handleSubmit(login)"
-      />
+      <form @submit.prevent.stop="handleSubmit(login)">
+        <validated-input
+          v-model="email"
+          rules="required|email"
+          name="email"
+          data-cy="email"
+          label="E-mail"
+          type="email"
+        />
 
-      <validated-input
-        v-model="password"
-        rules="required"
-        label="Hasło"
-        name="password"
-        data-cy="password"
-        type="password"
-        @keydown.enter="handleSubmit(login)"
-      />
-      <br />
+        <validated-input
+          v-model="password"
+          rules="required"
+          label="Hasło"
+          name="password"
+          data-cy="password"
+          type="password"
+        />
+        <br />
 
-      <div class="central-screen-form__row">
-        <app-button data-cy="submitBtn" @click="handleSubmit(login)"> Zaloguj </app-button>
-        <app-button type="white" to="/reset-password"> Zapomniałeś hasła? </app-button>
-      </div>
+        <div class="central-screen-form__row">
+          <app-button data-cy="submitBtn" html-type="submit"> Zaloguj </app-button>
+          <app-button type="white" to="/reset-password"> Zapomniałeś hasła? </app-button>
+        </div>
+      </form>
     </ValidationObserver>
   </central-screen-form>
 </template>
@@ -35,6 +35,7 @@ import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import CentralScreenForm from '@/components/form/CentralScreenForm.vue'
 import { formatApiNotificationError } from '@/utils/errors'
+import { first, isArray } from 'lodash'
 
 const DEBUG = process.env.NODE_ENV === 'development'
 
@@ -49,8 +50,12 @@ export default Vue.extend({
     password: DEBUG ? '***REMOVED***' : '',
   }),
   computed: {
-    loginError() {
+    loginError(): any {
       return this.$accessor.auth.error
+    },
+    nextURL(): string {
+      const next = this.$route.query.next
+      return (isArray(next) ? first(next) : next) || '/'
     },
   },
   watch: {
@@ -67,7 +72,7 @@ export default Vue.extend({
         email: this.email,
         password: this.password,
       })
-      if (success) this.$router.push({ name: 'Home' })
+      if (success) this.$router.push(this.nextURL)
       this.$accessor.stopLoading()
     },
   },

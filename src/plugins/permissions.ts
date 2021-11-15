@@ -31,7 +31,7 @@ Vue.directive('can', function (el, binding) {
     ? 'disable'
     : 'remove'
 
-  const isElementVisible = hasUserAccess(binding.value, anyOfRequired)
+  const isElementVisible = binding.value ? hasUserAccess(binding.value, anyOfRequired) : true
 
   switch (behaviour) {
     case 'disable':

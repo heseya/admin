@@ -10,7 +10,9 @@
         @confirm="deleteSchema"
       >
         <icon-button type="danger">
-          <i slot="icon" class="bx bx-trash"></i>
+          <template #icon>
+            <i class="bx bx-trash"></i>
+          </template>
           Usuń
         </icon-button>
       </pop-confirm>

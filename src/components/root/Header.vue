@@ -9,7 +9,9 @@
         :to="returnUrl"
         class="header__return-btn"
       >
-        <i slot="icon" class="bx bx-left-arrow-alt"></i>
+        <template #icon>
+          <i class="bx bx-left-arrow-alt"></i>
+        </template>
         Wróć do listy
       </icon-button>
 
@@ -22,12 +24,14 @@
       <a-dropdown :trigger="['click']">
         <div class="user__email">{{ user.email }}</div>
 
-        <a-menu slot="overlay">
-          <a-menu-item>
-            <router-link to="/settings">Ustawienia</router-link>
-          </a-menu-item>
-          <a-menu-item @click="logout">Wyloguj się </a-menu-item>
-        </a-menu>
+        <template #overlay>
+          <a-menu>
+            <a-menu-item>
+              <router-link to="/settings">Ustawienia</router-link>
+            </a-menu-item>
+            <a-menu-item @click="logout">Wyloguj się </a-menu-item>
+          </a-menu>
+        </template>
       </a-dropdown>
     </div>
   </header>
@@ -35,6 +39,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import last from 'lodash/last'
+
 import { User } from '@/interfaces/User'
 
 export default Vue.extend({
@@ -53,7 +59,7 @@ export default Vue.extend({
       return this.$accessor.auth.user
     },
     userRole(): string {
-      return this.user?.roles[0]?.name || ''
+      return last(this.user?.roles)?.name || ''
     },
   },
   methods: {
@@ -130,7 +136,7 @@ export default Vue.extend({
     transition: 0.3s;
 
     &:hover {
-      background-color: $primary-color-200;
+      background-color: $primary-color-100;
     }
   }
 }

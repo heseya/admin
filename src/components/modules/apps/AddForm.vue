@@ -48,18 +48,62 @@
           <div class="field__value">{{ appInfo.author }}</div>
         </div>
       </div>
+
+      <validated-input
+        v-if="appInfo.licence_required"
+        v-model="form.licence_key"
+        rules="required"
+        label="Klucz licencyjny"
+      />
+
       <div class="field">
         <div class="field__label">Wymagane uprawnienia</div>
         <div class="field__value">
-          <code v-for="perm in requiredPermissions" :key="perm.id">
-            {{ perm.display_name || perm.name }}
+          <ul>
+            <li v-for="perm in requiredPermissions" :key="perm.id">
+              {{ perm.display_name || perm.name }}
 
-            <a-tooltip v-if="perm.description">
-              <template slot="title"> {{ perm.description }} </template>
-              <i class="bx bxs-info-circle"></i>
-            </a-tooltip>
-          </code>
+              <a-tooltip v-if="perm.description">
+                <template #title> {{ perm.description }} </template>
+                <i class="bx bxs-info-circle"></i>
+              </a-tooltip>
+            </li>
+          </ul>
           <small v-if="requiredPermissions.length === 0">Brak</small>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field__label">Wewnętrzne uprawnienia aplikacji</div>
+        <div class="field__value">
+          <div class="field__value">
+            <ul>
+              <li v-for="perm in appInfo.internal_permissions" :key="perm.id" class="permission">
+                <a-tooltip>
+                  <template #title>
+                    Czy to uprawnienie ma zostać nadane niezalogowanym użytkownikom?
+                  </template>
+                  <switch-input
+                    :value="isPermUnauthenticated(perm)"
+                    @input="(v) => changeIsPermUnauthenticated(perm, v)"
+                  >
+                    <template #unCheckedChildren> <i class="bx bxs-low-vision"></i> </template>
+                    <template #checkedChildren> <i class="bx bx-show"></i> </template>
+                  </switch-input>
+                </a-tooltip>
+
+                <div class="permission__name">
+                  {{ perm.display_name || perm.name }}
+                </div>
+
+                <a-tooltip v-if="perm.description">
+                  <template #title> {{ perm.description }} </template>
+                  <i class="bx bxs-info-circle"></i>
+                </a-tooltip>
+              </li>
+            </ul>
+            <small v-if="requiredPermissions.length === 0">Brak</small>
+          </div>
         </div>
       </div>
 
@@ -77,7 +121,7 @@ import { debounce } from 'lodash'
 
 import LoadingIndicator from '@/components/layout/LoadingIndicator.vue'
 
-import { CreateAppDto, IntegrationInfo } from '@/interfaces/App'
+import { AppInternalPermission, CreateAppDto, IntegrationInfo } from '@/interfaces/App'
 import { PermissionObject } from '@/interfaces/Permissions'
 
 export default Vue.extend({
@@ -114,9 +158,10 @@ export default Vue.extend({
   },
   watch: {
     ['form.url']() {
-      if (this.isValidUrl) this.debouncedFetch()
-      this.isError = false
-      this.appInfo = null
+      this.urlWatcher()
+    },
+    isValidUrl() {
+      this.urlWatcher()
     },
   },
   created() {
@@ -124,6 +169,11 @@ export default Vue.extend({
     this.$accessor.roles.fetchPermissions()
   },
   methods: {
+    urlWatcher() {
+      if (this.isValidUrl) this.debouncedFetch()
+      this.isError = false
+      this.appInfo = null
+    },
     debouncedFetch: debounce(function (this: any) {
       this.fetchAppInfo()
     }, 500),
@@ -139,10 +189,26 @@ export default Vue.extend({
         this.appInfo = data
         this.form.name = data.name
         this.form.allowed_permissions = data.required_permissions
+        this.form.public_app_permissions = data.internal_permissions
+          .filter((p) => p.unauthenticated)
+          .map((p) => p.name)
       } catch (e) {
         this.isError = true
       }
       this.isLoading = false
+    },
+
+    isPermUnauthenticated(perm: AppInternalPermission) {
+      return !!this.form.public_app_permissions.find((p) => p === perm.name) ?? false
+    },
+    changeIsPermUnauthenticated(perm: AppInternalPermission, value: boolean) {
+      if (value) {
+        this.form.public_app_permissions.push(perm.name)
+      } else {
+        this.form.public_app_permissions = this.form.public_app_permissions.filter(
+          (p) => p !== perm.name,
+        )
+      }
     },
   },
 })
@@ -174,8 +240,20 @@ export default Vue.extend({
       font-size: 1.1em;
     }
 
-    code {
-      margin-right: 6px;
+    ul {
+      padding-left: 0;
+      list-style-type: none;
+
+      li {
+        &::before {
+          content: '';
+          display: inline-block;
+          width: 5px;
+          height: 5px;
+          margin-right: 8px;
+          background-color: $font-color;
+        }
+      }
     }
   }
 
@@ -183,6 +261,16 @@ export default Vue.extend({
     width: 32px;
     height: 32px;
     margin-right: 12px;
+  }
+
+  .permission {
+    display: flex;
+    align-items: center;
+    position: relative;
+
+    &__name {
+      margin-left: 12px;
+    }
   }
 }
 </style>

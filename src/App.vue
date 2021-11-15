@@ -7,7 +7,7 @@
 
     <main class="app__content">
       <transition name="fade" mode="out-in">
-        <router-view />
+        <router-view :key="$route.path" />
       </transition>
     </main>
 
@@ -29,7 +29,7 @@ export default Vue.extend({
     // if no subcomponents specify a metaInfo.title, this title will be used
     title: 'Admin',
     // all titles will be injected into this template
-    titleTemplate: '%s | Heseya Shop System',
+    titleTemplate: '%s | Heseya',
   },
   components: {
     DesktopNavigation,

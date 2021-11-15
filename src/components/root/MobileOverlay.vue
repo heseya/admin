@@ -4,73 +4,38 @@
       <img src="@/assets/images/icons/close-icon.svg" alt="Close" />
     </button>
 
-    <!-- <router-link class="mobile-nav-overlay__link" to="/analytics" @click.native="close">
-      <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/stats-icon.svg')" />
-      <span class="mobile-nav-overlay__link-label">Statystyka</span>
-    </router-link> -->
-
-    <router-link
-      v-can="$p.Products.Show"
-      class="mobile-nav-overlay__link"
-      to="/products"
+    <menu-link
+      v-for="item in MENU_ITEMS"
+      :key="item.to"
+      v-can="item.can"
+      :to="item.to"
+      :exact="item.exact"
+      :label="item.label"
+      :icon="item.icon"
+      root-class="mobile-nav-overlay"
       @click.native="close"
-    >
-      <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/products-icon.svg')" />
-      <span class="mobile-nav-overlay__link-label">Produkty</span>
-    </router-link>
-
-    <router-link
-      v-can="$p.ProductSets.Show"
-      class="mobile-nav-overlay__link"
-      to="/collections"
-      @click.native="close"
-    >
-      <InlineSvg
-        class="nav-link-img"
-        :src="require('@/assets/images/icons/collections-icon.svg')"
-      />
-      <span class="mobile-nav-overlay__link-label">Kolekcje</span>
-    </router-link>
-
-    <router-link
-      v-can="$p.Items.Show"
-      class="mobile-nav-overlay__link"
-      to="/items"
-      @click.native="close"
-    >
-      <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/warehouse-icon.svg')" />
-      <span class="mobile-nav-overlay__link-label">Magazyn</span>
-    </router-link>
-
-    <router-link
-      v-can="$p.Discounts.Show"
-      class="mobile-nav-overlay__link"
-      to="/discounts"
-      @click.native="close"
-    >
-      <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/discounts-icon.svg')" />
-      <span class="mobile-nav-overlay__link-label">Kody rabatowe</span>
-    </router-link>
-
-    <router-link class="mobile-nav-overlay__link" to="/settings" @click.native="close">
-      <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/settings-icon.svg')" />
-      <span class="mobile-nav-overlay__link-label">Ustawienia</span>
-    </router-link>
+    />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-// @ts-ignore
-import InlineSvg from 'vue-inline-svg'
+import { MenuItem, MENU_ITEMS } from '@/consts/menuItems'
+
+import MenuLink from './MenuLink.vue'
 
 export default Vue.extend({
-  name: 'Navigation',
-  components: { InlineSvg },
+  name: 'MobileOverlay',
+  components: { MenuLink },
   props: {
     isVisible: {
       type: Boolean,
       default: false,
+    },
+  },
+  computed: {
+    MENU_ITEMS(): MenuItem[] {
+      return MENU_ITEMS
     },
   },
   methods: {
@@ -81,7 +46,7 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .mobile-nav-overlay {
   position: fixed;
   top: 102vh;

@@ -98,7 +98,7 @@ export default Vue.extend({
       this.isLoading = true
       try {
         const query = stringifyQuery({ search })
-        const { data } = await api.get(`/${this.type}?${query}`)
+        const { data } = await api.get<{ data: Item[] }>(`/${this.type}?${query}`)
         this.data = data.data
       } catch (error: any) {
         this.$toast.error(formatApiNotificationError(error))

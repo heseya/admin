@@ -205,7 +205,6 @@ export default Vue.extend({
     RichEditor,
     TagsSelect,
     SwitchInput,
-    ChangesHistory,
     SeoForm,
     AuditsModal,
     Textarea,

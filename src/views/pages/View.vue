@@ -70,7 +70,6 @@ import FlexInput from '@/components/layout/FlexInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import RichEditor from '@/components/form/RichEditor.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
-import ChangesHistory from '@/components/ChangesHistory.vue'
 import SeoForm from '@/components/modules/seo/Accordion.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 
@@ -89,7 +88,6 @@ export default Vue.extend({
     RichEditor,
     ValidationObserver,
     SwitchInput,
-    ChangesHistory,
     SeoForm,
     AuditsModal,
   },

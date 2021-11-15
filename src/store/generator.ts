@@ -20,6 +20,7 @@ export interface BaseItem {
 export enum StoreMutations {
   SetError = 'SET_ERROR',
   SetMeta = 'SET_META',
+  SetQueryParams = 'SET_QUERY_PARAMS',
   SetData = 'SET_DATA',
   AddData = 'ADD_DATA',
   EditData = 'EDIT_DATA',
@@ -33,6 +34,7 @@ interface DefaultStore<Item extends BaseItem> {
   isLoading: boolean
   meta: ResponseMeta
   data: Item[]
+  queryParams: Record<string, any>
   selected: Item
 }
 
@@ -68,6 +70,7 @@ export const createVuexCRUD =
         meta: {} as ResponseMeta,
         data: [] as Item[],
         selected: {} as Item,
+        queryParams: {},
         ...(extend?.state || {}),
       } as DefaultStore<Item> & State)
 
@@ -80,6 +83,9 @@ export const createVuexCRUD =
       },
       getMeta(state) {
         return state.meta
+      },
+      getQueryParams(state) {
+        return state.queryParams
       },
       getSelected(state) {
         return state.selected
@@ -103,6 +109,9 @@ export const createVuexCRUD =
       },
       [StoreMutations.SetMeta](state, newMeta: ResponseMeta) {
         state.meta = newMeta || {}
+      },
+      [StoreMutations.SetQueryParams](state, newParams: Record<string, any>) {
+        state.queryParams = newParams || {}
       },
       [StoreMutations.SetData](state, newData: Item[] = []) {
         state.data = newData
@@ -156,6 +165,8 @@ export const createVuexCRUD =
                 ([, value]) => !isNil(value),
               ),
             )
+
+            commit(StoreMutations.SetQueryParams, filteredQuery)
 
             const stringQuery = stringifyQuery(filteredQuery)
 

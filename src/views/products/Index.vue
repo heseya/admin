@@ -17,7 +17,9 @@
         </icon-button>
 
         <icon-button to="/products/create">
-          <i slot="icon" class="bx bx-plus"></i>
+          <template #icon>
+            <i class="bx bx-plus"></i>
+          </template>
           Dodaj produkt
         </icon-button>
       </template>

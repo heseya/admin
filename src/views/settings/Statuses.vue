@@ -3,7 +3,9 @@
     <PaginatedList title="Statusy zamówień" store-key="statuses" draggable>
       <template #nav>
         <icon-button v-can="$p.Statuses.Add" @click="openModal()">
-          <i slot="icon" class="bx bx-plus"></i>
+          <template #icon>
+            <i class="bx bx-plus"></i>
+          </template>
           Dodaj status
         </icon-button>
       </template>

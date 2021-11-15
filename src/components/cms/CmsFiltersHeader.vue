@@ -11,7 +11,9 @@
       class="cms-filters-header__btn"
       @click="$emit('clear-filters')"
     >
-      <img slot="icon" src="@/assets/images/icons/close-icon.svg" alt="Close" />
+      <template #icon>
+        <img src="@/assets/images/icons/close-icon.svg" alt="Close" />
+      </template>
       Wyczyść ustawione filtry
     </icon-button>
   </div>

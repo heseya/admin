@@ -3,7 +3,9 @@
     <PaginatedList title="Role" store-key="roles">
       <template #nav>
         <icon-button v-can="$p.Roles.Add" to="/settings/roles/create">
-          <i slot="icon" class="bx bx-plus"></i>
+          <template #icon>
+            <i class="bx bx-plus"></i>
+          </template>
           Dodaj rolę
         </icon-button>
       </template>

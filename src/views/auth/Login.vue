@@ -35,6 +35,7 @@ import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import CentralScreenForm from '@/components/form/CentralScreenForm.vue'
 import { formatApiNotificationError } from '@/utils/errors'
+import { first, isArray } from 'lodash'
 
 const DEBUG = process.env.NODE_ENV === 'development'
 
@@ -49,8 +50,12 @@ export default Vue.extend({
     password: DEBUG ? '***REMOVED***' : '',
   }),
   computed: {
-    loginError() {
+    loginError(): any {
       return this.$accessor.auth.error
+    },
+    nextURL(): string {
+      const next = this.$route.query.next
+      return (isArray(next) ? first(next) : next) || '/'
     },
   },
   watch: {
@@ -67,7 +72,7 @@ export default Vue.extend({
         email: this.email,
         password: this.password,
       })
-      if (success) this.$router.push({ name: 'Home' })
+      if (success) this.$router.push(this.nextURL)
       this.$accessor.stopLoading()
     },
   },

@@ -1,6 +1,6 @@
 <template>
   <validation-provider v-slot="{ errors }" :rules="rules" :name="name">
-    <app-input v-bind="$props" v-on="$listeners">
+    <app-input v-bind="$props" :data-cy="dataCy || name" v-on="$listeners">
       <slot></slot>
       <template #error>{{ errors[0] }}</template>
     </app-input>

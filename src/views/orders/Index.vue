@@ -88,7 +88,7 @@ export default Vue.extend({
           },
           { key: 'payed', label: 'Płatność', width: '0.8fr' },
           { key: 'status', label: 'Status', width: '0.8fr' },
-          { key: 'shipping_method', label: 'Przesyłka', render: (method) => method.name },
+          { key: 'shipping_method.name', label: 'Przesyłka' },
           { key: 'email', label: 'Klient', width: '2fr' },
         ],
       }

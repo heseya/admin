@@ -1,6 +1,6 @@
 export enum CdnMediaType {
-  Photo = 1,
-  Video = 2,
+  Photo = 'photo',
+  Video = 'video',
 }
 
 export interface CdnMedia {

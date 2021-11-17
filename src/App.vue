@@ -82,6 +82,7 @@ export default Vue.extend({
   display: flex;
   flex-direction: column;
   transition: padding 0.3s;
+  min-height: 100vh;
 
   @media ($viewport-11) {
     padding-left: $navWidth;
@@ -109,6 +110,7 @@ export default Vue.extend({
 
   &__content {
     width: 100%;
+    min-height: 100vh;
     box-sizing: border-box;
     padding: 24px 12px;
     margin: 0 auto;

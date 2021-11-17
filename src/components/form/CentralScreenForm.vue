@@ -1,5 +1,6 @@
 <template>
   <div class="central-screen-form">
+    <nav-store-logo static big class="central-screen-form__logo" />
     <card class="central-screen-form__card">
       <slot name="title">
         <h1 class="central-screen-form__title">{{ title }}</h1>
@@ -7,6 +8,8 @@
 
       <slot></slot>
     </card>
+
+    <powered-by class="central-screen-form__powered-by" />
 
     <div class="central-screen-form__footer">&copy; Heseya | v{{ version }}</div>
   </div>
@@ -16,10 +19,12 @@
 import Vue from 'vue'
 import { version } from '../../../package.json'
 import Card from '../layout/Card.vue'
+import NavStoreLogo from '../root/NavStoreLogo.vue'
+import PoweredBy from '../root/PoweredBy.vue'
 
 export default Vue.extend({
   name: 'CentralScreenForm',
-  components: { Card },
+  components: { Card, NavStoreLogo, PoweredBy },
   props: {
     title: { type: String, default: '' },
   },
@@ -34,10 +39,19 @@ export default Vue.extend({
 <style lang="scss">
 .central-screen-form {
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - 48px);
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: space-evenly;
   align-items: center;
+
+  @media ($viewport-7) {
+    height: calc(100vh - 64px);
+  }
+
+  &__logo {
+    max-width: 400px;
+  }
 
   &__title {
     margin: 0;
@@ -46,7 +60,8 @@ export default Vue.extend({
   }
 
   &__card {
-    width: 400px;
+    max-width: 400px;
+    width: 100%;
 
     input {
       width: 100%;

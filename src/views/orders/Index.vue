@@ -6,6 +6,7 @@
       :table="tableConfig"
       store-key="orders"
       class="orders-list"
+      @search="makeSearch"
       @clear-filters="clearFilters"
     >
       <template #filters>
@@ -47,7 +48,10 @@ import Vue from 'vue'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
-import OrderFilter, { EMPTY_ORDER_FILTERS } from '@/components/modules/orders/OrderFilter.vue'
+import OrderFilter, {
+  EMPTY_ORDER_FILTERS,
+  OrderFilersType,
+} from '@/components/modules/orders/OrderFilter.vue'
 
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 
@@ -56,8 +60,6 @@ import { Order } from '@/interfaces/Order'
 
 import { formatFilters, getRelativeDate } from '@/utils/utils'
 import { formatCurrency } from '@/utils/currency'
-
-type OrderFilersType = typeof EMPTY_ORDER_FILTERS
 
 export default Vue.extend({
   metaInfo: { title: 'Zamówienia' },

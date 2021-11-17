@@ -4,7 +4,12 @@
     :class="{ 'cms-table--draggable': draggable }"
     :style="{ '--table-cols': gridColumns }"
   >
-    <cms-table-header class="cms-table__header" :headers="config.headers" />
+    <cms-table-header
+      class="cms-table__header"
+      :headers="config.headers"
+      :sort-filters="sortFilters"
+      @sort="(v) => $emit('sort', v)"
+    />
 
     <component :is="draggable ? 'Draggable' : 'div'" v-model="items">
       <template v-if="shouldRenderList">
@@ -59,6 +64,10 @@ export default Vue.extend({
     rowEl: {
       type: String,
       default: null,
+    },
+    sortFilters: {
+      type: String,
+      default: '',
     },
   },
   computed: {

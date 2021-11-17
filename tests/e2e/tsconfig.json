@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "noEmit": true,
-    "types": ["webpack-env", "cypress"]
+    "types": ["webpack-env", "cypress", "cypress-file-upload"]
   },
   "exclude": [],
   "include": ["../../node_modules/cypress", "./**/*.ts"]

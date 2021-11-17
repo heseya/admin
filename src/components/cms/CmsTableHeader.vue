@@ -51,7 +51,7 @@ export default Vue.extend({
     },
     makeSort(sortObj: Record<string, string | null>) {
       const stringValue = Object.entries(sortObj)
-        .filter(([_key, value]) => !!value)
+        .filter(([, value]) => !!value)
         .map(([key, value]) => `${key}:${value}`)
         .join(',')
 

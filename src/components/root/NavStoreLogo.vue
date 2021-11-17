@@ -2,8 +2,8 @@
   <media-uploader
     class="nav-logo"
     :class="{
-      'nav-logo--exist': filePath || static,
-      'nav-logo--disabled': !canModify,
+      'nav-logo--exist': filePath || disabled,
+      'nav-logo--disabled': !canModify || disabled,
       'nav-logo--big': big,
     }"
     :disabled="!canModify"
@@ -31,7 +31,7 @@ const ENV_NAME = 'store_logo'
 export default Vue.extend({
   components: { MediaUploader },
   props: {
-    static: {
+    disabled: {
       type: Boolean,
       default: false,
     },
@@ -51,7 +51,7 @@ export default Vue.extend({
       return this.$accessor.env[ENV_NAME]
     },
     canModify(): boolean {
-      return this.$can(this.$p.Settings.Edit) && !this.static
+      return this.$can(this.$p.Settings.Edit)
     },
   },
   watch: {

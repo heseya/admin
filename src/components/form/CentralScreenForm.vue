@@ -1,6 +1,6 @@
 <template>
   <div class="central-screen-form">
-    <nav-store-logo static big class="central-screen-form__logo" />
+    <nav-store-logo disabled big class="central-screen-form__logo" />
     <card class="central-screen-form__card">
       <slot name="title">
         <h1 class="central-screen-form__title">{{ title }}</h1>

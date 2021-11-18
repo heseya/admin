@@ -12,12 +12,9 @@ export interface Page {
 }
 
 export interface PageDto {
-  id: UUID
   name: string
   slug: string
-  content_md: string
   content_html: string
   public: boolean
   seo: SeoMetadataDto
 }
-export type PageDto = Omit<Page, 'id'>

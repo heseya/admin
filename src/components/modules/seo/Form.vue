@@ -2,7 +2,13 @@
   <modal-form class="seo-form">
     <validated-input v-model="form.title" :disabled="disabled" label="Tytuł strony" />
     <validated-input v-model="form.description" :disabled="disabled" label="Opis strony" />
-    <app-select v-model="form.keywords" label="Słowa kluczowe" :disabled="disabled" mode="tags" />
+    <app-select
+      :value="form.keywords || []"
+      label="Słowa kluczowe"
+      :disabled="disabled"
+      mode="tags"
+      @input="(v) => (form.keywords = v)"
+    />
 
     <app-select v-model="form.twitter_card" label="Typ kart Twittera" :disabled="disabled">
       <a-select-option value="summary"> Podsumowanie (<code>summary</code>) </a-select-option>

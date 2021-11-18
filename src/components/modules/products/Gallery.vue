@@ -25,6 +25,7 @@
         v-if="!disabled"
         class="gallery__img add undragabble"
         :class="{ 'add--drag': isDrag, 'add--big': images.length === 0 }"
+        multiple
         @dragChange="dragChange"
         @upload="onImageUpload"
         @error="onUploadError"

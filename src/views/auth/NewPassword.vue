@@ -20,7 +20,7 @@
       <br />
 
       <div class="central-screen-form__row">
-        <app-button @click="handleSubmit(changePassword)"> Zmień hasło </app-button>
+        <app-button type="primary" @click="handleSubmit(changePassword)"> Zmień hasło </app-button>
       </div>
     </ValidationObserver>
   </central-screen-form>

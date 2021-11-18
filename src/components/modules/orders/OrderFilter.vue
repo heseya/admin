@@ -24,6 +24,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable camelcase */
 import Vue from 'vue'
 import { debounce } from 'lodash'
 
@@ -32,20 +33,26 @@ import { ALL_FILTER_VALUE } from '@/consts/filters'
 import { OrderStatus } from '@/interfaces/Order'
 import { ShippingMethod } from '@/interfaces/ShippingMethod'
 
-export const EMPTY_ORDER_FILTERS = {
+export type OrderFilersType = {
+  search: string
+  status_id: string
+  shipping_method_id: string
+  sort?: string
+}
+
+export const EMPTY_ORDER_FILTERS: OrderFilersType = {
   search: '',
   status_id: ALL_FILTER_VALUE,
   shipping_method_id: ALL_FILTER_VALUE,
+  sort: undefined,
 }
-
-type OrderFilers = typeof EMPTY_ORDER_FILTERS
 
 export default Vue.extend({
   props: {
     filters: {
       type: Object,
       default: () => ({ ...EMPTY_ORDER_FILTERS }),
-    } as Vue.PropOptions<OrderFilers>,
+    } as Vue.PropOptions<OrderFilersType>,
   },
   data: () => ({
     search: '',
@@ -61,7 +68,7 @@ export default Vue.extend({
     },
   },
   watch: {
-    filters(f: OrderFilers) {
+    filters(f: OrderFilersType) {
       this.search = f.search
       this.status_id = f.status_id
       this.shipping_method_id = f.shipping_method_id
@@ -79,6 +86,7 @@ export default Vue.extend({
   methods: {
     makeSearch() {
       this.$emit('search', {
+        ...this.filters,
         search: this.search,
         status_id: this.status_id,
         shipping_method_id: this.shipping_method_id,

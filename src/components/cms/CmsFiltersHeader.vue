@@ -33,7 +33,9 @@ export default Vue.extend({
   },
   computed: {
     filtersCount(): number {
-      return Object.values(formatFilters(this.filters)).filter((v) => !!v).length
+      return Object.entries(formatFilters(this.filters)).filter(
+        ([key, value]) => key !== 'sort' && !!value,
+      ).length
     },
   },
 })

@@ -22,7 +22,7 @@
         <br />
 
         <div class="central-screen-form__row">
-          <app-button data-cy="submitBtn" html-type="submit"> Zaloguj </app-button>
+          <app-button data-cy="submitBtn" html-type="submit" type="primary"> Zaloguj </app-button>
           <app-button type="white" to="/reset-password"> Zapomniałeś hasła? </app-button>
         </div>
       </form>

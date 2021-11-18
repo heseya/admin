@@ -12,7 +12,9 @@
         <br />
 
         <div class="central-screen-form__row">
-          <app-button @click="handleSubmit(sendResetRequest)"> Resetuj hasło </app-button>
+          <app-button type="primary" @click="handleSubmit(sendResetRequest)">
+            Resetuj hasło
+          </app-button>
           <app-button type="white" to="/login"> Wróć do strony logowania </app-button>
         </div>
       </ValidationObserver>

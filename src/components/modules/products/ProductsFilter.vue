@@ -62,6 +62,7 @@ export default Vue.extend({
   methods: {
     makeSearch() {
       this.$emit('search', {
+        ...this.filters,
         search: this.search,
         sets: this.sets,
       })

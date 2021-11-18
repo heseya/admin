@@ -49,7 +49,8 @@ module.exports = {
 
     iconPaths: {
       appleTouchIcon: 'img/apple-touch-icon.png',
-      maskIcon: 'img/safari-pinned-tab.svg',
+      // maskIcon: 'img/safari-pinned-tab.svg',
+      maskIcon: null,
       msTileImage: 'img/mstile-150x150.svg',
     },
   },

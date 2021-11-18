@@ -39,7 +39,7 @@ export interface Schema {
   step: null | number
   used_schemas: any[] // TODO: SchemaDTO
   validation: string
-  auto_dependecy: boolean // TODO: not implemented on backend
+  auto_dependecy?: boolean // TODO: not implemented on backend
 }
 
 export interface SchemaValue {

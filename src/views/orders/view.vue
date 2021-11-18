@@ -488,7 +488,12 @@ export default Vue.extend({
 
   &__content {
     display: flex;
+    flex-direction: column;
     align-items: center;
+
+    @media ($viewport-8) {
+      flex-direction: row;
+    }
 
     > *:first-child {
       margin-right: 8px;

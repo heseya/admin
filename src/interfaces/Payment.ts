@@ -7,6 +7,6 @@ export interface Payment {
   continue_url: string
   external_id: UUID
   method: string
-  payed: boolean
+  paid: boolean
   redirect_url: string
 }

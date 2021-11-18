@@ -1,9 +1,11 @@
 <template>
   <validation-provider v-slot="{ errors }" :rules="rules" :name="name">
-    <app-input v-bind="$props" :data-cy="dataCy || name" v-on="$listeners">
-      <slot></slot>
+    <switch-input v-bind="$props" :data-cy="dataCy || name" v-on="$listeners">
+      <template #title>
+        <slot name="title" />
+      </template>
       <template #error>{{ errors[0] }}</template>
-    </app-input>
+    </switch-input>
   </validation-provider>
 </template>
 
@@ -16,25 +18,6 @@ export default Vue.extend({
   components: {
     ValidationProvider,
   },
-  props: [
-    'name',
-    'value',
-    'rules',
-    'label',
-    'placeholder',
-    'color',
-    'state',
-    'progress',
-    'loading',
-    'dataCy',
-    'type',
-    'step',
-    'rows',
-    'border',
-    'shadow',
-    'disabled',
-    'allowClear',
-    'addonBefore',
-  ],
+  props: ['rules', 'value', 'disabled', 'horizontal', 'label', 'name', 'dataCy'],
 })
 </script>

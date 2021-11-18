@@ -24,7 +24,7 @@
           :key="schema.id"
           :schema="editedSchema"
           :disabled="!$can(isNew ? $p.Products.Edit : $p.Products.Add)"
-          @submit="saveSchema"
+          @submit="onSubmit"
         />
       </card>
     </div>
@@ -89,7 +89,7 @@ export default Vue.extend({
     }
   },
   methods: {
-    async saveSchema(schema: Schema) {
+    async onSubmit(schema: Schema) {
       if (this.isNew) this.$router.push(`/schemas/${schema.id}`)
     },
     async deleteSchema() {

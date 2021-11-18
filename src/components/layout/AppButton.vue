@@ -83,6 +83,7 @@ export default Vue.extend({
   $default-icon-size: 24px;
 
   all: unset;
+  appearance: none !important;
   background-color: #2d2e31;
   color: #ffffff;
   cursor: pointer;

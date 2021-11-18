@@ -1,9 +1,11 @@
+import { BaseItem } from '@/store/generator'
+
 export interface TableHeader {
   key: string
   label: string
   width?: string
   sortable?: boolean
-  render?: (v: any) => any
+  render?: (v: any) => string | number | boolean
 }
 
 export interface TableValue {
@@ -13,7 +15,7 @@ export interface TableValue {
   rawValue: any
 }
 
-export interface TableConfig<Item = any> {
+export interface TableConfig<Item extends BaseItem = BaseItem> {
   headers: TableHeader[]
   rowOnClick?: (item: Item) => void
   rowUrlBuilder?: (item: Item) => string

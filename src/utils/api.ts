@@ -6,13 +6,14 @@ export const getApiURL = () => {
       return 'https://***REMOVED***.***REMOVED***'
     case 'admin.***REMOVED***.eu':
       return 'https://***REMOVED***.***REMOVED***'
-      return 'https://***REMOVED***.***REMOVED***'
     case 'admin.***REMOVED***.eu':
       return 'https://***REMOVED***.***REMOVED***'
     case '***REMOVED***':
       return '***REMOVED***'
     case '***REMOVED***':
       return 'https://rc.***REMOVED***'
+    case '***REMOVED***':
+      return '***REMOVED***'
     case 'store-admin-git-feature-hes-273-***REMOVED***':
       return 'https://sandbox.***REMOVED***'
     default:

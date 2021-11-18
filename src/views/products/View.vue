@@ -59,6 +59,7 @@
                   v-model="form.name"
                   rules="required"
                   label="Nazwa"
+                  name="name"
                   :disabled="!canModify"
                   @input="editSlug"
                 />
@@ -66,14 +67,16 @@
                   v-model="form.slug"
                   rules="required|slug"
                   label="Link"
+                  name="slug"
                   :disabled="!canModify"
                 />
                 <validated-input
                   v-model="form.price"
-                  rules="required|positive"
+                  rules="required|not-negative"
                   type="number"
                   step="0.01"
                   label="Cena"
+                  name="price"
                   :disabled="!canModify"
                 />
               </div>
@@ -85,6 +88,7 @@
                     v-model="form.sets"
                     placeholder="Wybierz kolekcje"
                     mode="multiple"
+                    name="sets"
                     label="Kolekcje"
                     :disabled="!canModify"
                   >
@@ -101,6 +105,7 @@
                   type="number"
                   max="999999"
                   step="0.01"
+                  name="quantity_step"
                   label="Format ilości"
                   :disabled="!canModify"
                 />
@@ -127,11 +132,17 @@
                 <br />
                 <br />
                 <div class="flex">
-                  <app-button v-if="canModify" html-type="submit" style="margin-right: 12px">
+                  <app-button
+                    v-if="canModify"
+                    data-cy="submit-btn"
+                    html-type="submit"
+                    style="margin-right: 12px"
+                  >
                     Zapisz
                   </app-button>
                   <app-button
                     v-if="canModify && isNew"
+                    data-cy="submit-and-next-btn"
                     @click.prevent="handleSubmit(submitAndGoNext)"
                   >
                     Zapisz i dodaj następny

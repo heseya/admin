@@ -41,7 +41,7 @@ export default Vue.extend({
     },
     placement: {
       type: String,
-      default: 'bottom',
+      default: 'top',
     },
     trigger: {
       type: String,

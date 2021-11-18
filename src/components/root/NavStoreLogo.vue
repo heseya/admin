@@ -1,7 +1,11 @@
 <template>
   <media-uploader
     class="nav-logo"
-    :class="{ 'nav-logo--exist': filePath, 'nav-logo--disabled': !canModify }"
+    :class="{
+      'nav-logo--exist': filePath || disabled,
+      'nav-logo--disabled': !canModify || disabled,
+      'nav-logo--big': big,
+    }"
     :disabled="!canModify"
     @upload="changeLogo"
   >
@@ -26,6 +30,16 @@ const ENV_NAME = 'store_logo'
 
 export default Vue.extend({
   components: { MediaUploader },
+  props: {
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    big: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data: () => ({
     filePath: '',
   }),
@@ -88,7 +102,8 @@ export default Vue.extend({
   }
 
   &__logo {
-    width: 130px;
+    width: 100%;
+    max-width: 130px;
     max-height: 70px;
     object-fit: contain;
     opacity: 0.4;
@@ -100,8 +115,12 @@ export default Vue.extend({
   }
 
   &--exist &__logo {
-    width: 150px;
+    max-width: 150px;
     opacity: 1;
+  }
+
+  &--big &__logo {
+    max-width: 200px;
   }
 
   &--exist &__title {

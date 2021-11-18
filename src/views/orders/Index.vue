@@ -6,6 +6,7 @@
       :table="tableConfig"
       store-key="orders"
       class="orders-list"
+      @search="makeSearch"
       @clear-filters="clearFilters"
     >
       <template #filters>
@@ -29,7 +30,7 @@
               <span class="order-icon"> <i class="bx bxs-error"></i> </span>
             </a-tooltip>
           </template>
-          <template #payed="{ rawValue }">
+          <template #paid="{ rawValue }">
             <span v-if="rawValue" class="order-tag success-text">Opłacone</span>
             <span v-else class="order-tag danger-text">Nieopłacone</span>
           </template>
@@ -47,7 +48,10 @@ import Vue from 'vue'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
-import OrderFilter, { EMPTY_ORDER_FILTERS } from '@/components/modules/orders/OrderFilter.vue'
+import OrderFilter, {
+  EMPTY_ORDER_FILTERS,
+  OrderFilersType,
+} from '@/components/modules/orders/OrderFilter.vue'
 
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 
@@ -56,8 +60,6 @@ import { Order } from '@/interfaces/Order'
 
 import { formatFilters, getRelativeDate } from '@/utils/utils'
 import { formatCurrency } from '@/utils/currency'
-
-type OrderFilersType = typeof EMPTY_ORDER_FILTERS
 
 export default Vue.extend({
   metaInfo: { title: 'Zamówienia' },
@@ -86,9 +88,9 @@ export default Vue.extend({
             label: 'Wartość',
             render: (v) => this.formatCurrency(v),
           },
-          { key: 'payed', label: 'Płatność', width: '0.8fr' },
+          { key: 'paid', label: 'Płatność', width: '0.8fr' },
           { key: 'status', label: 'Status', width: '0.8fr' },
-          { key: 'shipping_method', label: 'Przesyłka', render: () => 'DHL kurier' },
+          { key: 'shipping_method.name', label: 'Przesyłka' },
           { key: 'email', label: 'Klient', width: '2fr' },
         ],
       }

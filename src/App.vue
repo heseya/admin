@@ -12,6 +12,8 @@
     </main>
 
     <Loading :relative="false" :active="isLoading" />
+
+    <sw-update-popup />
   </div>
 </template>
 
@@ -23,6 +25,7 @@ import DesktopNavigation from './components/root/DesktopNavigation.vue'
 import MobileNavigation from './components/root/MobileNavigation.vue'
 import AppHeader from './components/root/Header.vue'
 import Loading from './components/layout/Loading.vue'
+import SwUpdatePopup from './components/root/SwUpdatePopup.vue'
 
 export default Vue.extend({
   metaInfo: {
@@ -36,6 +39,7 @@ export default Vue.extend({
     MobileNavigation,
     AppHeader,
     Loading,
+    SwUpdatePopup,
   },
   computed: {
     isLoading(): boolean {

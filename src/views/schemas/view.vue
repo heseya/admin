@@ -9,7 +9,7 @@
         cancel-text="Anuluj"
         @confirm="deleteSchema"
       >
-        <icon-button type="danger">
+        <icon-button type="danger" data-cy="delete-btn">
           <template #icon>
             <i class="bx bx-trash"></i>
           </template>

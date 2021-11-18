@@ -1,5 +1,3 @@
-const uuid = () => Cypress._.random(0, 1e6)
-
 describe('Products page', () => {
   it('should load products page', () => {
     cy.login()
@@ -28,7 +26,7 @@ describe('Products page', () => {
         })
     })*/
 
-    const productName = `Cypress Product ${uuid()}`
+    const productName = `Cypress Product ${cy.util.uuid()}`
 
     cy.dataCy('name').type(productName)
     cy.dataCy('price').clear().type('100')
@@ -47,7 +45,7 @@ describe('Products page', () => {
 
     cy.intercept('PATCH', '/products/id:*').as('saveProduct')
 
-    const renamedProductName = `Renamed Cypress Product ${uuid()}`
+    const renamedProductName = `Renamed Cypress Product ${cy.util.uuid()}`
 
     cy.dataCy('name').clear().type(renamedProductName)
     cy.dataCy('price').clear().type('3000')
@@ -68,5 +66,16 @@ describe('Products page', () => {
     cy.dataCy('submit-btn').click()
 
     cy.wait('@saveProduct')
+  })
+
+  it('product can be removed', () => {
+    // TODO: Article Editor throw werid error when routing to new page
+    cy.on('uncaught:exception', () => false)
+
+    cy.dataCy('delete-btn').click()
+
+    cy.get('.ant-popover .app-button').contains('Usuń').click()
+
+    cy.url().should('eq', `${Cypress.config().baseUrl}products`)
   })
 })

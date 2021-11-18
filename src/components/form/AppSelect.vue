@@ -7,6 +7,7 @@
       v-model="innerValue"
       class="app-input__input"
       v-bind="$props"
+      :data-cy="dataCy || name"
       @change="$emit('change')"
     >
       <a-select-option v-if="addAll" value="_all"> Wszystkie </a-select-option>
@@ -38,6 +39,7 @@ export default Vue.extend({
     disabled: Boolean,
     addAll: Boolean,
     showSearch: Boolean,
+    dataCy: String,
   },
   computed: {
     innerValue: {

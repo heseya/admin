@@ -11,7 +11,7 @@
         cancel-text="Anuluj"
         @confirm="deleteProduct"
       >
-        <icon-button type="danger">
+        <icon-button type="danger" data-cy="delete-btn">
           <template #icon>
             <i class="bx bx-trash"></i>
           </template>

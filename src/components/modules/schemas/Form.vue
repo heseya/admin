@@ -15,7 +15,7 @@
     />
     <div class="flex">
       <validation-provider v-slot="{ errors }" name="schema-type" rules="id-required">
-        <app-select v-model="form.type" :disabled="disabled" label="Typ schematu">
+        <app-select v-model="form.type" :disabled="disabled" name="type" label="Typ schematu">
           <a-select-option
             v-for="{ value, label } in SchemaTypesOptions"
             :key="value"
@@ -149,7 +149,9 @@
       />
     </Zone>
     <br />
-    <app-button :disabled="disabled" @click.stop="handleSubmit(submit)"> Zapisz </app-button>
+    <app-button data-cy="submit-btn" :disabled="disabled" @click.stop="handleSubmit(submit)">
+      Zapisz
+    </app-button>
   </validation-observer>
 </template>
 

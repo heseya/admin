@@ -64,6 +64,7 @@ export default Vue.extend({
   visibility: hidden;
   opacity: 0;
   transition: 0.3s;
+  z-index: 1000;
 
   @media ($viewport-4) {
     flex-direction: row;
@@ -71,9 +72,13 @@ export default Vue.extend({
   }
 
   &--active {
-    bottom: 20px;
+    bottom: 64px;
     visibility: visible;
     opacity: 1;
+
+    @media ($viewport-11) {
+      bottom: 20px;
+    }
   }
 
   &__text {

@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { UUID } from './UUID'
 import { Product, ProductItem } from './Product'
 
@@ -36,9 +37,9 @@ export interface Schema {
   products: Product[]
   required: boolean
   step: null | number
-  // eslint-disable-next-line camelcase
   used_schemas: any[] // TODO: SchemaDTO
   validation: string
+  auto_dependecy: boolean // TODO: not implemented on backend
 }
 
 export interface SchemaValue {

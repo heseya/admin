@@ -97,3 +97,11 @@ extend('price-ranges-duplicates', {
     })
   },
 })
+
+extend('schema-checkbox', {
+  params: ['target'],
+  validate(value, { target }: Record<string, any>) {
+    return !(value && target)
+  },
+  message: 'Schemat nie może być jednocześnie ukryty i wymagany',
+})

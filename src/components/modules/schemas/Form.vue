@@ -38,12 +38,22 @@
       />
     </div>
     <div class="flex">
-      <SwitchInput v-model="form.hidden" :disabled="disabled">
+      <ValidatedSwitchInput
+        v-model="form.hidden"
+        :disabled="disabled"
+        name="hidden"
+        rules="schema-checkbox:@disabled"
+      >
         <template #title>Ukryty</template>
-      </SwitchInput>
-      <SwitchInput v-model="form.required" :disabled="disabled">
+      </ValidatedSwitchInput>
+      <ValidatedSwitchInput
+        v-model="form.required"
+        :disabled="disabled"
+        name="disabled"
+        rules="schema-checkbox:@hidden"
+      >
         <template #title>Wymagany</template>
-      </SwitchInput>
+      </ValidatedSwitchInput>
     </div>
     <div v-if="isKindOfNumeric(form.type) || form.type === SchemaType.String" class="flex">
       <validated-input

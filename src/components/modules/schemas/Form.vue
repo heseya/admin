@@ -38,12 +38,22 @@
       />
     </div>
     <div class="flex">
-      <SwitchInput v-model="form.hidden" :disabled="disabled">
+      <ValidatedSwitchInput
+        v-model="form.hidden"
+        :disabled="disabled"
+        name="hidden"
+        rules="schema-checkbox:@disabled"
+      >
         <template #title>Ukryty</template>
-      </SwitchInput>
-      <SwitchInput v-model="form.required" :disabled="disabled">
+      </ValidatedSwitchInput>
+      <ValidatedSwitchInput
+        v-model="form.required"
+        :disabled="disabled"
+        name="disabled"
+        rules="schema-checkbox:@hidden"
+      >
         <template #title>Wymagany</template>
-      </SwitchInput>
+      </ValidatedSwitchInput>
     </div>
     <div v-if="isKindOfNumeric(form.type) || form.type === SchemaType.String" class="flex">
       <validated-input
@@ -246,36 +256,42 @@ export default Vue.extend({
       }
 
       this.$accessor.startLoading()
-      let id = ''
+      try {
+        let id = ''
 
-      this.form.default =
-        this.form.type === SchemaType.Select ? this.defaultOption : this.form.default
+        this.form.default =
+          this.form.type === SchemaType.Select ? this.defaultOption : this.form.default
 
-      const options = this.form.options.map((opt) => ({
-        ...opt,
-        items: opt.items.map((item) => item.id),
-      }))
+        const options = this.form.options.map((opt) => ({
+          ...opt,
+          items: opt.items.map((item) => item.id),
+        }))
 
-      if (!this.form?.id) {
-        // @ts-ignore // TODO: Schema DTO
-        const schema = await this.$accessor.schemas.add({ ...this.form, options })
-        if (schema && schema.id) {
-          this.$toast.success('Schemat został utworzony.')
-          id = schema.id
-        }
-      } else {
-        const success = await this.$accessor.schemas.update({
-          id: this.form.id,
+        if (!this.form?.id) {
           // @ts-ignore // TODO: Schema DTO
-          item: { ...this.form, options },
-        })
-        if (success) {
+          const schema = await this.$accessor.schemas.add({ ...this.form, options })
+          if (!schema) throw new Error('Schema not created')
+
+          if (schema && schema.id) {
+            this.$toast.success('Schemat został utworzony.')
+            id = schema.id
+          }
+        } else {
+          const success = await this.$accessor.schemas.update({
+            id: this.form.id,
+            // @ts-ignore // TODO: Schema DTO
+            item: { ...this.form, options },
+          })
+          if (!success) throw new Error('Schema not updated')
+
           id = this.form.id
           this.$toast.success('Schemat został zaktualizowany.')
         }
+        this.$emit('submit', this.$accessor.schemas.getFromListById(id))
+      } catch {
+      } finally {
+        this.$accessor.stopLoading()
       }
-      this.$accessor.stopLoading()
-      this.$emit('submit', this.$accessor.schemas.getFromListById(id))
     },
   },
 })

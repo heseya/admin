@@ -111,14 +111,14 @@
                 Klient zapłacił {{ formatCurrency(order.summary_paid) }} zamiast
                 {{ formatCurrency(order.summary) }}
               </template>
-              <span class="overpayed-icon"> <i class="bx bxs-error"></i> </span>
+              <span class="overpaid-icon"> <i class="bx bxs-error"></i> </span>
             </a-tooltip>
 
             Próby płatności
           </h2>
           <div v-for="payment in order.payments" :key="payment.id" class="payment-method">
-            <i v-if="payment.payed" class="bx bxs-check-circle payment-method__success"></i>
-            <i v-if="!payment.payed" class="bx bxs-x-circle payment-method__failed"></i>
+            <i v-if="payment.paid" class="bx bxs-check-circle payment-method__success"></i>
+            <i v-if="!payment.paid" class="bx bxs-x-circle payment-method__failed"></i>
             <span class="payment-method__name">{{ payment.method }}</span>
             <span class="payment-method__amount">({{ formatCurrency(payment.amount) }})</span>
           </div>
@@ -442,7 +442,7 @@ export default Vue.extend({
     grid-template-columns: 1fr;
   }
 
-  .overpayed-icon {
+  .overpaid-icon {
     display: flex;
     justify-content: center;
     color: $red-color-500;

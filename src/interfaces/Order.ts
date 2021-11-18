@@ -25,7 +25,7 @@ export interface Order {
   email: string
   invoice_address: Address
   payable: boolean
-  payed: boolean
+  paid: boolean
   payments: Payment[]
   products: CartItem[]
   shipping_method: ShippingMethod

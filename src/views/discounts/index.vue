@@ -120,13 +120,13 @@ export default Vue.extend({
           {
             key: 'starts_at',
             label: 'Ważny od',
-            render: (v) => (v ? formatDate(v) : '-'),
+            render: (v) => formatDate(v) || '-',
             width: '0.5fr',
           },
           {
             key: 'expires_at',
             label: 'Ważny do',
-            render: (v) => (v ? formatDate(v) : '-'),
+            render: (v) => formatDate(v) || '-',
             width: '0.5fr',
           },
         ],

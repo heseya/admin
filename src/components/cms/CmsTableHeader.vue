@@ -5,10 +5,14 @@
       :key="key"
       class="cms-table-header__col"
       :class="{ 'cms-table-header__col--sortable': sortable }"
-      @click="sort(key)"
+      @click="handleSort(key)"
     >
       {{ label }}
-      <i v-if="sortable" class="bx bx-down-arrow-alt"></i>
+      <template v-if="sortable">
+        <i v-if="!sortingObject[key]" class="bx bx-sort-alt-2"></i>
+        <i v-else-if="sortingObject[key] === 'asc'" class="bx bx-up-arrow-alt"></i>
+        <i v-else-if="sortingObject[key] === 'desc'" class="bx bx-down-arrow-alt"></i>
+      </template>
     </button>
   </div>
 </template>
@@ -24,12 +28,34 @@ export default Vue.extend({
       type: Array,
       required: true,
     } as Vue.PropOptions<TableHeader[]>,
+    sortFilters: {
+      type: String,
+      default: '',
+    },
+  },
+  computed: {
+    sortingObject(): Record<string, string> {
+      return this.sortFilters.split(',').reduce<Record<string, string>>((acc, keyvalue) => {
+        const [key, value] = keyvalue.split(':')
+        return { ...acc, [key]: value }
+      }, {})
+    },
   },
   methods: {
-    sort(key: string) {
-      // TODO: implement sorting
-      // eslint-disable-next-line no-console
-      console.log('sort by:', key)
+    handleSort(key: string) {
+      if (!this.sortingObject[key]) this.makeSort({ ...this.sortingObject, [key]: 'asc' })
+      else if (this.sortingObject[key] === 'asc')
+        this.makeSort({ ...this.sortingObject, [key]: 'desc' })
+      else if (this.sortingObject[key] === 'desc')
+        this.makeSort({ ...this.sortingObject, [key]: null })
+    },
+    makeSort(sortObj: Record<string, string | null>) {
+      const stringValue = Object.entries(sortObj)
+        .filter(([, value]) => !!value)
+        .map(([key, value]) => `${key}:${value}`)
+        .join(',')
+
+      this.$emit('sort', stringValue)
     },
   },
 })

@@ -16,8 +16,10 @@
         :is="contentComponent"
         v-else
         v-model="items"
+        :sort-filters="filters && filters.sort"
         v-bind="!!table ? { config: table, draggable } : {}"
         class="paginated-list__list"
+        @sort="onSort"
       >
         <template v-for="item in items">
           <slot :item="item">
@@ -174,6 +176,9 @@ export default Vue.extend({
 
       if (this.page === 1) this.getItems()
       else this.$router.push({ path: this.$route.path, query: { ...this.$route.query, page: '1' } })
+    },
+    onSort(sortFilters: string) {
+      this.$emit('search', { ...this.filters, sort: sortFilters })
     },
     async getItems() {
       this.isLoading = true

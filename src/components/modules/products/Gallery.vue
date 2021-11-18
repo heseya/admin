@@ -7,8 +7,12 @@
       :disabled="disabled"
     >
       <div v-for="image in images" :key="image.url" class="gallery__img">
-        <img v-if="image.type === 1" :src="`${image.url}?w=350&h=350`" :style="{ objectFit }" />
-        <video v-if="image.type === 2" :src="image.url" autoplay loop muted />
+        <img
+          v-if="image.type === CdnMediaType.Photo"
+          :src="`${image.url}?w=350&h=350`"
+          :style="{ objectFit }"
+        />
+        <video v-if="image.type === CdnMediaType.Video" :src="image.url" autoplay loop muted />
         <div class="remove">
           <icon-button v-if="!disabled" type="danger" @click="onImageDelete(image.id)">
             <template #icon>
@@ -38,7 +42,7 @@ import Draggable from 'vuedraggable'
 import MediaUploader from '@/components/MediaUploader.vue'
 import { formatApiNotificationError } from '@/utils/errors'
 import { UUID } from '@/interfaces/UUID'
-import { CdnMedia } from '@/interfaces/Media'
+import { CdnMedia, CdnMediaType } from '@/interfaces/Media'
 import { removeMedia } from '@/services/uploadMedia'
 
 export default Vue.extend({
@@ -58,6 +62,9 @@ export default Vue.extend({
     isDrag: false,
   }),
   computed: {
+    CdnMediaType(): typeof CdnMediaType {
+      return CdnMediaType
+    },
     images: {
       get(): CdnMedia[] {
         return this.value

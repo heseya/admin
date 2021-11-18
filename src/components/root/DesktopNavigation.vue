@@ -51,12 +51,7 @@
       <span class="nav__link-label">Ustawienia</span>
     </router-link>
 
-    <div class="nav__author nav-author">
-      <span class="nav-author__title">Powered by</span>
-      <a href="https://heseya.com" target="_blank">
-        <img src="@/assets/images/heseya-primary.svg" alt="Heseya" class="nav-author__logo" />
-      </a>
-    </div>
+    <powered-by class="nav__author" />
   </nav>
 </template>
 
@@ -65,10 +60,11 @@ import Vue from 'vue'
 // @ts-ignore
 import InlineSvg from 'vue-inline-svg'
 import NavStoreLogo from './NavStoreLogo.vue'
+import PoweredBy from './PoweredBy.vue'
 
 export default Vue.extend({
   name: 'DesktopNavigation',
-  components: { NavStoreLogo, InlineSvg },
+  components: { NavStoreLogo, InlineSvg, PoweredBy },
   computed: {
     isHidden(): boolean {
       return !!this.$route.meta?.hiddenNav || false
@@ -158,26 +154,10 @@ export default Vue.extend({
       padding: 8px 12px;
     }
   }
-}
 
-.nav-author {
-  width: 100%;
-  margin-top: auto;
-  margin-bottom: 8vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &__title {
-    font-size: 0.8em;
-    font-weight: 300;
-    letter-spacing: -0.24px;
-    color: #bec1c7;
-    margin-right: 10px;
-  }
-
-  &__logo {
-    height: 22px;
+  &__author {
+    margin-top: auto;
+    margin-bottom: 8vh;
   }
 }
 </style>

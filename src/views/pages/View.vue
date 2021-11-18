@@ -75,6 +75,7 @@ import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { Page, PageDto } from '@/interfaces/Page'
+import { UUID } from '@/interfaces/UUID'
 
 export default Vue.extend({
   metaInfo(): any {
@@ -95,14 +96,13 @@ export default Vue.extend({
     form: {
       name: '',
       slug: '',
-      content_md: '',
       content_html: '',
       public: true,
       seo: {},
     } as PageDto,
   }),
   computed: {
-    id(): string {
+    id(): UUID {
       return this.$route.params.id
     },
     isNew(): boolean {

@@ -50,7 +50,7 @@
           <small class="label">Treść</small>
           <RichEditor v-if="!isLoading" v-model="form.content_html" :disabled="!canModify" />
           <br />
-          <SeoForm v-model="form.seo" :disabled="!canModify" />
+          <seo-form v-model="form.seo" :disabled="!canModify" />
           <br />
           <app-button v-if="canModify" @click="handleSubmit(save)"> Zapisz </app-button>
         </card>

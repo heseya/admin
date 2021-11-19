@@ -10,7 +10,7 @@
       :data-cy="dataCy || name"
       @change="$emit('change')"
     >
-      <a-select-option v-if="addAll" value="_all"> Wszystkie </a-select-option>
+      <a-select-option v-if="addAll" value="_all" label="Wszystkie"> Wszystkie </a-select-option>
       <slot></slot>
     </a-select>
     <span class="app-input__error">
@@ -39,6 +39,7 @@ export default Vue.extend({
     disabled: Boolean,
     addAll: Boolean,
     showSearch: Boolean,
+    optionFilterProp: String,
     dataCy: String,
   },
   computed: {

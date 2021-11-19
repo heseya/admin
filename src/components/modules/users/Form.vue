@@ -18,11 +18,17 @@
       label="Hasło"
     />
 
-    <app-select v-model="form.roles" :disabled="disabled" label="Role" mode="multiple">
+    <app-select
+      v-model="form.roles"
+      :disabled="disabled"
+      label="Role"
+      mode="multiple"
+      option-filter-prop="label"
+    >
       <a-select-option
         v-for="role in roles"
         :key="role.id"
-        :value="role.id"
+        :label="role.name"
         :disabled="!role.assignable"
       >
         {{ role.name }}

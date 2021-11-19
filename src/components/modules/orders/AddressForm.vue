@@ -7,8 +7,8 @@
       <validated-input v-model="form.city" rules="required" name="address" label="Miasto" />
     </div>
     <ValidationProvider rules="required" tag="div" class="address-form__select">
-      <app-select v-model="form.country" label="Kraj" show-search>
-        <a-select-option v-for="country in countries" :key="country.code" :value="country.code">
+      <app-select v-model="form.country" label="Kraj" show-search option-filter-prop="label">
+        <a-select-option v-for="country in countries" :key="country.code" :label="country.name">
           {{ country.name }}
         </a-select-option>
       </app-select>

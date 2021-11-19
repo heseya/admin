@@ -90,9 +90,10 @@
                     mode="multiple"
                     name="sets"
                     label="Kolekcje"
+                    option-filter-prop="label"
                     :disabled="!canModify"
                   >
-                    <a-select-option v-for="set in productSets" :key="set.id" :value="set.id">
+                    <a-select-option v-for="set in productSets" :key="set.id" :label="set.name">
                       <i v-if="!set.public" class="bx bx-lock"></i>
                       {{ set.name }} &nbsp; <small>(/{{ set.slug }})</small>
                     </a-select-option>

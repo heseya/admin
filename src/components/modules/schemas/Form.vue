@@ -15,11 +15,17 @@
     />
     <div class="flex">
       <validation-provider v-slot="{ errors }" name="schema-type" rules="id-required">
-        <app-select v-model="form.type" :disabled="disabled" name="type" label="Typ schematu">
+        <app-select
+          v-model="form.type"
+          :disabled="disabled"
+          name="type"
+          label="Typ schematu"
+          option-filter-prop="label"
+        >
           <a-select-option
             v-for="{ value, label } in SchemaTypesOptions"
             :key="value"
-            :value="value"
+            :label="label"
           >
             {{ label }}
           </a-select-option>

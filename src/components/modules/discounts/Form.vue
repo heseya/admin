@@ -8,8 +8,8 @@
     <validated-input v-model="form.discount" :disabled="disabled" rules="required" label="Zniżka" />
     <ValidationProvider v-slot="{ errors }" rules="required">
       <app-select v-model="form.type" :disabled="disabled" label="Typ">
-        <a-select-option :value="0">Rabat Procentowy</a-select-option>
-        <a-select-option :value="1">Rabat Kwotowy</a-select-option>
+        <a-select-option :value="0" label="Rabat procentowy">Rabat procentowy</a-select-option>
+        <a-select-option :value="1" label="Rabat kwotowy">Rabat kwotowy</a-select-option>
         <template #error>{{ errors[0] }}</template>
       </app-select>
     </ValidationProvider>

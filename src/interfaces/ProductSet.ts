@@ -5,7 +5,7 @@ import { SeoMetadata, SeoMetadataDto } from './SeoMetadata'
 export interface ProductSet {
   id: UUID
   name: string
-  slug: Readonly<string>
+  slug: string
   slug_suffix: string
   slug_override: boolean
   public: boolean

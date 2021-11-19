@@ -130,11 +130,28 @@ export default Vue.extend({
     form: {} as ProductSetDTO,
   }),
   watch: {
-    value(value: ProductSetDTO) {
-      this.form = { ...cloneDeep(value), seo: value.seo || {} }
+    value() {
+      this.fetchProductSet()
     },
   },
   methods: {
+    async fetchProductSet() {
+      if (!this.value?.id) return
+      this.$accessor.startLoading()
+      const success = await this.$accessor.productSets.get(this.value.id)
+      if (success) {
+        const fetched = this.$accessor.productSets.getSelected
+        this.form = {
+          ...cloneDeep(fetched),
+          parent_id: fetched.parent?.id || null,
+          children_ids: fetched.children?.map((child) => child.id) || [],
+          seo: fetched.seo || {},
+        }
+      } else {
+        this.$emit('close')
+      }
+      this.$accessor.stopLoading()
+    },
     editSlug() {
       if (!this.form.id) {
         this.form.slug_suffix = slugify(this.form.name, { lower: true, remove: /[.]/g })

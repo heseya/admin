@@ -136,6 +136,17 @@ const actions = actionTree(
       }
     },
 
+    async changePassword(
+      _u,
+      { oldPassword, newPassword }: { oldPassword: string; newPassword: string },
+    ) {
+      return api.patch('users/password', {
+        password: oldPassword,
+        password_new: newPassword,
+        password_confirmation: newPassword,
+      })
+    },
+
     async logout({ commit, dispatch }) {
       accessor.startLoading()
       try {

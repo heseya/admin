@@ -44,7 +44,7 @@
       </template>
     </template>
     <template v-else>
-      <small class="address__error">Brak podanego adresu</small>
+      <small class="address__error">Brak</small>
     </template>
   </div>
 </template>

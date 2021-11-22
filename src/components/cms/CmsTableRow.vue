@@ -75,6 +75,7 @@ export default Vue.extend({
 .cms-table-row {
   border: none;
   @extend %card;
+  box-shadow: none;
   background-color: #fff;
   display: grid;
   align-items: center;

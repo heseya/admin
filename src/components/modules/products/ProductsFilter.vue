@@ -9,8 +9,14 @@
       @input="debouncedSearch"
     />
 
-    <app-select v-model="sets[0]" label="Kolekcja" add-all @change="debouncedSearch">
-      <a-select-option v-for="set in productSets" :key="set.id" :label="set.name" :value="set.slug">
+    <app-select
+      v-model="sets[0]"
+      label="Kolekcja"
+      add-all
+      option-filter-prop="label"
+      @change="debouncedSearch"
+    >
+      <a-select-option v-for="set in productSets" :key="set.id" :label="set.name">
         {{ set.name }}
       </a-select-option>
     </app-select>

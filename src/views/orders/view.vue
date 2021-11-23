@@ -66,11 +66,12 @@
                 v-model="packageTemplateId"
                 label="Szablon przesyłki"
                 placeholder="-- Wybierz szablon --"
+                option-filter-prop="label"
               >
                 <a-select-option
                   v-for="template in packageTemplates"
                   :key="template.id"
-                  :value="template.id"
+                  :label="template.name"
                 >
                   {{ template.name }}
                 </a-select-option>
@@ -92,9 +93,10 @@
             <app-select
               v-model="status"
               :loading="isLoading"
+              option-filter-prop="label"
               :disabled="!$can($p.Orders.EditStatus)"
             >
-              <a-select-option v-for="{ id, name } in statuses" :key="id" :value="id">
+              <a-select-option v-for="{ id, name } in statuses" :key="id" :label="name">
                 {{ name }}
               </a-select-option>
             </app-select>

@@ -7,9 +7,10 @@
           v-model="form.payment_methods"
           :disabled="disabled"
           mode="multiple"
+          option-filter-prop="label"
           label="Dostępne metody płatności"
         >
-          <a-select-option v-for="method in paymentMethods" :key="method.id" :value="method.id">
+          <a-select-option v-for="method in paymentMethods" :key="method.id" :label="method.name">
             {{ method.name }}
           </a-select-option>
         </app-select>
@@ -40,8 +41,14 @@
       </div>
 
       <div class="center">
-        <app-select v-model="form.countries" :disabled="disabled" mode="multiple" label="Kraje">
-          <a-select-option v-for="country in countries" :key="country.code" :value="country.code">
+        <app-select
+          v-model="form.countries"
+          :disabled="disabled"
+          mode="multiple"
+          label="Kraje"
+          option-filter-prop="label"
+        >
+          <a-select-option v-for="country in countries" :key="country.code" :label="country.name">
             {{ country.name }}
           </a-select-option>
         </app-select>

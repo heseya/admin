@@ -9,14 +9,26 @@
       @input="debouncedSearch"
     />
 
-    <app-select v-model="status_id" label="Status" add-all @change="debouncedSearch">
-      <a-select-option v-for="s in statuses" :key="s.id" :value="s.id">
+    <app-select
+      v-model="status_id"
+      label="Status"
+      add-all
+      option-filter-prop="label"
+      @change="debouncedSearch"
+    >
+      <a-select-option v-for="s in statuses" :key="s.id" :label="s.name">
         {{ s.name }}
       </a-select-option>
     </app-select>
 
-    <app-select v-model="shipping_method_id" label="Dostawa" add-all @change="debouncedSearch">
-      <a-select-option v-for="method in shippingMethods" :key="method.id" :value="method.id">
+    <app-select
+      v-model="shipping_method_id"
+      label="Dostawa"
+      add-all
+      option-filter-prop="label"
+      @change="debouncedSearch"
+    >
+      <a-select-option v-for="method in shippingMethods" :key="method.id" :label="method.name">
         {{ method.name }}
       </a-select-option>
     </app-select>

@@ -1,7 +1,7 @@
 <template>
   <validation-observer v-slot="{ handleSubmit }">
     <validated-input
-      v-model="password"
+      v-model="oldPassword"
       icon-after
       label="Obecne hasło"
       type="password"
@@ -12,18 +12,18 @@
       </template>
     </validated-input>
     <validated-input
-      v-model="passwordNew"
+      v-model="newPassword"
       label="Nowe hasło"
       type="password"
       rules="required|password"
-      name="passwordNew"
+      name="newPassword"
     >
     </validated-input>
     <validated-input
-      v-model="passwordConfirmation"
+      v-model="confirmNewPassword"
       label="Powtórz nowe hasło"
       type="password"
-      rules="required|repeatPassword:@passwordNew"
+      rules="required|repeatPassword:@newPassword"
     >
     </validated-input>
     <br />
@@ -38,7 +38,6 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
-import { api } from '../../../api'
 import { formatApiNotificationError } from '@/utils/errors'
 
 export default Vue.extend({
@@ -46,20 +45,23 @@ export default Vue.extend({
     ValidationObserver,
   },
   data: () => ({
-    password: '',
-    passwordNew: '',
-    passwordConfirmation: '',
+    oldPassword: '',
+    newPassword: '',
+    confirmNewPassword: '',
     isLoading: false,
   }),
   methods: {
     async changePassword() {
-      this.isLoading = true
       try {
-        await api.patch('user/password', {
-          password: this.password,
-          password_new: this.passwordNew,
-          password_confirmation: this.passwordConfirmation,
+        this.isLoading = true
+
+        if (this.newPassword !== this.confirmNewPassword) throw new Error('Hasła nie są identyczne')
+
+        await this.$accessor.auth.changePassword({
+          oldPassword: this.oldPassword,
+          newPassword: this.newPassword,
         })
+
         this.$toast.success('Hasło zostało zmienione')
       } catch (error: any) {
         this.$toast.error(formatApiNotificationError(error))

@@ -78,6 +78,7 @@ export default Vue.extend({
 
   &__select {
     width: 100%;
+    z-index: 1;
   }
 }
 </style>

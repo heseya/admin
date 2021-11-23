@@ -16,9 +16,10 @@
           v-if="field.type === 'select'"
           :key="field.key"
           v-model="form[field.key]"
+          option-filter-prop="label"
           :label="field.label"
         >
-          <a-select-option v-for="{ value, label } in field.options" :key="value" :value="value">
+          <a-select-option v-for="{ value, label } in field.options" :key="value" :label="label">
             {{ label }}
           </a-select-option>
         </app-select>

@@ -133,11 +133,13 @@ export default Vue.extend({
         ...new Set([...Object.keys(audit.old_values), ...Object.keys(audit.new_values)]),
       ]
 
-      return keys.map((key) => ({
-        key,
-        old: audit.old_values[key],
-        new: audit.new_values[key],
-      }))
+      return keys
+        .filter((key) => key !== 'id') // Remove ID key
+        .map((key) => ({
+          key,
+          old: audit.old_values[key],
+          new: audit.new_values[key],
+        }))
     },
 
     async fetchAudits() {

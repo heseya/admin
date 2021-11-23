@@ -11,7 +11,7 @@
         cancel-text="Anuluj"
         @confirm="deleteProduct"
       >
-        <icon-button type="danger">
+        <icon-button type="danger" data-cy="delete-btn">
           <template #icon>
             <i class="bx bx-trash"></i>
           </template>
@@ -90,9 +90,10 @@
                     mode="multiple"
                     name="sets"
                     label="Kolekcje"
+                    option-filter-prop="label"
                     :disabled="!canModify"
                   >
-                    <a-select-option v-for="set in productSets" :key="set.id" :value="set.id">
+                    <a-select-option v-for="set in productSets" :key="set.id" :label="set.name">
                       <i v-if="!set.public" class="bx bx-lock"></i>
                       {{ set.name }} &nbsp; <small>(/{{ set.slug }})</small>
                     </a-select-option>

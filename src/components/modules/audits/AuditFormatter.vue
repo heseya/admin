@@ -30,8 +30,8 @@ export default Vue.extend({
       required: true,
     },
     value: {
-      type: [String, Object, Number],
-      required: true,
+      type: [String, Object, Number, Boolean],
+      default: null,
     },
   },
   computed: {

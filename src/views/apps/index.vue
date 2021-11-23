@@ -28,8 +28,17 @@
 
                 <icon-button size="small" @click="openConfigureModal(app)">
                   <template #icon>
-                    <i v-if="app.microfrontend_url" class="bx bx-log-in"></i>
-                    <i v-else class="bx bx-edit"></i>
+                    <i class="bx bx-edit"></i>
+                  </template>
+                </icon-button>
+
+                <icon-button
+                  v-if="app.microfrontend_url"
+                  size="small"
+                  @click="goToMicrofrontend(app)"
+                >
+                  <template #icon>
+                    <i class="bx bx-log-in"></i>
                   </template>
                 </icon-button>
 
@@ -123,13 +132,13 @@ export default Vue.extend({
       // ? Only to allow local apps to work on docker
       app.url = app.url.replace('host.docker.internal', 'localhost')
 
-      if (app.microfrontend_url) {
-        this.$router.push(`/apps/${app.id}/`)
-        return
-      }
-
       this.isConfigureModalActive = true
       this.configuratedApp = app
+    },
+    goToMicrofrontend(app: App) {
+      if (!app.microfrontend_url) return
+
+      this.$router.push(`/apps/${app.id}/`)
     },
     closeConfigurationModal() {
       this.configuratedApp = null

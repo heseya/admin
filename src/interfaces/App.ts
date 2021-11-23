@@ -56,7 +56,7 @@ interface AppConfigBase {
   value?: any
 }
 interface AppConfigInput extends AppConfigBase {
-  type: 'text' | 'number' | 'color' | 'date' | 'datetime-local'
+  type: 'text' | 'number' | 'color' | 'date' | 'datetime-local' | 'checkbox'
 }
 
 interface AppConfigSelect extends AppConfigBase {

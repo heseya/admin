@@ -59,7 +59,7 @@
       <div class="field">
         <div class="field__label">Wymagane uprawnienia</div>
         <div class="field__value">
-          <ul>
+          <ul v-if="requiredPermissions.length">
             <li v-for="perm in requiredPermissions" :key="perm.id">
               {{ perm.display_name || perm.name }}
 
@@ -69,7 +69,7 @@
               </a-tooltip>
             </li>
           </ul>
-          <small v-if="requiredPermissions.length === 0">Brak</small>
+          <small v-else>Brak</small>
         </div>
       </div>
 
@@ -77,7 +77,7 @@
         <div class="field__label">Wewnętrzne uprawnienia aplikacji</div>
         <div class="field__value">
           <div class="field__value">
-            <ul>
+            <ul v-if="appInfo.internal_permissions.length">
               <li v-for="perm in appInfo.internal_permissions" :key="perm.id" class="permission">
                 <a-tooltip>
                   <template #title>
@@ -102,7 +102,7 @@
                 </a-tooltip>
               </li>
             </ul>
-            <small v-if="requiredPermissions.length === 0">Brak</small>
+            <small v-else>Brak</small>
           </div>
         </div>
       </div>

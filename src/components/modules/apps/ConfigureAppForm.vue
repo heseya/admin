@@ -24,6 +24,14 @@
           </a-select-option>
         </app-select>
 
+        <switch-input
+          v-else-if="field.type === 'checkbox'"
+          :key="field.key"
+          v-model="form[field.key]"
+          horizontal
+          :label="field.label"
+        />
+
         <validated-input
           v-else
           :key="field.key"
@@ -97,7 +105,7 @@ export default Vue.extend({
 
         this.fields = data
         this.form = this.fields.reduce(
-          (acc, field) => ({ ...acc, [field.key]: field.value || field.default_value }),
+          (acc, field) => ({ ...acc, [field.key]: field.value ?? field.default_value }),
           {},
         )
       } catch (e: unknown) {
@@ -137,6 +145,15 @@ export default Vue.extend({
   &__btns {
     display: flex;
     justify-content: space-between;
+  }
+
+  .switch-input {
+    margin-bottom: 12px;
+
+    &__label {
+      margin-right: auto;
+      font-weight: 400;
+    }
   }
 }
 </style>

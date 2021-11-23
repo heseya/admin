@@ -1,20 +1,21 @@
 <template>
   <media-uploader
+    :key="storeLogoPath"
     class="nav-logo"
     :class="{
-      'nav-logo--exist': filePath || disabled,
+      'nav-logo--exist': storeLogoPath || disabled,
       'nav-logo--disabled': !canModify || disabled,
       'nav-logo--big': big,
     }"
     :disabled="!canModify"
     @upload="changeLogo"
   >
-    <template v-if="!filePath">
+    <template v-if="!isLogoExist">
       <img src="@/assets/images/heseya.svg" alt="Heseya" class="nav-logo__logo" />
       <span v-if="canModify" class="nav-logo__title">Dodaj swoje logo</span>
     </template>
     <template v-else>
-      <img :src="filePath" :alt="storeName" class="nav-logo__logo" />
+      <img :src="storeLogoPath" :alt="storeName" class="nav-logo__logo" />
       <span v-if="canModify" class="nav-logo__title">Zmień swoje logo</span>
     </template>
   </media-uploader>
@@ -41,23 +42,29 @@ export default Vue.extend({
     },
   },
   data: () => ({
-    filePath: '',
+    storeLogoPath: '',
   }),
   computed: {
     storeName(): string {
       return this.$accessor.env.store_name
     },
-    storeLogo(): string {
+    envStoreLogo(): string {
       return this.$accessor.env[ENV_NAME]
     },
     canModify(): boolean {
       return this.$can(this.$p.Settings.Edit)
     },
+    isLogoExist(): boolean {
+      return !!this.storeLogoPath || !!this.envStoreLogo
+    },
   },
   watch: {
-    storeLogo(logo: string) {
-      this.filePath = logo
+    envStoreLogo(logo: string) {
+      this.storeLogoPath = logo
     },
+  },
+  created() {
+    this.storeLogoPath = this.envStoreLogo
   },
   methods: {
     async changeLogo(file: CdnMedia) {
@@ -69,7 +76,7 @@ export default Vue.extend({
           value: file.url,
         },
       })
-      this.filePath = file.url
+      this.storeLogoPath = file.url
     },
   },
 })

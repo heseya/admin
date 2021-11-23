@@ -114,7 +114,6 @@ export default Vue.extend({
 
   &__content {
     width: 100%;
-    min-height: 100vh;
     box-sizing: border-box;
     padding: 24px 12px;
     margin: 0 auto;

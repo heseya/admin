@@ -44,6 +44,7 @@ export default Vue.extend({
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
+  padding-top: 48px;
 
   @media ($viewport-7) {
     height: calc(100vh - 64px);
@@ -62,6 +63,11 @@ export default Vue.extend({
   &__card {
     max-width: 400px;
     width: 100%;
+    margin-top: 12px;
+
+    @media ($viewport-10) {
+      margin-top: 48px;
+    }
 
     input {
       width: 100%;
@@ -77,6 +83,10 @@ export default Vue.extend({
   &__row {
     display: flex;
     justify-content: space-between;
+  }
+
+  &__powered-by {
+    margin-top: auto;
   }
 
   &__footer {

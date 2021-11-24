@@ -60,7 +60,9 @@ export default Vue.extend({
   methods: {
     async submit() {
       this.$accessor.startLoading()
-      await this.$accessor.globalSeo.update(this.form)
+      const success = await this.$accessor.globalSeo.update(this.form)
+      if (success) this.$toast.success('Globalne SEO zostało zaktualizowane')
+      else this.$toast.error('Wystąpił błąd podczas aktualizacji')
       this.$accessor.stopLoading()
     },
   },

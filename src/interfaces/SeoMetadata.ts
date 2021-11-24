@@ -19,6 +19,6 @@ export interface SeoMetadataDto {
   title?: string
   description?: string
   keywords?: string[]
-  og_image_id?: UUID
+  og_image_id?: UUID | null
   twitter_card?: TwitterCardType
 }

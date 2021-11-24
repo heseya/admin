@@ -95,6 +95,18 @@ import SeoForm from '@/components/modules/seo/Accordion.vue'
 
 import { ProductSetDTO } from '@/interfaces/ProductSet'
 
+export const CLEAR_PRODUCT_SET_FORM: ProductSetDTO = {
+  id: '',
+  name: '',
+  slug_suffix: '',
+  slug_override: false,
+  public: true,
+  hide_on_index: false,
+  parent_id: null,
+  children_ids: [],
+  seo: {},
+}
+
 export default Vue.extend({
   components: {
     ModalForm,
@@ -127,16 +139,18 @@ export default Vue.extend({
     },
   },
   data: () => ({
-    form: {} as ProductSetDTO,
+    form: cloneDeep(CLEAR_PRODUCT_SET_FORM) as ProductSetDTO,
   }),
   watch: {
-    value() {
+    value(value: ProductSetDTO) {
+      this.form = { ...cloneDeep(CLEAR_PRODUCT_SET_FORM), ...cloneDeep(value) }
       this.fetchProductSet()
     },
   },
   methods: {
     async fetchProductSet() {
       if (!this.value?.id) return
+
       this.$accessor.startLoading()
       const success = await this.$accessor.productSets.get(this.value.id)
       if (success) {

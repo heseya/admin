@@ -84,9 +84,9 @@ export default Vue.extend({
   },
 
   methods: {
-    changeMedia(media: CdnMedia) {
+    changeMedia(media: CdnMedia | undefined) {
       this.form.og_image = media
-      this.form.og_image_id = media.id
+      this.form.og_image_id = media?.id || null
     },
   },
 })

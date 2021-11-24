@@ -2,7 +2,7 @@
   <div class="narrower-page">
     <top-nav :title="`Zamówienie ${order.code}`" :subtitle="`z dnia ${formattedDate}`">
       <audits-modal :id="order.id" model="orders" />
-      <a :href="`https://***REMOVED***.eu/payment/${order.code}`" target="_blank">
+      <a v-if="storefrontPaymentUrl" :href="`${storefrontPaymentUrl}${order.code}`" target="_blank">
         <icon-button>
           <template #icon>
             <i class="bx bxs-dollar-circle"></i>
@@ -262,6 +262,9 @@ export default Vue.extend({
     },
     formattedDate(): string | null {
       return this.order.created_at && formatDate(this.order.created_at)
+    },
+    storefrontPaymentUrl(): string | undefined {
+      return this.$accessor.env.storefront_payment_url || undefined
     },
   },
   watch: {

@@ -16,7 +16,12 @@
     <div class="flex">
       <div class="name">
         {{ product.name }}<br />
-        <small>{{ formatCurrency(product.price) }}</small>
+        <small v-if="product.price_min !== product.price_max">
+          {{ formatCurrency(product.price_min) }} - {{ formatCurrency(product.price_max) }}
+        </small>
+        <small v-else>
+          {{ formatCurrency(product.price) }}
+        </small>
       </div>
     </div>
   </button>

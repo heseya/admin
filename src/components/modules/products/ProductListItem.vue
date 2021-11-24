@@ -21,7 +21,12 @@
     </template>
 
     <template #price>
-      <span>{{ formatCurrency(product.price) }}</span>
+      <span v-if="product.price_min !== product.price_max">
+        {{ formatCurrency(product.price_min) }} - {{ formatCurrency(product.price_max) }}
+      </span>
+      <span v-else>
+        {{ formatCurrency(product.price) }}
+      </span>
     </template>
 
     <template #tags>

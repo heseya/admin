@@ -10,6 +10,8 @@ export interface Product {
   name: string
   slug: string
   price: number
+  price_min: number
+  price_max: number
   description_html: string
   description_short: string
   digital: boolean

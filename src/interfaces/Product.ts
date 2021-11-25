@@ -44,7 +44,10 @@ export interface ProductDTO {
 }
 
 export interface ProductComponentForm
-  extends Omit<Product, 'id' | 'sets' | 'brand' | 'category' | 'cover' | 'visible'> {
+  extends Omit<
+    Product,
+    'id' | 'sets' | 'brand' | 'category' | 'cover' | 'visible' | 'price_min' | 'price_max'
+  > {
   id?: UUID
   sets: UUID[]
 }

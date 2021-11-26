@@ -159,3 +159,11 @@ export enum RolesPermission {
   Edit = 'roles.edit',
   Remove = 'roles.remove',
 }
+
+export enum SeoPermission {
+  Show = 'roles.show',
+  Edit = 'roles.edit',
+  // TODO:
+  // Show = 'seo.show',
+  // Edit = 'seo.edit',
+}

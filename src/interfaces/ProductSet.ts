@@ -1,10 +1,11 @@
 /* eslint-disable camelcase */
 import { UUID } from './UUID'
+import { SeoMetadata, SeoMetadataDto } from './SeoMetadata'
 
 export interface ProductSet {
   id: UUID
   name: string
-  slug: Readonly<string>
+  slug: string
   slug_suffix: string
   slug_override: boolean
   public: boolean
@@ -12,6 +13,7 @@ export interface ProductSet {
   hide_on_index: boolean
   parent: ProductSet | null
   children: ProductSet[]
+  seo: SeoMetadata
 }
 
 export interface ProductSetDTO {
@@ -23,4 +25,5 @@ export interface ProductSetDTO {
   hide_on_index: boolean
   parent_id: UUID | null
   children_ids: UUID[]
+  seo: SeoMetadataDto
 }

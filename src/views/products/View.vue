@@ -113,6 +113,10 @@
               </div>
 
               <div class="wide">
+                <SeoForm v-model="form.seo" :disabled="!canModify" />
+              </div>
+
+              <div class="wide">
                 <tags-select v-model="form.tags" :disabled="!canModify" />
               </div>
 
@@ -171,6 +175,7 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import RichEditor from '@/components/form/RichEditor.vue'
 import SchemaConfigurator from '@/components/modules/schemas/Configurator.vue'
 import TagsSelect from '@/components/TagsSelect.vue'
+import SeoForm from '@/components/modules/seo/Accordion.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 import Textarea from '@/components/form/Textarea.vue'
@@ -194,6 +199,7 @@ const EMPTY_FORM: ProductComponentForm = {
   schemas: [],
   gallery: [],
   tags: [],
+  seo: {},
 }
 
 export default Vue.extend({
@@ -211,6 +217,7 @@ export default Vue.extend({
     RichEditor,
     TagsSelect,
     SwitchInput,
+    SeoForm,
     AuditsModal,
     Textarea,
   },
@@ -247,6 +254,7 @@ export default Vue.extend({
         this.form = {
           ...product,
           sets: product.sets?.map(({ id }) => id) || [],
+          seo: product.seo || {},
         }
       }
     },

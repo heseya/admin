@@ -24,6 +24,7 @@ import {
   TagsPermission,
   UsersPermission,
   RolesPermission,
+  SeoPermission,
 } from '@/enums/permissions'
 
 export const PERMISSIONS_TREE = {
@@ -51,6 +52,7 @@ export const PERMISSIONS_TREE = {
   Tags: TagsPermission,
   Users: UsersPermission,
   Roles: RolesPermission,
+  Seo: SeoPermission,
 }
 
 export const ALL_PERMISSIONS: Permission[] = Object.values(PERMISSIONS_TREE)
@@ -86,4 +88,5 @@ export const PERMISSIONS_GROUP_LABELS = {
   users: 'Użytkownicy',
   roles: 'Role użytkowników',
   webhooks: 'Webhooki',
+  seo: 'SEO',
 }

@@ -50,6 +50,8 @@
           <small class="label">Treść</small>
           <RichEditor v-if="!isLoading" v-model="form.content_html" :disabled="!canModify" />
           <br />
+          <seo-form v-model="form.seo" :disabled="!canModify" />
+          <br />
           <app-button v-if="canModify" @click="handleSubmit(save)"> Zapisz </app-button>
         </card>
       </validation-observer>
@@ -68,6 +70,7 @@ import FlexInput from '@/components/layout/FlexInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import RichEditor from '@/components/form/RichEditor.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
+import SeoForm from '@/components/modules/seo/Accordion.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
@@ -86,6 +89,7 @@ export default Vue.extend({
     RichEditor,
     ValidationObserver,
     SwitchInput,
+    SeoForm,
     AuditsModal,
   },
   data: () => ({
@@ -94,6 +98,7 @@ export default Vue.extend({
       slug: '',
       content_html: '',
       public: true,
+      seo: {},
     } as PageDto,
   }),
   computed: {
@@ -119,7 +124,7 @@ export default Vue.extend({
   watch: {
     page(page: Page) {
       if (!this.isNew) {
-        this.form = { ...page }
+        this.form = { ...page, seo: page.seo || {} }
       }
     },
     error(error) {

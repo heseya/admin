@@ -58,6 +58,10 @@
             />
           </flex-input>
         </div>
+
+        <br />
+
+        <SeoForm v-model="form.seo" :disabled="disabled" />
       </modal-form>
       <template #footer>
         <div class="row">
@@ -87,8 +91,21 @@ import ModalForm from '@/components/form/ModalForm.vue'
 import FlexInput from '@/components/layout/FlexInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
+import SeoForm from '@/components/modules/seo/Accordion.vue'
 
 import { ProductSetDTO } from '@/interfaces/ProductSet'
+
+export const CLEAR_PRODUCT_SET_FORM: ProductSetDTO = {
+  id: '',
+  name: '',
+  slug_suffix: '',
+  slug_override: false,
+  public: true,
+  hide_on_index: false,
+  parent_id: null,
+  children_ids: [],
+  seo: {},
+}
 
 export default Vue.extend({
   components: {
@@ -97,6 +114,7 @@ export default Vue.extend({
     FlexInput,
     ValidationObserver,
     SwitchInput,
+    SeoForm,
   },
   props: {
     value: {
@@ -121,14 +139,33 @@ export default Vue.extend({
     },
   },
   data: () => ({
-    form: {} as ProductSetDTO,
+    form: cloneDeep(CLEAR_PRODUCT_SET_FORM) as ProductSetDTO,
   }),
   watch: {
     value(value: ProductSetDTO) {
-      this.form = cloneDeep(value)
+      this.form = { ...cloneDeep(CLEAR_PRODUCT_SET_FORM), ...cloneDeep(value) }
+      this.fetchProductSet()
     },
   },
   methods: {
+    async fetchProductSet() {
+      if (!this.value?.id) return
+
+      this.$accessor.startLoading()
+      const success = await this.$accessor.productSets.get(this.value.id)
+      if (success) {
+        const fetched = this.$accessor.productSets.getSelected
+        this.form = {
+          ...cloneDeep(fetched),
+          parent_id: fetched.parent?.id || null,
+          children_ids: fetched.children?.map((child) => child.id) || [],
+          seo: fetched.seo || {},
+        }
+      } else {
+        this.$emit('close')
+      }
+      this.$accessor.stopLoading()
+    },
     editSlug() {
       if (!this.form.id) {
         this.form.slug_suffix = slugify(this.form.name, { lower: true, remove: /[.]/g })

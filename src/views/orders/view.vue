@@ -34,7 +34,13 @@
         <card>
           <div class="flex-column">
             <h2 class="section-title">Koszyk</h2>
-            <app-cart-item v-for="item in order.products" :key="item.id" :item="item" />
+            <app-cart-item
+              v-for="item in order.products"
+              :key="item.id"
+              :item="item"
+              :discount="order.discounts[0]"
+              :products-count="productsCount"
+            />
             <div class="cart-item">
               <img class="cart-item__cover" src="@/assets/images/icons/delivery-icon.svg" />
               <div class="cart-item__content">
@@ -45,13 +51,13 @@
             <div class="cart-total">
               <div v-for="discount in order.discounts" :key="discount.id">
                 Rabat {{ discount.code }}:
-                <b
-                  >-{{
+                <b>
+                  -{{
                     discount.type === 0
                       ? `${discount.discount}%`
                       : formatCurrency(discount.discount)
-                  }}</b
-                >
+                  }}
+                </b>
               </div>
               Łącznie: <b>{{ formatCurrency(order.summary) }}</b>
             </div>
@@ -250,6 +256,9 @@ export default Vue.extend({
     },
     order(): Order {
       return this.$accessor.orders.getSelected
+    },
+    productsCount(): number {
+      return this.order.products.reduce((sum, item) => sum + item.quantity, 0)
     },
     statuses(): OrderStatus[] {
       return this.$accessor.statuses.getData

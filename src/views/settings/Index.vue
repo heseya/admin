@@ -61,6 +61,7 @@
 
         <h2 v-can.any="[$p.Apps.Show, $p.Settings.Show]" class="section-title">Inne</h2>
         <SettingsItem v-can="$p.Apps.Show" name="Aplikacje" icon="bx bxs-store-alt" url="/apps" />
+        <SettingsItem v-can="$p.Webhooks.Show" name="Webhooki" icon="bx bxs-bot" url="/webhooks" />
         <SettingsItem
           v-can="$p.Seo.Show"
           name="Ustawienia SEO"

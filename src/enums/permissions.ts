@@ -167,3 +167,10 @@ export enum SeoPermission {
   // Show = 'seo.show',
   // Edit = 'seo.edit',
 }
+
+export enum WebhooksPermission {
+  Show = 'webhooks.show',
+  Add = 'webhooks.add',
+  Edit = 'webhooks.edit',
+  Remove = 'webhooks.remove',
+}

@@ -170,26 +170,5 @@ export default Vue.extend({
       color: $primary-color-500;
     }
   }
-
-  ::v-deep {
-    .ant-checkbox-wrapper {
-      margin-left: 0 !important;
-
-      .ant-checkbox::after,
-      &:hover .ant-checkbox-inner,
-      &:focus-within .ant-checkbox-inner {
-        border-color: #000000 !important;
-      }
-
-      .ant-checkbox-checked .ant-checkbox-inner {
-        border-color: #000000 !important;
-        background-color: #000000 !important;
-      }
-
-      .ant-checkbox-indeterminate .ant-checkbox-inner::after {
-        background-color: #000000 !important;
-      }
-    }
-  }
 }
 </style>

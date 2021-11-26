@@ -22,6 +22,7 @@ import { packageTemplates } from './packageTemplates'
 import { settings } from './settings'
 import { authSessions } from './authSessions'
 import { apps } from './apps'
+import { webhooks } from './webhooks'
 import { discounts } from './discounts'
 import { tags } from './tags'
 import { productSets } from './productSets'
@@ -81,6 +82,7 @@ const storeModules = {
   discounts,
   authSessions,
   apps,
+  webhooks,
   tags,
   productSets,
 }

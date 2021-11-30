@@ -21,7 +21,7 @@
         class="paginated-list__list"
         @sort="onSort"
       >
-        <template v-for="item in items">
+        <div v-for="item in items" :key="item.id" class="paginated-list__list-item">
           <slot :item="item">
             <cms-table-row
               v-if="table"
@@ -31,7 +31,7 @@
               @click="table.rowOnClick ? table.rowOnClick(item) : null"
             />
           </slot>
-        </template>
+        </div>
       </component>
     </AppCard>
 
@@ -119,6 +119,10 @@ export default Vue.extend({
   computed: {
     items: {
       get(): BaseItem[] {
+        console.log(
+          '🚀 ~ file: PaginatedList.vue ~ line 123 ~ get ~ this.$accessor[this.storeKey].getData',
+          this.$accessor[this.storeKey].getData,
+        )
         return this.$accessor[this.storeKey].getData
       },
       async set(items: BaseItem[]) {
@@ -203,6 +207,14 @@ export default Vue.extend({
 
   &__list {
     padding: 0;
+  }
+
+  &__list-item {
+    width: 100%;
+
+    > * {
+      width: 100%;
+    }
   }
 
   &__content {

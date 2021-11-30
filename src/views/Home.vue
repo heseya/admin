@@ -99,7 +99,7 @@ export default Vue.extend({
   }),
   computed: {
     storeName(): string {
-      return this.$accessor.env.store_name ?? 'E-Commerce Dog'
+      return this.$accessor.env.store_name ?? 'Heseya Store'
     },
     orders(): Order[] {
       return this.$accessor.orders.getData

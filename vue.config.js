@@ -20,7 +20,7 @@ module.exports = {
     },
   },
   pwa: {
-    name: 'Heseya Store Admin',
+    name: 'Heseya',
     themeColor: '#8f022c',
     msTileColor: '#8f022c',
     appleMobileWebAppCapable: 'yes',

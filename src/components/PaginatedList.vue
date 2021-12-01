@@ -211,7 +211,7 @@ export default Vue.extend({
 
     > * {
       display: block;
-      width: 100%;
+      width: 100% !important;
     }
   }
 

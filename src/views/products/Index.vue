@@ -29,8 +29,8 @@
       </template>
 
       <template #default="{ item: product }">
-        <ProductTile v-if="!listView" :product="product" />
-        <ProductListItem v-else :product="product" :table="tableConfig" />
+        <ProductTile v-if="!listView" :key="product.id" :product="product" />
+        <ProductListItem v-else :key="product.id" :product="product" :table="tableConfig" />
       </template>
     </PaginatedList>
   </div>

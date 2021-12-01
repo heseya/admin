@@ -29,7 +29,7 @@
       </template>
 
       <template #default="{ item }">
-        <list-item :url="`/schemas/${item.id}`">
+        <list-item :key="item.id" :url="`/schemas/${item.id}`">
           {{ item.name }}
           <small>{{ item.description }}</small>
           <template #action>

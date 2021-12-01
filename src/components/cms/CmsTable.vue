@@ -11,9 +11,9 @@
       @sort="(v) => $emit('sort', v)"
     />
 
-    <component :is="draggable ? 'Draggable' : 'div'" v-model="items">
+    <component :is="draggable ? 'Draggable' : 'div'" v-model="items" class="cms-table__content">
       <template v-if="shouldRenderList">
-        <template v-for="item in items">
+        <div v-for="item in items" :key="item.id" class="cms-table__item">
           <slot :item="item">
             <cms-table-row
               :item="item"
@@ -24,7 +24,7 @@
               @click="config.rowOnClick || (() => {})"
             />
           </slot>
-        </template>
+        </div>
       </template>
 
       <slot v-else></slot>
@@ -99,6 +99,14 @@ export default Vue.extend({
   &__header {
     @media ($max-viewport-11) {
       display: none !important;
+    }
+  }
+
+  &__item {
+    width: 100%;
+
+    > * {
+      width: 100%;
     }
   }
 

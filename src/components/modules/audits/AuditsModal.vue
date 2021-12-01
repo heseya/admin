@@ -50,7 +50,7 @@
 
           <cms-table class="audit-entry__table" :value="getValues(entry)" :config="tableConfig">
             <template #default="{ item: audit }">
-              <cms-table-row :item="audit" no-hover :headers="tableConfig.headers">
+              <cms-table-row :key="audit.id" :item="audit" no-hover :headers="tableConfig.headers">
                 <template #new>
                   <audit-formatter :field-key="audit.key" :value="audit.new" />
                 </template>

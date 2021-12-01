@@ -22,6 +22,9 @@
       rules="required"
       label="Maksymalna ilość użyć"
     />
+    <small>
+      W przypadku podania wartości <b>0</b>, kod rabatowy nie będzie miał ograniczeń ilości użyć.
+    </small>
 
     <hr />
 

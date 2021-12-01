@@ -11,7 +11,7 @@
       </template>
 
       <template #default="{ item: role }">
-        <list-item :url="`/settings/roles/${role.id}`">
+        <list-item :key="role.id" :url="`/settings/roles/${role.id}`">
           {{ role.name }}
           <small>{{ role.description }}</small>
         </list-item>

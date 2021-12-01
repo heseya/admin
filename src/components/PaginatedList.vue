@@ -25,6 +25,7 @@
           <slot :item="item">
             <cms-table-row
               v-if="table"
+              :key="item.id"
               :item="item"
               :headers="table.headers"
               :to="table.rowUrlBuilder ? table.rowUrlBuilder(item) : null"
@@ -119,10 +120,6 @@ export default Vue.extend({
   computed: {
     items: {
       get(): BaseItem[] {
-        console.log(
-          '🚀 ~ file: PaginatedList.vue ~ line 123 ~ get ~ this.$accessor[this.storeKey].getData',
-          this.$accessor[this.storeKey].getData,
-        )
         return this.$accessor[this.storeKey].getData
       },
       async set(items: BaseItem[]) {

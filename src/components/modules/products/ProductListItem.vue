@@ -25,7 +25,7 @@
         {{ formatCurrency(product.price_min) }} - {{ formatCurrency(product.price_max) }}
       </span>
       <span v-else>
-        {{ formatCurrency(product.price) }}
+        {{ formatCurrency(product.price_min) }}
       </span>
     </template>
 

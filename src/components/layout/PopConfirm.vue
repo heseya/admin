@@ -1,29 +1,27 @@
 <template>
-  <vs-tooltip bottom shadow not-hover :value="visible" @input="setVisible">
-    <slot :open="open" :close="close" :toggle="toggle"></slot>
-    <template #tooltip>
-      <div class="content-tooltip">
+  <a-popover v-model="visible" :placement="placement" :trigger="trigger">
+    <slot></slot>
+
+    <template #content>
+      <div class="pop-confirm">
         <p>{{ title }}</p>
         <footer>
-          <vs-button :color="okColor" block @click="confirm">
+          <app-button :type="okColor" size="small" @click="confirm">
             {{ okText }}
-          </vs-button>
-          <vs-button @click="cancel" transparent dark block>
+          </app-button>
+          <app-button size="small" @click="cancel">
             {{ cancelText }}
-          </vs-button>
+          </app-button>
         </footer>
       </div>
     </template>
-  </vs-tooltip>
+  </a-popover>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 export default Vue.extend({
   name: 'PopConfirm',
-  data: () => ({
-    visible: false,
-  }),
   props: {
     title: {
       type: String,
@@ -41,19 +39,21 @@ export default Vue.extend({
       type: String,
       default: 'Nie',
     },
+    placement: {
+      type: String,
+      default: 'top',
+    },
+    trigger: {
+      type: String,
+      default: 'click',
+    },
   },
+  data: () => ({
+    visible: false,
+  }),
   methods: {
-    setVisible(newValue: boolean) {
-      this.visible = !!newValue
-    },
-    open() {
-      this.setVisible(true)
-    },
     close() {
-      this.setVisible(false)
-    },
-    toggle() {
-      this.setVisible(!this.visible)
+      this.visible = false
     },
     confirm() {
       this.$emit('confirm')
@@ -68,11 +68,13 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.content-tooltip {
+.pop-confirm {
+  max-width: 300px;
+
   footer {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
   }
 }
 </style>

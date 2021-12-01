@@ -1,25 +1,42 @@
 <template>
   <validation-observer v-slot="{ handleSubmit }" class="schema-form">
-    <validated-input name="name" rules="required" v-model="form.name" label="Nazwa" />
-    <validated-input name="description" v-model="form.description" label="Opis" />
+    <validated-input
+      v-model="form.name"
+      :disabled="disabled"
+      name="name"
+      rules="required"
+      label="Nazwa"
+    />
+    <validated-input
+      v-model="form.description"
+      :disabled="disabled"
+      name="description"
+      label="Opis"
+    />
     <div class="flex">
-      <validation-provider name="schema-type" rules="id-required" v-slot="{ errors }">
-        <vs-select v-model="form.type" label="Typ schematu">
-          <vs-option
+      <validation-provider v-slot="{ errors }" name="schema-type" rules="id-required">
+        <app-select
+          v-model="form.type"
+          :disabled="disabled"
+          name="type"
+          label="Typ schematu"
+          option-filter-prop="label"
+        >
+          <a-select-option
             v-for="{ value, label } in SchemaTypesOptions"
             :key="value"
             :label="label"
-            :value="value"
           >
             {{ label }}
-          </vs-option>
+          </a-select-option>
           <template #message-danger>{{ errors[0] }}</template>
-        </vs-select>
+        </app-select>
       </validation-provider>
 
       <validated-input
         v-if="form.type !== SchemaType.MultiplySchema"
         v-model="form.price"
+        :disabled="disabled"
         name="price"
         type="number"
         rules="required|not-negative"
@@ -27,16 +44,27 @@
       />
     </div>
     <div class="flex">
-      <SwitchInput v-model="form.hidden">
+      <ValidatedSwitchInput
+        v-model="form.hidden"
+        :disabled="disabled"
+        name="hidden"
+        rules="schema-checkbox:@disabled"
+      >
         <template #title>Ukryty</template>
-      </SwitchInput>
-      <SwitchInput v-model="form.required">
+      </ValidatedSwitchInput>
+      <ValidatedSwitchInput
+        v-model="form.required"
+        :disabled="disabled"
+        name="disabled"
+        rules="schema-checkbox:@hidden"
+      >
         <template #title>Wymagany</template>
-      </SwitchInput>
+      </ValidatedSwitchInput>
     </div>
-    <div class="flex" v-if="isKindOfNumeric(form.type) || form.type === SchemaType.String">
+    <div v-if="isKindOfNumeric(form.type) || form.type === SchemaType.String" class="flex">
       <validated-input
         v-model="form.min"
+        :disabled="disabled"
         default="0"
         name="min"
         type="number"
@@ -44,6 +72,7 @@
       />
       <validated-input
         v-model="form.max"
+        :disabled="disabled"
         type="number"
         name="max"
         :label="isKindOfNumeric(form.type) ? 'Maksymalna wartość' : 'Maksymalna długość'"
@@ -51,6 +80,7 @@
       <validated-input
         v-if="isKindOfNumeric(form.type)"
         v-model="form.step"
+        :disabled="disabled"
         type="number"
         name="step"
         label="Krok"
@@ -59,21 +89,27 @@
     <validated-input
       v-if="isKindOfNumeric(form.type) || form.type === SchemaType.String"
       v-model="form.default"
+      :disabled="disabled"
       name="default"
       :type="isKindOfNumeric(form.type) ? 'number' : 'text'"
       label="Wartość domyślna"
     />
-    <SwitchInput v-if="form.type === SchemaType.Boolean" v-model="form.default">
+    <SwitchInput
+      v-if="form.type === SchemaType.Boolean"
+      v-model="form.default"
+      :disabled="disabled"
+    >
       <template #title>Wartość domyślna</template>
     </SwitchInput>
 
     <br />
 
     <select-schema-options
+      v-if="form.type === SchemaType.Select"
       v-model="form.options"
       :default-option="defaultOption"
+      :disabled="disabled"
       @setDefault="(v) => (defaultOption = v)"
-      v-if="form.type === SchemaType.Select"
     />
 
     <Zone v-if="form.type === SchemaType.MultiplySchema">
@@ -82,32 +118,46 @@
           <small>Mnożony schemat</small><br />
           <b>{{ usedSchemaName || '-- wybierz --' }}</b>
         </div>
-        <vs-button @click="isUsedSchemaModalActive = true">Zmień</vs-button>
+        <app-button @click="isUsedSchemaModalActive = true">Zmień</app-button>
       </div>
 
-      <vs-dialog width="800px" not-center v-model="isUsedSchemaModalActive">
-        <template #header>
-          <h4 class="flex schema-selector-title">Wybierz istniejący schemat</h4>
-        </template>
+      <a-modal
+        v-model="isUsedSchemaModalActive"
+        width="800px"
+        title="Wybierz istniejący schemat"
+        :footer="null"
+      >
         <modal-form>
           <selector
-            @select="selectUsedSchema"
             type="schemas"
             add-text="Wybierz"
             :existing="[form]"
+            @select="selectUsedSchema"
           />
         </modal-form>
-      </vs-dialog>
+      </a-modal>
     </Zone>
 
     <br />
 
     <Zone title="Opcje zaawansowane" type="danger">
-      <validated-input name="pattern" v-model="form.pattern" label="Wyrażenie regularne" />
-      <validated-input name="validation" v-model="form.validation" label="Walidacja" />
+      <validated-input
+        v-model="form.pattern"
+        :disabled="disabled"
+        name="pattern"
+        label="Wyrażenie regularne"
+      />
+      <validated-input
+        v-model="form.validation"
+        :disabled="disabled"
+        name="validation"
+        label="Walidacja"
+      />
     </Zone>
     <br />
-    <vs-button color="dark" size="large" @click.stop="handleSubmit(submit)"> Zapisz </vs-button>
+    <app-button data-cy="submit-btn" :disabled="disabled" @click.stop="handleSubmit(submit)">
+      Zapisz
+    </app-button>
   </validation-observer>
 </template>
 
@@ -121,7 +171,6 @@ import Zone from '@/components/layout/Zone.vue'
 import SelectSchemaOptions from '@/components/modules/schemas/SelectSchemaOptions.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import Selector from '@/components/Selector.vue'
-import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
 import { Schema, SchemaType } from '@/interfaces/Schema'
 import { SchemaTypeLabel } from '@/consts/schemaTypeLabels'
@@ -137,7 +186,17 @@ export default Vue.extend({
     SelectSchemaOptions,
     ModalForm,
     Selector,
-    ValidatedInput,
+  },
+  props: {
+    schema: {
+      type: Object,
+      required: true,
+    } as Vue.PropOptions<Schema>,
+    currentProductSchemas: {
+      type: Array,
+      default: () => [],
+    } as Vue.PropOptions<Schema[]>,
+    disabled: { type: Boolean, default: false },
   },
   data: () => ({
     form: cloneDeep(CLEAR_FORM),
@@ -150,16 +209,6 @@ export default Vue.extend({
     })),
     SchemaType: SchemaType,
   }),
-  props: {
-    schema: {
-      type: Object,
-      required: true,
-    } as Vue.PropOptions<Schema>,
-    currentProductSchemas: {
-      type: Array,
-      default: () => [],
-    } as Vue.PropOptions<Schema[]>,
-  },
   computed: {
     selectableSchemas(): Schema[] {
       return this.currentProductSchemas.filter(({ id }) => id !== this.form.id)
@@ -184,8 +233,18 @@ export default Vue.extend({
         )?.name || schema
       this.usedSchemaName = newName
     },
+    schema(schema) {
+      this.initSchemaForm(schema)
+    },
+  },
+  created() {
+    this.initSchemaForm(this.schema)
   },
   methods: {
+    initSchemaForm(schema: Schema) {
+      this.form = schema.type ? cloneDeep(schema) : cloneDeep(CLEAR_FORM)
+      this.defaultOption = Number(this.form.default)
+    },
     isKindOfNumeric(type: SchemaType): boolean {
       return (
         type === SchemaType.Numeric ||
@@ -200,72 +259,54 @@ export default Vue.extend({
     },
     async submit() {
       if (this.form.type === SchemaType.MultiplySchema && !this.form.used_schemas[0]) {
-        this.$vs.notification({
-          color: 'warning',
-          title: 'Wybierz mnożony schemat',
-        })
+        this.$toast.warning('Wybierz mnożony schemat')
         return
       }
 
       this.$accessor.startLoading()
-      let id = ''
+      try {
+        let id = ''
 
-      this.form.default =
-        this.form.type === SchemaType.Select ? this.defaultOption : this.form.default
+        this.form.default =
+          this.form.type === SchemaType.Select ? this.defaultOption : this.form.default
 
-      const options = this.form.options.map((opt) => ({
-        ...opt,
-        items: opt.items.map((item) => item.id),
-      }))
+        const options = this.form.options.map((opt) => ({
+          ...opt,
+          items: opt.items.map((item) => item.id),
+        }))
 
-      if (!this.form?.id) {
-        // @ts-ignore // TODO: Schema DTO
-        const schema = await this.$accessor.schemas.add({ ...this.form, options })
-        if (schema && schema.id) {
-          this.$vs.notification({
-            color: 'success',
-            title: 'Schemat został utworzony.',
-          })
-          id = schema.id
-        }
-      } else {
-        const success = await this.$accessor.schemas.update({
-          id: this.form.id,
+        if (!this.form?.id) {
           // @ts-ignore // TODO: Schema DTO
-          item: { ...this.form, options },
-        })
-        if (success) {
-          id = this.form.id
-          this.$vs.notification({
-            color: 'success',
-            title: 'Schemat został zaktualizowany.',
+          const schema = await this.$accessor.schemas.add({ ...this.form, options })
+          if (!schema) throw new Error('Schema not created')
+
+          if (schema && schema.id) {
+            this.$toast.success('Schemat został utworzony.')
+            id = schema.id
+          }
+        } else {
+          const success = await this.$accessor.schemas.update({
+            id: this.form.id,
+            // @ts-ignore // TODO: Schema DTO
+            item: { ...this.form, options },
           })
+          if (!success) throw new Error('Schema not updated')
+
+          id = this.form.id
+          this.$toast.success('Schemat został zaktualizowany.')
         }
+        this.$emit('submit', this.$accessor.schemas.getFromListById(id))
+      } catch {
+      } finally {
+        this.$accessor.stopLoading()
       }
-      this.$accessor.stopLoading()
-      this.$emit('submit', this.$accessor.schemas.getFromListById(id))
     },
-  },
-  created() {
-    this.form = this.schema.type ? cloneDeep(this.schema) : cloneDeep(CLEAR_FORM)
-    this.defaultOption = Number(this.form.default)
   },
 })
 </script>
 
 <style lang="scss">
 .schema-form {
-  .vs-input-parent {
-    margin-top: 24px;
-    margin-bottom: 0 !important;
-  }
-
-  .vs-select-content {
-    width: 100%;
-    margin-top: 20px;
-    max-width: 1000px;
-  }
-
   .flex {
     display: flex;
 
@@ -282,14 +323,6 @@ export default Vue.extend({
   .used-schema {
     display: flex;
     justify-content: space-between;
-  }
-
-  .vs-radio__label {
-    font-size: 0.6em;
-  }
-
-  .vs-select__label {
-    padding-left: 8px;
   }
 }
 </style>

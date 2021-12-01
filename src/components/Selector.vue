@@ -1,19 +1,21 @@
 <template>
   <div class="schema-selector">
-    <vs-input v-model="query" :label="`Wyszukaj ${typeName}`"></vs-input>
+    <app-input v-model="query" :label="`Wyszukaj ${typeName}`"></app-input>
 
     <div ref="content" class="schema-selector__content">
+      <loading :active="isLoading" />
+
       <empty v-if="query !== '' && list.length === 0">Nic nie znaleziono</empty>
 
       <list class="schema-selector__items">
-        <list-item class="schema-selector__item" v-for="item in list" :key="item.id" no-hover>
+        <list-item v-for="item in list" :key="item.id" class="schema-selector__item" no-hover>
           {{ item.name }}
           <small>{{ getSubText(item) }}</small>
           <template #action>
             <div class="flex">
-              <vs-button success icon @click.stop.prevent="onSelect(item)">
+              <app-button type="success" size="small" @click="onSelect(item)">
                 {{ addText }}
-              </vs-button>
+              </app-button>
             </div>
           </template>
         </list-item>
@@ -27,7 +29,7 @@ import Vue from 'vue'
 import debounce from 'lodash/debounce'
 
 import { api } from '../api'
-import { formatApiError } from '@/utils/errors'
+import { formatApiNotificationError } from '@/utils/errors'
 import { stringifyQuery } from '@/utils/utils'
 
 import List from '@/components/layout/List.vue'
@@ -37,6 +39,7 @@ import ListItem from '@/components/layout/ListItem.vue'
 import { Schema } from '@/interfaces/Schema'
 import { SchemaTypeLabel } from '@/consts/schemaTypeLabels'
 import { UUID } from '@/interfaces/UUID'
+import Loading from './layout/Loading.vue'
 
 interface Item {
   id: UUID
@@ -45,10 +48,12 @@ interface Item {
 
 export default Vue.extend({
   name: 'Selector',
-  data: () => ({
-    query: '',
-    data: [] as Item[],
-  }),
+  components: {
+    List,
+    ListItem,
+    Empty,
+    Loading,
+  },
   props: {
     type: {
       type: String,
@@ -67,6 +72,11 @@ export default Vue.extend({
       default: () => [],
     } as Vue.PropOptions<Item[]>,
   },
+  data: () => ({
+    query: '',
+    isLoading: false,
+    data: [] as Item[],
+  }),
   computed: {
     list(): Item[] {
       return this.data.filter((x) => !this.existing.find((y) => x.id === y.id))
@@ -85,20 +95,15 @@ export default Vue.extend({
         return
       }
 
-      const loading = this.$vs.loading({
-        target: this.$refs.content,
-      })
+      this.isLoading = true
       try {
         const query = stringifyQuery({ search })
-        const { data } = await api.get(`/${this.type}?${query}`)
+        const { data } = await api.get<{ data: Item[] }>(`/${this.type}${query}`)
         this.data = data.data
-      } catch (error) {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(error),
-        })
+      } catch (error: any) {
+        this.$toast.error(formatApiNotificationError(error))
       }
-      loading.close()
+      this.isLoading = false
     }, 300),
     onSelect(item: Item) {
       this.$emit('select', item)
@@ -114,20 +119,11 @@ export default Vue.extend({
       return ''
     },
   },
-  components: {
-    List,
-    ListItem,
-    Empty,
-  },
 })
 </script>
 
 <style lang="scss">
 .schema-selector {
-  .vs-input-parent {
-    margin-bottom: 0;
-  }
-
   &__content {
     position: relative;
   }

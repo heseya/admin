@@ -13,7 +13,7 @@ export const uploadMedia = async (file: File) => {
       success: true,
       file: data.data,
     }
-  } catch (error) {
+  } catch (error: any) {
     return {
       success: false,
       error,
@@ -25,7 +25,7 @@ export const removeMedia = async (fileId: UUID): Promise<true | Error> => {
   try {
     await api.delete<null>(`/media/id:${fileId}`)
     return true
-  } catch (error) {
+  } catch (error: any) {
     return error
   }
 }

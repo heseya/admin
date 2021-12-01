@@ -1,49 +1,51 @@
 <template>
-  <div :key="$route.params.id">
+  <div :key="$route.params.id" class="narrower-page">
     <top-nav :title="!isNew ? product.name : 'Nowy produkt'">
+      <audits-modal :id="product.id" model="products" />
+
       <pop-confirm
         v-if="!isNew"
-        v-slot="{ open }"
+        v-can="$p.Products.Remove"
         title="Czy na pewno chcesz usunąć ten produkt?"
         ok-text="Usuń"
         cancel-text="Anuluj"
         @confirm="deleteProduct"
       >
-        <vs-button dark icon @click="open">
-          <i class="bx bx-trash"></i>
-        </vs-button>
+        <icon-button type="danger" data-cy="delete-btn">
+          <template #icon>
+            <i class="bx bx-trash"></i>
+          </template>
+          Usuń
+        </icon-button>
       </pop-confirm>
     </top-nav>
 
     <div class="product">
-      <gallery ref="gallery" v-model="form.gallery" />
+      <gallery ref="gallery" v-model="form.gallery" :disabled="!canModify" />
 
       <div>
         <card>
-          <flex-input>
-            <label class="title">Widoczność produktu</label>
-            <vs-switch v-model="form.public" success>
-              <template #off>
-                <i class="bx bx-x"></i>
-              </template>
-              <template #on>
-                <i class="bx bx-check"></i>
-              </template>
-            </vs-switch>
-          </flex-input>
+          <switch-input
+            v-model="form.public"
+            horizontal
+            :disabled="!canModify"
+            label="Widoczność produktu"
+          />
           <template v-if="!product.visible && product.public">
             <br />
-            <vs-alert color="warn">
-              <template #title>Produkt wciąż jest ukryty</template>
-              Produkt jest niewidoczny ponieważ jego marka lub kategoria jest ukryta.
-            </vs-alert>
+            <a-alert
+              message="Produkt wciąż jest ukryty"
+              description="Produkt jest niewidoczny ponieważ jego marka lub kategoria jest ukryta."
+              show-icon
+              type="warning"
+            />
           </template>
         </card>
       </div>
 
       <div class="product__schemas">
         <card>
-          <SchemaConfigurator v-model="form.schemas" />
+          <SchemaConfigurator v-model="form.schemas" :disabled="!canModify" />
         </card>
       </div>
 
@@ -57,73 +59,95 @@
                   v-model="form.name"
                   rules="required"
                   label="Nazwa"
+                  name="name"
+                  :disabled="!canModify"
                   @input="editSlug"
                 />
-                <br /><br />
-                <validated-input v-model="form.slug" rules="required|slug" label="Link" />
-                <br /><br />
+                <validated-input
+                  v-model="form.slug"
+                  rules="required|slug"
+                  label="Link"
+                  name="slug"
+                  :disabled="!canModify"
+                />
                 <validated-input
                   v-model="form.price"
-                  rules="required"
+                  rules="required|not-negative"
                   type="number"
                   step="0.01"
                   label="Cena"
+                  name="price"
+                  :disabled="!canModify"
                 />
-                <br />
               </div>
 
               <div>
                 <br />
                 <validation-provider v-slot="{ errors }">
-                  <vs-select
-                    :key="productSets.length"
+                  <app-select
                     v-model="form.sets"
                     placeholder="Wybierz kolekcje"
-                    filter
-                    multiple
+                    mode="multiple"
+                    name="sets"
                     label="Kolekcje"
-                    @click.native.prevent.stop
+                    option-filter-prop="label"
+                    :disabled="!canModify"
                   >
-                    <vs-option
-                      v-for="set in productSets"
-                      :key="set.id"
-                      :label="set.name"
-                      :value="set.id"
-                    >
+                    <a-select-option v-for="set in productSets" :key="set.id" :label="set.name">
                       <i v-if="!set.public" class="bx bx-lock"></i>
                       {{ set.name }} &nbsp; <small>(/{{ set.slug }})</small>
-                    </vs-option>
+                    </a-select-option>
                     <template #message-danger>{{ errors[0] }}</template>
-                  </vs-select>
+                  </app-select>
                 </validation-provider>
-                <br /><br />
                 <validated-input
                   v-model="form.quantity_step"
                   rules="required"
                   type="number"
                   max="999999"
                   step="0.01"
+                  name="quantity_step"
                   label="Format ilości"
+                  :disabled="!canModify"
                 />
               </div>
 
               <div class="wide">
-                <tags-select v-model="form.tags" />
+                <tags-select v-model="form.tags" :disabled="!canModify" />
               </div>
 
               <div class="wide">
                 <small class="label">Opis</small>
-                <rich-editor v-if="!isLoading" v-model="form.description_html" />
+                <rich-editor
+                  v-if="!isLoading"
+                  v-model="form.description_html"
+                  :disabled="!canModify"
+                />
+                <br />
+                <small class="label">Krótki opis</small>
+                <Textarea
+                  v-if="!isLoading"
+                  v-model="form.description_short"
+                  :disabled="!canModify"
+                />
+                <br />
                 <br />
                 <div class="flex">
-                  <vs-button color="dark" size="large">Zapisz</vs-button>
-                  <vs-button
-                    color="dark"
-                    size="large"
-                    type="button"
-                    @click="handleSubmit(submitAndGoNext)"
-                    >Zapisz i dodaj następny</vs-button
+                  <app-button
+                    v-if="canModify"
+                    data-cy="submit-btn"
+                    html-type="submit"
+                    style="margin-right: 12px"
                   >
+                    Zapisz
+                  </app-button>
+                  <app-button
+                    v-if="canModify && isNew"
+                    data-cy="submit-and-next-btn"
+                    @click.prevent="handleSubmit(submitAndGoNext)"
+                  >
+                    Zapisz i dodaj następny
+                  </app-button>
                 </div>
               </div>
             </form>
@@ -143,14 +167,15 @@ import cloneDeep from 'lodash/cloneDeep'
 import TopNav from '@/components/layout/TopNav.vue'
 import Gallery from '@/components/modules/products/Gallery.vue'
 import Card from '@/components/layout/Card.vue'
-import FlexInput from '@/components/layout/FlexInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import RichEditor from '@/components/form/RichEditor.vue'
 import SchemaConfigurator from '@/components/modules/schemas/Configurator.vue'
-import ValidatedInput from '@/components/form/ValidatedInput.vue'
 import TagsSelect from '@/components/TagsSelect.vue'
+import SwitchInput from '@/components/form/SwitchInput.vue'
+import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
+import Textarea from '@/components/form/Textarea.vue'
 
-import { formatApiError } from '@/utils/errors'
+import { formatApiNotificationError } from '@/utils/errors'
 import { UUID } from '@/interfaces/UUID'
 import { Product, ProductDTO, ProductComponentForm } from '@/interfaces/Product'
 import { ProductSet } from '@/interfaces/ProductSet'
@@ -161,6 +186,7 @@ const EMPTY_FORM: ProductComponentForm = {
   slug: '',
   price: 0,
   description_html: '',
+  description_short: '',
   digital: false,
   public: true,
   sets: [],
@@ -171,18 +197,22 @@ const EMPTY_FORM: ProductComponentForm = {
 }
 
 export default Vue.extend({
+  metaInfo(): any {
+    return { title: this.product?.name || 'Nowy produkt' }
+  },
   components: {
     TopNav,
     Gallery,
     Card,
-    FlexInput,
     PopConfirm,
     ValidationProvider,
     ValidationObserver,
     SchemaConfigurator,
     RichEditor,
     TagsSelect,
-    ValidatedInput,
+    SwitchInput,
+    AuditsModal,
+    Textarea,
   },
   data: () => ({
     form: cloneDeep(EMPTY_FORM),
@@ -207,6 +237,9 @@ export default Vue.extend({
       // @ts-ignore // TODO: fix extended store getters typings
       return this.$accessor.products.getError || this.$accessor.products.getDepositError
     },
+    canModify(): boolean {
+      return this.$can(this.isNew ? this.$p.Products.Add : this.$p.Products.Edit)
+    },
   },
   watch: {
     product(product: Product) {
@@ -219,10 +252,7 @@ export default Vue.extend({
     },
     error(error) {
       if (error) {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(error),
-        })
+        this.$toast.error(formatApiNotificationError(error))
       }
     },
     async '$route.params.id'() {
@@ -254,10 +284,7 @@ export default Vue.extend({
       this.$accessor.startLoading()
       const success = await this.$accessor.products.remove(this.id)
       if (success) {
-        this.$vs.notification({
-          color: 'success',
-          title: 'Produkt został usunięty.',
-        })
+        this.$toast.success('Produkt został usunięty.')
         this.$router.push('/products')
       }
       this.$accessor.stopLoading()
@@ -285,10 +312,7 @@ export default Vue.extend({
       this.$accessor.stopLoading()
 
       if (item) {
-        this.$vs.notification({
-          color: 'success',
-          title: successMessage,
-        })
+        this.$toast.success(successMessage)
 
         if (item.id !== this.product.id) {
           this.$router.push(`/products/${item.id}`)
@@ -308,10 +332,6 @@ export default Vue.extend({
   &__info {
     input {
       width: 100%;
-    }
-
-    .vs-select-content {
-      max-width: none;
     }
   }
 
@@ -333,14 +353,14 @@ export default Vue.extend({
   }
 }
 
-@media (min-width: $break) {
+@media ($viewport-11) {
   .product {
     display: grid;
     grid-template-columns: 4fr 2fr;
     gap: 35px;
 
     small {
-      color: #aaa;
+      color: #aaaaaa;
     }
 
     &__info {

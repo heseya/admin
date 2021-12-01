@@ -1,56 +1,85 @@
 <template>
-  <list-item @click="onClick" class="product-list-item">
-    <template #avatar>
-      <vs-avatar color="#eee">
+  <cms-table-row
+    class="product-list-item"
+    :item="product"
+    :headers="table.headers"
+    @click="onClick"
+  >
+    <template #cover>
+      <avatar color="#eee">
         <img
           v-if="product.cover"
           :src="`${product.cover.url}?w=100&h=100`"
           :style="{ objectFit }"
         />
         <i v-else class="product-list-item__img-icon bx bx-image"></i>
-      </vs-avatar>
+      </avatar>
     </template>
 
-    {{ product.name }}
-    <small>{{ product.price }} {{ currency }}</small>
+    <template #name>
+      <b>{{ product.name }}</b>
+    </template>
 
-    <template #action>
+    <template #price>
+      <span v-if="product.price_min !== product.price_max">
+        {{ formatCurrency(product.price_min) }} - {{ formatCurrency(product.price_max) }}
+      </span>
+      <span v-else>
+        {{ formatCurrency(product.price) }}
+      </span>
+    </template>
+
+    <template #tags>
       <div class="product-list-item__tags">
-        <div
-          class="product-list-item__tag"
-          :style="{ backgroundColor: `#${tag.color}` }"
-          v-for="tag in product.tags"
-          :key="tag.id"
-        >
+        <tag v-for="tag in product.tags" :key="tag.id" :color="`#${tag.color}`">
           {{ tag.name }}
-        </div>
+        </tag>
+        <span v-if="product.tags.length === 0">-</span>
       </div>
-
-      <vs-avatar size="22" class="product-list-item__icon" color="#000" v-if="!product.visible">
-        <i class="bx bx-lock-alt"></i>
-      </vs-avatar>
     </template>
-  </list-item>
+
+    <template #visible>
+      <tag v-if="product.visible" type="success"> <i class="bx bx-check"></i> Tak </tag>
+      <tag v-else type="error"> <i class="bx bx-x"></i> Nie </tag>
+    </template>
+  </cms-table-row>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import ListItem from '../../layout/ListItem.vue'
+
+import Avatar from '@/components/layout/Avatar.vue'
+
+import { Product } from '@/interfaces/Product'
+import { formatCurrency } from '@/utils/currency'
+import CmsTableRow from '@/components/cms/CmsTableRow.vue'
+import { TableConfig } from '@/interfaces/CmsTable'
+import Tag from '@/components/Tag.vue'
 
 export default Vue.extend({
-  components: { ListItem },
+  components: { Avatar, CmsTableRow, Tag },
   props: {
-    product: Object,
+    product: {
+      type: Object,
+      required: true,
+    } as Vue.PropOptions<Product>,
+    table: {
+      type: Object,
+      required: true,
+    } as Vue.PropOptions<TableConfig<Product>>,
   },
   computed: {
-    currency(): string {
-      return this.$accessor.currency
-    },
     objectFit(): string {
       return +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'
     },
   },
+  mounted() {
+    navigator.permissions.query({ name: 'clipboard-write' as PermissionName })
+  },
   methods: {
+    formatCurrency(amount: number) {
+      return formatCurrency(amount, this.$accessor.currency)
+    },
     onClick() {
       // @ts-ignore
       if (window.copyIdMode === true) {
@@ -62,14 +91,8 @@ export default Vue.extend({
     },
     async copyId() {
       await navigator.clipboard.writeText(this.product.id)
-      this.$vs.notification({
-        color: 'success',
-        title: 'Skopiowano id',
-      })
+      this.$toast.success('Skopiowano ID')
     },
-  },
-  mounted() {
-    navigator.permissions.query({ name: 'clipboard-write' })
   },
 })
 </script>
@@ -77,6 +100,11 @@ export default Vue.extend({
 <style lang="scss">
 .product-list-item {
   position: relative;
+
+  .cms-table-row__col:first-of-type {
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
 
   &__icon {
     position: absolute;
@@ -94,7 +122,7 @@ export default Vue.extend({
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 2em;
-    color: #999;
+    color: #999999;
 
     &::after {
       content: '';
@@ -111,19 +139,8 @@ export default Vue.extend({
 
   &__tags {
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
     flex-wrap: wrap;
-  }
-
-  &__tag {
-    display: inline-block;
-    margin-right: 3px;
-    margin-top: 3px;
-    background-color: #000;
-    padding: 3px 6px;
-    color: #fff;
-    font-size: 0.7em;
-    border-radius: 3px;
   }
 }
 </style>

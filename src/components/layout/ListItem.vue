@@ -26,7 +26,7 @@ export default Vue.extend({
   props: {
     url: {
       type: String,
-      required: false,
+      default: null,
     },
     el: {
       type: String,
@@ -62,11 +62,9 @@ export default Vue.extend({
   width: 100%;
   box-sizing: border-box;
   cursor: pointer;
-  border-radius: 20px;
-  padding: 15px 20px;
-  min-height: 44px;
-  font-family: $font-sec;
-  font-size: 17px;
+  border-radius: 7px;
+  padding: 8px 12px;
+  min-height: 32px;
   display: flex;
   align-items: center;
   text-decoration: none;
@@ -74,26 +72,31 @@ export default Vue.extend({
   transition: 0.3s;
   text-align: left;
 
+  &__content {
+    font-weight: 600;
+  }
+
   &__hidden-icon {
     font-size: 0.9em;
     margin-right: 6px;
   }
 
   &:hover {
-    background-color: $grey-light;
+    background-color: $primary-color-100;
+    color: black;
   }
 
   &--no-hover:hover {
-    background-color: #fff0;
+    background-color: #ffffff00;
     cursor: default;
   }
 
   small {
     display: block;
-    color: #aaa;
+    color: #aaaaaa;
 
     b {
-      color: #666;
+      color: #666666;
     }
   }
 
@@ -109,7 +112,7 @@ export default Vue.extend({
 
 @media (hover: hover) and (pointer: fine) {
   .list__item:hover {
-    background-color: #fff0;
+    background-color: #ffffff00;
   }
 }
 </style>

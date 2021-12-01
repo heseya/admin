@@ -1,9 +1,11 @@
 import { extend } from 'vee-validate'
 import { required, email } from 'vee-validate/dist/rules'
+import v from 'validator'
 
 import { ShippingMethodPriceRangeDTO } from '@/interfaces/ShippingMethod'
 
 import { ONLY_LETTERS_REGEX, PASSWORD_REGEX, SLUG_REGEX } from '@/consts/regexes'
+import { isBefore } from 'date-fns'
 
 extend('required', {
   ...required,
@@ -57,10 +59,29 @@ extend('slug', {
   },
 })
 
+extend('url', {
+  message: 'Wartość musi być poprawnym adresem URL',
+  validate: (value) => {
+    return v.isURL(value, {
+      require_tld: false,
+      require_protocol: true,
+      protocols: ['http', 'https'],
+    })
+  },
+})
+
 extend('letters-only', {
   message: 'Wartość może składać się tylko z liter i podkreślników (_)',
   validate: (value) => {
     return ONLY_LETTERS_REGEX.test(value)
+  },
+})
+
+extend('date-before', {
+  message: 'Data zakończenia musi być przed datą startu',
+  params: ['target'],
+  validate(date, { target }: Record<string, any>) {
+    return target ? isBefore(new Date(date), new Date(target)) : true
   },
 })
 
@@ -75,4 +96,12 @@ extend('price-ranges-duplicates', {
       return !isDuplicate
     })
   },
+})
+
+extend('schema-checkbox', {
+  params: ['target'],
+  validate(value, { target }: Record<string, any>) {
+    return !(value && target)
+  },
+  message: 'Schemat nie może być jednocześnie ukryty i wymagany',
 })

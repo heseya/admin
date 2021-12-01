@@ -1,54 +1,88 @@
 <template>
-  <div>
-    <top-nav title="Ustawienia">
-      <div class="profile">
-        <span class="profile__name">{{ user.name }}</span>
-        <vs-avatar>
-          <img v-if="user.avatar" :src="user.avatar" />
-          <i v-else class="bx bx-user"></i>
-        </vs-avatar>
-      </div>
-    </top-nav>
+  <div class="settings-page narrower-page">
+    <top-nav title="Ustawienia" />
 
     <card>
       <list>
-        <h2 class="section-title">Sklep</h2>
-        <SettingsItem name="Strony" url="/pages" icon="bx bxs-copy-alt" />
+        <h2 v-can="$p.Pages.Show" class="section-title">Sklep</h2>
+        <SettingsItem v-can="$p.Pages.Show" name="Strony" url="/pages" icon="bx bxs-copy-alt" />
 
-        <h2 class="section-title">Produkty</h2>
-        <SettingsItem name="Kolekcje produktów" url="/settings/product-sets" icon="bx bx-list-ul" />
-        <SettingsItem name="Tagi" icon="bx bxs-purchase-tag" url="/settings/tags" />
-        <SettingsItem name="Schematy" icon="bx bxs-customize" url="/schemas" />
-
-        <h2 class="section-title">Zamówienia</h2>
-        <SettingsItem name="Statusy zamówień" icon="bx bxs-check-circle" url="/settings/statuses" />
-
-        <h2 class="section-title">Dostawa</h2>
-        <SettingsItem name="Opcje dostawy" icon="bx bxs-truck" url="/settings/shipping-methods" />
+        <h2 v-can.any="[$p.Tags.Show, $p.Products.Show]" class="section-title">Produkty</h2>
         <SettingsItem
+          v-can="$p.Tags.Show"
+          name="Tagi"
+          icon="bx bxs-purchase-tag"
+          url="/settings/tags"
+        />
+        <SettingsItem
+          v-can="$p.Products.Show"
+          name="Schematy"
+          icon="bx bxs-customize"
+          url="/schemas"
+        />
+
+        <h2 v-can.any="[$p.Statuses.Show]" class="section-title">Zamówienia</h2>
+        <SettingsItem
+          v-can="$p.Statuses.Show"
+          name="Statusy zamówień"
+          icon="bx bxs-check-circle"
+          url="/settings/statuses"
+        />
+
+        <h2 v-can.any="[$p.ShippingMethods.Show, $p.Packages.Show]" class="section-title">
+          Dostawa
+        </h2>
+        <SettingsItem
+          v-can="$p.ShippingMethods.Show"
+          name="Opcje dostawy"
+          icon="bx bxs-truck"
+          url="/settings/shipping-methods"
+        />
+        <SettingsItem
+          v-can="$p.Packages.Show"
           name="Szablony przesyłek"
           icon="bx bxs-box"
           url="/settings/package-templates"
         />
 
-        <h2 class="section-title">Inne</h2>
-        <SettingsItem name="Aplikacje" icon="bx bxs-store-alt" url="/apps" />
-        <SettingsItem name="Ustawienia zaawansowane" icon="bx bxs-cog" url="/settings/advanced" />
-        <SettingsItem name="Lista użytkowników" icon="bx bxs-group" url="/settings/users" />
+        <h2 v-can.any="[$p.Roles.Show, $p.Users.Show]" class="section-title">Użytkownicy</h2>
+        <SettingsItem
+          v-can="$p.Users.Show"
+          name="Lista użytkowników"
+          icon="bx bxs-group"
+          url="/settings/users"
+        />
+        <SettingsItem
+          v-can="$p.Roles.Show"
+          name="Role użytkowników"
+          icon="bx bx-task"
+          url="/settings/roles"
+        />
+
+        <h2 v-can.any="[$p.Apps.Show, $p.Settings.Show]" class="section-title">Inne</h2>
+        <SettingsItem v-can="$p.Apps.Show" name="Aplikacje" icon="bx bxs-store-alt" url="/apps" />
+        <SettingsItem
+          v-can="$p.Settings.Show"
+          name="Ustawienia zaawansowane"
+          icon="bx bxs-cog"
+          url="/settings/advanced"
+        />
 
         <h2 class="section-title">Konto</h2>
         <SettingsItem name="Zmień hasło" icon="bx bxs-lock" @click="isChangePasswordModal = true" />
-        <SettingsItem name="Sesje użytkownika" icon="bx bx-history" url="/settings/login-history" />
+        <!-- <SettingsItem
+          v-can="$p.Auth.SessionsShow"
+          name="Sesje użytkownika"
+          icon="bx bx-history"
+          url="/settings/login-history"
+        /> -->
         <SettingsItem name="Wyloguj" icon="bx bx-log-out-circle" @click="logout" />
       </list>
     </card>
 
-    <vs-dialog v-model="isChangePasswordModal" width="350px" not-center>
-      <template #header>
-        <h4>Zmiana hasła</h4>
-      </template>
+    <a-modal v-model="isChangePasswordModal" width="350px" :footer="null" title="Zmiana hasła">
       <ChangePasswordForm @close="isChangePasswordModal = false" />
-    </vs-dialog>
+    </a-modal>
   </div>
 </template>
 
@@ -62,12 +96,21 @@ import { User } from '@/interfaces/User'
 import SettingsItem from '@/components/modules/settings/SettingsItem.vue'
 
 export default Vue.extend({
+  metaInfo: { title: 'Ustawienia' },
   components: {
     TopNav,
     Card,
     List,
     SettingsItem,
     ChangePasswordForm,
+  },
+  beforeRouteLeave(to, from, next) {
+    if (this.isChangePasswordModal) {
+      this.isChangePasswordModal = false
+      next(false)
+    } else {
+      next()
+    }
   },
   data: () => ({
     isChangePasswordModal: false,
@@ -79,24 +122,20 @@ export default Vue.extend({
   },
   methods: {
     async logout() {
-      this.$accessor.startLoading()
       await this.$accessor.auth.logout()
-      this.$accessor.stopLoading()
       this.$router.push('/login')
     },
-  },
-  beforeRouteLeave(to, from, next) {
-    if (this.isChangePasswordModal) {
-      this.isChangePasswordModal = false
-      next(false)
-    } else {
-      next()
-    }
   },
 })
 </script>
 
 <style lang="scss" scoped>
+.settings-page {
+  .section-title:first-of-type {
+    margin-top: 0;
+  }
+}
+
 .profile {
   display: flex;
   justify-content: center;
@@ -113,13 +152,13 @@ export default Vue.extend({
     font-weight: 300;
     margin-right: 8px;
     font-size: 1.2em;
-    font-family: $font-sec;
+    font-weight: 600;
   }
 }
 
 .section-title {
-  font-family: $font-sec;
-  font-weight: 400;
+  font-weight: 600;
   margin-bottom: 5px;
+  margin-top: 16px;
 }
 </style>

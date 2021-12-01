@@ -1,27 +1,31 @@
 <template>
   <central-screen-form title="Logowanie">
     <ValidationObserver v-slot="{ handleSubmit }">
-      <validated-input
-        rules="required|email"
-        v-model="email"
-        label="E-mail"
-        type="email"
-        @keydown.enter="handleSubmit(login)"
-      />
-      <br /><br />
-      <validated-input
-        rules="required"
-        v-model="password"
-        label="Hasło"
-        type="password"
-        @keydown.enter="handleSubmit(login)"
-      />
-      <br />
+      <form @submit.prevent.stop="handleSubmit(login)">
+        <validated-input
+          v-model="email"
+          rules="required|email"
+          name="email"
+          data-cy="email"
+          label="E-mail"
+          type="email"
+        />
 
-      <div class="central-screen-form__row">
-        <vs-button dark @click="handleSubmit(login)"> Zaloguj </vs-button>
-        <vs-button transparent dark to="/reset-password"> Zapomniałeś hasła? </vs-button>
-      </div>
+        <validated-input
+          v-model="password"
+          rules="required"
+          label="Hasło"
+          name="password"
+          data-cy="password"
+          type="password"
+        />
+        <br />
+
+        <div class="central-screen-form__row">
+          <app-button data-cy="submitBtn" html-type="submit" type="primary"> Zaloguj </app-button>
+          <app-button type="white" to="/reset-password"> Zapomniałeś hasła? </app-button>
+        </div>
+      </form>
     </ValidationObserver>
   </central-screen-form>
 </template>
@@ -30,15 +34,15 @@
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import CentralScreenForm from '@/components/form/CentralScreenForm.vue'
-import { formatApiError } from '@/utils/errors'
-import ValidatedInput from '@/components/form/ValidatedInput.vue'
+import { formatApiNotificationError } from '@/utils/errors'
+import { first, isArray } from 'lodash'
 
 const DEBUG = process.env.NODE_ENV === 'development'
 
 export default Vue.extend({
+  metaInfo: { title: 'Logowanie' },
   components: {
     CentralScreenForm,
-    ValidatedInput,
     ValidationObserver,
   },
   data: () => ({
@@ -46,29 +50,30 @@ export default Vue.extend({
     password: DEBUG ? '***REMOVED***' : '',
   }),
   computed: {
-    loginError() {
+    loginError(): any {
       return this.$accessor.auth.error
+    },
+    nextURL(): string {
+      const next = this.$route.query.next
+      return (isArray(next) ? first(next) : next) || '/'
     },
   },
   watch: {
-    loginError(error) {
+    loginError(error: any) {
       if (error) {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(error),
-        })
+        this.$toast.error(formatApiNotificationError(error))
       }
     },
   },
   methods: {
     async login() {
       this.$accessor.startLoading()
-      await this.$accessor.auth.login({
+      const success = await this.$accessor.auth.login({
         email: this.email,
         password: this.password,
       })
+      if (success) this.$router.push(this.nextURL)
       this.$accessor.stopLoading()
-      this.$router.push({ name: 'Home' })
     },
   },
 })

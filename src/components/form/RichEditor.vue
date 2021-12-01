@@ -1,6 +1,6 @@
 <template>
   <div class="rich-editor" :style="{ '--height': height }">
-    <quill-editor ref="editor" :value="value" @input="onInput" :options="editorOption" />
+    <article-editor ref="editor" v-model="innerValue" :config="editorConfig" :disabled="disabled" />
   </div>
 </template>
 
@@ -8,42 +8,21 @@
 import Vue from 'vue'
 
 import { uploadMedia } from '@/services/uploadMedia'
-import { QuillOptionsStatic } from 'quill'
+import { CdnMedia } from '@/interfaces/Media'
+
+const articleUpload = async (upload: any, data: { files: File[]; e: any }) => {
+  const rawFiles = Array.from(data.files)
+  const responses = await Promise.all(rawFiles.map((file: File) => uploadMedia(file)))
+  const files = responses.map((r) => (r.success ? r.file : null)).filter((v) => !!v) as CdnMedia[]
+
+  // create response
+  const uploadedFiles = files.reduce((acc, file) => ({ ...acc, [file.id]: file }), {})
+
+  // call complete
+  upload.complete(uploadedFiles, data.e)
+}
 
 export default Vue.extend({
-  data: () => ({
-    editorOption: {
-      theme: 'snow',
-      modules: {
-        toolbar: [
-          ['bold', 'italic', 'underline', 'strike'], // toggled buttons
-          ['blockquote', 'code-block', 'image'],
-
-          [{ list: 'ordered' }, { list: 'bullet' }],
-          [{ script: 'sub' }, { script: 'super' }], // superscript/subscript
-          [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
-
-          [{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
-          [{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-          [{ color: [] }, { background: [] }], // dropdown with defaults from theme
-          [{ align: [] }],
-
-          ['clean'], // remove formatting button
-        ],
-        imageUploader: {
-          upload: async (sourceFile: File) => {
-            const { success, file, error } = await uploadMedia(sourceFile)
-            if (success && file) return file.url
-            // eslint-disable-next-line no-console
-            console.error('Failed to upload file to CDN:', error)
-            // this.$vs.notification({ color: 'danger', ...formatApiError(error) })
-            return null
-          },
-        },
-      },
-    } as QuillOptionsStatic,
-  }),
   props: {
     value: {
       type: String,
@@ -53,10 +32,42 @@ export default Vue.extend({
       type: String,
       default: '400px',
     },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
-  methods: {
-    onInput(value: string) {
-      this.$emit('input', value)
+  data: () => ({
+    editorConfig: {
+      css: '/article-editor/css/',
+      plugins: [
+        'imageposition',
+        'imageresize',
+        'underline',
+        'removeformat',
+        'reorder',
+        // TODO: enable when CDN will support more files
+        // 'filelink',
+      ],
+      link: {
+        nofollow: true,
+      },
+      image: {
+        upload: articleUpload,
+      },
+      filelink: {
+        upload: articleUpload,
+      },
+    },
+  }),
+  computed: {
+    innerValue: {
+      get(): string {
+        return this.value
+      },
+      set(value: string) {
+        this.$emit('input', value)
+      },
     },
   },
 })
@@ -64,8 +75,12 @@ export default Vue.extend({
 
 <style lang="scss">
 .rich-editor {
-  .ql-editor {
-    height: var(--height);
+  .arx-editor-frame {
+    min-height: var(--height) !important;
+  }
+
+  .arx-editor-container {
+    border-right-width: 2px;
   }
 }
 </style>

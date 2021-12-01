@@ -22,7 +22,7 @@ export const items = createVuexCRUD<ProductItem>()('items', {
       try {
         const { data } = await api.post(`/items/id:${id}/deposits`, { quantity })
         return data
-      } catch (error) {
+      } catch (error: any) {
         commit('PRODUCTS_SET_DEPOSITS_ERROR', error)
         return false
       }
@@ -32,7 +32,7 @@ export const items = createVuexCRUD<ProductItem>()('items', {
       try {
         const { data } = await api.get<{ data: { quantity: number }[] }>(`/items/id:${id}/deposits`)
         return data.data.reduce((acc, { quantity }) => acc + quantity, 0)
-      } catch (error) {
+      } catch (error: any) {
         commit('PRODUCTS_SET_DEPOSITS_ERROR', error)
         return false
       }

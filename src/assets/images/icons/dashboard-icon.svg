@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="19" height="19" viewBox="0 0 19 19">
+  <defs>
+    <style>
+
+      .cls-2 {
+        fill: currentColor;
+      }
+
+      .cls-3 {
+        fill: #fff0;
+      }
+    </style>
+    <clipPath id="clip-ico-1-1">
+      <rect width="19" height="19"/>
+    </clipPath>
+  </defs>
+  <g id="ico-1-1" class="cls-1">
+    <rect class="cls-3" width="19" height="19"/>
+    <g id="Group_227" data-name="Group 227" transform="translate(-20 -107)">
+      <path id="Rectangle_3653" data-name="Rectangle 3653" class="cls-2" d="M2,1.5a.5.5,0,0,0-.5.5V5a.5.5,0,0,0,.5.5H5A.5.5,0,0,0,5.5,5V2A.5.5,0,0,0,5,1.5H2M2,0H5A2,2,0,0,1,7,2V5A2,2,0,0,1,5,7H2A2,2,0,0,1,0,5V2A2,2,0,0,1,2,0Z" transform="translate(22 109)"/>
+      <path id="Rectangle_3655" data-name="Rectangle 3655" class="cls-2" d="M2,1.5a.5.5,0,0,0-.5.5V5a.5.5,0,0,0,.5.5H5A.5.5,0,0,0,5.5,5V2A.5.5,0,0,0,5,1.5H2M2,0H5A2,2,0,0,1,7,2V5A2,2,0,0,1,5,7H2A2,2,0,0,1,0,5V2A2,2,0,0,1,2,0Z" transform="translate(22 117)"/>
+      <path id="Rectangle_3654" data-name="Rectangle 3654" class="cls-2" d="M2,1.5a.5.5,0,0,0-.5.5V5a.5.5,0,0,0,.5.5H5A.5.5,0,0,0,5.5,5V2A.5.5,0,0,0,5,1.5H2M2,0H5A2,2,0,0,1,7,2V5A2,2,0,0,1,5,7H2A2,2,0,0,1,0,5V2A2,2,0,0,1,2,0Z" transform="translate(30 109)"/>
+      <path id="Rectangle_3656" data-name="Rectangle 3656" class="cls-2" d="M2,1.5a.5.5,0,0,0-.5.5V5a.5.5,0,0,0,.5.5H5A.5.5,0,0,0,5.5,5V2A.5.5,0,0,0,5,1.5H2M2,0H5A2,2,0,0,1,7,2V5A2,2,0,0,1,5,7H2A2,2,0,0,1,0,5V2A2,2,0,0,1,2,0Z" transform="translate(30 117)"/>
+    </g>
+  </g>
+</svg>

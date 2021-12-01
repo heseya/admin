@@ -1,13 +1,16 @@
 <template>
-  <div>
-    <PaginatedList title="Szablony przesyłek" storeKey="packageTemplates">
+  <div class="narrower-page">
+    <PaginatedList title="Szablony przesyłek" store-key="packageTemplates">
       <template #nav>
-        <vs-button @click="openModal()" color="dark" icon>
-          <i class="bx bx-plus"></i>
-        </vs-button>
+        <icon-button v-can="$p.Packages.Add" @click="openModal()">
+          <template #icon>
+            <i class="bx bx-plus"></i>
+          </template>
+          Dodaj szablon
+        </icon-button>
       </template>
-      <template v-slot="{ item: packageTemplate }">
-        <list-item @click="openModal(packageTemplate.id)">
+      <template #default="{ item: packageTemplate }">
+        <list-item :key="packageTemplate.id" @click="openModal(packageTemplate.id)">
           {{ packageTemplate.name }}
           <small>
             waga: <b>{{ packageTemplate.weight }}kg</b>, wysokość:
@@ -19,57 +22,67 @@
     </PaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
-      <vs-dialog width="550px" not-center v-model="isModalActive">
-        <template #header>
-          <h4>{{ editedItem.id ? 'Edycja szablony' : 'Nowy szablon' }}</h4>
-        </template>
+      <a-modal
+        v-model="isModalActive"
+        width="550px"
+        :title="editedItem.id ? 'Edycja szablony' : 'Nowy szablon'"
+      >
         <modal-form>
-          <validated-input rules="required" v-model="editedItem.name" label="Nazwa" />
+          <validated-input
+            v-model="editedItem.name"
+            :disabled="!canModify"
+            rules="required"
+            label="Nazwa"
+          />
 
           <validated-input
-            rules="required|positive"
             v-model="editedItem.weight"
+            :disabled="!canModify"
+            rules="required|positive"
             type="number"
             step="0.01"
             label="Waga (kg)"
           />
 
           <validated-input
-            rules="required|positive"
             v-model="editedItem.width"
+            :disabled="!canModify"
+            rules="required|positive"
             type="number"
             label="Szerokość (cm)"
           />
 
           <validated-input
-            rules="required|positive"
             v-model="editedItem.height"
+            :disabled="!canModify"
+            rules="required|positive"
             type="number"
             label="Wysokość (cm)"
           />
 
           <validated-input
-            rules="required|positive"
             v-model="editedItem.depth"
+            :disabled="!canModify"
+            rules="required|positive"
             type="number"
             label="Głębokość (cm)"
           />
         </modal-form>
         <template #footer>
           <div class="row">
-            <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
+            <app-button v-if="canModify" @click="handleSubmit(saveModal)"> Zapisz </app-button>
             <pop-confirm
+              v-can="$p.Packages.Remove"
               title="Czy na pewno chcesz usunąć ten szablon dostawy?"
-              okText="Usuń"
-              cancelText="Anuluj"
+              ok-text="Usuń"
+              cancel-text="Anuluj"
               @confirm="deleteItem"
-              v-slot="{ open }"
             >
-              <vs-button v-if="editedItem.id" color="danger" @click="open">Usuń</vs-button>
+              <app-button v-if="editedItem.id" type="danger">Usuń</app-button>
             </pop-confirm>
           </div>
         </template>
-      </vs-dialog>
+      </a-modal>
     </validation-observer>
   </div>
 </template>
@@ -83,7 +96,6 @@ import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import { PackageTemplate } from '@/interfaces/PackageTemplate'
@@ -98,18 +110,31 @@ const CLEAR_PACKAGE_TEMPALTE: PackageTemplate = {
 }
 
 export default Vue.extend({
+  metaInfo: { title: 'Szablony przesyłek' },
   components: {
     PaginatedList,
     ListItem,
     ModalForm,
     PopConfirm,
     ValidationObserver,
-    ValidatedInput,
+  },
+  beforeRouteLeave(to, from, next) {
+    if (this.isModalActive) {
+      this.isModalActive = false
+      next(false)
+    } else {
+      next()
+    }
   },
   data: () => ({
     isModalActive: false,
     editedItem: clone(CLEAR_PACKAGE_TEMPALTE),
   }),
+  computed: {
+    canModify(): boolean {
+      return this.$can(this.editedItem.id ? this.$p.Packages.Edit : this.$p.Packages.Add)
+    },
+  },
   methods: {
     openModal(id?: UUID) {
       this.isModalActive = true
@@ -139,14 +164,6 @@ export default Vue.extend({
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
-  },
-  beforeRouteLeave(to, from, next) {
-    if (this.isModalActive) {
-      this.isModalActive = false
-      next(false)
-    } else {
-      next()
-    }
   },
 })
 </script>

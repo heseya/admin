@@ -1,0 +1,79 @@
+<template>
+  <textarea
+    class="article-editor"
+    ref="article"
+    :name="name"
+    :placeholder="placeholder"
+    :value="value"
+  />
+</template>
+
+<script lang="ts">
+// @ts-nocheck
+import Vue from 'vue'
+export default Vue.extend({
+  article: false,
+  props: {
+    value: {
+      default: '',
+      type: String,
+    },
+    placeholder: {
+      type: String,
+      default: null,
+    },
+    name: {
+      type: String,
+      default: null,
+    },
+    config: {
+      default: {},
+      type: Object,
+    },
+  },
+  mounted() {
+    this.init()
+  },
+  beforeDestroy() {
+    this.destroy()
+  },
+  methods: {
+    init() {
+      var me = this
+      var subscribe = {
+        'editor.change': function (event) {
+          var html = event.get('html')
+          me.handleInput(html)
+          return html
+        },
+      }
+
+      // extend config
+      Vue.set(this.config, 'subscribe', subscribe)
+
+      // call
+      var app = ArticleEditor(this.$refs.article, this.config)
+
+      // set instance
+      this.article = app
+      this.$parent.article = app
+    },
+    destroy() {
+      // Call destroy on article to cleanup event handlers
+      this.article.stop()
+
+      // unset instance for garbage collection
+      this.article = null
+      this.$parent.article = null
+    },
+    handleInput(val) {
+      this.$emit('input', val)
+    },
+  },
+})
+</script>
+
+<style lang="scss">
+.article-editor {
+}
+</style>

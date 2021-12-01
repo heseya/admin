@@ -1,17 +1,22 @@
 <template>
-  <div>
+  <div class="narrower-page">
     <top-nav :title="!isNew ? page.name : 'Nowa strona'">
+      <audits-modal :id="page.id" model="pages" />
+
       <pop-confirm
         v-if="!isNew"
-        v-slot="{ open }"
+        v-can="$p.Pages.Remove"
         title="Czy na pewno chcesz usunąć tą stronę?"
         ok-text="Usuń"
         cancel-text="Anuluj"
         @confirm="deletePage"
       >
-        <vs-button dark icon @click="open">
-          <i class="bx bx-trash"></i>
-        </vs-button>
+        <icon-button type="danger">
+          <template #icon>
+            <i class="bx bx-trash"></i>
+          </template>
+          Usuń
+        </icon-button>
       </pop-confirm>
     </top-nav>
 
@@ -19,17 +24,33 @@
       <validation-observer v-slot="{ handleSubmit }">
         <card>
           <div class="page__info">
-            <validated-input v-model="form.name" rules="required" label="Nazwa" @input="editSlug" />
-            <validated-input v-model="form.slug" rules="required|slug" label="Link" />
+            <validated-input
+              v-model="form.name"
+              rules="required"
+              label="Nazwa"
+              :disabled="!canModify"
+              @input="editSlug"
+            />
+            <validated-input
+              v-model="form.slug"
+              rules="required|slug"
+              label="Link"
+              :disabled="!canModify"
+            />
             <flex-input>
-              <switch-input v-model="form.public" horizontal label="Widoczność strony" />
+              <switch-input
+                v-model="form.public"
+                horizontal
+                label="Widoczność strony"
+                :disabled="!canModify"
+              />
             </flex-input>
           </div>
           <br />
           <small class="label">Treść</small>
-          <rich-editor v-if="!isLoading" v-model="form.content_html" />
+          <RichEditor v-if="!isLoading" v-model="form.content_html" :disabled="!canModify" />
           <br />
-          <vs-button color="dark" size="large" @click="handleSubmit(save)"> Zapisz </vs-button>
+          <app-button v-if="canModify" @click="handleSubmit(save)"> Zapisz </app-button>
         </card>
       </validation-observer>
     </div>
@@ -47,12 +68,16 @@ import FlexInput from '@/components/layout/FlexInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import RichEditor from '@/components/form/RichEditor.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
-import ValidatedInput from '@/components/form/ValidatedInput.vue'
+import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 
-import { formatApiError } from '@/utils/errors'
-import { Page } from '@/interfaces/Page'
+import { formatApiNotificationError } from '@/utils/errors'
+import { Page, PageDto } from '@/interfaces/Page'
+import { UUID } from '@/interfaces/UUID'
 
 export default Vue.extend({
+  metaInfo(): any {
+    return { title: this.page?.name || 'Nowa strona' }
+  },
   components: {
     TopNav,
     Card,
@@ -61,19 +86,18 @@ export default Vue.extend({
     RichEditor,
     ValidationObserver,
     SwitchInput,
-    ValidatedInput,
+    AuditsModal,
   },
   data: () => ({
     form: {
       name: '',
       slug: '',
-      content_md: '',
       content_html: '',
       public: true,
-    },
+    } as PageDto,
   }),
   computed: {
-    id(): string {
+    id(): UUID {
       return this.$route.params.id
     },
     isNew(): boolean {
@@ -88,6 +112,9 @@ export default Vue.extend({
     isLoading(): boolean {
       return this.$accessor.pages.isLoading
     },
+    canModify(): boolean {
+      return this.$can(this.isNew ? this.$p.Pages.Add : this.$p.Pages.Edit)
+    },
   },
   watch: {
     page(page: Page) {
@@ -97,10 +124,7 @@ export default Vue.extend({
     },
     error(error) {
       if (error) {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(error),
-        })
+        this.$toast.error(formatApiNotificationError(error))
       }
     },
   },
@@ -122,10 +146,7 @@ export default Vue.extend({
       if (this.isNew) {
         const page = await this.$accessor.pages.add(this.form)
         if (page && page.id) {
-          this.$vs.notification({
-            color: 'success',
-            title: 'Strona została utworzona.',
-          })
+          this.$toast.success('Strona została utworzona.')
           this.$router.push(`/pages/${page.id}`)
         }
       } else {
@@ -134,10 +155,7 @@ export default Vue.extend({
           item: this.form,
         })
         if (success) {
-          this.$vs.notification({
-            color: 'success',
-            title: 'Strona została zaktualizowana.',
-          })
+          this.$toast.success('Strona została zaktualizowana.')
         }
       }
       this.$accessor.stopLoading()
@@ -146,10 +164,7 @@ export default Vue.extend({
       this.$accessor.startLoading()
       const success = await this.$accessor.pages.remove(this.id)
       if (success) {
-        this.$vs.notification({
-          color: 'success',
-          title: 'Strona została usunięta.',
-        })
+        this.$toast.success('Strona została usunięta.')
         this.$router.push('/pages')
       }
       this.$accessor.stopLoading()
@@ -170,13 +185,9 @@ export default Vue.extend({
   input {
     width: 100%;
   }
-
-  .vs-select-content {
-    max-width: none;
-  }
 }
 
-@media (min-width: $break) {
+@media ($viewport-11) {
   .page__info {
     grid-template-columns: 1fr 1fr 1fr;
     column-gap: 20px;

@@ -1,15 +1,13 @@
-import format from 'date-fns/format'
 import { isArray } from 'lodash'
 import queryString from 'query-string'
 
 import { ALL_FILTER_VALUE } from '../consts/filters'
+import { DateInput } from './dates'
 
 /**
  * Returns last element of the given array
  */
 export const getLastElement = <T>(array: T[] = []) => (array ? array[array.length - 1] : undefined)
-
-export type DateInput = string | number | Date
 
 export const getDaysDiff = (d1: DateInput, d2: DateInput) => {
   const diff = new Date(d2).setHours(12) - new Date(d1).setHours(12)
@@ -37,10 +35,6 @@ export const getRelativeDate = (date: DateInput, lang = 'pl') => {
   else return rtf.format(Math.floor(diff / 365), 'year')
 }
 
-export const formatDate = (date: DateInput) => {
-  return format(new Date(date), 'dd.MM.yyyy HH:mm:ss')
-}
-
 export const formatFilters = (filters: Record<string, unknown>) => {
   return Object.fromEntries(
     Object.entries(filters).filter(([, v]) => {
@@ -50,5 +44,16 @@ export const formatFilters = (filters: Record<string, unknown>) => {
   )
 }
 
-export const stringifyQuery = (payload: Record<string, any>) =>
-  queryString.stringify(payload, { arrayFormat: 'bracket' })
+export const formatApiNotification = ({ title, text }: { title: string; text?: string }) => {
+  return text
+    ? `
+  <span class="notification__title">${title}</span>
+  <span class="notification__text">${text}</span>
+  `
+    : title
+}
+
+export const stringifyQuery = (payload: Record<string, any>) => {
+  const query = queryString.stringify(payload, { arrayFormat: 'bracket' })
+  return query ? `?${query}` : ''
+}

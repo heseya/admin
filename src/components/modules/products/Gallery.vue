@@ -1,22 +1,36 @@
 <template>
   <div class="gallery">
-    <draggable class="gallery__images" v-model="images" :options="{ filter: '.undragabble' }">
-      <div class="gallery__img" v-for="image in images" :key="image.url">
-        <img :src="`${image.url}?w=350&h=350`" :style="{ objectFit }" />
+    <draggable
+      v-model="images"
+      class="gallery__images"
+      :options="{ filter: '.undragabble' }"
+      :disabled="disabled"
+    >
+      <div v-for="image in images" :key="image.url" class="gallery__img">
+        <img
+          v-if="image.type === CdnMediaType.Photo"
+          :src="`${image.url}?w=350&h=350`"
+          :style="{ objectFit }"
+        />
+        <video v-if="image.type === CdnMediaType.Video" :src="image.url" autoplay loop muted />
         <div class="remove">
-          <vs-button icon color="danger" @click="onImageDelete(image.id)">
-            <i class="bx bx-trash"></i>
-          </vs-button>
+          <icon-button v-if="!disabled" type="danger" @click="onImageDelete(image.id)">
+            <template #icon>
+              <i class="bx bx-trash"></i>
+            </template>
+          </icon-button>
         </div>
       </div>
       <app-media-uploader
+        v-if="!disabled"
+        class="gallery__img add undragabble"
+        :class="{ 'add--drag': isDrag, 'add--big': images.length === 0 }"
+        multiple
         @dragChange="dragChange"
         @upload="onImageUpload"
         @error="onUploadError"
-        class="gallery__img add undragabble"
-        :class="{ 'add--drag': isDrag, 'add--big': images.length === 0 }"
       >
-        <img src="/img/icons/plus.svg" />
+        <img src="@/assets/images/icons/plus-icon.svg" />
       </app-media-uploader>
     </draggable>
   </div>
@@ -27,9 +41,9 @@ import Vue from 'vue'
 import Draggable from 'vuedraggable'
 
 import MediaUploader from '@/components/MediaUploader.vue'
-import { formatApiError } from '@/utils/errors'
+import { formatApiNotificationError } from '@/utils/errors'
 import { UUID } from '@/interfaces/UUID'
-import { CdnMedia } from '@/interfaces/Media'
+import { CdnMedia, CdnMediaType } from '@/interfaces/Media'
 import { removeMedia } from '@/services/uploadMedia'
 
 export default Vue.extend({
@@ -42,8 +56,16 @@ export default Vue.extend({
       type: Array,
       default: () => [],
     } as Vue.PropOptions<CdnMedia[]>,
+    disabled: { type: Boolean, default: false },
   },
+  data: () => ({
+    mediaToDelete: [] as UUID[],
+    isDrag: false,
+  }),
   computed: {
+    CdnMediaType(): typeof CdnMediaType {
+      return CdnMediaType
+    },
     images: {
       get(): CdnMedia[] {
         return this.value
@@ -63,10 +85,6 @@ export default Vue.extend({
     window.removeEventListener('beforeunload', this.removeTouchedFiles)
     this.removeTouchedFiles()
   },
-  data: () => ({
-    mediaToDelete: [] as UUID[],
-    isDrag: false,
-  }),
   methods: {
     dragChange(isDrag: boolean) {
       this.isDrag = isDrag
@@ -84,10 +102,7 @@ export default Vue.extend({
       this.mediaToDelete = [...this.mediaToDelete, file.id]
     },
     onUploadError(error: any) {
-      this.$vs.notification({
-        color: 'danger',
-        ...formatApiError(error),
-      })
+      this.$toast.error(formatApiNotificationError(error))
     },
     clearMediaToDelete() {
       this.mediaToDelete = []
@@ -118,19 +133,19 @@ export default Vue.extend({
     width: 100%;
     padding-top: 100%;
     margin-bottom: 4px;
-    background-color: #fff;
-    border-radius: 20px;
+    background-color: #ffffff;
     box-shadow: $shadow;
 
-    img {
+    img,
+    video {
       position: absolute;
       top: 0;
       left: 0;
       height: 100%;
       width: 100%;
       object-fit: cover;
-      background-color: #fff;
-      border-radius: 20px;
+      background-color: #ffffff;
+      border-radius: 7px;
     }
 
     .remove {
@@ -189,8 +204,8 @@ export default Vue.extend({
       width: 20%;
       animation: spin 1s infinite;
       background-color: transparent;
-      border: 6px solid #fff;
-      border-color: #fff transparent transparent transparent;
+      border: 6px solid #ffffff;
+      border-color: #ffffff transparent transparent transparent;
       box-shadow: none;
       z-index: 4;
     }
@@ -198,15 +213,6 @@ export default Vue.extend({
     img {
       filter: blur(4px);
       transform: scale(1.1);
-    }
-  }
-
-  @keyframes spin {
-    from {
-      transform: translate(-50%, -50%) rotate(0deg);
-    }
-    to {
-      transform: translate(-50%, -50%) rotate(360deg);
     }
   }
 }

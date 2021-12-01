@@ -1,15 +1,28 @@
 <template>
-  <div class="card">
+  <div class="card" :class="{ 'card--border': border }">
     <slot></slot>
   </div>
 </template>
 
+<script lang="ts">
+import Vue from 'vue'
+export default Vue.extend({
+  props: {
+    border: {
+      type: Boolean,
+      default: false,
+    },
+  },
+})
+</script>
+
 <style lang="scss">
 .card {
-  background: #fff;
-  padding: 20px;
-  border-radius: 20px;
+  @extend %card;
   margin-bottom: 30px;
-  box-shadow: $shadow;
+
+  &--border {
+    @extend %card--border;
+  }
 }
 </style>

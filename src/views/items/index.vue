@@ -1,81 +1,95 @@
 <template>
   <div>
-    <PaginatedList title="Magazyn" storeKey="items" :filters="filters">
+    <PaginatedList
+      title="Magazyn"
+      store-key="items"
+      :filters="filters"
+      :table="tableConfig"
+      @clear-filters="clearFilters"
+    >
       <template #nav>
-        <vs-input
-          state="dark"
-          type="search"
-          v-model="filters.search"
-          @keydown.enter="makeSearch"
-          placeholder="Wyszukiwanie"
-        />
-
-        <vs-button @click="makeSearch" color="dark" icon>
-          <i class="bx bx-search"></i>
-        </vs-button>
-        <vs-button @click="openModal()" color="dark" icon>
-          <i class="bx bx-plus"></i>
-        </vs-button>
+        <icon-button v-can="$p.Items.Add" @click="openModal()">
+          <template #icon>
+            <i class="bx bx-plus"></i>
+          </template>
+          Dodaj przedmiot
+        </icon-button>
       </template>
 
-      <template v-slot="{ item }">
-        <list-item @click="openModal(item.id)">
-          {{ item.name }}
-          <small>{{ item.sku }}</small>
-          <template #action>
-            <small>{{ item.quantity }} sztuk</small>
-          </template>
-        </list-item>
+      <template #filters>
+        <div>
+          <app-input
+            v-model="filters.search"
+            class="span-2"
+            type="search"
+            label="Wyszukiwanie"
+            allow-clear
+            @input="debouncedSearch"
+          />
+        </div>
       </template>
     </PaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
-      <vs-dialog width="550px" not-center v-model="isModalActive">
-        <template #header>
-          <h4>{{ editedItem.id ? 'Edycja' : 'Nowy' }} przedmiot</h4>
-        </template>
+      <a-modal
+        v-model="isModalActive"
+        width="550px"
+        :title="editedItem.id ? 'Edycja przedmiot' : 'Nowy przedmiot'"
+      >
         <modal-form>
-          <validated-input rules="required" v-model="editedItem.name" label="Nazwa" />
-
-          <validated-input rules="required" v-model="editedItem.sku" label="SKU" />
           <validated-input
+            v-model="editedItem.name"
+            :disabled="!canModify"
             rules="required"
+            label="Nazwa"
+          />
+
+          <validated-input
+            v-model="editedItem.sku"
+            :disabled="!canModify"
+            rules="required"
+            label="SKU"
+          />
+          <validated-input
             v-if="editedItem.id"
-            type="number"
             v-model="editedItem.quantity"
+            :disabled="!canModify"
+            rules="required"
+            type="number"
             label="Ilość w magazynie"
           />
         </modal-form>
         <template #footer>
           <div class="row">
-            <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
+            <app-button v-if="canModify" @click="handleSubmit(saveModal)"> Zapisz </app-button>
             <pop-confirm
+              v-can="$p.Items.Remove"
               title="Czy na pewno chcesz usunąć ten przedmiot?"
-              okText="Usuń"
-              cancelText="Anuluj"
+              ok-text="Usuń"
+              cancel-text="Anuluj"
               @confirm="deleteItem"
-              v-slot="{ open }"
             >
-              <vs-button v-if="editedItem.id" color="danger" @click="open">Usuń</vs-button>
+              <app-button v-if="editedItem.id" type="danger">Usuń</app-button>
             </pop-confirm>
           </div>
         </template>
-      </vs-dialog>
+      </a-modal>
     </validation-observer>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import { debounce } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import ListItem from '@/components/layout/ListItem.vue'
-import ValidatedInput from '@/components/form/ValidatedInput.vue'
+
 import { UUID } from '@/interfaces/UUID'
 import { ProductItem } from '@/interfaces/Product'
+import { TableConfig } from '@/interfaces/CmsTable'
 
 const EMPTY_FORM: ProductItem = {
   id: '',
@@ -85,13 +99,20 @@ const EMPTY_FORM: ProductItem = {
 }
 
 export default Vue.extend({
+  metaInfo: { title: 'Magazyn' },
   components: {
-    ListItem,
     ModalForm,
     PopConfirm,
     ValidationObserver,
     PaginatedList,
-    ValidatedInput,
+  },
+  beforeRouteLeave(to, from, next) {
+    if (this.isModalActive) {
+      this.isModalActive = false
+      next(false)
+    } else {
+      next()
+    }
   },
   data: () => ({
     filters: {
@@ -106,8 +127,18 @@ export default Vue.extend({
       // @ts-ignore // TODO: fix extended store getters typings
       return this.$accessor.items.getDepositError
     },
-    currency(): string {
-      return this.$accessor.currency
+    canModify(): boolean {
+      return this.$can(this.editedItem.id ? this.$p.Items.Edit : this.$p.Items.Add)
+    },
+    tableConfig(): TableConfig<ProductItem> {
+      return {
+        rowOnClick: (item) => this.openModal(item.id),
+        headers: [
+          { key: 'name', label: 'Nazwa' },
+          { key: 'sku', label: 'SKU', width: '0.5fr' },
+          { key: 'quantity', label: 'Ilość w magazynie', width: '0.5fr' },
+        ],
+      }
     },
   },
   watch: {
@@ -115,12 +146,12 @@ export default Vue.extend({
       if (depositsError) {
         // eslint-disable-next-line no-console
         console.error('depositsError', depositsError)
-        this.$vs.notification({
-          color: 'danger',
-          title: depositsError.message,
-        })
+        this.$toast.error(depositsError.message)
       }
     },
+  },
+  created() {
+    this.filters.search = (this.$route.query.search as string) || ''
   },
   methods: {
     makeSearch() {
@@ -131,8 +162,18 @@ export default Vue.extend({
         })
       }
     },
+    debouncedSearch: debounce(function (this: any) {
+      this.$nextTick(() => {
+        this.makeSearch()
+      })
+    }, 300),
+    clearFilters() {
+      this.filters.search = ''
+      this.makeSearch()
+    },
 
     openModal(id?: UUID) {
+      if (!this.$verboseCan(this.$p.Items.ShowDetails)) return
       this.isModalActive = true
       if (id) {
         this.editedItem = this.$accessor.items.getFromListById(id)
@@ -173,17 +214,6 @@ export default Vue.extend({
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
-  },
-  created() {
-    this.filters.search = (this.$route.query.search as string) || ''
-  },
-  beforeRouteLeave(to, from, next) {
-    if (this.isModalActive) {
-      this.isModalActive = false
-      next(false)
-    } else {
-      next()
-    }
   },
 })
 </script>

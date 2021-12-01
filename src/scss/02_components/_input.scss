@@ -1,0 +1,15 @@
+.app-input {
+  width: 100%;
+  margin-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+
+  &__label {
+    font-size: 0.8em;
+  }
+
+  &__error {
+    color: $red-color-500;
+    font-size: 0.7em;
+  }
+}

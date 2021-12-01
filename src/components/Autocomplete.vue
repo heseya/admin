@@ -3,32 +3,36 @@
     <div class="autocomplete__input">
       <div class="autocomplete__label">
         {{ label }}
-        <button class="icon-btn" @click="isModalActive = true"><i class="bx bx-plus"></i></button>
+        <button :disabled="disabled" class="icon-btn" @click="isModalActive = true">
+          <i class="bx bx-plus"></i>
+        </button>
       </div>
       <div class="autocomplete__items">
         <div
-          class="autocomplete__item"
           v-for="item in value"
           :key="item.id"
+          class="autocomplete__item"
           :label="item.name"
           :value="item"
           disabled
         >
           {{ item.name }}
-          <button class="icon-btn" @click.stop="deleteItem(item.id)">
+          <button class="icon-btn" :disabled="disabled" @click.stop="deleteItem(item.id)">
             <i class="bx bx-x"></i>
           </button>
         </div>
       </div>
     </div>
-    <vs-dialog width="800px" not-center v-model="isModalActive">
-      <template #header>
-        <h4>Wybierz przedmiot z magazynu</h4>
-      </template>
+    <a-modal
+      v-model="isModalActive"
+      width="800px"
+      title="Wybierz przedmiot z magazynu"
+      :footer="null"
+    >
       <modal-form>
-        <selector typeName="produkt" type="items" :existing="value" @select="addItem" />
+        <selector type-name="produkt" type="items" :existing="value" @select="addItem" />
       </modal-form>
-    </vs-dialog>
+    </a-modal>
   </div>
 </template>
 
@@ -45,6 +49,7 @@ interface AutocompleteItem {
 
 export default Vue.extend({
   name: 'Autocomplete',
+  components: { Selector, ModalForm },
   props: {
     type: {
       type: String,
@@ -58,6 +63,7 @@ export default Vue.extend({
       type: Array,
       default: null,
     } as Vue.PropOptions<AutocompleteItem[]>,
+    disabled: { type: Boolean, default: false },
   },
   data: () => ({
     isModalActive: false,
@@ -80,24 +86,21 @@ export default Vue.extend({
       this.compValue = this.compValue.filter((item) => item.id !== itemId)
     },
   },
-  components: { Selector, ModalForm },
 })
 </script>
 
 <style lang="scss" scoped>
 .autocomplete {
-  margin-top: 8px;
-
   &__label {
     font-size: 0.8em;
-    padding-left: 8px;
   }
 
   &__items {
     display: flex;
     flex-wrap: wrap;
-    background-color: #f4f7f8;
-    border-radius: 12px;
+    background-color: #ffffff;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
     padding: 4px;
     box-sizing: border-box;
     min-height: 33px;
@@ -122,8 +125,13 @@ export default Vue.extend({
     cursor: pointer;
     border-radius: 3px;
 
+    &[disabled] {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
     &:hover {
-      background-color: #eee;
+      background-color: #eeeeee;
     }
   }
 }

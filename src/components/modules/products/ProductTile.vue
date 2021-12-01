@@ -1,27 +1,27 @@
 <template>
-  <button @click="onClick" class="product-box">
-    <vs-avatar size="30" class="product-box__icon" color="#000" v-if="!product.visible">
+  <button class="product-box" @click="onClick">
+    <avatar v-if="!product.visible" small class="product-box__icon">
       <i class="bx bx-lock-alt"></i>
-    </vs-avatar>
+    </avatar>
     <div class="product-box__img">
       <img v-if="product.cover" :src="`${product.cover.url}?w=350&h=350`" :style="{ objectFit }" />
       <i v-else class="product-box__img-icon bx bx-image"></i>
 
       <div class="product-box__tags">
-        <div
-          class="product-box__tag"
-          :style="{ backgroundColor: `#${tag.color}` }"
-          v-for="tag in product.tags"
-          :key="tag.id"
-        >
+        <tag v-for="tag in product.tags" :key="tag.id" small :color="`#${tag.color}`">
           {{ tag.name }}
-        </div>
+        </tag>
       </div>
     </div>
     <div class="flex">
       <div class="name">
         {{ product.name }}<br />
-        <small>{{ product.price }} {{ currency }}</small>
+        <small v-if="product.price_min !== product.price_max">
+          {{ formatCurrency(product.price_min) }} - {{ formatCurrency(product.price_max) }}
+        </small>
+        <small v-else>
+          {{ formatCurrency(product.price) }}
+        </small>
       </div>
     </div>
   </button>
@@ -29,19 +29,33 @@
 
 <script lang="ts">
 import Vue from 'vue'
+
+import Avatar from '@/components/layout/Avatar.vue'
+
+import { Product } from '@/interfaces/Product'
+import { formatCurrency } from '@/utils/currency'
+import Tag from '@/components/Tag.vue'
+
 export default Vue.extend({
+  components: { Avatar, Tag },
   props: {
-    product: Object,
+    product: {
+      type: Object,
+      required: true,
+    } as Vue.PropOptions<Product>,
   },
   computed: {
-    currency(): string {
-      return this.$accessor.currency
-    },
     objectFit(): string {
       return +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'
     },
   },
+  mounted() {
+    navigator.permissions.query({ name: 'clipboard-write' as PermissionName })
+  },
   methods: {
+    formatCurrency(amount: number) {
+      return formatCurrency(amount, this.$accessor.currency)
+    },
     onClick() {
       // @ts-ignore
       if (window.copyIdMode === true) {
@@ -53,14 +67,8 @@ export default Vue.extend({
     },
     async copyId() {
       await navigator.clipboard.writeText(this.product.id)
-      this.$vs.notification({
-        color: 'success',
-        title: 'Skopiowano id',
-      })
+      this.$toast.success('Skopiowano ID')
     },
-  },
-  mounted() {
-    navigator.permissions.query({ name: 'clipboard-write' })
   },
 })
 </script>
@@ -68,23 +76,24 @@ export default Vue.extend({
 <style lang="scss">
 .product-box {
   all: unset;
-  color: #000;
+  color: #000000;
   text-decoration: none;
   position: relative;
   cursor: pointer;
 
   &__icon {
-    position: absolute;
+    position: absolute !important;
     top: -10px;
     left: -10px;
+    z-index: 1;
   }
 
   &__img {
     position: relative;
     width: 100%;
     padding-top: 100%;
-    border-radius: 20px;
-    background-color: #fff;
+    border-radius: 8px;
+    background-color: #ffffff;
     overflow: hidden;
     margin-bottom: 4px;
     box-shadow: $shadow;
@@ -110,17 +119,6 @@ export default Vue.extend({
     flex-wrap: wrap;
   }
 
-  &__tag {
-    display: inline-block;
-    margin-right: 3px;
-    margin-top: 3px;
-    background-color: #000;
-    padding: 3px 6px;
-    color: #fff;
-    font-size: 0.7em;
-    border-radius: 3px;
-  }
-
   &:hover &__img img {
     transform: scale(1.05);
   }
@@ -131,7 +129,7 @@ export default Vue.extend({
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 2em;
-    color: #ccc;
+    color: #cccccc;
 
     &::after {
       content: '';
@@ -147,13 +145,13 @@ export default Vue.extend({
   }
 
   .name {
-    font-family: $font-sec;
+    font-weight: 500;
     padding: 5px;
     padding-bottom: 2px;
   }
 
   small {
-    color: #777;
+    color: #777777;
   }
 
   .price {

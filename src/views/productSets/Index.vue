@@ -1,13 +1,16 @@
 <template>
-  <div>
-    <PaginatedList title="Kolekcje produktów" storeKey="productSets" draggable>
+  <div class="narrower-page">
+    <PaginatedList title="Kolekcje produktów" store-key="productSets" draggable>
       <template #nav>
-        <vs-button @click="createProductSet()" color="dark" icon>
-          <i class="bx bx-plus"></i>
-        </vs-button>
+        <icon-button v-can="$p.ProductSets.Add" @click="createProductSet()">
+          <template #icon>
+            <i class="bx bx-plus"></i>
+          </template>
+          Dodaj kolekcję
+        </icon-button>
       </template>
 
-      <template v-slot="{ item: set }">
+      <template #default="{ item: set }">
         <ProductSet
           :set="set"
           @edit="editProductSet"
@@ -19,8 +22,10 @@
 
     <ProductSetForm
       :value="editedItem"
-      :slugPrefix="editedItemSlugPrefix"
+      :slug-prefix="editedItemSlugPrefix"
       :is-open="isFormModalActive"
+      :disabled="!$can(editedItem.id ? $p.ProductSets.Edit : $p.ProductSets.Add)"
+      :deletable="$can($p.ProductSets.Remove)"
       @close="isFormModalActive = false"
     />
 
@@ -51,11 +56,20 @@ const CLEAR_FORM: ProductSetDTO = {
 }
 
 export default Vue.extend({
+  metaInfo: { title: 'Kolekcje' },
   components: {
     PaginatedList,
     ProductSetForm,
     ProductSet: ProductSetComponent,
     SetProductsList,
+  },
+  beforeRouteLeave(to, from, next) {
+    if (this.isFormModalActive) {
+      this.isFormModalActive = false
+      next(false)
+    } else {
+      next()
+    }
   },
   data: () => ({
     isFormModalActive: false,
@@ -84,14 +98,6 @@ export default Vue.extend({
     showSetProducts(set: ProductSet) {
       this.selectedSet = set
     },
-  },
-  beforeRouteLeave(to, from, next) {
-    if (this.isFormModalActive) {
-      this.isFormModalActive = false
-      next(false)
-    } else {
-      next()
-    }
   },
 })
 </script>

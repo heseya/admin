@@ -1,47 +1,56 @@
 <template>
-  <vs-dialog width="900px" class="set-products" not-center :value="isOpen" @input="$emit('close')">
-    <template #header>
+  <a-modal width="900px" class="set-products" :visible="isOpen" @cancel="$emit('close')">
+    <template #title>
       <div class="set-products__header">
         <h4>Produkty w kolekcji {{ set && set.name }}</h4>
-        <vs-button dark @click="isSelectorActive = true">
-          <i class="bx bx-plus"></i> &nbsp; Dodaj produkt do kolekcji
-        </vs-button>
+        <icon-button v-can="$p.ProductSets.Edit" size="small" dark @click="isSelectorActive = true">
+          <template #icon>
+            <i class="bx bx-plus"></i>
+          </template>
+          Dodaj produkt do kolekcji
+        </icon-button>
       </div>
     </template>
 
     <div v-if="products.length" class="set-products__list">
-      <div class="set-product-item" v-for="product in products" :key="product.id">
-        <vs-avatar color="#eee">
+      <div v-for="product in products" :key="product.id" class="set-product-item">
+        <avatar color="#eee">
           <img
             v-if="product.cover"
             :src="`${product.cover.url}?w=100&h=100`"
             :style="{ objectFit }"
           />
           <i v-else class="product-list-item__img-icon bx bx-image"></i>
-        </vs-avatar>
+        </avatar>
         <div class="set-product-item__main">
           <span class="set-product-item__name">{{ product.name }}</span>
-          <span class="set-product-item__price">{{ product.price }} {{ currency }}</span>
+          <span class="set-product-item__price">{{ formatCurrency(product.price) }}</span>
         </div>
         <div class="set-product-item__actions">
-          <vs-button danger icon size="small" @click.stop="removeProduct(product.id)">
-            <i class="bx bx-trash"></i>
-          </vs-button>
+          <icon-button
+            v-can="$p.ProductSets.Edit"
+            size="small"
+            type="danger"
+            @click.stop="removeProduct(product.id)"
+          >
+            <template #icon>
+              <i class="bx bx-trash"></i>
+            </template>
+          </icon-button>
         </div>
       </div>
     </div>
 
     <empty v-else>Ta kolekcja nie zawiera produktów</empty>
 
-    <vs-button success @click="save">Zapisz</vs-button>
+    <template #footer>
+      <app-button type="success" @click="save">Zapisz</app-button>
+    </template>
 
-    <vs-dialog width="800px" not-center v-model="isSelectorActive">
-      <template #header>
-        <h4>Wybierz produkt</h4>
-      </template>
-      <selector typeName="produkt" type="products" :existing="products" @select="addProduct" />
-    </vs-dialog>
-  </vs-dialog>
+    <a-modal v-model="isSelectorActive" width="800px" title="Wybierz produkt" :footer="null">
+      <selector type-name="produkt" type="products" :existing="products" @select="addProduct" />
+    </a-modal>
+  </a-modal>
 </template>
 
 <script lang="ts">
@@ -49,15 +58,18 @@ import Vue from 'vue'
 
 import Selector from '@/components/Selector.vue'
 import Empty from '@/components/layout/Empty.vue'
+import Avatar from '@/components/layout/Avatar.vue'
 
 import { ProductSet } from '@/interfaces/ProductSet'
 import { Product } from '@/interfaces/Product'
 import { UUID } from '@/interfaces/UUID'
+
 import { api } from '@/api'
-import { formatApiError } from '@/utils/errors'
+import { formatCurrency } from '@/utils/currency'
+import { formatApiNotificationError } from '@/utils/errors'
 
 export default Vue.extend({
-  components: { Selector, Empty },
+  components: { Selector, Empty, Avatar },
   props: {
     set: {
       type: Object,
@@ -68,24 +80,24 @@ export default Vue.extend({
       default: false,
     },
   },
-  computed: {
-    currency(): string {
-      return this.$accessor.currency
-    },
-    objectFit(): string {
-      return +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'
-    },
-  },
   data: () => ({
     isSelectorActive: false,
     products: [] as Product[],
   }),
+  computed: {
+    objectFit(): string {
+      return +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'
+    },
+  },
   watch: {
     set(v: ProductSet | null) {
       if (v) this.fetchProducts()
     },
   },
   methods: {
+    formatCurrency(amount: number) {
+      return formatCurrency(amount, this.$accessor.currency)
+    },
     addProduct(product: Product) {
       this.products.push(product)
     },
@@ -101,11 +113,8 @@ export default Vue.extend({
           data: { data: products },
         } = await api.get<{ data: Product[] }>(`/product-sets/id:${this.set.id}/products?limit=500`)
         this.products = products
-      } catch (e) {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(e),
-        })
+      } catch (e: any) {
+        this.$toast.error(formatApiNotificationError(e))
       }
       this.$accessor.stopLoading()
     },
@@ -116,16 +125,10 @@ export default Vue.extend({
       try {
         const products = this.products.map((p) => p.id)
         await api.post(`/product-sets/id:${this.set.id}/products`, { products })
-        this.$vs.notification({
-          color: 'success',
-          title: 'Produkty zostały zapisane w kolekcji',
-        })
+        this.$toast.success('Produkty zostały zapisane w kolekcji')
         this.$emit('close')
-      } catch (e) {
-        this.$vs.notification({
-          color: 'danger',
-          ...formatApiError(e),
-        })
+      } catch (e: any) {
+        this.$toast.error(formatApiNotificationError(e))
       }
       this.$accessor.stopLoading()
     },
@@ -139,6 +142,11 @@ export default Vue.extend({
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding-right: 24px;
+
+    h4 {
+      margin-bottom: 0;
+    }
   }
 
   &__list {
@@ -165,7 +173,7 @@ export default Vue.extend({
 
   &__name {
     display: block;
-    font-family: $font-sec;
+    font-weight: 600;
   }
 
   &__price {

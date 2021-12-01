@@ -8,7 +8,7 @@ export const shippingMethods = createVuexCRUD<ShippingMethod, DTO, DTO>()('shipp
   mutations: {},
   actions: {
     async reorder(_c, items) {
-      await reorderCollection('shipping-methods', 'shipping_methods', 'order')(items)
+      await reorderCollection('shipping-methods', 'shipping_methods')(items)
     },
   },
 })

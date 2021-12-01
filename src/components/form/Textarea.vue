@@ -1,13 +1,5 @@
 <template>
-  <div class="textarea">
-    <textarea v-model="formValue" />
-    <small>
-      Markdown is supported
-      <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" target="_blank">
-        <i class="bx bx-info-circle"></i>
-      </a>
-    </small>
-  </div>
+  <textarea v-model="formValue" class="textarea" />
 </template>
 
 <script lang="ts">
@@ -35,38 +27,21 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .textarea {
-  textarea {
-    width: 100%;
-    background-color: #f4f7f8;
-    border-radius: 10px;
-    box-sizing: border-box;
-    padding: 7px 13px;
-    padding-left: 10px;
-    border: none;
-    font-family: $font-main;
-    transition: 0.3s;
-    min-height: 100px;
-    height: 200px;
-    max-height: 400px;
-    resize: vertical;
+  width: 100%;
+  background-color: #fff;
+  border: solid 1px #d9d9d9;
+  border-radius: 4px;
+  box-sizing: border-box;
+  padding: 7px 13px;
+  font-family: $primaryFont;
+  transition: 0.3s;
+  min-height: 100px;
+  height: 200px;
+  max-height: 400px;
+  resize: vertical;
 
-    &:focus {
-      padding-left: 15px;
-      outline: none;
-    }
-  }
-
-  small {
-    display: block;
-    width: 100%;
-    text-align: right;
-    color: #333;
-    font-family: $font-sec;
-    font-size: 0.7em;
-
-    i {
-      color: #47b2f0;
-    }
+  &:focus {
+    outline: none;
   }
 }
 </style>

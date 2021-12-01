@@ -23,7 +23,7 @@ export const products = createVuexCRUD<Product, ProductDTO, ProductDTO>()('produ
       try {
         const { data } = await api.post(`/items/id:${id}/deposits`, { quantity })
         return data
-      } catch (error) {
+      } catch (error: any) {
         commit('SET_DEPOSITS_ERROR', error)
         return false
       }

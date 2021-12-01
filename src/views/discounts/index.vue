@@ -1,80 +1,76 @@
 <template>
   <div>
-    <PaginatedList title="Kody rabatowe" storeKey="discounts">
+    <PaginatedList title="Kody rabatowe" store-key="discounts" :table="tableConfig">
       <template #nav>
-        <vs-button @click="openModal()" color="dark" icon>
-          <i class="bx bx-plus"></i>
-        </vs-button>
+        <icon-button v-can="$p.Discounts.Add" @click="openModal()">
+          <template #icon>
+            <i class="bx bx-plus"></i>
+          </template>
+          Dodaj kod rabatowy
+        </icon-button>
       </template>
 
-      <template v-slot="{ item: discount }">
-        <list-item @click="openModal(discount.id)">
-          {{ discount.code }}
-          <small>{{ discount.description }}</small>
-
-          <template #action>
-            -{{ discount.discount }} {{ discount.type === 0 ? '%' : currency }}
-            <small style="white-space: nowrap"
-              >wykorzystano {{ discount.uses }} z {{ discount.max_uses }}</small
-            >
+      <template #default="{ item: discount }">
+        <cms-table-row
+          :key="discount.id"
+          :item="discount"
+          :headers="tableConfig.headers"
+          @click="openModal(discount.id)"
+        >
+          <template #code>
+            <b>{{ discount.code }}</b>
+            <small v-if="discount.description">&nbsp;({{ discount.description }})</small>
           </template>
-        </list-item>
+          <template #discount="{ rawValue }">
+            -{{ discount.type === 0 ? `${rawValue}%` : formatCurrency(rawValue) }}
+          </template>
+          <template #uses> {{ discount.uses }} z {{ discount.max_uses }} </template>
+        </cms-table-row>
       </template>
     </PaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
-      <vs-dialog width="550px" not-center v-model="isModalActive">
-        <template #header>
-          <h4>{{ editedItem.id ? 'Edycja kodu rabatowego' : 'Nowy kod rabatowy' }}</h4>
-        </template>
-        <modal-form>
-          <validated-input rules="required" v-model="editedItem.code" label="Kod" />
-          <validated-input rules="required" v-model="editedItem.description" label="Opis" />
+      <a-modal
+        v-model="isModalActive"
+        width="550px"
+        :title="editedItem.id ? 'Edycja kodu rabatowego' : 'Nowy kod rabatowy'"
+      >
+        <DiscountForm v-model="editedItem" :disabled="!canModify" />
 
-          <validated-input
-            rules="required"
-            v-model="editedItem.max_uses"
-            label="Maksymalna ilość użyć"
-          />
-          <validated-input rules="required" v-model="editedItem.discount" label="Zniżka" />
-          <ValidationProvider rules="required" v-slot="{ errors }">
-            <vs-select v-model="editedItem.type" label="Typ">
-              <vs-option label="Procentowy" value="0">Rabat Procentowy</vs-option>
-              <vs-option label="Kwotowy" value="1">Rabat Kwotowy</vs-option>
-              <template #message-danger>{{ errors[0] }}</template>
-            </vs-select>
-          </ValidationProvider>
-        </modal-form>
         <template #footer>
           <div class="row">
-            <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
-            <!--            <pop-confirm-->
-            <!--              title="Czy na pewno chcesz usunąć ten kod?"-->
-            <!--              okText="Usuń"-->
-            <!--              cancelText="Anuluj"-->
-            <!--              @confirm="deleteItem"-->
-            <!--              v-slot="{ open }"-->
-            <!--            >-->
-            <!--              <vs-button v-if="editedItem.id" color="danger" @click="open">Usuń</vs-button>-->
-            <!--            </pop-confirm>-->
+            <app-button v-if="canModify" @click="handleSubmit(saveModal)"> Zapisz </app-button>
+            <pop-confirm
+              v-can="$p.Discounts.Remove"
+              title="Czy na pewno chcesz usunąć ten kod?"
+              ok-text="Usuń"
+              cancel-text="Anuluj"
+              @confirm="deleteItem"
+            >
+              <app-button v-if="editedItem.id" type="danger">Usuń</app-button>
+            </pop-confirm>
           </div>
         </template>
-      </vs-dialog>
+      </a-modal>
     </validation-observer>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { ValidationProvider, ValidationObserver } from 'vee-validate'
+import { ValidationObserver } from 'vee-validate'
 
-import ModalForm from '@/components/form/ModalForm.vue'
-import ListItem from '@/components/layout/ListItem.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
-import ValidatedInput from '@/components/form/ValidatedInput.vue'
+import PopConfirm from '@/components/layout/PopConfirm.vue'
+import DiscountForm from '@/components/modules/discounts/Form.vue'
+import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 
 import { DiscountCode } from '@/interfaces/DiscountCode'
 import { UUID } from '@/interfaces/UUID'
+
+import { formatCurrency } from '@/utils/currency'
+import { DATETIME_FORMAT, formatDate, formatUTC } from '@/utils/dates'
+import { TableConfig } from '@/interfaces/CmsTable'
 
 const EMPTY_DISCOUNT_CODE: DiscountCode = {
   id: '',
@@ -84,16 +80,26 @@ const EMPTY_DISCOUNT_CODE: DiscountCode = {
   max_uses: 1,
   available: true,
   uses: 0,
+  starts_at: null,
+  expires_at: null,
 }
 
 export default Vue.extend({
+  metaInfo: { title: 'Kody rabatowe' },
   components: {
-    ListItem,
-    ModalForm,
-    ValidationProvider,
+    DiscountForm,
     ValidationObserver,
     PaginatedList,
-    ValidatedInput,
+    PopConfirm,
+    CmsTableRow,
+  },
+  beforeRouteLeave(to, from, next) {
+    if (this.isModalActive) {
+      this.isModalActive = false
+      next(false)
+    } else {
+      next()
+    }
   },
   data: () => ({
     isModalActive: false,
@@ -102,15 +108,49 @@ export default Vue.extend({
     } as DiscountCode,
   }),
   computed: {
-    currency(): string {
-      return this.$accessor.currency
+    canModify(): boolean {
+      return this.$can(this.editedItem.id ? this.$p.Discounts.Edit : this.$p.Discounts.Add)
+    },
+    tableConfig(): TableConfig<DiscountCode> {
+      return {
+        rowOnClick: (item) => this.openModal(item.id),
+        headers: [
+          { key: 'code', label: 'Kod' },
+          { key: 'discount', label: 'Rabat', width: '0.5fr' },
+          { key: 'uses', label: 'Wykorzystano', width: '0.5fr' },
+          {
+            key: 'starts_at',
+            label: 'Ważny od',
+            render: (v) => formatDate(v) || '-',
+            width: '0.5fr',
+          },
+          {
+            key: 'expires_at',
+            label: 'Ważny do',
+            render: (v) => formatDate(v) || '-',
+            width: '0.5fr',
+          },
+        ],
+      }
     },
   },
   methods: {
+    formatCurrency(amount: number) {
+      return formatCurrency(amount, this.$accessor.currency)
+    },
+    formatDateTime(date: string) {
+      return formatDate(date)
+    },
     openModal(id?: UUID) {
+      if (!this.$verboseCan(this.$p.Discounts.ShowDetails)) return
       this.isModalActive = true
       if (id) {
-        this.editedItem = this.$accessor.discounts.getFromListById(id)
+        const item = this.$accessor.discounts.getFromListById(id)
+        this.editedItem = {
+          ...(item || {}),
+          starts_at: formatDate(item.starts_at, DATETIME_FORMAT),
+          expires_at: formatDate(item.expires_at, DATETIME_FORMAT),
+        }
       } else {
         this.editedItem = {
           ...EMPTY_DISCOUNT_CODE,
@@ -122,7 +162,11 @@ export default Vue.extend({
       if (this.editedItem.id) {
         await this.$accessor.discounts.update({
           id: this.editedItem.id,
-          item: this.editedItem,
+          item: {
+            ...this.editedItem,
+            starts_at: formatUTC(this.editedItem.starts_at),
+            expires_at: formatUTC(this.editedItem.expires_at),
+          },
         })
       } else {
         await this.$accessor.discounts.add(this.editedItem)
@@ -136,14 +180,6 @@ export default Vue.extend({
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
-  },
-  beforeRouteLeave(to, from, next) {
-    if (this.isModalActive) {
-      this.isModalActive = false
-      next(false)
-    } else {
-      next()
-    }
   },
 })
 </script>

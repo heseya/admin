@@ -10,7 +10,10 @@ export interface Product {
   name: string
   slug: string
   price: number
+  price_min: number
+  price_max: number
   description_html: string
+  description_short: string
   digital: boolean
   public: boolean
   visible: boolean
@@ -30,6 +33,7 @@ export interface ProductDTO {
   slug: string
   price: number
   description_html: string
+  description_short: string
   digital: boolean
   public: boolean
   quantity_step: number
@@ -40,7 +44,10 @@ export interface ProductDTO {
 }
 
 export interface ProductComponentForm
-  extends Omit<Product, 'id' | 'sets' | 'brand' | 'category' | 'cover' | 'visible'> {
+  extends Omit<
+    Product,
+    'id' | 'sets' | 'brand' | 'category' | 'cover' | 'visible' | 'price_min' | 'price_max'
+  > {
   id?: UUID
   sets: UUID[]
 }

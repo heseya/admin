@@ -1,9 +1,9 @@
 <template>
   <list-item :url="url" @click="$emit('click')">
     <template #avatar>
-      <vs-avatar dark>
+      <avatar>
         <i :class="icon"></i>
-      </vs-avatar>
+      </avatar>
     </template>
     {{ name }}
   </list-item>
@@ -12,9 +12,10 @@
 <script lang="ts">
 import Vue from 'vue'
 import ListItem from '@/components/layout/ListItem.vue'
+import Avatar from '@/components/layout/Avatar.vue'
 
 export default Vue.extend({
-  components: { ListItem },
+  components: { ListItem, Avatar },
   props: {
     name: {
       type: String,

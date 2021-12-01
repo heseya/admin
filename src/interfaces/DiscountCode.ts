@@ -15,4 +15,6 @@ export interface DiscountCode {
   uses: number
   max_uses: number
   available: boolean
+  starts_at: string | null
+  expires_at: string | null
 }

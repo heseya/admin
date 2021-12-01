@@ -1,26 +1,27 @@
 <template>
-  <div>
-    <PaginatedList title="Sesje użytkownika" storeKey="authSessions">
+  <div class="narrower-page">
+    <PaginatedList title="Sesje użytkownika" store-key="authSessions">
       <template #nav>
         <pop-confirm
+          v-can="$p.Auth.SessionsRevoke"
           title="Czy na pewno chcesz wylogować wszystkie sesje użytkownika? Tylko obecna pozostanie aktywna."
-          okText="Usuń"
-          cancelText="Anuluj"
+          ok-text="Usuń"
+          cancel-text="Anuluj"
           @confirm="killAllSessions"
-          v-slot="{ open }"
         >
-          <vs-button color="danger" @click="open" :disabled="!areSessionsToKill">
+          <icon-button type="danger" :disabled="!areSessionsToKill">
+            <template #icon>
+              <i class="bx bx-trash"></i>
+            </template>
             Wyloguj wszystkie
-          </vs-button>
+          </icon-button>
         </pop-confirm>
       </template>
 
-      <template v-slot="{ item: login }">
-        <list-item class="login-item" no-hover>
+      <template #default="{ item: login }">
+        <list-item :key="login.id" class="login-item" no-hover>
           <template #avatar>
-            <vs-avatar dark>
-              <i :class="getBrowserIcon(login.browser)"></i>
-            </vs-avatar>
+            <avatar> <i :class="getBrowserIcon(login.browser)"></i> </avatar>
           </template>
           <span v-if="login.platform">
             {{ login.platform + ' ' + login.browser + ' ' + login.browser_ver }}
@@ -33,19 +34,22 @@
           <template #action>
             <small v-if="login.current_session" class="login-item__current">To ty</small>
             <pop-confirm
+              v-can="$p.Auth.SessionsRevoke"
               title="Czy na pewno chcesz wylogować tę sesję użytkownika?"
-              okText="Usuń"
-              cancelText="Anuluj"
+              ok-text="Usuń"
+              cancel-text="Anuluj"
               @confirm="killSession(login.id)"
-              v-slot="{ open }"
             >
-              <vs-button
+              <icon-button
                 v-if="!login.revoked && !login.current_session"
-                color="danger"
-                @click="open"
+                type="danger"
+                size="small"
               >
+                <template #icon>
+                  <i class="bx bx-trash"></i>
+                </template>
                 Wyloguj
-              </vs-button>
+              </icon-button>
             </pop-confirm>
           </template>
         </list-item>
@@ -61,12 +65,15 @@ import PaginatedList from '@/components/PaginatedList.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import { UUID } from '@/interfaces/UUID'
+import Avatar from '@/components/layout/Avatar.vue'
 
 export default Vue.extend({
+  metaInfo: { title: 'Sesje użytkownika' },
   components: {
     PaginatedList,
     ListItem,
     PopConfirm,
+    Avatar,
   },
   computed: {
     areSessionsToKill(): boolean {
@@ -100,7 +107,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .login-item {
-  $activeColor: #158a15;
+  $activeColor: $green-color-500;
 
   &__active {
     color: $activeColor;
@@ -110,7 +117,7 @@ export default Vue.extend({
     width: 70px;
     margin-right: 5px;
     box-sizing: border-box;
-    background-color: lighten($activeColor, 60%);
+    background-color: lighten($activeColor, 50%);
     text-align: center;
     color: $activeColor;
     border: dashed 1px $activeColor;

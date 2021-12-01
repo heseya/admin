@@ -1,0 +1,130 @@
+@import './01_abstracts/index.scss';
+@import './02_components/index';
+@import './font';
+
+body {
+  font-family: $primaryFont, 'BlinkMacSystemFont', sans-serif !important;
+  background: $background-color-500 !important;
+  color: $font-color !important;
+  margin: 0;
+}
+
+.uppercase {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.danger-text {
+  color: $red-color-500;
+}
+
+.success-text {
+  color: $green-color-500;
+}
+
+hr {
+  all: unset;
+  display: block;
+  height: 1px !important;
+  background-color: $background-color-700;
+  width: 100%;
+  margin: 12px 0;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.flex-column {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition-property: opacity;
+  transition-duration: 0.25s;
+}
+
+.fade-enter-active {
+  transition-delay: 0.25s;
+}
+
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
+}
+
+.label {
+  display: block;
+  margin-left: 5px;
+  margin-bottom: 3px;
+  color: #000000 !important;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.flex {
+  display: flex;
+}
+
+.multiselect {
+  z-index: 1000;
+}
+
+.multiselect__tag {
+  background: #000000;
+}
+
+.multiselect__tag-icon::after {
+  color: #ffffff;
+}
+
+.title {
+  font-weight: 600;
+  margin: 0;
+}
+
+.notification {
+  &__title {
+    display: block;
+    font-weight: 600;
+    font-size: 1.1em;
+  }
+
+  &__text {
+    display: block;
+  }
+}
+
+.v-toast {
+  padding-bottom: 5em !important;
+
+  @media ($viewport-11) {
+    padding-bottom: inherit !important;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+code {
+  background-color: $background-color-700;
+  color: $font-color;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+.narrower-page {
+  max-width: 900px;
+  display: block;
+  margin: 0 auto;
+}

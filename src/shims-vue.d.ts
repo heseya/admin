@@ -1,5 +1,9 @@
 import VueRouter, { Route } from 'vue-router'
-import { accessor } from './store'
+
+import { hasUserAccess, alertIfNoAccess } from './plugins/permissions'
+import { PermissionsTree } from './consts/permissions'
+import { AccessorType } from './store'
+import { MetaInfo, MetaInfoComputed } from 'vue-meta'
 
 declare module '*.vue' {
   import Vue from 'vue'
@@ -10,7 +14,22 @@ declare module 'vue/types/vue' {
   interface Vue {
     $router: VueRouter
     $route: Route
-    $vs: any
-    $accessor: typeof accessor
+    $accessor: AccessorType
+
+    $p: PermissionsTree
+    $can: typeof hasUserAccess
+    $verboseCan: typeof alertIfNoAccess
+  }
+}
+
+declare module 'vue/types/options' {
+  interface ComponentOptions {
+    metaInfo?: MetaInfo | MetaInfoComputed
+  }
+}
+
+declare module 'axios' {
+  interface AxiosRequestConfig {
+    _retried?: boolean
   }
 }

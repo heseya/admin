@@ -11,7 +11,7 @@ export const reorderCollection =
         [key]: ids,
       })
       return true
-    } catch (error) {
+    } catch (error: any) {
       return false
     }
   }

@@ -6,15 +6,25 @@ module.exports = {
     node: true,
   },
 
+  parserOptions: {
+    parser: '@typescript-eslint/parser',
+    ecmaFeatures: {
+      modules: true,
+    },
+  },
+
   rules: {
     'no-console': 'warn',
     'no-debugger': 'warn',
+    '@typescript-eslint/no-unused-vars': 'warn',
+    'vue/multi-word-component-names': 'off',
+    'vue/no-deprecated-slot-attribute': 'error',
     camelcase: ['error', { properties: 'never' }],
   },
 
   extends: [
-    // 'plugin:vue/recommended',
-    'plugin:vue/essential',
+    // 'plugin:vue/essential',
+    'plugin:vue/recommended',
     '@vue/typescript',
     'prettier',
     'plugin:prettier/recommended',

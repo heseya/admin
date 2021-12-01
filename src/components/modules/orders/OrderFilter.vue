@@ -1,76 +1,76 @@
 <template>
   <div class="orders-filter">
-    <vs-input type="search" v-model="search" @keydown.enter="makeSearch" label="Wyszukiwanie" />
+    <app-input
+      v-model="search"
+      class="span-2"
+      type="search"
+      label="Wyszukiwanie"
+      allow-clear
+      @input="debouncedSearch"
+    />
 
-    <vs-select v-model="status_id" label="Status" :key="'status' + statuses.length" filter>
-      <vs-option label="Wszystkie" value="_all"> Wszystkie </vs-option>
-      <vs-option v-for="s in statuses" :key="s.id" :label="s.name" :value="s.id">
+    <app-select
+      v-model="status_id"
+      label="Status"
+      add-all
+      option-filter-prop="label"
+      @change="debouncedSearch"
+    >
+      <a-select-option v-for="s in statuses" :key="s.id" :label="s.name">
         {{ s.name }}
-      </vs-option>
-    </vs-select>
+      </a-select-option>
+    </app-select>
 
-    <br />
-
-    <vs-select
+    <app-select
       v-model="shipping_method_id"
       label="Dostawa"
-      :key="'shippingMethod' + shippingMethods.length"
-      filter
+      add-all
+      option-filter-prop="label"
+      @change="debouncedSearch"
     >
-      <vs-option label="Wszystkie" value="_all"> Wszystkie </vs-option>
-      <vs-option
-        v-for="method in shippingMethods"
-        :key="method.id"
-        :label="method.name"
-        :value="method.id"
-      >
+      <a-select-option v-for="method in shippingMethods" :key="method.id" :label="method.name">
         {{ method.name }}
-      </vs-option>
-    </vs-select>
-
-    <br />
-
-    <vs-button @click="makeSearch" color="dark"> <i class="bx bx-search"></i> Wyszukaj </vs-button>
-    <vs-button @click="clearFilters" transparent> Wyczyść filtry </vs-button>
+      </a-select-option>
+    </app-select>
   </div>
 </template>
 
 <script lang="ts">
+/* eslint-disable camelcase */
 import Vue from 'vue'
-import clone from 'lodash/clone'
+import { debounce } from 'lodash'
 
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 
 import { OrderStatus } from '@/interfaces/Order'
 import { ShippingMethod } from '@/interfaces/ShippingMethod'
 
-export const EMPTY_ORDER_FILTERS = {
+export type OrderFilersType = {
+  search: string
+  status_id: string
+  shipping_method_id: string
+  sort?: string
+}
+
+export const EMPTY_ORDER_FILTERS: OrderFilersType = {
   search: '',
   status_id: ALL_FILTER_VALUE,
   shipping_method_id: ALL_FILTER_VALUE,
+  sort: undefined,
 }
 
-type OrderFilers = typeof EMPTY_ORDER_FILTERS
-
 export default Vue.extend({
+  props: {
+    filters: {
+      type: Object,
+      default: () => ({ ...EMPTY_ORDER_FILTERS }),
+    } as Vue.PropOptions<OrderFilersType>,
+  },
   data: () => ({
     search: '',
     status_id: ALL_FILTER_VALUE,
     shipping_method_id: ALL_FILTER_VALUE,
   }),
-  props: {
-    filters: {
-      type: Object,
-      default: () => ({ ...EMPTY_ORDER_FILTERS }),
-    } as Vue.PropOptions<OrderFilers>,
-  },
-  watch: {
-    filters(f: OrderFilers) {
-      this.search = f.search
-      this.status_id = f.status_id
-      this.shipping_method_id = f.shipping_method_id
-    },
-  },
   computed: {
     statuses(): OrderStatus[] {
       return this.$accessor.statuses.getData
@@ -79,16 +79,11 @@ export default Vue.extend({
       return this.$accessor.shippingMethods.getData
     },
   },
-  methods: {
-    makeSearch() {
-      this.$emit('search', {
-        search: this.search,
-        status_id: this.status_id,
-        shipping_method_id: this.shipping_method_id,
-      })
-    },
-    clearFilters() {
-      this.$emit('search', clone(EMPTY_ORDER_FILTERS))
+  watch: {
+    filters(f: OrderFilersType) {
+      this.search = f.search
+      this.status_id = f.status_id
+      this.shipping_method_id = f.shipping_method_id
     },
   },
   created() {
@@ -100,10 +95,21 @@ export default Vue.extend({
     this.status_id = this.filters.status_id
     this.shipping_method_id = this.filters.shipping_method_id
   },
+  methods: {
+    makeSearch() {
+      this.$emit('search', {
+        ...this.filters,
+        search: this.search,
+        status_id: this.status_id,
+        shipping_method_id: this.shipping_method_id,
+      })
+    },
+
+    debouncedSearch: debounce(function (this: any) {
+      this.$nextTick(() => {
+        this.makeSearch()
+      })
+    }, 300),
+  },
 })
 </script>
-
-<style lang="scss" scoped>
-.orders-filter {
-}
-</style>

@@ -1,14 +1,21 @@
 <template>
-  <div>
-    <PaginatedList title="Opcje Dostawy" storeKey="shippingMethods" draggable>
+  <div class="narrower-page">
+    <PaginatedList title="Opcje Dostawy" store-key="shippingMethods" draggable>
       <template #nav>
-        <vs-button @click="openModal()" color="dark" icon>
-          <i class="bx bx-plus"></i>
-        </vs-button>
+        <icon-button v-can="$p.ShippingMethods.Add" @click="openModal()">
+          <template #icon>
+            <i class="bx bx-plus"></i>
+          </template>
+          Dodaj opcję dostawy
+        </icon-button>
       </template>
 
-      <template v-slot="{ item: shippingMethod }">
-        <list-item @click="openModal(shippingMethod.id)" :hidden="!shippingMethod.public">
+      <template #default="{ item: shippingMethod }">
+        <list-item
+          :key="shippingMethod.id"
+          :hidden="!shippingMethod.public"
+          @click="openModal(shippingMethod.id)"
+        >
           {{ shippingMethod.name }}
           <small v-if="shippingMethod.countries.length">
             {{ shippingMethod.black_list ? 'Wszystkie kraje poza:' : 'Tylko wybrane kraje:' }}
@@ -26,26 +33,27 @@
     </PaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
-      <vs-dialog width="660px" not-center v-model="isModalActive">
-        <template #header>
-          <h4>{{ editedItem.id ? 'Edycja opcji' : 'Nowa opcja' }} dostawy</h4>
-        </template>
-        <ShippingMethodsForm v-model="editedItem" :countries="countries" />
+      <a-modal
+        v-model="isModalActive"
+        width="660px"
+        :title="editedItem.id ? 'Edycja opcji dostawy' : 'Nowa opcja dostawy'"
+      >
+        <ShippingMethodsForm v-model="editedItem" :countries="countries" :disabled="!canModify" />
         <template #footer>
           <div class="row">
-            <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
+            <app-button v-if="canModify" @click="handleSubmit(saveModal)"> Zapisz </app-button>
             <pop-confirm
+              v-can="$p.ShippingMethods.Remove"
               title="Czy na pewno chcesz usunąć tą metode dostawy?"
-              okText="Usuń"
-              cancelText="Anuluj"
+              ok-text="Usuń"
+              cancel-text="Anuluj"
               @confirm="deleteItem"
-              v-slot="{ open }"
             >
-              <vs-button v-if="editedItem.id" color="danger" @click="open">Usuń</vs-button>
+              <app-button v-if="editedItem.id" type="danger">Usuń</app-button>
             </pop-confirm>
           </div>
         </template>
-      </vs-dialog>
+      </a-modal>
     </validation-observer>
   </div>
 </template>
@@ -62,8 +70,10 @@ import ShippingMethodsForm from '@/components/modules/shippingMethods/Index.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import { ShippingMethodDTO } from '@/interfaces/ShippingMethod'
+import { Country } from '@/interfaces/Country'
 
 export default Vue.extend({
+  metaInfo: { title: 'Metody dostawy' },
   components: {
     ListItem,
     PopConfirm,
@@ -71,11 +81,33 @@ export default Vue.extend({
     PaginatedList,
     ShippingMethodsForm,
   },
+  beforeRouteLeave(to, from, next) {
+    if (this.isModalActive) {
+      this.isModalActive = false
+      next(false)
+    } else {
+      next()
+    }
+  },
   data: () => ({
     isModalActive: false,
     editedItem: {} as ShippingMethodDTO,
-    countries: [],
+    countries: [] as Country[],
   }),
+  computed: {
+    canModify(): boolean {
+      return this.$can(
+        this.editedItem.id ? this.$p.ShippingMethods.Edit : this.$p.ShippingMethods.Add,
+      )
+    },
+  },
+  async created() {
+    this.$accessor.startLoading()
+    this.$accessor.paymentMethods.fetch()
+    const { data } = await api.get<{ data: Country[] }>('countries')
+    this.countries = data.data
+    this.$accessor.stopLoading()
+  },
   methods: {
     openModal(id?: UUID) {
       this.isModalActive = true
@@ -126,21 +158,6 @@ export default Vue.extend({
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
-  },
-  async created() {
-    this.$accessor.startLoading()
-    this.$accessor.paymentMethods.fetch()
-    const { data } = await api.get('countries')
-    this.countries = data.data
-    this.$accessor.stopLoading()
-  },
-  beforeRouteLeave(to, from, next) {
-    if (this.isModalActive) {
-      this.isModalActive = false
-      next(false)
-    } else {
-      next()
-    }
   },
 })
 </script>

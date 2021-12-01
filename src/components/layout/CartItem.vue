@@ -14,16 +14,31 @@
       </span>
       <small v-for="schema in item.schemas" :key="schema.id">
         <span>{{ schema.name }}:</span> {{ schema.value }}
-        <small v-if="schema.price !== 0">(+ {{ schema.price }} {{ currency }})</small>
+        <small v-if="schema.price !== 0">(+ {{ formatCurrency(schema.price) }} )</small>
       </small>
     </div>
-    <span class="cart-item__price">{{ item.price }} {{ currency }}</span>
+    <span v-if="discount" class="cart-item__price">
+      <a-tooltip>
+        <template #title>
+          Kwota po rabacie może być błędna, sprawdź czy nie brakuje części groszowej zanim zaczniesz
+          wystawiać dokumenty księgowe
+        </template>
+        <i class="bx bxs-error"></i> {{ formatCurrency(discountedPrice) }}
+      </a-tooltip>
+      <small v-if="discount">Przed rabatem: {{ formatCurrency(item.price) }} </small>
+    </span>
+    <span v-else class="cart-item__price">
+      {{ formatCurrency(item.price) }}
+    </span>
   </div>
 </template>
 
 <script lang="ts">
-import { CartItem } from '@/interfaces/CartItem'
 import Vue from 'vue'
+
+import { CartItem } from '@/interfaces/CartItem'
+import { formatCurrency } from '@/utils/currency'
+import { DiscountCode, DiscountCodeType } from '@/interfaces/DiscountCode'
 
 export default Vue.extend({
   props: {
@@ -31,16 +46,34 @@ export default Vue.extend({
       type: Object,
       required: true,
     } as Vue.PropOptions<CartItem>,
+    discount: {
+      type: Object,
+      default: () => null,
+    } as Vue.PropOptions<DiscountCode>,
+    productsCount: {
+      type: Number,
+      required: true,
+    },
   },
   computed: {
     coverUrl(): string {
       return this.item?.product?.cover?.url
     },
-    currency(): string {
-      return this.$accessor.currency
-    },
     objectFit(): string {
       return +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'
+    },
+    discountedPrice(): number {
+      if (!this.discount) return this.item.price
+      if (this.discount.type === DiscountCodeType.Percentage)
+        return (this.item.price * (100 - this.discount.discount)) / 100
+
+      // Amount
+      return this.item.price - this.discount.discount / this.productsCount
+    },
+  },
+  methods: {
+    formatCurrency(amount: number) {
+      return formatCurrency(amount, this.$accessor.currency)
     },
   },
 })
@@ -59,7 +92,7 @@ export default Vue.extend({
     height: 48px;
     object-fit: cover;
     border-radius: 12px;
-    background-color: #eee;
+    background-color: #eeeeee;
     text-indent: -10000px;
   }
 
@@ -70,14 +103,14 @@ export default Vue.extend({
     margin-left: 12px;
 
     small {
-      color: #aaa;
+      color: #aaaaaa;
 
       span {
-        color: #333;
+        color: #333333;
       }
 
       small {
-        color: #ccc;
+        color: #cccccc;
       }
     }
   }
@@ -85,9 +118,19 @@ export default Vue.extend({
   &__price {
     display: flex;
     justify-content: center;
+    align-items: flex-end;
     margin-left: auto;
-    font-family: $font-sec;
+    font-weight: 600;
     white-space: nowrap;
+    flex-direction: column;
+
+    small {
+      font-weight: 400;
+    }
+
+    .bx {
+      color: $red-color-500;
+    }
   }
 }
 </style>

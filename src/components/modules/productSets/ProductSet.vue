@@ -1,10 +1,12 @@
 <template>
-  <div @click.stop="toggleChildrenVisibility" class="product-set">
+  <div class="product-set" @click.stop="toggleChildrenVisibility">
     <div class="product-set__content">
-      <vs-button transparent icon size="mini" dark :disabled="!children.length">
-        <i v-if="areChildrenVisible" class="bx bx-minus"></i>
-        <i v-else class="bx bx-plus"></i>
-      </vs-button>
+      <icon-button type="transparent" size="small" :disabled="!children.length">
+        <template #icon>
+          <i v-if="areChildrenVisible" class="bx bx-minus"></i>
+          <i v-else class="bx bx-plus"></i>
+        </template>
+      </icon-button>
 
       <span class="product-set__name">
         <i v-if="!set.public" class="product-set__hidden-icon bx bx-low-vision"></i>
@@ -12,38 +14,39 @@
       </span>
 
       <div class="product-set__actions">
-        <vs-tooltip
-          shadow
-          interactivity
-          bottom
-          not-hover
-          :value="isMenuVisible"
-          @input="(v) => (isMenuVisible = v)"
+        <a-dropdown
+          v-can.any="[$p.ProductSets.ShowDetails, $p.ProductSets.Add]"
+          :trigger="['click']"
         >
-          <vs-button size="small" color="dark" icon transparent @click.stop="isMenuVisible = true">
-            <i class="bx bx-menu"></i>
-          </vs-button>
-          <template #tooltip>
-            <vs-button @click.stop="create" shadow>
-              <i class="bx bx-plus"></i> &nbsp; Dodaj subkolekcje
-            </vs-button>
-            <vs-button @click.stop="showProducts" shadow color="success">
-              <i class="bx bx-customize"></i> &nbsp; Zobacz produkty w kolekcji
-            </vs-button>
-            <vs-button @click.stop="edit" shadow color="dark">
-              <i class="bx bx-edit"></i> &nbsp; Edytuj kolekcję
-            </vs-button>
+          <icon-button type="transparent" size="small" @click.stop>
+            <template #icon>
+              <i class="bx bx-menu"></i>
+            </template>
+          </icon-button>
+
+          <template #overlay>
+            <a-menu>
+              <a-menu-item v-can="$p.ProductSets.Add" @click="create">
+                <i class="bx bx-plus"></i> &nbsp; Dodaj subkolekcje
+              </a-menu-item>
+              <a-menu-item v-can="$p.ProductSets.ShowDetails" @click="showProducts">
+                <i class="bx bx-customize"></i> &nbsp; Zobacz produkty w kolekcji
+              </a-menu-item>
+              <a-menu-item v-can="$p.ProductSets.ShowDetails" @click="edit">
+                <i class="bx bx-edit"></i> &nbsp; Edytuj kolekcję
+              </a-menu-item>
+            </a-menu>
           </template>
-        </vs-tooltip>
+        </a-dropdown>
       </div>
     </div>
 
-    <div class="product-set__children" v-show="areChildrenVisible">
+    <div v-show="areChildrenVisible" class="product-set__children">
       <Draggable v-model="children">
         <product-set
           v-for="child in children"
-          :set="{ ...child, parent: set }"
           :key="child.id"
+          :set="{ ...child, parent: set }"
           v-on="$listeners"
         />
       </Draggable>
@@ -68,7 +71,6 @@ export default Vue.extend({
   },
   data: () => ({
     areChildrenVisible: false,
-    isMenuVisible: false,
   }),
   computed: {
     children: {
@@ -109,13 +111,13 @@ export default Vue.extend({
   border-radius: 0;
   padding: 2px 8px;
   padding-right: 0;
-  border-bottom: solid 1px #ccc;
+  border-bottom: solid 1px $background-color-700;
   cursor: grab;
   transition: 0.3s;
 
   &.sortable-chosen,
   &:hover {
-    background-color: $grey-light;
+    background-color: $background-color-500;
   }
 
   &__hidden-icon {
@@ -132,8 +134,11 @@ export default Vue.extend({
   }
 
   &__name {
-    font-family: $font-sec;
-    font-weight: 500;
+    font-weight: 600;
+
+    small {
+      font-weight: 400;
+    }
   }
 
   &__actions {

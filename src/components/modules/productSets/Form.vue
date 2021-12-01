@@ -1,67 +1,79 @@
 <template>
   <validation-observer v-slot="{ handleSubmit }" class="product-set-form">
-    <vs-dialog width="550px" not-center :value="isOpen" @input="$emit('close')">
-      <template #header>
-        <h4>{{ form.id ? 'Edycja kolekcji' : 'Nowa kolekcja' }}</h4>
-      </template>
+    <a-modal
+      :title="form.id ? 'Edycja kolekcji' : 'Nowa kolekcja'"
+      :visible="isOpen"
+      @cancel="$emit('close')"
+    >
       <modal-form class="product-set-form">
-        <validated-input rules="required" v-model="form.name" @input="editSlug" label="Nazwa" />
+        <validated-input
+          v-model="form.name"
+          :disabled="disabled"
+          rules="required"
+          label="Nazwa"
+          @input="editSlug"
+        />
 
         <div class="slug-input">
-          <span class="slug-input__prefix" v-if="slugPrefix && !form.slug_override">
-            {{ slugPrefix }}-
-          </span>
-
           <validated-input
+            v-model="form.slug_suffix"
+            :disabled="disabled"
+            :addon-before="slugPrefix && !form.slug_override ? `${slugPrefix}-` : ''"
             class="slug-input__input"
             rules="required|slug"
-            v-model="form.slug_suffix"
             label="Link"
           />
 
-          <vs-tooltip bottom>
+          <a-tooltip placement="bottom">
             <switch-input
               v-if="slugPrefix"
-              class="slug-input__switch"
               v-model="form.slug_override"
+              :disabled="disabled"
+              class="slug-input__switch"
               label="Nadpisz link"
             />
 
-            <template #tooltip>
+            <template #title>
               Domyślnie, początek linku wynika z linku kolekcji-rodzica. Nadpisując link, sprawiamy,
               że link będzie dokładnie taki jaki zostanie wpisany.
             </template>
-          </vs-tooltip>
+          </a-tooltip>
         </div>
 
         <div class="switches">
           <flex-input>
             <switch-input
-              horizontal
               v-model="form.hide_on_index"
+              :disabled="disabled"
+              horizontal
               label="Ukryj na stronie głównej"
             />
           </flex-input>
           <flex-input>
-            <switch-input horizontal v-model="form.public" label="Widoczność kolekcji" />
+            <switch-input
+              v-model="form.public"
+              :disabled="disabled"
+              horizontal
+              label="Widoczność kolekcji"
+            />
           </flex-input>
         </div>
       </modal-form>
       <template #footer>
         <div class="row">
-          <vs-button color="dark" @click="handleSubmit(saveModal)">Zapisz</vs-button>
+          <app-button v-if="!disabled" @click="handleSubmit(saveModal)"> Zapisz </app-button>
           <pop-confirm
+            v-if="deletable"
             title="Czy na pewno chcesz usunąć tę kolekcję? Wraz z nią usuniesz wszystkie jej subkolekcje!"
-            okText="Usuń"
-            cancelText="Anuluj"
+            ok-text="Usuń"
+            cancel-text="Anuluj"
             @confirm="deleteItem"
-            v-slot="{ open }"
           >
-            <vs-button v-if="form.id" color="danger" @click="open">Usuń</vs-button>
+            <app-button v-if="form.id" type="danger">Usuń</app-button>
           </pop-confirm>
         </div>
       </template>
-    </vs-dialog>
+    </a-modal>
   </validation-observer>
 </template>
 
@@ -74,7 +86,6 @@ import { ValidationObserver } from 'vee-validate'
 import ModalForm from '@/components/form/ModalForm.vue'
 import FlexInput from '@/components/layout/FlexInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import ValidatedInput from '@/components/form/ValidatedInput.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 
 import { ProductSetDTO } from '@/interfaces/ProductSet'
@@ -85,7 +96,6 @@ export default Vue.extend({
     PopConfirm,
     FlexInput,
     ValidationObserver,
-    ValidatedInput,
     SwitchInput,
   },
   props: {
@@ -98,6 +108,14 @@ export default Vue.extend({
       default: '',
     },
     isOpen: {
+      type: Boolean,
+      default: false,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    deletable: {
       type: Boolean,
       default: false,
     },
@@ -145,18 +163,13 @@ export default Vue.extend({
   .switches {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 12px;
+    margin-top: 12px;
     padding: 0 10px;
   }
 
   .slug-input {
     display: flex;
     align-items: center;
-
-    &__prefix {
-      font-size: 0.85em;
-      white-space: nowrap;
-    }
 
     &__input {
       width: 100%;
@@ -168,7 +181,6 @@ export default Vue.extend({
 
     &__switch {
       width: 130px;
-      margin-top: -20px;
       margin-left: 10px;
       text-align: center;
     }

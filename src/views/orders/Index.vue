@@ -14,7 +14,12 @@
       </template>
 
       <template #default="{ item: order }">
-        <cms-table-row :item="order" :headers="tableConfig.headers" :to="`/orders/${order.id}`">
+        <cms-table-row
+          :key="order.id"
+          :item="order"
+          :headers="tableConfig.headers"
+          :to="`/orders/${order.id}`"
+        >
           <template #code="{ value, item }">
             {{ value }}
             <a-tooltip v-if="item.comment">

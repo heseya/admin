@@ -11,10 +11,10 @@
       @sort="(v) => $emit('sort', v)"
     />
 
-    <component :is="draggable ? 'Draggable' : 'div'" v-model="items">
+    <component :is="draggable ? 'Draggable' : 'div'" v-model="items" class="cms-table__content">
       <template v-if="shouldRenderList">
-        <template v-for="item in items">
-          <slot :item="item">
+        <div v-for="item in items" :key="item.id" class="cms-table__item">
+          <slot name="item" :item="item">
             <cms-table-row
               :item="item"
               :headers="config.headers"
@@ -24,7 +24,7 @@
               @click="config.rowOnClick || (() => {})"
             />
           </slot>
-        </template>
+        </div>
       </template>
 
       <slot v-else></slot>
@@ -80,7 +80,7 @@ export default Vue.extend({
       },
     },
     shouldRenderList(): boolean {
-      return !this.$slots.default || this.$slots.default?.length === 1
+      return !this.$slots.default
     },
     gridColumns(): string {
       return this.config.headers.map((header) => header.width || '1fr').join(' ')
@@ -99,6 +99,15 @@ export default Vue.extend({
   &__header {
     @media ($max-viewport-11) {
       display: none !important;
+    }
+  }
+
+  &__item {
+    width: 100%;
+
+    > * {
+      display: block;
+      width: 100% !important;
     }
   }
 

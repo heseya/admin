@@ -3,6 +3,7 @@ import VueRouter, { Route } from 'vue-router'
 import { hasUserAccess, alertIfNoAccess } from './plugins/permissions'
 import { PermissionsTree } from './consts/permissions'
 import { AccessorType } from './store'
+import { MetaInfo, MetaInfoComputed } from 'vue-meta'
 
 declare module '*.vue' {
   import Vue from 'vue'
@@ -18,6 +19,12 @@ declare module 'vue/types/vue' {
     $p: PermissionsTree
     $can: typeof hasUserAccess
     $verboseCan: typeof alertIfNoAccess
+  }
+}
+
+declare module 'vue/types/options' {
+  interface ComponentOptions {
+    metaInfo?: MetaInfo | MetaInfoComputed
   }
 }
 

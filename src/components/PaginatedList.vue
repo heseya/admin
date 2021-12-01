@@ -21,17 +21,18 @@
         class="paginated-list__list"
         @sort="onSort"
       >
-        <template v-for="item in items">
+        <div v-for="item in items" :key="item.id" class="paginated-list__list-item">
           <slot :item="item">
             <cms-table-row
               v-if="table"
+              :key="item.id"
               :item="item"
               :headers="table.headers"
               :to="table.rowUrlBuilder ? table.rowUrlBuilder(item) : null"
               @click="table.rowOnClick ? table.rowOnClick(item) : null"
             />
           </slot>
-        </template>
+        </div>
       </component>
     </AppCard>
 
@@ -203,6 +204,15 @@ export default Vue.extend({
 
   &__list {
     padding: 0;
+  }
+
+  &__list-item {
+    width: 100%;
+
+    > * {
+      display: block;
+      width: 100% !important;
+    }
   }
 
   &__content {

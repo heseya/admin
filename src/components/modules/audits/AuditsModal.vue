@@ -40,7 +40,7 @@
         <a-collapse-panel v-for="entry in audits" :key="entry.id" class="audit-entry">
           <template #header>
             <div class="audit-entry__header">
-              <span>{{ entry.user.email }}</span>
+              <span>{{ entry.user ? entry.user.email : 'Niezalogowany użytkownik' }}</span>
               <span class="audit-entry__tag">
                 {{ entry.event === 'updated' ? 'zmieniono' : entry.event }}
               </span>
@@ -49,8 +49,8 @@
           </template>
 
           <cms-table class="audit-entry__table" :value="getValues(entry)" :config="tableConfig">
-            <template #default="{ item: audit }">
-              <cms-table-row :item="audit" no-hover :headers="tableConfig.headers">
+            <template #item="{ item: audit }">
+              <cms-table-row :key="audit.id" :item="audit" no-hover :headers="tableConfig.headers">
                 <template #new>
                   <audit-formatter :field-key="audit.key" :value="audit.new" />
                 </template>

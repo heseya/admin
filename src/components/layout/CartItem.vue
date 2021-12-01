@@ -17,7 +17,19 @@
         <small v-if="schema.price !== 0">(+ {{ formatCurrency(schema.price) }} )</small>
       </small>
     </div>
-    <span class="cart-item__price">{{ formatCurrency(item.price) }} </span>
+    <span v-if="discount" class="cart-item__price">
+      <a-tooltip>
+        <template #title>
+          Kwota po rabacie może być błędna, sprawdź czy nie brakuje części groszowej zanim zaczniesz
+          wystawiać dokumenty księgowe
+        </template>
+        <i class="bx bxs-error"></i> {{ formatCurrency(discountedPrice) }}
+      </a-tooltip>
+      <small v-if="discount">Przed rabatem: {{ formatCurrency(item.price) }} </small>
+    </span>
+    <span v-else class="cart-item__price">
+      {{ formatCurrency(item.price) }}
+    </span>
   </div>
 </template>
 
@@ -26,6 +38,7 @@ import Vue from 'vue'
 
 import { CartItem } from '@/interfaces/CartItem'
 import { formatCurrency } from '@/utils/currency'
+import { DiscountCode, DiscountCodeType } from '@/interfaces/DiscountCode'
 
 export default Vue.extend({
   props: {
@@ -33,6 +46,14 @@ export default Vue.extend({
       type: Object,
       required: true,
     } as Vue.PropOptions<CartItem>,
+    discount: {
+      type: Object,
+      default: () => null,
+    } as Vue.PropOptions<DiscountCode>,
+    productsCount: {
+      type: Number,
+      required: true,
+    },
   },
   computed: {
     coverUrl(): string {
@@ -40,6 +61,14 @@ export default Vue.extend({
     },
     objectFit(): string {
       return +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'
+    },
+    discountedPrice(): number {
+      if (!this.discount) return this.item.price
+      if (this.discount.type === DiscountCodeType.Percentage)
+        return (this.item.price * (100 - this.discount.discount)) / 100
+
+      // Amount
+      return this.item.price - this.discount.discount / this.productsCount
     },
   },
   methods: {
@@ -89,9 +118,19 @@ export default Vue.extend({
   &__price {
     display: flex;
     justify-content: center;
+    align-items: flex-end;
     margin-left: auto;
     font-weight: 600;
     white-space: nowrap;
+    flex-direction: column;
+
+    small {
+      font-weight: 400;
+    }
+
+    .bx {
+      color: $red-color-500;
+    }
   }
 }
 </style>

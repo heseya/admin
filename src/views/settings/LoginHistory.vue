@@ -19,7 +19,7 @@
       </template>
 
       <template #default="{ item: login }">
-        <list-item class="login-item" no-hover>
+        <list-item :key="login.id" class="login-item" no-hover>
           <template #avatar>
             <avatar> <i :class="getBrowserIcon(login.browser)"></i> </avatar>
           </template>

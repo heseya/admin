@@ -10,7 +10,7 @@
         </icon-button>
       </template>
       <template #default="{ item: packageTemplate }">
-        <list-item @click="openModal(packageTemplate.id)">
+        <list-item :key="packageTemplate.id" @click="openModal(packageTemplate.id)">
           {{ packageTemplate.name }}
           <small>
             waga: <b>{{ packageTemplate.weight }}kg</b>, wysokość:

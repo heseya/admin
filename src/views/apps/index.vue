@@ -11,7 +11,7 @@
       </template>
 
       <template #default="{ item: app }">
-        <list-item no-hover>
+        <list-item :key="app.id" no-hover>
           <template #avatar>
             <avatar>
               <img v-if="app.icon" :src="app.icon" />

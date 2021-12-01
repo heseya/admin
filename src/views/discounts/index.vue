@@ -12,6 +12,7 @@
 
       <template #default="{ item: discount }">
         <cms-table-row
+          :key="discount.id"
           :item="discount"
           :headers="tableConfig.headers"
           @click="openModal(discount.id)"

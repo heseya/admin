@@ -16,7 +16,7 @@
       option-filter-prop="label"
       @change="debouncedSearch"
     >
-      <a-select-option v-for="set in productSets" :key="set.id" :label="set.name">
+      <a-select-option v-for="set in productSets" :key="set.slug" :label="set.name">
         {{ set.name }}
       </a-select-option>
     </app-select>

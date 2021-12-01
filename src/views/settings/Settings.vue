@@ -10,7 +10,7 @@
         </icon-button>
       </template>
       <template #default="{ item: setting }">
-        <list-item :hidden="!setting.public" @click="openModal(setting)">
+        <list-item :key="setting.id" :hidden="!setting.public" @click="openModal(setting)">
           {{ setting.name }}
           <small>{{ setting.value }}</small>
         </list-item>

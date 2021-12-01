@@ -11,7 +11,7 @@
       </template>
 
       <template #default="{ item: page }">
-        <list-item :url="`/pages/${page.id}`" :hidden="!page.public">
+        <list-item :key="page.id" :url="`/pages/${page.id}`" :hidden="!page.public">
           {{ page.name }}
           <small>/{{ page.slug }}</small>
         </list-item>

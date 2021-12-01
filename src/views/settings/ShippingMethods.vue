@@ -11,7 +11,11 @@
       </template>
 
       <template #default="{ item: shippingMethod }">
-        <list-item :hidden="!shippingMethod.public" @click="openModal(shippingMethod.id)">
+        <list-item
+          :key="shippingMethod.id"
+          :hidden="!shippingMethod.public"
+          @click="openModal(shippingMethod.id)"
+        >
           {{ shippingMethod.name }}
           <small v-if="shippingMethod.countries.length">
             {{ shippingMethod.black_list ? 'Wszystkie kraje poza:' : 'Tylko wybrane kraje:' }}

@@ -24,10 +24,7 @@
           <template #discount="{ rawValue }">
             -{{ discount.type === 0 ? `${rawValue}%` : formatCurrency(rawValue) }}
           </template>
-          <template v-if="discount.max_uses" #uses>
-            {{ discount.uses }} z {{ discount.max_uses }}
-          </template>
-          <template v-else #uses> {{ discount.uses }} </template>
+          <template #uses> {{ discount.uses }} z {{ discount.max_uses }} </template>
         </cms-table-row>
       </template>
     </PaginatedList>

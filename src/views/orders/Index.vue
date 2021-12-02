@@ -82,12 +82,7 @@ export default Vue.extend({
         rowUrlBuilder: (order) => `/orders/${order.id}`,
         headers: [
           { key: 'code', label: 'Kod zamówienia' },
-          {
-            key: 'created_at',
-            label: 'Data',
-            sortable: true,
-            render: (v) => getRelativeDate(v),
-          },
+          { key: 'delivery_address.name', label: 'Klient' },
           {
             key: 'summary',
             label: 'Wartość',
@@ -96,7 +91,12 @@ export default Vue.extend({
           { key: 'paid', label: 'Płatność', width: '0.8fr' },
           { key: 'status', label: 'Status', width: '0.8fr' },
           { key: 'shipping_method.name', label: 'Przesyłka' },
-          { key: 'email', label: 'Klient', width: '2fr' },
+          {
+            key: 'created_at',
+            label: 'Data',
+            sortable: true,
+            render: (v) => getRelativeDate(v),
+          },
         ],
       }
     },

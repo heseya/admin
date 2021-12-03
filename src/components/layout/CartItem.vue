@@ -8,8 +8,16 @@
     />
     <div v-else class="cart-item__cover" />
     <div class="cart-item__content">
-      <span>
-        {{ item.product.brand && item.product.brand.name }} {{ item.product.name }}&nbsp;
+      <span class="cart-item__title">
+        <a-tooltip v-bind="item.product.sets.length === 0 ? { visible: false } : {}">
+          <template #title>
+            <small>Kolekcje produktu:</small>
+            <div v-for="set in item.product.sets" :key="set.id">{{ set.name }}</div>
+          </template>
+          <i v-if="item.product.sets.length" class="bx bxs-info-circle"></i>
+        </a-tooltip>
+
+        {{ item.product.name }}&nbsp;
         <small v-if="item.quantity !== 1">(x{{ item.quantity }})</small>
       </span>
       <small v-for="schema in item.schemas" :key="schema.id">
@@ -101,17 +109,22 @@ export default Vue.extend({
     flex-direction: column;
     justify-content: center;
     margin-left: 12px;
+  }
+
+  &__title {
+    display: block;
+    padding: 12px 0;
+
+    i {
+      color: $primary-color-300;
+    }
+
+    span {
+      color: #333333;
+    }
 
     small {
-      color: #aaaaaa;
-
-      span {
-        color: #333333;
-      }
-
-      small {
-        color: #cccccc;
-      }
+      color: #cccccc;
     }
   }
 

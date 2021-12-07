@@ -81,9 +81,23 @@ export default Vue.extend({
     // MicroFrontend Events End
 
     // MultiTabs Token Sync Start
-    onTokenUpdate((tokens) => {
-      if (tokens.accessToken) this.$accessor.auth.setTokens(tokens)
-      else this.$accessor.auth.clearAuth()
+    onTokenUpdate(async (tokens) => {
+      if (tokens) {
+        const wasLogged = this.$accessor.auth.isLogged
+
+        // Update tokens
+        this.$accessor.auth.setTokens(tokens)
+
+        if (!wasLogged) {
+          // Login user
+          await this.$accessor.auth.fetchProfile()
+          this.$router.push('/')
+        }
+      } else {
+        // Logout user
+        this.$accessor.auth.clearAuth()
+        this.$router.push('/login')
+      }
     })
     // MultiTabs Token Sync End
   },

@@ -166,9 +166,11 @@ const actions = actionTree(
       accessor.startLoading()
       try {
         await api.post('/auth/logout')
-        dispatch('clearAuth')
       } catch (e: any) {
         commit('SET_ERROR', e)
+      } finally {
+        dispatch('clearAuth')
+        updateTokens(null)
       }
       accessor.stopLoading()
     },
@@ -177,13 +179,11 @@ const actions = actionTree(
       commit('SET_ERROR', null)
       commit('SET_USER', null)
 
-      const tokens = {
+      dispatch('setTokens', {
         accessToken: null,
         identityToken: null,
         refreshToken: null,
-      }
-      updateTokens(tokens)
-      dispatch('setTokens', tokens)
+      })
     },
 
     setPermissionsError({ commit }, error: Error) {

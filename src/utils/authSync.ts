@@ -1,18 +1,18 @@
 import { BroadcastChannel } from 'broadcast-channel'
 
 interface Tokens {
-  accessToken: string | null
-  identityToken: string | null
-  refreshToken: string | null
+  accessToken: string
+  identityToken: string
+  refreshToken: string
 }
 
-export const tokenChannel = new BroadcastChannel<Tokens>('token')
+export const tokenChannel = new BroadcastChannel<Tokens | null>('token')
 
-export const updateTokens = (tokens: Tokens) => {
+export const updateTokens = (tokens: Tokens | null) => {
   tokenChannel.postMessage(tokens)
 }
 
-export const onTokenUpdate = (callback: (tokens: Tokens) => void) => {
+export const onTokenUpdate = (callback: (tokens: Tokens | null) => void) => {
   tokenChannel.onmessage = (data) => {
     callback(data)
   }

@@ -4,6 +4,7 @@ import isNull from 'lodash/isNull'
 import { accessor } from './store/index'
 import router from './router'
 import { getApiURL } from './utils/api'
+import { broadcastTokensUpdate } from './utils/authSync'
 
 const CORE_API_URL = getApiURL()
 
@@ -70,6 +71,7 @@ export const createApiInstance = (baseURL: string, useAccessToken = true) => {
           // ? If token not refreshed, logout & redirect to login
           if (!refreshedTokens.success) {
             accessor.auth.clearAuth()
+            broadcastTokensUpdate(null)
             accessor.stopLoading()
             router.push('/login')
             throw error

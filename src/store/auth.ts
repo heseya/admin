@@ -8,7 +8,7 @@ import { UUID } from '@/interfaces/UUID'
 import { PERMISSIONS_TREE } from '@/consts/permissions'
 import { hasAccess } from '@/utils/hasAccess'
 import { accessor } from '.'
-import { updateTokens } from '@/utils/authSync'
+import { broadcastTokensUpdate } from '@/utils/authSync'
 
 interface AuthResponse {
   user: User
@@ -93,7 +93,7 @@ const actions = actionTree(
           identityToken: data.identity_token,
           refreshToken: data.refresh_token,
         }
-        updateTokens(tokens)
+        broadcastTokensUpdate(tokens)
         dispatch('setTokens', tokens)
 
         return data.user
@@ -120,7 +120,7 @@ const actions = actionTree(
           identityToken: data.identity_token,
           refreshToken: data.refresh_token,
         }
-        updateTokens(tokens)
+        broadcastTokensUpdate(tokens)
         dispatch('setTokens', tokens)
 
         return {
@@ -170,7 +170,7 @@ const actions = actionTree(
         commit('SET_ERROR', e)
       } finally {
         dispatch('clearAuth')
-        updateTokens(null)
+        broadcastTokensUpdate(null)
       }
       accessor.stopLoading()
     },

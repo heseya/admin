@@ -8,11 +8,11 @@ interface Tokens {
 
 export const tokenChannel = new BroadcastChannel<Tokens | null>('token')
 
-export const updateTokens = (tokens: Tokens | null) => {
+export const broadcastTokensUpdate = (tokens: Tokens | null) => {
   tokenChannel.postMessage(tokens)
 }
 
-export const onTokenUpdate = (callback: (tokens: Tokens | null) => void) => {
+export const onTokensSync = (callback: (tokens: Tokens | null) => void) => {
   tokenChannel.onmessage = (data) => {
     callback(data)
   }

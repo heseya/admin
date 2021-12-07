@@ -27,7 +27,7 @@ import AppHeader from './components/root/Header.vue'
 import Loading from './components/layout/Loading.vue'
 import SwUpdatePopup from './components/root/SwUpdatePopup.vue'
 
-import { onTokenUpdate } from './utils/authSync'
+import { onTokensSync } from './utils/authSync'
 
 export default Vue.extend({
   metaInfo: {
@@ -81,7 +81,7 @@ export default Vue.extend({
     // MicroFrontend Events End
 
     // MultiTabs Token Sync Start
-    onTokenUpdate(async (tokens) => {
+    onTokensSync(async (tokens) => {
       if (tokens) {
         const wasLogged = this.$accessor.auth.isLogged
 

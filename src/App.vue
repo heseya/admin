@@ -28,6 +28,7 @@ import Loading from './components/layout/Loading.vue'
 import SwUpdatePopup from './components/root/SwUpdatePopup.vue'
 
 import { onTokensSync } from './utils/authSync'
+import { first, isArray } from 'lodash'
 
 export default Vue.extend({
   metaInfo: {
@@ -91,12 +92,18 @@ export default Vue.extend({
         if (!wasLogged) {
           // Login user
           await this.$accessor.auth.fetchProfile()
-          this.$router.push('/')
+
+          const { next } = this.$route.query
+          const nextURL = (isArray(next) ? first(next) : next) || '/'
+          this.$router.push(nextURL)
         }
       } else {
         // Logout user
         this.$accessor.auth.clearAuth()
-        this.$router.push('/login')
+        this.$router.push({
+          name: 'Login',
+          query: { next: this.$route.fullPath !== '/' ? this.$route.fullPath : undefined },
+        })
       }
     })
     // MultiTabs Token Sync End

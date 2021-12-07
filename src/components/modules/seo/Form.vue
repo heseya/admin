@@ -1,7 +1,23 @@
 <template>
   <modal-form class="seo-form">
     <validated-input v-model="form.title" :disabled="disabled" label="Tytuł strony" />
+    <small class="seo-form__subtext">
+      Ilość znaków: {{ form.title ? form.title.length : 0 }}
+      <a-tooltip>
+        <template #title> Zalecana maksymalna długość tytułu to 70 znaków </template>
+        <i class="bx bxs-info-circle"></i>
+      </a-tooltip>
+    </small>
+
     <validated-input v-model="form.description" :disabled="disabled" label="Opis strony" />
+    <small class="seo-form__subtext">
+      Ilość znaków: {{ form.description ? form.description.length : 0 }}
+      <a-tooltip>
+        <template #title> Zalecana maksymalna długość opisu to 160 znaków </template>
+        <i class="bx bxs-info-circle"></i>
+      </a-tooltip>
+    </small>
+
     <app-select
       :value="form.keywords || []"
       label="Słowa kluczowe"
@@ -95,6 +111,21 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .seo-form {
   &__og-image {
+  }
+
+  &__subtext {
+    display: block;
+    text-align: right;
+    margin-top: -6px;
+    margin-bottom: 4px;
+    font-size: 0.6rem;
+    color: #999;
+
+    i {
+      color: $blue-color-400;
+      font-size: 1.1em;
+      transform: translateY(1px);
+    }
   }
 }
 </style>

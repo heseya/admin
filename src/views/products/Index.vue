@@ -5,6 +5,7 @@
       :filters="filters"
       store-key="products"
       :table="listView ? tableConfig : undefined"
+      @search="makeSearch"
       @clear-filters="clearFilters"
     >
       <template #nav>
@@ -71,10 +72,10 @@ export default Vue.extend({
       return {
         headers: [
           { key: 'cover', label: '', width: '60px' },
-          { key: 'name', label: 'Nazwa' },
-          { key: 'price', label: 'Cena', width: '0.5fr' },
+          { key: 'name', label: 'Nazwa', sortable: true },
+          { key: 'price', label: 'Cena', width: '0.5fr', sortable: true },
           { key: 'tags', label: 'Tagi' },
-          { key: 'visible', label: 'Widoczność', width: '0.5fr' },
+          { key: 'public', label: 'Widoczność', width: '0.5fr', sortable: true },
         ],
       }
     },
@@ -88,6 +89,10 @@ export default Vue.extend({
     this.filters.search = (this.$route.query.search as string) || ''
     const sets = this.$route.query.sets || [ALL_FILTER_VALUE]
     this.filters.sets = isArray(sets) ? (sets as string[]) : [sets]
+    const tags = this.$route.query.tags || [ALL_FILTER_VALUE]
+    this.filters.tags = isArray(tags) ? (tags as string[]) : [tags]
+
+    this.filters.public = this.$route.query.public as string
 
     this.listView = !!+(window.localStorage.getItem(LOCAL_STORAGE_KEY) || 0)
   },

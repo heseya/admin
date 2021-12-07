@@ -27,6 +27,8 @@ import AppHeader from './components/root/Header.vue'
 import Loading from './components/layout/Loading.vue'
 import SwUpdatePopup from './components/root/SwUpdatePopup.vue'
 
+import { onTokenUpdate } from './utils/authSync'
+
 export default Vue.extend({
   metaInfo: {
     // if no subcomponents specify a metaInfo.title, this title will be used
@@ -67,6 +69,7 @@ export default Vue.extend({
     this.$accessor.fetchEnv()
     if (this.$accessor.auth.isLogged) this.$accessor.auth.fetchProfile()
 
+    // MicroFrontend Events Start
     onMounted(() => {
       this.tokenChannel.emit('set', this.$accessor.auth.getIdentityToken)
     })
@@ -75,6 +78,14 @@ export default Vue.extend({
       const { identityToken } = await this.$accessor.auth.refreshToken()
       return identityToken
     })
+    // MicroFrontend Events End
+
+    // MultiTabs Token Sync Start
+    onTokenUpdate((tokens) => {
+      if (tokens.accessToken) this.$accessor.auth.setTokens(tokens)
+      else this.$accessor.auth.clearAuth()
+    })
+    // MultiTabs Token Sync End
   },
 })
 </script>

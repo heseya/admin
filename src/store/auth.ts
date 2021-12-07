@@ -8,6 +8,7 @@ import { UUID } from '@/interfaces/UUID'
 import { PERMISSIONS_TREE } from '@/consts/permissions'
 import { hasAccess } from '@/utils/hasAccess'
 import { accessor } from '.'
+import { broadcastTokensUpdate } from '@/utils/authSync'
 
 interface AuthResponse {
   user: User
@@ -72,7 +73,7 @@ const mutations = mutationTree(state, {
 const actions = actionTree(
   { state, getters, mutations },
   {
-    async login({ commit }, { email, password }: { email: string; password: string }) {
+    async login({ commit, dispatch }, { email, password }: { email: string; password: string }) {
       commit('SET_ERROR', null)
       try {
         const {
@@ -87,9 +88,13 @@ const actions = actionTree(
 
         commit('SET_USER', data.user)
 
-        commit('SET_ACCESS_TOKEN', data.token)
-        commit('SET_IDENTITY_TOKEN', data.identity_token)
-        commit('SET_REFRESH_TOKEN', data.refresh_token)
+        const tokens = {
+          accessToken: data.token,
+          identityToken: data.identity_token,
+          refreshToken: data.refresh_token,
+        }
+        broadcastTokensUpdate(tokens)
+        dispatch('setTokens', tokens)
 
         return data.user
       } catch (e: any) {
@@ -98,7 +103,7 @@ const actions = actionTree(
       }
     },
 
-    async refreshToken({ commit, getters: get }) {
+    async refreshToken({ commit, getters: get, dispatch }) {
       commit('SET_ERROR', null)
 
       try {
@@ -110,9 +115,13 @@ const actions = actionTree(
           refresh_token: get.getRefreshToken,
         })
 
-        commit('SET_ACCESS_TOKEN', data.token)
-        commit('SET_IDENTITY_TOKEN', data.identity_token)
-        commit('SET_REFRESH_TOKEN', data.refresh_token)
+        const tokens = {
+          accessToken: data.token,
+          identityToken: data.identity_token,
+          refreshToken: data.refresh_token,
+        }
+        broadcastTokensUpdate(tokens)
+        dispatch('setTokens', tokens)
 
         return {
           success: true as const,
@@ -123,6 +132,12 @@ const actions = actionTree(
         commit('SET_ERROR', e)
         return { success: false as const }
       }
+    },
+
+    setTokens({ commit }, { accessToken, identityToken, refreshToken }) {
+      commit('SET_ACCESS_TOKEN', accessToken)
+      commit('SET_IDENTITY_TOKEN', identityToken)
+      commit('SET_REFRESH_TOKEN', refreshToken)
     },
 
     async fetchProfile({ commit }) {
@@ -151,20 +166,24 @@ const actions = actionTree(
       accessor.startLoading()
       try {
         await api.post('/auth/logout')
-        dispatch('clearAuth')
       } catch (e: any) {
         commit('SET_ERROR', e)
+      } finally {
+        dispatch('clearAuth')
+        broadcastTokensUpdate(null)
       }
       accessor.stopLoading()
     },
 
-    clearAuth({ commit }) {
+    clearAuth({ commit, dispatch }) {
       commit('SET_ERROR', null)
       commit('SET_USER', null)
 
-      commit('SET_ACCESS_TOKEN', null)
-      commit('SET_IDENTITY_TOKEN', null)
-      commit('SET_REFRESH_TOKEN', null)
+      dispatch('setTokens', {
+        accessToken: null,
+        identityToken: null,
+        refreshToken: null,
+      })
     },
 
     setPermissionsError({ commit }, error: Error) {

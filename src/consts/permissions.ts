@@ -90,5 +90,6 @@ export const PERMISSIONS_GROUP_LABELS = {
   users: 'Użytkownicy',
   roles: 'Role użytkowników',
   webhooks: 'Webhooki',
+  events: 'Wydarzenia aktywujące Webhooki',
   seo: 'SEO',
 }

@@ -38,8 +38,8 @@
       </div>
     </template>
 
-    <template #visible>
-      <tag v-if="product.visible" type="success"> <i class="bx bx-check"></i> Tak </tag>
+    <template #public>
+      <tag v-if="product.public" type="success"> <i class="bx bx-check"></i> Tak </tag>
       <tag v-else type="error"> <i class="bx bx-x"></i> Nie </tag>
     </template>
   </cms-table-row>

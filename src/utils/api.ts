@@ -14,6 +14,8 @@ export const getApiURL = () => {
       return 'https://rc.***REMOVED***'
     case '***REMOVED***':
       return '***REMOVED***'
+    case 'client-demo-admin.heseya.com':
+      return 'https://client-demo.***REMOVED***'
     default:
       return process.env.VUE_APP_API_URL || 'https://dev.***REMOVED***'
   }

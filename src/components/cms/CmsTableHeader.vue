@@ -5,7 +5,7 @@
       :key="key"
       class="cms-table-header__col"
       :class="{ 'cms-table-header__col--sortable': sortable }"
-      @click="handleSort(key)"
+      @click="sortable && handleSort(key)"
     >
       {{ label }}
       <template v-if="sortable">

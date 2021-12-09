@@ -81,11 +81,12 @@ export default Vue.extend({
       return {
         rowUrlBuilder: (order) => `/orders/${order.id}`,
         headers: [
-          { key: 'code', label: 'Kod zamówienia' },
+          { key: 'code', label: 'Kod zamówienia', sortable: true },
           { key: 'delivery_address.name', label: 'Klient' },
           {
             key: 'summary',
             label: 'Wartość',
+            sortable: true,
             render: (v) => this.formatCurrency(v),
           },
           { key: 'paid', label: 'Płatność', width: '0.8fr' },
@@ -106,6 +107,8 @@ export default Vue.extend({
       search: (this.$route.query.search as string) || '',
       status_id: (this.$route.query.status_id as string) || ALL_FILTER_VALUE,
       shipping_method_id: (this.$route.query.shipping_method_id as string) || ALL_FILTER_VALUE,
+      paid: (this.$route.query.paid as string) || ALL_FILTER_VALUE,
+      sort: (this.$route.query.sort as string) || '',
     }
   },
   methods: {

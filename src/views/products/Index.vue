@@ -92,7 +92,8 @@ export default Vue.extend({
     const tags = this.$route.query.tags || [ALL_FILTER_VALUE]
     this.filters.tags = isArray(tags) ? (tags as string[]) : [tags]
 
-    this.filters.public = this.$route.query.public as string
+    this.filters.public = (this.$route.query.public as string) || ALL_FILTER_VALUE
+    this.filters.sort = (this.$route.query.sort as string) || ''
 
     this.listView = !!+(window.localStorage.getItem(LOCAL_STORAGE_KEY) || 0)
   },

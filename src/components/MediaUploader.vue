@@ -32,6 +32,7 @@ export default Vue.extend({
         'svg',
         'mp4',
         'webm',
+        'webp',
         // 'ogg',
         // 'avi',
         // 'mov',

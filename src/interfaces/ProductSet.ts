@@ -1,12 +1,15 @@
 /* eslint-disable camelcase */
 import { UUID } from './UUID'
 import { SeoMetadata, SeoMetadataDto } from './SeoMetadata'
+import { CdnMedia } from './Media'
 
 export interface ProductSet {
   id: UUID
   name: string
   slug: string
   slug_suffix: string
+  description_html: string
+  cover?: CdnMedia
   slug_override: boolean
   public: boolean
   visible: boolean
@@ -21,6 +24,9 @@ export interface ProductSetDTO {
   name: string
   slug_suffix: string
   slug_override: boolean
+  description_html: string
+  cover?: CdnMedia
+  cover_id?: string
   public: boolean
   hide_on_index: boolean
   parent_id: UUID | null

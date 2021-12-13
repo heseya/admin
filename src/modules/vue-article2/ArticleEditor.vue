@@ -32,10 +32,18 @@ export default Vue.extend({
     },
   },
   mounted() {
-    this.init()
+    try {
+      this.init()
+    } catch (e) {
+      console.error('[Article Editor]', e)
+    }
   },
   beforeDestroy() {
-    this.destroy()
+    try {
+      this.destroy()
+    } catch (e) {
+      console.error('[Article Editor]', e)
+    }
   },
   methods: {
     init() {

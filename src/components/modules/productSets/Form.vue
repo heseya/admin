@@ -6,7 +6,7 @@
       :width="900"
       @cancel="$emit('close')"
     >
-      <modal-form class="product-set-form">
+      <modal-form :key="form.id || 'new'" class="product-set-form">
         <validated-input
           v-model="form.name"
           :disabled="disabled"
@@ -74,13 +74,7 @@
 
         <br />
         <small class="label">Opis</small>
-        <!-- TODO: Bugged editor -->
-        <rich-editor
-          v-if="isOpen"
-          :key="form.id"
-          v-model="form.description_html"
-          :disabled="disabled"
-        />
+        <rich-editor v-if="isEditorActive" v-model="form.description_html" :disabled="disabled" />
       </modal-form>
       <template #footer>
         <div class="row">
@@ -167,11 +161,18 @@ export default Vue.extend({
   },
   data: () => ({
     form: cloneDeep(CLEAR_PRODUCT_SET_FORM) as ProductSetDTO,
+    isEditorActive: false,
   }),
   watch: {
     value(value: ProductSetDTO) {
       this.form = { ...cloneDeep(CLEAR_PRODUCT_SET_FORM), ...cloneDeep(value) }
       this.fetchProductSet()
+    },
+    isOpen(isOpen: boolean) {
+      this.$nextTick(() => {
+        // ? Workaround for a bugged ArticleEditor, which doesn't render correctly in the first time
+        this.isEditorActive = isOpen
+      })
     },
   },
   methods: {

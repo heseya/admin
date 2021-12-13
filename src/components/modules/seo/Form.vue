@@ -18,6 +18,21 @@
       </a-tooltip>
     </small>
 
+    <switch-input v-if="!forceIndex" v-model="form.no_index" :disabled="disabled" type="red">
+      <template #title>
+        Wyłącz indeksowanie podstrony
+        <a-tooltip>
+          <template #title>
+            Wyłączenie indeksowanie strony zapobiegnie wyświetlaniu strony w wynikach wyszukiwania
+            (np. Google).
+          </template>
+          <i class="seo-form__switch-tooltip-icon bx bxs-info-circle"></i>
+        </a-tooltip>
+      </template>
+      <template #checkedChildren> <i class="bx bxs-low-vision"></i> </template>
+      <template #unCheckedChildren> <i class="bx bx-show"></i> </template>
+    </switch-input>
+
     <app-select
       :value="form.keywords || []"
       label="Słowa kluczowe"
@@ -53,13 +68,14 @@ import MediaUploadInput from '@/components/MediaUploadInput.vue'
 
 type SeoMeta = SeoMetadata & SeoMetadataDto
 
-const CLEAR_FORM: SeoMeta = {
+export const CLEAR_SEO_FORM: SeoMeta = {
   title: '',
   description: '',
   keywords: [],
   twitter_card: TwitterCardType.Summary,
   og_image: undefined,
   og_image_id: undefined,
+  no_index: false,
 }
 
 export default Vue.extend({
@@ -73,6 +89,10 @@ export default Vue.extend({
       required: true,
     } as Vue.PropOptions<SeoMeta>,
     disabled: {
+      type: Boolean,
+      default: false,
+    },
+    forceIndex: {
       type: Boolean,
       default: false,
     },
@@ -90,12 +110,13 @@ export default Vue.extend({
 
   created() {
     this.form = {
-      title: this.form.title || CLEAR_FORM.title,
-      description: this.form.description || CLEAR_FORM.description,
-      keywords: this.form.keywords || CLEAR_FORM.keywords,
-      og_image: this.form.og_image || CLEAR_FORM.og_image,
-      og_image_id: this.form.og_image?.id || CLEAR_FORM.og_image_id,
-      twitter_card: this.form.twitter_card || CLEAR_FORM.twitter_card,
+      title: this.form.title || CLEAR_SEO_FORM.title,
+      description: this.form.description || CLEAR_SEO_FORM.description,
+      keywords: this.form.keywords || CLEAR_SEO_FORM.keywords,
+      og_image: this.form.og_image || CLEAR_SEO_FORM.og_image,
+      og_image_id: this.form.og_image?.id || CLEAR_SEO_FORM.og_image_id,
+      twitter_card: this.form.twitter_card || CLEAR_SEO_FORM.twitter_card,
+      no_index: this.form.no_index || CLEAR_SEO_FORM.no_index,
     }
   },
 
@@ -126,6 +147,10 @@ export default Vue.extend({
       font-size: 1.1em;
       transform: translateY(1px);
     }
+  }
+
+  &__switch-tooltip-icon {
+    color: $blue-color-400;
   }
 }
 </style>

@@ -10,7 +10,7 @@
         sprecyzowanych własnych ustawień SEO."
       />
       <p></p>
-      <SeoForm v-model="form" />
+      <SeoForm v-model="form" force-index />
       <br />
       <AppButton @click="submit"> Zapisz zmiany </AppButton>
     </card>
@@ -49,7 +49,8 @@ export default Vue.extend({
       }
     },
     globalSeo(globalSeo) {
-      this.form = { ...globalSeo, og_image_id: globalSeo.og_image?.id }
+      // no_index must be false on global SEO
+      this.form = { ...globalSeo, og_image_id: globalSeo.og_image?.id, no_index: false }
     },
   },
   async created() {

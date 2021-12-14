@@ -2,9 +2,9 @@
   <textarea
     class="article-editor"
     ref="article"
+    :value="value"
     :name="name"
     :placeholder="placeholder"
-    :value="value"
   />
 </template>
 
@@ -31,6 +31,11 @@ export default Vue.extend({
       type: Object,
     },
   },
+  watch: {
+    value(value) {
+      this.article.editor.setContent({ html: value })
+    },
+  },
   mounted() {
     try {
       this.init()
@@ -47,8 +52,8 @@ export default Vue.extend({
   },
   methods: {
     init() {
-      var me = this
-      var subscribe = {
+      const me = this
+      const subscribe = {
         'editor.change': function (event) {
           var html = event.get('html')
           me.handleInput(html)
@@ -57,16 +62,24 @@ export default Vue.extend({
       }
 
       // extend config
-      Vue.set(this.config, 'subscribe', subscribe)
+      const config = {
+        ...this.config,
+        subscribe: {
+          ...this.config?.subscribe,
+          ...subscribe,
+        },
+      }
 
       // call
-      var app = ArticleEditor(this.$refs.article, this.config)
+      var app = ArticleEditor(this.$refs.article, config)
 
       // set instance
       this.article = app
       this.$parent.article = app
     },
     destroy() {
+      if (!this.article) return
+
       // Call destroy on article to cleanup event handlers
       this.article.stop()
 

@@ -58,6 +58,23 @@ const actions = actionTree(
         return false
       }
     },
+
+    async checkDuplicates(_c, keywords: string[]) {
+      type CheckResponse = { data: { duplicated: boolean; duplicates: [] } }
+
+      try {
+        const response = await api.post<CheckResponse>('/seo/check', {
+          keywords,
+        })
+
+        return response.data.data
+      } catch {
+        return {
+          duplicated: false,
+          duplicates: [],
+        }
+      }
+    },
   },
 )
 

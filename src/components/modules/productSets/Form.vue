@@ -3,9 +3,10 @@
     <a-modal
       :title="form.id ? 'Edycja kolekcji' : 'Nowa kolekcja'"
       :visible="isOpen"
+      :width="900"
       @cancel="$emit('close')"
     >
-      <modal-form class="product-set-form">
+      <modal-form :key="form.id || 'new'" class="product-set-form">
         <validated-input
           v-model="form.name"
           :disabled="disabled"
@@ -62,6 +63,18 @@
         <br />
 
         <SeoForm v-model="form.seo" :disabled="disabled" />
+
+        <br />
+        <media-upload-input
+          label="Okładka kolekcji"
+          :disabled="disabled"
+          :image="form.cover"
+          @upload="changeMedia"
+        />
+
+        <br />
+        <small class="label">Opis</small>
+        <rich-editor v-if="isEditorActive" v-model="form.description_html" :disabled="disabled" />
       </modal-form>
       <template #footer>
         <div class="row">
@@ -92,13 +105,19 @@ import FlexInput from '@/components/layout/FlexInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import SeoForm from '@/components/modules/seo/Accordion.vue'
+import RichEditor from '@/components/form/RichEditor.vue'
 
 import { ProductSetDTO } from '@/interfaces/ProductSet'
+import MediaUploadInput from '@/components/MediaUploadInput.vue'
+import { CdnMedia } from '@/interfaces/Media'
 
 export const CLEAR_PRODUCT_SET_FORM: ProductSetDTO = {
   id: '',
   name: '',
   slug_suffix: '',
+  description_html: '',
+  cover: undefined,
+  cover_id: undefined,
   slug_override: false,
   public: true,
   hide_on_index: false,
@@ -115,6 +134,8 @@ export default Vue.extend({
     ValidationObserver,
     SwitchInput,
     SeoForm,
+    RichEditor,
+    MediaUploadInput,
   },
   props: {
     value: {
@@ -140,11 +161,18 @@ export default Vue.extend({
   },
   data: () => ({
     form: cloneDeep(CLEAR_PRODUCT_SET_FORM) as ProductSetDTO,
+    isEditorActive: false,
   }),
   watch: {
     value(value: ProductSetDTO) {
       this.form = { ...cloneDeep(CLEAR_PRODUCT_SET_FORM), ...cloneDeep(value) }
       this.fetchProductSet()
+    },
+    isOpen(isOpen: boolean) {
+      this.$nextTick(() => {
+        // ? Workaround for a bugged ArticleEditor, which doesn't render correctly in the first time
+        this.isEditorActive = isOpen
+      })
     },
   },
   methods: {
@@ -156,7 +184,9 @@ export default Vue.extend({
       if (success) {
         const fetched = this.$accessor.productSets.getSelected
         this.form = {
+          ...cloneDeep(CLEAR_PRODUCT_SET_FORM),
           ...cloneDeep(fetched),
+          cover_id: fetched.cover?.id,
           parent_id: fetched.parent?.id || null,
           children_ids: fetched.children?.map((child) => child.id) || [],
           seo: fetched.seo || {},
@@ -190,6 +220,11 @@ export default Vue.extend({
       await this.$accessor.productSets.remove(this.form.id)
       this.$accessor.stopLoading()
       this.$emit('close')
+    },
+
+    changeMedia(media: CdnMedia | undefined) {
+      this.form.cover = media
+      this.form.cover_id = media?.id
     },
   },
 })

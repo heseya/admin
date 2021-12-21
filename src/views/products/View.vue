@@ -95,7 +95,7 @@
                   >
                     <a-select-option v-for="set in productSets" :key="set.id" :label="set.name">
                       <i v-if="!set.public" class="bx bx-lock"></i>
-                      {{ set.name }} &nbsp; <small>(/{{ set.slug }})</small>
+                      {{ set.name }}&nbsp;<small>(/{{ set.slug }})</small>
                     </a-select-option>
                     <template #message-danger>{{ errors[0] }}</template>
                   </app-select>

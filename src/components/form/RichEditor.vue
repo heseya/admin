@@ -1,6 +1,12 @@
 <template>
   <div class="rich-editor" :style="{ '--height': height }">
-    <article-editor ref="editor" v-model="innerValue" :config="editorConfig" :disabled="disabled" />
+    <article-editor
+      ref="editor"
+      v-model="innerValue"
+      :name="name"
+      :config="editorConfig"
+      :disabled="disabled"
+    />
   </div>
 </template>
 
@@ -27,6 +33,10 @@ export default Vue.extend({
     value: {
       type: String,
       default: '',
+    },
+    name: {
+      type: String,
+      default: null,
     },
     height: {
       type: String,

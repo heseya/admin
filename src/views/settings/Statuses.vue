@@ -60,6 +60,34 @@
             horizontal
             label="Przywracanie stanów magazynowych"
           />
+          <br />
+
+          <SwitchInput v-model="editedItem.hidden" :disabled="!canModify" horizontal>
+            <template #title>
+              Ukryj zamówienia z tym statusem na liście
+              <a-tooltip>
+                <template #title>
+                  Zamówienia z tym statusem nie będą domyślnie pokazywać się na liście zamówień.
+                  Wciąż będzie można po nim filtrować.
+                </template>
+                <i class="bx bxs-info-circle"></i>
+              </a-tooltip>
+            </template>
+          </SwitchInput>
+          <br />
+
+          <SwitchInput v-model="editedItem.no_notifications" :disabled="!canModify" horizontal>
+            <template #title>
+              Nie wysyłaj powiadomień
+              <a-tooltip>
+                <template #title>
+                  Przy zmianie statusu zamówienia na ten, klientowi nie zostanie wysłane
+                  powiadomienie mailowe.
+                </template>
+                <i class="bx bxs-info-circle"></i>
+              </a-tooltip>
+            </template>
+          </SwitchInput>
         </modal-form>
         <template #footer>
           <div class="row">
@@ -101,6 +129,8 @@ const CLEAR_STATUS: OrderStatus = {
   description: '',
   color: '000000',
   cancel: false,
+  hidden: false,
+  no_notifications: false,
 }
 
 export default Vue.extend({

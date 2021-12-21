@@ -17,7 +17,7 @@
       @change="debouncedSearch"
     >
       <a-select-option v-for="set in productSets" :key="set.slug" :label="set.name">
-        {{ set.name }}
+        {{ set.name }}&nbsp;<small>(/{{ set.slug }})</small>
       </a-select-option>
     </app-select>
 

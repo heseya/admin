@@ -12,6 +12,8 @@ export interface OrderStatus {
   description: string
   color: string
   cancel: boolean
+  hidden: boolean
+  no_notifications: boolean
 }
 
 export interface Order {

@@ -1,4 +1,4 @@
-import { ProductSet } from '@/interfaces/ProductSet'
+import { ProductSet, ProductSetDTO } from '@/interfaces/ProductSet'
 import { createVuexCRUD, StoreMutations } from './generator'
 import { findInTree, removeFromTree, updateItemInTree } from '@/utils/tree'
 import { UUID } from '@/interfaces/UUID'
@@ -9,7 +9,7 @@ const PARAM = { tree: 1 }
 
 const reorderSets = reorderCollection('product-sets', 'product_sets')
 
-export const productSets = createVuexCRUD<ProductSet>()(
+export const productSets = createVuexCRUD<ProductSet, ProductSetDTO, ProductSetDTO>()(
   'product-sets',
   {
     state: {},

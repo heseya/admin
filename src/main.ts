@@ -13,6 +13,7 @@ import './plugins/slugify'
 import './plugins/permissions'
 import './plugins/globalComponents'
 import './plugins/articleEditor'
+import './plugins/sentry'
 
 import './registerServiceWorker'
 

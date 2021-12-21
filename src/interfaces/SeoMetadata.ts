@@ -13,6 +13,7 @@ export interface SeoMetadata {
   keywords?: string[]
   og_image?: CdnMedia
   twitter_card?: TwitterCardType
+  no_index?: boolean
 }
 
 export interface SeoMetadataDto {
@@ -21,4 +22,5 @@ export interface SeoMetadataDto {
   keywords?: string[]
   og_image_id?: UUID | null
   twitter_card?: TwitterCardType
+  no_index?: boolean
 }

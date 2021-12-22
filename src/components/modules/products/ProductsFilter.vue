@@ -58,6 +58,7 @@ export const EMPTY_PRODUCT_FILTERS = {
   sets: [ALL_FILTER_VALUE],
   tags: [ALL_FILTER_VALUE],
   public: ALL_FILTER_VALUE,
+  sort: undefined as string | undefined,
 }
 
 type ProductFilers = typeof EMPTY_PRODUCT_FILTERS
@@ -81,11 +82,8 @@ export default Vue.extend({
     },
   },
   watch: {
-    filters(f: ProductFilers) {
-      this.local.search = f.search
-      this.local.sets = f.sets
-      this.local.tags = f.tags
-      this.local.public = f.public
+    filters(filters: ProductFilers) {
+      this.local = { ...this.local, ...filters }
     },
   },
   created() {
@@ -93,19 +91,13 @@ export default Vue.extend({
     this.$accessor.tags.fetch({ limit: 500 })
   },
   mounted() {
-    this.local.search = this.filters.search
-    this.local.sets = this.filters.sets
-    this.local.tags = this.filters.tags
-    this.local.public = this.filters.public
+    this.local = { ...this.local, ...this.filters }
   },
   methods: {
     makeSearch() {
       this.$emit('search', {
         ...this.filters,
-        search: this.local.search,
-        sets: this.local.sets,
-        tags: this.local.tags,
-        public: this.local.public,
+        ...this.local,
       })
     },
 

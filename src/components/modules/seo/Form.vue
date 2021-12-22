@@ -41,6 +41,14 @@
       @input="(v) => (form.keywords = v)"
     />
 
+    <a-alert v-if="duplicatedKeywordsItem" type="warning" show-icon style="margin-bottom: 1rem">
+      <template #message>
+        Słowa kluczowe podane powyżej duplikują słowa kluczowe w
+        <a :href="duplicatedKeywordUrl" target="_blank">innym elemencie</a>. Rozważ ich zmianę, aby
+        osiągnąć lepsze rezultaty SEO.
+      </template>
+    </a-alert>
+
     <app-select v-model="form.twitter_card" label="Typ kart Twittera" :disabled="disabled">
       <a-select-option value="summary"> Podsumowanie (<code>summary</code>) </a-select-option>
       <a-select-option value="summary_large_image">
@@ -65,6 +73,7 @@ import ModalForm from '@/components/form/ModalForm.vue'
 import { SeoMetadata, SeoMetadataDto, TwitterCardType } from '@/interfaces/SeoMetadata'
 import { CdnMedia } from '@/interfaces/Media'
 import MediaUploadInput from '@/components/MediaUploadInput.vue'
+import { UUID } from '@/interfaces/UUID'
 
 type SeoMeta = SeoMetadata & SeoMetadataDto
 
@@ -77,6 +86,8 @@ export const CLEAR_SEO_FORM: SeoMeta = {
   og_image_id: undefined,
   no_index: false,
 }
+
+type ModelType = 'Product' | 'ProductSet' | 'Page'
 
 export default Vue.extend({
   components: {
@@ -96,7 +107,20 @@ export default Vue.extend({
       type: Boolean,
       default: false,
     },
+    current: {
+      type: Object,
+      default: null,
+    } as Vue.PropOptions<{ id: UUID; model: ModelType }>,
   },
+
+  data: () => ({
+    duplicatedKeywordsItem: null as null | {
+      // eslint-disable-next-line camelcase
+      model_type: ModelType
+      id: UUID
+    },
+  }),
+
   computed: {
     form: {
       get(): SeoMeta {
@@ -105,6 +129,31 @@ export default Vue.extend({
       set(v: SeoMeta) {
         this.$emit('input', v)
       },
+    },
+    duplicatedKeywordUrl(): string | null {
+      switch (this.duplicatedKeywordsItem?.model_type) {
+        case 'Product':
+          return `/products/${this.duplicatedKeywordsItem.id}`
+        case 'ProductSet':
+          return `/collections?open=${this.duplicatedKeywordsItem.id}`
+        case 'Page':
+          return `/pages/${this.duplicatedKeywordsItem.id}`
+        default:
+          return null
+      }
+    },
+  },
+
+  watch: {
+    'form.keywords': {
+      handler(keywords: string[]) {
+        if (keywords.length) {
+          this.checkDuplicates(keywords)
+        } else {
+          this.duplicatedKeywordsItem = null
+        }
+      },
+      deep: true,
     },
   },
 
@@ -125,15 +174,20 @@ export default Vue.extend({
       this.form.og_image = media
       this.form.og_image_id = media?.id || null
     },
+
+    async checkDuplicates(keywords: string[]) {
+      const { duplicates } = await this.$accessor.globalSeo.checkDuplicates({
+        keywords,
+        excluded: this.current,
+      })
+      this.duplicatedKeywordsItem = duplicates[0] || null
+    },
   },
 })
 </script>
 
 <style lang="scss" scoped>
 .seo-form {
-  &__og-image {
-  }
-
   &__subtext {
     display: block;
     text-align: right;

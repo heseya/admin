@@ -35,7 +35,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, isString } from 'lodash'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ProductSetForm, { CLEAR_PRODUCT_SET_FORM } from '@/components/modules/productSets/Form.vue'
@@ -66,14 +66,23 @@ export default Vue.extend({
     editedItem: cloneDeep(CLEAR_PRODUCT_SET_FORM) as ProductSetDTO,
     editedItemSlugPrefix: '',
   }),
+  mounted() {
+    if (this.$route.query.open) {
+      this.editProductSet(this.$route.query.open as string)
+    }
+  },
   methods: {
-    editProductSet(set: ProductSet) {
-      this.editedItem = {
-        ...cloneDeep(set),
-        parent_id: set.parent?.id || null,
-        children_ids: set.children.map((child) => child.id),
+    editProductSet(set: ProductSet | string) {
+      if (isString(set)) {
+        this.editedItem = { id: set } as ProductSetDTO
+      } else {
+        this.editedItem = {
+          ...cloneDeep(set),
+          parent_id: set.parent?.id || null,
+          children_ids: set.children.map((child) => child.id),
+        }
+        this.editedItemSlugPrefix = set.parent?.slug || ''
       }
-      this.editedItemSlugPrefix = set.parent?.slug || ''
       this.isFormModalActive = true
     },
     createProductSet(parent: ProductSet | null = null) {

@@ -4,6 +4,7 @@ import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 import { api } from '../api'
 
 import { SeoMetadata } from '@/interfaces/SeoMetadata'
+import { UUID } from '@/interfaces/UUID'
 
 const state = () => ({
   error: null as null | Error,
@@ -56,6 +57,27 @@ const actions = actionTree(
       } catch (e: any) {
         commit('SET_ERROR', e)
         return false
+      }
+    },
+
+    async checkDuplicates(
+      _c,
+      { keywords, excluded }: { keywords: string[]; excluded?: { id: UUID; model: string } },
+    ) {
+      type CheckResponse = { data: { duplicated: boolean; duplicates: [] } }
+
+      try {
+        const response = await api.post<CheckResponse>('/seo/check', {
+          keywords,
+          excluded,
+        })
+
+        return response.data.data
+      } catch {
+        return {
+          duplicated: false,
+          duplicates: [],
+        }
       }
     },
   },

@@ -16,7 +16,7 @@
       <template #header>
         <span class="seo-form-accrodion__title">Ustawienia SEO</span>
       </template>
-      <SeoForm v-model="form" />
+      <SeoForm v-model="form" :current="current" />
     </a-collapse-panel>
   </a-collapse>
 </template>
@@ -26,6 +26,7 @@ import Vue from 'vue'
 
 import { SeoMetadata } from '@/interfaces/SeoMetadata'
 import SeoForm from './Form.vue'
+import { UUID } from '@/interfaces/UUID'
 
 export default Vue.extend({
   components: {
@@ -44,6 +45,10 @@ export default Vue.extend({
       type: Boolean,
       default: false,
     },
+    current: {
+      type: Object,
+      default: null,
+    } as Vue.PropOptions<{ id: UUID; model: string }>,
   },
   computed: {
     form: {

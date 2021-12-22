@@ -62,7 +62,11 @@
 
         <br />
 
-        <SeoForm v-model="form.seo" :disabled="disabled" />
+        <SeoForm
+          v-model="form.seo"
+          :disabled="disabled"
+          :current="form.id ? { id: form.id, model: 'ProductSet' } : null"
+        />
 
         <br />
         <media-upload-input

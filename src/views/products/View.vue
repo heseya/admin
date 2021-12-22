@@ -113,7 +113,11 @@
               </div>
 
               <div class="wide">
-                <SeoForm v-model="form.seo" :disabled="!canModify" />
+                <SeoForm
+                  v-model="form.seo"
+                  :disabled="!canModify"
+                  :current="!isNew ? { id, model: 'Product' } : null"
+                />
               </div>
 
               <div class="wide">

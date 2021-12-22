@@ -73,6 +73,7 @@ import ModalForm from '@/components/form/ModalForm.vue'
 import { SeoMetadata, SeoMetadataDto, TwitterCardType } from '@/interfaces/SeoMetadata'
 import { CdnMedia } from '@/interfaces/Media'
 import MediaUploadInput from '@/components/MediaUploadInput.vue'
+import { UUID } from '@/interfaces/UUID'
 
 type SeoMeta = SeoMetadata & SeoMetadataDto
 
@@ -85,6 +86,8 @@ export const CLEAR_SEO_FORM: SeoMeta = {
   og_image_id: undefined,
   no_index: false,
 }
+
+type ModelType = 'Product' | 'ProductSet' | 'Page'
 
 export default Vue.extend({
   components: {
@@ -104,13 +107,17 @@ export default Vue.extend({
       type: Boolean,
       default: false,
     },
+    current: {
+      type: Object,
+      default: null,
+    } as Vue.PropOptions<{ id: UUID; model: ModelType }>,
   },
 
   data: () => ({
     duplicatedKeywordsItem: null as null | {
       // eslint-disable-next-line camelcase
-      model_type: 'Product' | 'ProductSet' | 'Page'
-      id: string
+      model_type: ModelType
+      id: UUID
     },
   }),
 
@@ -142,6 +149,8 @@ export default Vue.extend({
       handler(keywords: string[]) {
         if (keywords.length) {
           this.checkDuplicates(keywords)
+        } else {
+          this.duplicatedKeywordsItem = null
         }
       },
       deep: true,
@@ -167,7 +176,10 @@ export default Vue.extend({
     },
 
     async checkDuplicates(keywords: string[]) {
-      const { duplicates } = await this.$accessor.globalSeo.checkDuplicates(keywords)
+      const { duplicates } = await this.$accessor.globalSeo.checkDuplicates({
+        keywords,
+        excluded: this.current,
+      })
       this.duplicatedKeywordsItem = duplicates[0] || null
     },
   },

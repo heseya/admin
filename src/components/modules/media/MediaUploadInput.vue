@@ -40,8 +40,8 @@
 <script lang="ts">
 import { CdnMedia } from '@/interfaces/Media'
 import Vue from 'vue'
-import MediaEditForm from './MediaEditForm.vue'
-import MediaUploader from './MediaUploader.vue'
+import MediaEditForm from '@/components/modules/media/MediaEditForm.vue'
+import MediaUploader from '@/components/modules/media/MediaUploader.vue'
 
 export default Vue.extend({
   components: { MediaUploader, MediaEditForm },

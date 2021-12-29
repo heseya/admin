@@ -25,7 +25,7 @@
 import Vue from 'vue'
 
 import { CdnMedia } from '@/interfaces/Media'
-import MediaUploader from '@/components/MediaUploader.vue'
+import MediaUploader from '@/components/modules/media/MediaUploader.vue'
 
 const ENV_NAME = 'store_logo'
 

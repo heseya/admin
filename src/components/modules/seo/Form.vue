@@ -72,7 +72,7 @@ import ModalForm from '@/components/form/ModalForm.vue'
 
 import { SeoMetadata, SeoMetadataDto, TwitterCardType } from '@/interfaces/SeoMetadata'
 import { CdnMedia } from '@/interfaces/Media'
-import MediaUploadInput from '@/components/MediaUploadInput.vue'
+import MediaUploadInput from '@/components/modules/media/MediaUploadInput.vue'
 import { UUID } from '@/interfaces/UUID'
 
 type SeoMeta = SeoMetadata & SeoMetadataDto

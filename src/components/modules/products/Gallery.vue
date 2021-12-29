@@ -47,12 +47,12 @@
 import Vue from 'vue'
 import Draggable from 'vuedraggable'
 
-import MediaUploader from '@/components/MediaUploader.vue'
+import MediaUploader from '@/components/modules/media/MediaUploader.vue'
 import { formatApiNotificationError } from '@/utils/errors'
 import { UUID } from '@/interfaces/UUID'
 import { CdnMedia, CdnMediaType } from '@/interfaces/Media'
 import { removeMedia } from '@/services/uploadMedia'
-import MediaEditForm from '@/components/MediaEditForm.vue'
+import MediaEditForm from '@/components/modules/media/MediaEditForm.vue'
 
 export default Vue.extend({
   components: {

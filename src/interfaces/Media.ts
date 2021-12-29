@@ -7,4 +7,6 @@ export interface CdnMedia {
   id: string
   type: CdnMediaType
   url: string
+  alt?: string
+  slug?: string
 }

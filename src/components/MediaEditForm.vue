@@ -1,37 +1,37 @@
 <template>
-  <div class="media-edit-modal">
-    <a-popover
-      v-model="isOpen"
-      title="Edycja zdjęcia/video"
-      trigger="click"
-      placement="bottomRight"
-    >
-      <template #content>
-        <form class="media-edit-modal__form" @submit.prevent="onSubmit">
-          <validated-input
-            v-model="form.alt"
-            label="Tekst alternatywny zdjęcia"
-            :disabled="isLoading"
-          />
-          <validated-input v-model="form.slug" label="Nazwa pliku zdjęcia" :disabled="isLoading" />
-          <small>
-            Aktualny link: <b>{{ media.url }}</b>
-          </small>
+  <a-popover
+    v-model="isOpen"
+    class="media-edit-modal"
+    title="Edycja zdjęcia/video"
+    trigger="click"
+    :placement="placement"
+  >
+    <template #content>
+      <form class="media-edit-modal__form" @submit.prevent="onSubmit">
+        <validated-input
+          v-model="form.alt"
+          label="Tekst alternatywny zdjęcia"
+          :disabled="isLoading"
+        />
 
-          <br />
-          <app-button type="primary" html-type="submit" size="small" :loading="isLoading">
-            Zapisz
-          </app-button>
-        </form>
+        <validated-input v-model="form.slug" label="Nazwa pliku zdjęcia" :disabled="isLoading" />
+        <small>
+          Aktualny link: <b>{{ media.url }}</b>
+        </small>
+
+        <br />
+        <app-button type="primary" html-type="submit" size="small" :loading="isLoading">
+          Zapisz
+        </app-button>
+      </form>
+    </template>
+
+    <icon-button v-if="!disabled" type="default">
+      <template #icon>
+        <i class="bx bxs-pencil"></i>
       </template>
-
-      <icon-button v-if="!disabled" type="default">
-        <template #icon>
-          <i class="bx bxs-pencil"></i>
-        </template>
-      </icon-button>
-    </a-popover>
-  </div>
+    </icon-button>
+  </a-popover>
 </template>
 
 <script lang="ts">
@@ -49,6 +49,7 @@ const EMPTY_FORM = {
 export default Vue.extend({
   props: {
     disabled: { type: Boolean, default: false },
+    placement: { type: String, default: 'bottomRight' },
     media: { type: Object, required: true } as Vue.PropOptions<CdnMedia>,
   },
   data: () => ({
@@ -89,6 +90,8 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .media-edit-modal {
+  z-index: 100;
+
   &__form {
     display: flex;
     flex-direction: column;

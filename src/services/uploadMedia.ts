@@ -1,6 +1,7 @@
 import { api } from '@/api'
 import { UUID } from '@/interfaces/UUID'
 import { CdnMedia } from '@/interfaces/Media'
+import { ApiError } from '@/utils/errors'
 
 export const uploadMedia = async (file: File) => {
   try {
@@ -10,13 +11,29 @@ export const uploadMedia = async (file: File) => {
     const { data } = await api.post<{ data: CdnMedia }>('/media', form)
 
     return {
-      success: true,
+      success: true as const,
       file: data.data,
     }
   } catch (error: any) {
     return {
-      success: false,
-      error,
+      success: false as const,
+      error: error as ApiError,
+    }
+  }
+}
+
+export const updateMedia = async (media: CdnMedia) => {
+  try {
+    const { data } = await api.patch<{ data: CdnMedia }>(`/media/id:${media.id}`, media)
+
+    return {
+      success: true as const,
+      file: data.data,
+    }
+  } catch (error: any) {
+    return {
+      success: false as const,
+      error: error as ApiError,
     }
   }
 }
@@ -26,6 +43,6 @@ export const removeMedia = async (fileId: UUID): Promise<true | Error> => {
     await api.delete<null>(`/media/id:${fileId}`)
     return true
   } catch (error: any) {
-    return error
+    return error as ApiError
   }
 }

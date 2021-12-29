@@ -13,7 +13,12 @@
             label="Tekst alternatywny zdjęcia"
             :disabled="isLoading"
           />
-          <validated-input v-model="form.slug" label="Link do zdjęcia" :disabled="isLoading" />
+          <validated-input v-model="form.slug" label="Nazwa pliku zdjęcia" :disabled="isLoading" />
+          <small>
+            Aktualny link: <b>{{ media.url }}</b>
+          </small>
+
+          <br />
           <app-button type="primary" html-type="submit" size="small" :loading="isLoading">
             Zapisz
           </app-button>
@@ -31,7 +36,10 @@
 
 <script lang="ts">
 import Vue from 'vue'
+
 import { CdnMedia } from '@/interfaces/Media'
+import { updateMedia } from '@/services/uploadMedia'
+import { formatApiNotificationError } from '@/utils/errors'
 
 const EMPTY_FORM = {
   alt: '',
@@ -59,17 +67,21 @@ export default Vue.extend({
   },
 
   methods: {
-    onSubmit() {
+    async onSubmit() {
       if (this.isLoading) return
       this.isLoading = true
 
-      // TODO:
-      console.log('submit', this.form)
+      const result = await updateMedia({ ...this.media, ...this.form })
 
-      setTimeout(() => {
-        this.isLoading = false
+      if (result.success) {
+        this.$toast.success('Metadane zdjęcia zostały zaktualizowane')
+        this.$emit('update', result.file)
         this.isOpen = false
-      }, 1000)
+      } else {
+        this.$toast.error(formatApiNotificationError(result.error))
+      }
+
+      this.isLoading = false
     },
   },
 })
@@ -82,6 +94,10 @@ export default Vue.extend({
     flex-direction: column;
     align-items: center;
     justify-content: center;
+
+    > span {
+      width: 100%;
+    }
   }
 }
 </style>

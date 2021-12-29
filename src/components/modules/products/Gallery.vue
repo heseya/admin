@@ -21,7 +21,12 @@
           </icon-button>
         </div>
 
-        <media-edit-form class="gallery__edit-img" :disabled="disabled" :media="image" />
+        <media-edit-form
+          class="gallery__edit-img"
+          :disabled="disabled"
+          :media="image"
+          @update="updateMedia"
+        />
       </div>
       <app-media-uploader
         v-if="!disabled"
@@ -111,6 +116,12 @@ export default Vue.extend({
     clearMediaToDelete() {
       this.mediaToDelete = []
     },
+
+    updateMedia(file: CdnMedia) {
+      const index = this.images.findIndex((image) => image.id === file.id)
+      this.images.splice(index, 1, file)
+    },
+
     async removeTouchedFiles() {
       await Promise.all(this.mediaToDelete.map(removeMedia))
       this.clearMediaToDelete()

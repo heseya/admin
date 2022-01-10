@@ -8,7 +8,7 @@
       class="app-input__input"
       v-bind="$props"
       :data-cy="dataCy || name"
-      @change="$emit('change')"
+      v-on="$listeners"
     >
       <a-select-option v-if="addAll" value="_all" label="Wszystkie"> Wszystkie </a-select-option>
       <slot></slot>
@@ -39,6 +39,8 @@ export default Vue.extend({
     disabled: Boolean,
     addAll: Boolean,
     showSearch: Boolean,
+    labelInValue: Boolean,
+    tokenSeparators: Array,
     optionFilterProp: String,
     dataCy: String,
   },

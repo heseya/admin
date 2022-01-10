@@ -1,8 +1,8 @@
 <template>
   <div class="tags">
-    <small class="label">Tagi</small>
-    <a-select
+    <app-select
       :value="tagsValue"
+      label="Tagi"
       class="tags__select"
       mode="tags"
       option-filter-prop="label"
@@ -20,13 +20,15 @@
           {{ tag.name }}
         </div>
       </a-select-option>
-    </a-select>
+    </app-select>
   </div>
 </template>
 <script lang="ts">
 import Vue from 'vue'
 import { debounce, uniqBy } from 'lodash'
 import { Tag } from '@/interfaces/Tag'
+
+type AntSelectOption = { key: string; label: string }
 
 export default Vue.extend({
   props: {
@@ -66,11 +68,11 @@ export default Vue.extend({
       this.$accessor.tags.fetch({ search })
     }, 200),
 
-    removeTag(tag: { key: string; label: string }) {
+    removeTag(tag: AntSelectOption) {
       this.tags = this.tags.filter(({ id }) => id !== tag.key)
     },
 
-    async addTag(rawTag: { key: string; label: string }) {
+    async addTag(rawTag: AntSelectOption) {
       const tag = this.options.find((tag) => tag.id === rawTag.key)
       if (tag) {
         // Add existing tag

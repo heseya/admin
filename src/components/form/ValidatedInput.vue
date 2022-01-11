@@ -28,6 +28,8 @@ export default Vue.extend({
     'loading',
     'dataCy',
     'type',
+    'min',
+    'max',
     'step',
     'rows',
     'border',

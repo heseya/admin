@@ -28,6 +28,8 @@ export interface ShippingMethod {
   payment_methods: PaymentMethod[]
   public: boolean
   black_list: boolean
+  shipping_time_min: number
+  shipping_time_max: number
   countries: ShippingMethodCountry[]
   price_ranges: ShippingMethodPriceRange[]
 }
@@ -38,6 +40,8 @@ export interface ShippingMethodDTO {
   payment_methods: string[]
   public: boolean
   black_list: boolean
+  shipping_time_min: number
+  shipping_time_max: number
   countries: string[]
   price_ranges: ShippingMethodPriceRangeDTO[]
 }

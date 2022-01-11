@@ -45,6 +45,14 @@ extend('not-negative', {
   },
 })
 
+extend('less-than', {
+  params: ['target'],
+  validate(value, { target }: Record<string, any>) {
+    return value <= target
+  },
+  message: 'Wartość musi być mniejsza bądź równa od {_target_}',
+})
+
 extend('id-required', {
   message: 'To pole jest wymagane',
   validate: (value) => {

@@ -50,7 +50,7 @@ export default Vue.extend({
         this.$emit('input', v)
       },
     },
-    tagsValue(): string[] {
+    tagsValue(): AntSelectOption[] {
       return this.tags.map((tag) => ({ key: tag.id, label: tag.name }))
     },
     options(): Tag[] {

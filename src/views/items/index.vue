@@ -5,6 +5,7 @@
       store-key="items"
       :filters="filters"
       :table="tableConfig"
+      @search="makeSearch"
       @clear-filters="clearFilters"
     >
       <template #nav>
@@ -17,16 +18,7 @@
       </template>
 
       <template #filters>
-        <div>
-          <app-input
-            v-model="filters.search"
-            class="span-2"
-            type="search"
-            label="Wyszukiwanie"
-            allow-clear
-            @input="debouncedSearch"
-          />
-        </div>
+        <items-filter :filters="filters" @search="makeSearch" />
       </template>
     </PaginatedList>
 
@@ -80,16 +72,21 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { debounce } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
+import ItemsFilter, {
+  EMPTY_ITEMS_FILTERS,
+  ItemsFilersType,
+} from '@/components/modules/items/ItemsFilter.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import { ProductItem } from '@/interfaces/Product'
 import { TableConfig } from '@/interfaces/CmsTable'
+import { ALL_FILTER_VALUE } from '@/consts/filters'
+import { formatFilters } from '@/utils/utils'
 
 const EMPTY_FORM: ProductItem = {
   id: '',
@@ -105,6 +102,7 @@ export default Vue.extend({
     PopConfirm,
     ValidationObserver,
     PaginatedList,
+    ItemsFilter,
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {
@@ -115,9 +113,7 @@ export default Vue.extend({
     }
   },
   data: () => ({
-    filters: {
-      search: '',
-    },
+    filters: { ...EMPTY_ITEMS_FILTERS } as ItemsFilersType,
     isModalActive: false,
     editedItem: { ...EMPTY_FORM },
     editedOriginalQuantity: 0,
@@ -134,9 +130,9 @@ export default Vue.extend({
       return {
         rowOnClick: (item) => this.openModal(item.id),
         headers: [
-          { key: 'name', label: 'Nazwa' },
-          { key: 'sku', label: 'SKU', width: '0.5fr' },
-          { key: 'quantity', label: 'Ilość w magazynie', width: '0.5fr' },
+          { key: 'name', label: 'Nazwa', sortable: true },
+          { key: 'sku', label: 'SKU', width: '0.5fr', sortable: true },
+          { key: 'quantity', label: 'Ilość w magazynie', width: '0.5fr', sortable: true },
         ],
       }
     },
@@ -152,23 +148,24 @@ export default Vue.extend({
   },
   created() {
     this.filters.search = (this.$route.query.search as string) || ''
+    this.filters.sold_out = (this.$route.query.sold_out as string) || ALL_FILTER_VALUE
+    this.filters.sort = (this.$route.query.sort as string) || ''
   },
   methods: {
-    makeSearch() {
-      if (this.filters.search !== this.$route.query.search) {
-        this.$router.push({
-          path: 'items',
-          query: { page: undefined, search: this.filters.search || undefined },
-        })
-      }
-    },
-    debouncedSearch: debounce(function (this: any) {
-      this.$nextTick(() => {
-        this.makeSearch()
+    makeSearch(filters: ItemsFilersType) {
+      this.filters = filters
+
+      const queryFilters = formatFilters(filters)
+
+      this.$router.push({
+        path: 'items',
+        query: { page: undefined, ...queryFilters },
       })
-    }, 300),
+    },
+
     clearFilters() {
       this.filters.search = ''
+      this.filters.sold_out = ALL_FILTER_VALUE
       this.makeSearch()
     },
 

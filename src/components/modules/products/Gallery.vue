@@ -7,12 +7,7 @@
       :disabled="disabled"
     >
       <div v-for="image in images" :key="image.url" class="gallery__img">
-        <img
-          v-if="image.type === CdnMediaType.Photo"
-          :src="`${image.url}?w=350&h=350`"
-          :style="{ objectFit }"
-        />
-        <video v-if="image.type === CdnMediaType.Video" :src="image.url" autoplay loop muted />
+        <media-element :media="image" :size="350" />
         <div class="gallery__remove-img">
           <icon-button v-if="!disabled" type="danger" @click="onImageDelete(image.id)">
             <template #icon>
@@ -53,12 +48,14 @@ import { UUID } from '@/interfaces/UUID'
 import { CdnMedia, CdnMediaType } from '@/interfaces/Media'
 import { removeMedia } from '@/services/uploadMedia'
 import MediaEditForm from '@/components/modules/media/MediaEditForm.vue'
+import MediaElement from '@/components/MediaElement.vue'
 
 export default Vue.extend({
   components: {
     appMediaUploader: MediaUploader,
     Draggable,
     MediaEditForm,
+    MediaElement,
   },
   props: {
     value: {
@@ -82,9 +79,6 @@ export default Vue.extend({
       set(val: CdnMedia[]) {
         this.$emit('input', val)
       },
-    },
-    objectFit() {
-      return +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'
     },
   },
   mounted() {
@@ -152,8 +146,7 @@ export default Vue.extend({
     background-color: #ffffff;
     box-shadow: $shadow;
 
-    img,
-    video {
+    .media-element {
       position: absolute;
       top: 0;
       left: 0;

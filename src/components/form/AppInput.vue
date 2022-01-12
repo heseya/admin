@@ -40,6 +40,8 @@ export default Vue.extend({
     'dataCy',
     'error',
     'type',
+    'min',
+    'max',
     'size',
     'step',
     'allowClear',

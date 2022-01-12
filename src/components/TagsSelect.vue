@@ -1,50 +1,45 @@
 <template>
   <div class="tags">
-    <small class="label">Tagi</small>
-    <multiselect
-      v-model="tags"
-      tag-placeholder="Dodaj jako nowy tag"
-      select-label="Naciśnij enter by wybrać"
-      selected-label="Wybrany"
-      placeholder="Wyszukaj lub dodaj tagi"
-      deselect-label="Usuń tag"
-      label="name"
-      track-by="id"
-      :options="options"
-      :multiple="true"
-      :taggable="true"
-      :close-on-select="false"
+    <app-select
+      :value="tagsValue"
+      label="Tagi"
       class="tags__select"
-      @tag="addTag"
-      @search-change="onSearch"
+      mode="tags"
+      option-filter-prop="label"
+      :token-separators="[',']"
+      :disabled="disabled"
+      allow-clear
+      label-in-value
+      @search="onSearch"
+      @select="addTag"
+      @deselect="removeTag"
     >
-      <template #noOptions> Lista jest pusta </template>
-      <template #tag="{ option, remove }">
-        <span class="multiselect__tag" :style="{ backgroundColor: `#${option.color}` }">
-          <span>{{ option.name }}</span>
-          <i aria-hidden="true" class="multiselect__tag-icon" @click="remove"></i>
-        </span>
-      </template>
-    </multiselect>
+      <a-select-option v-for="tag in options" :key="tag.id" :value="tag.id" :label="tag.name">
+        <div class="tags__option">
+          <div class="tags__color" :style="{ backgroundColor: `#${tag.color}` }"></div>
+          {{ tag.name }}
+        </div>
+      </a-select-option>
+    </app-select>
   </div>
 </template>
 <script lang="ts">
 import Vue from 'vue'
-import Multiselect from 'vue-multiselect'
-import { debounce } from 'lodash'
+import { debounce, uniqBy } from 'lodash'
 import { Tag } from '@/interfaces/Tag'
 
-import 'vue-multiselect/dist/vue-multiselect.min.css'
+type AntSelectOption = { key: string; label: string }
 
 export default Vue.extend({
-  components: {
-    Multiselect,
-  },
   props: {
     value: {
       type: Array,
       required: true,
     } as Vue.PropOptions<Tag[]>,
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     tags: {
@@ -55,17 +50,38 @@ export default Vue.extend({
         this.$emit('input', v)
       },
     },
+    tagsValue(): AntSelectOption[] {
+      return this.tags.map((tag) => ({ key: tag.id, label: tag.name }))
+    },
     options(): Tag[] {
-      return this.$accessor.tags.data
+      return uniqBy([...this.tags, ...this.$accessor.tags.data], 'id')
     },
   },
+
+  created() {
+    this.$accessor.tags.fetch()
+  },
+
   methods: {
     onSearch: debounce(function (this: any, search: string) {
       if (!search) return this.$accessor.tags.clearData()
       this.$accessor.tags.fetch({ search })
     }, 200),
-    async addTag(tagName: string) {
-      const newTag = await this.$accessor.tags.add({ name: tagName })
+
+    removeTag(tag: AntSelectOption) {
+      this.tags = this.tags.filter(({ id }) => id !== tag.key)
+    },
+
+    async addTag(rawTag: AntSelectOption) {
+      const tag = this.options.find((tag) => tag.id === rawTag.key)
+      if (tag) {
+        // Add existing tag
+        this.tags = [...this.tags, tag]
+        return
+      }
+
+      // Create new tag
+      const newTag = await this.$accessor.tags.add({ name: rawTag.label })
       if (newTag) this.tags = [...this.tags, newTag]
     },
   },
@@ -79,6 +95,19 @@ export default Vue.extend({
   &__select {
     width: 100%;
     z-index: 1;
+  }
+
+  &__option {
+    display: flex;
+    align-items: center;
+  }
+
+  &__color {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    background-color: #000;
+    margin-right: 4px;
   }
 }
 </style>

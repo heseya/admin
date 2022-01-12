@@ -22,7 +22,12 @@
       </div>
     </div>
     <small class="price-ranges-form__error">{{ error }}</small>
-    <icon-button class="price-ranges-form__btn" :disabled="disabled" size="small" @click="addRange">
+    <icon-button
+      class="price-ranges-form__btn"
+      :disabled="disabled"
+      size="small"
+      @click="addRange()"
+    >
       <template #icon>
         <i class="bx bx-plus"></i>
       </template>
@@ -103,6 +108,7 @@ export default Vue.extend({
     margin-left: 6px;
     font-size: 0.7em;
     margin-bottom: 6px;
+    margin-top: 20px;
   }
 }
 </style>

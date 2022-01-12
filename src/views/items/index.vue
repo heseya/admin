@@ -166,7 +166,7 @@ export default Vue.extend({
     clearFilters() {
       this.filters.search = ''
       this.filters.sold_out = ALL_FILTER_VALUE
-      this.makeSearch()
+      this.makeSearch({ ...EMPTY_ITEMS_FILTERS })
     },
 
     openModal(id?: UUID) {

@@ -10,8 +10,8 @@
     />
 
     <app-select
-      v-model="local.soldout"
-      label="Status płatności"
+      v-model="local.sold_out"
+      label="Status w magazynie"
       add-all
       option-filter-prop="label"
       @change="debouncedSearch"
@@ -30,13 +30,14 @@ import { ALL_FILTER_VALUE } from '@/consts/filters'
 
 export type ItemsFilersType = {
   search: string
-  soldout: string
+  // eslint-disable-next-line camelcase
+  sold_out: string
   sort?: string
 }
 
 export const EMPTY_ITEMS_FILTERS: ItemsFilersType = {
   search: '',
-  soldout: ALL_FILTER_VALUE,
+  sold_out: ALL_FILTER_VALUE,
   sort: undefined,
 }
 

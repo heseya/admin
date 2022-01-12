@@ -148,7 +148,7 @@ export default Vue.extend({
   },
   created() {
     this.filters.search = (this.$route.query.search as string) || ''
-    this.filters.soldout = (this.$route.query.soldout as string) || ALL_FILTER_VALUE
+    this.filters.sold_out = (this.$route.query.sold_out as string) || ALL_FILTER_VALUE
     this.filters.sort = (this.$route.query.sort as string) || ''
   },
   methods: {
@@ -165,7 +165,7 @@ export default Vue.extend({
 
     clearFilters() {
       this.filters.search = ''
-      this.filters.soldout = ALL_FILTER_VALUE
+      this.filters.sold_out = ALL_FILTER_VALUE
       this.makeSearch()
     },
 

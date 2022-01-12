@@ -128,6 +128,8 @@ export default Vue.extend({
           black_list: false,
           payment_methods: [],
           countries: [],
+          shipping_time_min: 0,
+          shipping_time_max: 0,
           price_ranges: [
             {
               start: 0,

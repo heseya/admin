@@ -7,11 +7,7 @@
   >
     <template #cover>
       <avatar color="#eee">
-        <img
-          v-if="product.cover"
-          :src="`${product.cover.url}?w=100&h=100`"
-          :style="{ objectFit }"
-        />
+        <media-element v-if="product.cover" :media="product.cover" :size="100" />
         <i v-else class="product-list-item__img-icon bx bx-image"></i>
       </avatar>
     </template>
@@ -55,9 +51,10 @@ import { formatCurrency } from '@/utils/currency'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 import { TableConfig } from '@/interfaces/CmsTable'
 import Tag from '@/components/Tag.vue'
+import MediaElement from '@/components/MediaElement.vue'
 
 export default Vue.extend({
-  components: { Avatar, CmsTableRow, Tag },
+  components: { Avatar, CmsTableRow, Tag, MediaElement },
   props: {
     product: {
       type: Object,

@@ -1,10 +1,11 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import VuexPersistence from 'vuex-persist'
+import axios from 'axios'
 
 import { useAccessor, getterTree, mutationTree, actionTree } from 'typed-vuex'
 
-import { api } from '../api'
+import { getApiURL } from '@/utils/api'
 
 import { auth } from './auth'
 import { globalSeo } from './globalSeo'
@@ -52,7 +53,8 @@ const actions = actionTree(
   { state, getters, mutations },
   {
     async fetchEnv({ commit }) {
-      const { data } = await api.get<Record<string, string>>('/settings?array')
+      // Fetch setting wtihout authorization, so it wont crash when auth is invalid
+      const { data } = await axios.get<Record<string, string>>(`${getApiURL()}/settings?array`)
       commit('SET_ENV', data)
     },
     startLoading({ commit, state }) {

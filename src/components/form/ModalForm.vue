@@ -27,5 +27,18 @@ export default Vue.extend({
       margin-left: 12px;
     }
   }
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+
+    > * {
+      width: 100%;
+
+      &:not(:last-child) {
+        margin-right: 16px;
+      }
+    }
+  }
 }
 </style>

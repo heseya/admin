@@ -31,6 +31,30 @@
 
       <hr />
 
+      <h5>Czas dostawy</h5>
+      <div class="row">
+        <validated-input
+          v-model="form.shipping_time_min"
+          type="number"
+          min="0"
+          name="shipping_time_min"
+          :disabled="disabled"
+          rules="not-negative|less-than:@shipping_time_max"
+          label="Minimalna ilość dni dostawy"
+        />
+        <validated-input
+          v-model="form.shipping_time_max"
+          type="number"
+          min="0"
+          name="shipping_time_max"
+          :disabled="disabled"
+          rules="not-negative"
+          label="Maksymalna ilość dni dostawy"
+        />
+      </div>
+
+      <hr />
+
       <h5>Wysyłka możliwa do</h5>
       <div class="center">
         <flex-input>

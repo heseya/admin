@@ -18,6 +18,12 @@
           </template>
           {{ user.name }}
           <small>{{ user.roles.map((r) => r.name).join(', ') }}</small>
+
+          <template #action>
+            <tag v-if="user.is_2fa_active" type="success" small>
+              <i class="bx bx-check"></i> 2FA aktywne
+            </tag>
+          </template>
         </list-item>
       </template>
     </PaginatedList>
@@ -28,7 +34,7 @@
         width="550px"
         :title="isNewUser(editedUser) ? 'Nowy użytkownik' : 'Edycja użytkownika'"
       >
-        <UserForm v-model="editedUser" :disabled="!canModify" />
+        <UserForm v-model="editedUser" :disabled="!canModify" @close="isModalActive = false" />
 
         <template #footer>
           <div class="row">
@@ -65,6 +71,7 @@ import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import UserForm from '@/components/modules/users/Form.vue'
 import Avatar from '@/components/layout/Avatar.vue'
+import Tag from '@/components/Tag.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import { CreateUserDTO, EditUserDTO } from '@/interfaces/User'
@@ -85,6 +92,7 @@ export default Vue.extend({
     PopConfirm,
     ValidationObserver,
     Avatar,
+    Tag,
   },
   beforeRouteLeave(_to, _from, next) {
     if (this.isModalActive) {

@@ -150,6 +150,7 @@ export enum UsersPermission {
   Add = 'users.add',
   Edit = 'users.edit',
   Remove = 'users.remove',
+  TfaRemove = 'users.2fa_remove',
 }
 
 export enum RolesPermission {

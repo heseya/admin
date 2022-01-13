@@ -77,6 +77,11 @@
 
         <h2 class="section-title">Konto</h2>
         <SettingsItem name="Zmień hasło" icon="bx bxs-lock" @click="isChangePasswordModal = true" />
+        <SettingsItem
+          name="Weryfikacja dwuetapowa"
+          icon="bx bx-mobile-vibration"
+          url="/settings/two-factor-authentication"
+        />
         <!-- <SettingsItem
           v-can="$p.Auth.SessionsShow"
           name="Sesje użytkownika"

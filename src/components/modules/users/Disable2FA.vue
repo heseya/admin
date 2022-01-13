@@ -1,21 +1,22 @@
 <template>
   <div class="disable-2fa">
     <h3 class="disable-2fa__title">
-      Podwójna autoryzacja
-      <a-tooltip>
+      Weryfikacja dwuetapowa
+      <!-- <a-tooltip>
         <template #title> TODO </template>
         <i class="bx bxs-info-circle"></i>
-      </a-tooltip>
+      </a-tooltip> -->
     </h3>
     <span v-if="is2faEnabled" class="disable-2fa__text disable-2fa__text--enabled">
-      Użytkownik ma aktywną podwójną autoryzację
+      Użytkownik ma aktywną weryfikację dwuetapową
     </span>
     <span v-else class="disable-2fa__text disable-2fa__text--disabled">
-      Użytkownik nie posiada aktywnej podwójnej autoryzacji
+      Użytkownik nie posiada aktywnej weryfikacji dwuetapowej
     </span>
 
     <pop-confirm
-      title="Czy na pewno chcesz wyłączyć podwójną autoryzację dla tego użytkownika?"
+      v-can="$p.Users.TfaRemove"
+      title="Czy na pewno chcesz wyłączyć weryfikację dwuetapową dla tego użytkownika?"
       @confirm="disable2FA"
     >
       <app-button
@@ -25,7 +26,7 @@
         type="danger"
         class="disable-2fa__disable-btn"
       >
-        Wyłącz podwójną autoryzację
+        Wyłącz weryfikację dwuetapową
       </app-button>
     </pop-confirm>
   </div>
@@ -59,7 +60,7 @@ export default Vue.extend({
         // @ts-ignore // TODO: fix extended store actions typings
         await this.$accessor.users.removeUser2FA(this.userId)
 
-      if (result.success) this.$toast.success('Konfiguracja została zapisana')
+      if (result.success) this.$toast.success('Weryfikacja dwuetapowa została usunięta')
       else this.$toast.error(formatApiNotificationError(result.error))
 
       this.$accessor.stopLoading()

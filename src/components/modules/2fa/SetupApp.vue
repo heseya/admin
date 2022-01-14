@@ -1,6 +1,6 @@
 <template>
   <div class="setup-2fa-app">
-    <h3>Aktywacja weryfikacji dwuetapowej przez Aplikacje</h3>
+    <h3>Aktywacja weryfikacji dwuetapowej przez aplikacje</h3>
     <p>
       Zeskanuj poniższy kod QR w aplikacji do weryfikacji dwuetapowej (Np. Google Authenticator).
       Następnie potwierdź aktywację weryfikacji przez wpisanie kodu który wyświetli Ci się na

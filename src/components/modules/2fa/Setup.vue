@@ -41,12 +41,22 @@
 
         <hr />
 
-        <div class="setup-2fa__confirm-section">
-          <app-input v-model="confirmCode" name="confirm_code" label="Kod autoryzacyjny" />
-          <app-button type="primary" @click="confirmTwoFactorAuth">
-            Aktywuj weryfikację dwuetapową
-          </app-button>
-        </div>
+        <validation-observer v-slot="{ handleSubmit }">
+          <form
+            class="setup-2fa__confirm-section"
+            @submit.prevent="handleSubmit(confirmTwoFactorAuth)"
+          >
+            <validated-input
+              v-model="confirmCode"
+              rules="required"
+              name="confirm_code"
+              label="Kod autoryzacyjny"
+            />
+            <app-button type="primary" html-type="submit">
+              Aktywuj weryfikację dwuetapową
+            </app-button>
+          </form></validation-observer
+        >
       </div>
 
       <div v-else-if="step === ProgressStep.Finished" class="setup-2fa__success">
@@ -69,6 +79,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { ValidationObserver } from 'vee-validate'
 
 import AppButton from '@/components/layout/AppButton.vue'
 import SetupEmail from './SetupEmail.vue'
@@ -86,7 +97,7 @@ enum ProgressStep {
 }
 
 export default Vue.extend({
-  components: { AppButton, SetupApp, SetupEmail, IconButton },
+  components: { AppButton, SetupApp, SetupEmail, IconButton, ValidationObserver },
   data: () => ({
     step: ProgressStep.Init,
     selectedMethod: null as TwoFactorAuthMethod | null,

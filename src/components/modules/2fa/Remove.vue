@@ -23,7 +23,7 @@
 import Vue from 'vue'
 
 import AppButton from '@/components/layout/AppButton.vue'
-import PasswordConfirmModal from './PasswordConfirmModal.vue'
+import PasswordConfirmModal from '../../PasswordConfirmModal.vue'
 import { removeTwoFactorAuth } from '@/services/twoFactorAuth'
 import { formatApiNotificationError } from '@/utils/errors'
 
@@ -37,6 +37,7 @@ export default Vue.extend({
       const result = await removeTwoFactorAuth(password)
       if (result.success) {
         this.$toast.success('Weryfikacja dwuetapowa została usunięta')
+        this.isModalActive = false
         this.$emit('removed')
       } else {
         this.$toast.error(formatApiNotificationError(result.error))

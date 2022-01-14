@@ -90,3 +90,23 @@ export const removeTwoFactorAuth = async (password: string) => {
     } as const
   }
 }
+
+export const generateRecoveryCodes = async (password: string) => {
+  type CreateCodesResponse = ApiResponse<{
+    // eslint-disable-next-line camelcase
+    recovery_codes: string[]
+  }>
+
+  try {
+    const { data } = await api.post<CreateCodesResponse>('/auth/2fa/recovery/create', {
+      password,
+    })
+
+    return { success: true, recoveryCodes: data.data.recovery_codes } as const
+  } catch (e) {
+    return {
+      success: false,
+      error: e as AxiosError,
+    } as const
+  }
+}

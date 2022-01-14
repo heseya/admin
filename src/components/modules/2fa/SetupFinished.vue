@@ -6,9 +6,7 @@
       gdy stracisz urządzenie na którym aktywowałeś podwójną weryfikacje. Kodów możesz użyć do
       zalogowania, pamiętaj jednak, że są jednorazowe! Nowe kody możesz wygenerować w ustawieniach.
     </p>
-    <div class="setup-finished__codes">
-      <code v-for="code in recoveryCodes" :key="code"> {{ code }} </code>
-    </div>
+    <recovery-codes :codes="recoveryCodes" />
 
     <app-button type="primary" to="/settings"> Wróć do ustawień </app-button>
   </div>
@@ -16,7 +14,11 @@
 
 <script lang="ts">
 import Vue from 'vue'
+
+import RecoveryCodes from './RecoveryCodes.vue'
+
 export default Vue.extend({
+  components: { RecoveryCodes },
   props: {
     recoveryCodes: {
       type: Array,
@@ -35,19 +37,6 @@ export default Vue.extend({
 
   .bxs-check-circle {
     color: $green-color-500;
-  }
-
-  &__codes {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    margin-bottom: 16px;
-
-    code {
-      margin: 8px;
-      font-size: 2em;
-    }
   }
 }
 </style>

@@ -59,6 +59,11 @@ export default Vue.extend({
       },
     },
   },
+  watch: {
+    isActive(v: boolean) {
+      if (!v) this.password = ''
+    },
+  },
   methods: {
     confirm() {
       this.$emit('confirm', this.password)

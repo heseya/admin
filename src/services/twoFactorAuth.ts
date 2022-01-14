@@ -73,3 +73,20 @@ export const confirmTwoFactorAuth = async (confirmCode: string) => {
     } as const
   }
 }
+
+export const removeTwoFactorAuth = async (password: string) => {
+  try {
+    await api.post('/auth/2fa/remove', {
+      password,
+    })
+
+    accessor.auth.SET_USER_TFA(false)
+
+    return { success: true } as const
+  } catch (e) {
+    return {
+      success: false,
+      error: e as AxiosError,
+    } as const
+  }
+}

@@ -21,7 +21,4 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss" scoped>
-.generate-recovery-codes {
-}
-</style>
+<style lang="scss" scoped></style>

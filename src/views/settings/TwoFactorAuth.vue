@@ -12,7 +12,7 @@
       <div v-else>
         <GenerateRecoveryCodes />
         <hr />
-        <Remove2FA />
+        <Remove2FA @removed="isTfaActive = false" />
       </div>
     </card>
   </div>

@@ -20,7 +20,7 @@
           <small>{{ user.roles.map((r) => r.name).join(', ') }}</small>
 
           <template #action>
-            <tag v-if="user.is_2fa_active" type="success" small>
+            <tag v-if="user.is_tfa_active" type="success" small>
               <i class="bx bx-check"></i> 2FA aktywne
             </tag>
           </template>

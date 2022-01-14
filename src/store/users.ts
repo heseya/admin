@@ -21,7 +21,7 @@ export const users = createVuexCRUD<User, CreateUserDTO, EditUserDTO>()('users',
           item: { ...user, is_tfa_active: false },
         })
 
-        return { succes: true }
+        return { success: true }
       } catch (error) {
         return {
           success: false,

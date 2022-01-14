@@ -15,17 +15,12 @@
     </span>
 
     <pop-confirm
+      v-if="!isLoggedUser && is2faEnabled"
       v-can="$p.Users.TfaRemove"
       title="Czy na pewno chcesz wyłączyć weryfikację dwuetapową dla tego użytkownika?"
       @confirm="disable2FA"
     >
-      <app-button
-        v-if="is2faEnabled"
-        :disabled="disabled"
-        size="small"
-        type="danger"
-        class="disable-2fa__disable-btn"
-      >
+      <app-button :disabled="disabled" size="small" type="danger" class="disable-2fa__disable-btn">
         Wyłącz weryfikację dwuetapową
       </app-button>
     </pop-confirm>
@@ -50,6 +45,11 @@ export default Vue.extend({
     is2faEnabled: {
       type: Boolean,
       required: true,
+    },
+  },
+  computed: {
+    isLoggedUser(): boolean {
+      return this.userId === this.$accessor.auth.user?.id
     },
   },
   methods: {

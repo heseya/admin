@@ -9,6 +9,9 @@ import { PERMISSIONS_TREE } from '@/consts/permissions'
 import { hasAccess } from '@/utils/hasAccess'
 import { accessor } from '.'
 import { broadcastTokensUpdate } from '@/utils/authSync'
+import { LoginState } from '@/enums/login'
+import { AxiosResponse } from 'axios'
+import { TwoFactorAuthMethod } from '@/enums/twoFactorAuth'
 
 interface AuthResponse {
   user: User
@@ -106,10 +109,23 @@ const actions = actionTree(
         broadcastTokensUpdate(tokens)
         dispatch('setTokens', tokens)
 
-        return data.user
+        return {
+          state: LoginState.Success,
+          user: data.user,
+        } as const
       } catch (e: any) {
+        const response: AxiosResponse = e.response
+
+        // Two-Factor Authentication
+        if (response?.status === 403 && response?.data?.data?.type) {
+          return {
+            state: LoginState.TwoFactorAuthRequired,
+            method: response.data.data.type as TwoFactorAuthMethod,
+          } as const
+        }
+
         commit('SET_ERROR', e)
-        return false
+        return { state: LoginState.Error, error: e } as const
       }
     },
 

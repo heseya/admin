@@ -1,36 +1,55 @@
 <template>
-  <central-screen-form title="Logowanie">
-    <login-form v-model="form" @submit="login" />
+  <central-screen-form :title="isTwoFactorAuth ? 'Weryfikacja dwuetapowa' : 'Logowanie'">
+    <login-form v-if="!isTwoFactorAuth" v-model="form" @submit="login" />
+
+    <two-factor-auth-code-form
+      v-else
+      v-model="securityCode"
+      :method="twoFactorAuthMethod"
+      @cancel="clearForm"
+      @submit="login"
+    />
   </central-screen-form>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { first, isArray } from 'lodash'
+import { first, isArray, isNull } from 'lodash'
 
 import CentralScreenForm from '@/components/form/CentralScreenForm.vue'
 import LoginForm from '@/components/modules/auth/LoginForm.vue'
+import TwoFactorAuthCodeForm from '@/components/modules/auth/TwoFactorAuthCodeForm.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
+import { TwoFactorAuthMethod } from '@/enums/twoFactorAuth'
+import { LoginState } from '@/enums/login'
 
 const DEFAULT_CREDENTIALS = process.env.NODE_ENV === 'development'
+
+const CLEAR_LOGIN_FORM = {
+  email: DEFAULT_CREDENTIALS ? 'artur@heseya.com' : '',
+  password: DEFAULT_CREDENTIALS ? 'Kurwa1234%' : '',
+}
 
 export default Vue.extend({
   metaInfo: { title: 'Logowanie' },
   components: {
     CentralScreenForm,
     LoginForm,
+    TwoFactorAuthCodeForm,
   },
   data: () => ({
-    form: {
-      email: DEFAULT_CREDENTIALS ? '***REMOVED***' : '',
-      password: DEFAULT_CREDENTIALS ? '***REMOVED***' : '',
-    },
+    twoFactorAuthMethod: null as TwoFactorAuthMethod | null,
+    securityCode: '',
+    form: { ...CLEAR_LOGIN_FORM },
   }),
   computed: {
     nextURL(): string {
       const { next } = this.$route.query
       return (isArray(next) ? first(next) : next) || '/'
+    },
+    isTwoFactorAuth(): boolean {
+      return !isNull(this.twoFactorAuthMethod)
     },
   },
   watch: {
@@ -41,10 +60,24 @@ export default Vue.extend({
     },
   },
   methods: {
+    clearForm() {
+      this.twoFactorAuthMethod = null
+      this.securityCode = ''
+      this.form = { ...CLEAR_LOGIN_FORM }
+    },
     async login() {
       this.$accessor.startLoading()
-      const success = await this.$accessor.auth.login(this.form)
-      if (success) this.$router.push(this.nextURL)
+      const response = await this.$accessor.auth.login({
+        ...this.form,
+        code: this.twoFactorAuthMethod ? this.securityCode : undefined,
+      })
+
+      if (response.state === LoginState.Success) this.$router.push(this.nextURL)
+
+      if (response.state === LoginState.TwoFactorAuthRequired) {
+        this.twoFactorAuthMethod = response.method
+      }
+
       this.$accessor.stopLoading()
     },
   },

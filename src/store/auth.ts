@@ -17,6 +17,12 @@ interface AuthResponse {
   refresh_token: string
 }
 
+interface ILoginRequest {
+  email: string
+  password: string
+  code?: string
+}
+
 const state = () => ({
   error: null as null | Error,
   permissionsError: null as null | Error,
@@ -76,7 +82,7 @@ const mutations = mutationTree(state, {
 const actions = actionTree(
   { state, getters, mutations },
   {
-    async login({ commit, dispatch }, { email, password }: { email: string; password: string }) {
+    async login({ commit, dispatch }, { email, password, code }: ILoginRequest) {
       commit('SET_ERROR', null)
       try {
         const {
@@ -84,10 +90,11 @@ const actions = actionTree(
         } = await api.post<{ data: AuthResponse }>('/login', {
           email,
           password,
+          code,
         })
 
         if (!hasAccess(PERMISSIONS_TREE.Admin.Login)(data.user.permissions))
-          throw new Error('Unauthorized')
+          throw new Error('Nie masz uprawnień, by zalogować się do panelu administracyjnego')
 
         commit('SET_USER', data.user)
 

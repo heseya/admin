@@ -27,8 +27,8 @@ import { LoginState } from '@/enums/login'
 const DEFAULT_CREDENTIALS = process.env.NODE_ENV === 'development'
 
 const CLEAR_LOGIN_FORM = {
-  email: DEFAULT_CREDENTIALS ? 'artur@heseya.com' : '',
-  password: DEFAULT_CREDENTIALS ? 'Kurwa1234%' : '',
+  email: DEFAULT_CREDENTIALS ? '***REMOVED***' : '',
+  password: DEFAULT_CREDENTIALS ? '***REMOVED***' : '',
 }
 
 export default Vue.extend({

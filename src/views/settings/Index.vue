@@ -77,6 +77,18 @@
 
         <h2 class="section-title">Konto</h2>
         <SettingsItem name="Zmień hasło" icon="bx bxs-lock" @click="isChangePasswordModal = true" />
+        <SettingsItem
+          name="Weryfikacja dwuetapowa"
+          icon="bx bx-mobile-vibration"
+          url="/settings/two-factor-authentication"
+        >
+          <template #action>
+            <tag v-if="user.is_tfa_active" type="success">
+              <i class="bx bx-check"></i> Aktywna
+            </tag>
+            <tag v-else type="error"> <i class="bx bx-x"></i> Nieaktywna </tag>
+          </template>
+        </SettingsItem>
         <!-- <SettingsItem
           v-can="$p.Auth.SessionsShow"
           name="Sesje użytkownika"
@@ -95,12 +107,15 @@
 
 <script lang="ts">
 import Vue from 'vue'
+
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import List from '@/components/layout/List.vue'
 import ChangePasswordForm from '@/components/modules/auth/ChangePassword.vue'
-import { User } from '@/interfaces/User'
 import SettingsItem from '@/components/modules/settings/SettingsItem.vue'
+import Tag from '@/components/Tag.vue'
+
+import { User } from '@/interfaces/User'
 
 export default Vue.extend({
   metaInfo: { title: 'Ustawienia' },
@@ -110,6 +125,7 @@ export default Vue.extend({
     List,
     SettingsItem,
     ChangePasswordForm,
+    Tag,
   },
   beforeRouteLeave(to, from, next) {
     if (this.isChangePasswordModal) {

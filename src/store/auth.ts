@@ -68,6 +68,9 @@ const mutations = mutationTree(state, {
   SET_PERMISSIONS_ERROR(state, newError) {
     state.permissionsError = newError
   },
+  SET_USER_TFA(state, isActive) {
+    state.user!.is_tfa_active = isActive
+  },
 })
 
 const actions = actionTree(

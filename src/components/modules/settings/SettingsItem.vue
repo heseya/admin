@@ -6,6 +6,9 @@
       </avatar>
     </template>
     {{ name }}
+    <template #action>
+      <slot name="action" />
+    </template>
   </list-item>
 </template>
 

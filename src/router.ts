@@ -181,6 +181,14 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/settings/two-factor-authentication',
+      name: 'ShippingMethods',
+      component: () => import('./views/settings/TwoFactorAuth.vue'),
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
       path: '/collections',
       name: 'ProductSets',
       component: () => import('./views/productSets/Index.vue'),

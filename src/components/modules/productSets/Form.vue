@@ -112,7 +112,7 @@ import SeoForm from '@/components/modules/seo/Accordion.vue'
 import RichEditor from '@/components/form/RichEditor.vue'
 
 import { ProductSetDTO } from '@/interfaces/ProductSet'
-import MediaUploadInput from '@/components/MediaUploadInput.vue'
+import MediaUploadInput from '@/components/modules/media/MediaUploadInput.vue'
 import { CdnMedia } from '@/interfaces/Media'
 
 export const CLEAR_PRODUCT_SET_FORM: ProductSetDTO = {

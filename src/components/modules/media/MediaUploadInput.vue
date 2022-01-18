@@ -4,11 +4,12 @@
     <media-uploader
       class="media-upload-input"
       :class="{ 'media-upload-input--image': !!image }"
-      :disabled="disabled"
+      :disabled="disabled || !!image"
       @upload="(f) => $emit('upload', f)"
     >
       <template v-if="image">
         <img :src="image.url" role="presentation" />
+
         <AppButton
           type="danger"
           size="small"
@@ -17,6 +18,14 @@
         >
           Usuń lub zmień zdjęcie
         </AppButton>
+
+        <media-edit-form
+          class="media-upload-input__edit-img"
+          :disabled="disabled"
+          :media="image"
+          placement="top"
+          @update="updateMedia"
+        />
       </template>
       <template v-else>
         <span class="media-upload-input__title">Upuść lub wybierz zdjęcie</span>
@@ -31,9 +40,11 @@
 <script lang="ts">
 import { CdnMedia } from '@/interfaces/Media'
 import Vue from 'vue'
-import MediaUploader from './MediaUploader.vue'
+import MediaEditForm from '@/components/modules/media/MediaEditForm.vue'
+import MediaUploader from '@/components/modules/media/MediaUploader.vue'
+
 export default Vue.extend({
-  components: { MediaUploader },
+  components: { MediaUploader, MediaEditForm },
   props: {
     image: {
       type: Object,
@@ -48,11 +59,18 @@ export default Vue.extend({
       default: '',
     },
   },
+  methods: {
+    updateMedia(media: CdnMedia) {
+      this.$emit('upload', media)
+    },
+  },
 })
 </script>
 
 <style lang="scss" scoped>
 .media-upload-input-wrapper {
+  position: relative;
+
   &__label {
     margin-bottom: 3px;
     font-size: 0.8em;
@@ -69,26 +87,14 @@ export default Vue.extend({
   position: relative;
 
   img {
-    max-height: 200px;
+    display: block;
+    max-height: 240px;
+    min-height: 150px;
   }
 
   &--image {
     background-color: #eee;
-  }
-
-  &__delete {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 0;
-    visibility: none;
-    transition: 0.3s;
-  }
-
-  &:hover &__delete {
-    opacity: 1;
-    visibility: visible;
+    cursor: default;
   }
 
   &__title {
@@ -96,5 +102,36 @@ export default Vue.extend({
     font-weight: 600;
     margin-bottom: 12px;
   }
+
+  &__delete,
+  &__edit-img {
+    position: absolute;
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.3s;
+  }
+
+  &__delete {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  &__edit-img {
+    left: 50%;
+    bottom: 32px;
+    transform: translateX(-50%);
+  }
+
+  &:hover &__delete,
+  &:hover &__edit-img {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.media-upload-input-wrapper:hover .media-upload-input__edit-img {
+  opacity: 1;
+  visibility: visible;
 }
 </style>

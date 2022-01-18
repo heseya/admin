@@ -18,7 +18,7 @@
       </div>
       <app-media-uploader
         v-if="!disabled"
-        class="gallery__img add undragabble"
+        class="gallery__img gallery__add undragabble"
         :class="{ 'add--drag': isDrag, 'add--big': images.length === 0 }"
         multiple
         @dragChange="dragChange"
@@ -129,6 +129,7 @@ export default Vue.extend({
     margin-bottom: 4px;
     background-color: #ffffff;
     box-shadow: $shadow;
+    border-radius: 7px;
 
     .media-element {
       position: absolute;
@@ -157,11 +158,7 @@ export default Vue.extend({
     }
   }
 
-  .add {
-    // width: 25%;
-    // padding-top: 25%;
-    // margin-top: 10px;
-
+  &__add {
     &--big {
       width: 50%;
       padding-top: 50%;
@@ -169,6 +166,7 @@ export default Vue.extend({
     }
 
     img {
+      position: absolute;
       top: 40%;
       left: 40%;
       height: 20%;

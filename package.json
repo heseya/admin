@@ -18,7 +18,7 @@
     "@sentry/vue": "^6.16.1",
     "ant-design-vue": "^1.7.8",
     "axios": "^0.24.0",
-    "bout": "^0.1.1",
+    "bout": "^0.2.0",
     "boxicons": "2.0.9",
     "broadcast-channel": "^4.7.0",
     "core-js": "^3.19.1",

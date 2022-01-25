@@ -82,6 +82,7 @@ export default Vue.extend({
       this.mainChannel.emit('init', {
         coreUrl: getApiURL(),
         token: this.$accessor.auth.getIdentityToken,
+        user: this.$accessor.auth.user,
       })
     })
 

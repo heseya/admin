@@ -18,6 +18,9 @@ export default Vue.extend({
       required: true,
     },
   },
+  data: () => ({
+    container: null as null | string | Element,
+  }),
   computed: {
     containerId(): string {
       return `${this.appKey}-container`
@@ -27,24 +30,29 @@ export default Vue.extend({
     },
   },
   async mounted() {
+    // this.$el.attachShadow({ mode: 'open' })
+    // this.$el.shadowRoot.innerHTML = `<div id="${this.containerId}" />`
+
+    this.container = this.$el
+
     if (findAppByHost(this.standardHost)) {
-      this.mountApp()
+      this.mountApp(this.container)
     } else {
       await installApp(this.standardHost)
-      this.mountApp()
+      this.mountApp(this.container)
     }
   },
   beforeDestroy() {
     this.unmountApp()
   },
   methods: {
-    mountApp() {
+    mountApp(container: Element | string) {
       const app = findAppByHost(this.standardHost)
-      if (app) app.mount(this.containerId)
+      if (app) app.mount(container)
     },
     unmountApp() {
       const app = findAppByHost(this.standardHost)
-      if (app) app.unmount(this.containerId)
+      if (app) app.unmount()
     },
   },
 })

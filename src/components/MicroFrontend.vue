@@ -1,10 +1,10 @@
 <template>
-  <div :id="containerId" />
+  <div class="micro-frontend" />
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { findAppByHost, installApp } from 'bout'
+import { findAppByHost, installApp, uninstallApp } from 'bout'
 
 export default Vue.extend({
   name: 'MicroFrontend',
@@ -30,25 +30,39 @@ export default Vue.extend({
     },
   },
   async mounted() {
-    // this.$el.attachShadow({ mode: 'open' })
-    // this.$el.shadowRoot.innerHTML = `<div id="${this.containerId}" />`
+    const { head, body } = this.initShadowDom()
+    this.container = body
 
-    this.container = this.$el
-
-    if (findAppByHost(this.standardHost)) {
-      this.mountApp(this.container)
-    } else {
-      await installApp(this.standardHost)
-      this.mountApp(this.container)
+    try {
+      await installApp(this.standardHost, head)
+      this.mountApp(body)
+    } catch (e) {
+      console.error('Installation failed: ', e)
     }
   },
   beforeDestroy() {
     this.unmountApp()
+    uninstallApp(this.standardHost)
   },
   methods: {
+    initShadowDom() {
+      this.$el.attachShadow({ mode: 'open' }).innerHTML = `
+        <div id="document">
+          <div id="head"></div>
+          <div id="body"></div>
+        </div>`
+
+      const document = this.$el.shadowRoot!.getElementById('document')!
+      const head = document.querySelector('#head')!
+      const body = document.querySelector('#body')!
+
+      return { head, body, document }
+    },
+
     mountApp(container: Element | string) {
       const app = findAppByHost(this.standardHost)
       if (app) app.mount(container)
+      else console.warn('App not found', this.standardHost)
     },
     unmountApp() {
       const app = findAppByHost(this.standardHost)

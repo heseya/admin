@@ -3067,10 +3067,10 @@ boolbase@^1.0.0, boolbase@~1.0.0:
   resolved "https://registry.yarnpkg.com/boolbase/-/boolbase-1.0.0.tgz#68dff5fbe60c51eb37725ea9e3ed310dcc1e776e"
   integrity sha1-aN/1++YMUes3cl6p4+0xDcwed24=
 
-bout@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/bout/-/bout-0.1.2.tgz#6e60ffb35066b533d4ffc28cbbe3ef4457f16d9f"
-  integrity sha512-pKoWWnAxPBNoUHnEMJ45TX2UpRl/EVsxDjdelYeJ3sTXihnNNkBYVD7LXNR+6zSvc7MseXc//R+0E8uN6+DxUQ==
+bout@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/bout/-/bout-0.2.0.tgz#42a8e7fba7a33dc104f0a916e3cdfe9d9776eec8"
+  integrity sha512-YedZnY1pdg/5euKxD5pOtMiy2cmohER1S71CiJm81QVwE1k4MTy+giYNWrjoypIy187NGh1IJTQdwEm0Yx20KQ==
 
 boxicons@2.0.9:
   version "2.0.9"

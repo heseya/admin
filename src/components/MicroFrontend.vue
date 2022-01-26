@@ -37,6 +37,7 @@ export default Vue.extend({
       await installApp(this.standardHost, head)
       this.mountApp(body)
     } catch (e) {
+      // eslint-disable-next-line no-console
       console.error('Installation failed: ', e)
     }
   },
@@ -62,6 +63,7 @@ export default Vue.extend({
     mountApp(container: Element | string) {
       const app = findAppByHost(this.standardHost)
       if (app) app.mount(container)
+      // eslint-disable-next-line no-console
       else console.warn('App not found', this.standardHost)
     },
     unmountApp() {

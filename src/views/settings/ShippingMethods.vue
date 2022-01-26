@@ -41,15 +41,17 @@
         <ShippingMethodsForm v-model="editedItem" :countries="countries" :disabled="!canModify" />
         <template #footer>
           <div class="row">
-            <app-button v-if="canModify" @click="handleSubmit(saveModal)"> Zapisz </app-button>
+            <app-button v-if="canModify" @click="handleSubmit(saveModal)">
+              {{ $t('common.save') }}
+            </app-button>
             <pop-confirm
               v-can="$p.ShippingMethods.Remove"
               title="Czy na pewno chcesz usunąć tą metode dostawy?"
-              ok-text="Usuń"
-              cancel-text="Anuluj"
+              :ok-text="$t('common.delete')"
+              :cancel-text="$t('common.cancel')"
               @confirm="deleteItem"
             >
-              <app-button v-if="editedItem.id" type="danger">Usuń</app-button>
+              <app-button v-if="editedItem.id" type="danger">{{ $t('common.delete') }}</app-button>
             </pop-confirm>
           </div>
         </template>

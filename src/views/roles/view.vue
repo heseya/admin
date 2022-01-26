@@ -6,15 +6,15 @@
         v-if="!isNew"
         v-can="$p.Roles.Remove"
         title="Czy na pewno chcesz usunąć tę rolę?"
-        ok-text="Usuń"
-        cancel-text="Anuluj"
+        :ok-text="$t('common.delete')"
+        :cancel-text="$t('common.cancel')"
         @confirm="deletePage"
       >
         <icon-button type="danger">
           <template #icon>
             <i class="bx bx-trash"></i>
           </template>
-          Usuń
+          {{ $t('common.delete') }}
         </icon-button>
       </pop-confirm>
     </top-nav>

@@ -16,8 +16,8 @@
       v-if="!hideRemove && address"
       v-can="$p.Orders.Edit"
       title="Czy na pewno chcesz usunąć adres?"
-      ok-text="Usuń"
-      cancel-text="Anuluj"
+      :ok-text="$t('common.delete')"
+      :cancel-text="$t('common.cancel')"
       @confirm="remove"
     >
       <icon-button size="small" type="transparent" class="address__btn address__btn--remove">

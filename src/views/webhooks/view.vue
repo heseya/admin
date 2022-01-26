@@ -5,15 +5,15 @@
         v-if="!isNew"
         v-can="$p.Webhooks.Remove"
         title="Czy na pewno chcesz usunąć tego webhooka?"
-        ok-text="Usuń"
-        cancel-text="Anuluj"
+        :ok-text="$t('common.delete')"
+        :cancel-text="$t('common.cancel')"
         @confirm="deleteWebhook"
       >
         <icon-button type="danger">
           <template #icon>
             <i class="bx bx-trash"></i>
           </template>
-          Usuń
+          {{ $t('common.delete') }}
         </icon-button>
       </pop-confirm>
     </top-nav>

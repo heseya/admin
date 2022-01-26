@@ -6,21 +6,10 @@
       </slot>
     </div>
     <div class="empty__message">
-      <slot> {{ $t('defaultEmpty') }} </slot>
+      <slot> {{ $t('common.defaultEmpty') }} </slot>
     </div>
   </div>
 </template>
-
-<i18n>
-{
-  "pl": {
-    "defaultEmpty": "Nic tutaj nie ma"
-  },
-  "en": {
-    "defaultEmpty": "Nothing here"
-  }
-}
-</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

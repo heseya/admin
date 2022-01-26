@@ -5,8 +5,8 @@
         <pop-confirm
           v-can="$p.Auth.SessionsRevoke"
           title="Czy na pewno chcesz wylogować wszystkie sesje użytkownika? Tylko obecna pozostanie aktywna."
-          ok-text="Usuń"
-          cancel-text="Anuluj"
+          :ok-text="$t('common.delete')"
+          :cancel-text="$t('common.cancel')"
           @confirm="killAllSessions"
         >
           <icon-button type="danger" :disabled="!areSessionsToKill">
@@ -36,8 +36,8 @@
             <pop-confirm
               v-can="$p.Auth.SessionsRevoke"
               title="Czy na pewno chcesz wylogować tę sesję użytkownika?"
-              ok-text="Usuń"
-              cancel-text="Anuluj"
+              :ok-text="$t('common.delete')"
+              :cancel-text="$t('common.cancel')"
               @confirm="killSession(login.id)"
             >
               <icon-button
@@ -68,6 +68,7 @@ import { UUID } from '@/interfaces/UUID'
 import Avatar from '@/components/layout/Avatar.vue'
 
 export default Vue.extend({
+  // TODO: lang
   metaInfo: { title: 'Sesje użytkownika' },
   components: {
     PaginatedList,

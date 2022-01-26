@@ -44,7 +44,7 @@
     <empty v-else>Ta kolekcja nie zawiera produktów</empty>
 
     <template #footer>
-      <app-button type="success" @click="save">Zapisz</app-button>
+      <app-button type="success" @click="save">{{ $t('common.save') }}</app-button>
     </template>
 
     <a-modal v-model="isSelectorActive" width="800px" title="Wybierz produkt" :footer="null">

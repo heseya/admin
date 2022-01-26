@@ -84,7 +84,9 @@
     <small class="danger-text">{{ error }}</small>
 
     <br />
-    <app-button :disabled="disabled" @click.stop="handleSubmit(submit)"> Zapisz </app-button>
+    <app-button :disabled="disabled" @click.stop="handleSubmit(submit)">
+      {{ $t('common.save') }}
+    </app-button>
   </validation-observer>
 </template>
 

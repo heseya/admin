@@ -15,7 +15,7 @@
         title="Czy na pewno chcesz ręcznie oznaczyć zamówienie jako opłacone? (Np. przelewem tradycyjnym lub gotówką)"
         ok-text="Opłać"
         ok-color="success"
-        cancel-text="Anuluj"
+        :cancel-text="$t('common.cancel')"
         @confirm="payOffline"
       >
         <icon-button>

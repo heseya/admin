@@ -7,15 +7,15 @@
         v-if="!isNew"
         v-can="$p.Pages.Remove"
         title="Czy na pewno chcesz usunąć tą stronę?"
-        ok-text="Usuń"
-        cancel-text="Anuluj"
+        :ok-text="$t('common.delete')"
+        :cancel-text="$t('common.cancel')"
         @confirm="deletePage"
       >
         <icon-button type="danger">
           <template #icon>
             <i class="bx bx-trash"></i>
           </template>
-          Usuń
+          {{ $t('common.delete') }}
         </icon-button>
       </pop-confirm>
     </top-nav>
@@ -59,7 +59,9 @@
           <RichEditor v-if="!isLoading" v-model="form.content_html" :disabled="!canModify" />
 
           <br />
-          <app-button v-if="canModify" @click="handleSubmit(save)"> Zapisz </app-button>
+          <app-button v-if="canModify" @click="handleSubmit(save)">
+            {{ $t('common.save') }}
+          </app-button>
         </card>
       </validation-observer>
     </div>

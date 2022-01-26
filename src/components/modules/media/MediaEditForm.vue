@@ -21,7 +21,7 @@
 
         <br />
         <app-button type="primary" html-type="submit" size="small" :loading="isLoading">
-          Zapisz
+          {{ $t('common.save') }}
         </app-button>
       </form>
     </template>

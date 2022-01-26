@@ -3,7 +3,10 @@
     "close": "Zamknij",
     "active": "Aktywna",
     "inactive": "Nieaktywna",
-    "cancel": "Anuluj"
+    "cancel": "Anuluj",
+    "delete": "Usuń",
+    "save": "Zapisz",
+    "defaultEmpty": "Nic nie znaleziono"
   },
 
   "nav": {
@@ -18,6 +21,16 @@
     "orders": "Zamówienia",
     "products": "Produkty",
     "sets": "Kolekcje",
-    "discounts": "Kody rabatowe"
+    "discounts": "Kody rabatowe",
+    "pages": "Strony",
+    "tags": "Tagi",
+    "schemas": "Schematy",
+    "statuses": "Statusy zamówień",
+    "shipping_methods": "Metody dostawy",
+    "package_templates": "Szablony przesyłek",
+    "users": "Użytkownicy",
+    "roles": "Role",
+    "apps": "Aplikacje",
+    "webhooks": "Webhooki"
   }
 }

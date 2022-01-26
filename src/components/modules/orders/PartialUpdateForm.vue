@@ -22,7 +22,7 @@
           label="Komentarz do zamówienia"
         />
       </div>
-      <app-button @click="handleSubmit(save)">Zapisz</app-button>
+      <app-button @click="handleSubmit(save)">{{ $t('common.save') }}</app-button>
     </ValidationObserver>
   </div>
 </template>

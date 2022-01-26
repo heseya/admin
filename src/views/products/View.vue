@@ -7,15 +7,15 @@
         v-if="!isNew"
         v-can="$p.Products.Remove"
         title="Czy na pewno chcesz usunąć ten produkt?"
-        ok-text="Usuń"
-        cancel-text="Anuluj"
+        :ok-text="$t('common.delete')"
+        :cancel-text="$t('common.cancel')"
         @confirm="deleteProduct"
       >
         <icon-button type="danger" data-cy="delete-btn">
           <template #icon>
             <i class="bx bx-trash"></i>
           </template>
-          Usuń
+          {{ $t('common.delete') }}
         </icon-button>
       </pop-confirm>
     </top-nav>
@@ -147,7 +147,7 @@
                     html-type="submit"
                     style="margin-right: 12px"
                   >
-                    Zapisz
+                    {{ $t('common.save') }}
                   </app-button>
                   <app-button
                     v-if="canModify && isNew"

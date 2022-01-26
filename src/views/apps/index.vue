@@ -45,8 +45,8 @@
                 <pop-confirm
                   v-can="$p.Apps.Remove"
                   title="Czy na pewno chcesz odinstalować tę aplikację?"
-                  ok-text="Usuń"
-                  cancel-text="Anuluj"
+                  :ok-text="$t('common.delete')"
+                  :cancel-text="$t('common.cancel')"
                   @confirm="uninstallApp(app)"
                 >
                   <icon-button size="small" type="danger">

@@ -1,21 +1,22 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList title="Szablony przesyłek" store-key="packageTemplates">
+    <PaginatedList :title="$t('title')" store-key="packageTemplates">
       <template #nav>
         <icon-button v-can="$p.Packages.Add" @click="openModal()">
           <template #icon>
             <i class="bx bx-plus"></i>
           </template>
-          Dodaj szablon
+          {{ $t('add') }}
         </icon-button>
       </template>
       <template #default="{ item: packageTemplate }">
         <list-item :key="packageTemplate.id" @click="openModal(packageTemplate.id)">
           {{ packageTemplate.name }}
           <small>
-            waga: <b>{{ packageTemplate.weight }}kg</b>, wysokość:
-            <b>{{ packageTemplate.height }}cm</b>, szerokość: <b>{{ packageTemplate.width }}cm</b>,
-            głębokość: <b>{{ packageTemplate.depth }}cm</b>
+            {{ $t('item.weight') }}: <b>{{ packageTemplate.weight }}kg</b>, {{ $t('item.height') }}:
+            <b>{{ packageTemplate.height }}cm</b>, {{ $t('item.width') }}:
+            <b>{{ packageTemplate.width }}cm</b>, {{ $t('item.depth') }}:
+            <b>{{ packageTemplate.depth }}cm</b>
           </small>
         </list-item>
       </template>
@@ -25,14 +26,14 @@
       <a-modal
         v-model="isModalActive"
         width="550px"
-        :title="editedItem.id ? 'Edycja szablony' : 'Nowy szablon'"
+        :title="editedItem.id ? $t('editTitle') : $t('newTitle')"
       >
         <modal-form>
           <validated-input
             v-model="editedItem.name"
             :disabled="!canModify"
             rules="required"
-            label="Nazwa"
+            :label="$t('form.name')"
           />
 
           <validated-input
@@ -41,7 +42,7 @@
             rules="required|positive"
             type="number"
             step="0.01"
-            label="Waga (kg)"
+            :label="$t('form.weight')"
           />
 
           <validated-input
@@ -49,7 +50,7 @@
             :disabled="!canModify"
             rules="required|positive"
             type="number"
-            label="Szerokość (cm)"
+            :label="$t('form.width')"
           />
 
           <validated-input
@@ -57,7 +58,7 @@
             :disabled="!canModify"
             rules="required|positive"
             type="number"
-            label="Wysokość (cm)"
+            :label="$t('form.height')"
           />
 
           <validated-input
@@ -65,20 +66,22 @@
             :disabled="!canModify"
             rules="required|positive"
             type="number"
-            label="Głębokość (cm)"
+            :label="$t('form.depth')"
           />
         </modal-form>
         <template #footer>
           <div class="row">
-            <app-button v-if="canModify" @click="handleSubmit(saveModal)"> Zapisz </app-button>
+            <app-button v-if="canModify" @click="handleSubmit(saveModal)">
+              {{ $t('common.save') }}
+            </app-button>
             <pop-confirm
               v-can="$p.Packages.Remove"
-              title="Czy na pewno chcesz usunąć ten szablon dostawy?"
-              ok-text="Usuń"
-              cancel-text="Anuluj"
+              :title="$t('deleteText')"
+              :ok-text="$t('common.delete')"
+              :cancel-text="$t('common.cancel')"
               @confirm="deleteItem"
             >
-              <app-button v-if="editedItem.id" type="danger">Usuń</app-button>
+              <app-button v-if="editedItem.id" type="danger">{{ $t('common.delete') }}</app-button>
             </pop-confirm>
           </div>
         </template>
@@ -86,6 +89,51 @@
     </validation-observer>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "title": "Szablony przesyłek",
+    "add": "Dodaj szablon",
+    "editTitle": "Edycja szablonu",
+    "newTitle": "Nowy szablon",
+    "deleteText": "Czy na pewno chcesz usunąć ten szablon dostawy?",
+    "item": {
+      "weight": "waga",
+      "height": "wysokość",
+      "width": "szerokość",
+      "depth": "głębokość"
+    },
+    "form": {
+      "name": "Nazwa",
+      "weight": "Waga (kg)",
+      "height": "Wysokość (cm)",
+      "width": "Szerokość (cm)",
+      "depth": "Głębokość (cm)"
+    }
+  },
+  "en": {
+    "title": "Package templates",
+    "add": "Add template",
+    "editTitle": "Edit template",
+    "newTitle": "New template",
+    "deleteText": "Are you sure you want to delete this template?",
+    "item": {
+      "weight": "weight",
+      "height": "height",
+      "width": "width",
+      "depth": "depth"
+    },
+    "form": {
+      "name": "Name",
+      "weight": "Weight (kg)",
+      "height": "Height (cm)",
+      "width": "Width (cm)",
+      "depth": "Depth (cm)"
+    }
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

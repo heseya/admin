@@ -3,7 +3,10 @@
     "close": "Close",
     "active": "Active",
     "inactive": "Inactive",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "save": "Save",
+    "defaultEmpty": "Nothing found"
   },
 
   "nav": {
@@ -18,6 +21,16 @@
     "orders": "Orders",
     "products": "Products",
     "sets": "Collections",
-    "discounts": "Discount codes"
+    "discounts": "Discount codes",
+    "pages": "Pages",
+    "tags": "Tags",
+    "schemas": "Schemas",
+    "statuses": "Order statuses",
+    "shipping_methods": "Shipping options",
+    "package_templates": "Package templates",
+    "users": "Users",
+    "roles": "Roles",
+    "apps": "Apps",
+    "webhooks": "Webhooks"
   }
 }

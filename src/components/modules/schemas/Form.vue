@@ -156,7 +156,7 @@
     </Zone>
     <br />
     <app-button data-cy="submit-btn" :disabled="disabled" @click.stop="handleSubmit(submit)">
-      Zapisz
+      {{ $t('common.save') }}
     </app-button>
   </validation-observer>
 </template>

@@ -82,15 +82,17 @@
       </modal-form>
       <template #footer>
         <div class="row">
-          <app-button v-if="!disabled" @click="handleSubmit(saveModal)"> Zapisz </app-button>
+          <app-button v-if="!disabled" @click="handleSubmit(saveModal)">
+            {{ $t('common.save') }}
+          </app-button>
           <pop-confirm
             v-if="deletable"
             title="Czy na pewno chcesz usunąć tę kolekcję? Wraz z nią usuniesz wszystkie jej subkolekcje!"
-            ok-text="Usuń"
-            cancel-text="Anuluj"
+            :ok-text="$t('common.delete')"
+            :cancel-text="$t('common.cancel')"
             @confirm="deleteItem"
           >
-            <app-button v-if="form.id" type="danger">Usuń</app-button>
+            <app-button v-if="form.id" type="danger">{{ $t('common.delete') }}</app-button>
           </pop-confirm>
         </div>
       </template>

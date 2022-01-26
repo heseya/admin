@@ -96,6 +96,8 @@
           url="/settings/login-history"
         /> -->
         <SettingsItem name="Wyloguj" icon="bx bx-log-out-circle" @click="logout" />
+
+        <lang-switch />
       </list>
     </card>
 
@@ -116,6 +118,7 @@ import SettingsItem from '@/components/modules/settings/SettingsItem.vue'
 import Tag from '@/components/Tag.vue'
 
 import { User } from '@/interfaces/User'
+import LangSwitch from '@/components/LangSwitch.vue'
 
 export default Vue.extend({
   metaInfo: { title: 'Ustawienia' },
@@ -126,6 +129,7 @@ export default Vue.extend({
     SettingsItem,
     ChangePasswordForm,
     Tag,
+    LangSwitch,
   },
   beforeRouteLeave(to, from, next) {
     if (this.isChangePasswordModal) {

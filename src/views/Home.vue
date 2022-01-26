@@ -75,7 +75,7 @@
   "pl": {
     "income": {
       "title": "Przychody",
-      "orders": "brak zamówień | 1 zamówienie | {count} zamówień | {count} zamówienia",
+      "orders": "brak zamówień | {count} zamówienie | {count} zamówienia | {count} zamówień",
       "week": "W tym tygodniu",
       "month": "W tym miesiącu",
       "year": "W tym roku",

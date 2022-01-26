@@ -2,6 +2,7 @@
   "common": {
     "close": "Zamknij",
     "active": "Aktywna",
-    "inactive": "Nieaktywna"
+    "inactive": "Nieaktywna",
+    "cancel": "Anuluj"
   }
 }

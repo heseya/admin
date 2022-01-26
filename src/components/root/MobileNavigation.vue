@@ -16,7 +16,7 @@
         root-class="mobile-nav"
         class="mobile-nav__more-btn"
         icon="icons/more-icon.svg"
-        label="Więcej"
+        :label="$t('more')"
         @click="isMenuVisible = true"
       />
     </div>
@@ -24,6 +24,17 @@
     <mobile-overlay :is-visible="isMenuVisible" @close="isMenuVisible = false" />
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "moreLink": "Więcej"
+  },
+  "en": {
+    "moreLink": "More"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

@@ -6,34 +6,42 @@
       <div>
         <card v-can="$p.Analytics.Payments">
           <div class="flex-column">
-            <h2 class="section-title">Przychody</h2>
+            <h2 class="section-title">{{ $t('income.title') }}</h2>
 
             <div class="incomes">
               <card border class="income-box">
-                <div class="income-box__title">W tym tygodniu</div>
+                <div class="income-box__title">{{ $t('income.week') }}</div>
                 <div class="income-box__value">
                   {{ formatCurrency(currentWeekIncome) }}
                 </div>
-                <div class="income-box__orders">{{ currentWeekOrdersCount }} zamówień</div>
+                <div class="income-box__orders">
+                  {{ $tc('income.orders', currentWeekOrdersCount) }}
+                </div>
               </card>
               <card border class="income-box">
-                <div class="income-box__title">W tym miesiącu</div>
+                <div class="income-box__title">{{ $t('income.month') }}</div>
                 <div class="income-box__value">
                   {{ formatCurrency(currentMonthIncome) }}
                 </div>
-                <div class="income-box__orders">{{ currentMonthOrdersCount }} zamówień</div>
+                <div class="income-box__orders">
+                  {{ $tc('income.orders', currentMonthOrdersCount) }}
+                </div>
               </card>
               <card border class="income-box">
-                <div class="income-box__title">W tym roku</div>
+                <div class="income-box__title">{{ $t('income.year') }}</div>
                 <div class="income-box__value">
                   {{ formatCurrency(currentYearIncome) }}
                 </div>
-                <div class="income-box__orders">{{ currentYearOrdersCount }} zamówień</div>
+                <div class="income-box__orders">
+                  {{ $tc('income.orders', currentYearOrdersCount) }}
+                </div>
               </card>
               <card border class="income-box">
-                <div class="income-box__title">W ubiegłym roku</div>
+                <div class="income-box__title">{{ $t('income.lastYear') }}</div>
                 <div class="income-box__value">{{ formatCurrency(lastYearIncome) }}</div>
-                <div class="income-box__orders">{{ lastYearOrdersCount }} zamówień</div>
+                <div class="income-box__orders">
+                  {{ $tc('income.orders', lastYearOrdersCount) }}
+                </div>
               </card>
             </div>
           </div>
@@ -42,7 +50,7 @@
 
       <div>
         <card v-can="$p.Orders.Show">
-          <h2 class="section-title" style="margin-bottom: 20px">Ostatnie zamówienia</h2>
+          <h2 class="section-title" style="margin-bottom: 20px">{{ $t('lastOrders.title') }}</h2>
           <list-item
             v-for="order in orders"
             :key="order.id"
@@ -61,6 +69,33 @@
     </div>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "income": {
+      "title": "Przychody",
+      "orders": "brak zamówień | 1 zamówienie | {count} zamówień | {count} zamówienia",
+      "week": "W tym tygodniu",
+      "month": "W tym miesiącu",
+      "year": "W tym roku",
+      "lastYear": "W ubiegłym roku"
+    },
+    "lastOrders": {"title": "Ostatnie zamówienia"}
+  },
+  "en": {
+    "income": {
+      "title": "Income",
+      "orders": "no orders | 1 order | {count} orders",
+      "week": "In this week",
+      "month": "In this month",
+      "year": "In this year",
+      "lastYear": "In previous year"
+    },
+    "lastOrders": {"title": "Last orders"}
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
@@ -135,7 +170,7 @@ export default Vue.extend({
   },
   methods: {
     getRelativeDate(date: DateInput) {
-      return getRelativeDate(date)
+      return getRelativeDate(date, this.$i18n.locale)
     },
     formatCurrency(amount: number) {
       return formatCurrency(amount, this.$accessor.currency)

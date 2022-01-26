@@ -4,7 +4,7 @@
       v-model="isActive"
       class="password-confirm-modal"
       :ok-text="okText"
-      cancel-text="Anuluj"
+      :cancel-text="$t('common.cancel')"
       :title="title"
       :ok-type="okType"
       @ok="handleSubmit(confirm)"
@@ -12,13 +12,24 @@
       <validated-input
         v-model="password"
         icon-after
-        label="Hasło"
+        :label="$t('password')"
         type="password"
         rules="required"
       />
     </a-modal>
   </validation-observer>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "password": "Hasło"
+  },
+  "en": {
+    "password": "Password"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

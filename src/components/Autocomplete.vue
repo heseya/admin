@@ -23,18 +23,24 @@
         </div>
       </div>
     </div>
-    <a-modal
-      v-model="isModalActive"
-      width="800px"
-      title="Wybierz przedmiot z magazynu"
-      :footer="null"
-    >
+    <a-modal v-model="isModalActive" width="800px" :title="$t('chooseItem')" :footer="null">
       <modal-form>
         <selector type-name="produkt" type="items" :existing="value" @select="addItem" />
       </modal-form>
     </a-modal>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "chooseItem": "Wybierz przedmiot z magazynu"
+  },
+  "en": {
+    "chooseItem": "Choose item from warehouse"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

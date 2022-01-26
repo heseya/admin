@@ -182,7 +182,7 @@ const router = new VueRouter({
     },
     {
       path: '/settings/two-factor-authentication',
-      name: 'ShippingMethods',
+      name: 'TwoFactorAuthentication',
       component: () => import('./views/settings/TwoFactorAuth.vue'),
       meta: {
         requiresAuth: true,

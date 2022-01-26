@@ -6,6 +6,7 @@ import VueToast from 'vue-toast-notification'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import i18n from './i18n'
 
 import { disableScrollOnInput } from './plugins/disableScrollOnInput'
 import './plugins/validation-rules'
@@ -29,6 +30,7 @@ Vue.use(VueToast)
 new Vue({
   router,
   store,
+  i18n,
   render: (h) => h(App),
 }).$mount('#app')
 

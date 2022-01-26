@@ -2,9 +2,9 @@
   <div class="narrower-page">
     <top-nav title="Weryfikacja dwuetapowa">
       <tag v-if="user && user.is_tfa_active" type="success">
-        <i class="bx bx-check"></i> Aktywna
+        <i class="bx bx-check"></i> {{ $t('common.active') }}
       </tag>
-      <tag v-else type="error"> <i class="bx bx-x"></i> Nieaktywna </tag>
+      <tag v-else type="error"> <i class="bx bx-x"></i> {{ $t('common.inactive') }} </tag>
     </top-nav>
 
     <card>

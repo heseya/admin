@@ -1,12 +1,12 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList title="Kolekcje produktów" store-key="productSets" draggable>
+    <PaginatedList :title="$t('title')" store-key="productSets" draggable>
       <template #nav>
         <icon-button v-can="$p.ProductSets.Add" @click="createProductSet()">
           <template #icon>
             <i class="bx bx-plus"></i>
           </template>
-          Dodaj kolekcję
+          {{ $t('add') }}
         </icon-button>
       </template>
 
@@ -32,6 +32,19 @@
     <SetProductsList :set="selectedSet" :is-open="!!selectedSet" @close="selectedSet = null" />
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "title": "Kolekcje produktów",
+    "add": "Dodaj kolekcję"
+  },
+  "en": {
+    "title": "Collections",
+    "add": "Add collection"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

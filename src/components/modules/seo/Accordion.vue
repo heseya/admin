@@ -14,12 +14,23 @@
 
     <a-collapse-panel>
       <template #header>
-        <span class="seo-form-accrodion__title">Ustawienia SEO</span>
+        <span class="seo-form-accrodion__title">{{ $t('title') }}</span>
       </template>
       <SeoForm v-model="form" :current="current" />
     </a-collapse-panel>
   </a-collapse>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "title": "Ustawienia SEO"
+  },
+  "en": {
+    "title": "SEO settings"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

@@ -2,12 +2,12 @@
   <a-modal width="900px" class="set-products" :visible="isOpen" @cancel="$emit('close')">
     <template #title>
       <div class="set-products__header">
-        <h4>Produkty w kolekcji {{ set && set.name }}</h4>
+        <h4>{{ $t('title') }} {{ set && set.name }}</h4>
         <icon-button v-can="$p.ProductSets.Edit" size="small" dark @click="isSelectorActive = true">
           <template #icon>
             <i class="bx bx-plus"></i>
           </template>
-          Dodaj produkt do kolekcji
+          {{ $t('addProduct') }}
         </icon-button>
       </div>
     </template>
@@ -41,7 +41,7 @@
       </div>
     </div>
 
-    <empty v-else>Ta kolekcja nie zawiera produktów</empty>
+    <empty v-else>{{ $t('empty') }}</empty>
 
     <template #footer>
       <app-button type="success" @click="save">{{ $t('common.save') }}</app-button>
@@ -52,6 +52,21 @@
     </a-modal>
   </a-modal>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "title": "Produkty w kolekcji",
+    "addProduct": "Dodaj produkt do kolekcji",
+    "empty": "Ta kolekcja nie zawiera produktów"
+  },
+  "en": {
+    "title": "Products in collection",
+    "addProduct": "Add product to collection",
+    "empty": "This collection does not contain products"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

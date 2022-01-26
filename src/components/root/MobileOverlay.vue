@@ -5,7 +5,7 @@
     </button>
 
     <menu-link
-      v-for="item in MENU_ITEMS"
+      v-for="item in MENU_LINKS"
       :key="item.to"
       v-can="item.can"
       :to="item.to"
@@ -20,13 +20,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { MenuItem, MENU_ITEMS } from '@/consts/menuItems'
+import { MenuLink, MENU_LINKS } from '@/consts/menuItems'
 
-import MenuLink from './MenuLink.vue'
+import MenuLinkComponent from './MenuLink.vue'
 
 export default Vue.extend({
   name: 'MobileOverlay',
-  components: { MenuLink },
+  components: { MenuLink: MenuLinkComponent },
   props: {
     isVisible: {
       type: Boolean,
@@ -34,8 +34,8 @@ export default Vue.extend({
     },
   },
   computed: {
-    MENU_ITEMS(): MenuItem[] {
-      return MENU_ITEMS
+    MENU_LINKS(): MenuLink[] {
+      return MENU_LINKS
     },
   },
   methods: {

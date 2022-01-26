@@ -267,7 +267,7 @@ export default Vue.extend({
       return this.$accessor.packageTemplates.getData
     },
     relativeOrderedDate(): string | null {
-      return this.order.created_at && getRelativeDate(this.order.created_at)
+      return this.order.created_at && getRelativeDate(this.order.created_at, this.$i18n.locale)
     },
     formattedDate(): string | null {
       return this.order.created_at && formatDate(this.order.created_at)

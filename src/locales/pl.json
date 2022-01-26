@@ -4,5 +4,20 @@
     "active": "Aktywna",
     "inactive": "Nieaktywna",
     "cancel": "Anuluj"
+  },
+
+  "nav": {
+    "dashboard": "Dashboard",
+    "settings": "Ustawienia",
+    "warehouse": "Magazyn",
+    "analytics": "Statystyka",
+    "moreLink": "Więcej"
+  },
+
+  "models": {
+    "orders": "Zamówienia",
+    "products": "Produkty",
+    "sets": "Kolekcje",
+    "discounts": "Kody rabatowe"
   }
 }

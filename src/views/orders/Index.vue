@@ -96,7 +96,7 @@ export default Vue.extend({
             key: 'created_at',
             label: 'Data',
             sortable: true,
-            render: (v) => getRelativeDate(v),
+            render: (v) => getRelativeDate(v, this.$i18n.locale),
           },
         ],
       }

@@ -19,13 +19,24 @@
       shadow
       @click="next"
     >
-      Następna
+      {{ $t('nextPage') }}
       <template #icon>
         <i class="bx bxs-chevron-right"></i>
       </template>
     </app-button>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "nextPage": "Następna"
+  },
+  "en": {
+    "nextPage": "Next"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

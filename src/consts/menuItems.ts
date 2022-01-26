@@ -1,6 +1,12 @@
 import { PERMISSIONS_TREE } from './permissions'
 
-export interface MenuItem {
+enum MenuItemType {
+  Link = 'link',
+  Spacer = 'spacer',
+}
+
+export interface MenuLink {
+  type: MenuItemType.Link
   to: string
   can?: string | string[]
   exact?: boolean
@@ -8,51 +14,70 @@ export interface MenuItem {
   label: string
 }
 
+export interface MenuSpacer {
+  type: MenuItemType.Spacer
+}
+
+export type MenuItem = MenuLink | MenuSpacer
+
 export const MENU_ITEMS: MenuItem[] = [
   {
+    type: MenuItemType.Link,
     to: '/',
     exact: true,
     icon: 'icons/dashboard-icon.svg',
-    label: 'Dashboard',
+    label: 'nav.dashboard',
   },
+  { type: MenuItemType.Spacer },
   {
+    type: MenuItemType.Link,
     can: PERMISSIONS_TREE.Orders.Show,
     to: '/orders',
     icon: 'icons/orders-icon.svg',
-    label: 'Zamówienia',
+    label: 'models.orders',
   },
+  { type: MenuItemType.Spacer },
   // {
+  //   type: MenuItemType.Link,
   //   to: '/analytics',
   //   icon: 'icons/stats-icon.svg',
-  //   label: 'Statystyka',
+  //   label: 'nav.analytics',
   // },
   {
+    type: MenuItemType.Link,
     can: PERMISSIONS_TREE.Products.Show,
     to: '/products',
     icon: 'icons/products-icon.svg',
-    label: 'Produkty',
+    label: 'models.products',
   },
   {
+    type: MenuItemType.Link,
     can: PERMISSIONS_TREE.ProductSets.Show,
     to: '/collections',
     icon: 'icons/collections-icon.svg',
-    label: 'Kolekcje',
+    label: 'models.sets',
   },
   {
+    type: MenuItemType.Link,
     can: PERMISSIONS_TREE.Items.Show,
     to: '/items',
     icon: 'icons/warehouse-icon.svg',
-    label: 'Magazyn',
+    label: 'nav.warehouse',
   },
   {
+    type: MenuItemType.Link,
     can: PERMISSIONS_TREE.Discounts.Show,
     to: '/discounts',
     icon: 'icons/discounts-icon.svg',
-    label: 'Kody rabatowe',
+    label: 'models.discounts',
   },
+  { type: MenuItemType.Spacer },
   {
+    type: MenuItemType.Link,
     to: '/settings',
     icon: 'icons/settings-icon.svg',
-    label: 'Ustawienia',
+    label: 'nav.settings',
   },
 ]
+
+export const MENU_LINKS = MENU_ITEMS.filter((item) => item.type === MenuItemType.Link) as MenuLink[]

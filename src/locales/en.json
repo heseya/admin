@@ -4,5 +4,20 @@
     "active": "Active",
     "inactive": "Inactive",
     "cancel": "Cancel"
+  },
+
+  "nav": {
+    "dashboard": "Dashboard",
+    "settings": "Settings",
+    "warehouse": "Warehouse",
+    "analytics": "Analytics",
+    "moreLink": "More"
+  },
+
+  "models": {
+    "orders": "Orders",
+    "products": "Products",
+    "sets": "Collections",
+    "discounts": "Discount codes"
   }
 }

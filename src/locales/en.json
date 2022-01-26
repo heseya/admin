@@ -1,3 +1,7 @@
 {
-  "message": "hello i18n !!"
+  "common": {
+    "close": "Close",
+    "active": "Active",
+    "inactive": "Inactive"
+  }
 }

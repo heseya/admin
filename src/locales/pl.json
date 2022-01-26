@@ -1,3 +1,7 @@
 {
-  "message": "siema i18n !!"
+  "common": {
+    "close": "Zamknij",
+    "active": "Aktywna",
+    "inactive": "Nieaktywna"
+  }
 }

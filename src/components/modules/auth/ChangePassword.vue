@@ -23,9 +23,11 @@
       rules="required|repeatPassword:@newPassword"
     >
     </validated-input>
-    <br />
+
+    <hr />
+
     <div class="center">
-      <app-button :loading="isLoading" @click="handleSubmit(changePassword)">
+      <app-button type="primary" :loading="isLoading" @click="handleSubmit(changePassword)">
         Zmień hasło
       </app-button>
     </div>

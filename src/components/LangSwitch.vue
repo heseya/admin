@@ -1,23 +1,27 @@
 <template>
   <div class="lang-switch">
-    <small> {{ $t('name') }} </small>
-    <select v-model="$root.$i18n.locale">
-      <option v-for="lang in $i18n.availableLocales" :key="lang" :value="lang">
+    <app-select v-model="$root.$i18n.locale" :label="$t('name')">
+      <a-select-option
+        v-for="lang in $i18n.availableLocales"
+        :key="lang"
+        :value="lang"
+        :label="$t(lang)"
+      >
         {{ $t(lang) }}
-      </option>
-    </select>
+      </a-select-option>
+    </app-select>
   </div>
 </template>
 
 <i18n>
 {
   "en": {
-    "name": "Interface language",
+    "name": "Admin dashboard interface language",
     "pl": "Polish",
     "en": "English"
   },
   "pl": {
-    "name": "Język interfejsu",
+    "name": "Język interfejsu panelu administracyjnego",
     "pl": "Polski",
     "en": "Angielski"
   }

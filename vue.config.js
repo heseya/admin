@@ -19,6 +19,7 @@ module.exports = {
       },
     },
   },
+
   pwa: {
     name: 'Heseya',
     themeColor: '#8f022c',
@@ -52,6 +53,16 @@ module.exports = {
       // maskIcon: 'img/safari-pinned-tab.svg',
       maskIcon: null,
       msTileImage: 'img/mstile-150x150.svg',
+    },
+  },
+
+  pluginOptions: {
+    i18n: {
+      locale: 'pl',
+      fallbackLocale: 'pl',
+      localeDir: 'locales',
+      enableInSFC: true,
+      enableBridge: false,
     },
   },
 }

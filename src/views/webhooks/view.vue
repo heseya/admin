@@ -1,10 +1,10 @@
 <template>
   <div :key="webhook.id" class="narrower-page">
-    <top-nav :title="!isNew ? webhook.name : 'Nowy webhook'">
+    <top-nav :title="!isNew ? webhook.name : $t('newTitle')">
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Webhooks.Remove"
-        title="Czy na pewno chcesz usunąć tego webhooka?"
+        :title="$t('deleteText')"
         :ok-text="$t('common.delete')"
         :cancel-text="$t('common.cancel')"
         @confirm="deleteWebhook"
@@ -28,6 +28,19 @@
     </card>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "newTitle": "Nowy webhook",
+    "deleteText": "Czy na pewno chcesz usunąć ten webhook?"
+  },
+  "en": {
+    "newTitle": "New webhook",
+    "deleteText": "Are you sure you want to delete this webhook?"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

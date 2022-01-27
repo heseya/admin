@@ -26,7 +26,7 @@
     "tags": "Tags",
     "schemas": "Schemas",
     "statuses": "Order statuses",
-    "shipping_methods": "Shipping options",
+    "shipping_methods": "Shipping methods",
     "package_templates": "Package templates",
     "users": "Users",
     "roles": "Roles",

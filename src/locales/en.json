@@ -6,7 +6,8 @@
     "cancel": "Cancel",
     "delete": "Delete",
     "save": "Save",
-    "defaultEmpty": "Nothing found"
+    "defaultEmpty": "Nothing found",
+    "search": "Search"
   },
 
   "nav": {

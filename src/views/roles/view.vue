@@ -5,7 +5,7 @@
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Roles.Remove"
-        title="Czy na pewno chcesz usunąć tę rolę?"
+        :title="$t('deleteText')"
         :ok-text="$t('common.delete')"
         :cancel-text="$t('common.cancel')"
         @confirm="deletePage"
@@ -27,6 +27,25 @@
   </div>
 </template>
 
+<i18n>
+{
+  "pl": {
+    "newTitle": "Nowa rola",
+    "deleteText": "Czy na pewno chcesz usunąć tę rolę?",
+    "deletedMessage": "Rola została usunięty.",
+    "createdMessage": "Rola została utworzona.",
+    "updatedMessage": "Rola została zaktualizowana."
+  },
+  "en": {
+    "newTitle": "New role",
+    "deleteText": "Are you sure you want to delete this role?",
+    "deletedMessage": "role has been deleted",
+    "createdMessage": "role has been created",
+    "updatedMessage": "role has been updated"
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 import { cloneDeep } from 'lodash'
@@ -47,7 +66,7 @@ const CLEAN_FORM: RoleDTO = {
 
 export default Vue.extend({
   metaInfo(this: any): any {
-    return { title: this.role?.name || 'Nowa rola' }
+    return { title: this.role?.name || (this.$t('newTitle') as string) }
   },
   components: {
     TopNav,
@@ -97,7 +116,9 @@ export default Vue.extend({
   methods: {
     async save() {
       this.$accessor.startLoading()
-      const successMessage = this.isNew ? 'Rola została utworzona' : 'Rola została zaktualizowana'
+      const successMessage = this.isNew
+        ? (this.$t('createdMessage') as string)
+        : (this.$t('updatedMessage') as string)
 
       const role = this.isNew
         ? await this.$accessor.roles.add(this.form)
@@ -119,7 +140,7 @@ export default Vue.extend({
       this.$accessor.startLoading()
       const success = await this.$accessor.roles.remove(this.id)
       if (success) {
-        this.$toast.success('Rola została usunięta.')
+        this.$toast.success(this.$t('deletedMessage') as string)
         this.$router.push('/settings/roles')
       }
       this.$accessor.stopLoading()

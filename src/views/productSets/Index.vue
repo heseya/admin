@@ -58,7 +58,9 @@ import SetProductsList from '@/components/modules/productSets/SetProductsList.vu
 import { ProductSet, ProductSetDTO } from '@/interfaces/ProductSet'
 
 export default Vue.extend({
-  metaInfo: { title: 'Kolekcje' },
+  metaInfo(this: any) {
+    return { title: this.$t('title') as string }
+  },
   components: {
     PaginatedList,
     ProductSetForm,

@@ -6,7 +6,8 @@
     "cancel": "Anuluj",
     "delete": "Usuń",
     "save": "Zapisz",
-    "defaultEmpty": "Nic nie znaleziono"
+    "defaultEmpty": "Nic nie znaleziono",
+    "search": "Wyszukiwanie"
   },
 
   "nav": {

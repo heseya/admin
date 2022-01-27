@@ -4,7 +4,7 @@
       v-model="local.search"
       class="span-2"
       type="search"
-      label="Wyszukiwanie"
+      :label="$t('common.search')"
       allow-clear
       @input="debouncedSearch"
     />

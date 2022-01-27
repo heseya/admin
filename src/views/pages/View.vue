@@ -1,12 +1,12 @@
 <template>
   <div class="narrower-page">
-    <top-nav :title="!isNew ? page.name : 'Nowa strona'">
+    <top-nav :title="!isNew ? page.name : $t('newTitle')">
       <audits-modal :id="page.id" model="pages" />
 
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Pages.Remove"
-        title="Czy na pewno chcesz usunąć tą stronę?"
+        :title="$t('deleteText')"
         :ok-text="$t('common.delete')"
         :cancel-text="$t('common.cancel')"
         @confirm="deletePage"
@@ -27,21 +27,21 @@
             <validated-input
               v-model="form.name"
               rules="required"
-              label="Nazwa"
+              :label="$t('form.name')"
               :disabled="!canModify"
               @input="editSlug"
             />
             <validated-input
               v-model="form.slug"
               rules="required|slug"
-              label="Link"
+              :label="$t('form.slug')"
               :disabled="!canModify"
             />
             <flex-input>
               <switch-input
                 v-model="form.public"
                 horizontal
-                label="Widoczność strony"
+                :label="$t('form.public')"
                 :disabled="!canModify"
               />
             </flex-input>
@@ -55,7 +55,7 @@
           />
 
           <br />
-          <small class="label">Treść</small>
+          <small class="label">{{ $t('form.content') }}</small>
           <RichEditor v-if="!isLoading" v-model="form.content_html" :disabled="!canModify" />
 
           <br />
@@ -67,6 +67,37 @@
     </div>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "newTitle": "Nowa strona",
+    "deleteText": "Czy na pewno chcesz usunąć tą stronę?",
+    "deletedMessage": "Strona została usunięty.",
+    "createdMessage": "Strona została utworzona.",
+    "updatedMessage": "Strona została zaktualizowana.",
+    "form": {
+      "name": "Nazwa",
+      "slug": "Link",
+      "public": "Widoczność strony",
+      "content": "Treść"
+    }
+  },
+  "en": {
+    "newTitle": "New page",
+    "deleteText": "Are you sure you want to delete this page?",
+    "deletedMessage": "Page has been deleted",
+    "createdMessage": "Page has been created",
+    "updatedMessage": "Page has been updated",
+    "form": {
+      "name": "Name",
+      "slug": "Slug",
+      "public": "Page visibility",
+      "content": "Content"
+    }
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
@@ -87,8 +118,8 @@ import { Page, PageDto } from '@/interfaces/Page'
 import { UUID } from '@/interfaces/UUID'
 
 export default Vue.extend({
-  metaInfo(this: any): any {
-    return { title: this.page?.name || 'Nowa strona' }
+  metaInfo(this: any) {
+    return { title: this.page?.name || (this.$t('newTitle') as string) }
   },
   components: {
     TopNav,
@@ -160,7 +191,7 @@ export default Vue.extend({
       if (this.isNew) {
         const page = await this.$accessor.pages.add(this.form)
         if (page && page.id) {
-          this.$toast.success('Strona została utworzona.')
+          this.$toast.success(this.$t('createdMessage') as string)
           this.$router.push(`/pages/${page.id}`)
         }
       } else {
@@ -169,7 +200,7 @@ export default Vue.extend({
           item: this.form,
         })
         if (success) {
-          this.$toast.success('Strona została zaktualizowana.')
+          this.$toast.success(this.$t('updatedMessage') as string)
         }
       }
       this.$accessor.stopLoading()
@@ -178,7 +209,7 @@ export default Vue.extend({
       this.$accessor.startLoading()
       const success = await this.$accessor.pages.remove(this.id)
       if (success) {
-        this.$toast.success('Strona została usunięta.')
+        this.$toast.success(this.$t('deletedMessage') as string)
         this.$router.push('/pages')
       }
       this.$accessor.stopLoading()

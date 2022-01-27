@@ -1,7 +1,7 @@
 <template>
   <div>
     <PaginatedList
-      title="Magazyn"
+      :title="$t('title')"
       store-key="items"
       :filters="filters"
       :table="tableConfig"
@@ -13,7 +13,7 @@
           <template #icon>
             <i class="bx bx-plus"></i>
           </template>
-          Dodaj przedmiot
+          {{ $t('add') }}
         </icon-button>
       </template>
 
@@ -26,21 +26,21 @@
       <a-modal
         v-model="isModalActive"
         width="550px"
-        :title="editedItem.id ? 'Edycja przedmiot' : 'Nowy przedmiot'"
+        :title="editedItem.id ? $t('editTitle') : $t('newTitle')"
       >
         <modal-form>
           <validated-input
             v-model="editedItem.name"
             :disabled="!canModify"
             rules="required"
-            label="Nazwa"
+            :label="$t('form.name')"
           />
 
           <validated-input
             v-model="editedItem.sku"
             :disabled="!canModify"
             rules="required"
-            label="SKU"
+            :label="$t('form.sku')"
           />
           <validated-input
             v-if="editedItem.id"
@@ -48,7 +48,7 @@
             :disabled="!canModify"
             rules="required"
             type="number"
-            label="Ilość w magazynie"
+            :label="$t('form.quantity')"
           />
         </modal-form>
         <template #footer>
@@ -58,7 +58,7 @@
             </app-button>
             <pop-confirm
               v-can="$p.Items.Remove"
-              title="Czy na pewno chcesz usunąć ten przedmiot?"
+              :title="$t('deleteText')"
               :ok-text="$t('common.delete')"
               :cancel-text="$t('common.cancel')"
               @confirm="deleteItem"
@@ -71,6 +71,35 @@
     </validation-observer>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "title": "Magazyn",
+    "add": "Dodaj przedmiot",
+    "editTitle": "Edycja przedmiotu",
+    "newTitle": "Nowy przedmiot",
+    "deleteText": "Czy na pewno chcesz usunąć ten przedmiot?",
+    "form": {
+      "name": "Nazwa",
+      "sku": "SKU",
+      "quantity": "Ilość w magazynie"
+    }
+  },
+  "en": {
+    "title": "Warehouse",
+    "add": "Add item",
+    "editTitle": "Edit item",
+    "newTitle": "New item",
+    "deleteText": "Are you sure you want to delete this item?",
+    "form": {
+      "name": "Name",
+      "sku": "SKU",
+      "quantity": "Quantity in stock"
+    }
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
@@ -98,7 +127,9 @@ const EMPTY_FORM: ProductItem = {
 }
 
 export default Vue.extend({
-  metaInfo: { title: 'Magazyn' },
+  metaInfo(this: any) {
+    return { title: this.$t('title') as string }
+  },
   components: {
     ModalForm,
     PopConfirm,
@@ -132,9 +163,14 @@ export default Vue.extend({
       return {
         rowOnClick: (item) => this.openModal(item.id),
         headers: [
-          { key: 'name', label: 'Nazwa', sortable: true },
-          { key: 'sku', label: 'SKU', width: '0.5fr', sortable: true },
-          { key: 'quantity', label: 'Ilość w magazynie', width: '0.5fr', sortable: true },
+          { key: 'name', label: this.$t('form.name') as string, sortable: true },
+          { key: 'sku', label: this.$t('form.sku') as string, width: '0.5fr', sortable: true },
+          {
+            key: 'quantity',
+            label: this.$t('form.quantity') as string,
+            width: '0.5fr',
+            sortable: true,
+          },
         ],
       }
     },

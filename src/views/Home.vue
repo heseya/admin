@@ -73,6 +73,7 @@
 <i18n>
 {
   "pl": {
+    "title": "Dashboard",
     "income": {
       "title": "Przychody",
       "orders": "brak zamówień | {count} zamówienie | {count} zamówienia | {count} zamówień",
@@ -84,6 +85,7 @@
     "lastOrders": {"title": "Ostatnie zamówienia"}
   },
   "en": {
+    "title": "Dashboard",
     "income": {
       "title": "Income",
       "orders": "no orders | 1 order | {count} orders",
@@ -116,7 +118,9 @@ import ListItem from '@/components/layout/ListItem.vue'
 import { Order } from '@/interfaces/Order'
 
 export default Vue.extend({
-  metaInfo: { title: 'Dashboard' },
+  metaInfo(this: any) {
+    return { title: this.$t('nav.settings') as string }
+  },
   components: {
     ListItem,
     TopNav,

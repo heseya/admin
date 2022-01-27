@@ -46,7 +46,7 @@ const CLEAN_FORM: RoleDTO = {
 }
 
 export default Vue.extend({
-  metaInfo(): any {
+  metaInfo(this: any): any {
     return { title: this.role?.name || 'Nowa rola' }
   },
   components: {

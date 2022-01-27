@@ -158,7 +158,11 @@ const CLEAR_PACKAGE_TEMPALTE: PackageTemplate = {
 }
 
 export default Vue.extend({
-  metaInfo: { title: 'Szablony przesyłek' },
+  metaInfo(this: any) {
+    return {
+      title: this.$t('title') as string,
+    }
+  },
   components: {
     PaginatedList,
     ListItem,

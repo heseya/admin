@@ -1,6 +1,6 @@
 <template>
   <div class="narrower-page">
-    <top-nav title="Weryfikacja dwuetapowa">
+    <top-nav :title="$t('title')">
       <tag v-if="user && user.is_tfa_active" type="success">
         <i class="bx bx-check"></i> {{ $t('common.active') }}
       </tag>
@@ -18,6 +18,17 @@
   </div>
 </template>
 
+<i18n>
+{
+  "pl": {
+    "title": "Weryfikacja dwuetapowa"
+  },
+  "en": {
+    "title": "Two-factor authentication"
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 
@@ -31,6 +42,9 @@ import GenerateRecoveryCodes from '@/components/modules/2fa/GenerateRecoveryCode
 import { User } from '@/interfaces/User'
 
 export default Vue.extend({
+  metaInfo(this: any) {
+    return { title: this.$t('title') as string }
+  },
   components: { TopNav, Tag, Card, Setup2FA, Remove2FA, GenerateRecoveryCodes },
   data: () => ({
     isTfaActive: false,

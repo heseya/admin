@@ -207,7 +207,7 @@ const EMPTY_FORM: ProductComponentForm = {
 }
 
 export default Vue.extend({
-  metaInfo(): any {
+  metaInfo(this: any): any {
     return { title: this.product?.name || 'Nowy produkt' }
   },
   components: {

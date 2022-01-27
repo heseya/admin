@@ -52,7 +52,7 @@ const CLEAR_FORM: WebHookDto = {
 }
 
 export default Vue.extend({
-  metaInfo(): any {
+  metaInfo(this: any): any {
     return { title: this.webhook?.name || this.webhook?.url || 'Nowy webhook' }
   },
   components: {

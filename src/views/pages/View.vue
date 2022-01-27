@@ -87,7 +87,7 @@ import { Page, PageDto } from '@/interfaces/Page'
 import { UUID } from '@/interfaces/UUID'
 
 export default Vue.extend({
-  metaInfo(): any {
+  metaInfo(this: any): any {
     return { title: this.page?.name || 'Nowa strona' }
   },
   components: {

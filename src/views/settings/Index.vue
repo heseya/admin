@@ -207,7 +207,11 @@ import UserPreferences from '@/components/modules/settings/UserPreferences.vue'
 import { User } from '@/interfaces/User'
 
 export default Vue.extend({
-  metaInfo: { title: 'Ustawienia' },
+  metaInfo(this: any) {
+    return {
+      title: this.$t('nav.settings') as string,
+    }
+  },
   components: {
     TopNav,
     Card,

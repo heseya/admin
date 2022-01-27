@@ -227,7 +227,7 @@ const DEFAULT_FORM = {
 }
 
 export default Vue.extend({
-  metaInfo(): any {
+  metaInfo(this: any): any {
     return { title: `Zamówienie ${this.order?.code}` }
   },
   components: {

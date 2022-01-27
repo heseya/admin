@@ -1,4 +1,4 @@
-/* eslint-disable camelcase */
+import axios from 'axios'
 import { assign, cloneDeep, isNil } from 'lodash'
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 import { ActionTree, GetterTree, MutationTree } from 'vuex'
@@ -63,6 +63,10 @@ interface CrudParams {
 export const createVuexCRUD =
   <Item extends BaseItem, CreateItemDTO = Partial<Item>, UpdateItemDTO = Partial<Item>>() =>
   <State>(endpoint: string, extend: ExtendStore<State, Item>, queryParams: CrudParams = {}) => {
+    const privateState = {
+      fetchAbortController: null as null | AbortController,
+    }
+
     const moduleState = () =>
       ({
         error: null as null | Error,
@@ -160,6 +164,9 @@ export const createVuexCRUD =
           commit(StoreMutations.SetError, null)
           commit(StoreMutations.SetLoading, true)
           try {
+            privateState.fetchAbortController?.abort()
+            privateState.fetchAbortController = new AbortController()
+
             const filteredQuery = Object.fromEntries(
               Object.entries({ ...(queryParams.get || {}), ...(query || {}) }).filter(
                 ([, value]) => !isNil(value),
@@ -172,14 +179,19 @@ export const createVuexCRUD =
 
             const { data } = await api.get<{ data: Item[]; meta: ResponseMeta }>(
               `/${endpoint}${stringQuery}`,
+              { signal: privateState.fetchAbortController.signal },
             )
+
+            privateState.fetchAbortController = null
+
             commit(StoreMutations.SetMeta, data.meta)
             commit(StoreMutations.SetData, data.data)
             commit(StoreMutations.SetLoading, false)
             return true
           } catch (error: any) {
-            commit(StoreMutations.SetError, error)
             commit(StoreMutations.SetLoading, false)
+            // If request was canceled, do not report error
+            if (!axios.isCancel(error)) commit(StoreMutations.SetError, error)
             return false
           }
         },

@@ -1,11 +1,11 @@
 <template>
-  <central-screen-form title="Nowe hasło">
+  <central-screen-form :title="$t('newPassword')">
     <ValidationObserver v-slot="{ handleSubmit }">
       <validated-input
         v-model="password"
         name="password"
         rules="required|password"
-        label="Nowe hasło"
+        :label="$t('newPassword')"
         type="password"
         @keydown.enter="handleSubmit(changePassword)"
       />
@@ -13,18 +13,37 @@
         v-model="repeatPassword"
         name="repeatPassword"
         rules="required|repeatPassword:@password"
-        label="Powtórz nowe hasło"
+        :label="$t('repeatPassword')"
         type="password"
         @keydown.enter="handleSubmit(changePassword)"
       />
       <br />
 
       <div class="central-screen-form__row">
-        <app-button type="primary" @click="handleSubmit(changePassword)"> Zmień hasło </app-button>
+        <app-button type="primary" @click="handleSubmit(changePassword)">
+          {{ $t('changePassword') }}
+        </app-button>
       </div>
     </ValidationObserver>
   </central-screen-form>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "newPassword": "Nowe hasło",
+    "repeatPassword": "Powtórz nowe hasło",
+    "changePassword": "Zmień hasło",
+    "successMessage": "Hasło zostało zmienione."
+  },
+  "en": {
+    "newPassword": "New password",
+    "repeatPassword": "Repeat new password",
+    "changePassword": "Change password",
+    "successMessage": "Password has been changed."
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
@@ -36,7 +55,9 @@ import { formatApiNotificationError } from '@/utils/errors'
 import { api } from '@/api'
 
 export default Vue.extend({
-  metaInfo: { title: 'Nowe hasło' },
+  metaInfo(this: any) {
+    return { title: this.$t('newPassword') as string }
+  },
   components: {
     CentralScreenForm,
     ValidationObserver,
@@ -80,7 +101,7 @@ export default Vue.extend({
       this.$accessor.stopLoading()
 
       if (isSuccess) {
-        this.$toast.success('Hasło zostało zmienione')
+        this.$toast.success(this.$t('successMessage') as string)
         this.$router.push({ name: 'Login' })
       }
     },

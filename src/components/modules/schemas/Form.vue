@@ -19,7 +19,7 @@
           v-model="form.type"
           :disabled="disabled"
           name="type"
-          label="Typ schematu"
+          :label="$t('form.type')"
           option-filter-prop="label"
         >
           <a-select-option
@@ -40,7 +40,9 @@
         name="price"
         type="number"
         rules="required|not-negative"
-        :label="form.type === SchemaType.Multiply ? 'Cena za sztukę' : 'Dodatkowa cena'"
+        :label="
+          form.type === SchemaType.Multiply ? $t('form.pricePerUnit') : $t('form.additionalPrice')
+        "
       />
     </div>
     <div class="flex">
@@ -50,7 +52,7 @@
         name="hidden"
         rules="schema-checkbox:@disabled"
       >
-        <template #title>Ukryty</template>
+        <template #title>{{ $t('form.hidden') }}</template>
       </ValidatedSwitchInput>
       <ValidatedSwitchInput
         v-model="form.required"
@@ -58,7 +60,7 @@
         name="disabled"
         rules="schema-checkbox:@hidden"
       >
-        <template #title>Wymagany</template>
+        <template #title>{{ $t('form.required') }}</template>
       </ValidatedSwitchInput>
     </div>
     <div v-if="isKindOfNumeric(form.type) || form.type === SchemaType.String" class="flex">
@@ -68,14 +70,14 @@
         default="0"
         name="min"
         type="number"
-        :label="isKindOfNumeric(form.type) ? 'Minimalna wartość' : 'Minimalna długość'"
+        :label="isKindOfNumeric(form.type) ? $t('form.minValue') : $t('form.minLength')"
       />
       <validated-input
         v-model="form.max"
         :disabled="disabled"
         type="number"
         name="max"
-        :label="isKindOfNumeric(form.type) ? 'Maksymalna wartość' : 'Maksymalna długość'"
+        :label="isKindOfNumeric(form.type) ? $t('form.maxValue') : $t('form.maxLength')"
       />
       <validated-input
         v-if="isKindOfNumeric(form.type)"
@@ -83,7 +85,7 @@
         :disabled="disabled"
         type="number"
         name="step"
-        label="Krok"
+        :label="$t('form.step')"
       />
     </div>
     <validated-input
@@ -92,14 +94,14 @@
       :disabled="disabled"
       name="default"
       :type="isKindOfNumeric(form.type) ? 'number' : 'text'"
-      label="Wartość domyślna"
+      :label="$t('form.default')"
     />
     <SwitchInput
       v-if="form.type === SchemaType.Boolean"
       v-model="form.default"
       :disabled="disabled"
     >
-      <template #title>Wartość domyślna</template>
+      <template #title>{{ $t('form.default') }}</template>
     </SwitchInput>
 
     <br />
@@ -115,22 +117,23 @@
     <Zone v-if="form.type === SchemaType.MultiplySchema">
       <div class="used-schema">
         <div>
-          <small>Mnożony schemat</small><br />
-          <b>{{ usedSchemaName || '-- wybierz --' }}</b>
+          <small>{{ $t('multipliedSchema') }}</small
+          ><br />
+          <b>{{ usedSchemaName || $t('choosePlaceholder') }}</b>
         </div>
-        <app-button @click="isUsedSchemaModalActive = true">Zmień</app-button>
+        <app-button @click="isUsedSchemaModalActive = true">{{ $t('change') }}</app-button>
       </div>
 
       <a-modal
         v-model="isUsedSchemaModalActive"
         width="800px"
-        title="Wybierz istniejący schemat"
+        :title="$t('modalTitle')"
         :footer="null"
       >
         <modal-form>
           <selector
             type="schemas"
-            add-text="Wybierz"
+            :add-text="$t('choose')"
             :existing="[form]"
             @select="selectUsedSchema"
           />
@@ -140,18 +143,18 @@
 
     <br />
 
-    <Zone title="Opcje zaawansowane" type="danger">
+    <Zone :title="$t('advancedOptions')" type="danger">
       <validated-input
         v-model="form.pattern"
         :disabled="disabled"
         name="pattern"
-        label="Wyrażenie regularne"
+        :label="$t('form.pattern')"
       />
       <validated-input
         v-model="form.validation"
         :disabled="disabled"
         name="validation"
-        label="Walidacja"
+        :label="$t('form.validation')"
       />
     </Zone>
     <br />
@@ -160,6 +163,67 @@
     </app-button>
   </validation-observer>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "form": {
+      "type": "Typ schematu",
+      "pricePerUnit": "Cena za sztukę",
+      "additionalPrice": "Dodatkowa cena",
+      "hidden": "Ukryty",
+      "required": "Wymagany",
+      "minValue": "Minimalna wartość",
+      "minLength": "Minimalna długość",
+      "maxValue": "Maksymalna wartość",
+      "maxLength": "Maksymalna długość",
+      "step": "Krok",
+      "default": "Wartość domyślna",
+      "pattern": "Wyrażenie regularne",
+      "validation": "Walidacja"
+    },
+    "advancedOptions": "Opcje zaawansowane",
+    "multipliedSchema": "Mnożony schemat",
+    "modalTitle": "Wybierz istniejący schemat",
+    "choose": "Wybierz",
+    "choosePlaceholder": "-- wybierz --",
+    "change": "Zmień",
+    "alerts": {
+      "selectMultiplied": "Wybierz mnożony schemat",
+      "created": "Schemat został utworzony.",
+      "updated": "Schemat został zaktualizowany."
+    }
+  },
+  "en": {
+    "form": {
+      "type": "Schema type",
+      "pricePerUnit": "Price per unit",
+      "additionalPrice": "Additional price",
+      "hidden": "Hidden",
+      "required": "Required",
+      "minValue": "Minimal value",
+      "minLength": "Minimal length",
+      "maxValue": "Maximal value",
+      "maxLength": "Maximal length",
+      "step": "Step",
+      "default": "Default value",
+      "pattern": "Regular expression",
+      "validation": "Validation"
+    },
+    "advancedOptions": "Advanced options",
+    "multipliedSchema": "Multiplied schema",
+    "modalTitle": "Choose existing schema",
+    "choose": "Choose",
+    "choosePlaceholder": "-- choose --",
+    "change": "Change",
+    "alerts": {
+      "selectMultiplied": "Select multiplied schema",
+      "created": "Schema has been created.",
+      "updated": "Schema has been updated."
+    }
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
@@ -259,7 +323,7 @@ export default Vue.extend({
     },
     async submit() {
       if (this.form.type === SchemaType.MultiplySchema && !this.form.used_schemas[0]) {
-        this.$toast.warning('Wybierz mnożony schemat')
+        this.$toast.warning(this.$t('alerts.selectMultiplied') as string)
         return
       }
 
@@ -281,7 +345,7 @@ export default Vue.extend({
           if (!schema) throw new Error('Schema not created')
 
           if (schema && schema.id) {
-            this.$toast.success('Schemat został utworzony.')
+            this.$toast.success(this.$t('alerts.created') as string)
             id = schema.id
           }
         } else {
@@ -293,7 +357,7 @@ export default Vue.extend({
           if (!success) throw new Error('Schema not updated')
 
           id = this.form.id
-          this.$toast.success('Schemat został zaktualizowany.')
+          this.$toast.success(this.$t('alerts.updated') as string)
         }
         this.$emit('submit', this.$accessor.schemas.getFromListById(id))
       } catch {

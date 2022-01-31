@@ -1,18 +1,18 @@
 <template>
   <div class="narrower-page">
-    <top-nav :title="`Zamówienie ${order.code}`" :subtitle="`z dnia ${formattedDate}`">
+    <top-nav :title="`${$t('title')} ${order.code}`" :subtitle="`z dnia ${formattedDate}`">
       <audits-modal :id="order.id" model="orders" />
       <a v-if="storefrontPaymentUrl" :href="`${storefrontPaymentUrl}${order.code}`" target="_blank">
         <icon-button>
           <template #icon>
             <i class="bx bxs-dollar-circle"></i>
           </template>
-          Przejdź do płatności
+          {{ $t('goToPayment') }}
         </icon-button>
       </a>
       <pop-confirm
         v-if="order.payable"
-        title="Czy na pewno chcesz ręcznie oznaczyć zamówienie jako opłacone? (Np. przelewem tradycyjnym lub gotówką)"
+        :title="$t('payTheOrderConfirm')"
         ok-text="Opłać"
         ok-color="success"
         :cancel-text="$t('common.cancel')"
@@ -22,7 +22,7 @@
           <template #icon>
             <i class="bx bxs-diamond"></i>
           </template>
-          Opłać zamówienie
+          {{ $t('payTheOrder') }}
         </icon-button>
       </pop-confirm>
 
@@ -33,7 +33,7 @@
       <div>
         <card>
           <div class="flex-column">
-            <h2 class="section-title">Koszyk</h2>
+            <h2 class="section-title">{{ $t('cart.title') }}</h2>
             <app-cart-item
               v-for="item in order.products"
               :key="item.id"
@@ -44,13 +44,16 @@
             <div class="cart-item">
               <img class="cart-item__cover" src="@/assets/images/icons/delivery-icon.svg" />
               <div class="cart-item__content">
-                <span>Dostawa {{ order.shipping_method && order.shipping_method.name }}</span>
+                <span>
+                  {{ $t('cart.shipping') }}
+                  {{ order.shipping_method && order.shipping_method.name }}
+                </span>
               </div>
               <span class="cart-item__price">{{ formatCurrency(order.shipping_price) }}</span>
             </div>
             <div class="cart-total">
               <div v-for="discount in order.discounts" :key="discount.id">
-                Rabat {{ discount.code }}:
+                {{ $t('cart.discount') }} {{ discount.code }}:
                 <b>
                   -{{
                     discount.type === 0
@@ -59,19 +62,19 @@
                   }}
                 </b>
               </div>
-              Łącznie: <b>{{ formatCurrency(order.summary) }}</b>
+              {{ $t('cart.total') }}: <b>{{ formatCurrency(order.summary) }}</b>
             </div>
           </div>
         </card>
 
         <card>
           <div class="flex-column send-package">
-            <h2 class="section-title send-package__title">Wyślij przesyłkę</h2>
+            <h2 class="section-title send-package__title">{{ $t('sendPackage.title') }}</h2>
             <div v-if="!shippingNumber" class="send-package__content">
               <app-select
                 v-model="packageTemplateId"
-                label="Szablon przesyłki"
-                placeholder="-- Wybierz szablon --"
+                :label="$t('sendPackage.template')"
+                :placeholder="$t('sendPackage.templatePlaceholder')"
                 option-filter-prop="label"
               >
                 <a-select-option
@@ -82,11 +85,11 @@
                   {{ template.name }}
                 </a-select-option>
               </app-select>
-              <app-button @click="createPackage">Utwórz&nbsp;przesyłkę</app-button>
+              <app-button @click="createPackage">{{ $t('sendPackage.create') }}</app-button>
             </div>
             <small v-else>
-              <i class="bx bxs-check-circle"></i> Przesyłka została już zamówiona (Numer śledzenia:
-              {{ shippingNumber }})
+              <i class="bx bxs-check-circle"></i>
+              {{ $t('sendPackage.existing', { number: shippingNumber }) }}
             </small>
           </div>
         </card>
@@ -95,7 +98,7 @@
       <div>
         <card>
           <template v-if="order.status">
-            <h2 class="section-title">Status</h2>
+            <h2 class="section-title">{{ $t('status.title') }}</h2>
             <app-select
               v-model="status"
               :loading="isLoading"
@@ -111,18 +114,22 @@
           <h2 class="section-title">
             <a-tooltip v-if="order.summary_paid > order.summary">
               <template #title>
-                Zamówienie zostało nadpłacone o
+                {{ $t('status.overpaidTitle') }}
                 <b>{{ formatCurrency(order.summary_paid - order.summary) }}</b
                 >!
                 <br />
                 <br />
-                Klient zapłacił {{ formatCurrency(order.summary_paid) }} zamiast
-                {{ formatCurrency(order.summary) }}
+                {{
+                  $t('status.overpaidMessage', {
+                    paid: formatCurrency(order.summary_paid),
+                    should: formatCurrency(order.summary),
+                  })
+                }}
               </template>
               <span class="overpaid-icon"> <i class="bx bxs-error"></i> </span>
             </a-tooltip>
 
-            Próby płatności
+            {{ $t('paymentsTries.title') }}
           </h2>
           <div v-for="payment in order.payments" :key="payment.id" class="payment-method">
             <i v-if="payment.paid" class="bx bxs-check-circle payment-method__success"></i>
@@ -132,7 +139,7 @@
           </div>
         </card>
         <card class="comment">
-          <h2 class="section-title">Komentarz</h2>
+          <h2 class="section-title">{{ $t('comment.title') }}</h2>
           <icon-button
             v-can="$p.Orders.Edit"
             size="small"
@@ -145,11 +152,11 @@
             </template>
           </icon-button>
           <span class="comment__content">
-            {{ order.comment || 'Brak komentarza do zamówienia' }}
+            {{ order.comment || $t('comment.empty') }}
           </span>
         </card>
         <card>
-          <h2 class="section-title">E-mail</h2>
+          <h2 class="section-title">{{ $t('email.title') }}</h2>
           <div class="email">
             <icon-button
               v-can="$p.Orders.Edit"
@@ -165,11 +172,11 @@
             <a :href="`mailto:${order.email}`" class="email__name">{{ order.email }}</a>
           </div>
           <br />
-          <h2 class="section-title">Adres dostawy</h2>
+          <h2 class="section-title">{{ $t('deliveryAddress') }}</h2>
           <app-address :address="order.delivery_address" hide-remove @edit="editDeliveryAddress" />
         </card>
         <card>
-          <h2 class="section-title">Adres rozliczeniowy</h2>
+          <h2 class="section-title">{{ $t('invoiceAddress') }}</h2>
           <app-address
             :address="order.invoice_address"
             @edit="editInvoiceAddress"
@@ -183,7 +190,7 @@
       v-model="isModalActive"
       width="800px"
       :footer="null"
-      :title="`Edytuj ${modalFormTitle}`"
+      :title="`${$t('common.edit')} ${modalFormTitle}`"
     >
       <modal-form>
         <partial-update-form v-model="form" @save="saveForm" />
@@ -191,6 +198,97 @@
     </a-modal>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "title": "Zamówienie",
+    "cart": {
+      "title": "Koszyk",
+      "shipping": "Dostawa",
+      "discount": "Rabat",
+      "total": "Łącznie"
+    },
+    "sendPackage": {
+      "title": "Wyślij przesyłkę",
+      "template": "Szablon przesyłki",
+      "templatePlaceholder": "-- Wybierz szablon --",
+      "create": "Utwórz przesyłkę",
+      "created": "Przesyłka została utworzona",
+      "existing": "Przesyłka została już zamówiona (Numer śledzenia: {number})"
+    },
+    "status": {
+      "title": "Status",
+      "overpaidTitle": "Zamówienie zostało nadpłacone o",
+      "overpaidMessage": "Klient zapłacił {paid} zamiast {should}",
+      "changedSuccess": "Status zamówienia został zmieniony"
+    },
+    "paymentsTries": {
+      "title": "Próby płatności",
+      "paidSuccess": "Zamówienie zostało opłacone",
+      "paidError": "Nie udało się opłacić zamówienia"
+    },
+    "comment": {
+      "title": "Komentarz",
+      "editTitle": "komentarz do zamówienia",
+      "empty": "Brak komentarza do zamówienia"
+    },
+    "email": {
+      "title": "E-mail",
+      "editTitle": "adres e-mail"
+    },
+    "deliveryAddress": "Adres dostawy",
+    "invoiceAddress": "Adres rozliczeniowy",
+    "goToPayment": "Przejdź do płatności",
+    "payTheOrder": "Opłać zamówienie",
+    "payTheOrderConfirm": "Czy na pewno chcesz ręcznie oznaczyć zamówienie jako opłacone? (Np. przelewem tradycyjnym lub gotówką)",
+    "updatedSuccess": "Zamówienie zostało zaktualizowane"
+  },
+  "en": {
+    "title": "Order",
+    "cart": {
+      "title": "Cart",
+      "shipping": "Shipping",
+      "discount": "Discount",
+      "total": "Total"
+    },
+    "sendPackage": {
+      "title": "Send package",
+      "template": "Package template",
+      "templatePlaceholder": "-- Select template --",
+      "create": "Create package",
+      "created": "Package was created",
+      "existing": "Package was already ordered (Tracking number: {number})"
+    },
+    "status": {
+      "title": "Status",
+      "overpaidTitle": "Order was overpaid by",
+      "overpaidMessage": "Client paid {paid} instead of {should}",
+      "changedSuccess": "Order status was changed"
+    },
+    "paymentsTries": {
+      "title": "Payments tries",
+      "paidSuccess": "Order was paid",
+      "paidError": "Order payment failed"
+    },
+    "comment": {
+      "title": "Comment",
+      "editTitle": "order comment",
+      "empty": "No order comment"
+    },
+    "email": {
+      "title": "E-mail",
+      "editTitle": "e-mail address"
+    },
+    "deliveryAddress": "Delivery address",
+    "invoiceAddress": "Invoice address",
+    "goToPayment": "Go to payment",
+    "payTheOrder": "Pay the order",
+    "payTheOrderConfirm": "Are you sure you want to manually mark the order as paid? (E.g. by cash or bank transfer)",
+    "updatedSuccess": "Order was updated"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
@@ -228,7 +326,7 @@ const DEFAULT_FORM = {
 
 export default Vue.extend({
   metaInfo(this: any): any {
-    return { title: `Zamówienie ${this.order?.code}` }
+    return { title: `${this.$t('title')} ${this.order?.code}` }
   },
   components: {
     TopNav,
@@ -312,7 +410,7 @@ export default Vue.extend({
       })
 
       if (success) {
-        this.$toast.success('Status zamówienia został zmieniony')
+        this.$toast.success(this.$t('status.changedSuccess') as string)
       }
 
       this.isLoading = false
@@ -324,7 +422,7 @@ export default Vue.extend({
 
       if (res.success) {
         this.shippingNumber = res.shippingNumber
-        this.$toast.success('Przesyłka utworzona poprawnie')
+        this.$toast.success(this.$t('sendPackage.create') as string)
       } else {
         this.$toast.error(formatApiNotificationError(res.error))
       }
@@ -333,21 +431,21 @@ export default Vue.extend({
     },
     editComment() {
       this.isModalActive = true
-      this.modalFormTitle = 'komentarz do zamówienia'
+      this.modalFormTitle = this.$t('comment.editTitle') as string
       this.form = {
         comment: this.order.comment,
       }
     },
     editEmail() {
       this.isModalActive = true
-      this.modalFormTitle = 'adres e-mail'
+      this.modalFormTitle = this.$t('email.editTitle') as string
       this.form = {
         email: this.order.email,
       }
     },
     editDeliveryAddress() {
       this.isModalActive = true
-      this.modalFormTitle = 'adres dostawy'
+      this.modalFormTitle = (this.$t('deliveryAddress') as string).toLowerCase()
       this.form = {
         delivery_address: {
           ...this.order.delivery_address,
@@ -356,7 +454,7 @@ export default Vue.extend({
     },
     editInvoiceAddress() {
       this.isModalActive = true
-      this.modalFormTitle = 'adres rozliczeniowy'
+      this.modalFormTitle = (this.$t('invoiceAddress') as string).toLowerCase()
       this.form = {
         invoice_address: {
           ...(this.order.invoice_address || DEFAULT_FORM),
@@ -371,7 +469,7 @@ export default Vue.extend({
       this.$accessor.startLoading()
       await this.$accessor.orders.update({ id: this.order.id, item: this.form })
       this.isModalActive = false
-      this.$toast.success('Zamówienie zostało zaktualizowane')
+      this.$toast.success(this.$t('updatedSuccess') as string)
       this.$accessor.stopLoading()
     },
 
@@ -380,9 +478,9 @@ export default Vue.extend({
       try {
         await api.post(`/orders/${this.order.code}/pay/offline`)
         await this.$accessor.orders.get(this.$route.params.id)
-        this.$toast.success('Zamówienie zostało opłacone')
+        this.$toast.success(this.$t('paymentsTries.paidSuccess') as string)
       } catch {
-        this.$toast.error('Nie udało się opłacić zamówienia')
+        this.$toast.error(this.$t('paymentsTries.paidError') as string)
       }
 
       this.$accessor.stopLoading()

@@ -42,10 +42,15 @@
 
 <i18n>
 {
-  "en": {
+  "pl": {
     "productSets": "Kolekcje produktu",
     "priceTooltip": "Kwota po rabacie może być błędna, sprawdź czy nie brakuje części groszowej zanim zaczniesz wystawiać dokumenty księgowe.",
     "beforeDiscount": "Przed rabatem"
+  },
+  "en": {
+    "productSets": "Product sets",
+    "priceTooltip": "The price may be incorrect, check if there is a penny left before you start issuing invoices.",
+    "beforeDiscount": "Before discount"
   }
 }
 </i18n>

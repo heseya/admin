@@ -30,7 +30,7 @@
             v-model="editedItem.name"
             :disabled="!canModify"
             rules="required"
-            :label="$t('form.name')"
+            :label="$t('common.form.name')"
           />
 
           <validated-input
@@ -72,7 +72,6 @@
     "newTitle": "Nowy tag",
     "deleteText": "Czy na pewno chcesz usunąć ten tag?",
     "form": {
-      "name": "Nazwa",
       "color": "Kolor"
     }
   },
@@ -83,7 +82,6 @@
     "newTitle": "New tag",
     "deleteText": "Are you sure you want to delete this tag?",
     "form": {
-      "name": "Name",
       "color": "Color"
     }
   }

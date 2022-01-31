@@ -4,14 +4,14 @@
       v-model="form.name"
       :disabled="disabled"
       name="name"
-      :label="$t('common.name')"
+      :label="$t('common.form.name')"
     />
     <validated-input
       v-model="form.url"
       :disabled="disabled"
       name="url"
       rules="required|url"
-      label="Link"
+      :label="$t('common.form.slug')"
     />
 
     <a-alert

@@ -9,7 +9,7 @@
     <validated-input
       v-model="form.description"
       :disabled="disabled"
-      :label="$t('form.description')"
+      :label="$t('common.form.description')"
     />
 
     <hr />
@@ -71,7 +71,6 @@
   "pl": {
     "form": {
       "code": "Kod",
-      "description": "Opis",
       "discount": "Zniżka",
       "type": "Typ",
       "max_uses": "Maksymalna ilość użyć",
@@ -88,7 +87,6 @@
   "en": {
     "form": {
       "code": "Code",
-      "description": "Description",
       "discount": "Discount",
       "type": "Type",
       "max_uses": "Max uses",

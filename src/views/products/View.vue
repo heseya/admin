@@ -58,7 +58,7 @@
                 <validated-input
                   v-model="form.name"
                   rules="required"
-                  label="Nazwa"
+                  :label="$t('common.form.name')"
                   name="name"
                   :disabled="!canModify"
                   @input="editSlug"
@@ -66,7 +66,7 @@
                 <validated-input
                   v-model="form.slug"
                   rules="required|slug"
-                  label="Link"
+                  :label="$t('common.form.slug')"
                   name="slug"
                   :disabled="!canModify"
                 />
@@ -125,7 +125,7 @@
               </div>
 
               <div class="wide">
-                <small class="label">{{ $t('common.description') }}</small>
+                <small class="label">{{ $t('common.form.description') }}</small>
                 <rich-editor
                   v-if="!isLoading"
                   v-model="form.description_html"

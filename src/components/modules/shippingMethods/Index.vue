@@ -5,7 +5,7 @@
         v-model="form.name"
         :disabled="disabled"
         rules="required"
-        :label="$t('common.name')"
+        :label="$t('common.form.name')"
       />
       <div class="center">
         <app-select

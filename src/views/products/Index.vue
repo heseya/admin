@@ -48,7 +48,6 @@
       "list": "listy"
     },
     "form": {
-      "name": "Nazwa",
       "price": "Cena",
       "tags": "Tagi",
       "public": "Widoczność"
@@ -63,7 +62,6 @@
       "list": "list"
     },
     "form": {
-      "name": "Name",
       "price": "Price",
       "tags": "Tags",
       "public": "Visibility"
@@ -109,7 +107,7 @@ export default Vue.extend({
       return {
         headers: [
           { key: 'cover', label: '', width: '60px' },
-          { key: 'name', label: this.$t('form.name') as string, sortable: true },
+          { key: 'name', label: this.$t('common.form.name') as string, sortable: true },
           { key: 'price', label: this.$t('form.price') as string, width: '0.5fr', sortable: true },
           { key: 'tags', label: this.$t('form.tags') as string },
           {

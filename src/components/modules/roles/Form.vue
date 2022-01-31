@@ -4,12 +4,12 @@
       <validated-input
         v-model="form.name"
         rules="required"
-        :label="$t('common.name')"
+        :label="$t('common.form.name')"
         :disabled="disabled"
       />
       <validated-input
         v-model="form.description"
-        :label="$t('common.description')"
+        :label="$t('common.form.description')"
         :disabled="disabled"
       />
       <br />

@@ -5,13 +5,13 @@
       :disabled="disabled"
       name="name"
       rules="required"
-      :label="$t('common.name')"
+      :label="$t('common.form.name')"
     />
     <validated-input
       v-model="form.description"
       :disabled="disabled"
       name="description"
-      :label="$t('common.description')"
+      :label="$t('common.form.description')"
     />
     <div class="flex">
       <validation-provider v-slot="{ errors }" name="schema-type" rules="id-required">

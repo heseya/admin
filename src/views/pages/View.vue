@@ -27,14 +27,14 @@
             <validated-input
               v-model="form.name"
               rules="required"
-              :label="$t('form.name')"
+              :label="$t('common.form.name')"
               :disabled="!canModify"
               @input="editSlug"
             />
             <validated-input
               v-model="form.slug"
               rules="required|slug"
-              :label="$t('form.slug')"
+              :label="$t('common.form.slug')"
               :disabled="!canModify"
             />
             <flex-input>
@@ -77,8 +77,6 @@
     "createdMessage": "Strona została utworzona.",
     "updatedMessage": "Strona została zaktualizowana.",
     "form": {
-      "name": "Nazwa",
-      "slug": "Link",
       "public": "Widoczność strony",
       "content": "Treść"
     }
@@ -90,8 +88,6 @@
     "createdMessage": "Page has been created",
     "updatedMessage": "Page has been updated",
     "form": {
-      "name": "Name",
-      "slug": "Slug",
       "public": "Page visibility",
       "content": "Content"
     }

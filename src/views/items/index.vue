@@ -33,7 +33,7 @@
             v-model="editedItem.name"
             :disabled="!canModify"
             rules="required"
-            :label="$t('form.name')"
+            :label="$t('common.form.name')"
           />
 
           <validated-input
@@ -81,7 +81,6 @@
     "newTitle": "Nowy przedmiot",
     "deleteText": "Czy na pewno chcesz usunąć ten przedmiot?",
     "form": {
-      "name": "Nazwa",
       "sku": "SKU",
       "quantity": "Ilość w magazynie"
     }
@@ -93,7 +92,6 @@
     "newTitle": "New item",
     "deleteText": "Are you sure you want to delete this item?",
     "form": {
-      "name": "Name",
       "sku": "SKU",
       "quantity": "Quantity in stock"
     }
@@ -163,7 +161,7 @@ export default Vue.extend({
       return {
         rowOnClick: (item) => this.openModal(item.id),
         headers: [
-          { key: 'name', label: this.$t('form.name') as string, sortable: true },
+          { key: 'name', label: this.$t('common.form.name') as string, sortable: true },
           { key: 'sku', label: this.$t('form.sku') as string, width: '0.5fr', sortable: true },
           {
             key: 'quantity',

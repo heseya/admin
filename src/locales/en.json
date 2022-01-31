@@ -9,8 +9,11 @@
     "defaultEmpty": "Nothing found",
     "search": "Search",
     "none": "None",
-    "name": "Name",
-    "description": "Description"
+    "form": {
+      "name": "Name",
+      "description": "Description",
+      "slug": "Link"
+    }
   },
 
   "nav": {

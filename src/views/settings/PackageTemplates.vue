@@ -33,7 +33,7 @@
             v-model="editedItem.name"
             :disabled="!canModify"
             rules="required"
-            :label="$t('form.name')"
+            :label="$t('common.form.name')"
           />
 
           <validated-input
@@ -105,7 +105,6 @@
       "depth": "głębokość"
     },
     "form": {
-      "name": "Nazwa",
       "weight": "Waga (kg)",
       "height": "Wysokość (cm)",
       "width": "Szerokość (cm)",
@@ -125,7 +124,6 @@
       "depth": "depth"
     },
     "form": {
-      "name": "Name",
       "weight": "Weight (kg)",
       "height": "Height (cm)",
       "width": "Width (cm)",

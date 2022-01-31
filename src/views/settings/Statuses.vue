@@ -31,7 +31,7 @@
             v-model="editedItem.name"
             :disabled="!canModify"
             rules="required"
-            :label="$t('form.name')"
+            :label="$t('common.form.name')"
           />
 
           <validated-input
@@ -40,7 +40,7 @@
             type="textarea"
             rows="5"
             rules="required"
-            :label="$t('form.description')"
+            :label="$t('common.form.description')"
           />
 
           <validated-input
@@ -117,9 +117,7 @@
     "newTitle": "Nowy status",
     "deleteText": "Czy na pewno chcesz usunąć ten status?",
     "form": {
-      "name": "Nazwa",
       "color": "Kolor",
-      "description": "Opis",
       "cancel": "Przywracanie stanów magazynowych",
       "hidden": "Ukryj zamówienia z tym statusem na liście",
       "hiddenTooltip": "Zamówienia z tym statusem nie będą domyślnie pokazywać się na liście zamówień. Wciąż będzie można po nim filtrować.",
@@ -134,9 +132,7 @@
     "newTitle": "New status",
     "deleteText": "Are you sure you want to delete this status?",
     "form": {
-      "name": "Name",
       "color": "Color",
-      "description": "Description",
       "cancel": "Restore stock",
       "hidden": "Hide orders with this status on the list",
       "hiddenTooltip": "Orders with this status will not be shown on the list by default. You can still filter by them.",

@@ -11,7 +11,7 @@
           v-model="form.name"
           :disabled="disabled"
           rules="required"
-          :label="$t('form.name')"
+          :label="$t('common.form.name')"
           @input="editSlug"
         />
 
@@ -22,7 +22,7 @@
             :addon-before="slugPrefix && !form.slug_override ? `${slugPrefix}-` : ''"
             class="slug-input__input"
             rules="required|slug"
-            :label="$t('form.slug')"
+            :label="$t('common.form.slug')"
           />
 
           <a-tooltip placement="bottom">
@@ -76,7 +76,7 @@
         />
 
         <br />
-        <small class="label">{{ $t('form.description') }}</small>
+        <small class="label">{{ $t('common.form.description') }}</small>
         <rich-editor v-if="isEditorActive" v-model="form.description_html" :disabled="disabled" />
       </modal-form>
       <template #footer>
@@ -104,27 +104,21 @@
   "pl": {
     "deleteText": "Czy na pewno chcesz usunąć tę kolekcję? Wraz z nią usuniesz wszystkie jej subkolekcje!",
     "form": {
-      "name": "Nazwa",
-      "slug": "Link",
       "slugOverride": "Nadpisz link",
       "slugOverrideHelp": "Domyślnie, początek linku wynika z linku kolekcji-rodzica. Nadpisując link, sprawiamy, że link będzie dokładnie taki jaki zostanie wpisany.",
       "hideOnIndex": "Ukryj na stronie głównej",
       "public": "Widoczność kolekcji",
-      "cover": "Okładka kolekcji",
-      "description": "Opis"
+      "cover": "Okładka kolekcji"
     }
   },
   "en": {
     "deleteText": "Are you sure you want to delete this collection? All subcollections will be deleted as well!",
     "form": {
-      "name": "Name",
-      "slug": "Link",
       "slugOverride": "Override link",
       "slugOverrideHelp": "By default, the beginning of the link is derived from the parent collection's link. Overriding the link, you make sure that the link is exactly what you enter.",
       "hideOnIndex": "Hide on main page",
       "public": "Visibility",
-      "cover": "Collection cover",
-      "description": "Description"
+      "cover": "Collection cover"
     }
   }
 }

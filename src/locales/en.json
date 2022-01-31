@@ -12,6 +12,8 @@
     "add": "Add",
     "allowList": "Allow list",
     "blockList": "Block list",
+    "yes": "Yes",
+    "no": "No",
     "form": {
       "name": "Name",
       "description": "Description",

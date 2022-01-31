@@ -1,22 +1,55 @@
 <template>
   <div class="address-form">
-    <validated-input v-model="form.name" rules="required" name="name" label="Imię i nazwisko" />
-    <validated-input v-model="form.address" rules="required" name="address" label="Adres" />
+    <validated-input v-model="form.name" rules="required" name="name" :label="$t('name')" />
+    <validated-input
+      v-model="form.address"
+      rules="required"
+      name="address"
+      :label="$t('address')"
+    />
     <div class="address-form__row">
-      <validated-input v-model="form.zip" rules="required" name="address" label="Kod pocztowy" />
-      <validated-input v-model="form.city" rules="required" name="address" label="Miasto" />
+      <validated-input v-model="form.zip" rules="required" name="zip" :label="$t('zip')" />
+      <validated-input v-model="form.city" rules="required" name="city" :label="$t('city')" />
     </div>
     <ValidationProvider rules="required" tag="div" class="address-form__select">
-      <app-select v-model="form.country" label="Kraj" show-search option-filter-prop="label">
+      <app-select
+        v-model="form.country"
+        :label="$t('country')"
+        show-search
+        option-filter-prop="label"
+      >
         <a-select-option v-for="country in countries" :key="country.code" :label="country.name">
           {{ country.name }}
         </a-select-option>
       </app-select>
     </ValidationProvider>
-    <validated-input v-model="form.phone" rules="required" name="address" label="Telefon" />
-    <validated-input v-model="form.vat" name="address" label="NIP" />
+    <validated-input v-model="form.phone" rules="required" name="phone" :label="$t('phone')" />
+    <validated-input v-model="form.vat" name="vat" :label="$t('vat')" />
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "name": "Imię i nazwisko",
+    "address": "Adres",
+    "zip": "Kod pocztowy",
+    "city": "Miasto",
+    "country": "Kraj",
+    "phone": "Telefon",
+    "vat": "NIP"
+  },
+  "en": {
+    "name": "Name",
+    "address": "Address",
+    "zip": "Zip code",
+    "city": "City",
+    "country": "Country",
+    "phone": "Phone",
+    "vat": "VAT"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

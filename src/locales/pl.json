@@ -12,6 +12,8 @@
     "add": "Dodaj",
     "allowList": "Lista dozwolonych",
     "blockList": "Lista zabronionych",
+    "yes": "Tak",
+    "no": "Nie",
     "form": {
       "name": "Nazwa",
       "description": "Opis",

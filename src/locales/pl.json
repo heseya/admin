@@ -9,6 +9,9 @@
     "defaultEmpty": "Nic nie znaleziono",
     "search": "Wyszukiwanie",
     "none": "Brak",
+    "add": "Dodaj",
+    "allowList": "Lista dozwolonych",
+    "blockList": "Lista zabronionych",
     "form": {
       "name": "Nazwa",
       "description": "Opis",

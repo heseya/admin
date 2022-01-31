@@ -1,15 +1,22 @@
 <template>
   <div class="price-ranges-form">
-    <h5 class="price-ranges-form__title">Zakresy cen</h5>
+    <h5 class="price-ranges-form__title">
+      {{ $t('title') }}
+    </h5>
     <div class="price-ranges-form__list">
       <div v-for="(range, i) in priceRanges" :key="`${i}`" class="price-ranges-form__row">
         <app-input
           v-model="range.start"
-          label="Minimalna wartość koszyka"
+          :label="$t('rangeStart')"
           type="number"
           :disabled="i === 0 || disabled"
         />
-        <app-input v-model="range.value" :disabled="disabled" label="Stawka" type="number" />
+        <app-input
+          v-model="range.value"
+          :disabled="disabled"
+          :label="$t('rangeValue')"
+          type="number"
+        />
         <icon-button
           :disabled="disabled || i === 0"
           type="transparent"
@@ -31,10 +38,27 @@
       <template #icon>
         <i class="bx bx-plus"></i>
       </template>
-      Dodaj zakres
+      {{ $t('addRange') }}
     </icon-button>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "title": "Zakresy cen",
+    "addRange": "Dodaj zakres",
+    "rangeStart": "Minimalna wartość koszyka",
+    "rangeValue": "Stawka"
+  },
+  "en": {
+    "title": "Price ranges",
+    "addRange": "Add range",
+    "rangeStart": "Minimal cart value",
+    "rangeValue": "Rate"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

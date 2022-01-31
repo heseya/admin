@@ -9,6 +9,9 @@
     "defaultEmpty": "Nothing found",
     "search": "Search",
     "none": "None",
+    "add": "Add",
+    "allowList": "Allow list",
+    "blockList": "Block list",
     "form": {
       "name": "Name",
       "description": "Description",

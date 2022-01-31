@@ -5,7 +5,7 @@
     <div ref="content" class="schema-selector__content">
       <loading :active="isLoading" />
 
-      <empty v-if="query !== '' && list.length === 0">Nic nie znaleziono</empty>
+      <empty v-if="query !== '' && list.length === 0" />
 
       <list class="schema-selector__items">
         <list-item v-for="item in list" :key="item.id" class="schema-selector__item" no-hover>

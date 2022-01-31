@@ -18,24 +18,21 @@
       v-if="!hasHttps && form.url && errors.url && errors.url.length === 0"
       type="warning"
       show-icon
-      message="Link docelowy webhooka nie posiada certyfikatu SSL"
+      :message="$t('httpsAlert.title')"
     >
       <template #description>
-        Może to spowodować potencjalne zagrożenie bezpieczeństwa danych, które zostaną przesłane na
-        powyższy adres. Użycie protokołu <code>https</code> jest mocno zalecane.
+        <div v-html="$t('httpsAlert.description')" />
       </template>
     </a-alert>
 
     <div class="webhook-form__switches">
       <switch-input v-model="form.with_issuer" horizontal :disabled="disabled">
         <template #title>
-          Z podmiotem akcji
+          {{ $t('withIssuer.title') }}
           <a-tooltip>
             <template #title>
               <small>
-                Jeśli zaznaczone, żądanie będzie zawierać informacje o użytkowniku (lub aplikacji),
-                który spowodował daną akcję. Np. zawarta będzie informacja o osobie która zedytowała
-                produkt.
+                {{ $t('withIssuer.description') }}
               </small>
             </template>
             <i class="bx bxs-info-circle"></i>
@@ -45,12 +42,11 @@
 
       <switch-input v-model="form.with_hidden" horizontal :disabled="disabled">
         <template #title>
-          Z ukrytymi wpisami
+          {{ $t('withHidden.title') }}
           <a-tooltip>
             <template #title>
               <small>
-                Jeśli zaznaczone, żądanie będzie wykonywane również dla obiektów, które są w
-                systemie ukryte. Np. edycja ukrytego produktu.
+                {{ $t('withHidden.description') }}
               </small>
             </template>
             <i class="bx bxs-info-circle"></i>
@@ -63,17 +59,13 @@
       v-model="form.secret"
       :disabled="disabled"
       name="secret"
-      label="Sekretny token"
+      :label="$t('secret.title')"
     />
-    <small>
-      Użyj tego tokena do sprawdzenia poprawności i autentyczności otrzymanego webhooka. Zostanie
-      użyty do zahashowania (<code>sha256</code>) payloadu żądania, a następnie zostanie wysyłany
-      wraz z żądaniem w nagłówku HTTP <code>Signature</code>.
-    </small>
+    <small v-html="$t('secret.description')"> </small>
 
     <br />
 
-    <h3>Wydarzenia wywołujące webhooka:</h3>
+    <h3>{{ $t('events') }}</h3>
     <div class="webhook-form__events">
       <a-checkbox
         v-for="ev in allEvents"
@@ -94,6 +86,49 @@
     </app-button>
   </validation-observer>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "httpsAlert": {
+      "title": "Link docelowy webhooka nie posiada certyfikatu SSL",
+      "description": "Może to spowodować potencjalne zagrożenie bezpieczeństwa danych, które zostaną przesłane na powyższy adres. Użycie protokołu <code>https</code> jest mocno zalecane."
+    },
+    "withIssuer": {
+      "title": "Z podmiotem akcji",
+      "description": "Jeśli zaznaczone, żądanie będzie zawierać informacje o użytkowniku (lub aplikacji), który spowodował daną akcję. Np. zawarta będzie informacja o osobie która zedytowała produkt."
+    },
+    "withHidden": {
+      "title": "Z ukrytymi wpisami",
+      "description": "Jeśli zaznaczone, żądanie będzie wykonywane również dla obiektów, które są w systemie ukryte. Np. edycja ukrytego produktu."
+    },
+    "secret": {
+      "title": "Sekretny token",
+      "description": "Użyj tego tokena do sprawdzenia poprawności i autentyczności otrzymanego webhooka. Zostanie użyty do zahashowania (<code>sha256</code>) payloadu żądania, a następnie zostanie wysyłany wraz z żądaniem w nagłówku HTTP <code>Signature</code>."
+    },
+    "events": "Wydarzenia wywołujące webhooka:"
+  },
+  "en": {
+    "httpsAlert": {
+      "title": "The target webhook does not have a SSL certificate",
+      "description": "This may cause data security risks, as the data will be sent to the target address. Using <code>https</code> is strongly recommended."
+    },
+    "withIssuer": {
+      "title": "With issuer",
+      "description": "If checked, the request will contain information about the user (or application) that caused the action. For example, a request will contain information about the person who edited the product."
+    },
+    "withHidden": {
+      "title": "With hidden",
+      "description": "If checked, the request will be sent also for hidden objects. For example, editing a hidden product."
+    },
+    "secret": {
+      "title": "Secret token",
+      "description": "Use this token to verify the authenticity of the webhook. It will be used to hash the payload of the request (<code>sha256</code>), and then sent along with the request in the HTTP <code>Signature</code> header."
+    },
+    "events": "Events triggering the webhook:"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

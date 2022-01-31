@@ -12,7 +12,7 @@
       @click="$emit('clear-filters')"
     >
       <template #icon>
-        <img src="@/assets/images/icons/close-icon.svg" alt="Close" />
+        <img src="@/assets/images/icons/close-icon.svg" :alt="$t('common.close')" />
       </template>
       {{ $t('clearFilters') }}
     </icon-button>

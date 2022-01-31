@@ -16,7 +16,7 @@
         root-class="mobile-nav"
         class="mobile-nav__more-btn"
         icon="icons/more-icon.svg"
-        label="nav.moreLink"
+        :label="`nav.moreLink`"
         @click="isMenuVisible = true"
       />
     </div>

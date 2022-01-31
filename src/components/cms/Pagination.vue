@@ -1,6 +1,6 @@
 <template>
   <div class="pagination">
-    <p-button v-if="showFirstButton" :page="1" :current="page" @click="set(1)"> 1 </p-button>
+    <p-button v-if="showFirstButton" :page="1" :current="page" @click="set(1)"> {{ 1 }} </p-button>
     <div v-if="showFirstSpacer" class="pagination__space">...</div>
 
     <p-button v-for="i in showable" :key="i" :page="i" :current="page" @click="set(i)">

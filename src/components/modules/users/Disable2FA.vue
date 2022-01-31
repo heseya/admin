@@ -29,12 +29,19 @@
 
 <i18n>
 {
-  "en": {
+  "pl": {
     "title": "Weryfikacja dwuetapowa",
     "active": "Użytkownik ma aktywną weryfikację dwuetapową",
     "inactive": "Użytkownik nie posiada aktywnej weryfikacji dwuetapowej",
     "disableText": "Czy na pewno chcesz wyłączyć weryfikację dwuetapową dla tego użytkownika?",
     "disableConfirm": "Wyłącz weryfikację dwuetapową"
+  },
+  "en": {
+    "title": "Two-factor authentication",
+    "active": "User has active two-factor authentication",
+    "inactive": "User has no active two-factor authentication",
+    "disableText": "Are you sure you want to disable two-factor authentication for this user?",
+    "disableConfirm": "Disable two-factor authentication"
   }
 }
 </i18n>

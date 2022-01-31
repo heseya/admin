@@ -7,7 +7,7 @@
       <p></p>
       <SeoForm v-model="form" force-index />
       <br />
-      <AppButton @click="submit"> Zapisz zmiany </AppButton>
+      <AppButton @click="submit"> {{ $t('save') }} </AppButton>
     </card>
   </div>
 </template>
@@ -18,13 +18,15 @@
     "title": "Ustawienia SEO",
     "message": "Podane wartości będą wyświetlane wyłącznie na tych podstronach sklepu, które nie mają sprecyzowanych własnych ustawień SEO.",
     "savedMessage": "Globalne SEO zostało zaktualizowane",
-    "errorMessage": "Wystąpił błąd podczas aktualizacji globalnego SEO"
+    "errorMessage": "Wystąpił błąd podczas aktualizacji globalnego SEO",
+    "save": "Zapisz zmiany"
   },
   "en": {
     "title": "SEO settings",
     "message": "The values entered here will be displayed only on pages of the store that do not have own SEO settings.",
     "savedMessage": "Global SEO has been updated",
-    "errorMessage": "An error occurred while updating global SEO"
+    "errorMessage": "An error occurred while updating global SEO",
+    "save": "Save changes"
 
   }
 }

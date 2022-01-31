@@ -1,12 +1,17 @@
 <template>
   <modal-form>
-    <validated-input v-model="form.name" :disabled="disabled" rules="required" label="Nazwa" />
+    <validated-input
+      v-model="form.name"
+      :disabled="disabled"
+      rules="required"
+      :label="$t('name')"
+    />
 
     <validated-input
       v-model="form.email"
       :disabled="disabled"
       rules="required|email"
-      label="Email"
+      :label="$t('email')"
     />
 
     <validated-input
@@ -15,13 +20,13 @@
       :disabled="disabled"
       type="password"
       rules="required|password"
-      label="Hasło"
+      :label="$t('password')"
     />
 
     <app-select
       v-model="form.roles"
       :disabled="disabled"
-      label="Role"
+      :label="$t('roles')"
       mode="multiple"
       option-filter-prop="label"
     >
@@ -45,6 +50,23 @@
     </template>
   </modal-form>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "name": "Nazwa",
+    "email": "Email",
+    "password": "Hasło",
+    "roles": "Role"
+  },
+  "en": {
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "roles": "Roles"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

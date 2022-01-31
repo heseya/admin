@@ -19,6 +19,7 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': 'warn',
     'vue/multi-word-component-names': 'off',
     'vue/no-deprecated-slot-attribute': 'error',
+    'vue/no-bare-strings-in-template': ['warn', { allowlist: ['|', 'v', ')', '(', 's'] }],
     camelcase: ['error', { properties: 'never' }],
   },
 

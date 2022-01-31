@@ -1,5 +1,5 @@
 <template>
-  <error-page title="403" :description="$t('description')" />
+  <error-page :title="$t('title')" :description="$t('description')" />
 </template>
 
 <i18n>

@@ -5,16 +5,14 @@
         <template #icon>
           <i class="bx bx-left-arrow-alt"></i>
         </template>
-        Wróć do formularza logowania
+        {{ $t('returnToLogin') }}
       </icon-button>
 
       <p v-if="method === TwoFactorAuthMethod.App">
-        Wpisz poniżej kod autoryzacyjny, który wyświetla się na twoim urządzeniu w aplikacji do
-        weryfikacji dwuetapowej.
+        {{ $t('app2fa') }}
       </p>
       <p v-else-if="method === TwoFactorAuthMethod.Email">
-        Wysłaliśmy do Ciebie wiadomość e-mail z kodem autoryzującym. Wpisz go poniżej aby się
-        zalogować. Kod jest ważny przez 15 minut.
+        {{ $t('email2fa') }}
       </p>
 
       <validated-input
@@ -22,14 +20,35 @@
         rules="required"
         name="code"
         data-cy="code"
-        label="Kod autoryzacyjny"
+        :label="$t('code')"
         class="tfa-code-form__input"
       />
 
-      <app-button data-cy="submitBtn" html-type="submit" type="primary"> Zaloguj </app-button>
+      <app-button data-cy="submitBtn" html-type="submit" type="primary">
+        {{ $t('login') }}
+      </app-button>
     </form>
   </ValidationObserver>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "returnToLogin": "Wróć do formularza logowania",
+    "app2fa": "Wpisz poniżej kod autoryzacyjny, który wyświetla się na twoim urządzeniu w aplikacji do weryfikacji dwuetapowej.",
+    "email2fa": "Wysłaliśmy do Ciebie wiadomość e-mail z kodem autoryzującym. Wpisz go poniżej aby się zalogować. Kod jest ważny przez 15 minut.",
+    "code": "Kod autoryzacyjny",
+    "login": "Zaloguj"
+  },
+  "en": {
+    "returnToLogin": "Return to login form",
+    "app2fa": "Enter the code from your device in the app to verify two-factor authentication.",
+    "email2fa": "We have sent you an email with a code to verify your account. Enter it below to log in. The code is valid for 15 minutes.",
+    "code": "Code",
+    "login": "Login"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

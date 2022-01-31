@@ -44,7 +44,7 @@
       </template>
     </template>
     <template v-else>
-      <small class="address__error">Brak</small>
+      <small class="address__error">{{ $t('common.none') }}</small>
     </template>
   </div>
 </template>

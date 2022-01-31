@@ -7,7 +7,10 @@
     "delete": "Delete",
     "save": "Save",
     "defaultEmpty": "Nothing found",
-    "search": "Search"
+    "search": "Search",
+    "none": "None",
+    "name": "Name",
+    "description": "Description"
   },
 
   "nav": {

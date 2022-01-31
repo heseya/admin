@@ -1,8 +1,17 @@
 <template>
   <validation-observer v-slot="{ handleSubmit }">
     <card>
-      <validated-input v-model="form.name" rules="required" label="Nazwa" :disabled="disabled" />
-      <validated-input v-model="form.description" label="Opis" :disabled="disabled" />
+      <validated-input
+        v-model="form.name"
+        rules="required"
+        :label="$t('common.name')"
+        :disabled="disabled"
+      />
+      <validated-input
+        v-model="form.description"
+        :label="$t('common.description')"
+        :disabled="disabled"
+      />
       <br />
       <permissions-manager v-model="form.permissions" :disabled="disabled" />
       <br />

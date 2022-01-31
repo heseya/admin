@@ -125,7 +125,7 @@
               </div>
 
               <div class="wide">
-                <small class="label">Opis</small>
+                <small class="label">{{ $t('common.description') }}</small>
                 <rich-editor
                   v-if="!isLoading"
                   v-model="form.description_html"

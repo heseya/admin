@@ -4,19 +4,19 @@
       <template #icon>
         <i class="bx bx-history"></i>
       </template>
-      Rejestr zmian
+      {{ $t('title') }}
     </icon-button>
 
     <a-modal :visible="isModalOpen" width="750px" :footer="null" @cancel="isModalOpen = false">
       <template #title>
         <div class="audits-modal__header">
-          <span>Rejestr wprowadzonych zmian</span>
+          <span> {{ $t('header') }}</span>
 
           <icon-button size="small" @click="downloadAudits">
             <template #icon>
               <i class="bx bx-history"></i>
             </template>
-            Pobierz historię zmian
+            {{ $t('download') }}
           </icon-button>
         </div>
       </template>
@@ -63,10 +63,37 @@
         </a-collapse-panel>
       </a-collapse>
 
-      <empty v-else> Nie zarejestrowano żadnych zmian dla tego obiektu </empty>
+      <empty v-else> {{ $t('noChanges') }} </empty>
     </a-modal>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "title": "Rejestr zmian",
+    "header": "Rejestr wprowadzonych zmian",
+    "download": "Pobierz historię zmian",
+    "noChanges": "Nie zarejestrowano żadnych zmian dla tego obiektu",
+    "table": {
+      "name": "Nazwa",
+      "old": "Starta wartość",
+      "new": "Nowa wartość"
+    }
+  },
+  "en": {
+    "title": "Audit log",
+    "header": "Audit log",
+    "download": "Download audit log",
+    "noChanges": "No changes have been logged for this object",
+    "table": {
+      "name": "Name",
+      "old": "Old value",
+      "new": "New value"
+    }
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
@@ -109,11 +136,11 @@ export default Vue.extend({
         headers: [
           {
             key: 'key',
-            label: 'Nazwa',
+            label: this.$t('table.name') as string,
             render: (key) => changeAuditKeyToName(key),
           },
-          { key: 'old', label: 'Stara wartość' },
-          { key: 'new', label: 'Nowa wartość' },
+          { key: 'old', label: this.$t('table.old') as string },
+          { key: 'new', label: this.$t('table.new') as string },
         ],
       }
     },

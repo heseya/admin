@@ -16,7 +16,7 @@
           class="media-upload-input__delete"
           @click.prevent.stop="$emit('upload', undefined)"
         >
-          Usuń lub zmień zdjęcie
+          {{ $t('removeOrChangeImage') }}
         </AppButton>
 
         <media-edit-form
@@ -28,14 +28,29 @@
         />
       </template>
       <template v-else>
-        <span class="media-upload-input__title">Upuść lub wybierz zdjęcie</span>
+        <span class="media-upload-input__title">{{ $t('dropOrChooseImage') }}</span>
         <AppButton type="primary" @click.prevent>
-          <i class="bx bx-upload"></i> Wybierz zdjęcie
+          <i class="bx bx-upload"></i> {{ $t('chooseImage') }}
         </AppButton>
       </template>
     </media-uploader>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "removeOrChangeImage": "Usuń lub zmień zdjęcie",
+    "dropOrChooseImage": "Upuść lub wybierz zdjęcie",
+    "chooseImage": "Wybierz zdjęcie"
+  },
+  "en": {
+    "removeOrChangeImage": "Remove or change image",
+    "dropOrChooseImage": "Drop or choose image",
+    "chooseImage": "Choose image"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import { CdnMedia } from '@/interfaces/Media'

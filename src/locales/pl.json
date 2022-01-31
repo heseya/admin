@@ -7,7 +7,10 @@
     "delete": "Usuń",
     "save": "Zapisz",
     "defaultEmpty": "Nic nie znaleziono",
-    "search": "Wyszukiwanie"
+    "search": "Wyszukiwanie",
+    "none": "Brak",
+    "name": "Nazwa",
+    "description": "Opis"
   },
 
   "nav": {

@@ -1,6 +1,6 @@
 <template>
   <div class="permissions-manager">
-    <span class="permissions-manager__title">Uprawnienia roli</span>
+    <span class="permissions-manager__title">{{ $t('title') }}</span>
     <div v-for="{ section, permissions: groupPerms, isAssignable } in grouped" :key="section">
       <span class="permissions-manager__subtitle">
         <a-checkbox
@@ -9,7 +9,7 @@
           :indeterminate="hasSome(section) && !(hasAll(section) && isAssignable)"
           @change="() => changeAll(section)"
         >
-          {{ PERMISSIONS_GROUP_LABELS[section] || section.replace(/_/g, ' ') }}
+          {{ $t(`sections.${section}`) || section.replace(/_/g, ' ') }}
         </a-checkbox>
       </span>
 
@@ -33,17 +33,85 @@
   </div>
 </template>
 
+<i18n>
+{
+  "pl": {
+    "title": "Uprawnienia roli",
+    "sections": {
+      "admin": "Administracja",
+      "analytics": "Statystyka",
+      "apps": "Zarządzanie aplikacjami",
+      "app": "Aplikacje zewnętrzne",
+      "audits": "Historia zmian",
+      "auth": "Autoryzacja użytkowników",
+      "product_sets": "Kolekcje",
+      "countries": "Kraje",
+      "shipping_methods": "Metody dostawy",
+      "deposits": "Depozyty",
+      "discounts": "Kody rabatowe",
+      "items": "Przedmioty magazynowe",
+      "schemas": "Schematy",
+      "cart": "Koszyk",
+      "orders": "Zamówienia ",
+      "packages": "Szablony przesyłek",
+      "pages": "Strony",
+      "payments": "Płatności",
+      "payment_methods": "Metody Płatności",
+      "products": "Produkty",
+      "settings": "Ustawienia zaawansowane",
+      "statuses": "Statusy zamówień",
+      "tags": "Tagi",
+      "users": "Użytkownicy",
+      "roles": "Role użytkowników",
+      "webhooks": "Webhooki",
+      "events": "Wydarzenia aktywujące Webhooki",
+      "seo": "SEO"
+    }
+  },
+  "en": {
+    "title": "Permissions manager",
+    "sections": {
+      "admin": "Administration",
+      "analytics": "Analytics",
+      "apps": "Apps management",
+      "app": "External apps",
+      "audits": "Audits",
+      "auth": "Auth",
+      "product_sets": "Product sets",
+      "countries": "Countries",
+      "shipping_methods": "Shipping methods",
+      "deposits": "Deposits",
+      "discounts": "Discounts",
+      "items": "Items",
+      "schemas": "Schemas",
+      "cart": "Cart",
+      "orders": "Orders",
+      "packages": "Packages",
+      "pages": "Pages",
+      "payments": "Payments",
+      "payment_methods": "Payment methods",
+      "products": "Products",
+      "settings": "Advanced settings",
+      "statuses": "Statuses",
+      "tags": "Tags",
+      "users": "Users",
+      "roles": "Roles",
+      "webhooks": "Webhooks",
+      "events": "Webhooks events",
+      "seo": "SEO"
+    }
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 import { groupBy } from 'lodash'
 
 import { Permission, PermissionObject } from '@/interfaces/Permissions'
-import { PERMISSIONS_GROUP_LABELS } from '@/consts/permissions'
-
-type SectionKey = keyof typeof PERMISSIONS_GROUP_LABELS
 
 interface GroupedPermissions {
-  section: SectionKey
+  section: string
   permissions: PermissionObject[]
   assignablePermissions: PermissionObject[]
   isAssignable: boolean
@@ -76,15 +144,12 @@ export default Vue.extend({
       const grouped = groupBy(this.permissions, (p) => p.name.split('.')[0])
       return Object.keys(grouped)
         .map((section) => ({
-          section: section as SectionKey,
+          section: section,
           permissions: grouped[section],
           assignablePermissions: grouped[section].filter((p) => p.assignable),
           isAssignable: grouped[section].some((p) => p.assignable),
         }))
         .sort((a, b) => (a.section > b.section ? 1 : -1))
-    },
-    PERMISSIONS_GROUP_LABELS(): typeof PERMISSIONS_GROUP_LABELS {
-      return PERMISSIONS_GROUP_LABELS
     },
   },
   created() {

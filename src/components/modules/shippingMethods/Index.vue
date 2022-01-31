@@ -1,7 +1,12 @@
 <template>
   <div class="shipping-methods-form">
     <modal-form>
-      <validated-input v-model="form.name" :disabled="disabled" rules="required" label="Nazwa" />
+      <validated-input
+        v-model="form.name"
+        :disabled="disabled"
+        rules="required"
+        :label="$t('common.name')"
+      />
       <div class="center">
         <app-select
           v-model="form.payment_methods"

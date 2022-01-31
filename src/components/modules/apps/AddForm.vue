@@ -3,7 +3,7 @@
     <validated-input
       v-model="form.url"
       rules="required|url"
-      label="Link do aplikacji"
+      :label="$t('form.url')"
       :loading="isLoading"
     />
 
@@ -15,8 +15,8 @@
       v-else-if="isError && form.url"
       type="error"
       show-icon
-      message="Nie udało się pobrać informacji o aplikacji"
-      description="Aplikacja którą próbujesz dodać nie istnieje, albo powoduje błąd. Nie można jej obecnie zainstalować."
+      :message="$t('error.no_app')"
+      :description="$t('error.no_app_description')"
     />
 
     <template v-else-if="appInfo && form.url">
@@ -24,27 +24,27 @@
       <div class="add-app-form__row">
         <img v-if="appInfo.icon" :src="appInfo.icon" alt="" class="app-icon" />
         <div class="field">
-          <div class="field__label">Nazwa</div>
+          <div class="field__label">{{ $t('preview.name') }}</div>
           <div class="field__value">
             <b>{{ appInfo.name }}</b>
           </div>
         </div>
       </div>
       <div class="field">
-        <div class="field__label">Opis</div>
+        <div class="field__label">{{ $t('preview.description') }}</div>
         <div class="field__value">{{ appInfo.description }}</div>
       </div>
       <div class="add-app-form__row">
         <div class="field">
-          <div class="field__label">Wersja aplikacji</div>
+          <div class="field__label">{{ $t('preview.version') }}</div>
           <div class="field__value">{{ appInfo.version }}</div>
         </div>
         <div class="field">
-          <div class="field__label">Wymagana wersja sklepu</div>
+          <div class="field__label">{{ $t('preview.api_version') }}</div>
           <div class="field__value">{{ appInfo.api_version }}</div>
         </div>
         <div class="field">
-          <div class="field__label">Autor</div>
+          <div class="field__label">{{ $t('preview.author') }}</div>
           <div class="field__value">{{ appInfo.author }}</div>
         </div>
       </div>
@@ -53,11 +53,11 @@
         v-if="appInfo.licence_required"
         v-model="form.licence_key"
         rules="required"
-        label="Klucz licencyjny"
+        :label="$t('form.licence_key')"
       />
 
       <div class="field">
-        <div class="field__label">Wymagane uprawnienia</div>
+        <div class="field__label">{{ $t('preview.required_permissions') }}</div>
         <div class="field__value">
           <ul v-if="requiredPermissions.length">
             <li v-for="perm in requiredPermissions" :key="perm.id">
@@ -69,19 +69,19 @@
               </a-tooltip>
             </li>
           </ul>
-          <small v-else>Brak</small>
+          <small v-else>{{ $t('common.none') }}</small>
         </div>
       </div>
 
       <div class="field">
-        <div class="field__label">Wewnętrzne uprawnienia aplikacji</div>
+        <div class="field__label">{{ $t('preview.internal_permissions') }}</div>
         <div class="field__value">
           <div class="field__value">
             <ul v-if="appInfo.internal_permissions.length">
               <li v-for="perm in appInfo.internal_permissions" :key="perm.id" class="permission">
                 <a-tooltip>
                   <template #title>
-                    Czy to uprawnienie ma zostać nadane niezalogowanym użytkownikom?
+                    {{ $t('preview.should_be_unauthenticated') }}
                   </template>
                   <switch-input
                     :value="isPermUnauthenticated(perm)"
@@ -102,17 +102,64 @@
                 </a-tooltip>
               </li>
             </ul>
-            <small v-else>Brak</small>
+            <small v-else>{{ $t('common.none') }}</small>
           </div>
         </div>
       </div>
 
       <hr />
 
-      <app-button @click="$emit('submit')">Zainstaluj</app-button>
+      <app-button @click="$emit('submit')">{{ $t('form.install') }}</app-button>
     </template>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "form": {
+      "url": "Link do aplikacji",
+      "licence_key": "Klucz licencyjny",
+      "install": "Zainstaluj"
+    },
+    "preview": {
+      "name": "Nazwa",
+      "description": "Opis",
+      "version": "Wersja aplikacji",
+      "api_version": "Wymagana wersja sklepu",
+      "author": "Autor",
+      "required_permissions": "Wymagane uprawnienia",
+      "internal_permissions": "Wewnętrzne uprawnienia aplikacji",
+      "should_be_unauthenticated": "Uprawnienie powinno być nadane niezalogowanym użytkownikom"
+    },
+    "error": {
+      "no_app": "Nie udało się pobrać informacji o aplikacji",
+      "no_app_description": "Aplikacja którą próbujesz dodać nie istnieje, albo powoduje błąd. Nie można jej obecnie zainstalować."
+    }
+  },
+  "en": {
+    "form": {
+      "url": "App URL",
+      "licence_key": "Licence key",
+      "install": "Install"
+    },
+    "preview": {
+      "name": "Name",
+      "description": "Description",
+      "version": "App version",
+      "api_version": "Required API version",
+      "author": "Author",
+      "required_permissions": "Required permissions",
+      "internal_permissions": "Internal permissions",
+      "should_be_unauthenticated": "Permission should be given to unauthenticated users"
+    },
+    "error": {
+      "no_app": "Failed to load app info",
+      "no_app_description": "The app you are trying to add does not exist or causes an error. It cannot be installed at the moment."
+    }
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

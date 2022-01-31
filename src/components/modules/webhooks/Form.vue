@@ -1,6 +1,11 @@
 <template>
   <validation-observer v-slot="{ handleSubmit, errors }" class="webhook-form">
-    <validated-input v-model="form.name" :disabled="disabled" name="name" label="Nazwa" />
+    <validated-input
+      v-model="form.name"
+      :disabled="disabled"
+      name="name"
+      :label="$t('common.name')"
+    />
     <validated-input
       v-model="form.url"
       :disabled="disabled"

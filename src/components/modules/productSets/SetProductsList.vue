@@ -2,12 +2,12 @@
   <a-modal width="900px" class="set-products" :visible="isOpen" @cancel="$emit('close')">
     <template #title>
       <div class="set-products__header">
-        <h4>Produkty w kolekcji {{ set && set.name }}</h4>
+        <h4>{{ $t('title') }} {{ set && set.name }}</h4>
         <icon-button v-can="$p.ProductSets.Edit" size="small" dark @click="isSelectorActive = true">
           <template #icon>
             <i class="bx bx-plus"></i>
           </template>
-          Dodaj produkt do kolekcji
+          {{ $t('addProduct') }}
         </icon-button>
       </div>
     </template>
@@ -41,17 +41,43 @@
       </div>
     </div>
 
-    <empty v-else>Ta kolekcja nie zawiera produktów</empty>
+    <empty v-else>{{ $t('empty') }}</empty>
 
     <template #footer>
-      <app-button type="success" @click="save">Zapisz</app-button>
+      <app-button type="success" @click="save">{{ $t('common.save') }}</app-button>
     </template>
 
-    <a-modal v-model="isSelectorActive" width="800px" title="Wybierz produkt" :footer="null">
-      <selector type-name="produkt" type="products" :existing="products" @select="addProduct" />
+    <a-modal v-model="isSelectorActive" width="800px" :title="$t('chooseProduct')" :footer="null">
+      <selector
+        :type-name="$t('product')"
+        type="products"
+        :existing="products"
+        @select="addProduct"
+      />
     </a-modal>
   </a-modal>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "title": "Produkty w kolekcji",
+    "addProduct": "Dodaj produkt do kolekcji",
+    "empty": "Ta kolekcja nie zawiera produktów",
+    "chooseProduct": "Wybierz produkt",
+    "successMessage": "Produkty zostały zapisane w kolekcji",
+    "product": "produkt"
+  },
+  "en": {
+    "title": "Products in collection",
+    "addProduct": "Add product to collection",
+    "empty": "This collection does not contain products",
+    "chooseProduct": "Choose product",
+    "successMessage": "Products saved in collection",
+    "product": "product"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
@@ -125,7 +151,7 @@ export default Vue.extend({
       try {
         const products = this.products.map((p) => p.id)
         await api.post(`/product-sets/id:${this.set.id}/products`, { products })
-        this.$toast.success('Produkty zostały zapisane w kolekcji')
+        this.$toast.success(this.$t('successMessage') as string)
         this.$emit('close')
       } catch (e: any) {
         this.$toast.error(formatApiNotificationError(e))

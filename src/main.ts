@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import VueMeta from 'vue-meta'
 import AntDesign from 'ant-design-vue'
 import VueToast from 'vue-toast-notification'
 
@@ -24,6 +25,7 @@ import 'boxicons/css/boxicons.min.css'
 
 Vue.config.productionTip = false
 
+Vue.use(VueMeta)
 Vue.use(AntDesign)
 Vue.use(VueToast)
 

@@ -15,7 +15,7 @@
         :class="{ 'cms-filters__mobile-wrapper--open': isModalOpen }"
       >
         <button class="cms-filters__close-btn" @click="isModalOpen = false">
-          <img src="@/assets/images/icons/close-icon.svg" alt="Close" />
+          <img src="@/assets/images/icons/close-icon.svg" :alt="$t('common.close')" />
         </button>
         <cms-filters-header :filters="filters" @clear-filters="$emit('clear-filters')" />
         <div class="cms-filters__mobile-content">

@@ -11,7 +11,7 @@
 
     <powered-by class="central-screen-form__powered-by" />
 
-    <div class="central-screen-form__footer">&copy; Heseya | v{{ version }}</div>
+    <div class="central-screen-form__footer">{{ `&copy;` }} Heseya | v{{ version }}</div>
   </div>
 </template>
 

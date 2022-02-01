@@ -1,37 +1,37 @@
 <template>
   <div class="settings-page narrower-page">
-    <top-nav :title="$t('title')" />
+    <top-nav :title="$t('nav.settings')" />
 
     <card>
       <list>
         <h2 v-can="$p.Pages.Show" class="section-title">{{ $t('sections.shop') }}</h2>
         <SettingsItem
           v-can="$p.Pages.Show"
-          :name="$t('items.pages')"
+          :name="$t('models.pages')"
           url="/pages"
           icon="bx bxs-copy-alt"
         />
 
         <h2 v-can.any="[$p.Tags.Show, $p.Products.Show]" class="section-title">
-          {{ $t('sections.products') }}
+          {{ $t('models.products') }}
         </h2>
         <SettingsItem
           v-can="$p.Tags.Show"
-          :name="$t('items.tags')"
+          :name="$t('models.tags')"
           icon="bx bxs-purchase-tag"
           url="/settings/tags"
         />
         <SettingsItem
           v-can="$p.Products.Show"
-          :name="$t('items.schemas')"
+          :name="$t('models.schemas')"
           icon="bx bxs-customize"
           url="/schemas"
         />
 
-        <h2 v-can.any="[$p.Statuses.Show]" class="section-title">{{ $t('sections.orders') }}</h2>
+        <h2 v-can.any="[$p.Statuses.Show]" class="section-title">{{ $t('models.orders') }}</h2>
         <SettingsItem
           v-can="$p.Statuses.Show"
-          :name="$t('items.statuses')"
+          :name="$t('models.statuses')"
           icon="bx bxs-check-circle"
           url="/settings/statuses"
         />
@@ -41,19 +41,19 @@
         </h2>
         <SettingsItem
           v-can="$p.ShippingMethods.Show"
-          :name="$t('items.shipping_methods')"
+          :name="$t('models.shipping_methods')"
           icon="bx bxs-truck"
           url="/settings/shipping-methods"
         />
         <SettingsItem
           v-can="$p.Packages.Show"
-          :name="$t('items.package_templates')"
+          :name="$t('models.package_templates')"
           icon="bx bxs-box"
           url="/settings/package-templates"
         />
 
         <h2 v-can.any="[$p.Roles.Show, $p.Users.Show]" class="section-title">
-          {{ $t('sections.users') }}
+          {{ $t('models.users') }}
         </h2>
         <SettingsItem
           v-can="$p.Users.Show"
@@ -73,13 +73,13 @@
         </h2>
         <SettingsItem
           v-can="$p.Apps.Show"
-          :name="$t('items.apps')"
+          :name="$t('models.apps')"
           icon="bx bxs-store-alt"
           url="/apps"
         />
         <SettingsItem
           v-can="$p.Webhooks.Show"
-          :name="$t('items.webhooks')"
+          :name="$t('models.webhooks')"
           icon="bx bxs-bot"
           url="/webhooks"
         />
@@ -152,27 +152,15 @@
 <i18n>
 {
   "en": {
-    "title": "Settings",
     "sections": {
       "shop": "Shop",
-      "products": "Products",
-      "orders": "Orders",
       "shipping": "Shipping",
-      "users": "Users",
       "other": "Other",
       "account": "Account"
     },
     "items": {
-      "pages": "Pages",
-      "tags": "Tags",
-      "schemas": "Schemas",
-      "statuses": "Order statuses",
-      "shipping_methods": "Shipping options",
-      "package_templates": "Package templates",
       "users": "Users list",
       "roles": "User roles",
-      "apps": "Apps",
-      "webhooks": "Webhooks",
       "seo": "SEO settings",
       "advanced": "Advanced settings",
       "preferences": "User preferences",
@@ -184,27 +172,15 @@
   },
 
   "pl": {
-    "title": "Ustawienia",
     "sections": {
       "shop": "Sklep",
-      "products": "Produkty",
-      "orders": "Zamówienia",
       "shipping": "Dostawa",
-      "users": "Użytkownicy",
       "other": "Inne",
       "account": "Konto"
     },
     "items": {
-      "pages": "Strony",
-      "tags": "Tagi",
-      "schemas": "Schematy",
-      "statuses": "Statusy zamówień",
-      "shipping_methods": "Opcje dostawy",
-      "package_templates": "Szablony przesyłek",
       "users": "Lista użytkowników",
       "roles": "Role użytkowników",
-      "apps": "Aplikacje",
-      "webhooks": "Webhooki",
       "seo": "Ustawienia SEO",
       "advanced": "Ustawienia zaawansowane",
       "preferences": "Preferencje użytkownika",
@@ -231,7 +207,11 @@ import UserPreferences from '@/components/modules/settings/UserPreferences.vue'
 import { User } from '@/interfaces/User'
 
 export default Vue.extend({
-  metaInfo: { title: 'Ustawienia' },
+  metaInfo(this: any) {
+    return {
+      title: this.$t('nav.settings') as string,
+    }
+  },
   components: {
     TopNav,
     Card,

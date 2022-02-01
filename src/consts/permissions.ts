@@ -62,34 +62,3 @@ export const ALL_PERMISSIONS: Permission[] = Object.values(PERMISSIONS_TREE)
   .flat()
 
 export type PermissionsTree = typeof PERMISSIONS_TREE
-
-export const PERMISSIONS_GROUP_LABELS = {
-  admin: 'Administracja',
-  analytics: 'Statystyka',
-  apps: 'Zarządzanie aplikacjami',
-  app: 'Aplikacje zewnętrzne',
-  audits: 'Historia zmian',
-  auth: 'Autoryzacja użytkowników',
-  product_sets: 'Kolekcje',
-  countries: 'Kraje',
-  shipping_methods: 'Metody dostawy',
-  deposits: 'Depozyty',
-  discounts: 'Kody rabatowe',
-  items: 'Przedmioty magazynowe',
-  schemas: 'Schematy',
-  cart: 'Koszyk',
-  orders: 'Zamówienia ',
-  packages: 'Szablony przesyłek',
-  pages: 'Strony',
-  payments: 'Płatności',
-  payment_methods: 'Metody Płatności',
-  products: 'Produkty',
-  settings: 'Ustawienia zaawansowane',
-  statuses: 'Statusy zamówień',
-  tags: 'Tagi',
-  users: 'Użytkownicy',
-  roles: 'Role użytkowników',
-  webhooks: 'Webhooki',
-  events: 'Wydarzenia aktywujące Webhooki',
-  seo: 'SEO',
-}

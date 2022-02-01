@@ -1,5 +1,5 @@
 <template>
-  <central-screen-form :title="isTwoFactorAuth ? 'Weryfikacja dwuetapowa' : 'Logowanie'">
+  <central-screen-form :title="isTwoFactorAuth ? $t('twoFactorAuthTitle') : $t('loginTitle')">
     <login-form v-if="!isTwoFactorAuth" v-model="form" @submit="login" />
 
     <two-factor-auth-code-form
@@ -11,6 +11,19 @@
     />
   </central-screen-form>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "loginTitle": "Logowanie",
+    "twoFactorAuthTitle": "Weryfikacja dwuetapowa"
+  },
+  "en": {
+    "loginTitle": "Login",
+    "twoFactorAuthTitle": "Two-factor authentication"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
@@ -32,7 +45,9 @@ const CLEAR_LOGIN_FORM = {
 }
 
 export default Vue.extend({
-  metaInfo: { title: 'Logowanie' },
+  metaInfo(this: any) {
+    return { title: this.$t('loginTitle') as string }
+  },
   components: {
     CentralScreenForm,
     LoginForm,

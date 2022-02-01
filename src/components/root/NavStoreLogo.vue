@@ -12,14 +12,27 @@
   >
     <template v-if="!isLogoExist">
       <img src="@/assets/images/heseya.svg" alt="Heseya" class="nav-logo__logo" />
-      <span v-if="canModify" class="nav-logo__title">Dodaj swoje logo</span>
+      <span v-if="canModify" class="nav-logo__title">{{ $t('addLogo') }}</span>
     </template>
     <template v-else>
       <img :src="storeLogoPath" :alt="storeName" class="nav-logo__logo" />
-      <span v-if="canModify" class="nav-logo__title">Zmień swoje logo</span>
+      <span v-if="canModify" class="nav-logo__title">{{ $t('changeLogo') }}</span>
     </template>
   </media-uploader>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "addLogo": "Dodaj swoje logo",
+    "changeLogo": "Zmień swoje logo"
+  },
+  "en": {
+    "addLogo": "Add your logo",
+    "changeLogo": "Change your logo"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

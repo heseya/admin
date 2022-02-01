@@ -2,7 +2,7 @@
   <div>
     <div class="mobile-nav" :class="{ 'mobile-nav--hidden': isHidden }">
       <menu-link
-        v-for="item in MENU_ITEMS"
+        v-for="item in MENU_LINKS"
         :key="item.to"
         v-can="item.can"
         :to="item.to"
@@ -16,7 +16,7 @@
         root-class="mobile-nav"
         class="mobile-nav__more-btn"
         icon="icons/more-icon.svg"
-        label="Więcej"
+        :label="`nav.moreLink`"
         @click="isMenuVisible = true"
       />
     </div>
@@ -28,13 +28,13 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import MenuLink from './MenuLink.vue'
+import MenuLinkComponent from './MenuLink.vue'
 import MobileOverlay from './MobileOverlay.vue'
-import { MenuItem, MENU_ITEMS } from '@/consts/menuItems'
+import { MenuLink, MENU_LINKS } from '@/consts/menuItems'
 
 export default Vue.extend({
   name: 'MobileNavigation',
-  components: { MobileOverlay, MenuLink },
+  components: { MobileOverlay, MenuLink: MenuLinkComponent },
   data: () => ({
     isMenuVisible: false,
   }),
@@ -42,8 +42,8 @@ export default Vue.extend({
     isHidden(): boolean {
       return !!this.$route.meta?.hiddenNav || false
     },
-    MENU_ITEMS(): MenuItem[] {
-      return MENU_ITEMS
+    MENU_LINKS(): MenuLink[] {
+      return MENU_LINKS
     },
   },
 })

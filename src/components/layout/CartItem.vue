@@ -11,7 +11,7 @@
       <span class="cart-item__title">
         <a-tooltip v-bind="item.product.sets.length === 0 ? { visible: false } : {}">
           <template #title>
-            <small>Kolekcje produktu:</small>
+            <small>{{ $t('productSets') }}:</small>
             <div v-for="set in item.product.sets" :key="set.id">{{ set.name }}</div>
           </template>
           <i v-if="item.product.sets.length" class="bx bxs-info-circle"></i>
@@ -28,18 +28,32 @@
     <span v-if="discount" class="cart-item__price">
       <a-tooltip>
         <template #title>
-          Kwota po rabacie może być błędna, sprawdź czy nie brakuje części groszowej zanim zaczniesz
-          wystawiać dokumenty księgowe
+          {{ $t('priceTooltip') }}
         </template>
         <i class="bx bxs-error"></i> {{ formatCurrency(discountedPrice) }}
       </a-tooltip>
-      <small v-if="discount">Przed rabatem: {{ formatCurrency(item.price) }} </small>
+      <small v-if="discount">{{ $t('beforeDiscount') }}: {{ formatCurrency(item.price) }} </small>
     </span>
     <span v-else class="cart-item__price">
       {{ formatCurrency(item.price) }}
     </span>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "productSets": "Kolekcje produktu",
+    "priceTooltip": "Kwota po rabacie może być błędna, sprawdź czy nie brakuje części groszowej zanim zaczniesz wystawiać dokumenty księgowe.",
+    "beforeDiscount": "Przed rabatem"
+  },
+  "en": {
+    "productSets": "Product sets",
+    "priceTooltip": "The price may be incorrect, check if there is a penny left before you start issuing invoices.",
+    "beforeDiscount": "Before discount"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

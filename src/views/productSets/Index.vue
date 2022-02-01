@@ -1,12 +1,12 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList title="Kolekcje produktów" store-key="productSets" draggable>
+    <PaginatedList :title="$t('title')" store-key="productSets" draggable>
       <template #nav>
         <icon-button v-can="$p.ProductSets.Add" @click="createProductSet()">
           <template #icon>
             <i class="bx bx-plus"></i>
           </template>
-          Dodaj kolekcję
+          {{ $t('add') }}
         </icon-button>
       </template>
 
@@ -33,6 +33,19 @@
   </div>
 </template>
 
+<i18n>
+{
+  "pl": {
+    "title": "Kolekcje produktów",
+    "add": "Dodaj kolekcję"
+  },
+  "en": {
+    "title": "Collections",
+    "add": "Add collection"
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 import { cloneDeep, isString } from 'lodash'
@@ -45,7 +58,9 @@ import SetProductsList from '@/components/modules/productSets/SetProductsList.vu
 import { ProductSet, ProductSetDTO } from '@/interfaces/ProductSet'
 
 export default Vue.extend({
-  metaInfo: { title: 'Kolekcje' },
+  metaInfo(this: any) {
+    return { title: this.$t('title') as string }
+  },
   components: {
     PaginatedList,
     ProductSetForm,

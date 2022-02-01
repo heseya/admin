@@ -1,7 +1,7 @@
 <template>
   <div class="narrower-page">
     <PaginatedList
-      title="Schematy"
+      :title="$t('title')"
       :filters="filters"
       store-key="schemas"
       @clear-filters="clearFilters"
@@ -11,7 +11,7 @@
           <template #icon>
             <i class="bx bx-plus"></i>
           </template>
-          Dodaj schemat
+          {{ $t('add') }}
         </icon-button>
       </template>
 
@@ -21,7 +21,7 @@
             v-model="filters.search"
             class="span-2"
             type="search"
-            label="Wyszukiwanie"
+            :label="$t('common.search')"
             allow-clear
             @input="debouncedSearch"
           />
@@ -33,13 +33,26 @@
           {{ item.name }}
           <small>{{ item.description }}</small>
           <template #action>
-            <small>{{ SchemaTypeLabel[item.type] }}</small>
+            <small>{{ $t(`schemaTypes.${item.type}`) }}</small>
           </template>
         </list-item>
       </template>
     </PaginatedList>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "title": "Schematy",
+    "add": "Dodaj schemat"
+  },
+  "en": {
+    "title": "Schemas",
+    "add": "Add schema"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
@@ -48,10 +61,10 @@ import { debounce } from 'lodash'
 import ListItem from '@/components/layout/ListItem.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 
-import { SchemaTypeLabel } from '@/consts/schemaTypeLabels'
-
 export default Vue.extend({
-  metaInfo: { title: 'Schematy' },
+  metaInfo(this: any) {
+    return { title: this.$t('title') as string }
+  },
   components: {
     PaginatedList,
     ListItem,
@@ -60,7 +73,6 @@ export default Vue.extend({
     filters: {
       search: '',
     },
-    SchemaTypeLabel: Object.freeze(SchemaTypeLabel),
   }),
   created() {
     this.filters.search = (this.$route.query.search as string) || ''

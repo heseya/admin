@@ -1,7 +1,7 @@
 <template>
   <div>
     <PaginatedList
-      title="Zamówienia"
+      :title="$t('title')"
       :filters="filters"
       :table="tableConfig"
       store-key="orders"
@@ -29,15 +29,15 @@
 
             <a-tooltip v-if="item.summary_paid > item.summary">
               <template #title>
-                Nadpłacono
+                {{ $t('overpayed') }}
                 <b>{{ formatCurrency(item.summary_paid - item.summary) }}</b>
               </template>
               <span class="order-icon"> <i class="bx bxs-error"></i> </span>
             </a-tooltip>
           </template>
           <template #paid="{ rawValue }">
-            <span v-if="rawValue" class="order-tag success-text">Opłacone</span>
-            <span v-else class="order-tag danger-text">Nieopłacone</span>
+            <span v-if="rawValue" class="order-tag success-text">{{ $t('payed') }}</span>
+            <span v-else class="order-tag danger-text">{{ $t('notpayed') }}</span>
           </template>
           <template #status="{ rawValue: { name, color } }">
             <span class="order-tag" :style="{ color: `#${color}` }"> {{ name }} </span>
@@ -47,6 +47,41 @@
     </PaginatedList>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "title": "Zamówienia",
+    "overpayed": "Nadpłacono",
+    "payed": "Opłacone",
+    "notpayed": "Nieopłacone",
+    "form": {
+      "code": "Kod zamówienia",
+      "clientName": "Klient",
+      "summary": "Wartość",
+      "paid": "Płatność",
+      "status": "Status",
+      "shipping": "Przesyłka",
+      "date": "Data"
+    }
+  },
+  "en": {
+    "title": "Orders",
+    "overpayed": "Overpayed",
+    "payed": "Payed",
+    "notpayed": "Not payed",
+    "form": {
+      "code": "Order code",
+      "clientName": "Client",
+      "summary": "Value",
+      "paid": "Payment",
+      "status": "Status",
+      "shipping": "Shipping",
+      "date": "Date"
+    }
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
@@ -67,7 +102,9 @@ import { formatFilters, getRelativeDate } from '@/utils/utils'
 import { formatCurrency } from '@/utils/currency'
 
 export default Vue.extend({
-  metaInfo: { title: 'Zamówienia' },
+  metaInfo(this: any) {
+    return { title: this.$t('title') as string }
+  },
   components: {
     OrderFilter,
     PaginatedList,
@@ -81,22 +118,22 @@ export default Vue.extend({
       return {
         rowUrlBuilder: (order) => `/orders/${order.id}`,
         headers: [
-          { key: 'code', label: 'Kod zamówienia', sortable: true },
-          { key: 'delivery_address.name', label: 'Klient' },
+          { key: 'code', label: this.$t('form.code') as string, sortable: true },
+          { key: 'delivery_address.name', label: this.$t('form.clientName') as string },
           {
             key: 'summary',
-            label: 'Wartość',
+            label: this.$t('form.summary') as string,
             sortable: true,
             render: (v) => this.formatCurrency(v),
           },
-          { key: 'paid', label: 'Płatność', width: '0.8fr' },
-          { key: 'status', label: 'Status', width: '0.8fr' },
-          { key: 'shipping_method.name', label: 'Przesyłka' },
+          { key: 'paid', label: this.$t('form.paid') as string, width: '0.8fr' },
+          { key: 'status', label: this.$t('form.status') as string, width: '0.8fr' },
+          { key: 'shipping_method.name', label: this.$t('form.shipping') as string },
           {
             key: 'created_at',
-            label: 'Data',
+            label: this.$t('form.date') as string,
             sortable: true,
-            render: (v) => getRelativeDate(v),
+            render: (v) => getRelativeDate(v, this.$i18n.locale),
           },
         ],
       }

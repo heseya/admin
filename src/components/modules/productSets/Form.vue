@@ -11,7 +11,7 @@
           v-model="form.name"
           :disabled="disabled"
           rules="required"
-          label="Nazwa"
+          :label="$t('common.form.name')"
           @input="editSlug"
         />
 
@@ -22,7 +22,7 @@
             :addon-before="slugPrefix && !form.slug_override ? `${slugPrefix}-` : ''"
             class="slug-input__input"
             rules="required|slug"
-            label="Link"
+            :label="$t('common.form.slug')"
           />
 
           <a-tooltip placement="bottom">
@@ -31,12 +31,11 @@
               v-model="form.slug_override"
               :disabled="disabled"
               class="slug-input__switch"
-              label="Nadpisz link"
+              :label="$t('form.slugOverride')"
             />
 
             <template #title>
-              Domyślnie, początek linku wynika z linku kolekcji-rodzica. Nadpisując link, sprawiamy,
-              że link będzie dokładnie taki jaki zostanie wpisany.
+              {{ $t('form.slugOverrideHelp') }}
             </template>
           </a-tooltip>
         </div>
@@ -47,7 +46,7 @@
               v-model="form.hide_on_index"
               :disabled="disabled"
               horizontal
-              label="Ukryj na stronie głównej"
+              :label="$t('form.hideOnIndex')"
             />
           </flex-input>
           <flex-input>
@@ -55,7 +54,7 @@
               v-model="form.public"
               :disabled="disabled"
               horizontal
-              label="Widoczność kolekcji"
+              :label="$t('form.public')"
             />
           </flex-input>
         </div>
@@ -70,33 +69,60 @@
 
         <br />
         <media-upload-input
-          label="Okładka kolekcji"
+          :label="$t('form.cover')"
           :disabled="disabled"
           :image="form.cover"
           @upload="changeMedia"
         />
 
         <br />
-        <small class="label">Opis</small>
+        <small class="label">{{ $t('common.form.description') }}</small>
         <rich-editor v-if="isEditorActive" v-model="form.description_html" :disabled="disabled" />
       </modal-form>
       <template #footer>
         <div class="row">
-          <app-button v-if="!disabled" @click="handleSubmit(saveModal)"> Zapisz </app-button>
+          <app-button v-if="!disabled" @click="handleSubmit(saveModal)">
+            {{ $t('common.save') }}
+          </app-button>
           <pop-confirm
             v-if="deletable"
-            title="Czy na pewno chcesz usunąć tę kolekcję? Wraz z nią usuniesz wszystkie jej subkolekcje!"
-            ok-text="Usuń"
-            cancel-text="Anuluj"
+            :title="$t('deleteText')"
+            :ok-text="$t('common.delete')"
+            :cancel-text="$t('common.cancel')"
             @confirm="deleteItem"
           >
-            <app-button v-if="form.id" type="danger">Usuń</app-button>
+            <app-button v-if="form.id" type="danger">{{ $t('common.delete') }}</app-button>
           </pop-confirm>
         </div>
       </template>
     </a-modal>
   </validation-observer>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "deleteText": "Czy na pewno chcesz usunąć tę kolekcję? Wraz z nią usuniesz wszystkie jej subkolekcje!",
+    "form": {
+      "slugOverride": "Nadpisz link",
+      "slugOverrideHelp": "Domyślnie, początek linku wynika z linku kolekcji-rodzica. Nadpisując link, sprawiamy, że link będzie dokładnie taki jaki zostanie wpisany.",
+      "hideOnIndex": "Ukryj na stronie głównej",
+      "public": "Widoczność kolekcji",
+      "cover": "Okładka kolekcji"
+    }
+  },
+  "en": {
+    "deleteText": "Are you sure you want to delete this collection? All subcollections will be deleted as well!",
+    "form": {
+      "slugOverride": "Override link",
+      "slugOverrideHelp": "By default, the beginning of the link is derived from the parent collection's link. Overriding the link, you make sure that the link is exactly what you enter.",
+      "hideOnIndex": "Hide on main page",
+      "public": "Visibility",
+      "cover": "Collection cover"
+    }
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

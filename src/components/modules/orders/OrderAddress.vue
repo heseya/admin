@@ -15,9 +15,9 @@
     <pop-confirm
       v-if="!hideRemove && address"
       v-can="$p.Orders.Edit"
-      title="Czy na pewno chcesz usunąć adres?"
-      ok-text="Usuń"
-      cancel-text="Anuluj"
+      :title="$t('removeConfirm')"
+      :ok-text="$t('common.delete')"
+      :cancel-text="$t('common.cancel')"
       @confirm="remove"
     >
       <icon-button size="small" type="transparent" class="address__btn address__btn--remove">
@@ -35,19 +35,34 @@
         {{ address.country_name || address.country }}
       </span>
       <template v-if="address.vat">
-        <span class="address__subtitle">NIP:</span>
+        <span class="address__subtitle">{{ $t('vat') }}:</span>
         <span class="address__field">{{ address.vat }}</span>
       </template>
       <template v-if="address.phone">
-        <span class="address__subtitle">Telefon:</span>
+        <span class="address__subtitle">{{ $t('phone') }}:</span>
         <span class="address__field">{{ address.phone }}</span>
       </template>
     </template>
     <template v-else>
-      <small class="address__error">Brak</small>
+      <small class="address__error">{{ $t('common.none') }}</small>
     </template>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "removeConfirm": "Czy na pewno chcesz usunąć adres?",
+    "phone": "Telefon",
+    "vat": "NIP"
+  },
+  "en": {
+    "removeConfirm": "Are you sure you want to remove the address?",
+    "phone": "Phone",
+    "vat": "VAT"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import { Address } from '@/interfaces/Address'

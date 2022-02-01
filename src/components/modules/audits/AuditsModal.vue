@@ -4,19 +4,19 @@
       <template #icon>
         <i class="bx bx-history"></i>
       </template>
-      Rejestr zmian
+      {{ $t('title') }}
     </icon-button>
 
     <a-modal :visible="isModalOpen" width="750px" :footer="null" @cancel="isModalOpen = false">
       <template #title>
         <div class="audits-modal__header">
-          <span>Rejestr wprowadzonych zmian</span>
+          <span> {{ $t('header') }}</span>
 
           <icon-button size="small" @click="downloadAudits">
             <template #icon>
               <i class="bx bx-history"></i>
             </template>
-            Pobierz historię zmian
+            {{ $t('download') }}
           </icon-button>
         </div>
       </template>
@@ -40,9 +40,9 @@
         <a-collapse-panel v-for="entry in audits" :key="entry.id" class="audit-entry">
           <template #header>
             <div class="audit-entry__header">
-              <span>{{ entry.user ? entry.user.email : 'Niezalogowany użytkownik' }}</span>
+              <span>{{ entry.user ? entry.user.email : $t('unauthenticated') }}</span>
               <span class="audit-entry__tag">
-                {{ entry.event === 'updated' ? 'zmieniono' : entry.event }}
+                {{ entry.event === 'updated' ? $t('eventChanged') : entry.event }}
               </span>
               <span>{{ formatDateTime(entry.created_at) }}</span>
             </div>
@@ -63,14 +63,70 @@
         </a-collapse-panel>
       </a-collapse>
 
-      <empty v-else> Nie zarejestrowano żadnych zmian dla tego obiektu </empty>
+      <empty v-else> {{ $t('noChanges') }} </empty>
     </a-modal>
   </div>
 </template>
 
+<i18n>
+{
+  "pl": {
+    "title": "Rejestr zmian",
+    "header": "Rejestr wprowadzonych zmian",
+    "download": "Pobierz historię zmian",
+    "noChanges": "Nie zarejestrowano żadnych zmian dla tego obiektu",
+    "table": {
+      "name": "Nazwa",
+      "old": "Starta wartość",
+      "new": "Nowa wartość"
+    },
+    "unauthenticated": "Niezalogowany użytkownik",
+    "eventChanged": "zmieniono",
+    "keyValues": {
+      "delivery_address_id": "Adres dostawy",
+      "invoice_address_id": "Adres rozliczeniowy",
+      "status_id": "Status zamówienia",
+      "content_html": "Treść",
+      "slug": "Link",
+      "name": "Nazwa",
+      "public": "Widoczność",
+      "price": "Cena",
+      "quantity_step": "Format ilości",
+      "description_html": "Opis"
+    }
+  },
+  "en": {
+    "title": "Audit log",
+    "header": "Audit log",
+    "download": "Download audit log",
+    "noChanges": "No changes have been logged for this object",
+    "table": {
+      "name": "Name",
+      "old": "Old value",
+      "new": "New value"
+    },
+    "unauthenticated": "Unauthenticated user",
+    "eventChanged": "changed",
+    "keyValues": {
+      "delivery_address_id": "Delivery address",
+      "invoice_address_id": "Invoice address",
+      "status_id": "Order status",
+      "content_html": "Content",
+      "slug": "Link",
+      "name": "Name",
+      "public": "Visibility",
+      "price": "Price",
+      "quantity_step": "Quantity format",
+      "description_html": "Description"
+    }
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 import format from 'date-fns/format'
+import { capitalize } from 'lodash'
 
 import CmsTable from '../../cms/CmsTable.vue'
 import Empty from '../../layout/Empty.vue'
@@ -79,12 +135,14 @@ import AuditFormatter from './AuditFormatter.vue'
 import CmsTableRow from '../../cms/CmsTableRow.vue'
 
 import { downloadJsonAsFile } from '@/utils/download'
-import { changeAuditKeyToName } from '@/utils/auditsFieldsNames'
 
 import { UUID } from '@/interfaces/UUID'
 import { GeneratedStoreModulesKeys } from '@/store'
 import { AuditEntry } from '@/interfaces/AuditEntry'
 import { TableConfig } from '@/interfaces/CmsTable'
+
+const transformKey = (key: string): string =>
+  capitalize(key.split('_id').join('').split('_').join(' '))
 
 export default Vue.extend({
   components: { CmsTable, Empty, Loading, AuditFormatter, CmsTableRow },
@@ -109,11 +167,11 @@ export default Vue.extend({
         headers: [
           {
             key: 'key',
-            label: 'Nazwa',
-            render: (key) => changeAuditKeyToName(key),
+            label: this.$t('table.name') as string,
+            render: (key) => (this.$t(`keyValues.${key}`) as string) || transformKey(key),
           },
-          { key: 'old', label: 'Stara wartość' },
-          { key: 'new', label: 'Nowa wartość' },
+          { key: 'old', label: this.$t('table.old') as string },
+          { key: 'new', label: this.$t('table.new') as string },
         ],
       }
     },

@@ -5,12 +5,25 @@
         v-model="confirmCode"
         rules="required"
         name="confirm_code"
-        label="Kod autoryzacyjny"
+        :label="$t('confirmCode')"
       />
-      <app-button type="primary" html-type="submit"> Aktywuj weryfikację dwuetapową </app-button>
+      <app-button type="primary" html-type="submit"> {{ $t('activate2fa') }} </app-button>
     </form>
   </validation-observer>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "confirmCode": "Kod autoryzacyjny",
+    "activate2fa": "Aktywuj weryfikację dwuetapową"
+  },
+  "en": {
+    "confirmCode": "Confirmation code",
+    "activate2fa": "Activate two-factor authentication"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

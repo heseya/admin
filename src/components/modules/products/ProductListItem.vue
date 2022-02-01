@@ -35,8 +35,10 @@
     </template>
 
     <template #public>
-      <tag v-if="product.public" type="success"> <i class="bx bx-check"></i> Tak </tag>
-      <tag v-else type="error"> <i class="bx bx-x"></i> Nie </tag>
+      <tag v-if="product.public" type="success">
+        <i class="bx bx-check"></i> {{ $t('common.yes') }}
+      </tag>
+      <tag v-else type="error"> <i class="bx bx-x"></i> {{ $t('common.no') }} </tag>
     </template>
   </cms-table-row>
 </template>

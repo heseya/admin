@@ -13,8 +13,19 @@
     loop
     muted
   />
-  <div v-else class="media-element media-element--unknown">unknown media type</div>
+  <div v-else class="media-element media-element--unknown">{{ $t('unknownType') }}</div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "unknownType": "Nieznany typ pliku"
+  },
+  "en": {
+    "unknownType": "Unknown media type"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

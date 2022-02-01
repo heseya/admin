@@ -1,11 +1,11 @@
 <template>
-  <central-screen-form title="Resetowanie hasła">
+  <central-screen-form :title="$t('title')">
     <template v-if="!isSuccess">
       <ValidationObserver v-slot="{ handleSubmit }">
         <validated-input
           v-model="email"
           rules="required|email"
-          label="E-mail"
+          :label="$t('email')"
           type="email"
           @keydown.enter="handleSubmit(sendResetRequest)"
         />
@@ -13,19 +13,31 @@
 
         <div class="central-screen-form__row">
           <app-button type="primary" @click="handleSubmit(sendResetRequest)">
-            Resetuj hasło
+            {{ $t('resetPassword') }}
           </app-button>
-          <app-button type="white" to="/login"> Wróć do strony logowania </app-button>
+          <app-button type="white" to="/login"> {{ $t('returnToLogin') }} </app-button>
         </div>
       </ValidationObserver>
     </template>
     <template v-else>
-      <p>Prośba resetu hasła została wysłana. Sprawdź swoją skrzynkę pocztową!</p>
+      <p>{{ $t('successMessage') }}</p>
       <br />
-      <app-button to="/login"> Wróć do strony logowania </app-button>
+      <app-button to="/login"> {{ $t('returnToLogin') }} </app-button>
     </template>
   </central-screen-form>
 </template>
+
+<i18n>
+{
+  "en": {
+    "title": "Resetowanie hasła",
+    "email": "E-mail",
+    "resetPassword": "Resetuj hasło",
+    "returnToLogin": "Wróć do strony logowania",
+    "successMessage": "Prośba resetu hasła została wysłana. Sprawdź swoją skrzynkę pocztową!"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
@@ -36,7 +48,9 @@ import CentralScreenForm from '@/components/form/CentralScreenForm.vue'
 import { formatApiNotificationError } from '@/utils/errors'
 
 export default Vue.extend({
-  metaInfo: { title: 'Resetowanie hasła' },
+  metaInfo(this: any) {
+    return { title: this.$t('title') as string }
+  },
   components: {
     CentralScreenForm,
     ValidationObserver,

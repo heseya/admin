@@ -12,6 +12,17 @@
   </div>
 </template>
 
+<i18n>
+{
+  "pl": {
+    "allowedExtensions": "Obsługiwane są tylko pliki z rozszerzeniami:"
+  },
+  "en": {
+    "allowedExtensions": "Allowed extensions:"
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 
@@ -82,9 +93,7 @@ export default Vue.extend({
     },
     async upload(files: File[]) {
       if (files.some((f) => !this.isFileValid(f))) {
-        this.$toast.error(
-          `Obsługiwane są tylko pliki z rozszerzeniami: ${this.extensions.join(', ')}`,
-        )
+        this.$toast.error(`${this.$t('allowedExtensions')}: ${this.extensions.join(', ')}`)
         return
       }
 

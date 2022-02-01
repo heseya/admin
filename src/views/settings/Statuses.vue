@@ -1,12 +1,12 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList title="Statusy zamówień" store-key="statuses" draggable>
+    <PaginatedList :title="$t('title')" store-key="statuses" draggable>
       <template #nav>
         <icon-button v-can="$p.Statuses.Add" @click="openModal()">
           <template #icon>
             <i class="bx bx-plus"></i>
           </template>
-          Dodaj status
+          {{ $t('add') }}
         </icon-button>
       </template>
       <template #default="{ item: status }">
@@ -24,14 +24,14 @@
       <a-modal
         v-model="isModalActive"
         width="550px"
-        :title="editedItem.id ? 'Edycja statusu' : 'Nowy status'"
+        :title="editedItem.id ? $t('editTitle') : $t('newTitle')"
       >
         <modal-form>
           <validated-input
             v-model="editedItem.name"
             :disabled="!canModify"
             rules="required"
-            label="Nazwa"
+            :label="$t('common.form.name')"
           />
 
           <validated-input
@@ -40,14 +40,14 @@
             type="textarea"
             rows="5"
             rules="required"
-            label="Opis"
+            :label="$t('common.form.description')"
           />
 
           <validated-input
             :disabled="!canModify"
             rules="required"
             :value="`#${editedItem.color}`"
-            label="Kolor"
+            :label="$t('form.color')"
             type="color"
             @input="setColor"
           />
@@ -58,17 +58,16 @@
             v-model="editedItem.cancel"
             :disabled="!canModify"
             horizontal
-            label="Przywracanie stanów magazynowych"
+            :label="$t('form.cancel')"
           />
           <br />
 
           <SwitchInput v-model="editedItem.hidden" :disabled="!canModify" horizontal>
             <template #title>
-              Ukryj zamówienia z tym statusem na liście
+              {{ $t('form.hidden') }}
               <a-tooltip>
                 <template #title>
-                  Zamówienia z tym statusem nie będą domyślnie pokazywać się na liście zamówień.
-                  Wciąż będzie można po nim filtrować.
+                  {{ $t('form.hiddenTooltip') }}
                 </template>
                 <i class="bx bxs-info-circle"></i>
               </a-tooltip>
@@ -78,11 +77,10 @@
 
           <SwitchInput v-model="editedItem.no_notifications" :disabled="!canModify" horizontal>
             <template #title>
-              Nie wysyłaj powiadomień
+              {{ $t('form.noNotification') }}
               <a-tooltip>
                 <template #title>
-                  Przy zmianie statusu zamówienia na ten, klientowi nie zostanie wysłane
-                  powiadomienie mailowe.
+                  {{ $t('form.noNotificationTooltip') }}
                 </template>
                 <i class="bx bxs-info-circle"></i>
               </a-tooltip>
@@ -91,15 +89,17 @@
         </modal-form>
         <template #footer>
           <div class="row">
-            <app-button v-if="canModify" @click="handleSubmit(saveModal)"> Zapisz </app-button>
+            <app-button v-if="canModify" @click="handleSubmit(saveModal)">
+              {{ $t('common.save') }}
+            </app-button>
             <pop-confirm
               v-can="$p.Statuses.Remove"
-              title="Czy na pewno chcesz usunąć ten status?"
-              ok-text="Usuń"
-              cancel-text="Anuluj"
+              :title="$t('deleteText')"
+              :ok-text="$t('common.delete')"
+              :cancel-text="$t('common.cancel')"
               @confirm="deleteItem"
             >
-              <app-button v-if="editedItem.id" type="danger">Usuń</app-button>
+              <app-button v-if="editedItem.id" type="danger">{{ $t('common.delete') }}</app-button>
             </pop-confirm>
           </div>
         </template>
@@ -107,6 +107,41 @@
     </validation-observer>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "title": "Statusy zamówień",
+    "add": "Dodaj status",
+    "editTitle": "Edycja statusu",
+    "newTitle": "Nowy status",
+    "deleteText": "Czy na pewno chcesz usunąć ten status?",
+    "form": {
+      "color": "Kolor",
+      "cancel": "Przywracanie stanów magazynowych",
+      "hidden": "Ukryj zamówienia z tym statusem na liście",
+      "hiddenTooltip": "Zamówienia z tym statusem nie będą domyślnie pokazywać się na liście zamówień. Wciąż będzie można po nim filtrować.",
+      "noNotification": "Nie wysyłaj powiadomień",
+      "noNotificationTooltip": "Przy zmianie statusu zamówienia na ten, klientowi nie zostanie wysłane powiadomienie mailowe."
+    }
+  },
+  "en": {
+    "title": "Order statuses",
+    "add": "Add status",
+    "editTitle": "Edit status",
+    "newTitle": "New status",
+    "deleteText": "Are you sure you want to delete this status?",
+    "form": {
+      "color": "Color",
+      "cancel": "Restore stock",
+      "hidden": "Hide orders with this status on the list",
+      "hiddenTooltip": "Orders with this status will not be shown on the list by default. You can still filter by them.",
+      "noNotification": "Don't send notifications",
+      "noNotificationTooltip": "When changing order status to this one, the customer will not receive a notification email."
+    }
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
@@ -134,7 +169,9 @@ const CLEAR_STATUS: OrderStatus = {
 }
 
 export default Vue.extend({
-  metaInfo: { title: 'Statusy zamówień' },
+  metaInfo(this: any) {
+    return { title: this.$t('title') as string }
+  },
   components: {
     PaginatedList,
     ListItem,

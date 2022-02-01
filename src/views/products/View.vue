@@ -183,6 +183,11 @@
       "title": "Produkt wciąż jest ukryty",
       "description": "Produkt jest niewidoczny ponieważ jego marka lub kategoria jest ukryta."
     },
+    "messages": {
+      "removed": "Produkt został usunięty.",
+      "created": "Produkt został utworzony.",
+      "updated": "Produkt został zaktualizowany."
+    },
     "saveAndNext": "Zapisz i dodaj następny"
   },
   "en": {
@@ -199,6 +204,11 @@
     "stillVisible": {
       "title": "Product is still hidden",
       "description": "Product is hidden because its brand or category is hidden."
+    },
+    "messages": {
+      "removed": "Product has been removed.",
+      "created": "Product has been created.",
+      "updated": "Product has been updated."
     },
     "saveAndNext": "Save and add next"
   }
@@ -335,7 +345,7 @@ export default Vue.extend({
       this.$accessor.startLoading()
       const success = await this.$accessor.products.remove(this.id)
       if (success) {
-        this.$toast.success('Produkt został usunięty.')
+        this.$toast.success(this.$t('messages.removed') as string)
         this.$router.push('/products')
       }
       this.$accessor.stopLoading()
@@ -351,8 +361,8 @@ export default Vue.extend({
       this.$accessor.startLoading()
 
       const successMessage = this.isNew
-        ? 'Produkt został utworzony'
-        : 'Produkt został zaktualizowany'
+        ? (this.$t('messages.created') as string)
+        : (this.$t('messages.updated') as string)
 
       const item = this.isNew
         ? await this.$accessor.products.add(apiPayload)

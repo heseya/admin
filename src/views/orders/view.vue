@@ -1,6 +1,9 @@
 <template>
   <div class="narrower-page">
-    <top-nav :title="`${$t('title')} ${order.code}`" :subtitle="`z dnia ${formattedDate}`">
+    <top-nav
+      :title="`${$t('title')} ${order.code}`"
+      :subtitle="`${$t('datePrefix')} ${formattedDate}`"
+    >
       <audits-modal :id="order.id" model="orders" />
       <a v-if="storefrontPaymentUrl" :href="`${storefrontPaymentUrl}${order.code}`" target="_blank">
         <icon-button>
@@ -13,7 +16,7 @@
       <pop-confirm
         v-if="order.payable"
         :title="$t('payTheOrderConfirm')"
-        ok-text="Opłać"
+        :ok-text="$t('pay')"
         ok-color="success"
         :cancel-text="$t('common.cancel')"
         @confirm="payOffline"
@@ -203,6 +206,7 @@
 {
   "pl": {
     "title": "Zamówienie",
+    "datePrefix": "z dnia",
     "cart": {
       "title": "Koszyk",
       "shipping": "Dostawa",
@@ -242,10 +246,12 @@
     "goToPayment": "Przejdź do płatności",
     "payTheOrder": "Opłać zamówienie",
     "payTheOrderConfirm": "Czy na pewno chcesz ręcznie oznaczyć zamówienie jako opłacone? (Np. przelewem tradycyjnym lub gotówką)",
+    "pay": "Opłać",
     "updatedSuccess": "Zamówienie zostało zaktualizowane"
   },
   "en": {
     "title": "Order",
+    "datePrefix": "of",
     "cart": {
       "title": "Cart",
       "shipping": "Shipping",
@@ -285,6 +291,7 @@
     "goToPayment": "Go to payment",
     "payTheOrder": "Pay the order",
     "payTheOrderConfirm": "Are you sure you want to manually mark the order as paid? (E.g. by cash or bank transfer)",
+    "pay": "Pay",
     "updatedSuccess": "Order was updated"
   }
 }

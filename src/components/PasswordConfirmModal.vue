@@ -3,9 +3,9 @@
     <a-modal
       v-model="isActive"
       class="password-confirm-modal"
-      :ok-text="okText"
+      :ok-text="okText || $t('common.continue')"
       :cancel-text="$t('common.cancel')"
-      :title="title"
+      :title="title || $t('defaultText')"
       :ok-type="okType"
       @ok="handleSubmit(confirm)"
     >
@@ -23,9 +23,11 @@
 <i18n>
 {
   "pl": {
+    "defaultText": "Wpisz swoje hasło, aby potwierdzić operację.",
     "password": "Hasło"
   },
   "en": {
+    "defaultText": "Enter your password to confirm the operation",
     "password": "Password"
   }
 }
@@ -46,7 +48,7 @@ export default Vue.extend({
     },
     title: {
       type: String,
-      default: 'Wpisz swoje hasło, aby potwierdzić operację',
+      default: null,
     },
     okText: {
       type: String,

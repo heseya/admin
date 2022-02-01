@@ -29,12 +29,19 @@
 
 <i18n>
 {
-  "en": {
+  "pl": {
     "title": "Resetowanie hasła",
     "email": "E-mail",
     "resetPassword": "Resetuj hasło",
     "returnToLogin": "Wróć do strony logowania",
     "successMessage": "Prośba resetu hasła została wysłana. Sprawdź swoją skrzynkę pocztową!"
+  },
+  "en": {
+    "title": "Password reset",
+    "email": "E-mail",
+    "resetPassword": "Reset password",
+    "returnToLogin": "Return to login page",
+    "successMessage": "Your password reset request has been sent. Check your mailbox!"
   }
 }
 </i18n>

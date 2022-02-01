@@ -237,7 +237,6 @@ import ModalForm from '@/components/form/ModalForm.vue'
 import Selector from '@/components/Selector.vue'
 
 import { Schema, SchemaType } from '@/interfaces/Schema'
-import { SchemaTypeLabel } from '@/consts/schemaTypeLabels'
 
 import { CLEAR_FORM, CLEAR_OPTION } from '@/consts/schemaConsts'
 
@@ -267,15 +266,17 @@ export default Vue.extend({
     defaultOption: 0,
     isUsedSchemaModalActive: false,
     usedSchemaName: '',
-    SchemaTypesOptions: Object.values(SchemaType).map((t) => ({
-      value: t,
-      label: SchemaTypeLabel[t],
-    })),
     SchemaType: SchemaType,
   }),
   computed: {
     selectableSchemas(): Schema[] {
       return this.currentProductSchemas.filter(({ id }) => id !== this.form.id)
+    },
+    SchemaTypesOptions(): { value: string; label: string }[] {
+      return Object.values(SchemaType).map((t) => ({
+        value: t,
+        label: this.$t(`schemaTypes.${t}`) as string,
+      }))
     },
   },
   watch: {

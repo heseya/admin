@@ -45,5 +45,16 @@
     "roles": "Roles",
     "apps": "Apps",
     "webhooks": "Webhooks"
+  },
+
+  "schemaTypes": {
+    "string": "Text value",
+    "select": "Select from multiple options",
+    "numeric": "Numeric value",
+    "boolean": "True/false value",
+    "multiply": "Multiplied numeric value",
+    "multiply_schema": "Schema multiply",
+    "date": "Date",
+    "file": "File"
   }
 }

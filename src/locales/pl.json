@@ -45,5 +45,16 @@
     "roles": "Role",
     "apps": "Aplikacje",
     "webhooks": "Webhooki"
+  },
+
+  "schemaTypes": {
+    "string": "Wartość tekstowa",
+    "select": "Wybór spośród kilku opcji",
+    "numeric": "Wartość numeryczna",
+    "boolean": "Wartość typu prawda/fałsz",
+    "multiply": "Mnożona wartość numeryczna",
+    "multiply_schema": "Mnożenie schematów",
+    "date": "Data",
+    "file": "Plik"
   }
 }

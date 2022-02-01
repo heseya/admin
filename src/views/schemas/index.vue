@@ -33,7 +33,7 @@
           {{ item.name }}
           <small>{{ item.description }}</small>
           <template #action>
-            <small>{{ SchemaTypeLabel[item.type] }}</small>
+            <small>{{ $t(`schemaTypes.${item.type}`) }}</small>
           </template>
         </list-item>
       </template>
@@ -61,8 +61,6 @@ import { debounce } from 'lodash'
 import ListItem from '@/components/layout/ListItem.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 
-import { SchemaTypeLabel } from '@/consts/schemaTypeLabels'
-
 export default Vue.extend({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
@@ -75,7 +73,6 @@ export default Vue.extend({
     filters: {
       search: '',
     },
-    SchemaTypeLabel: Object.freeze(SchemaTypeLabel),
   }),
   created() {
     this.filters.search = (this.$route.query.search as string) || ''

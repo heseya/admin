@@ -89,7 +89,7 @@
 
 <i18n>
 {
-  "en": {
+  "pl": {
     "title": "Schematy",
     "addSchema": "Dodaj schemat do produktu",
     "noSchemaInProduct": "Ten produkt nie ma jeszcze żadnego schematu",
@@ -99,6 +99,17 @@
     "newTitle": "Nowy schemat",
     "chooseExisting": "Wybierz istniejący schemat lub",
     "createNew": "utwórz nowy"
+  },
+  "en": {
+    "title": "Schemas",
+    "addSchema": "Add schema to product",
+    "noSchemaInProduct": "This product has no schemas yet",
+    "autoDependecy": "Schema is automatic - you can't delete it",
+    "optional": "optional",
+    "editTitle": "Edit schema",
+    "newTitle": "New schema",
+    "chooseExisting": "Choose existing schema or",
+    "createNew": "create new"
   }
 }
 </i18n>
@@ -114,7 +125,6 @@ import ModalForm from '@/components/form/ModalForm.vue'
 import SchemaForm from '@/components/modules/schemas/Form.vue'
 import Selector from '@/components/Selector.vue'
 
-import { SchemaTypeLabel } from '@/consts/schemaTypeLabels'
 import { Schema } from '@/interfaces/Schema'
 import { UUID } from '@/interfaces/UUID'
 
@@ -137,7 +147,6 @@ export default Vue.extend({
     disabled: { type: Boolean, default: false },
   },
   data: () => ({
-    SchemaTypeLabel: Object.freeze(SchemaTypeLabel),
     isModalActive: false,
     isFormModalActive: false,
     editedSchema: {} as Schema,

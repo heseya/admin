@@ -48,7 +48,12 @@
     </template>
 
     <a-modal v-model="isSelectorActive" width="800px" :title="$t('chooseProduct')" :footer="null">
-      <selector type-name="produkt" type="products" :existing="products" @select="addProduct" />
+      <selector
+        :type-name="$t('product')"
+        type="products"
+        :existing="products"
+        @select="addProduct"
+      />
     </a-modal>
   </a-modal>
 </template>
@@ -60,14 +65,16 @@
     "addProduct": "Dodaj produkt do kolekcji",
     "empty": "Ta kolekcja nie zawiera produktów",
     "chooseProduct": "Wybierz produkt",
-    "successMessage": "Produkty zostały zapisane w kolekcji"
+    "successMessage": "Produkty zostały zapisane w kolekcji",
+    "product": "produkt"
   },
   "en": {
     "title": "Products in collection",
     "addProduct": "Add product to collection",
     "empty": "This collection does not contain products",
     "chooseProduct": "Choose product",
-    "successMessage": "Products saved in collection"
+    "successMessage": "Products saved in collection",
+    "product": "product"
   }
 }
 </i18n>

@@ -25,7 +25,7 @@
     </div>
     <a-modal v-model="isModalActive" width="800px" :title="$t('chooseItem')" :footer="null">
       <modal-form>
-        <selector type-name="produkt" type="items" :existing="value" @select="addItem" />
+        <selector :type-name="$t('product')" type="items" :existing="value" @select="addItem" />
       </modal-form>
     </a-modal>
   </div>
@@ -34,10 +34,12 @@
 <i18n>
 {
   "pl": {
-    "chooseItem": "Wybierz przedmiot z magazynu"
+    "chooseItem": "Wybierz przedmiot z magazynu",
+    "product": "produkt"
   },
   "en": {
-    "chooseItem": "Choose item from warehouse"
+    "chooseItem": "Choose item from warehouse",
+    "product": "product"
   }
 }
 </i18n>

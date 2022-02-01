@@ -40,9 +40,9 @@
         <a-collapse-panel v-for="entry in audits" :key="entry.id" class="audit-entry">
           <template #header>
             <div class="audit-entry__header">
-              <span>{{ entry.user ? entry.user.email : 'Niezalogowany użytkownik' }}</span>
+              <span>{{ entry.user ? entry.user.email : $t('unauthenticated') }}</span>
               <span class="audit-entry__tag">
-                {{ entry.event === 'updated' ? 'zmieniono' : entry.event }}
+                {{ entry.event === 'updated' ? $t('eventChanged') : entry.event }}
               </span>
               <span>{{ formatDateTime(entry.created_at) }}</span>
             </div>
@@ -79,6 +79,20 @@
       "name": "Nazwa",
       "old": "Starta wartość",
       "new": "Nowa wartość"
+    },
+    "unauthenticated": "Niezalogowany użytkownik",
+    "eventChanged": "zmieniono",
+    "keyValues": {
+      "delivery_address_id": "Adres dostawy",
+      "invoice_address_id": "Adres rozliczeniowy",
+      "status_id": "Status zamówienia",
+      "content_html": "Treść",
+      "slug": "Link",
+      "name": "Nazwa",
+      "public": "Widoczność",
+      "price": "Cena",
+      "quantity_step": "Format ilości",
+      "description_html": "Opis"
     }
   },
   "en": {
@@ -90,6 +104,20 @@
       "name": "Name",
       "old": "Old value",
       "new": "New value"
+    },
+    "unauthenticated": "Unauthenticated user",
+    "eventChanged": "changed",
+    "keyValues": {
+      "delivery_address_id": "Delivery address",
+      "invoice_address_id": "Invoice address",
+      "status_id": "Order status",
+      "content_html": "Content",
+      "slug": "Link",
+      "name": "Name",
+      "public": "Visibility",
+      "price": "Price",
+      "quantity_step": "Quantity format",
+      "description_html": "Description"
     }
   }
 }
@@ -98,6 +126,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import format from 'date-fns/format'
+import { capitalize } from 'lodash'
 
 import CmsTable from '../../cms/CmsTable.vue'
 import Empty from '../../layout/Empty.vue'
@@ -106,12 +135,14 @@ import AuditFormatter from './AuditFormatter.vue'
 import CmsTableRow from '../../cms/CmsTableRow.vue'
 
 import { downloadJsonAsFile } from '@/utils/download'
-import { changeAuditKeyToName } from '@/utils/auditsFieldsNames'
 
 import { UUID } from '@/interfaces/UUID'
 import { GeneratedStoreModulesKeys } from '@/store'
 import { AuditEntry } from '@/interfaces/AuditEntry'
 import { TableConfig } from '@/interfaces/CmsTable'
+
+const transformKey = (key: string): string =>
+  capitalize(key.split('_id').join('').split('_').join(' '))
 
 export default Vue.extend({
   components: { CmsTable, Empty, Loading, AuditFormatter, CmsTableRow },
@@ -137,7 +168,7 @@ export default Vue.extend({
           {
             key: 'key',
             label: this.$t('table.name') as string,
-            render: (key) => changeAuditKeyToName(key),
+            render: (key) => (this.$t(`keyValues.${key}`) as string) || transformKey(key),
           },
           { key: 'old', label: this.$t('table.old') as string },
           { key: 'new', label: this.$t('table.new') as string },

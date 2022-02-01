@@ -56,5 +56,22 @@
     "multiply_schema": "Mnożenie schematów",
     "date": "Data",
     "file": "Plik"
+  },
+
+  "validation": {
+    "required": "To pole jest wymagane",
+    "email": "Wprowadź poprawny adres email",
+    "repeatPassword": "Powtórzone hasło różni się od nowego hasła",
+    "password": "Hasło musi mieć przynajmniej 10 znaków oraz zawierać małą, dużą literę, cyfrę i znak specjalny",
+    "positive": "To pole musi być większe od zera",
+    "notNegative": "To pole nie może być mniejsze od 0",
+    "lessThan": "Wartość musi być mniejsza bądź równa od {_target_}",
+    "idRequired": "Wymagane jest podanie ID",
+    "slug": "Link może składać się tylko z małych liter, cyfr i myślników",
+    "url": "Wartość musi być poprawnym adresem URL",
+    "lettersOnly": "Wartość może składać się tylko z liter i podkreślników (_)",
+    "dateBefore": "Data zakończenia musi być przed datą startu",
+    "priceRangesDuplicates": "Zakresy cen nie mogą zawierać zduplikowanych progów",
+    "schemaCheckbox": "Schemat nie może być jednocześnie ukryty i wymagany"
   }
 }

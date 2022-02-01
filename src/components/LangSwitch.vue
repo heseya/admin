@@ -30,6 +30,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { localeChanged } from 'vee-validate'
 import { LOCALE_STORAGE_KEY } from '@/consts/i18n'
 
 export default Vue.extend({
@@ -37,6 +38,7 @@ export default Vue.extend({
     '$root.$i18n.locale'(locale: string) {
       window.localStorage.setItem(LOCALE_STORAGE_KEY, locale)
       this.$i18n.locale = locale
+      localeChanged()
     },
   },
 })

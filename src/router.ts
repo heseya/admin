@@ -261,6 +261,16 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/settings/languages',
+      name: 'Languages',
+      component: () => import('./views/languages/index.vue'),
+      meta: {
+        requiresAuth: true,
+        // all authenticated users can show languages
+        // permissions: [Permissions.Languages.Show],
+      },
+    },
+    {
       path: '/settings/roles',
       name: 'Roles',
       component: () => import('./views/roles/index.vue'),

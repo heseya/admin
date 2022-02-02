@@ -11,6 +11,7 @@
           url="/pages"
           icon="bx bxs-copy-alt"
         />
+        <SettingsItem :name="$t('models.languages')" url="/settings/languages" icon="bx bx-text" />
 
         <h2 v-can.any="[$p.Tags.Show, $p.Products.Show]" class="section-title">
           {{ $t('models.products') }}

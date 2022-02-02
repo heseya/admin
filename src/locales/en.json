@@ -45,7 +45,8 @@
     "users": "Users",
     "roles": "Roles",
     "apps": "Apps",
-    "webhooks": "Webhooks"
+    "webhooks": "Webhooks",
+    "languages": "Languages"
   },
 
   "schemaTypes": {

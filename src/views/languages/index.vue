@@ -1,6 +1,6 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList :title="$t('title')" store-key="languages" :table="tableConfig">
+    <PaginatedList ref="table" :title="$t('title')" store-key="languages" :table="tableConfig">
       <template #nav>
         <icon-button v-can="$p.Languages.Add" @click="openModal()">
           <template #icon>
@@ -183,6 +183,9 @@ export default Vue.extend({
       this.$accessor.stopLoading()
 
       if (success) {
+        // Fetch all languages again, to check if the default language has changed
+        if (this.editedItem.default) await (this.$refs.table as any).getItems()
+
         this.isModalActive = false
       }
     },

@@ -21,12 +21,15 @@
       :label="$t('form.hidden')"
     />
 
-    <switch-input
-      v-model="form.default"
-      :disabled="disabled"
-      horizontal
-      :label="$t('form.default')"
-    />
+    <switch-input v-model="form.default" :disabled="disabled" horizontal>
+      <template #title>
+        {{ $t('form.default') }}
+        <!-- <a-tooltip>
+          <template #title> {{ $t('changeDefaultTooltip') }} </template>
+          <i class="bx bxs-info-circle"></i>
+        </a-tooltip> -->
+      </template>
+    </switch-input>
   </modal-form>
 </template>
 
@@ -37,19 +40,22 @@
       "iso": "Kod ISO",
       "default": "Język domyślny",
       "hidden": "Ukryty"
-    }
+    },
+    "changeDefaultTooltip": "TODO"
   },
   "en": {
     "form": {
       "iso": "ISO code",
       "default": "Default language",
       "hidden": "Hidden"
-    }
+    },
+    "changeDefaultTooltip": "TODO"
   }
 }
 </i18n>
 
 <script lang="ts">
+// TODO: tooltip przy języku domyślnym z konsekwencjami zmiani
 import Vue from 'vue'
 
 import ModalForm from '@/components/form/ModalForm.vue'

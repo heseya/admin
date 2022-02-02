@@ -9,6 +9,24 @@
           {{ $t('add') }}
         </icon-button>
       </template>
+
+      <template #default="{ item: language }">
+        <cms-table-row
+          :item="language"
+          :headers="tableConfig.headers"
+          @click="openModal(language.id)"
+        >
+          <template #iso="{ value }">
+            <code>{{ value }}</code>
+          </template>
+          <template #hidden="{ value }">
+            <boolean-tag-value :value="value" />
+          </template>
+          <template #default="{ value }">
+            <boolean-tag-value :value="value" />
+          </template>
+        </cms-table-row>
+      </template>
     </PaginatedList>
 
     <validation-observer v-slot="{ handleSubmit }">
@@ -23,15 +41,27 @@
             <app-button v-if="canModify" @click="handleSubmit(saveModal)">
               {{ $t('common.save') }}
             </app-button>
+
             <pop-confirm
+              v-if="!editedItem.default"
               v-can="$p.Languages.Remove"
               :title="$t('deleteText')"
               :ok-text="$t('common.delete')"
               :cancel-text="$t('common.cancel')"
               @confirm="deleteItem"
             >
-              <app-button v-if="editedItem.id" type="danger">{{ $t('common.delete') }}</app-button>
+              <app-button v-if="editedItem.id" type="danger">
+                {{ $t('common.delete') }}
+              </app-button>
             </pop-confirm>
+            <a-tooltip v-else>
+              <template #title> {{ $t('deleteDefaultTooltip') }} </template>
+              <div>
+                <app-button v-if="editedItem.id" type="danger" disabled>
+                  {{ $t('common.delete') }}
+                </app-button>
+              </div>
+            </a-tooltip>
           </div>
         </template>
       </a-modal>
@@ -46,35 +76,31 @@
     "add": "Dodaj język",
     "editTitle": "Edycja jęzka",
     "newTitle": "Nowy język",
-    "deleteText": "Czy na pewno chcesz usunąć ten język?",
+    "deleteText": "Czy na pewno chcesz usunąć ten język? Spowoduje to usunięce wszystkich treści, które zostały zapisane w tym języku!",
     "form": {
       "iso": "Kod ISO",
       "default": "Język domyślny",
       "hidden": "Ukryty"
-    }
+    },
+    "deleteDefaultTooltip": "Nie można usunąć języka domyślnego"
   },
   "en": {
     "title": "Languages",
     "add": "Add language",
     "editTitle": "Edit language",
     "newTitle": "New language",
-    "deleteText": "Are you sure you want to delete this language?",
+    "deleteText": "Are you sure you want to delete this language? This will delete all content in this language!",
     "form": {
       "iso": "ISO code",
       "default": "Default language",
       "hidden": "Hidden"
-    }
+    },
+    "deleteDefaultTooltip": "You can't delete default language"
   }
 }
 </i18n>
 
 <script lang="ts">
-// TODO: wyłączyć usuwanie domyślnego języka
-// TODO: dostosować szerokość tabelek
-// TODO: wyświetlać tagi zamiast true/false
-// TODO: lepszy komunikat potwierdzający usuwanie (opisać konsekwencje)
-// TODO: tooltip przy języku domyślnym z konsekwencjami zmiani
-
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 
@@ -85,6 +111,8 @@ import LanguagesForm from '@/components/modules/languages/Form.vue'
 import { UUID } from '@/interfaces/UUID'
 import { TableConfig } from '@/interfaces/CmsTable'
 import { Language, LanguageDto } from '@/interfaces/Language'
+import CmsTableRow from '@/components/cms/CmsTableRow.vue'
+import BooleanTagValue from '@/components/BooleanTagValue.vue'
 
 const EMPTY_FORM: LanguageDto = {
   name: '',
@@ -102,6 +130,8 @@ export default Vue.extend({
     ValidationObserver,
     PaginatedList,
     LanguagesForm,
+    CmsTableRow,
+    BooleanTagValue,
   },
   beforeRouteLeave(_to, _from, next) {
     if (this.isModalActive) {
@@ -121,12 +151,11 @@ export default Vue.extend({
     },
     tableConfig(): TableConfig<Language> {
       return {
-        rowOnClick: (item) => this.openModal(item.id),
         headers: [
           { key: 'name', label: this.$t('common.form.name') as string, sortable: true },
-          { key: 'iso', label: this.$t('form.iso') as string },
-          { key: 'hidden', label: this.$t('form.hidden') as string },
-          { key: 'default', label: this.$t('form.default') as string },
+          { key: 'iso', label: this.$t('form.iso') as string, width: '0.5fr' },
+          { key: 'hidden', label: this.$t('form.hidden') as string, width: '0.5fr' },
+          { key: 'default', label: this.$t('form.default') as string, width: '0.5fr' },
         ],
       }
     },

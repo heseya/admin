@@ -29,15 +29,15 @@
 
             <a-tooltip v-if="item.summary_paid > item.summary">
               <template #title>
-                {{ $t('overpayed') }}
+                {{ $t('overpaid') }}
                 <b>{{ formatCurrency(item.summary_paid - item.summary) }}</b>
               </template>
               <span class="order-icon"> <i class="bx bxs-error"></i> </span>
             </a-tooltip>
           </template>
           <template #paid="{ rawValue }">
-            <span v-if="rawValue" class="order-tag success-text">{{ $t('payed') }}</span>
-            <span v-else class="order-tag danger-text">{{ $t('notpayed') }}</span>
+            <span v-if="rawValue" class="order-tag success-text">{{ $t('paid') }}</span>
+            <span v-else class="order-tag danger-text">{{ $t('notpaid') }}</span>
           </template>
           <template #status="{ rawValue: { name, color } }">
             <span class="order-tag" :style="{ color: `#${color}` }"> {{ name }} </span>
@@ -52,9 +52,9 @@
 {
   "pl": {
     "title": "Zamówienia",
-    "overpayed": "Nadpłacono",
-    "payed": "Opłacone",
-    "notpayed": "Nieopłacone",
+    "overpaid": "Nadpłacono",
+    "paid": "Opłacone",
+    "notpaid": "Nieopłacone",
     "form": {
       "code": "Kod zamówienia",
       "clientName": "Klient",
@@ -67,9 +67,9 @@
   },
   "en": {
     "title": "Orders",
-    "overpayed": "Overpayed",
-    "payed": "Payed",
-    "notpayed": "Not payed",
+    "overpaid": "Overpaid",
+    "paid": "Paid",
+    "notpaid": "Not paid",
     "form": {
       "code": "Order code",
       "clientName": "Client",

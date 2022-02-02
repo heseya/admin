@@ -89,10 +89,10 @@
     "income": {
       "title": "Income",
       "orders": "no orders | 1 order | {count} orders",
-      "week": "In this week",
-      "month": "In this month",
-      "year": "In this year",
-      "lastYear": "In previous year"
+      "week": "This week",
+      "month": "This month",
+      "year": "This year",
+      "lastYear": "Previous year"
     },
     "lastOrders": {"title": "Last orders"}
   }

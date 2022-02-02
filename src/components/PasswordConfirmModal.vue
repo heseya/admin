@@ -52,7 +52,7 @@ export default Vue.extend({
     },
     okText: {
       type: String,
-      default: 'Kontynuuj',
+      default: null,
     },
     okType: {
       type: String,

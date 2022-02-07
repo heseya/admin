@@ -1,7 +1,7 @@
 <template>
   <validation-observer v-slot="{ handleSubmit }" class="product-set-form">
     <a-modal
-      :title="form.id ? 'Edycja kolekcji' : 'Nowa kolekcja'"
+      :title="form.id ? $t('editTitle') : $t('newTitle')"
       :visible="isOpen"
       :width="900"
       @cancel="$emit('close')"
@@ -102,6 +102,8 @@
 <i18n>
 {
   "pl": {
+    "newTitle": "Nowa kolekcja",
+    "editTitle": "Edycja kolekcji",
     "deleteText": "Czy na pewno chcesz usunąć tę kolekcję? Wraz z nią usuniesz wszystkie jej subkolekcje!",
     "form": {
       "slugOverride": "Nadpisz link",
@@ -112,6 +114,8 @@
     }
   },
   "en": {
+    "newTitle": "New collection",
+    "editTitle": "Edit collection",
     "deleteText": "Are you sure you want to delete this collection? All subcollections will be deleted as well!",
     "form": {
       "slugOverride": "Override link",

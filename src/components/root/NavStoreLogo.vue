@@ -15,7 +15,7 @@
       <span v-if="canModify" class="nav-logo__title">Dodaj swoje logo</span>
     </template>
     <template v-else>
-      <img :src="storeLogoPath" :alt="storeName" class="nav-logo__logo" />
+      <img :src="scaledLogoPath" :alt="storeName" class="nav-logo__logo" />
       <span v-if="canModify" class="nav-logo__title">Zmień swoje logo</span>
     </template>
   </media-uploader>
@@ -56,6 +56,9 @@ export default Vue.extend({
     },
     isLogoExist(): boolean {
       return !!this.storeLogoPath || !!this.envStoreLogo
+    },
+    scaledLogoPath(): string {
+      return this.storeLogoPath + `?w=${this.big ? '200' : '150'}`
     },
   },
   watch: {

@@ -24,9 +24,10 @@ test:
   before_script:
     - yarn
   script:
-    - yarn test:unit
+    - yarn jest ./src --coverage
   rules:
     - if: $CI_COMMIT_BRANCH != "master"
+  coverage: /All files\s*\|\s*([\d\.]+)/
 
 e2e:
   image: cypress/browsers:node12.14.1-chrome85-ff81

@@ -27,6 +27,7 @@ import { webhooks } from './webhooks'
 import { discounts } from './discounts'
 import { tags } from './tags'
 import { productSets } from './productSets'
+import { languages } from './languages'
 
 Vue.use(Vuex)
 
@@ -87,6 +88,7 @@ const storeModules = {
   webhooks,
   tags,
   productSets,
+  languages,
 }
 
 const storePattern = {

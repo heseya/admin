@@ -6,7 +6,7 @@
       </slot>
     </div>
     <div class="empty__message">
-      <slot> Nic tutaj nie ma </slot>
+      <slot> {{ $t('common.defaultEmpty') }} </slot>
     </div>
   </div>
 </template>

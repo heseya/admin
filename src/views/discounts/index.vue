@@ -1,12 +1,12 @@
 <template>
   <div>
-    <PaginatedList title="Kody rabatowe" store-key="discounts" :table="tableConfig">
+    <PaginatedList :title="$t('title')" store-key="discounts" :table="tableConfig">
       <template #nav>
         <icon-button v-can="$p.Discounts.Add" @click="openModal()">
           <template #icon>
             <i class="bx bx-plus"></i>
           </template>
-          Dodaj kod rabatowy
+          {{ $t('add') }}
         </icon-button>
       </template>
 
@@ -24,7 +24,7 @@
           <template #discount="{ rawValue }">
             -{{ discount.type === 0 ? `${rawValue}%` : formatCurrency(rawValue) }}
           </template>
-          <template #uses> {{ discount.uses }} z {{ discount.max_uses }} </template>
+          <template #uses> {{ discount.uses }} {{ $t('from') }} {{ discount.max_uses }} </template>
         </cms-table-row>
       </template>
     </PaginatedList>
@@ -33,21 +33,23 @@
       <a-modal
         v-model="isModalActive"
         width="550px"
-        :title="editedItem.id ? 'Edycja kodu rabatowego' : 'Nowy kod rabatowy'"
+        :title="editedItem.id ? $t('editTitle') : $t('newTitle')"
       >
         <DiscountForm v-model="editedItem" :disabled="!canModify" />
 
         <template #footer>
           <div class="row">
-            <app-button v-if="canModify" @click="handleSubmit(saveModal)"> Zapisz </app-button>
+            <app-button v-if="canModify" @click="handleSubmit(saveModal)">
+              {{ $t('common.save') }}
+            </app-button>
             <pop-confirm
               v-can="$p.Discounts.Remove"
-              title="Czy na pewno chcesz usunąć ten kod?"
-              ok-text="Usuń"
-              cancel-text="Anuluj"
+              :title="$t('deleteText')"
+              :ok-text="$t('common.delete')"
+              :cancel-text="$t('common.cancel')"
               @confirm="deleteItem"
             >
-              <app-button v-if="editedItem.id" type="danger">Usuń</app-button>
+              <app-button v-if="editedItem.id" type="danger">{{ $t('common.delete') }}</app-button>
             </pop-confirm>
           </div>
         </template>
@@ -55,6 +57,41 @@
     </validation-observer>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "title": "Kody rabatowe",
+    "add": "Dodaj kod rabatowy",
+    "editTitle": "Edycja kodu rabatowego",
+    "newTitle": "Nowy kod rabatowy",
+    "deleteText": "Czy na pewno chcesz usunąć ten kod rabatowy?",
+    "from": "z",
+    "table": {
+      "code": "Kod",
+      "discount": "Rabat",
+      "used": "Wykorzystano",
+      "startsAt": "Ważny od",
+      "expiresAt": "Ważny do"
+    }
+  },
+  "en": {
+    "title": "Discount codes",
+    "add": "Add discount code",
+    "editTitle": "Edit discount code",
+    "newTitle": "New discount code",
+    "deleteText": "Are you sure you want to delete this discount code?",
+    "from": "from",
+    "table": {
+      "code": "Code",
+      "discount": "Discount",
+      "used": "Used",
+      "startsAt": "Valid from",
+      "expiresAt": "Valid to"
+    }
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
@@ -85,7 +122,9 @@ const EMPTY_DISCOUNT_CODE: DiscountCode = {
 }
 
 export default Vue.extend({
-  metaInfo: { title: 'Kody rabatowe' },
+  metaInfo(this: any) {
+    return { title: this.$t('title') as string }
+  },
   components: {
     DiscountForm,
     ValidationObserver,
@@ -115,18 +154,18 @@ export default Vue.extend({
       return {
         rowOnClick: (item) => this.openModal(item.id),
         headers: [
-          { key: 'code', label: 'Kod' },
-          { key: 'discount', label: 'Rabat', width: '0.5fr' },
-          { key: 'uses', label: 'Wykorzystano', width: '0.5fr' },
+          { key: 'code', label: this.$t('table.code') as string },
+          { key: 'discount', label: this.$t('table.discount') as string, width: '0.5fr' },
+          { key: 'uses', label: this.$t('table.used') as string, width: '0.5fr' },
           {
             key: 'starts_at',
-            label: 'Ważny od',
+            label: this.$t('table.startsAt') as string,
             render: (v) => formatDate(v) || '-',
             width: '0.5fr',
           },
           {
             key: 'expires_at',
-            label: 'Ważny do',
+            label: this.$t('table.expiresAt') as string,
             render: (v) => formatDate(v) || '-',
             width: '0.5fr',
           },

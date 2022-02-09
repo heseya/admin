@@ -1,19 +1,19 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList title="Sesje użytkownika" store-key="authSessions">
+    <PaginatedList :title="$t('title')" store-key="authSessions">
       <template #nav>
         <pop-confirm
           v-can="$p.Auth.SessionsRevoke"
-          title="Czy na pewno chcesz wylogować wszystkie sesje użytkownika? Tylko obecna pozostanie aktywna."
-          ok-text="Usuń"
-          cancel-text="Anuluj"
+          :title="$t('logoutAllConfirm')"
+          :ok-text="$t('common.delete')"
+          :cancel-text="$t('common.cancel')"
           @confirm="killAllSessions"
         >
           <icon-button type="danger" :disabled="!areSessionsToKill">
             <template #icon>
               <i class="bx bx-trash"></i>
             </template>
-            Wyloguj wszystkie
+            {{ $t('logoutAll') }}
           </icon-button>
         </pop-confirm>
       </template>
@@ -26,18 +26,20 @@
           <span v-if="login.platform">
             {{ login.platform + ' ' + login.browser + ' ' + login.browser_ver }}
           </span>
-          <span v-else>Nieznane urządzenie</span>
+          <span v-else>{{ $t('unknownDevice') }}</span>
           <small v-if="login.ip" class="login-item__ip"> ({{ login.ip }})</small>
-          <small v-if="!login.revoked" class="login-item__active">Sesja aktywna</small>
+          <small v-if="!login.revoked" class="login-item__active">{{ $t('active') }}</small>
           <small>{{ login.created_at }}</small>
 
           <template #action>
-            <small v-if="login.current_session" class="login-item__current">To ty</small>
+            <small v-if="login.current_session" class="login-item__current">{{
+              $t('yourSession')
+            }}</small>
             <pop-confirm
               v-can="$p.Auth.SessionsRevoke"
-              title="Czy na pewno chcesz wylogować tę sesję użytkownika?"
-              ok-text="Usuń"
-              cancel-text="Anuluj"
+              :title="$t('logoutConfirm')"
+              :ok-text="$t('common.delete')"
+              :cancel-text="$t('common.cancel')"
               @confirm="killSession(login.id)"
             >
               <icon-button
@@ -48,7 +50,7 @@
                 <template #icon>
                   <i class="bx bx-trash"></i>
                 </template>
-                Wyloguj
+                {{ $t('logout') }}
               </icon-button>
             </pop-confirm>
           </template>
@@ -57,6 +59,31 @@
     </PaginatedList>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "title": "Sesje użytkownika",
+    "logoutAll": "Wyloguj wszystkie",
+    "logoutAllConfirm": "Czy na pewno chcesz wylogować wszystkie sesje użytkownika? Tylko obecna pozostanie aktywna.",
+    "logoutConfirm": "Czy na pewno chcesz wylogować tę sesję użytkownika?",
+    "logout": "Wyloguj",
+    "active": "Sesja aktywna",
+    "unknownDevice": "Nieznane urządzenie",
+    "yourSession": "To ty"
+  },
+  "en": {
+    "title": "User sessions",
+    "logoutAll": "Logout all",
+    "logoutAllConfirm": "Are you sure you want to logout all user sessions? Only current session will be active.",
+    "logoutConfirm": "Are you sure you want to logout this user session?",
+    "logout": "Logout",
+    "active": "Active session",
+    "unknownDevice": "Unknown device",
+    "yourSession": "This is you"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

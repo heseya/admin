@@ -6,26 +6,45 @@
         rules="required|email"
         name="email"
         data-cy="email"
-        label="E-mail"
+        :label="$t('email')"
         type="email"
       />
 
       <validated-input
         v-model="form.password"
         rules="required"
-        label="Hasło"
+        :label="$t('password')"
         name="password"
         data-cy="password"
         type="password"
       />
 
       <div class="central-screen-form__row login-form__btns">
-        <app-button data-cy="submitBtn" html-type="submit" type="primary"> Zaloguj </app-button>
-        <app-button type="white" to="/reset-password"> Zapomniałeś hasła? </app-button>
+        <app-button data-cy="submitBtn" html-type="submit" type="primary">
+          {{ $t('login') }}
+        </app-button>
+        <app-button type="white" to="/reset-password"> {{ $t('resetPassword') }} </app-button>
       </div>
     </form>
   </ValidationObserver>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "email": "E-mail",
+    "password": "Hasło",
+    "login": "Zaloguj",
+    "resetPassword": "Zapomniałeś hasła?"
+  },
+  "en": {
+    "email": "E-mail",
+    "password": "Password",
+    "login": "Login",
+    "resetPassword": "Forgot password?"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

@@ -1,19 +1,19 @@
 <template>
   <div :key="webhook.id" class="narrower-page">
-    <top-nav :title="!isNew ? webhook.name : 'Nowy webhook'">
+    <top-nav :title="!isNew ? webhook.name : $t('newTitle')">
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Webhooks.Remove"
-        title="Czy na pewno chcesz usunąć tego webhooka?"
-        ok-text="Usuń"
-        cancel-text="Anuluj"
+        :title="$t('deleteText')"
+        :ok-text="$t('common.delete')"
+        :cancel-text="$t('common.cancel')"
         @confirm="deleteWebhook"
       >
         <icon-button type="danger">
           <template #icon>
             <i class="bx bx-trash"></i>
           </template>
-          Usuń
+          {{ $t('common.delete') }}
         </icon-button>
       </pop-confirm>
     </top-nav>
@@ -28,6 +28,25 @@
     </card>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "newTitle": "Nowy webhook",
+    "deleteText": "Czy na pewno chcesz usunąć ten webhook?",
+    "deletedMessage": "Webhook został usunięty.",
+    "createdMessage": "Webhook został zaktualizowany.",
+    "updatedMessage": "Webhook został utworzony."
+  },
+  "en": {
+    "newTitle": "New webhook",
+    "deleteText": "Are you sure you want to delete this webhook?",
+    "deletedMessage": "Webhook has been deleted.",
+    "createdMessage": "Webhook has been created.",
+    "updatedMessage": "Webhook has been updated."
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
@@ -52,8 +71,8 @@ const CLEAR_FORM: WebHookDto = {
 }
 
 export default Vue.extend({
-  metaInfo(): any {
-    return { title: this.webhook?.name || this.webhook?.url || 'Nowy webhook' }
+  metaInfo(this: any): any {
+    return { title: this.webhook?.name || this.webhook?.url || (this.$t('newTitle') as string) }
   },
   components: {
     TopNav,
@@ -106,7 +125,9 @@ export default Vue.extend({
 
       if (newWebHook) {
         this.$toast.success(
-          this.isNew ? 'Webhook został utworzony.' : 'Webhook został zaktualizowany.',
+          this.isNew
+            ? (this.$t('createdMessage') as string)
+            : (this.$t('updatedMessage') as string),
         )
         if (this.isNew) this.$router.push(`/webhooks/${newWebHook.id}`)
       }
@@ -116,7 +137,7 @@ export default Vue.extend({
       this.$accessor.startLoading()
       const success = await this.$accessor.webhooks.remove(this.id)
       if (success) {
-        this.$toast.success('Webhook został usunięty.')
+        this.$toast.success(this.$t('deletedMessage') as string)
         this.$router.push('/webhooks')
       }
       this.$accessor.stopLoading()

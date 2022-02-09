@@ -1,12 +1,12 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList title="Opcje Dostawy" store-key="shippingMethods" draggable>
+    <PaginatedList :title="$t('title')" store-key="shippingMethods" draggable>
       <template #nav>
         <icon-button v-can="$p.ShippingMethods.Add" @click="openModal()">
           <template #icon>
             <i class="bx bx-plus"></i>
           </template>
-          Dodaj opcję dostawy
+          {{ $t('add') }}
         </icon-button>
       </template>
 
@@ -18,15 +18,11 @@
         >
           {{ shippingMethod.name }}
           <small v-if="shippingMethod.countries.length">
-            {{ shippingMethod.black_list ? 'Wszystkie kraje poza:' : 'Tylko wybrane kraje:' }}
+            {{ shippingMethod.black_list ? $t('list.blackList') : $t('list.whiteList') }}
             {{ shippingMethod.countries.map((c) => c.name).join(', ') }}
           </small>
           <small v-else>
-            {{
-              shippingMethod.black_list
-                ? 'Metoda dostepna w każdym kraju'
-                : 'Metoda niedostepna w żadnym kraju'
-            }}
+            {{ shippingMethod.black_list ? $t('list.allEnabled') : $t('list.allDisabled') }}
           </small>
         </list-item>
       </template>
@@ -36,20 +32,22 @@
       <a-modal
         v-model="isModalActive"
         width="660px"
-        :title="editedItem.id ? 'Edycja opcji dostawy' : 'Nowa opcja dostawy'"
+        :title="editedItem.id ? $t('editTitle') : $t('newTitle')"
       >
         <ShippingMethodsForm v-model="editedItem" :countries="countries" :disabled="!canModify" />
         <template #footer>
           <div class="row">
-            <app-button v-if="canModify" @click="handleSubmit(saveModal)"> Zapisz </app-button>
+            <app-button v-if="canModify" @click="handleSubmit(saveModal)">
+              {{ $t('common.save') }}
+            </app-button>
             <pop-confirm
               v-can="$p.ShippingMethods.Remove"
-              title="Czy na pewno chcesz usunąć tą metode dostawy?"
-              ok-text="Usuń"
-              cancel-text="Anuluj"
+              :title="$t('deleteText')"
+              :ok-text="$t('common.delete')"
+              :cancel-text="$t('common.cancel')"
               @confirm="deleteItem"
             >
-              <app-button v-if="editedItem.id" type="danger">Usuń</app-button>
+              <app-button v-if="editedItem.id" type="danger">{{ $t('common.delete') }}</app-button>
             </pop-confirm>
           </div>
         </template>
@@ -57,6 +55,37 @@
     </validation-observer>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "title": "Metody dostawy",
+    "add": "Dodaj metodę dostawy",
+    "editTitle": "Edycja metody dostawy",
+    "newTitle": "Nowa metoda dostawy",
+    "deleteText": "Czy na pewno chcesz usunąć tą metode dostawy?",
+    "list": {
+      "allEnabled": "Metoda dostepna w każdym kraju",
+      "allDisabled": "Metoda niedostepna w żadnym kraju",
+      "whiteList": "Tylko wybrane kraje:",
+      "blackList": "Wszystkie kraje poza:"
+    }
+  },
+  "en": {
+    "title": "Shipping methods",
+    "add": "Add shipping method",
+    "editTitle": "Edit shipping method",
+    "newTitle": "New shipping method",
+    "deleteText": "Are you sure you want to delete this shipping method?",
+    "list": {
+      "allEnabled": "Shipping method available in all countries",
+      "allDisabled": "Shipping method unavailable in any country",
+      "whiteList": "Only selected countries:",
+      "blackList": "All countries except:"
+    }
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
@@ -73,7 +102,9 @@ import { ShippingMethodDTO } from '@/interfaces/ShippingMethod'
 import { Country } from '@/interfaces/Country'
 
 export default Vue.extend({
-  metaInfo: { title: 'Metody dostawy' },
+  metaInfo(this: any) {
+    return { title: this.$t('title') as string }
+  },
   components: {
     ListItem,
     PopConfirm,

@@ -4,23 +4,46 @@
       v-model="local.search"
       class="span-2"
       type="search"
-      label="Wyszukiwanie"
+      :label="$t('common.search')"
       allow-clear
       @input="debouncedSearch"
     />
 
     <app-select
       v-model="local.sold_out"
-      label="Status w magazynie"
+      :label="$t('soldout.label')"
       add-all
       option-filter-prop="label"
       @change="debouncedSearch"
     >
-      <a-select-option :value="'1'" label="Wyprzedane"> Wyprzedane </a-select-option>
-      <a-select-option :value="'0'" label="Dostępne"> Dostępne </a-select-option>
+      <a-select-option :value="'1'" :label="$t('soldout.sold')">
+        {{ $t('soldout.sold') }}
+      </a-select-option>
+      <a-select-option :value="'0'" lab:label="$t('soldout.available')">
+        {{ $t('soldout.available') }}
+      </a-select-option>
     </app-select>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "soldout": {
+      "label": "Status w magazynie",
+      "sold": "Wyprzedane",
+      "available": "Dostępne"
+    }
+  },
+  "en": {
+    "soldout": {
+      "label": "Status in stock",
+      "sold": "Sold out",
+      "available": "Available"
+    }
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

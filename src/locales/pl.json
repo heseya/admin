@@ -1,0 +1,78 @@
+{
+  "common": {
+    "close": "Zamknij",
+    "active": "Aktywna",
+    "inactive": "Nieaktywna",
+    "cancel": "Anuluj",
+    "delete": "Usuń",
+    "save": "Zapisz",
+    "defaultEmpty": "Nic nie znaleziono",
+    "search": "Wyszukiwanie",
+    "none": "Brak",
+    "add": "Dodaj",
+    "allowList": "Lista dozwolonych",
+    "blockList": "Lista zabronionych",
+    "yes": "Tak",
+    "no": "Nie",
+    "edit": "Edytuj",
+    "continue": "Kontynuuj",
+    "form": {
+      "name": "Nazwa",
+      "description": "Opis",
+      "slug": "Link"
+    }
+  },
+
+  "nav": {
+    "dashboard": "Dashboard",
+    "settings": "Ustawienia",
+    "warehouse": "Magazyn",
+    "analytics": "Statystyka",
+    "moreLink": "Więcej"
+  },
+
+  "models": {
+    "orders": "Zamówienia",
+    "products": "Produkty",
+    "sets": "Kolekcje",
+    "discounts": "Kody rabatowe",
+    "pages": "Strony",
+    "tags": "Tagi",
+    "schemas": "Schematy",
+    "statuses": "Statusy zamówień",
+    "shipping_methods": "Metody dostawy",
+    "package_templates": "Szablony przesyłek",
+    "users": "Użytkownicy",
+    "roles": "Role",
+    "apps": "Aplikacje",
+    "webhooks": "Webhooki"
+  },
+
+  "schemaTypes": {
+    "string": "Wartość tekstowa",
+    "select": "Wybór spośród kilku opcji",
+    "numeric": "Wartość numeryczna",
+    "boolean": "Wartość typu prawda/fałsz",
+    "multiply": "Mnożona wartość numeryczna",
+    "multiply_schema": "Mnożenie schematów",
+    "date": "Data",
+    "file": "Plik"
+  },
+
+  "validation": {
+    "required": "To pole jest wymagane",
+    "email": "Wprowadź poprawny adres email",
+    "repeatPassword": "Powtórzone hasło różni się od nowego hasła",
+    "password": "Hasło musi mieć przynajmniej 10 znaków oraz zawierać małą, dużą literę, cyfrę i znak specjalny",
+    "positive": "To pole musi być większe od zera",
+    "notNegative": "To pole nie może być mniejsze od 0",
+    "lessThan": "Wartość musi być mniejsza bądź równa od {_target_}",
+    "idRequired": "Wymagane jest podanie ID",
+    "slug": "Link może składać się tylko z małych liter, cyfr i myślników",
+    "url": "Wartość musi być poprawnym adresem URL",
+    "lettersOnly": "Wartość może składać się tylko z liter i podkreślników (_)",
+    "dateBefore": "Data zakończenia musi być przed datą startu",
+    "priceRangesDuplicates": "Zakresy cen nie mogą zawierać zduplikowanych progów",
+    "schemaCheckbox": "Schemat nie może być jednocześnie ukryty i wymagany"
+  }
+}

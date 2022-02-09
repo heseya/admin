@@ -1,11 +1,22 @@
 <template>
   <div class="powered-by">
-    <span class="powered-by__title">Powered by</span>
+    <span class="powered-by__title">{{ $t('poweredBy') }}</span>
     <a href="https://heseya.com" target="_blank">
       <img src="@/assets/images/heseya-primary.svg" alt="Heseya" class="powered-by__logo" />
     </a>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "poweredBy": "Powered by"
+  },
+  "en": {
+    "poweredBy": "Powered by"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

@@ -10,7 +10,9 @@
       :data-cy="dataCy || name"
       v-on="$listeners"
     >
-      <a-select-option v-if="addAll" value="_all" label="Wszystkie"> Wszystkie </a-select-option>
+      <a-select-option v-if="addAll" value="_all" :label="allText || $t('all')">
+        {{ allText || $t('all') }}
+      </a-select-option>
       <slot></slot>
     </a-select>
     <span class="app-input__error">
@@ -18,6 +20,17 @@
     </span>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "all": "Wszystkie"
+  },
+  "en": {
+    "all": "All"
+  }
+}
+</i18n>
 
 <script lang="ts">
 /* eslint-disable vue/require-default-prop */
@@ -38,6 +51,7 @@ export default Vue.extend({
     loading: Boolean,
     disabled: Boolean,
     addAll: Boolean,
+    allText: String,
     showSearch: Boolean,
     labelInValue: Boolean,
     tokenSeparators: Array,

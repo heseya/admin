@@ -1,9 +1,9 @@
 <template>
   <Zone class="select-schema-options">
     <template #title>
-      Opcje do wyboru
+      {{ $t('title') }}
       <icon-button :disabled="disabled" size="small" reversed @click="addOption">
-        <template #icon> <i class="bx bx-plus"></i> </template> Dodaj
+        <template #icon> <i class="bx bx-plus"></i> </template> {{ $t('common.add') }}
       </icon-button>
     </template>
 
@@ -19,20 +19,25 @@
             v-model="option.name"
             :disabled="disabled"
             rules="required"
-            label="Nazwa"
+            :label="$t('common.form.name')"
           />
-          <app-input v-model="option.price" :disabled="disabled" type="number" label="Cena" />
+          <app-input
+            v-model="option.price"
+            :disabled="disabled"
+            type="number"
+            :label="$t('form.price')"
+          />
           <Autocomplete
             v-model="options[i].items"
             :disabled="disabled"
             class="input"
             type="products"
-            label="Przedmioty z magazynu"
+            :label="$t('form.items')"
           />
           <SwitchInput v-model="option.disabled" :disabled="disabled">
-            <template #title>Disabled</template>
+            <template #title>{{ $t('disabled') }}</template>
           </SwitchInput>
-          <a-radio :disabled="disabled" :value="i"> Domyślny </a-radio>
+          <a-radio :disabled="disabled" :value="i"> {{ $t('default') }} </a-radio>
           <icon-button
             size="small"
             type="danger"
@@ -47,10 +52,33 @@
       </draggable>
     </a-radio-group>
     <icon-button :disabled="disabled" size="small" reversed @click="addOption">
-      <template #icon> <i class="bx bx-plus"></i> </template> Dodaj
+      <template #icon> <i class="bx bx-plus"></i> </template> {{ $t('common.add') }}
     </icon-button>
   </Zone>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "title": "Opcje do wyboru",
+    "disabled": "Wyłączony",
+    "default": "Domyślny",
+    "form": {
+      "items": "Przedmioty z magazynu",
+      "price": "Cena"
+    }
+  },
+  "en": {
+    "title": "Select options",
+    "disabled": "Disabled",
+    "default": "Default",
+    "form": {
+      "items": "Items from warehouse",
+      "price": "Price"
+    }
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

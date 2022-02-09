@@ -4,14 +4,14 @@
       v-model="local.search"
       class="span-2"
       type="search"
-      label="Wyszukiwanie"
+      :label="$t('common.search')"
       allow-clear
       @input="debouncedSearch"
     />
 
     <app-select
       v-model="local.sets[0]"
-      label="Kolekcja"
+      :label="$t('sets')"
       add-all
       option-filter-prop="label"
       @change="debouncedSearch"
@@ -23,7 +23,7 @@
 
     <app-select
       v-model="local.tags[0]"
-      label="Tagi"
+      :label="$t('tags')"
       add-all
       option-filter-prop="label"
       @change="debouncedSearch"
@@ -35,16 +35,35 @@
 
     <app-select
       v-model="local.public"
-      label="Widoczność"
+      :label="$t('public')"
       add-all
       option-filter-prop="label"
       @change="debouncedSearch"
     >
-      <a-select-option :value="'1'" label="Tak"> Tak </a-select-option>
-      <a-select-option :value="'0'" label="Nie"> Nie </a-select-option>
+      <a-select-option :value="'1'" :label="$t('common.yes')">
+        {{ $t('common.yes') }}
+      </a-select-option>
+      <a-select-option :value="'0'" :label="$t('common.no')">
+        {{ $t('common.no') }}
+      </a-select-option>
     </app-select>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "sets": "Kolekcja",
+    "tags": "Tagi",
+    "public": "Widoczność"
+  },
+  "en": {
+    "sets": "Collection",
+    "tags": "Tags",
+    "public": "Public"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

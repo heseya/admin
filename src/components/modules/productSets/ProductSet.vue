@@ -27,13 +27,13 @@
           <template #overlay>
             <a-menu>
               <a-menu-item v-can="$p.ProductSets.Add" @click="create">
-                <i class="bx bx-plus"></i> &nbsp; Dodaj subkolekcje
+                <i class="bx bx-plus"></i> &nbsp; {{ $t('menu.addSubset') }}
               </a-menu-item>
               <a-menu-item v-can="$p.ProductSets.ShowDetails" @click="showProducts">
-                <i class="bx bx-customize"></i> &nbsp; Zobacz produkty w kolekcji
+                <i class="bx bx-customize"></i> &nbsp; {{ $t('menu.showProducts') }}
               </a-menu-item>
               <a-menu-item v-can="$p.ProductSets.ShowDetails" @click="edit">
-                <i class="bx bx-edit"></i> &nbsp; Edytuj kolekcję
+                <i class="bx bx-edit"></i> &nbsp; {{ $t('menu.edit') }}
               </a-menu-item>
             </a-menu>
           </template>
@@ -53,6 +53,25 @@
     </div>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "menu": {
+      "addSubset": "Dodaj subkolekcję",
+      "edit": "Edytuj kolekcję",
+      "showProducts": "Zobacz produkty w kolekcji"
+    }
+  },
+  "en": {
+    "menu": {
+      "addSubset": "Add subset",
+      "edit": "Edit collection",
+      "showProducts": "Show products in collection"
+    }
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

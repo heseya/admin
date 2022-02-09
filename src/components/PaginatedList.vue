@@ -11,7 +11,9 @@
     <AppCard class="paginated-list__content">
       <Loading :active="isLoading"></Loading>
 
-      <AppEmpty v-if="!items.length || isLoading">{{ emptyText }}</AppEmpty>
+      <AppEmpty v-if="!items.length || isLoading">
+        {{ emptyText || $t('common.defaultEmpty') }}
+      </AppEmpty>
       <component
         :is="contentComponent"
         v-else
@@ -97,7 +99,7 @@ export default Vue.extend({
     },
     emptyText: {
       type: String,
-      default: 'Nic nie znaleziono',
+      default: null,
     },
     filters: {
       type: Object,

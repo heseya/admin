@@ -14,7 +14,22 @@
       :label="$t('common.form.description')"
     />
 
-    TODO: rest of the fields
+    <switch-input v-model="form.global" :disabled="disabled" horizontal>
+      <template #title>
+        {{ $t('form.global') }}
+
+        <a-tooltip>
+          <template #title> {{ $t('form.globalTooltip') }} </template>
+          <i class="bx bxs-info-circle"></i>
+        </a-tooltip>
+      </template>
+    </switch-input>
+
+    <app-select v-model="form.type" :label="$t('common.form.type')">
+      <a-select-option :value="AttributeType.Text" :label="$t('types.' + AttributeType.Text)">
+        {{ $t('types.' + AttributeType.Text) }}
+      </a-select-option>
+    </app-select>
 
     <br />
 
@@ -27,12 +42,28 @@
 <i18n>
 {
   "pl": {
+    "types": {
+      "text": "Tekstowy jednokrotnego wyboru",
+      "number": "Liczbowy jednokrotnego wyboru"
+    },
+    "form": {
+      "global": "Globalny atrybut",
+      "globalTooltip": "Globalny atrybut oznacza, że po danym atrybucie można filtrować produkty niezależnie od kolekcji w której się one znajdują."
+    },
     "alerts": {
       "created": "Cecha została utworzona.",
       "updated": "Cecha została zaktualizowana."
     }
   },
   "en": {
+    "types": {
+      "text": "Text single choice",
+      "number": "Number single choice"
+    },
+    "form": {
+      "global": "Global attribute",
+      "globalTooltip": "Global attribute means that you can filter products independently from the collection in which they are located."
+    },
     "alerts": {
       "created": "Attribute has been created.",
       "updated": "Attribute has been updated."
@@ -76,27 +107,22 @@ export default Vue.extend({
     async submit() {
       this.$accessor.startLoading()
       try {
-        let id = ''
-
         if (!this.form?.id) {
-          const schema = await this.$accessor.attributes.add(this.form)
-          if (!schema) throw new Error('Schema not created')
+          const newAttribute = await this.$accessor.attributes.add(this.form)
+          if (!newAttribute || !newAttribute.id) throw new Error('Attribute not created')
 
-          if (schema && schema.id) {
-            this.$toast.success(this.$t('alerts.created') as string)
-            id = schema.id
-          }
+          this.$toast.success(this.$t('alerts.created') as string)
+          this.$emit('submit', newAttribute)
         } else {
-          const success = await this.$accessor.attributes.update({
+          const editedAttribute = await this.$accessor.attributes.update({
             id: this.form.id,
             item: this.form,
           })
-          if (!success) throw new Error('Schema not updated')
+          if (!editedAttribute) throw new Error('Attribute not updated')
 
-          id = this.form.id
           this.$toast.success(this.$t('alerts.updated') as string)
+          this.$emit('submit', editedAttribute)
         }
-        this.$emit('submit', this.$accessor.schemas.getFromListById(id))
       } catch {
       } finally {
         this.$accessor.stopLoading()

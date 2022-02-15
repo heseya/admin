@@ -11,7 +11,7 @@ export interface Attribute {
   name: string
   description: string
   type: AttributeType
-  searchable: boolean
+  global: boolean
   options: AttributeOption[]
 }
 

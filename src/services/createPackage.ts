@@ -1,13 +1,18 @@
 /* eslint-disable camelcase */
 import { api } from '@/api'
 
-export const createPackage = async (orderId: string, packageTemplateId: string) => {
+export const createPackage = async (
+  orderId: string,
+  packageTemplateId: string,
+  provider: string,
+) => {
   try {
     const { status, data } = await api.post<{ shipping_number: string }>(
       'furgonetka/create-package',
       {
         order_id: orderId,
         package_template_id: packageTemplateId,
+        provider,
       },
     )
 

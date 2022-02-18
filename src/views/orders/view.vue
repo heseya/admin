@@ -64,31 +64,12 @@
           </div>
         </card>
 
-        <card>
-          <div class="flex-column send-package">
-            <h2 class="section-title send-package__title">Wyślij przesyłkę</h2>
-            <div v-if="!shippingNumber" class="send-package__content">
-              <app-select
-                v-model="packageTemplateId"
-                label="Szablon przesyłki"
-                placeholder="-- Wybierz szablon --"
-                option-filter-prop="label"
-              >
-                <a-select-option
-                  v-for="template in packageTemplates"
-                  :key="template.id"
-                  :label="template.name"
-                >
-                  {{ template.name }}
-                </a-select-option>
-              </app-select>
-              <app-button @click="createPackage">Utwórz&nbsp;przesyłkę</app-button>
-            </div>
-            <small v-else>
-              <i class="bx bxs-check-circle"></i> Przesyłka została już zamówiona (Numer śledzenia:
-              {{ shippingNumber }})
-            </small>
-          </div>
+        <card v-if="order.id">
+          <send-package
+            :order-id="order.id"
+            :shipping-number="order.shipping_number"
+            @created="onPackageCreated"
+          />
         </card>
       </div>
 
@@ -204,14 +185,13 @@ import PartialUpdateForm from '@/components/modules/orders/PartialUpdateForm.vue
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 import NextPrevButtons from '@/components/modules/orders/NextPrevButtons.vue'
+import SendPackage from '@/components/modules/orders/SendPackage.vue'
 
 import { Order, OrderStatus } from '@/interfaces/Order'
 import { getRelativeDate } from '@/utils/utils'
 import { formatDate } from '@/utils/dates'
 
-import { createPackage } from '@/services/createPackage'
 import { formatApiNotificationError } from '@/utils/errors'
-import { PackageTemplate } from '@/interfaces/PackageTemplate'
 import { formatCurrency } from '@/utils/currency'
 import { api } from '@/api'
 
@@ -240,11 +220,11 @@ export default Vue.extend({
     PopConfirm,
     AuditsModal,
     NextPrevButtons,
+    SendPackage,
   },
   data: () => ({
     status: '',
     packageTemplateId: '',
-    shippingNumber: '',
     isLoading: false,
     modalFormTitle: '',
     form: {},
@@ -263,9 +243,6 @@ export default Vue.extend({
     statuses(): OrderStatus[] {
       return this.$accessor.statuses.getData
     },
-    packageTemplates(): PackageTemplate[] {
-      return this.$accessor.packageTemplates.getData
-    },
     relativeOrderedDate(): string | null {
       return this.order.created_at && getRelativeDate(this.order.created_at)
     },
@@ -279,7 +256,6 @@ export default Vue.extend({
   watch: {
     order(order: Order) {
       this.status = order?.status?.id
-      this.shippingNumber = order.shipping_number || ''
     },
     status(status: OrderStatus, prevStatus: OrderStatus) {
       if (!prevStatus) return
@@ -294,7 +270,6 @@ export default Vue.extend({
     await Promise.all([
       this.$accessor.orders.get(this.$route.params.id),
       this.$accessor.statuses.fetch(),
-      this.$accessor.packageTemplates.fetch(),
     ])
     this.$accessor.stopLoading()
   },
@@ -317,19 +292,8 @@ export default Vue.extend({
 
       this.isLoading = false
     },
-    async createPackage() {
-      if (!this.packageTemplateId) return
-      this.$accessor.startLoading()
-      const res = await createPackage(this.order.id, this.packageTemplateId)
-
-      if (res.success) {
-        this.shippingNumber = res.shippingNumber
-        this.$toast.success('Przesyłka utworzona poprawnie')
-      } else {
-        this.$toast.error(formatApiNotificationError(res.error))
-      }
-
-      this.$accessor.stopLoading()
+    onPackageCreated(shippingNumber: string) {
+      this.order.shipping_number = shippingNumber
     },
     editComment() {
       this.isModalActive = true
@@ -492,26 +456,6 @@ export default Vue.extend({
 
   &__success {
     color: $green-color-400;
-  }
-}
-
-.send-package {
-  &__title {
-    margin-bottom: 8px;
-  }
-
-  &__content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    @media ($viewport-8) {
-      flex-direction: row;
-    }
-
-    > *:first-child {
-      margin-right: 8px;
-    }
   }
 }
 </style>

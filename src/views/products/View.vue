@@ -1,21 +1,21 @@
 <template>
   <div :key="$route.params.id" class="narrower-page">
-    <top-nav :title="!isNew ? product.name : 'Nowy produkt'">
+    <top-nav :title="!isNew ? product.name : $t('newProductTitle')">
       <audits-modal :id="product.id" model="products" />
 
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Products.Remove"
-        title="Czy na pewno chcesz usunąć ten produkt?"
-        ok-text="Usuń"
-        cancel-text="Anuluj"
+        :title="$t('deleteConfirm')"
+        :ok-text="$t('common.delete')"
+        :cancel-text="$t('common.cancel')"
         @confirm="deleteProduct"
       >
         <icon-button type="danger" data-cy="delete-btn">
           <template #icon>
             <i class="bx bx-trash"></i>
           </template>
-          Usuń
+          {{ $t('common.delete') }}
         </icon-button>
       </pop-confirm>
     </top-nav>
@@ -29,13 +29,13 @@
             v-model="form.public"
             horizontal
             :disabled="!canModify"
-            label="Widoczność produktu"
+            :label="$t('form.public')"
           />
           <template v-if="!product.visible && product.public">
             <br />
             <a-alert
-              message="Produkt wciąż jest ukryty"
-              description="Produkt jest niewidoczny ponieważ jego marka lub kategoria jest ukryta."
+              :message="$t('stillVisible.title')"
+              :description="$t('stillVisible.description')"
               show-icon
               type="warning"
             />
@@ -58,7 +58,7 @@
                 <validated-input
                   v-model="form.name"
                   rules="required"
-                  label="Nazwa"
+                  :label="$t('common.form.name')"
                   name="name"
                   :disabled="!canModify"
                   @input="editSlug"
@@ -66,7 +66,7 @@
                 <validated-input
                   v-model="form.slug"
                   rules="required|slug"
-                  label="Link"
+                  :label="$t('common.form.slug')"
                   name="slug"
                   :disabled="!canModify"
                 />
@@ -75,7 +75,7 @@
                   rules="required|not-negative"
                   type="number"
                   step="0.01"
-                  label="Cena"
+                  :label="$t('form.price')"
                   name="price"
                   :disabled="!canModify"
                 />
@@ -86,16 +86,16 @@
                 <validation-provider v-slot="{ errors }">
                   <app-select
                     v-model="form.sets"
-                    placeholder="Wybierz kolekcje"
+                    :placeholder="$t('form.setsPlaceholder')"
                     mode="multiple"
                     name="sets"
-                    label="Kolekcje"
+                    :label="$t('form.sets')"
                     option-filter-prop="label"
                     :disabled="!canModify"
                   >
                     <a-select-option v-for="set in productSets" :key="set.id" :label="set.name">
                       <i v-if="!set.public" class="bx bx-lock"></i>
-                      {{ set.name }} &nbsp; <small>(/{{ set.slug }})</small>
+                      {{ set.name }}&nbsp;<small>(/{{ set.slug }})</small>
                     </a-select-option>
                     <template #message-danger>{{ errors[0] }}</template>
                   </app-select>
@@ -107,8 +107,16 @@
                   max="999999"
                   step="0.01"
                   name="quantity_step"
-                  label="Format ilości"
+                  :label="$t('form.quantityStep')"
                   :disabled="!canModify"
+                />
+              </div>
+
+              <div class="wide">
+                <SeoForm
+                  v-model="form.seo"
+                  :disabled="!canModify"
+                  :current="!isNew ? { id, model: 'Product' } : null"
                 />
               </div>
 
@@ -117,14 +125,14 @@
               </div>
 
               <div class="wide">
-                <small class="label">Opis</small>
+                <small class="label">{{ $t('common.form.description') }}</small>
                 <rich-editor
                   v-if="!isLoading"
                   v-model="form.description_html"
                   :disabled="!canModify"
                 />
                 <br />
-                <small class="label">Krótki opis</small>
+                <small class="label">{{ $t('form.shortDescription') }}</small>
                 <Textarea
                   v-if="!isLoading"
                   v-model="form.description_short"
@@ -139,14 +147,14 @@
                     html-type="submit"
                     style="margin-right: 12px"
                   >
-                    Zapisz
+                    {{ $t('common.save') }}
                   </app-button>
                   <app-button
                     v-if="canModify && isNew"
                     data-cy="submit-and-next-btn"
                     @click.prevent="handleSubmit(submitAndGoNext)"
                   >
-                    Zapisz i dodaj następny
+                    {{ $t('saveAndNext') }}
                   </app-button>
                 </div>
               </div>
@@ -157,6 +165,55 @@
     </div>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "newProductTitle": "Nowy produkt",
+    "deleteConfirm": "Czy na pewno chcesz usunąć ten produkt?",
+    "form": {
+      "public": "Widoczność produktu",
+      "price": "Cena",
+      "sets": "Kolekcje",
+      "setsPlaceholder": "Wybierz kolekcje",
+      "quantityStep": "Format ilości",
+      "shortDescription": "Krótki opis"
+    },
+    "stillVisible": {
+      "title": "Produkt wciąż jest ukryty",
+      "description": "Produkt jest niewidoczny ponieważ jego marka lub kategoria jest ukryta."
+    },
+    "messages": {
+      "removed": "Produkt został usunięty.",
+      "created": "Produkt został utworzony.",
+      "updated": "Produkt został zaktualizowany."
+    },
+    "saveAndNext": "Zapisz i dodaj następny"
+  },
+  "en": {
+    "newProductTitle": "New product",
+    "deleteConfirm": "Are you sure you want to delete this product?",
+    "form": {
+      "public": "Product visibility",
+      "price": "Price",
+      "sets": "Sets",
+      "setsPlaceholder": "Select sets",
+      "quantityStep": "Quantity format",
+      "shortDescription": "Short description"
+    },
+    "stillVisible": {
+      "title": "Product is still hidden",
+      "description": "Product is hidden because its brand or category is hidden."
+    },
+    "messages": {
+      "removed": "Product has been removed.",
+      "created": "Product has been created.",
+      "updated": "Product has been updated."
+    },
+    "saveAndNext": "Save and add next"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
@@ -171,6 +228,7 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import RichEditor from '@/components/form/RichEditor.vue'
 import SchemaConfigurator from '@/components/modules/schemas/Configurator.vue'
 import TagsSelect from '@/components/TagsSelect.vue'
+import SeoForm from '@/components/modules/seo/Accordion.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 import Textarea from '@/components/form/Textarea.vue'
@@ -194,10 +252,11 @@ const EMPTY_FORM: ProductComponentForm = {
   schemas: [],
   gallery: [],
   tags: [],
+  seo: {},
 }
 
 export default Vue.extend({
-  metaInfo(): any {
+  metaInfo(this: any): any {
     return { title: this.product?.name || 'Nowy produkt' }
   },
   components: {
@@ -211,6 +270,7 @@ export default Vue.extend({
     RichEditor,
     TagsSelect,
     SwitchInput,
+    SeoForm,
     AuditsModal,
     Textarea,
   },
@@ -247,6 +307,7 @@ export default Vue.extend({
         this.form = {
           ...product,
           sets: product.sets?.map(({ id }) => id) || [],
+          seo: product.seo || {},
         }
       }
     },
@@ -284,7 +345,7 @@ export default Vue.extend({
       this.$accessor.startLoading()
       const success = await this.$accessor.products.remove(this.id)
       if (success) {
-        this.$toast.success('Produkt został usunięty.')
+        this.$toast.success(this.$t('messages.removed') as string)
         this.$router.push('/products')
       }
       this.$accessor.stopLoading()
@@ -300,8 +361,8 @@ export default Vue.extend({
       this.$accessor.startLoading()
 
       const successMessage = this.isNew
-        ? 'Produkt został utworzony'
-        : 'Produkt został zaktualizowany'
+        ? (this.$t('messages.created') as string)
+        : (this.$t('messages.updated') as string)
 
       const item = this.isNew
         ? await this.$accessor.products.add(apiPayload)

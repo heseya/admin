@@ -1,7 +1,7 @@
 <template>
   <div class="cms-filters-header">
     <div class="cms-filters-header__title">
-      Filtry
+      {{ $t('filtersTitle') }}
       <div v-if="filtersCount" class="cms-filters-header__badge">{{ filtersCount }}</div>
     </div>
     <icon-button
@@ -12,12 +12,25 @@
       @click="$emit('clear-filters')"
     >
       <template #icon>
-        <img src="@/assets/images/icons/close-icon.svg" alt="Close" />
+        <img src="@/assets/images/icons/close-icon.svg" :alt="$t('common.close')" />
       </template>
-      Wyczyść ustawione filtry
+      {{ $t('clearFilters') }}
     </icon-button>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "filtersTitle": "Filtry",
+    "clearFilters": "Wyczyść ustawione filtry"
+  },
+  "en": {
+    "filtersTitle": "Filters",
+    "clearFilters": "Clear set filters"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

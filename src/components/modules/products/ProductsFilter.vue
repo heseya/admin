@@ -1,27 +1,69 @@
 <template>
   <div class="products-filter">
     <app-input
-      v-model="search"
+      v-model="local.search"
       class="span-2"
       type="search"
-      label="Wyszukiwanie"
+      :label="$t('common.search')"
       allow-clear
       @input="debouncedSearch"
     />
 
     <app-select
-      v-model="sets[0]"
-      label="Kolekcja"
+      v-model="local.sets[0]"
+      :label="$t('sets')"
       add-all
       option-filter-prop="label"
       @change="debouncedSearch"
     >
       <a-select-option v-for="set in productSets" :key="set.slug" :label="set.name">
-        {{ set.name }}
+        {{ set.name }}&nbsp;<small>(/{{ set.slug }})</small>
+      </a-select-option>
+    </app-select>
+
+    <app-select
+      v-model="local.tags[0]"
+      :label="$t('tags')"
+      add-all
+      option-filter-prop="label"
+      @change="debouncedSearch"
+    >
+      <a-select-option v-for="tag in apiTags" :key="tag.id" :label="tag.name">
+        {{ tag.name }}
+      </a-select-option>
+    </app-select>
+
+    <app-select
+      v-model="local.public"
+      :label="$t('public')"
+      add-all
+      option-filter-prop="label"
+      @change="debouncedSearch"
+    >
+      <a-select-option :value="'1'" :label="$t('common.yes')">
+        {{ $t('common.yes') }}
+      </a-select-option>
+      <a-select-option :value="'0'" :label="$t('common.no')">
+        {{ $t('common.no') }}
       </a-select-option>
     </app-select>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "sets": "Kolekcja",
+    "tags": "Tagi",
+    "public": "Widoczność"
+  },
+  "en": {
+    "sets": "Collection",
+    "tags": "Tags",
+    "public": "Public"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
@@ -33,6 +75,9 @@ import { ALL_FILTER_VALUE } from '@/consts/filters'
 export const EMPTY_PRODUCT_FILTERS = {
   search: '',
   sets: [ALL_FILTER_VALUE],
+  tags: [ALL_FILTER_VALUE],
+  public: ALL_FILTER_VALUE,
+  sort: undefined as string | undefined,
 }
 
 type ProductFilers = typeof EMPTY_PRODUCT_FILTERS
@@ -45,32 +90,33 @@ export default Vue.extend({
     } as Vue.PropOptions<ProductFilers>,
   },
   data: () => ({
-    ...cloneDeep(EMPTY_PRODUCT_FILTERS),
+    local: { ...cloneDeep(EMPTY_PRODUCT_FILTERS) },
   }),
   computed: {
     productSets() {
       return this.$accessor.productSets.getData
     },
+    apiTags() {
+      return this.$accessor.tags.getData
+    },
   },
   watch: {
-    filters(f: ProductFilers) {
-      this.search = f.search
-      this.sets = f.sets
+    filters(filters: ProductFilers) {
+      this.local = { ...this.local, ...filters }
     },
   },
   created() {
     this.$accessor.productSets.fetch({ tree: undefined })
+    this.$accessor.tags.fetch({ limit: 500 })
   },
   mounted() {
-    this.search = this.filters.search
-    this.sets = this.filters.sets
+    this.local = { ...this.local, ...this.filters }
   },
   methods: {
     makeSearch() {
       this.$emit('search', {
         ...this.filters,
-        search: this.search,
-        sets: this.sets,
+        ...this.local,
       })
     },
 

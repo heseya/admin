@@ -12,7 +12,7 @@
         <template #icon>
           <i class="bx bx-left-arrow-alt"></i>
         </template>
-        Wróć do listy
+        {{ $t('back') }}
       </icon-button>
 
       <div v-else class="header__text">{{ storeName }}</div>
@@ -27,15 +27,30 @@
         <template #overlay>
           <a-menu>
             <a-menu-item>
-              <router-link to="/settings">Ustawienia</router-link>
+              <router-link to="/settings"> {{ $t('settings') }}</router-link>
             </a-menu-item>
-            <a-menu-item @click="logout">Wyloguj się </a-menu-item>
+            <a-menu-item @click="logout"> {{ $t('logout') }} </a-menu-item>
           </a-menu>
         </template>
       </a-dropdown>
     </div>
   </header>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "back": "Wróć do listy",
+    "settings": "Ustawienia",
+    "logout": "Wyloguj się"
+  },
+  "en": {
+    "back": "Return to list",
+    "settings": "Settings",
+    "logout": "Log out"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

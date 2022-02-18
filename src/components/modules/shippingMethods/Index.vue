@@ -1,14 +1,19 @@
 <template>
   <div class="shipping-methods-form">
     <modal-form>
-      <validated-input v-model="form.name" :disabled="disabled" rules="required" label="Nazwa" />
+      <validated-input
+        v-model="form.name"
+        :disabled="disabled"
+        rules="required"
+        :label="$t('common.form.name')"
+      />
       <div class="center">
         <app-select
           v-model="form.payment_methods"
           :disabled="disabled"
           mode="multiple"
           option-filter-prop="label"
-          label="Dostępne metody płatności"
+          :label="$t('form.paymentMethods')"
         >
           <a-select-option v-for="method in paymentMethods" :key="method.id" :label="method.name">
             {{ method.name }}
@@ -18,7 +23,7 @@
 
       <div class="center">
         <flex-input>
-          <label class="title">Widoczność opcji dostawy</label>
+          <label class="title">{{ $t('form.public') }}</label>
           <switch-input v-model="form.public" :disabled="disabled"> </switch-input>
         </flex-input>
       </div>
@@ -31,12 +36,36 @@
 
       <hr />
 
-      <h5>Wysyłka możliwa do</h5>
+      <h5>{{ $t('form.deliveryTime') }}</h5>
+      <div class="row">
+        <validated-input
+          v-model="form.shipping_time_min"
+          type="number"
+          min="0"
+          name="shipping_time_min"
+          :disabled="disabled"
+          rules="not-negative|less-than:@shipping_time_max"
+          :label="$t('form.minDeliveryDays')"
+        />
+        <validated-input
+          v-model="form.shipping_time_max"
+          type="number"
+          min="0"
+          name="shipping_time_max"
+          :disabled="disabled"
+          rules="not-negative"
+          :label="$t('form.maxDeliveryDays')"
+        />
+      </div>
+
+      <hr />
+
+      <h5>{{ $t('form.deliveryRegions') }}</h5>
       <div class="center">
         <flex-input>
-          <label class="title">Biała lista</label>
+          <label class="title">{{ $t('common.allowList') }}</label>
           <a-switch v-model="form.black_list" :disabled="disabled" />
-          <label class="title">Czarna lista</label>
+          <label class="title">{{ $t('common.blockList') }}</label>
         </flex-input>
       </div>
 
@@ -45,7 +74,7 @@
           v-model="form.countries"
           :disabled="disabled"
           mode="multiple"
-          label="Kraje"
+          :label="$t('form.countries')"
           option-filter-prop="label"
         >
           <a-select-option v-for="country in countries" :key="country.code" :label="country.name">
@@ -56,6 +85,33 @@
     </modal-form>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "form": {
+      "paymentMethods": "Dostępne metody płatności",
+      "public": "Widoczność opcji dostawy",
+      "deliveryTime": "Czas dostawy",
+      "minDeliveryDays": "Minimalna ilość dni dostawy",
+      "maxDeliveryDays": "Maksymalna ilość dni dostawy",
+      "deliveryRegions": "Wysyłka możliwa do",
+      "countries": "Kraje"
+    }
+  },
+  "en": {
+    "form": {
+      "paymentMethods": "Available payment methods",
+      "public": "Shipping option visibility",
+      "deliveryTime": "Delivery time",
+      "minDeliveryDays": "Minimal number of days of delivery",
+      "maxDeliveryDays": "Maximum number of days of delivery",
+      "deliveryRegions": "Delivery is possible to",
+      "countries": "Countries"
+    }
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

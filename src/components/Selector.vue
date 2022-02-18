@@ -1,11 +1,14 @@
 <template>
   <div class="schema-selector">
-    <app-input v-model="query" :label="`Wyszukaj ${typeName}`"></app-input>
+    <app-input
+      v-model="query"
+      :label="`${$t('search')} ${typeName || $t('defaultTypeName')}`"
+    ></app-input>
 
     <div ref="content" class="schema-selector__content">
       <loading :active="isLoading" />
 
-      <empty v-if="query !== '' && list.length === 0">Nic nie znaleziono</empty>
+      <empty v-if="query !== '' && list.length === 0" />
 
       <list class="schema-selector__items">
         <list-item v-for="item in list" :key="item.id" class="schema-selector__item" no-hover>
@@ -14,7 +17,7 @@
           <template #action>
             <div class="flex">
               <app-button type="success" size="small" @click="onSelect(item)">
-                {{ addText }}
+                {{ addText || $t('defaultAddBtn') }}
               </app-button>
             </div>
           </template>
@@ -23,6 +26,21 @@
     </div>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "search": "Wyszukaj",
+    "defaultTypeName": "schemat",
+    "defaultAddBtn": "Dodaj"
+  },
+  "en": {
+    "search": "Search",
+    "defaultTypeName": "schema",
+    "defaultAddBtn": "Add"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
@@ -37,7 +55,6 @@ import Empty from '@/components/layout/Empty.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 
 import { Schema } from '@/interfaces/Schema'
-import { SchemaTypeLabel } from '@/consts/schemaTypeLabels'
 import { UUID } from '@/interfaces/UUID'
 import Loading from './layout/Loading.vue'
 
@@ -61,11 +78,11 @@ export default Vue.extend({
     },
     typeName: {
       type: String,
-      default: 'schemat',
+      default: null,
     },
     addText: {
       type: String,
-      default: 'Dodaj',
+      default: null,
     },
     existing: {
       type: Array,
@@ -112,7 +129,7 @@ export default Vue.extend({
     getSubText(item: any) {
       if (this.type === 'schemas') {
         const schema = item as Schema
-        const schemaType = SchemaTypeLabel[schema.type]
+        const schemaType = this.$t(`schemaTypes.${schema.type}`)
         return schema.description ? `${schemaType} | ${schema.description}` : schemaType
       }
       if (this.type === 'items') return `SKU: ${item.sku}`

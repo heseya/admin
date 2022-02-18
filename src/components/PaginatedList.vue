@@ -11,7 +11,9 @@
     <AppCard class="paginated-list__content">
       <Loading :active="isLoading"></Loading>
 
-      <AppEmpty v-if="!items.length || isLoading">{{ emptyText }}</AppEmpty>
+      <AppEmpty v-if="!items.length || isLoading">
+        {{ emptyText || $t('common.defaultEmpty') }}
+      </AppEmpty>
       <component
         :is="contentComponent"
         v-else
@@ -59,7 +61,7 @@ import Loading from './layout/Loading.vue'
 
 import { ResponseMeta } from '@/interfaces/Response'
 import { TableConfig } from '@/interfaces/CmsTable'
-import { StoreModulesKeys } from '@/store'
+import { GeneratedStoreModulesKeys } from '@/store'
 import { BaseItem } from '@/store/generator'
 
 import { formatFilters } from '@/utils/utils'
@@ -90,14 +92,14 @@ export default Vue.extend({
     storeKey: {
       type: String,
       required: true,
-    } as Vue.PropOptions<Exclude<StoreModulesKeys, 'auth'>>,
+    } as Vue.PropOptions<GeneratedStoreModulesKeys>,
     draggable: {
       type: Boolean,
       default: false,
     },
     emptyText: {
       type: String,
-      default: 'Nic nie znaleziono',
+      default: null,
     },
     filters: {
       type: Object,

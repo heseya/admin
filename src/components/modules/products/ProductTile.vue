@@ -4,7 +4,7 @@
       <i class="bx bx-lock-alt"></i>
     </avatar>
     <div class="product-box__img">
-      <img v-if="product.cover" :src="`${product.cover.url}?w=350&h=350`" :style="{ objectFit }" />
+      <media-element v-if="product.cover" :media="product.cover" :size="350" />
       <i v-else class="product-box__img-icon bx bx-image"></i>
 
       <div class="product-box__tags">
@@ -30,14 +30,15 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import Avatar from '@/components/layout/Avatar.vue'
-
 import { Product } from '@/interfaces/Product'
 import { formatCurrency } from '@/utils/currency'
+
+import Avatar from '@/components/layout/Avatar.vue'
 import Tag from '@/components/Tag.vue'
+import MediaElement from '@/components/MediaElement.vue'
 
 export default Vue.extend({
-  components: { Avatar, Tag },
+  components: { Avatar, Tag, MediaElement },
   props: {
     product: {
       type: Object,
@@ -98,7 +99,7 @@ export default Vue.extend({
     margin-bottom: 4px;
     box-shadow: $shadow;
 
-    img {
+    .media-element {
       position: absolute;
       top: 0;
       left: 0;

@@ -7,24 +7,26 @@
       :disabled="disabled"
     >
       <div v-for="image in images" :key="image.url" class="gallery__img">
-        <img
-          v-if="image.type === CdnMediaType.Photo"
-          :src="`${image.url}?w=350&h=350`"
-          :style="{ objectFit }"
-        />
-        <video v-if="image.type === CdnMediaType.Video" :src="image.url" autoplay loop muted />
-        <div class="remove">
+        <media-element :media="image" :size="350" />
+        <div class="gallery__remove-img">
           <icon-button v-if="!disabled" type="danger" @click="onImageDelete(image.id)">
             <template #icon>
               <i class="bx bx-trash"></i>
             </template>
           </icon-button>
         </div>
+
+        <media-edit-form
+          class="gallery__edit-img"
+          :disabled="disabled"
+          :media="image"
+          @update="updateMedia"
+        />
       </div>
       <app-media-uploader
         v-if="!disabled"
-        class="gallery__img add undragabble"
-        :class="{ 'add--drag': isDrag, 'add--big': images.length === 0 }"
+        class="gallery__img gallery__add-btn undragabble"
+        :class="{ 'gallery__add-btn--drag': isDrag, 'gallery__add-btn--big': images.length === 0 }"
         multiple
         @dragChange="dragChange"
         @upload="onImageUpload"
@@ -40,16 +42,20 @@
 import Vue from 'vue'
 import Draggable from 'vuedraggable'
 
-import MediaUploader from '@/components/MediaUploader.vue'
+import MediaUploader from '@/components/modules/media/MediaUploader.vue'
 import { formatApiNotificationError } from '@/utils/errors'
 import { UUID } from '@/interfaces/UUID'
 import { CdnMedia, CdnMediaType } from '@/interfaces/Media'
 import { removeMedia } from '@/services/uploadMedia'
+import MediaEditForm from '@/components/modules/media/MediaEditForm.vue'
+import MediaElement from '@/components/MediaElement.vue'
 
 export default Vue.extend({
   components: {
     appMediaUploader: MediaUploader,
     Draggable,
+    MediaEditForm,
+    MediaElement,
   },
   props: {
     value: {
@@ -73,9 +79,6 @@ export default Vue.extend({
       set(val: CdnMedia[]) {
         this.$emit('input', val)
       },
-    },
-    objectFit() {
-      return +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'
     },
   },
   mounted() {
@@ -107,6 +110,12 @@ export default Vue.extend({
     clearMediaToDelete() {
       this.mediaToDelete = []
     },
+
+    updateMedia(file: CdnMedia) {
+      const index = this.images.findIndex((image) => image.id === file.id)
+      this.images.splice(index, 1, file)
+    },
+
     async removeTouchedFiles() {
       await Promise.all(this.mediaToDelete.map(removeMedia))
       this.clearMediaToDelete()
@@ -128,6 +137,7 @@ export default Vue.extend({
     }
   }
 
+  &__add-btn,
   &__img {
     position: relative;
     width: 100%;
@@ -135,9 +145,9 @@ export default Vue.extend({
     margin-bottom: 4px;
     background-color: #ffffff;
     box-shadow: $shadow;
+    border-radius: 7px;
 
-    img,
-    video {
+    .media-element {
       position: absolute;
       top: 0;
       left: 0;
@@ -147,28 +157,9 @@ export default Vue.extend({
       background-color: #ffffff;
       border-radius: 7px;
     }
-
-    .remove {
-      position: absolute;
-      top: -15px;
-      right: -10px;
-      transition: 0.3s;
-      visibility: hidden;
-      opacity: 0;
-    }
-
-    &:hover .remove {
-      top: -10px;
-      visibility: visible;
-      opacity: 1;
-    }
   }
 
-  .add {
-    // width: 25%;
-    // padding-top: 25%;
-    // margin-top: 10px;
-
+  &__add-btn {
     &--big {
       width: 50%;
       padding-top: 50%;
@@ -176,6 +167,7 @@ export default Vue.extend({
     }
 
     img {
+      position: absolute;
       top: 40%;
       left: 40%;
       height: 20%;
@@ -191,29 +183,25 @@ export default Vue.extend({
     }
   }
 
-  .loading {
-    &::before {
-      content: '';
-      position: absolute;
-      box-sizing: border-box;
-      display: block;
-      border-radius: 50%;
-      top: 50%;
-      left: 50%;
-      height: 20%;
-      width: 20%;
-      animation: spin 1s infinite;
-      background-color: transparent;
-      border: 6px solid #ffffff;
-      border-color: #ffffff transparent transparent transparent;
-      box-shadow: none;
-      z-index: 4;
-    }
+  &__remove-img,
+  &__edit-img {
+    position: absolute;
+    top: -15px;
+    right: -10px;
+    transition: 0.3s;
+    visibility: hidden;
+    opacity: 0;
+  }
 
-    img {
-      filter: blur(4px);
-      transform: scale(1.1);
-    }
+  &__edit-img {
+    right: 24px;
+  }
+
+  &__img:hover &__remove-img,
+  &__img:hover &__edit-img {
+    top: -10px;
+    visibility: visible;
+    opacity: 1;
   }
 }
 </style>

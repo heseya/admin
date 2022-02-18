@@ -7,7 +7,7 @@
         v-if="error"
         type="error"
         show-icon
-        message="Nie udało się pobrać konfiguracji aplikacji"
+        :message="$t('fetchFailed')"
         :description="error.message"
       />
 
@@ -47,12 +47,29 @@
 
       <div class="configure-app-form__btns">
         <app-button :disabled="!!error" @click="handleSubmit(changeAppConfig)">
-          Zapisz konfiguracje
+          {{ $t('save') }}
         </app-button>
       </div>
     </div>
   </validation-observer>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "fetchFailed": "Nie udało się pobrać konfiguracji aplikacji",
+    "save": "Zapisz konfigurację",
+    "savedSuccess": "Konfiguracja została zapisana",
+    "savedError": "Nie udało się zapisać konfiguracji aplikacji"
+  },
+  "en": {
+    "fetchFailed": "Failed to fetch app configuration",
+    "save": "Save configuration",
+    "savedSuccess": "Configuration saved",
+    "savedError": "Failed to save configuration"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
@@ -121,7 +138,7 @@ export default Vue.extend({
 
         await this.appApi.post('/config', this.form)
 
-        this.$toast.success('Konfiguracja została zapisana')
+        this.$toast.success(this.$t('savedSuccess') as string)
         this.$emit('close')
       } catch (e: unknown) {
         const error = e as AxiosError<{ message?: string }>
@@ -129,7 +146,7 @@ export default Vue.extend({
 
         this.$toast.error(
           formatApiNotification({
-            title: 'Wystąpił błąd podczas zapisywania konfiguracji',
+            title: this.$t('savedError') as string,
             text: message,
           }),
         )

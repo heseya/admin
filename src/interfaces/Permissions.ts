@@ -23,6 +23,8 @@ import {
   TagsPermission,
   UsersPermission,
   RolesPermission,
+  SeoPermission,
+  WebhooksPermission,
 } from '@/enums/permissions'
 
 export type Permission =
@@ -49,6 +51,8 @@ export type Permission =
   | TagsPermission
   | UsersPermission
   | RolesPermission
+  | WebhooksPermission
+  | SeoPermission
 
 export interface PermissionObject {
   id: UUID

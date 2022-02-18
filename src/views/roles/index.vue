@@ -1,12 +1,12 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList title="Role" store-key="roles">
+    <PaginatedList :title="$t('title')" store-key="roles">
       <template #nav>
         <icon-button v-can="$p.Roles.Add" to="/settings/roles/create">
           <template #icon>
             <i class="bx bx-plus"></i>
           </template>
-          Dodaj rolę
+          {{ $t('add') }}
         </icon-button>
       </template>
 
@@ -20,13 +20,28 @@
   </div>
 </template>
 
+<i18n>
+{
+  "pl": {
+    "title": "Role",
+    "add": "Dodaj rolę"
+  },
+  "en": {
+    "title": "Roles",
+    "add": "Add role"
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 
 export default Vue.extend({
-  metaInfo: { title: 'Role' },
+  metaInfo(this: any) {
+    return { title: this.$t('title') as string }
+  },
   components: {
     ListItem,
     PaginatedList,

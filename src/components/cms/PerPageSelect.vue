@@ -1,6 +1,6 @@
 <template>
   <div class="per-page-select">
-    <label for="per-page" class="per-page-select__label">Elementów na stronę</label>
+    <label for="per-page" class="per-page-select__label">{{ $t('itemsPerPage') }}</label>
     <div class="per-page-select__select">
       <select id="per-page" v-model="perPage">
         <option v-for="option in perPageOptions" :key="option" :value="option">
@@ -10,6 +10,17 @@
     </div>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "itemsPerPage": "Elementów na stronę"
+  },
+  "en": {
+    "itemsPerPage": "Items per page"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

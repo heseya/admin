@@ -3,6 +3,7 @@
     :is="component"
     :to="to"
     class="icon-button"
+    :type="htmlType"
     :class="[
       `icon-button--${type}`,
       `icon-button--${size}`,
@@ -37,6 +38,10 @@ export default Vue.extend({
       default: false,
     },
     el: {
+      type: String,
+      default: 'button',
+    },
+    htmlType: {
       type: String,
       default: 'button',
     },

@@ -150,6 +150,7 @@ export enum UsersPermission {
   Add = 'users.add',
   Edit = 'users.edit',
   Remove = 'users.remove',
+  TfaRemove = 'users.2fa_remove',
 }
 
 export enum RolesPermission {
@@ -158,4 +159,19 @@ export enum RolesPermission {
   Add = 'roles.add',
   Edit = 'roles.edit',
   Remove = 'roles.remove',
+}
+
+export enum SeoPermission {
+  Show = 'roles.show',
+  Edit = 'roles.edit',
+  // TODO:
+  // Show = 'seo.show',
+  // Edit = 'seo.edit',
+}
+
+export enum WebhooksPermission {
+  Show = 'webhooks.show',
+  Add = 'webhooks.add',
+  Edit = 'webhooks.edit',
+  Remove = 'webhooks.remove',
 }

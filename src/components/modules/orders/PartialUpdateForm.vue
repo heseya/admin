@@ -11,7 +11,7 @@
           v-else-if="key === 'email'"
           v-model="form[key]"
           name="email"
-          label="Adres e-mail"
+          :label="$t('email')"
           rules="required|email"
         />
 
@@ -19,13 +19,26 @@
           v-else-if="key === 'comment'"
           v-model="form[key]"
           name="comment"
-          label="Komentarz do zamówienia"
+          :label="$t('comment')"
         />
       </div>
-      <app-button @click="handleSubmit(save)">Zapisz</app-button>
+      <app-button @click="handleSubmit(save)">{{ $t('common.save') }}</app-button>
     </ValidationObserver>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "email": "Adres e-mail",
+    "comment": "Komentarz do zamówienia"
+  },
+  "en": {
+    "email": "Email address",
+    "comment": "Order comment"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

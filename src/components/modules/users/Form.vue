@@ -1,12 +1,17 @@
 <template>
   <modal-form>
-    <validated-input v-model="form.name" :disabled="disabled" rules="required" label="Nazwa" />
+    <validated-input
+      v-model="form.name"
+      :disabled="disabled"
+      rules="required"
+      :label="$t('name')"
+    />
 
     <validated-input
       v-model="form.email"
       :disabled="disabled"
       rules="required|email"
-      label="Email"
+      :label="$t('email')"
     />
 
     <validated-input
@@ -15,13 +20,13 @@
       :disabled="disabled"
       type="password"
       rules="required|password"
-      label="Hasło"
+      :label="$t('password')"
     />
 
     <app-select
       v-model="form.roles"
       :disabled="disabled"
-      label="Role"
+      :label="$t('roles')"
       mode="multiple"
       option-filter-prop="label"
     >
@@ -34,26 +39,57 @@
         {{ role.name }}
       </a-select-option>
     </app-select>
+
+    <template v-if="!isNewUser(form)">
+      <hr />
+      <Disable2FA
+        :user-id="form.id"
+        :is2fa-enabled="form.is_tfa_active"
+        @close-modal="$emit('close')"
+      />
+    </template>
   </modal-form>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "name": "Nazwa",
+    "email": "Email",
+    "password": "Hasło",
+    "roles": "Role"
+  },
+  "en": {
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "roles": "Roles"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
 
 import ModalForm from '@/components/form/ModalForm.vue'
+import Disable2FA from './Disable2FA.vue'
 
 import { CreateUserDTO, EditUserDTO } from '@/interfaces/User'
 import { Role } from '@/interfaces/Role'
 
+// eslint-disable-next-line camelcase
+type UserDTO = CreateUserDTO | (EditUserDTO & { is_tfa_active: boolean })
+
 export default Vue.extend({
   components: {
     ModalForm,
+    Disable2FA,
   },
   props: {
     value: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<CreateUserDTO | EditUserDTO>,
+    } as Vue.PropOptions<UserDTO>,
     disabled: {
       type: Boolean,
       default: false,
@@ -61,10 +97,10 @@ export default Vue.extend({
   },
   computed: {
     form: {
-      get(): CreateUserDTO | EditUserDTO {
+      get(): UserDTO {
         return this.value
       },
-      set(v: CreateUserDTO | EditUserDTO) {
+      set(v: UserDTO) {
         this.$emit('input', v)
       },
     },
@@ -78,7 +114,7 @@ export default Vue.extend({
     this.$accessor.stopLoading()
   },
   methods: {
-    isNewUser(user: CreateUserDTO | EditUserDTO): user is CreateUserDTO {
+    isNewUser(user: UserDTO): user is CreateUserDTO {
       return 'id' in user === false
     },
   },

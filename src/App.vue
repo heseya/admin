@@ -19,6 +19,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { first, isArray } from 'lodash'
 import { init as initMicroApps, onMounted, openCommunicationChannel } from 'bout'
 
 import DesktopNavigation from './components/root/DesktopNavigation.vue'
@@ -28,7 +29,7 @@ import Loading from './components/layout/Loading.vue'
 import SwUpdatePopup from './components/root/SwUpdatePopup.vue'
 
 import { onTokensSync } from './utils/authSync'
-import { first, isArray } from 'lodash'
+import { getApiURL } from './utils/api'
 
 export default Vue.extend({
   metaInfo: {
@@ -54,6 +55,9 @@ export default Vue.extend({
     tokenChannel() {
       return openCommunicationChannel('Token')
     },
+    mainChannel() {
+      return openCommunicationChannel('Main')
+    },
   },
   watch: {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -72,7 +76,14 @@ export default Vue.extend({
 
     // MicroFrontend Events Start
     onMounted(() => {
+      // ! deprecated: remove before 3.0.0
       this.tokenChannel.emit('set', this.$accessor.auth.getIdentityToken)
+
+      this.mainChannel.emit('init', {
+        coreUrl: getApiURL(),
+        token: this.$accessor.auth.getIdentityToken,
+        user: this.$accessor.auth.user,
+      })
     })
 
     this.tokenChannel.on<undefined>('refresh', async () => {

@@ -46,7 +46,7 @@ export const createApiInstance = (baseURL: string, useAccessToken = true) => {
   apiInstance.interceptors.response.use(undefined, async (error: AxiosError) => {
     const originalRequest = error.config
 
-    if (error.response?.status === 403) {
+    if (error.response?.status === 403 && !!error.response?.data?.error) {
       accessor.auth.setPermissionsError(error.response.data as Error)
     }
 

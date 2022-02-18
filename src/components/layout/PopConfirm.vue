@@ -4,19 +4,38 @@
 
     <template #content>
       <div class="pop-confirm">
-        <p>{{ title }}</p>
+        <p>{{ title || $t('default.question') }}</p>
         <footer>
           <app-button :type="okColor" size="small" @click="confirm">
-            {{ okText }}
+            {{ okText || $t('default.confirm') }}
           </app-button>
           <app-button size="small" @click="cancel">
-            {{ cancelText }}
+            {{ cancelText || $t('default.cancel') }}
           </app-button>
         </footer>
       </div>
     </template>
   </a-popover>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "default": {
+      "question": "Jesteś pewny?",
+      "confirm": "Tak",
+      "cancel": "Nie"
+    }
+  },
+  "en": {
+     "default": {
+      "question": "Are you sure?",
+      "confirm": "Yes",
+      "cancel": "No"
+    }
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
@@ -25,11 +44,11 @@ export default Vue.extend({
   props: {
     title: {
       type: String,
-      default: 'Jesteś pewny?',
+      default: null,
     },
     okText: {
       type: String,
-      default: 'Tak',
+      default: null,
     },
     okColor: {
       type: String,
@@ -37,7 +56,7 @@ export default Vue.extend({
     },
     cancelText: {
       type: String,
-      default: 'Nie',
+      default: null,
     },
     placement: {
       type: String,

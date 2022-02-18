@@ -1,9 +1,24 @@
 <template>
   <div class="sw-update-popup" :class="{ 'sw-update-popup--active': updateExists }">
-    <p class="sw-update-popup__text">Dostępna jest aktualizacja</p>
-    <app-button type="white" size="small" @click.stop="refreshApp"> Zaktualizuj </app-button>
+    <p class="sw-update-popup__text">{{ $t('message') }}</p>
+    <app-button type="white" size="small" @click.stop="refreshApp">
+      {{ $t('install') }}
+    </app-button>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "message": "Dostępna jest aktualizacja",
+    "install": "Zaktualizuj"
+  },
+  "en": {
+    "message": "There is an update available",
+    "install": "Update"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

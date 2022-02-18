@@ -181,6 +181,14 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/settings/two-factor-authentication',
+      name: 'TwoFactorAuthentication',
+      component: () => import('./views/settings/TwoFactorAuth.vue'),
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
       path: '/collections',
       name: 'ProductSets',
       component: () => import('./views/productSets/Index.vue'),
@@ -244,6 +252,15 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/settings/seo',
+      name: 'Seo',
+      component: () => import('./views/seo/index.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Seo.Show],
+      },
+    },
+    {
       path: '/settings/roles',
       name: 'Roles',
       component: () => import('./views/roles/index.vue'),
@@ -260,6 +277,25 @@ const router = new VueRouter({
         returnUrl: '/settings/roles',
         requiresAuth: true,
         permissions: [Permissions.Roles.ShowDetails],
+      },
+    },
+    {
+      path: '/webhooks',
+      name: 'WebHooks',
+      component: () => import('./views/webhooks/index.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Webhooks.Show],
+      },
+    },
+    {
+      path: '/webhooks/:id',
+      name: 'WebHooksView',
+      component: () => import('./views/webhooks/view.vue'),
+      meta: {
+        returnUrl: '/webhooks',
+        requiresAuth: true,
+        permissions: [Permissions.Webhooks.Show],
       },
     },
     // {

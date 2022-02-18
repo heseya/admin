@@ -12,20 +12,33 @@
   >
     <template v-if="!isLogoExist">
       <img src="@/assets/images/heseya.svg" alt="Heseya" class="nav-logo__logo" />
-      <span v-if="canModify" class="nav-logo__title">Dodaj swoje logo</span>
+      <span v-if="canModify" class="nav-logo__title">{{ $t('addLogo') }}</span>
     </template>
     <template v-else>
-      <img :src="storeLogoPath" :alt="storeName" class="nav-logo__logo" />
-      <span v-if="canModify" class="nav-logo__title">Zmień swoje logo</span>
+      <img :src="scaledLogoPath" :alt="storeName" class="nav-logo__logo" />
+      <span v-if="canModify" class="nav-logo__title">{{ $t('changeLogo') }}</span>
     </template>
   </media-uploader>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "addLogo": "Dodaj swoje logo",
+    "changeLogo": "Zmień swoje logo"
+  },
+  "en": {
+    "addLogo": "Add your logo",
+    "changeLogo": "Change your logo"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
 
 import { CdnMedia } from '@/interfaces/Media'
-import MediaUploader from '@/components/MediaUploader.vue'
+import MediaUploader from '@/components/modules/media/MediaUploader.vue'
 
 const ENV_NAME = 'store_logo'
 
@@ -56,6 +69,9 @@ export default Vue.extend({
     },
     isLogoExist(): boolean {
       return !!this.storeLogoPath || !!this.envStoreLogo
+    },
+    scaledLogoPath(): string {
+      return this.storeLogoPath + `?w=${this.big ? '200' : '150'}`
     },
   },
   watch: {

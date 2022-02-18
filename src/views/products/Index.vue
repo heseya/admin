@@ -1,10 +1,11 @@
 <template>
   <div class="products-container" :class="{ 'products-container--grid-view': !listView }">
     <PaginatedList
-      title="Asortyment"
+      :title="$t('title')"
       :filters="filters"
       store-key="products"
       :table="listView ? tableConfig : undefined"
+      @search="makeSearch"
       @clear-filters="clearFilters"
     >
       <template #nav>
@@ -13,14 +14,14 @@
             <i v-if="!listView" class="bx bx-list-ul"></i>
             <i v-else class="bx bx-grid"></i>
           </template>
-          Przełącz na widok {{ listView ? 'siatki' : 'listy' }}
+          {{ $t('view.message') }} {{ listView ? $t('view.grid') : $t('view.list') }}
         </icon-button>
 
         <icon-button to="/products/create">
           <template #icon>
             <i class="bx bx-plus"></i>
           </template>
-          Dodaj produkt
+          {{ $t('add') }}
         </icon-button>
       </template>
 
@@ -35,6 +36,39 @@
     </PaginatedList>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "title": "Asortyment",
+    "add": "Dodaj produkt",
+    "view": {
+      "message": "Przełącz na widok",
+      "grid": "siatki",
+      "list": "listy"
+    },
+    "form": {
+      "price": "Cena",
+      "tags": "Tagi",
+      "public": "Widoczność"
+    }
+  },
+  "en": {
+    "title": "Products",
+    "add": "Add product",
+    "view": {
+      "message": "Switch to view",
+      "grid": "grid",
+      "list": "list"
+    },
+    "form": {
+      "price": "Price",
+      "tags": "Tags",
+      "public": "Visibility"
+    }
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
@@ -55,7 +89,9 @@ import { Product } from '@/interfaces/Product'
 const LOCAL_STORAGE_KEY = 'products-list-view'
 
 export default Vue.extend({
-  metaInfo: { title: 'Produkty' },
+  metaInfo(this: any) {
+    return { title: this.$t('title') as string }
+  },
   components: {
     ProductTile,
     ProductsFilter,
@@ -71,10 +107,15 @@ export default Vue.extend({
       return {
         headers: [
           { key: 'cover', label: '', width: '60px' },
-          { key: 'name', label: 'Nazwa' },
-          { key: 'price', label: 'Cena', width: '0.5fr' },
-          { key: 'tags', label: 'Tagi' },
-          { key: 'visible', label: 'Widoczność', width: '0.5fr' },
+          { key: 'name', label: this.$t('common.form.name') as string, sortable: true },
+          { key: 'price', label: this.$t('form.price') as string, width: '0.5fr', sortable: true },
+          { key: 'tags', label: this.$t('form.tags') as string },
+          {
+            key: 'public',
+            label: this.$t('form.public') as string,
+            width: '0.5fr',
+            sortable: true,
+          },
         ],
       }
     },
@@ -88,6 +129,11 @@ export default Vue.extend({
     this.filters.search = (this.$route.query.search as string) || ''
     const sets = this.$route.query.sets || [ALL_FILTER_VALUE]
     this.filters.sets = isArray(sets) ? (sets as string[]) : [sets]
+    const tags = this.$route.query.tags || [ALL_FILTER_VALUE]
+    this.filters.tags = isArray(tags) ? (tags as string[]) : [tags]
+
+    this.filters.public = (this.$route.query.public as string) || ALL_FILTER_VALUE
+    this.filters.sort = (this.$route.query.sort as string) || ''
 
     this.listView = !!+(window.localStorage.getItem(LOCAL_STORAGE_KEY) || 0)
   },

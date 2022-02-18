@@ -1,12 +1,23 @@
 <template>
   <validation-observer v-slot="{ handleSubmit }">
     <card>
-      <validated-input v-model="form.name" rules="required" label="Nazwa" :disabled="disabled" />
-      <validated-input v-model="form.description" label="Opis" :disabled="disabled" />
+      <validated-input
+        v-model="form.name"
+        rules="required"
+        :label="$t('common.form.name')"
+        :disabled="disabled"
+      />
+      <validated-input
+        v-model="form.description"
+        :label="$t('common.form.description')"
+        :disabled="disabled"
+      />
       <br />
       <permissions-manager v-model="form.permissions" :disabled="disabled" />
       <br />
-      <app-button v-if="!disabled" @click="handleSubmit(submit)"> Zapisz </app-button>
+      <app-button v-if="!disabled" @click="handleSubmit(submit)">
+        {{ $t('common.save') }}
+      </app-button>
     </card>
   </validation-observer>
 </template>

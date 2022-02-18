@@ -7,11 +7,7 @@
   >
     <template #cover>
       <avatar color="#eee">
-        <img
-          v-if="product.cover"
-          :src="`${product.cover.url}?w=100&h=100`"
-          :style="{ objectFit }"
-        />
+        <media-element v-if="product.cover" :media="product.cover" :size="100" />
         <i v-else class="product-list-item__img-icon bx bx-image"></i>
       </avatar>
     </template>
@@ -38,9 +34,11 @@
       </div>
     </template>
 
-    <template #visible>
-      <tag v-if="product.visible" type="success"> <i class="bx bx-check"></i> Tak </tag>
-      <tag v-else type="error"> <i class="bx bx-x"></i> Nie </tag>
+    <template #public>
+      <tag v-if="product.public" type="success">
+        <i class="bx bx-check"></i> {{ $t('common.yes') }}
+      </tag>
+      <tag v-else type="error"> <i class="bx bx-x"></i> {{ $t('common.no') }} </tag>
     </template>
   </cms-table-row>
 </template>
@@ -55,9 +53,10 @@ import { formatCurrency } from '@/utils/currency'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 import { TableConfig } from '@/interfaces/CmsTable'
 import Tag from '@/components/Tag.vue'
+import MediaElement from '@/components/MediaElement.vue'
 
 export default Vue.extend({
-  components: { Avatar, CmsTableRow, Tag },
+  components: { Avatar, CmsTableRow, Tag, MediaElement },
   props: {
     product: {
       type: Object,

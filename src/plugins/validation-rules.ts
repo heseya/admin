@@ -6,14 +6,15 @@ import { ShippingMethodPriceRangeDTO } from '@/interfaces/ShippingMethod'
 
 import { ONLY_LETTERS_REGEX, PASSWORD_REGEX, SLUG_REGEX } from '@/consts/regexes'
 import { isBefore } from 'date-fns'
+import i18n from '@/i18n'
 
 extend('required', {
   ...required,
-  message: 'To pole jest wymagane',
+  message: () => i18n.t('validation.required') as string,
 })
 extend('email', {
   ...email,
-  message: 'Wprowadź poprawny adres email',
+  message: () => i18n.t('validation.email') as string,
 })
 
 extend('repeatPassword', {
@@ -21,46 +22,53 @@ extend('repeatPassword', {
   validate(password, { target }: Record<string, any>) {
     return password === target
   },
-  message: 'Powtórzone hasło różni się od nowego hasła',
+  message: () => i18n.t('validation.repeatPassword') as string,
 })
 
 extend('password', {
   validate(password: string) {
     return PASSWORD_REGEX.test(password)
   },
-  message:
-    'Hasło musi mieć przynajmniej 10 znaków oraz zawierać małą, dużą literę, cyfrę i znak specjalny',
+  message: () => i18n.t('validation.password') as string,
 })
 
 extend('positive', {
-  message: 'To pole musi być większe od zera',
+  message: () => i18n.t('validation.positive') as string,
   validate: (value) => {
     return value > 0
   },
 })
 extend('not-negative', {
-  message: 'To pole nie może być mniejsze od 0',
+  message: () => i18n.t('validation.notNegative') as string,
   validate: (value) => {
     return value >= 0
   },
 })
 
+extend('less-than', {
+  params: ['target'],
+  validate(value, { target }: Record<string, any>) {
+    return value <= target
+  },
+  message: (_, v) => i18n.t('validation.lessThan', v) as string,
+})
+
 extend('id-required', {
-  message: 'To pole jest wymagane',
+  message: () => i18n.t('validation.required') as string,
   validate: (value) => {
     return value !== 0
   },
 })
 
 extend('slug', {
-  message: 'Link może składać się tylko z małych liter, cyfr i myślników',
+  message: () => i18n.t('validation.slug') as string,
   validate: (value) => {
     return SLUG_REGEX.test(value)
   },
 })
 
 extend('url', {
-  message: 'Wartość musi być poprawnym adresem URL',
+  message: () => i18n.t('validation.url') as string,
   validate: (value) => {
     return v.isURL(value, {
       require_tld: false,
@@ -71,14 +79,14 @@ extend('url', {
 })
 
 extend('letters-only', {
-  message: 'Wartość może składać się tylko z liter i podkreślników (_)',
+  message: () => i18n.t('validation.lettersOnly') as string,
   validate: (value) => {
     return ONLY_LETTERS_REGEX.test(value)
   },
 })
 
 extend('date-before', {
-  message: 'Data zakończenia musi być przed datą startu',
+  message: () => i18n.t('validation.dateBefore') as string,
   params: ['target'],
   validate(date, { target }: Record<string, any>) {
     return target ? isBefore(new Date(date), new Date(target)) : true
@@ -86,7 +94,7 @@ extend('date-before', {
 })
 
 extend('price-ranges-duplicates', {
-  message: 'Zakresy cen nie mogą zawierać zduplikowanych progów',
+  message: () => i18n.t('validation.priceRangesDuplicates') as string,
   validate: (priceRanges: ShippingMethodPriceRangeDTO[]) => {
     const startValues: number[] = []
 
@@ -103,5 +111,5 @@ extend('schema-checkbox', {
   validate(value, { target }: Record<string, any>) {
     return !(value && target)
   },
-  message: 'Schemat nie może być jednocześnie ukryty i wymagany',
+  message: () => i18n.t('validation.schemaCheckbox') as string,
 })

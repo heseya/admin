@@ -1,12 +1,12 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList title="Użytkownicy" store-key="users">
+    <PaginatedList :title="$t('title')" store-key="users">
       <template #nav>
         <icon-button v-can="$p.Users.Add" @click="openModal()">
           <template #icon>
             <i class="bx bx-plus"></i>
           </template>
-          Dodaj użytkownika
+          {{ $t('add') }}
         </icon-button>
       </template>
       <template #default="{ item: user }">
@@ -18,6 +18,12 @@
           </template>
           {{ user.name }}
           <small>{{ user.roles.map((r) => r.name).join(', ') }}</small>
+
+          <template #action>
+            <tag v-if="user.is_tfa_active" type="success" small>
+              <i class="bx bx-check"></i> {{ $t('tfaActive') }}
+            </tag>
+          </template>
         </list-item>
       </template>
     </PaginatedList>
@@ -26,18 +32,20 @@
       <a-modal
         v-model="isModalActive"
         width="550px"
-        :title="isNewUser(editedUser) ? 'Nowy użytkownik' : 'Edycja użytkownika'"
+        :title="isNewUser(editedUser) ? $t('editTitle') : $t('newTitle')"
       >
-        <UserForm v-model="editedUser" :disabled="!canModify" />
+        <UserForm v-model="editedUser" :disabled="!canModify" @close="isModalActive = false" />
 
         <template #footer>
           <div class="row">
-            <app-button v-if="canModify" @click="handleSubmit(saveModal)"> Zapisz </app-button>
+            <app-button v-if="canModify" @click="handleSubmit(saveModal)">
+              {{ $t('common.save') }}
+            </app-button>
             <pop-confirm
               v-can="$p.Users.Remove"
-              title="Czy na pewno chcesz usunąć tego użytkownika?"
-              ok-text="Usuń"
-              cancel-text="Anuluj"
+              :title="$t('deleteText')"
+              :ok-text="$t('common.delete')"
+              :cancel-text="$t('common.cancel')"
               @confirm="deleteItem"
             >
               <app-button
@@ -45,7 +53,7 @@
                 :disabled="isEditedUserCurrentUser"
                 type="danger"
               >
-                Usuń
+                {{ $t('common.delete') }}
               </app-button>
             </pop-confirm>
           </div>
@@ -54,6 +62,27 @@
     </validation-observer>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "title": "Użytkownicy",
+    "add": "Dodaj użytkownika",
+    "editTitle": "Edycja użytkownika",
+    "newTitle": "Nowy użytkownik",
+    "deleteText": "Czy na pewno chcesz usunąć tego użytkownika?",
+    "tfaActive": "2FA aktywne"
+  },
+  "en": {
+    "title": "Users",
+    "add": "Add user",
+    "editTitle": "Edit user",
+    "newTitle": "New user",
+    "deleteText": "Are you sure you want to delete this user?",
+    "tfaActive": "2FA active"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
@@ -65,6 +94,7 @@ import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import UserForm from '@/components/modules/users/Form.vue'
 import Avatar from '@/components/layout/Avatar.vue'
+import Tag from '@/components/Tag.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import { CreateUserDTO, EditUserDTO } from '@/interfaces/User'
@@ -77,7 +107,9 @@ const CLEAR_USER: CreateUserDTO = {
 }
 
 export default Vue.extend({
-  metaInfo: { title: 'Użytkownicy' },
+  metaInfo(this: any) {
+    return { title: this.$t('title') as string }
+  },
   components: {
     PaginatedList,
     ListItem,
@@ -85,6 +117,7 @@ export default Vue.extend({
     PopConfirm,
     ValidationObserver,
     Avatar,
+    Tag,
   },
   beforeRouteLeave(_to, _from, next) {
     if (this.isModalActive) {

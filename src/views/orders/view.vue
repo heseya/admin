@@ -67,6 +67,7 @@
         <card v-if="order.id">
           <send-package
             :order-id="order.id"
+            :shipping-method="order.shipping_method.name"
             :shipping-number="order.shipping_number"
             @created="onPackageCreated"
           />

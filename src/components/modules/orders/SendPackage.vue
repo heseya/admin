@@ -50,6 +50,10 @@ export default Vue.extend({
       type: String,
       default: null,
     },
+    shippingMethod: {
+      type: String,
+      default: null,
+    },
     orderId: {
       type: String,
       required: true,
@@ -76,6 +80,9 @@ export default Vue.extend({
   },
   created() {
     this.$accessor.packageTemplates.fetch()
+    this.providerKey =
+      this.PROVIDERS.find(({ key }) => this.shippingMethod.toLowerCase().includes(key))?.key ||
+      'dpd'
   },
   methods: {
     async createPackage() {

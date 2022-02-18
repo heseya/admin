@@ -195,14 +195,6 @@
       "discount": "Rabat",
       "total": "Łącznie"
     },
-    "sendPackage": {
-      "title": "Wyślij przesyłkę",
-      "template": "Szablon przesyłki",
-      "templatePlaceholder": "-- Wybierz szablon --",
-      "create": "Utwórz przesyłkę",
-      "created": "Przesyłka została utworzona",
-      "existing": "Przesyłka została już zamówiona (Numer śledzenia: {number})"
-    },
     "status": {
       "title": "Status",
       "overpaidTitle": "Zamówienie zostało nadpłacone o",
@@ -239,14 +231,6 @@
       "shipping": "Shipping",
       "discount": "Discount",
       "total": "Total"
-    },
-    "sendPackage": {
-      "title": "Send package",
-      "template": "Package template",
-      "templatePlaceholder": "-- Select template --",
-      "create": "Create package",
-      "created": "Package was created",
-      "existing": "Package was already ordered (Tracking number: {number})"
     },
     "status": {
       "title": "Status",

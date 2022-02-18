@@ -1,12 +1,12 @@
 <template>
   <div class="flex-column send-package">
-    <h2 class="section-title send-package__title">Wyślij przesyłkę</h2>
+    <h2 class="section-title send-package__title">{{ $t('sendPackage.title') }}</h2>
     <div v-if="!shippingNumber" class="send-package__content">
       <div class="send-package__selects">
         <app-select
           v-model="packageTemplateId"
-          label="Szablon przesyłki"
-          placeholder="-- Wybierz szablon --"
+          :label="$t('sendPackage.template')"
+          :placeholder="$t('sendPackage.templatePlaceholder')"
           option-filter-prop="label"
         >
           <a-select-option
@@ -17,7 +17,11 @@
             {{ template.name }}
           </a-select-option>
         </app-select>
-        <app-select v-model="providerKey" label="Operator dostawy" option-filter-prop="label">
+        <app-select
+          v-model="providerKey"
+          :label="$t('sendPackage.provider')"
+          option-filter-prop="label"
+        >
           <a-select-option
             v-for="provider in PROVIDERS"
             :key="provider.key"
@@ -28,15 +32,42 @@
         </app-select>
       </div>
       <app-button class="send-package__btn" @click="createPackage">
-        Utwórz&nbsp;przesyłkę
+        {{ $t('sendPackage.create') }}
       </app-button>
     </div>
     <small v-else>
-      <i class="bx bxs-check-circle"></i> Przesyłka została już zamówiona (Numer śledzenia:
-      {{ shippingNumber }})
+      <i class="bx bxs-check-circle"></i>
+      {{ $t('sendPackage.existing', { number: shippingNumber }) }}
     </small>
   </div>
 </template>
+
+<i18n>
+{
+  "pl": {
+    "sendPackage": {
+      "title": "Wyślij przesyłkę",
+      "template": "Szablon przesyłki",
+      "templatePlaceholder": "-- Wybierz szablon --",
+      "provider": "Operator dostawy",
+      "create": "Utwórz przesyłkę",
+      "created": "Przesyłka została utworzona",
+      "existing": "Przesyłka została już zamówiona (Numer śledzenia: {number})"
+    }
+  },
+  "en": {
+    "sendPackage": {
+      "title": "Send package",
+      "template": "Package template",
+      "templatePlaceholder": "-- Select template --",
+      "provider": "Shipping provider",
+      "create": "Create package",
+      "created": "Package was created",
+      "existing": "Package was already ordered (Tracking number: {number})"
+    }
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

@@ -2,21 +2,34 @@
   <div class="flex-column send-package">
     <h2 class="section-title send-package__title">Wyślij przesyłkę</h2>
     <div v-if="!shippingNumber" class="send-package__content">
-      <app-select
-        v-model="packageTemplateId"
-        label="Szablon przesyłki"
-        placeholder="-- Wybierz szablon --"
-        option-filter-prop="label"
-      >
-        <a-select-option
-          v-for="template in packageTemplates"
-          :key="template.id"
-          :label="template.name"
+      <div class="send-package__selects">
+        <app-select
+          v-model="packageTemplateId"
+          label="Szablon przesyłki"
+          placeholder="-- Wybierz szablon --"
+          option-filter-prop="label"
         >
-          {{ template.name }}
-        </a-select-option>
-      </app-select>
-      <app-button @click="createPackage">Utwórz&nbsp;przesyłkę</app-button>
+          <a-select-option
+            v-for="template in packageTemplates"
+            :key="template.id"
+            :label="template.name"
+          >
+            {{ template.name }}
+          </a-select-option>
+        </app-select>
+        <app-select v-model="providerKey" label="Operator dostawy" option-filter-prop="label">
+          <a-select-option
+            v-for="provider in PROVIDERS"
+            :key="provider.key"
+            :label="provider.label"
+          >
+            {{ provider.label }}
+          </a-select-option>
+        </app-select>
+      </div>
+      <app-button class="send-package__btn" @click="createPackage">
+        Utwórz&nbsp;przesyłkę
+      </app-button>
     </div>
     <small v-else>
       <i class="bx bxs-check-circle"></i> Przesyłka została już zamówiona (Numer śledzenia:
@@ -43,11 +56,22 @@ export default Vue.extend({
     },
   },
   data: () => ({
-    packageTemplateId: null as string | null,
+    packageTemplateId: undefined as string | undefined,
+    providerKey: 'dpd',
   }),
   computed: {
     packageTemplates(): PackageTemplate[] {
       return this.$accessor.packageTemplates.getData
+    },
+    PROVIDERS(): { key: string; label: string }[] {
+      return [
+        { key: 'dpd', label: 'Kurier DPD' },
+        { key: 'ups', label: 'Kurier UPS' },
+        { key: 'gls', label: 'Kurier GLS' },
+        { key: 'inpostkurier', label: 'Kurier InPost' },
+        { key: 'dhl', label: 'Kurier DHL Parcel' },
+        { key: 'dhlinternational', label: 'Kurier DHL Express' },
+      ]
     },
   },
   created() {
@@ -57,7 +81,7 @@ export default Vue.extend({
     async createPackage() {
       if (!this.packageTemplateId) return
       this.$accessor.startLoading()
-      const res = await createPackage(this.orderId, this.packageTemplateId)
+      const res = await createPackage(this.orderId, this.packageTemplateId, this.providerKey)
 
       if (res.success) {
         this.$emit('created', res.shippingNumber)
@@ -78,10 +102,18 @@ export default Vue.extend({
     margin-bottom: 8px;
   }
 
+  &__selects {
+    width: 100%;
+  }
+
+  &__btn {
+    margin-bottom: 8px;
+  }
+
   &__content {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-end;
 
     @media ($viewport-8) {
       flex-direction: row;

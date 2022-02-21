@@ -23,10 +23,7 @@
         >
           {{ perm.display_name || perm.name }}
 
-          <a-tooltip v-if="perm.description">
-            <template #title> {{ perm.description }} </template>
-            <i class="bx bxs-info-circle"></i>
-          </a-tooltip>
+          <info-tooltip v-if="perm.description"> {{ perm.description }} </info-tooltip>
         </a-checkbox>
       </div>
     </div>

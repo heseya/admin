@@ -24,22 +24,14 @@
     <switch-input v-model="form.global" :disabled="disabled" horizontal>
       <template #title>
         {{ $t('form.global') }}
-
-        <a-tooltip>
-          <template #title> {{ $t('form.globalTooltip') }} </template>
-          <i class="bx bxs-info-circle"></i>
-        </a-tooltip>
+        <info-tooltip> {{ $t('form.globalTooltip') }}</info-tooltip>
       </template>
     </switch-input>
 
     <switch-input v-model="form.sortable" :disabled="disabled" horizontal>
       <template #title>
         {{ $t('form.sortable') }}
-
-        <a-tooltip>
-          <template #title> {{ $t('form.sortableTooltip') }} </template>
-          <i class="bx bxs-info-circle"></i>
-        </a-tooltip>
+        <info-tooltip> {{ $t('form.sortableTooltip') }}</info-tooltip>
       </template>
     </switch-input>
 

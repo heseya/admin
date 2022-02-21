@@ -20,10 +20,10 @@
             <code>{{ value }}</code>
           </template>
           <template #hidden="{ value }">
-            <boolean-tag-value :value="value" />
+            <boolean-tag :value="value" />
           </template>
           <template #default="{ value }">
-            <boolean-tag-value :value="value" />
+            <boolean-tag :value="value" />
           </template>
         </cms-table-row>
       </template>
@@ -112,7 +112,6 @@ import { UUID } from '@/interfaces/UUID'
 import { TableConfig } from '@/interfaces/CmsTable'
 import { Language, LanguageDto } from '@/interfaces/Language'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
-import BooleanTagValue from '@/components/BooleanTagValue.vue'
 
 const EMPTY_FORM: LanguageDto = {
   name: '',
@@ -131,7 +130,6 @@ export default Vue.extend({
     PaginatedList,
     LanguagesForm,
     CmsTableRow,
-    BooleanTagValue,
   },
   beforeRouteLeave(_to, _from, next) {
     if (this.isModalActive) {

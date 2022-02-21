@@ -217,7 +217,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import slugify from 'slugify'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import cloneDeep from 'lodash/cloneDeep'
 
@@ -234,6 +233,8 @@ import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 import Textarea from '@/components/form/Textarea.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
+import { generateSlug } from '@/utils/generateSlug'
+
 import { UUID } from '@/interfaces/UUID'
 import { Product, ProductDTO, ProductComponentForm } from '@/interfaces/Product'
 import { ProductSet } from '@/interfaces/ProductSet'
@@ -338,7 +339,7 @@ export default Vue.extend({
     },
     editSlug() {
       if (this.isNew) {
-        this.form.slug = slugify(this.form.name, { lower: true, remove: /[.]/g })
+        this.form.slug = generateSlug(this.form.name)
       }
     },
     async deleteProduct() {

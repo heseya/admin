@@ -61,6 +61,16 @@
 
 <i18n>
 {
+  "pl": {
+    "title": "Opcje cechy",
+    "empty": "Brak opcji",
+    "add": "Dodaj opcję",
+    "form": {
+      "value_text": "Wartość tekstowa",
+      "value_number": "Wartość liczbowa",
+      "value_date": "Data"
+    }
+  },
   "en": {
     "title": "Attribute options",
     "empty": "No options",

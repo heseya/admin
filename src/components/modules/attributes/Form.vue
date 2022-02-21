@@ -6,12 +6,13 @@
       name="name"
       rules="required"
       :label="$t('common.form.name')"
+      @input="editSlug"
     />
     <validated-input
       v-model="form.slug"
       :disabled="disabled"
       name="slug"
-      rules="required|url"
+      rules="required|slug"
       :label="$t('form.slug')"
     />
     <validated-input
@@ -106,6 +107,7 @@
 import Vue from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import { ValidationObserver } from 'vee-validate'
+import { generateSlug } from '@/utils/generateSlug'
 
 import { Attribute, AttributeDto, AttributeType } from '@/interfaces/Attribute'
 import { UUID } from '@/interfaces/UUID'
@@ -144,6 +146,9 @@ export default Vue.extend({
     },
   },
   methods: {
+    editSlug() {
+      if (this.isNew) this.form.slug = generateSlug(this.form.name)
+    },
     async submit() {
       this.$accessor.startLoading()
       try {

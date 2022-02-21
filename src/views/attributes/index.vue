@@ -39,7 +39,7 @@
     "add": "Dodaj cechę",
     "form": {
       "global": "Globalny",
-      "sortalbe": "Sortowalny"
+      "sortable": "Sortowalny"
     }
   },
   "en": {
@@ -47,7 +47,7 @@
     "add": "Add attribute",
     "form": {
       "global": "Global",
-      "sortalbe": "Sortable"
+      "sortable": "Sortable"
     }
   }
 }

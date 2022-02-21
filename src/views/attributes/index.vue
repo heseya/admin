@@ -38,14 +38,16 @@
     "title": "Cechy produktów",
     "add": "Dodaj cechę",
     "form": {
-      "global": "Globalny"
+      "global": "Globalny",
+      "sortalbe": "Sortowalny"
     }
   },
   "en": {
     "title": "Attributes",
     "add": "Add attribute",
     "form": {
-      "global": "Global"
+      "global": "Global",
+      "sortalbe": "Sortable"
     }
   }
 }
@@ -79,6 +81,7 @@ export default Vue.extend({
           { key: 'name', label: this.$t('common.form.name') as string },
           { key: 'description', label: this.$t('common.form.description') as string },
           { key: 'type', label: this.$t('common.form.type') as string, width: '0.8fr' },
+          { key: 'sortable', label: this.$t('form.sortable') as string, width: '0.8fr' },
           { key: 'global', label: this.$t('form.global') as string, width: '0.8fr' },
         ],
       }

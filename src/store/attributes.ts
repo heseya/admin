@@ -15,8 +15,9 @@ export const attributes = createVuexCRUD<Attribute, AttributeDto, AttributeDto>(
   mutations: {
     ADD_OPTION(state, { attributeId, option }: { attributeId: UUID; option: AttributeOption }) {
       const listItem = state.data.find(({ id }) => id === attributeId)
-      if (listItem) listItem.options.push(option)
-      if (state.selected.id === attributeId) state.selected.options.push(option)
+      if (listItem) (listItem.options as AttributeOption[]).push(option)
+      if (state.selected.id === attributeId)
+        (state.selected.options as AttributeOption[]).push(option)
     },
   },
   actions: {

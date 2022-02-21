@@ -8,6 +8,13 @@
       :label="$t('common.form.name')"
     />
     <validated-input
+      v-model="form.slug"
+      :disabled="disabled"
+      name="slug"
+      rules="required"
+      :label="$t('common.form.slug')"
+    />
+    <validated-input
       v-model="form.description"
       :disabled="disabled"
       name="description"
@@ -25,9 +32,25 @@
       </template>
     </switch-input>
 
+    <switch-input v-model="form.sortable" :disabled="disabled" horizontal>
+      <template #title>
+        {{ $t('form.sortable') }}
+
+        <a-tooltip>
+          <template #title> {{ $t('form.sortableTooltip') }} </template>
+          <i class="bx bxs-info-circle"></i>
+        </a-tooltip>
+      </template>
+    </switch-input>
+
     <app-select v-model="form.type" :label="$t('common.form.type')">
-      <a-select-option :value="AttributeType.Text" :label="$t('types.' + AttributeType.Text)">
-        {{ $t('types.' + AttributeType.Text) }}
+      <a-select-option
+        v-for="type in AttributeType"
+        :key="type"
+        :value="type"
+        :label="$t('types.' + type)"
+      >
+        {{ $t('types.' + type) }}
       </a-select-option>
     </app-select>
 
@@ -43,12 +66,15 @@
 {
   "pl": {
     "types": {
-      "text": "Tekstowy jednokrotnego wyboru",
+      "single-option": "Tekstowy jednokrotnego wyboru",
+      "date": "Data",
       "number": "Liczbowy jednokrotnego wyboru"
     },
     "form": {
       "global": "Globalny atrybut",
-      "globalTooltip": "Globalny atrybut oznacza, że po danym atrybucie można filtrować produkty niezależnie od kolekcji w której się one znajdują."
+      "globalTooltip": "Globalny atrybut oznacza, że po danym atrybucie można filtrować produkty niezależnie od kolekcji w której się one znajdują.",
+      "sortable": "Sortowalny atrybut",
+      "sortableTooltip": "Sortowalny atrybut oznacza, że po danym atrybucie można sortować listę produktów."
     },
     "alerts": {
       "created": "Cecha została utworzona.",
@@ -57,12 +83,15 @@
   },
   "en": {
     "types": {
-      "text": "Text single choice",
+      "single-option": "Text single choice",
+      "date": "Date",
       "number": "Number single choice"
     },
     "form": {
       "global": "Global attribute",
-      "globalTooltip": "Global attribute means that you can filter products independently from the collection in which they are located."
+      "globalTooltip": "Global attribute means that you can filter products independently from the collection in which they are located.",
+      "sortable": "Sortable attribute",
+      "sortableTooltip": "Sortable attribute means that you can sort products by this attribute."
     },
     "alerts": {
       "created": "Attribute has been created.",
@@ -82,8 +111,10 @@ import { UUID } from '@/interfaces/UUID'
 
 const CLEAR_FORM: AttributeDto = {
   name: '',
+  slug: '',
   description: '',
-  type: AttributeType.Text,
+  type: AttributeType.SingleOption,
+  sortable: false,
   global: false,
   options: [],
 }

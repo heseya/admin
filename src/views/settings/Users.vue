@@ -94,7 +94,6 @@ import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import UserForm from '@/components/modules/users/Form.vue'
 import Avatar from '@/components/layout/Avatar.vue'
-import Tag from '@/components/Tag.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import { CreateUserDTO, EditUserDTO } from '@/interfaces/User'
@@ -117,7 +116,6 @@ export default Vue.extend({
     PopConfirm,
     ValidationObserver,
     Avatar,
-    Tag,
   },
   beforeRouteLeave(_to, _from, next) {
     if (this.isModalActive) {

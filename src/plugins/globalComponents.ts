@@ -8,6 +8,9 @@ import ValidatedInput from '@/components/form/ValidatedInput.vue'
 
 import IconButton from '@/components/layout/IconButton.vue'
 import AppButton from '@/components/layout/AppButton.vue'
+import InfoTooltip from '@/components/layout/InfoTooltip.vue'
+import BooleanTag from '@/components/layout/BooleanTag.vue'
+import Tag from '@/components/Tag.vue'
 
 Vue.component('AppInput', AppInput)
 Vue.component('ValidatedInput', ValidatedInput)
@@ -17,3 +20,7 @@ Vue.component('ValidatedSwitchInput', ValidatedSwitchInput)
 
 Vue.component('AppButton', AppButton)
 Vue.component('IconButton', IconButton)
+Vue.component('InfoTooltip', InfoTooltip)
+Vue.component('BooleanTag', BooleanTag)
+
+Vue.component('Tag', Tag)

@@ -63,10 +63,7 @@
             <li v-for="perm in requiredPermissions" :key="perm.id">
               {{ perm.display_name || perm.name }}
 
-              <a-tooltip v-if="perm.description">
-                <template #title> {{ perm.description }} </template>
-                <i class="bx bxs-info-circle"></i>
-              </a-tooltip>
+              <info-tooltip v-if="perm.description"> {{ perm.description }} </info-tooltip>
             </li>
           </ul>
           <small v-else>{{ $t('common.none') }}</small>
@@ -96,10 +93,7 @@
                   {{ perm.display_name || perm.name }}
                 </div>
 
-                <a-tooltip v-if="perm.description">
-                  <template #title> {{ perm.description }} </template>
-                  <i class="bx bxs-info-circle"></i>
-                </a-tooltip>
+                <info-tooltip v-if="perm.description"> {{ perm.description }} </info-tooltip>
               </li>
             </ul>
             <small v-else>{{ $t('common.none') }}</small>

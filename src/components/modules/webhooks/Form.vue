@@ -29,28 +29,22 @@
       <switch-input v-model="form.with_issuer" horizontal :disabled="disabled">
         <template #title>
           {{ $t('withIssuer.title') }}
-          <a-tooltip>
-            <template #title>
-              <small>
-                {{ $t('withIssuer.description') }}
-              </small>
-            </template>
-            <i class="bx bxs-info-circle"></i>
-          </a-tooltip>
+          <info-tooltip>
+            <small>
+              {{ $t('withIssuer.description') }}
+            </small>
+          </info-tooltip>
         </template>
       </switch-input>
 
       <switch-input v-model="form.with_hidden" horizontal :disabled="disabled">
         <template #title>
           {{ $t('withHidden.title') }}
-          <a-tooltip>
-            <template #title>
-              <small>
-                {{ $t('withHidden.description') }}
-              </small>
-            </template>
-            <i class="bx bxs-info-circle"></i>
-          </a-tooltip>
+          <info-tooltip>
+            <small>
+              {{ $t('withHidden.description') }}
+            </small>
+          </info-tooltip>
         </template>
       </switch-input>
     </div>

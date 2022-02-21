@@ -65,12 +65,9 @@
           <SwitchInput v-model="editedItem.hidden" :disabled="!canModify" horizontal>
             <template #title>
               {{ $t('form.hidden') }}
-              <a-tooltip>
-                <template #title>
-                  {{ $t('form.hiddenTooltip') }}
-                </template>
-                <i class="bx bxs-info-circle"></i>
-              </a-tooltip>
+              <info-tooltip>
+                {{ $t('form.hiddenTooltip') }}
+              </info-tooltip>
             </template>
           </SwitchInput>
           <br />
@@ -78,12 +75,9 @@
           <SwitchInput v-model="editedItem.no_notifications" :disabled="!canModify" horizontal>
             <template #title>
               {{ $t('form.noNotification') }}
-              <a-tooltip>
-                <template #title>
-                  {{ $t('form.noNotificationTooltip') }}
-                </template>
-                <i class="bx bxs-info-circle"></i>
-              </a-tooltip>
+              <info-tooltip>
+                {{ $t('form.noNotificationTooltip') }}
+              </info-tooltip>
             </template>
           </SwitchInput>
         </modal-form>

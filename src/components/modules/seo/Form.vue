@@ -3,10 +3,9 @@
     <validated-input v-model="form.title" :disabled="disabled" :label="$t('form.title')" />
     <small class="seo-form__subtext">
       {{ $t('charsCount') }}: {{ form.title ? form.title.length : 0 }}
-      <a-tooltip>
-        <template #title> {{ $t('titleCharsRecomendation') }} </template>
-        <i class="bx bxs-info-circle"></i>
-      </a-tooltip>
+      <info-tooltip>
+        {{ $t('titleCharsRecomendation') }}
+      </info-tooltip>
     </small>
 
     <validated-input
@@ -16,21 +15,17 @@
     />
     <small class="seo-form__subtext">
       {{ $t('charsCount') }}: {{ form.description ? form.description.length : 0 }}
-      <a-tooltip>
-        <template #title> {{ $t('descriptionCharsRecomendation') }} </template>
-        <i class="bx bxs-info-circle"></i>
-      </a-tooltip>
+      <info-tooltip>
+        {{ $t('descriptionCharsRecomendation') }}
+      </info-tooltip>
     </small>
 
     <switch-input v-if="!forceIndex" v-model="form.no_index" :disabled="disabled" type="red">
       <template #title>
         {{ $t('form.no_index') }}
-        <a-tooltip>
-          <template #title>
-            {{ $t('noIndexTooltip') }}
-          </template>
-          <i class="seo-form__switch-tooltip-icon bx bxs-info-circle"></i>
-        </a-tooltip>
+        <info-tooltip icon="seo-form__switch-tooltip-icon bx bxs-info-circle">
+          {{ $t('noIndexTooltip') }}
+        </info-tooltip>
       </template>
       <template #checkedChildren> <i class="bx bxs-low-vision"></i> </template>
       <template #unCheckedChildren> <i class="bx bx-show"></i> </template>

@@ -34,11 +34,10 @@ import { Product } from '@/interfaces/Product'
 import { formatCurrency } from '@/utils/currency'
 
 import Avatar from '@/components/layout/Avatar.vue'
-import Tag from '@/components/Tag.vue'
 import MediaElement from '@/components/MediaElement.vue'
 
 export default Vue.extend({
-  components: { Avatar, Tag, MediaElement },
+  components: { Avatar, MediaElement },
   props: {
     product: {
       type: Object,

@@ -11,8 +11,8 @@
       v-model="form.slug"
       :disabled="disabled"
       name="slug"
-      rules="required"
-      :label="$t('common.form.slug')"
+      rules="required|url"
+      :label="$t('form.slug')"
     />
     <validated-input
       v-model="form.description"
@@ -21,21 +21,23 @@
       :label="$t('common.form.description')"
     />
 
-    <switch-input v-model="form.global" :disabled="disabled" horizontal>
-      <template #title>
-        {{ $t('form.global') }}
-        <info-tooltip> {{ $t('form.globalTooltip') }}</info-tooltip>
-      </template>
-    </switch-input>
+    <div class="attribute-form__switches">
+      <switch-input v-model="form.global" :disabled="disabled" horizontal>
+        <template #title>
+          {{ $t('form.global') }}
+          <info-tooltip> {{ $t('form.globalTooltip') }}</info-tooltip>
+        </template>
+      </switch-input>
 
-    <switch-input v-model="form.sortable" :disabled="disabled" horizontal>
-      <template #title>
-        {{ $t('form.sortable') }}
-        <info-tooltip> {{ $t('form.sortableTooltip') }}</info-tooltip>
-      </template>
-    </switch-input>
+      <switch-input v-model="form.sortable" :disabled="disabled" horizontal>
+        <template #title>
+          {{ $t('form.sortable') }}
+          <info-tooltip> {{ $t('form.sortableTooltip') }}</info-tooltip>
+        </template>
+      </switch-input>
+    </div>
 
-    <app-select v-model="form.type" :label="$t('common.form.type')">
+    <app-select v-model="form.type" :label="$t('common.form.type')" :disabled="disabled || !isNew">
       <a-select-option
         v-for="type in AttributeType"
         :key="type"
@@ -45,6 +47,11 @@
         {{ $t('types.' + type) }}
       </a-select-option>
     </app-select>
+
+    <template v-if="!isNew">
+      <hr />
+      <options-form v-model="form.options" :disabled="disabled" :type="form.type" />
+    </template>
 
     <br />
 
@@ -63,6 +70,7 @@
       "number": "Liczbowy jednokrotnego wyboru"
     },
     "form": {
+      "slug": "Skrócona nazwa",
       "global": "Globalny atrybut",
       "globalTooltip": "Globalny atrybut oznacza, że po danym atrybucie można filtrować produkty niezależnie od kolekcji w której się one znajdują.",
       "sortable": "Sortowalny atrybut",
@@ -80,6 +88,7 @@
       "number": "Number single choice"
     },
     "form": {
+      "slug": "Short name",
       "global": "Global attribute",
       "globalTooltip": "Global attribute means that you can filter products independently from the collection in which they are located.",
       "sortable": "Sortable attribute",
@@ -101,6 +110,8 @@ import { ValidationObserver } from 'vee-validate'
 import { Attribute, AttributeDto, AttributeType } from '@/interfaces/Attribute'
 import { UUID } from '@/interfaces/UUID'
 
+import OptionsForm from './OptionsForm.vue'
+
 const CLEAR_FORM: AttributeDto = {
   name: '',
   slug: '',
@@ -114,6 +125,7 @@ const CLEAR_FORM: AttributeDto = {
 export default Vue.extend({
   components: {
     ValidationObserver,
+    OptionsForm,
   },
   props: {
     attribute: {
@@ -126,6 +138,11 @@ export default Vue.extend({
     form: cloneDeep(CLEAR_FORM) as AttributeDto & { id?: UUID },
     AttributeType: AttributeType,
   }),
+  computed: {
+    isNew(): boolean {
+      return !this.form.id
+    },
+  },
   methods: {
     async submit() {
       this.$accessor.startLoading()
@@ -155,4 +172,11 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.attribute-form {
+  &__switches {
+    display: flex;
+    justify-content: space-evenly;
+  }
+}
+</style>

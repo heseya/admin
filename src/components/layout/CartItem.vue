@@ -9,13 +9,13 @@
     <div v-else class="cart-item__cover" />
     <div class="cart-item__content">
       <span class="cart-item__title">
-        <a-tooltip v-bind="item.product.sets.length === 0 ? { visible: false } : {}">
-          <template #title>
-            <small>{{ $t('productSets') }}:</small>
-            <div v-for="set in item.product.sets" :key="set.id">{{ set.name }}</div>
-          </template>
-          <i v-if="item.product.sets.length" class="bx bxs-info-circle"></i>
-        </a-tooltip>
+        <info-tooltip
+          v-if="item.product.sets.length"
+          v-bind="item.product.sets.length === 0 ? { visible: false } : {}"
+        >
+          <small>{{ $t('productSets') }}:</small>
+          <div v-for="set in item.product.sets" :key="set.id">{{ set.name }}</div>
+        </info-tooltip>
 
         {{ item.product.name }}&nbsp;
         <small v-if="item.quantity !== 1">(x{{ item.quantity }})</small>
@@ -26,12 +26,12 @@
       </small>
     </div>
     <span v-if="discount" class="cart-item__price">
-      <a-tooltip>
+      <info-tooltip icon="bx bxs-error">
+        {{ $t('priceTooltip') }}
         <template #title>
-          {{ $t('priceTooltip') }}
+          {{ formatCurrency(discountedPrice) }}
         </template>
-        <i class="bx bxs-error"></i> {{ formatCurrency(discountedPrice) }}
-      </a-tooltip>
+      </info-tooltip>
       <small v-if="discount">{{ $t('beforeDiscount') }}: {{ formatCurrency(item.price) }} </small>
     </span>
     <span v-else class="cart-item__price">
@@ -129,7 +129,7 @@ export default Vue.extend({
     display: block;
     padding: 12px 0;
 
-    i {
+    .info-tooltip__icon {
       color: $primary-color-300;
     }
 
@@ -155,7 +155,7 @@ export default Vue.extend({
       font-weight: 400;
     }
 
-    .bx {
+    .info-tooltip__icon {
       color: $red-color-500;
     }
   }

@@ -35,10 +35,7 @@
     </template>
 
     <template #public>
-      <tag v-if="product.public" type="success">
-        <i class="bx bx-check"></i> {{ $t('common.yes') }}
-      </tag>
-      <tag v-else type="error"> <i class="bx bx-x"></i> {{ $t('common.no') }} </tag>
+      <BooleanTag :value="product.public" />
     </template>
   </cms-table-row>
 </template>
@@ -52,11 +49,10 @@ import { Product } from '@/interfaces/Product'
 import { formatCurrency } from '@/utils/currency'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 import { TableConfig } from '@/interfaces/CmsTable'
-import Tag from '@/components/Tag.vue'
 import MediaElement from '@/components/MediaElement.vue'
 
 export default Vue.extend({
-  components: { Avatar, CmsTableRow, Tag, MediaElement },
+  components: { Avatar, CmsTableRow, MediaElement },
   props: {
     product: {
       type: Object,

@@ -114,10 +114,11 @@
           url="/settings/two-factor-authentication"
         >
           <template #action>
-            <tag v-if="user.is_tfa_active" type="success">
-              <i class="bx bx-check"></i> {{ $t('common.active') }}
-            </tag>
-            <tag v-else type="error"> <i class="bx bx-x"></i> {{ $t('common.inactive') }} </tag>
+            <BooleanTag
+              :value="user.is_tfa_active"
+              :true-text="$t('common.active')"
+              :false-text="$t('common.inactive')"
+            />
           </template>
         </SettingsItem>
         <!-- <SettingsItem
@@ -202,7 +203,6 @@ import Card from '@/components/layout/Card.vue'
 import List from '@/components/layout/List.vue'
 import ChangePasswordForm from '@/components/modules/auth/ChangePassword.vue'
 import SettingsItem from '@/components/modules/settings/SettingsItem.vue'
-import Tag from '@/components/Tag.vue'
 import UserPreferences from '@/components/modules/settings/UserPreferences.vue'
 
 import { User } from '@/interfaces/User'
@@ -219,7 +219,6 @@ export default Vue.extend({
     List,
     SettingsItem,
     ChangePasswordForm,
-    Tag,
     UserPreferences,
   },
   beforeRouteLeave(to, from, next) {

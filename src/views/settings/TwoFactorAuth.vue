@@ -1,10 +1,11 @@
 <template>
   <div class="narrower-page">
     <top-nav :title="$t('title')">
-      <tag v-if="user && user.is_tfa_active" type="success">
-        <i class="bx bx-check"></i> {{ $t('common.active') }}
-      </tag>
-      <tag v-else type="error"> <i class="bx bx-x"></i> {{ $t('common.inactive') }} </tag>
+      <BooleanTag
+        :value="user && user.is_tfa_active"
+        :true-text="$t('common.active')"
+        :false-text="$t('common.inactive')"
+      />
     </top-nav>
 
     <card>
@@ -33,7 +34,6 @@
 import Vue from 'vue'
 
 import TopNav from '@/components/layout/TopNav.vue'
-import Tag from '@/components/Tag.vue'
 import Card from '@/components/layout/Card.vue'
 import Setup2FA from '@/components/modules/2fa/Setup.vue'
 import Remove2FA from '@/components/modules/2fa/Remove.vue'
@@ -45,7 +45,7 @@ export default Vue.extend({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },
-  components: { TopNav, Tag, Card, Setup2FA, Remove2FA, GenerateRecoveryCodes },
+  components: { TopNav, Card, Setup2FA, Remove2FA, GenerateRecoveryCodes },
   data: () => ({
     isTfaActive: false,
   }),

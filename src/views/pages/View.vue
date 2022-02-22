@@ -97,7 +97,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import slugify from 'slugify'
 import { ValidationObserver } from 'vee-validate'
 
 import TopNav from '@/components/layout/TopNav.vue'
@@ -110,6 +109,8 @@ import SeoForm from '@/components/modules/seo/Accordion.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
+import { generateSlug } from '@/utils/generateSlug'
+
 import { Page, PageDto } from '@/interfaces/Page'
 import { UUID } from '@/interfaces/UUID'
 
@@ -179,7 +180,7 @@ export default Vue.extend({
   methods: {
     editSlug() {
       if (this.isNew) {
-        this.form.slug = slugify(this.form.name, { lower: true, remove: /[.]/g })
+        this.form.slug = generateSlug(this.form.name)
       }
     },
     async save() {

@@ -62,7 +62,8 @@
       "roles": "Role użytkowników",
       "webhooks": "Webhooki",
       "events": "Wydarzenia aktywujące Webhooki",
-      "seo": "SEO"
+      "seo": "SEO",
+      "attributes": "Cechy"
     }
   },
   "en": {
@@ -95,7 +96,8 @@
       "roles": "Roles",
       "webhooks": "Webhooks",
       "events": "Webhooks events",
-      "seo": "SEO"
+      "seo": "SEO",
+      "attributes": "Attributes"
     }
   }
 }

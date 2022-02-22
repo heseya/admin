@@ -19,6 +19,7 @@
     "form": {
       "name": "Nazwa",
       "description": "Opis",
+      "type": "Typ",
       "slug": "Link"
     }
   },
@@ -45,7 +46,8 @@
     "users": "Użytkownicy",
     "roles": "Role",
     "apps": "Aplikacje",
-    "webhooks": "Webhooki"
+    "webhooks": "Webhooki",
+    "attributes": "Cechy"
   },
 
   "schemaTypes": {

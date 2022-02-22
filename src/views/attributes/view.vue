@@ -20,7 +20,6 @@
 
     <div class="attribute">
       <card>
-        <!-- TODO -->
         <AttributeForm
           :key="attribute.id"
           :attribute="editedAttribute"

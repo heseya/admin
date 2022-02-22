@@ -176,10 +176,9 @@ export enum WebhooksPermission {
   Remove = 'webhooks.remove',
 }
 
-// TODO: fix
 export enum AttributesPermission {
-  Show = 'products.show',
-  Add = 'products.add',
-  Edit = 'products.edit',
-  Remove = 'products.remove',
+  Show = 'attributes.show',
+  Add = 'attributes.add',
+  Edit = 'attributes.edit',
+  Remove = 'attributes.remove',
 }

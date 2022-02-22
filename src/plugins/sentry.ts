@@ -9,9 +9,10 @@ const ENVIRONMENT = VITE_SENTRY_ENVIORNMENT || window.location.hostname
 if (!VITE_SENTRY_DISABLED) {
   Sentry.init({
     Vue,
-    dsn: VITE_SENTRY_URL || '***REMOVED***',
+    dsn:
+      (VITE_SENTRY_URL as string) || '***REMOVED***',
     integrations: [new Integrations.BrowserTracing()],
-    environment: ENVIRONMENT,
+    environment: ENVIRONMENT as string,
 
     // Set tracesSampleRate to 1.0 to capture 100%
     // of transactions for performance monitoring.

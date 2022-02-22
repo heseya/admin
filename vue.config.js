@@ -34,14 +34,4 @@ module.exports = {
       msTileImage: 'img/mstile-150x150.svg',
     },
   },
-
-  pluginOptions: {
-    i18n: {
-      locale: 'pl',
-      fallbackLocale: 'pl',
-      localeDir: 'locales',
-      enableInSFC: true,
-      enableBridge: false,
-    },
-  },
 }

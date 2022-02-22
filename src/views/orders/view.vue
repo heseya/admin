@@ -45,7 +45,7 @@
               :products-count="productsCount"
             />
             <div class="cart-item">
-              <img class="cart-item__cover" src="@/assets/images/icons/delivery-icon.svg" />
+              <img class="cart-item__cover" src="/img/icons/delivery-icon.svg" />
               <div class="cart-item__content">
                 <span>
                   {{ $t('cart.shipping') }}

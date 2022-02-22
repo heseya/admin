@@ -6,7 +6,7 @@
     :exact="exact"
     @click="$emit('click')"
   >
-    <InlineSvg class="nav-link-img" :src="require(`@/assets/images/${icon}`)" />
+    <InlineSvg class="nav-link-img" :src="`/img/${icon}`" />
     <span :class="`${rootClass}__link-label`">{{ $t(label) }}</span>
   </component>
 </template>

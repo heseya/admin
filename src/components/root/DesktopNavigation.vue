@@ -10,7 +10,7 @@
         :to="item.to"
         :exact="item.exact"
       >
-        <InlineSvg class="nav-link-img" :src="require(`@/assets/images/${item.icon}`)" />
+        <InlineSvg class="nav-link-img" :src="`/img/${item.icon}`" />
         <span class="nav__link-label">{{ $t(item.label) }}</span>
       </router-link>
 

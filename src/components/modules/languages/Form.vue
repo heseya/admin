@@ -14,22 +14,25 @@
       :label="$t('form.iso')"
     />
 
-    <switch-input
-      v-model="form.hidden"
-      :disabled="disabled"
-      horizontal
-      :label="$t('form.hidden')"
-    />
+    <div class="switches-row">
+      <switch-input v-model="form.hidden" :disabled="disabled || form.default" horizontal>
+        <template #title>
+          {{ $t('form.hidden') }}
+          <info-tooltip v-if="form.default">
+            {{ $t('hiddenWhenDefaultTooltip') }}
+          </info-tooltip>
+        </template>
+      </switch-input>
 
-    <switch-input v-model="form.default" :disabled="disabled" horizontal>
-      <template #title>
-        {{ $t('form.default') }}
-        <!-- <a-tooltip>
-          <template #title> {{ $t('changeDefaultTooltip') }} </template>
-          <i class="bx bxs-info-circle"></i>
-        </a-tooltip> -->
-      </template>
-    </switch-input>
+      <switch-input v-model="form.default" :disabled="disabled" horizontal>
+        <template #title>
+          {{ $t('form.default') }}
+          <info-tooltip>
+            {{ $t('changeDefaultTooltip') }}
+          </info-tooltip>
+        </template>
+      </switch-input>
+    </div>
   </modal-form>
 </template>
 
@@ -41,7 +44,8 @@
       "default": "Język domyślny",
       "hidden": "Ukryty"
     },
-    "changeDefaultTooltip": "TODO"
+    "changeDefaultTooltip": "Tylko jeden język jest domyślny. W przypadku gdy użytkownik nie wybierze języka samodzielnie, treść zostanie wyświetlona w języku domyślnym.",
+    "hiddenWhenDefaultTooltip": "Język domyślny nie może być ukryty."
   },
   "en": {
     "form": {
@@ -49,13 +53,13 @@
       "default": "Default language",
       "hidden": "Hidden"
     },
-    "changeDefaultTooltip": "TODO"
+    "changeDefaultTooltip": "Only one language is default. In case the user does not choose a language manually, the content will be displayed in the default language.",
+    "hiddenWhenDefaultTooltip": "The default language cannot be hidden."
   }
 }
 </i18n>
 
 <script lang="ts">
-// TODO: tooltip przy języku domyślnym z konsekwencjami zmiani
 import Vue from 'vue'
 
 import ModalForm from '@/components/form/ModalForm.vue'
@@ -87,5 +91,18 @@ export default Vue.extend({
       },
     },
   },
+  watch: {
+    'form.default'(v) {
+      if (v) this.form.hidden = false
+    },
+  },
 })
 </script>
+
+<style lang="scss" scoped>
+.switches-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+</style>

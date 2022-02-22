@@ -48,6 +48,13 @@
     "typeName": "attribute",
     "editTitle": "Edit attribute",
     "newTitle": "New attribute"
+  },
+  "pl": {
+    "createNew": "Utwórz nowy atrybut",
+    "chooseExisting": "Wybierz istniejący atrybut",
+    "typeName": "atrybut",
+    "editTitle": "Edytuj atrybut",
+    "newTitle": "Nowy atrybut"
   }
 }
 </i18n>

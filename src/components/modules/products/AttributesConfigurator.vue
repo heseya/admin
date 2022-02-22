@@ -33,6 +33,11 @@
     "title": "Attributes",
     "addAttribute": "Add attribute to product",
     "noAttributesInProduct": "This product has no attributes yet"
+  },
+  "pl": {
+    "title": "Cechy",
+    "addAttribute": "Dodaj cechę do produktu",
+    "noAttributesInProduct": "Ten produkt nie ma jeszcze żadnej cechy"
   }
 }
 </i18n>

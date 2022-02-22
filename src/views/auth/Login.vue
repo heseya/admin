@@ -37,7 +37,7 @@ import { formatApiNotificationError } from '@/utils/errors'
 import { TwoFactorAuthMethod } from '@/enums/twoFactorAuth'
 import { LoginState } from '@/enums/login'
 
-const DEFAULT_CREDENTIALS = process.env.NODE_ENV === 'development'
+const DEFAULT_CREDENTIALS = import.meta.env.NODE_ENV === 'development'
 
 const CLEAR_LOGIN_FORM = {
   email: DEFAULT_CREDENTIALS ? '***REMOVED***' : '',

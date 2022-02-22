@@ -24,10 +24,10 @@ $color: lighten($font-color, 50%);
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 24px 12px;
+  padding: 16px 12px;
 
   &__icon {
-    font-size: 4em;
+    font-size: 3em;
     line-height: 1em;
     color: $color;
   }
@@ -35,8 +35,9 @@ $color: lighten($font-color, 50%);
   &__message {
     font-family: $primaryFont;
     color: $color;
-    font-weight: 600;
-    font-size: 1.3em;
+    font-weight: 300;
+    font-style: italic;
+    font-size: 1em;
   }
 }
 </style>

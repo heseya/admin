@@ -49,6 +49,12 @@
         </card>
       </div>
 
+      <div class="product__attributes">
+        <card>
+          <AttributesConfigurator v-model="form.attributes" :disabled="!canModify" />
+        </card>
+      </div>
+
       <div class="product__details">
         <card>
           <validation-observer v-slot="{ handleSubmit }">
@@ -231,6 +237,7 @@ import SeoForm from '@/components/modules/seo/Accordion.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 import Textarea from '@/components/form/Textarea.vue'
+import AttributesConfigurator from '@/components/modules/products/AttributesConfigurator.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { generateSlug } from '@/utils/generateSlug'
@@ -254,6 +261,7 @@ const EMPTY_FORM: ProductComponentForm = {
   gallery: [],
   tags: [],
   seo: {},
+  attributes: [],
 }
 
 export default Vue.extend({
@@ -274,6 +282,7 @@ export default Vue.extend({
     SeoForm,
     AuditsModal,
     Textarea,
+    AttributesConfigurator,
   },
   data: () => ({
     form: cloneDeep(EMPTY_FORM),
@@ -357,6 +366,13 @@ export default Vue.extend({
         media: this.form.gallery.map(({ id }) => id),
         tags: this.form.tags.map(({ id }) => id),
         schemas: this.form.schemas.map(({ id }) => id),
+        attributes: this.form.attributes.reduce(
+          (acc, { id, selected_option: option }) => ({
+            ...acc,
+            [id]: option.id,
+          }),
+          {},
+        ),
       }
 
       this.$accessor.startLoading()
@@ -398,7 +414,8 @@ export default Vue.extend({
   }
 
   &__details,
-  &__schemas {
+  &__schemas,
+  &__attributes {
     grid-column: 1/-1;
   }
 

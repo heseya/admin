@@ -33,10 +33,6 @@
         <span v-if="product.tags.length === 0">-</span>
       </div>
     </template>
-
-    <template #public>
-      <BooleanTag :value="product.public" />
-    </template>
   </cms-table-row>
 </template>
 

@@ -145,6 +145,14 @@ export default Vue.extend({
       return !this.form.id
     },
   },
+  watch: {
+    attribute(v) {
+      this.form = cloneDeep(v)
+    },
+  },
+  created() {
+    this.form = cloneDeep(this.attribute) || {}
+  },
   methods: {
     editSlug() {
       if (this.isNew) this.form.slug = generateSlug(this.form.name)

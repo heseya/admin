@@ -9,12 +9,21 @@ import { PERMISSIONS_TREE } from '@/consts/permissions'
 import { hasAccess } from '@/utils/hasAccess'
 import { accessor } from '.'
 import { broadcastTokensUpdate } from '@/utils/authSync'
+import { LoginState } from '@/enums/login'
+import { AxiosResponse } from 'axios'
+import { TwoFactorAuthMethod } from '@/enums/twoFactorAuth'
 
 interface AuthResponse {
   user: User
   token: string
   identity_token: string
   refresh_token: string
+}
+
+interface ILoginRequest {
+  email: string
+  password: string
+  code?: string
 }
 
 const state = () => ({
@@ -68,12 +77,15 @@ const mutations = mutationTree(state, {
   SET_PERMISSIONS_ERROR(state, newError) {
     state.permissionsError = newError
   },
+  SET_USER_TFA(state, isActive) {
+    state.user!.is_tfa_active = isActive
+  },
 })
 
 const actions = actionTree(
   { state, getters, mutations },
   {
-    async login({ commit, dispatch }, { email, password }: { email: string; password: string }) {
+    async login({ commit, dispatch }, { email, password, code }: ILoginRequest) {
       commit('SET_ERROR', null)
       try {
         const {
@@ -81,10 +93,11 @@ const actions = actionTree(
         } = await api.post<{ data: AuthResponse }>('/login', {
           email,
           password,
+          code,
         })
 
         if (!hasAccess(PERMISSIONS_TREE.Admin.Login)(data.user.permissions))
-          throw new Error('Unauthorized')
+          throw new Error('Nie masz uprawnień, by zalogować się do panelu administracyjnego')
 
         commit('SET_USER', data.user)
 
@@ -96,10 +109,23 @@ const actions = actionTree(
         broadcastTokensUpdate(tokens)
         dispatch('setTokens', tokens)
 
-        return data.user
+        return {
+          state: LoginState.Success,
+          user: data.user,
+        } as const
       } catch (e: any) {
+        const response: AxiosResponse = e.response
+
+        // Two-Factor Authentication
+        if (response?.status === 403 && response?.data?.data?.type) {
+          return {
+            state: LoginState.TwoFactorAuthRequired,
+            method: response.data.data.type as TwoFactorAuthMethod,
+          } as const
+        }
+
         commit('SET_ERROR', e)
-        return false
+        return { state: LoginState.Error, error: e } as const
       }
     },
 

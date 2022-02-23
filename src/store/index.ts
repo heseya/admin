@@ -1,12 +1,14 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import VuexPersistence from 'vuex-persist'
+import axios from 'axios'
 
 import { useAccessor, getterTree, mutationTree, actionTree } from 'typed-vuex'
 
-import { api } from '../api'
+import { getApiURL } from '@/utils/api'
 
 import { auth } from './auth'
+import { globalSeo } from './globalSeo'
 import { users } from './users'
 import { roles } from './roles'
 import { items } from './items'
@@ -21,6 +23,7 @@ import { packageTemplates } from './packageTemplates'
 import { settings } from './settings'
 import { authSessions } from './authSessions'
 import { apps } from './apps'
+import { webhooks } from './webhooks'
 import { discounts } from './discounts'
 import { tags } from './tags'
 import { productSets } from './productSets'
@@ -50,7 +53,8 @@ const actions = actionTree(
   { state, getters, mutations },
   {
     async fetchEnv({ commit }) {
-      const { data } = await api.get<Record<string, string>>('/settings?array')
+      // Fetch setting wtihout authorization, so it wont crash when auth is invalid
+      const { data } = await axios.get<Record<string, string>>(`${getApiURL()}/settings?array`)
       commit('SET_ENV', data)
     },
     startLoading({ commit, state }) {
@@ -64,6 +68,7 @@ const actions = actionTree(
 
 const storeModules = {
   auth,
+  globalSeo,
   users,
   roles,
   items,
@@ -79,6 +84,7 @@ const storeModules = {
   discounts,
   authSessions,
   apps,
+  webhooks,
   tags,
   productSets,
 }
@@ -100,6 +106,7 @@ export const accessor = useAccessor(store, storePattern)
 
 export type AccessorType = typeof accessor
 export type StoreModulesKeys = keyof typeof storeModules
+export type GeneratedStoreModulesKeys = Exclude<StoreModulesKeys, 'auth' | 'globalSeo'>
 
 Vue.prototype.$accessor = accessor
 

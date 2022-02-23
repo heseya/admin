@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { UUID } from './UUID'
 import { Permission } from './Permissions'
 import { Role } from './Role'
@@ -7,6 +8,7 @@ export interface User {
   name: string
   email: string
   avatar: string
+  is_tfa_active: boolean
   roles: Role[]
   permissions: Permission[]
 }

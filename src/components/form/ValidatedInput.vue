@@ -1,5 +1,5 @@
 <template>
-  <validation-provider v-slot="{ errors }" :rules="rules" :name="name">
+  <validation-provider v-slot="{ errors }" :rules="rules" :name="name" class="input-wrapper">
     <app-input v-bind="$props" :data-cy="dataCy || name" v-on="$listeners">
       <slot></slot>
       <template #error>{{ errors[0] }}</template>
@@ -28,6 +28,8 @@ export default Vue.extend({
     'loading',
     'dataCy',
     'type',
+    'min',
+    'max',
     'step',
     'rows',
     'border',
@@ -38,3 +40,10 @@ export default Vue.extend({
   ],
 })
 </script>
+
+<style lang="scss" scoped>
+.input-wrapper {
+  display: block;
+  width: 100%;
+}
+</style>

@@ -24,14 +24,16 @@ export default Vue.extend({
     extensions: {
       type: Array,
       default: () => [
-        'jpg',
-        'jpeg',
-        'png',
-        'gif',
-        'bmp',
-        'svg',
-        'mp4',
-        'webm',
+        // disabled frontend validation
+        // 'jpg',
+        // 'jpeg',
+        // 'png',
+        // 'gif',
+        // 'bmp',
+        // 'svg',
+        // 'mp4',
+        // 'webm',
+        // 'webp',
         // 'ogg',
         // 'avi',
         // 'mov',
@@ -102,7 +104,7 @@ export default Vue.extend({
     isFileValid(file: File) {
       if (!file) return false
       const extension = getLastElement(file.name.split('.'))?.toLowerCase()
-      return this.extensions.some((ext) => ext === extension)
+      return this.extensions.length ? this.extensions.some((ext) => ext === extension) : true
     },
     changeDrag(isDrag: boolean) {
       this.isDrag = isDrag

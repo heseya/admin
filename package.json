@@ -1,6 +1,6 @@
 {
   "name": "store-admin",
-  "version": "2.0.5",
+  "version": "2.1.0",
   "private": true,
   "description": "Admin panel for Heseya Store API",
   "author": "Heseya",
@@ -14,9 +14,11 @@
     "test": "yarn test:unit && yarn test:e2e --headless"
   },
   "dependencies": {
+    "@sentry/tracing": "^6.16.1",
+    "@sentry/vue": "^6.16.1",
     "ant-design-vue": "^1.7.8",
     "axios": "^0.24.0",
-    "bout": "^0.1.1",
+    "bout": "^0.2.0",
     "boxicons": "2.0.9",
     "broadcast-channel": "^4.7.0",
     "core-js": "^3.19.1",
@@ -32,7 +34,6 @@
     "vue-inline-svg": "^2.1.0",
     "vue-keypress": "^2.1.1",
     "vue-meta": "^2.4.0",
-    "vue-multiselect": "^2.1.6",
     "vue-router": "^3.5.3",
     "vue-toast-notification": "^0.6.2",
     "vuedraggable": "^2.24.3",

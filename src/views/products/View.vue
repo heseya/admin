@@ -95,7 +95,7 @@
                   >
                     <a-select-option v-for="set in productSets" :key="set.id" :label="set.name">
                       <i v-if="!set.public" class="bx bx-lock"></i>
-                      {{ set.name }} &nbsp; <small>(/{{ set.slug }})</small>
+                      {{ set.name }}&nbsp;<small>(/{{ set.slug }})</small>
                     </a-select-option>
                     <template #message-danger>{{ errors[0] }}</template>
                   </app-select>
@@ -109,6 +109,14 @@
                   name="quantity_step"
                   label="Format ilości"
                   :disabled="!canModify"
+                />
+              </div>
+
+              <div class="wide">
+                <SeoForm
+                  v-model="form.seo"
+                  :disabled="!canModify"
+                  :current="!isNew ? { id, model: 'Product' } : null"
                 />
               </div>
 
@@ -171,6 +179,7 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import RichEditor from '@/components/form/RichEditor.vue'
 import SchemaConfigurator from '@/components/modules/schemas/Configurator.vue'
 import TagsSelect from '@/components/TagsSelect.vue'
+import SeoForm from '@/components/modules/seo/Accordion.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 import Textarea from '@/components/form/Textarea.vue'
@@ -194,6 +203,7 @@ const EMPTY_FORM: ProductComponentForm = {
   schemas: [],
   gallery: [],
   tags: [],
+  seo: {},
 }
 
 export default Vue.extend({
@@ -211,6 +221,7 @@ export default Vue.extend({
     RichEditor,
     TagsSelect,
     SwitchInput,
+    SeoForm,
     AuditsModal,
     Textarea,
   },
@@ -247,6 +258,7 @@ export default Vue.extend({
         this.form = {
           ...product,
           sets: product.sets?.map(({ id }) => id) || [],
+          seo: product.seo || {},
         }
       }
     },

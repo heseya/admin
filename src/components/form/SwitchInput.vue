@@ -1,5 +1,8 @@
 <template>
-  <div class="switch-input" :class="{ 'switch-input--horizontal': horizontal }">
+  <div
+    class="switch-input"
+    :class="{ 'switch-input--horizontal': horizontal, [`switch-input--${type}`]: true }"
+  >
     <label class="switch-input__label">
       <slot name="title">{{ label }}</slot>
     </label>
@@ -36,6 +39,7 @@ export default Vue.extend({
     horizontal: { type: Boolean, default: false },
     label: { type: String, default: '' },
     name: { type: String, default: '' },
+    type: { type: String, default: 'default' },
     dataCy: { type: String, default: '' },
   },
   methods: {
@@ -81,6 +85,12 @@ export default Vue.extend({
 
     i {
       color: #ffffff !important;
+    }
+  }
+
+  &--red {
+    .ant-switch-checked {
+      background-color: $red-color-500;
     }
   }
 

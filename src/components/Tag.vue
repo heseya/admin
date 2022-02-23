@@ -42,6 +42,8 @@ export default Vue.extend({
   color: #ffffff;
   font-size: 0.9em;
   border-radius: 3px;
+  display: flex;
+  align-items: center;
 
   &--small {
     font-size: 0.7em;
@@ -57,6 +59,12 @@ export default Vue.extend({
 
   &--primary {
     background-color: $primary-color-500;
+  }
+
+  i {
+    font-size: 1.2em;
+    line-height: 1em;
+    margin-right: 4px;
   }
 }
 </style>

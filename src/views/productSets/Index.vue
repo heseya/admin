@@ -35,25 +35,14 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, isString } from 'lodash'
 
 import PaginatedList from '@/components/PaginatedList.vue'
-import ProductSetForm from '@/components/modules/productSets/Form.vue'
+import ProductSetForm, { CLEAR_PRODUCT_SET_FORM } from '@/components/modules/productSets/Form.vue'
 import ProductSetComponent from '@/components/modules/productSets/ProductSet.vue'
 import SetProductsList from '@/components/modules/productSets/SetProductsList.vue'
 
 import { ProductSet, ProductSetDTO } from '@/interfaces/ProductSet'
-
-const CLEAR_FORM: ProductSetDTO = {
-  id: '',
-  name: '',
-  slug_suffix: '',
-  slug_override: false,
-  public: true,
-  hide_on_index: false,
-  parent_id: null,
-  children_ids: [],
-}
 
 export default Vue.extend({
   metaInfo: { title: 'Kolekcje' },
@@ -74,26 +63,37 @@ export default Vue.extend({
   data: () => ({
     isFormModalActive: false,
     selectedSet: null as null | ProductSet,
-    editedItem: cloneDeep(CLEAR_FORM) as ProductSetDTO,
+    editedItem: cloneDeep(CLEAR_PRODUCT_SET_FORM) as ProductSetDTO,
     editedItemSlugPrefix: '',
   }),
+  mounted() {
+    if (this.$route.query.open) {
+      this.editProductSet(this.$route.query.open as string)
+    }
+  },
   methods: {
-    editProductSet(set: ProductSet) {
-      this.editedItem = {
-        ...cloneDeep(set),
-        parent_id: set.parent?.id || null,
-        children_ids: set.children.map((child) => child.id),
+    editProductSet(set: ProductSet | string) {
+      if (isString(set)) {
+        this.editedItem = { id: set } as ProductSetDTO
+      } else {
+        this.editedItem = {
+          ...cloneDeep(set),
+          parent_id: set.parent?.id || null,
+          children_ids: set.children.map((child) => child.id),
+        }
+        this.editedItemSlugPrefix = set.parent?.slug || ''
       }
-      this.editedItemSlugPrefix = set.parent?.slug || ''
       this.isFormModalActive = true
     },
     createProductSet(parent: ProductSet | null = null) {
       this.editedItem = {
-        ...cloneDeep(CLEAR_FORM),
+        ...cloneDeep(CLEAR_PRODUCT_SET_FORM),
         parent_id: parent?.id || null,
       }
       this.editedItemSlugPrefix = parent?.slug || ''
-      this.isFormModalActive = true
+      this.$nextTick(() => {
+        this.isFormModalActive = true
+      })
     },
     showSetProducts(set: ProductSet) {
       this.selectedSet = set

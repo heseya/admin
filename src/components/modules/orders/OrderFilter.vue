@@ -1,7 +1,7 @@
 <template>
   <div class="orders-filter">
     <app-input
-      v-model="search"
+      v-model="local.search"
       class="span-2"
       type="search"
       label="Wyszukiwanie"
@@ -10,7 +10,7 @@
     />
 
     <app-select
-      v-model="status_id"
+      v-model="local.status_id"
       label="Status"
       add-all
       option-filter-prop="label"
@@ -22,7 +22,7 @@
     </app-select>
 
     <app-select
-      v-model="shipping_method_id"
+      v-model="local.shipping_method_id"
       label="Dostawa"
       add-all
       option-filter-prop="label"
@@ -31,6 +31,17 @@
       <a-select-option v-for="method in shippingMethods" :key="method.id" :label="method.name">
         {{ method.name }}
       </a-select-option>
+    </app-select>
+
+    <app-select
+      v-model="local.paid"
+      label="Status płatności"
+      add-all
+      option-filter-prop="label"
+      @change="debouncedSearch"
+    >
+      <a-select-option :value="'1'" label="Opłacone"> Opłacone </a-select-option>
+      <a-select-option :value="'0'" label="Nie opłacone"> Nie opłacone </a-select-option>
     </app-select>
   </div>
 </template>
@@ -49,6 +60,7 @@ export type OrderFilersType = {
   search: string
   status_id: string
   shipping_method_id: string
+  paid: string
   sort?: string
 }
 
@@ -56,6 +68,7 @@ export const EMPTY_ORDER_FILTERS: OrderFilersType = {
   search: '',
   status_id: ALL_FILTER_VALUE,
   shipping_method_id: ALL_FILTER_VALUE,
+  paid: ALL_FILTER_VALUE,
   sort: undefined,
 }
 
@@ -67,9 +80,9 @@ export default Vue.extend({
     } as Vue.PropOptions<OrderFilersType>,
   },
   data: () => ({
-    search: '',
-    status_id: ALL_FILTER_VALUE,
-    shipping_method_id: ALL_FILTER_VALUE,
+    local: {
+      ...EMPTY_ORDER_FILTERS,
+    },
   }),
   computed: {
     statuses(): OrderStatus[] {
@@ -80,10 +93,8 @@ export default Vue.extend({
     },
   },
   watch: {
-    filters(f: OrderFilersType) {
-      this.search = f.search
-      this.status_id = f.status_id
-      this.shipping_method_id = f.shipping_method_id
+    filters(filters: OrderFilersType) {
+      this.local = { ...this.local, ...filters }
     },
   },
   created() {
@@ -91,17 +102,13 @@ export default Vue.extend({
     this.$accessor.shippingMethods.fetch()
   },
   mounted() {
-    this.search = this.filters.search
-    this.status_id = this.filters.status_id
-    this.shipping_method_id = this.filters.shipping_method_id
+    this.local = { ...this.local, ...this.filters }
   },
   methods: {
     makeSearch() {
       this.$emit('search', {
         ...this.filters,
-        search: this.search,
-        status_id: this.status_id,
-        shipping_method_id: this.shipping_method_id,
+        ...this.local,
       })
     },
 

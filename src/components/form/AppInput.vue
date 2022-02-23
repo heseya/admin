@@ -4,20 +4,13 @@
       <slot name="label"> {{ label }} </slot>
     </label>
 
-    <a-textarea
-      v-if="type === 'textarea'"
-      v-model="innerValue"
-      class="app-input__input"
-      v-bind="$props"
-      :data-cy="dataCy"
-    />
-    <a-input
-      v-else
+    <component
+      :is="component"
       v-bind="$props"
       :id="name"
       v-model="innerValue"
-      :data-cy="dataCy"
       class="app-input__input"
+      :data-cy="dataCy"
     />
 
     <span class="app-input__error">
@@ -40,6 +33,8 @@ export default Vue.extend({
     'dataCy',
     'error',
     'type',
+    'min',
+    'max',
     'size',
     'step',
     'allowClear',
@@ -56,6 +51,12 @@ export default Vue.extend({
       set(v: any) {
         this.$emit('input', v)
       },
+    },
+
+    component(): string {
+      if (this.type === 'password') return 'a-input-password'
+      if (this.type === 'textarea') return 'a-textarea'
+      return 'a-input'
     },
   },
 })

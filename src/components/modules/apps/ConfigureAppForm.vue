@@ -115,6 +115,11 @@ export default Vue.extend({
     async fetchAppConfigFields() {
       if (!this.app || !this.appApi) return
 
+      // Clear form
+      this.error = null
+      this.fields = []
+      this.form = {}
+
       try {
         this.isLoading = true
 

@@ -137,7 +137,7 @@ export default Vue.extend({
     disabled: { type: Boolean, default: false },
   },
   data: () => ({
-    form: cloneDeep(CLEAR_FORM) as AttributeDto & { id?: UUID },
+    form: {} as AttributeDto & { id?: UUID },
     AttributeType: AttributeType,
   }),
   computed: {
@@ -147,11 +147,11 @@ export default Vue.extend({
   },
   watch: {
     attribute(v) {
-      this.form = cloneDeep(v)
+      this.form = cloneDeep({ ...CLEAR_FORM, ...v })
     },
   },
   created() {
-    this.form = cloneDeep(this.attribute) || {}
+    this.form = cloneDeep({ ...CLEAR_FORM, ...this.attribute })
   },
   methods: {
     editSlug() {

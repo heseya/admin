@@ -22,7 +22,7 @@
       <card>
         <AttributeForm
           :key="attribute.id"
-          :attribute="attribute || {}"
+          :attribute="isNew ? {} : attribute"
           :disabled="!$can(isNew ? $p.Attributes.Edit : $p.Attributes.Add)"
           @submit="onSubmit"
         />
@@ -48,7 +48,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { cloneDeep } from 'lodash'
 
 import { Attribute } from '@/interfaces/Attribute'
 

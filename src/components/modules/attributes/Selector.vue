@@ -112,6 +112,8 @@ export default Vue.extend({
   methods: {
     addAttribute(attribute: ProductAttribute) {
       this.$emit('add', attribute)
+      this.isFormModalActive = false
+      this.isSelectorModalActive = false
     },
   },
 })

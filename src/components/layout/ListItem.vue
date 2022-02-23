@@ -73,6 +73,7 @@ export default Vue.extend({
   text-align: left;
 
   &__content {
+    width: 100%;
     font-weight: 600;
   }
 

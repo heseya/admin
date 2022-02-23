@@ -3086,10 +3086,10 @@ bout@^0.2.0:
   resolved "https://registry.yarnpkg.com/bout/-/bout-0.2.0.tgz#42a8e7fba7a33dc104f0a916e3cdfe9d9776eec8"
   integrity sha512-YedZnY1pdg/5euKxD5pOtMiy2cmohER1S71CiJm81QVwE1k4MTy+giYNWrjoypIy187NGh1IJTQdwEm0Yx20KQ==
 
-boxicons@2.0.9:
-  version "2.0.9"
-  resolved "https://registry.yarnpkg.com/boxicons/-/boxicons-2.0.9.tgz#7ffbcdab6eb19fe1b53a4044dbca5849905d9714"
-  integrity sha512-nsXBqNgtEtEu/TYuOlH4mZ8sdM4ol1/6q4Sb9i0SubhOxbW9SqDemaN1D4yZHC8TfMWGM2tIW0y4YWbDMmuBYg==
+boxicons@2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/boxicons/-/boxicons-2.1.1.tgz#84ccb3e680d142d3eecc38b15981352f6fa57a9a"
+  integrity sha512-+bOPcCnCM/7ZLDeKPB7OPqmtFmft58HfDZVEJLJx7ArDZhIDGY+wXSTUhC2eD3IGqv/UsgoDNyOKgIFoEiomGg==
   dependencies:
     "@webcomponents/webcomponentsjs" "^2.0.2"
     prop-types "^15.6.0"

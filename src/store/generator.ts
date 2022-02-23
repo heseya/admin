@@ -187,7 +187,7 @@ export const createVuexCRUD =
             commit(StoreMutations.SetMeta, data.meta)
             commit(StoreMutations.SetData, data.data)
             commit(StoreMutations.SetLoading, false)
-            return true
+            return data.data
           } catch (error: any) {
             commit(StoreMutations.SetLoading, false)
             // If request was canceled, do not report error

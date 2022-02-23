@@ -14,7 +14,30 @@
 
     <list v-else class="attributes-configurator__list">
       <list-item v-for="attribute in attributes" :key="attribute.id" no-hover>
-        {{ attribute.name }}
+        <div class="product-attribute">
+          <div class="product-attribute__title">
+            <info-tooltip v-if="attribute.global" class="global-tooltip" icon="bx bx-globe-alt">
+              {{ $t('globalTooltip') }}
+            </info-tooltip>
+            <span>{{ attribute.name }}</span>
+            <info-tooltip v-if="attribute.description"> {{ attribute.description }}</info-tooltip>
+          </div>
+
+          <div class="product-attribute__content">CONTENT</div>
+        </div>
+
+        <template #action>
+          <icon-button
+            v-if="!disabled && !attribute.global"
+            size="small"
+            type="danger"
+            @click="deleteAttribute(attribute.id)"
+          >
+            <template #icon>
+              <i class="bx bx-trash"></i>
+            </template>
+          </icon-button>
+        </template>
       </list-item>
     </list>
 
@@ -32,24 +55,27 @@
   "en": {
     "title": "Attributes",
     "addAttribute": "Add attribute to product",
-    "noAttributesInProduct": "This product has no attributes yet"
+    "noAttributesInProduct": "This product has no attributes yet",
+    "globalTooltip": "Global attribute is automatically given to all products"
   },
   "pl": {
     "title": "Cechy",
     "addAttribute": "Dodaj cechę do produktu",
-    "noAttributesInProduct": "Ten produkt nie ma jeszcze żadnej cechy"
+    "noAttributesInProduct": "Ten produkt nie ma jeszcze żadnej cechy",
+    "globalTooltip": "Globalna cecha jest automatycznie dodawana do wszystkich produktów"
   }
 }
 </i18n>
 
 <script lang="ts">
 import Vue from 'vue'
-import { ProductAttribute } from '@/interfaces/Attribute'
+import { Attribute, ProductAttribute } from '@/interfaces/Attribute'
 
 import Empty from '@/components/layout/Empty.vue'
 import List from '@/components/layout/List.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import AttributeSelector from '@/components/modules/attributes/Selector.vue'
+import { UUID } from '@/interfaces/UUID'
 
 export default Vue.extend({
   components: { Empty, List, ListItem, AttributeSelector },
@@ -62,6 +88,7 @@ export default Vue.extend({
   },
   data: () => ({
     isSelectorModalActive: false,
+    globalAttributes: [] as Attribute[],
   }),
   computed: {
     attributes: {
@@ -73,10 +100,33 @@ export default Vue.extend({
       },
     },
   },
+  watch: {
+    attributes() {
+      this.loadGlobalAttributes()
+    },
+  },
+  async created() {
+    const attributes = await this.$accessor.attributes.fetch({ global: 1 })
+    if (attributes) {
+      this.globalAttributes = attributes.filter((a) => a.global)
+      this.loadGlobalAttributes()
+    }
+  },
   methods: {
+    loadGlobalAttributes() {
+      const attributesToAdd = this.globalAttributes
+        .filter((attr) => this.attributes.findIndex((a) => a.id === attr.id) === -1)
+        .map((attr) => ({ ...attr, selected_option: {} as any })) // TODO
+      if (attributesToAdd.length > 0) this.attributes = [...this.attributes, ...attributesToAdd]
+    },
+
     addAttribute(attribute: ProductAttribute) {
-      this.attributes.push(attribute)
+      this.attributes = [...this.attributes, attribute]
       this.isSelectorModalActive = false
+    },
+
+    deleteAttribute(id: UUID) {
+      this.attributes = this.attributes.filter((a) => a.id !== id)
     },
   },
 })
@@ -93,6 +143,31 @@ export default Vue.extend({
   &__title {
     font-size: 1.3em;
     font-weight: 600;
+  }
+
+  .global-tooltip {
+    color: $green-color-500;
+    font-size: 1.3em;
+  }
+}
+
+.product-attribute {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &__title {
+    display: flex;
+    align-items: center;
+
+    > *:not(:last-child) {
+      margin-right: 4px;
+    }
+  }
+
+  &__content {
+    font-weight: 400;
   }
 }
 </style>

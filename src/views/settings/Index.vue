@@ -84,7 +84,6 @@
           url="/webhooks"
         />
         <SettingsItem
-          v-can="$p.Seo.Show"
           :name="$t('items.seo')"
           icon="bx bxl-google"
           url="/settings/seo"

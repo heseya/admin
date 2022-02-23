@@ -257,7 +257,6 @@ const router = new VueRouter({
       component: () => import('./views/seo/index.vue'),
       meta: {
         requiresAuth: true,
-        permissions: [Permissions.Seo.Show],
       },
     },
     {

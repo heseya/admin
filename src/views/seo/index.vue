@@ -10,7 +10,7 @@
         sprecyzowanych własnych ustawień SEO."
       />
       <p></p>
-      <SeoForm v-model="form" force-index />
+      <SeoForm v-model="form" force-index :disabled="!$can($p.Seo.Edit)" />
       <br />
       <AppButton @click="submit"> Zapisz zmiany </AppButton>
     </card>

@@ -10,7 +10,8 @@
       <span class="cms-table-row__col-label">{{ label }}</span>
       <span class="cms-table-row__col-value">
         <slot :name="key" v-bind="{ key, label, value, rawValue, item }">
-          {{ value }}
+          <BooleanTag v-if="typeof value === 'boolean'" :value="value" />
+          <template v-else> {{ value }} </template>
         </slot>
       </span>
     </div>

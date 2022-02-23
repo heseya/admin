@@ -50,6 +50,12 @@
     "attributes": "Attributes"
   },
 
+  "attributeTypes": {
+    "single-option": "Text single choice",
+    "date": "Date",
+    "number": "Number single choice"
+  },
+
   "schemaTypes": {
     "string": "Text value",
     "select": "Select from multiple options",

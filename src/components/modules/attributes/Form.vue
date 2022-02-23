@@ -43,9 +43,9 @@
         v-for="type in AttributeType"
         :key="type"
         :value="type"
-        :label="$t('types.' + type)"
+        :label="$t('attributeTypes.' + type)"
       >
-        {{ $t('types.' + type) }}
+        {{ $t('attributeTypes.' + type) }}
       </a-select-option>
     </app-select>
 
@@ -65,11 +65,6 @@
 <i18n>
 {
   "pl": {
-    "types": {
-      "single-option": "Tekstowy jednokrotnego wyboru",
-      "date": "Data",
-      "number": "Liczbowy jednokrotnego wyboru"
-    },
     "form": {
       "slug": "Skrócona nazwa",
       "global": "Globalny atrybut",
@@ -83,11 +78,6 @@
     }
   },
   "en": {
-    "types": {
-      "single-option": "Text single choice",
-      "date": "Date",
-      "number": "Number single choice"
-    },
     "form": {
       "slug": "Short name",
       "global": "Global attribute",

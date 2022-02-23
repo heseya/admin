@@ -136,7 +136,9 @@ export default Vue.extend({
       }
       if (this.type === 'items') return `SKU: ${(item as ProductItem).sku}`
       if (this.type === 'attributes')
-        return `${this.$t('common.form.type')}: ${(item as Attribute).type}`
+        return `${this.$t('common.form.type')}: ${this.$t(
+          'attributeTypes.' + (item as Attribute).type,
+        )}`
       return ''
     },
   },

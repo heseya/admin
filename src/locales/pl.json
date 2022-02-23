@@ -50,6 +50,12 @@
     "attributes": "Cechy"
   },
 
+  "attributeTypes": {
+    "single-option": "Tekstowy jednokrotnego wyboru",
+    "date": "Data",
+    "number": "Liczbowy jednokrotnego wyboru"
+  },
+
   "schemaTypes": {
     "string": "Wartość tekstowa",
     "select": "Wybór spośród kilku opcji",

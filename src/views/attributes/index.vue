@@ -44,7 +44,7 @@
             <small>{{ value || '-' }}</small>
           </template>
           <template #type="{ value }">
-            <i>{{ $t('form.types.' + value) }}</i>
+            <i>{{ $t('attributeTypes.' + value) }}</i>
           </template>
         </cms-table-row>
       </template>
@@ -59,12 +59,7 @@
     "add": "Dodaj cechę",
     "form": {
       "global": "Globalny",
-      "sortable": "Sortowalny",
-      "types": {
-        "single-option": "Tekstowy jednokrotnego wyboru",
-        "date": "Data",
-        "number": "Liczbowy jednokrotnego wyboru"
-      }
+      "sortable": "Sortowalny"
     }
   },
   "en": {
@@ -72,12 +67,7 @@
     "add": "Add attribute",
     "form": {
       "global": "Global",
-      "sortable": "Sortable",
-      "types": {
-        "single-option": "Text single choice",
-        "date": "Date",
-        "number": "Number single choice"
-      }
+      "sortable": "Sortable"
     }
   }
 }

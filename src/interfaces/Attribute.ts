@@ -35,8 +35,8 @@ interface AttributeBase {
 // ? ---------------------------------------------------------------
 
 // DtoHelper
-type MakeAttributeDto<Attr, Option> = Omit<Attr, 'id' | 'min' | 'max' | 'options'> & {
-  options: (Option & { id?: UUID })[]
+type MakeAttributeDto<Attr, OptionDto> = Omit<Attr, 'id' | 'min' | 'max' | 'options'> & {
+  options: (OptionDto & { id?: UUID })[]
 }
 
 // * Single Option -------------------------------------------------
@@ -52,7 +52,10 @@ interface AttributeSingleOption extends AttributeBase {
   max: null
   options: AttributeSingleOptionOption[]
 }
-type AttributeSingleOptionDto = MakeAttributeDto<AttributeSingleOption, AttributeSingleOptionOption>
+type AttributeSingleOptionDto = MakeAttributeDto<
+  AttributeSingleOption,
+  AttributeSingleOptionOptionDto
+>
 
 // * Number --------------------------------------------------------
 interface AttributeNumberOption extends AttributeOptionBase {
@@ -67,14 +70,14 @@ interface AttributeNumber extends AttributeBase {
   max: number
   options: AttributeNumberOption[]
 }
-type AttributeNumberDto = MakeAttributeDto<AttributeNumber, AttributeNumberOption>
+type AttributeNumberDto = MakeAttributeDto<AttributeNumber, AttributeNumberOptionDto>
 
 // * Date ----------------------------------------------------------
 interface AttributeDateOption extends AttributeOptionBase {
   value_number: null
   value_date: string // Date
 }
-type AttributeDateOptionDto = Omit<AttributeDateOption, 'id' | 'index'>
+type AttributeDateOptionDto = Omit<AttributeDateOption, 'id' | 'index'> | { id?: UUID }
 
 interface AttributeDate extends AttributeBase {
   type: AttributeType.Date
@@ -82,7 +85,7 @@ interface AttributeDate extends AttributeBase {
   max: string // Date
   options: AttributeDateOption[]
 }
-type AttributeDateDto = MakeAttributeDto<AttributeDate, AttributeDateOption>
+type AttributeDateDto = MakeAttributeDto<AttributeDate, AttributeDateOptionDto>
 
 // ? ---------------------------------------------------------------
 // ? SUMMARY
@@ -93,10 +96,7 @@ export type AttributeOption =
   | AttributeNumberOption
   | AttributeDateOption
 
-export type AttributeOptionDto =
-  | AttributeSingleOptionOptionDto
-  | AttributeNumberOptionDto
-  | AttributeDateOptionDto
+export type AttributeOptionDto = Omit<AttributeOptionBase, 'id' | 'index'> & { id?: UUID }
 
 export type Attribute = AttributeSingleOption | AttributeNumber | AttributeDate
 

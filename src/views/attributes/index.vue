@@ -1,5 +1,5 @@
 <template>
-  <div class="narrower-page">
+  <div>
     <PaginatedList
       :title="$t('title')"
       :filters="filters"
@@ -28,6 +28,26 @@
           />
         </div>
       </template>
+
+      <template #default="{ item: attribute }">
+        <cms-table-row
+          :key="attribute.id"
+          :item="attribute"
+          :headers="tableConfig.headers"
+          :to="`/settings/attributes/${attribute.id}`"
+        >
+          <template #name="{ value }">
+            {{ value }}
+            ( <code>{{ attribute.slug }}</code> )
+          </template>
+          <template #description="{ value }">
+            <small>{{ value || '-' }}</small>
+          </template>
+          <template #type="{ value }">
+            <i>{{ $t('form.types.' + value) }}</i>
+          </template>
+        </cms-table-row>
+      </template>
     </PaginatedList>
   </div>
 </template>
@@ -39,7 +59,12 @@
     "add": "Dodaj cechę",
     "form": {
       "global": "Globalny",
-      "sortable": "Sortowalny"
+      "sortable": "Sortowalny",
+      "types": {
+        "single-option": "Tekstowy jednokrotnego wyboru",
+        "date": "Data",
+        "number": "Liczbowy jednokrotnego wyboru"
+      }
     }
   },
   "en": {
@@ -47,7 +72,12 @@
     "add": "Add attribute",
     "form": {
       "global": "Global",
-      "sortable": "Sortable"
+      "sortable": "Sortable",
+      "types": {
+        "single-option": "Text single choice",
+        "date": "Date",
+        "number": "Number single choice"
+      }
     }
   }
 }
@@ -58,6 +88,8 @@ import Vue from 'vue'
 import { debounce } from 'lodash'
 
 import PaginatedList from '@/components/PaginatedList.vue'
+import CmsTableRow from '@/components/cms/CmsTableRow.vue'
+
 import { TableConfig } from '@/interfaces/CmsTable'
 import { Attribute } from '@/interfaces/Attribute'
 
@@ -67,6 +99,7 @@ export default Vue.extend({
   },
   components: {
     PaginatedList,
+    CmsTableRow,
   },
   data: () => ({
     filters: {
@@ -76,13 +109,16 @@ export default Vue.extend({
   computed: {
     tableConfig(): TableConfig<Attribute> {
       return {
-        rowUrlBuilder: (order) => `/attributes/${order.id}`,
         headers: [
           { key: 'name', label: this.$t('common.form.name') as string },
-          { key: 'description', label: this.$t('common.form.description') as string },
-          { key: 'type', label: this.$t('common.form.type') as string, width: '0.8fr' },
-          { key: 'sortable', label: this.$t('form.sortable') as string, width: '0.8fr' },
-          { key: 'global', label: this.$t('form.global') as string, width: '0.8fr' },
+          {
+            key: 'description',
+            label: this.$t('common.form.description') as string,
+            width: '1.6fr',
+          },
+          { key: 'type', label: this.$t('common.form.type') as string, width: '0.6fr' },
+          { key: 'sortable', label: this.$t('form.sortable') as string, width: '0.6fr' },
+          { key: 'global', label: this.$t('form.global') as string, width: '0.6fr' },
         ],
       }
     },

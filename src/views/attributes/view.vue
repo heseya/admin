@@ -22,7 +22,7 @@
       <card>
         <AttributeForm
           :key="attribute.id"
-          :attribute="editedAttribute"
+          :attribute="attribute || {}"
           :disabled="!$can(isNew ? $p.Attributes.Edit : $p.Attributes.Add)"
           @submit="onSubmit"
         />
@@ -69,9 +69,6 @@ export default Vue.extend({
     AttributeForm,
     PopConfirm,
   },
-  data: () => ({
-    editedAttribute: {} as Attribute,
-  }),
   computed: {
     id(): string {
       return this.$route.params.id
@@ -91,9 +88,6 @@ export default Vue.extend({
       if (error) {
         this.$toast.error(formatApiNotificationError(error))
       }
-    },
-    attribute() {
-      this.editedAttribute = cloneDeep(this.attribute)
     },
   },
   async created() {

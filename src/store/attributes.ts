@@ -30,7 +30,7 @@ export const attributes = createVuexCRUD<Attribute, AttributeDto, AttributeDto>(
           `/attributes/id:${attributeId}/options`,
           option,
         )
-        commit('ADD_OPTION', { attributeId, option: data })
+        commit('ADD_OPTION', { attributeId, option: data.data })
         return { success: true, option: data.data } as const
       } catch (e) {
         return { success: false, error: e } as const

@@ -20,7 +20,9 @@
       "name": "Nazwa",
       "description": "Opis",
       "type": "Typ",
-      "slug": "Link"
+      "slug": "Link",
+      "label": "Etykieta",
+      "value": "Wartość"
     }
   },
 

@@ -28,6 +28,7 @@
               :is="getInputComponent(attribute.type)"
               v-model="attribute.selected_option"
               :attribute="attribute"
+              :type="attribute.type"
             />
           </div>
         </div>
@@ -53,6 +54,8 @@
       :existing="attributes"
       @add="addAttribute"
     />
+
+    {{ attributes.map((a) => a.selected_option) }}
   </div>
 </template>
 
@@ -82,8 +85,7 @@ import List from '@/components/layout/List.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import AttributeSelector from '@/components/modules/attributes/Selector.vue'
 
-import DateTypeInput from '@/components/modules/attributes/configurator/DateTypeInput.vue'
-import NumberTypeInput from '@/components/modules/attributes/configurator/NumberTypeInput.vue'
+import DateAndNumberTypeInput from '@/components/modules/attributes/configurator/DateAndNumberTypeInput.vue'
 import SingleSelectTypeInput from '@/components/modules/attributes/configurator/SingleSelectTypeInput.vue'
 
 import { UUID } from '@/interfaces/UUID'
@@ -94,8 +96,7 @@ export default Vue.extend({
     List,
     ListItem,
     AttributeSelector,
-    DateTypeInput,
-    NumberTypeInput,
+    DateAndNumberTypeInput,
     SingleSelectTypeInput,
   },
   props: {
@@ -151,9 +152,8 @@ export default Vue.extend({
     getInputComponent(type: AttributeType): string {
       switch (type) {
         case AttributeType.Number:
-          return 'NumberTypeInput'
         case AttributeType.Date:
-          return 'DateTypeInput'
+          return 'DateAndNumberTypeInput'
         case AttributeType.SingleOption:
           return 'SingleSelectTypeInput'
       }

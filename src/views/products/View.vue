@@ -360,13 +360,29 @@ export default Vue.extend({
       }
       this.$accessor.stopLoading()
     },
+
+    async updateAttributeOptions() {
+      /**
+       * TODO: save attribute options
+       * - create not existing attribute options (without id)
+       * - - only when values are filled (value_number or value_date)
+       * - update all existing attribute options
+       */
+      console.log('Attributes:', this.form.attributes)
+      return this.form.attributes
+    },
+
     async saveProduct() {
+      this.$accessor.startLoading()
+
+      const attributes = await this.updateAttributeOptions()
+
       const apiPayload: ProductDTO = {
         ...this.form,
         media: this.form.gallery.map(({ id }) => id),
         tags: this.form.tags.map(({ id }) => id),
         schemas: this.form.schemas.map(({ id }) => id),
-        attributes: this.form.attributes.reduce(
+        attributes: attributes.reduce(
           (acc, { id, selected_option: option }) => ({
             ...acc,
             [id]: option?.id || undefined,
@@ -374,8 +390,6 @@ export default Vue.extend({
           {},
         ),
       }
-
-      this.$accessor.startLoading()
 
       const successMessage = this.isNew
         ? (this.$t('messages.created') as string)

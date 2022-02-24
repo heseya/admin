@@ -237,7 +237,7 @@ import SeoForm from '@/components/modules/seo/Accordion.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 import Textarea from '@/components/form/Textarea.vue'
-import AttributesConfigurator from '@/components/modules/products/AttributesConfigurator.vue'
+import AttributesConfigurator from '@/components/modules/attributes/configurator/Configurator.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { generateSlug } from '@/utils/generateSlug'

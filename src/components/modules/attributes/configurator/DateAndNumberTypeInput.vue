@@ -13,13 +13,15 @@
       class="number-input__input"
       name="name"
       :label="$t('displayName')"
+      :placeholder="$t('namePlaceholder')"
     />
     <app-input
       v-model="selectedOption.value_number"
       class="number-input__input"
       type="number"
       name="value_number"
-      :label="$t('common.form.value')"
+      :label="$t('value')"
+      :placeholder="$t('valuePlaceholder')"
     />
   </div>
 </template>
@@ -27,10 +29,16 @@
 <i18n>
 {
   "en": {
-    "displayName": "Display name"
+    "displayName": "Display name",
+    "value": "Numeric value",
+    "namePlaceholder": "E.g. 300cm",
+    "valuePlaceholder": "E.g. 300"
   },
   "pl": {
-    "displayName": "Wyświetlana nazwa"
+    "displayName": "Wyświetlana nazwa",
+    "value": "Wartość liczbowa",
+    "namePlaceholder": "Np. 300cm",
+    "valuePlaceholder": "Np. 300"
   }
 }
 </i18n>
@@ -69,7 +77,7 @@ export default Vue.extend({
   computed: {
     selectedOption: {
       get(): AttributeOptionDto {
-        return this.value || {}
+        return this.value || cloneDeep(EMPTY_OPTION)
       },
       set(option: AttributeOptionDto) {
         this.$emit('input', option)
@@ -98,7 +106,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .date-input {
   &__input {
-    min-width: 300px;
+    min-width: 330px;
     margin-bottom: 0;
   }
 }
@@ -109,8 +117,9 @@ export default Vue.extend({
   &__input {
     display: block;
     margin-bottom: 0;
-    margin-left: 8px;
+    margin-left: 10px;
     margin-top: -20px;
+    width: 160px;
   }
 }
 </style>

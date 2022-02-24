@@ -34,16 +34,18 @@
         </div>
 
         <template #action>
-          <icon-button
-            v-if="!disabled && !attribute.global"
-            size="small"
-            type="danger"
-            @click="deleteAttribute(attribute.id)"
-          >
-            <template #icon>
-              <i class="bx bx-trash"></i>
-            </template>
-          </icon-button>
+          <div class="attributes-configurator__delete-action">
+            <icon-button
+              v-if="!disabled && !attribute.global"
+              size="small"
+              type="danger"
+              @click="deleteAttribute(attribute.id)"
+            >
+              <template #icon>
+                <i class="bx bx-trash"></i>
+              </template>
+            </icon-button>
+          </div>
         </template>
       </list-item>
     </list>
@@ -54,8 +56,6 @@
       :existing="attributes"
       @add="addAttribute"
     />
-
-    {{ attributes.map((a) => a.selected_option) }}
   </div>
 </template>
 
@@ -173,6 +173,12 @@ export default Vue.extend({
   &__title {
     font-size: 1.3em;
     font-weight: 600;
+  }
+
+  &__delete-action {
+    width: 30px;
+    margin-right: -12px;
+    margin-left: 8px;
   }
 
   .global-tooltip {

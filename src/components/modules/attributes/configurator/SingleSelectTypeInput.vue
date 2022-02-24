@@ -21,10 +21,17 @@
         {{ option.name }}
       </a-select-option>
 
-      <template v-if="searchedValue" #notFoundContent>
-        <app-button :loading="isLoading" type="success" size="small" @click="createOption">
+      <template #notFoundContent>
+        <app-button
+          v-if="searchedValue"
+          :loading="isLoading"
+          type="success"
+          size="small"
+          @click="createOption"
+        >
           {{ $t('createOption') }}
         </app-button>
+        <empty v-else> {{ $t('empty') }} </empty>
       </template>
     </app-select>
   </div>
@@ -33,12 +40,14 @@
 <i18n>
 {
   "en": {
-    "placeholder": "Select an option",
-    "createOption": "Create new option"
+    "placeholder": "Select or create an option",
+    "createOption": "Create new option",
+    "empty": "Start typing to create a new option"
   },
   "pl": {
-    "placeholder": "Wybierz opcję",
-    "createOption": "Utwórz nową opcję"
+    "placeholder": "Wybierz lub utwórz opcję",
+    "createOption": "Utwórz nową opcję",
+    "empty": "Zacznij pisać, aby utworzyć nową opcje"
   }
 }
 </i18n>
@@ -48,10 +57,12 @@ import Vue from 'vue'
 import { AttributeOption, ProductAttribute } from '@/interfaces/Attribute'
 import { UUID } from '@/interfaces/UUID'
 import { formatApiNotificationError } from '@/utils/errors'
+import Empty from '@/components/layout/Empty.vue'
 
 type AddOptionResult = { success: true; option: AttributeOption } | { success: false; error: any }
 
 export default Vue.extend({
+  components: { Empty },
   props: {
     value: {
       type: Object,
@@ -127,7 +138,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .single-select-input {
   &__select {
-    min-width: 300px;
+    min-width: 330px;
     margin-bottom: 0;
   }
 }

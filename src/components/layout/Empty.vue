@@ -20,6 +20,7 @@ export default Vue.extend({})
 $color: lighten($font-color, 50%);
 
 .empty {
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;

@@ -67,10 +67,10 @@
   "pl": {
     "form": {
       "slug": "Skrócona nazwa",
-      "global": "Globalny atrybut",
-      "globalTooltip": "Globalny atrybut oznacza, że po danym atrybucie można filtrować produkty niezależnie od kolekcji w której się one znajdują.",
-      "sortable": "Sortowalny atrybut",
-      "sortableTooltip": "Sortowalny atrybut oznacza, że po danym atrybucie można sortować listę produktów."
+      "global": "Globalna cecha",
+      "globalTooltip": "Globalna cecha oznacza, że po danej cesze można filtrować produkty niezależnie od kolekcji w której się one znajdują.",
+      "sortable": "Sortowalna cecha",
+      "sortableTooltip": "Sortowalna cecha oznacza, że po danej cesze można sortować listę produktów."
     },
     "alerts": {
       "created": "Cecha została utworzona.",

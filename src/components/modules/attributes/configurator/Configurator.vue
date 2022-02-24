@@ -23,7 +23,13 @@
             <info-tooltip v-if="attribute.description"> {{ attribute.description }}</info-tooltip>
           </div>
 
-          <div class="product-attribute__content">CONTENT</div>
+          <div class="product-attribute__content">
+            <component
+              :is="getInputComponent(attribute.type)"
+              v-model="attribute.selected_option"
+              :attribute="attribute"
+            />
+          </div>
         </div>
 
         <template #action>
@@ -69,16 +75,29 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Attribute, ProductAttribute } from '@/interfaces/Attribute'
+import { Attribute, AttributeType, ProductAttribute } from '@/interfaces/Attribute'
 
 import Empty from '@/components/layout/Empty.vue'
 import List from '@/components/layout/List.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import AttributeSelector from '@/components/modules/attributes/Selector.vue'
+
+import DateTypeInput from '@/components/modules/attributes/configurator/DateTypeInput.vue'
+import NumberTypeInput from '@/components/modules/attributes/configurator/NumberTypeInput.vue'
+import SingleSelectTypeInput from '@/components/modules/attributes/configurator/SingleSelectTypeInput.vue'
+
 import { UUID } from '@/interfaces/UUID'
 
 export default Vue.extend({
-  components: { Empty, List, ListItem, AttributeSelector },
+  components: {
+    Empty,
+    List,
+    ListItem,
+    AttributeSelector,
+    DateTypeInput,
+    NumberTypeInput,
+    SingleSelectTypeInput,
+  },
   props: {
     value: {
       type: Array,
@@ -116,7 +135,7 @@ export default Vue.extend({
     loadGlobalAttributes() {
       const attributesToAdd = this.globalAttributes
         .filter((attr) => this.attributes.findIndex((a) => a.id === attr.id) === -1)
-        .map((attr) => ({ ...attr, selected_option: {} as any })) // TODO
+        .map((attr) => ({ ...attr, selected_option: undefined as any })) // TODO
       if (attributesToAdd.length > 0) this.attributes = [...this.attributes, ...attributesToAdd]
     },
 
@@ -127,6 +146,17 @@ export default Vue.extend({
 
     deleteAttribute(id: UUID) {
       this.attributes = this.attributes.filter((a) => a.id !== id)
+    },
+
+    getInputComponent(type: AttributeType): string {
+      switch (type) {
+        case AttributeType.Number:
+          return 'NumberTypeInput'
+        case AttributeType.Date:
+          return 'DateTypeInput'
+        case AttributeType.SingleOption:
+          return 'SingleSelectTypeInput'
+      }
     },
   },
 })

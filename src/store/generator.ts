@@ -204,7 +204,7 @@ export const createVuexCRUD =
             // @ts-ignore type is correct, but TS is screaming
             commit(StoreMutations.SetSelected, data.data)
             commit(StoreMutations.SetLoading, false)
-            return true
+            return data.data
           } catch (error: any) {
             commit(StoreMutations.SetError, error)
             commit(StoreMutations.SetLoading, false)

@@ -369,7 +369,7 @@ export default Vue.extend({
         attributes: this.form.attributes.reduce(
           (acc, { id, selected_option: option }) => ({
             ...acc,
-            [id]: option.id,
+            [id]: option?.id || undefined,
           }),
           {},
         ),

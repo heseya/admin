@@ -241,6 +241,7 @@ import AttributesConfigurator from '@/components/modules/attributes/configurator
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { generateSlug } from '@/utils/generateSlug'
+import { updateProductAttributeOptions } from '@/services/updateProductAttributeOptions'
 
 import { UUID } from '@/interfaces/UUID'
 import { Product, ProductDTO, ProductComponentForm } from '@/interfaces/Product'
@@ -361,21 +362,10 @@ export default Vue.extend({
       this.$accessor.stopLoading()
     },
 
-    async updateAttributeOptions() {
-      /**
-       * TODO: save attribute options
-       * - create not existing attribute options (without id)
-       * - - only when values are filled (value_number or value_date)
-       * - update all existing attribute options
-       */
-      console.log('Attributes:', this.form.attributes)
-      return this.form.attributes
-    },
-
     async saveProduct() {
       this.$accessor.startLoading()
 
-      const attributes = await this.updateAttributeOptions()
+      const attributes = await updateProductAttributeOptions(this.form.attributes)
 
       const apiPayload: ProductDTO = {
         ...this.form,

@@ -13,7 +13,7 @@ export enum AttributeType {
 interface AttributeOptionBase {
   id: UUID
   index: number
-  name: string | null
+  name: string
   value_number: number | null
   value_date: string | null // Date
 }

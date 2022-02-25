@@ -16,7 +16,9 @@ type UpdatedAttributesStructure = Omit<ProductAttribute, 'selected_option'> & {
  */
 export const updateProductAttributeOptions = async (rawAttributes: ProductAttribute[]) => {
   const updatesPromises = rawAttributes
-    .filter((a) => a.selected_option.value_date || a.selected_option.value_number)
+    .filter(
+      ({ selected_option: option }) => option.value_date || option.value_number || option.name,
+    )
     .map(
       async (attribute): Promise<UpdatedAttributesStructure> => ({
         ...attribute,

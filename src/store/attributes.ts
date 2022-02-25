@@ -27,11 +27,15 @@ export const attributes = createVuexCRUD<Attribute, AttributeDto, AttributeDto>(
     },
 
     UPDATE_OPTION(state, { attributeId, optionId, option }: UpdateOptionMutation) {
-      // TODO !!!!!!
       const listItem = state.data.find(({ id }) => id === attributeId)
-      if (listItem) (listItem.options as AttributeOption[]).push(option)
-      if (state.selected.id === attributeId)
-        (state.selected.options as AttributeOption[]).push(option)
+      if (listItem) {
+        const optionIndex = listItem.options.findIndex((o) => o.id === optionId)
+        if (optionIndex !== -1) (listItem.options as AttributeOption[])[optionIndex] = option
+      }
+      if (state.selected.id === attributeId) {
+        const optionIndex = state.selected.options.findIndex((o) => o.id === optionId)
+        if (optionIndex !== -1) (state.selected.options as AttributeOption[])[optionIndex] = option
+      }
     },
   },
   actions: {

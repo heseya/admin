@@ -50,7 +50,7 @@ import { cloneDeep } from 'lodash'
 import { AttributeOptionDto, AttributeType, ProductAttribute } from '@/interfaces/Attribute'
 
 const EMPTY_OPTION: AttributeOptionDto = {
-  name: null,
+  name: 'temp',
   value_number: null,
   value_date: null,
 }

@@ -1,6 +1,8 @@
 <template>
   <div class="user-preferences">
-    <lang-switch />
+    <ui-lang-switch />
+
+    <api-lang-switch />
 
     <hr />
 
@@ -11,10 +13,13 @@
 </template>
 
 <script lang="ts">
-import LangSwitch from '@/components/LangSwitch.vue'
 import Vue from 'vue'
+
+import UiLangSwitch from '@/components/UiLangSwitch.vue'
+import ApiLangSwitch from '@/components/ApiLangSwitch.vue'
+
 export default Vue.extend({
-  components: { LangSwitch },
+  components: { UiLangSwitch, ApiLangSwitch },
 })
 </script>
 

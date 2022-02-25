@@ -5,6 +5,7 @@ import { Tag } from './Tag'
 import { CdnMedia } from './Media'
 import { ProductSet } from './ProductSet'
 import { SeoMetadata, SeoMetadataDto } from './SeoMetadata'
+import { ProductAttribute } from './Attribute'
 
 export interface Product {
   id: UUID
@@ -27,6 +28,7 @@ export interface Product {
   cover: CdnMedia
   tags: Tag[]
   seo: SeoMetadata
+  attributes: ProductAttribute[]
 }
 
 export interface ProductDTO {
@@ -44,6 +46,10 @@ export interface ProductDTO {
   schemas: UUID[]
   media: UUID[]
   seo: SeoMetadataDto
+  /**
+   * Attribute.id -> AttributeOption.id
+   */
+  attributes: Record<UUID, UUID>
 }
 
 export interface ProductComponentForm

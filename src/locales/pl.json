@@ -20,7 +20,9 @@
       "name": "Nazwa",
       "description": "Opis",
       "type": "Typ",
-      "slug": "Link"
+      "slug": "Link",
+      "label": "Etykieta",
+      "value": "Wartość"
     }
   },
 
@@ -48,6 +50,12 @@
     "apps": "Aplikacje",
     "webhooks": "Webhooki",
     "attributes": "Cechy"
+  },
+
+  "attributeTypes": {
+    "single-option": "Tekstowy jednokrotnego wyboru",
+    "date": "Data",
+    "number": "Liczbowy jednokrotnego wyboru"
   },
 
   "schemaTypes": {

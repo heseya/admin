@@ -20,7 +20,9 @@
       "name": "Name",
       "description": "Description",
       "type": "Type",
-      "slug": "Link"
+      "slug": "Link",
+      "label": "Label",
+      "value": "Value"
     }
   },
 
@@ -48,6 +50,12 @@
     "apps": "Apps",
     "webhooks": "Webhooks",
     "attributes": "Attributes"
+  },
+
+  "attributeTypes": {
+    "single-option": "Text single choice",
+    "date": "Date",
+    "number": "Number single choice"
   },
 
   "schemaTypes": {

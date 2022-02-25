@@ -2,12 +2,14 @@
 import axios from 'axios'
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 
-// import { accessor } from './index'
+import { accessor } from './index'
 import { getApiURL } from '@/utils/api'
+import { getDefaultLanguage } from '@/utils/i18n'
 
 const state = () => ({
   currency: 'PLN',
-  apiLanguage: 'pl',
+  apiLanguage: null as null | string,
+  uiLanguage: getDefaultLanguage(),
   env: {} as Record<string, string>,
 })
 
@@ -20,6 +22,9 @@ const mutations = mutationTree(state, {
   SET_API_LANGUAGE(state, language: string) {
     state.apiLanguage = language
   },
+  SET_UI_LANGUAGE(state, language: string) {
+    state.uiLanguage = language
+  },
 })
 
 const actions = actionTree(
@@ -31,13 +36,13 @@ const actions = actionTree(
       commit('SET_ENV', data)
     },
 
-    // async initLanguages({ commit }) {
-    //   const languages = await accessor.languages.fetch()
-    //   if (languages) {
-    //     const defaultLang = languages.find((l) => l.default)
-    //     if (defaultLang) commit('SET_API_LANGUAGE', defaultLang.iso)
-    //   }
-    // },
+    async initLanguages({ state, commit }) {
+      const languages = await accessor.languages.fetch()
+      if (languages && !state.apiLanguage) {
+        const defaultLang = languages.find((l) => l.default)
+        if (defaultLang) commit('SET_API_LANGUAGE', defaultLang.iso)
+      }
+    },
   },
 )
 

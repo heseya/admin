@@ -60,6 +60,8 @@
         </div>
 
         <br />
+        <attributes-select v-model="form.attributes" :disabled="disabled" />
+        <br />
 
         <SeoForm
           v-model="form.seo"
@@ -139,6 +141,7 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import SeoForm from '@/components/modules/seo/Accordion.vue'
 import RichEditor from '@/components/form/RichEditor.vue'
+import AttributesSelect from './AttributesSelect.vue'
 
 import { ProductSetDTO } from '@/interfaces/ProductSet'
 import MediaUploadInput from '@/components/modules/media/MediaUploadInput.vue'
@@ -158,6 +161,7 @@ export const CLEAR_PRODUCT_SET_FORM: ProductSetDTO = {
   parent_id: null,
   children_ids: [],
   seo: {},
+  attributes: [],
 }
 
 export default Vue.extend({
@@ -170,6 +174,7 @@ export default Vue.extend({
     SeoForm,
     RichEditor,
     MediaUploadInput,
+    AttributesSelect,
   },
   props: {
     value: {
@@ -223,6 +228,7 @@ export default Vue.extend({
           cover_id: fetched.cover?.id,
           parent_id: fetched.parent?.id || null,
           children_ids: fetched.children?.map((child) => child.id) || [],
+          attributes: fetched.attributes?.map((attr) => attr.id) || [],
           seo: fetched.seo || {},
         }
       } else {

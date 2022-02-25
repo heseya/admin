@@ -176,7 +176,7 @@ export default Vue.extend({
       } else {
         await this.$accessor.settings.add(this.editedItem)
       }
-      await this.$accessor.fetchEnv()
+      await this.$accessor.config.fetchEnv()
       this.$accessor.stopLoading()
       this.isModalActive = false
     },

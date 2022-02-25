@@ -71,7 +71,8 @@ export default Vue.extend({
   },
   created() {
     initMicroApps()
-    this.$accessor.fetchEnv()
+    this.$accessor.config.fetchEnv()
+    // this.$accessor.config.initLanguages()
     if (this.$accessor.auth.isLogged) this.$accessor.auth.fetchProfile()
 
     // MicroFrontend Events Start

@@ -50,6 +50,5 @@ export const updateProductAttributeOptions = async (rawAttributes: ProductAttrib
         } as ProductAttribute),
     )
 
-  console.log('Updated attributes:', attributes)
   return attributes
 }

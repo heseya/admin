@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import axios from 'axios'
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 
@@ -38,7 +37,15 @@ const actions = actionTree(
 
     async initLanguages({ state, commit }) {
       const languages = await accessor.languages.fetch()
-      if (languages && !state.apiLanguage) {
+      if (!languages) {
+        // eslint-disable-next-line no-console
+        console.error('Failed to fetch languages')
+        return
+      }
+
+      const apiLanguage = languages.find(({ iso }) => iso === state.apiLanguage)
+
+      if (!state.apiLanguage || !apiLanguage) {
         const defaultLang = languages.find((l) => l.default)
         if (defaultLang) commit('SET_API_LANGUAGE', defaultLang.iso)
       }

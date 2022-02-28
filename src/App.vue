@@ -7,7 +7,7 @@
 
     <main class="app__content">
       <transition name="fade" mode="out-in">
-        <router-view :key="$route.path" />
+        <router-view :key="viewKey" />
       </transition>
     </main>
 
@@ -46,6 +46,9 @@ export default Vue.extend({
     SwUpdatePopup,
   },
   computed: {
+    viewKey(): string {
+      return `${this.$route.path}-${this.$accessor.config.apiLanguage}`
+    },
     isLoading(): boolean {
       return this.$accessor.loading
     },

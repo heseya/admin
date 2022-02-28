@@ -2,8 +2,6 @@
   <div class="user-preferences">
     <ui-lang-switch />
 
-    <api-lang-switch />
-
     <hr />
 
     <div class="center">
@@ -16,10 +14,9 @@
 import Vue from 'vue'
 
 import UiLangSwitch from '@/components/UiLangSwitch.vue'
-import ApiLangSwitch from '@/components/ApiLangSwitch.vue'
 
 export default Vue.extend({
-  components: { UiLangSwitch, ApiLangSwitch },
+  components: { UiLangSwitch },
 })
 </script>
 

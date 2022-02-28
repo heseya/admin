@@ -1,9 +1,6 @@
 <template>
-  <div class="narrower-page">
-    <top-nav
-      :title="`${$t('title')} ${order.code}`"
-      :subtitle="`${$t('datePrefix')} ${formattedDate}`"
-    >
+  <div>
+    <top-nav :title="$t('title')">
       <audits-modal :id="order.id" model="orders" />
       <a v-if="storefrontPaymentUrl" :href="`${storefrontPaymentUrl}${order.code}`" target="_blank">
         <icon-button>
@@ -31,6 +28,27 @@
 
       <next-prev-buttons />
     </top-nav>
+
+    <main class="order-page">
+      <Summary class="order-page__summary" :order="order" />
+
+      <card class="order-page__status">
+        <StatusInput :order="order" />
+      </card>
+      <card class="order-page__cart">Cart</card>
+      <card class="order-page__address">Address</card>
+      <card class="order-page__shipping">
+        <send-package
+          v-if="order.id"
+          :order-id="order.id"
+          :shipping-method="order.shipping_method.name"
+          :shipping-number="order.shipping_number"
+          @created="onPackageCreated"
+        />
+      </card>
+    </main>
+
+    <hr />
 
     <div class="order">
       <div>
@@ -82,20 +100,6 @@
 
       <div>
         <card>
-          <template v-if="order.status">
-            <h2 class="section-title">{{ $t('status.title') }}</h2>
-            <app-select
-              v-model="status"
-              :loading="isLoading"
-              option-filter-prop="label"
-              :disabled="!$can($p.Orders.EditStatus)"
-            >
-              <a-select-option v-for="{ id, name } in statuses" :key="id" :label="name">
-                {{ name }}
-              </a-select-option>
-            </app-select>
-          </template>
-          <br />
           <h2 class="section-title">
             <a-tooltip v-if="order.summary_paid > order.summary">
               <template #title>
@@ -187,8 +191,7 @@
 <i18n>
 {
   "pl": {
-    "title": "Zamówienie",
-    "datePrefix": "z dnia",
+    "title": "Szczegóły zamówienia",
     "cart": {
       "title": "Koszyk",
       "shipping": "Dostawa",
@@ -224,8 +227,7 @@
     "updatedSuccess": "Zamówienie zostało zaktualizowane"
   },
   "en": {
-    "title": "Order",
-    "datePrefix": "of",
+    "title": "Order details",
     "cart": {
       "title": "Cart",
       "shipping": "Shipping",
@@ -276,6 +278,8 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 import NextPrevButtons from '@/components/modules/orders/NextPrevButtons.vue'
 import SendPackage from '@/components/modules/orders/SendPackage.vue'
+import Summary from '@/components/modules/orders/Summary.vue'
+import StatusInput from '@/components/modules/orders/StatusInput.vue'
 
 import { Order, OrderStatus } from '@/interfaces/Order'
 import { getRelativeDate } from '@/utils/utils'
@@ -311,11 +315,11 @@ export default Vue.extend({
     AuditsModal,
     NextPrevButtons,
     SendPackage,
+    Summary,
+    StatusInput,
   },
   data: () => ({
-    status: '',
     packageTemplateId: '',
-    isLoading: false,
     modalFormTitle: '',
     form: {},
     isModalActive: false,
@@ -344,13 +348,6 @@ export default Vue.extend({
     },
   },
   watch: {
-    order(order: Order) {
-      this.status = order?.status?.id
-    },
-    status(status: OrderStatus, prevStatus: OrderStatus) {
-      if (!prevStatus) return
-      this.setStatus(status)
-    },
     error(error) {
       if (error) this.$toast.error(formatApiNotificationError(error))
     },
@@ -366,21 +363,6 @@ export default Vue.extend({
   methods: {
     formatCurrency(amount: number) {
       return formatCurrency(amount, this.$accessor.currency)
-    },
-    async setStatus(newStatus: OrderStatus) {
-      this.isLoading = true
-
-      // @ts-ignore // TODO: fix extended store actions typings
-      const success = await this.$accessor.orders.changeStatus({
-        orderId: this.order.id,
-        statusId: newStatus,
-      })
-
-      if (success) {
-        this.$toast.success(this.$t('status.changedSuccess') as string)
-      }
-
-      this.isLoading = false
     },
     onPackageCreated(shippingNumber: string) {
       this.order.shipping_number = shippingNumber
@@ -515,6 +497,37 @@ export default Vue.extend({
     justify-content: center;
     color: $red-color-500;
     margin-right: 5px;
+  }
+}
+
+.order-page {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-gap: 16px;
+  grid-template-areas: 'summary status' 'cart address' 'cart shipping';
+
+  .card {
+    margin-bottom: 0 !important;
+  }
+
+  @media screen and (max-width: 780px) {
+    grid-template-columns: 1fr;
+  }
+
+  &__summary {
+    grid-area: summary;
+  }
+
+  &__status {
+    grid-area: status;
+  }
+
+  &__cart {
+    grid-area: cart;
+  }
+
+  &__address {
+    grid-area: address;
   }
 }
 

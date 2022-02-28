@@ -6,6 +6,7 @@
     <AppHeader class="app__header"></AppHeader>
 
     <main class="app__content">
+      {{ viewKey }}
       <transition name="fade" mode="out-in">
         <router-view :key="viewKey" />
       </transition>
@@ -47,7 +48,7 @@ export default Vue.extend({
   },
   computed: {
     viewKey(): string {
-      return `${this.$route.path}-${this.$accessor.config.apiLanguage}`
+      return `${this.$accessor.config.apiLanguage}:${this.$route.path}`
     },
     isLoading(): boolean {
       return this.$accessor.loading

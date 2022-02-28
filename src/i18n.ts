@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueI18n, { LocaleMessages } from 'vue-i18n'
 import { accessor } from './store'
-import { getDefaultLanguage } from './utils/i18n'
+import { getDefaultUiLanguage } from './utils/i18n'
 
 Vue.use(VueI18n)
 
@@ -19,8 +19,8 @@ function loadLocaleMessages(): LocaleMessages {
 }
 
 export default new VueI18n({
-  locale: accessor.config.uiLanguage || getDefaultLanguage(),
-  fallbackLocale: process.env.VUE_APP_I18N_FALLBACK_LOCALE || 'pl', // TODO: change to 'en' when all translations are done
+  locale: accessor.config.uiLanguage || getDefaultUiLanguage(),
+  fallbackLocale: process.env.VUE_APP_I18N_FALLBACK_LOCALE || 'en',
   messages: loadLocaleMessages(),
   fallbackRoot: true,
   silentFallbackWarn: true,

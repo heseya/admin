@@ -3,12 +3,12 @@ import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 
 import { accessor } from './index'
 import { getApiURL } from '@/utils/api'
-import { getDefaultLanguage } from '@/utils/i18n'
+import { getDefaultUiLanguage } from '@/utils/i18n'
 
 const state = () => ({
   currency: 'PLN',
   apiLanguage: null as null | string,
-  uiLanguage: getDefaultLanguage(),
+  uiLanguage: getDefaultUiLanguage(),
   env: {} as Record<string, string>,
 })
 

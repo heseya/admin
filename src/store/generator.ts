@@ -63,6 +63,11 @@ interface CrudParams {
 export const createVuexCRUD =
   <Item extends BaseItem, CreateItemDTO = Partial<Item>, UpdateItemDTO = Partial<Item>>() =>
   <State>(endpoint: string, extend: ExtendStore<State, Item>, queryParams: CrudParams = {}) => {
+    const GLOBAL_QUERY_PARAMS: QueryPayload = {
+      lang_fallback: 'any',
+      translations: 1,
+    }
+
     const privateState = {
       fetchAbortController: null as null | AbortController,
     }
@@ -168,9 +173,9 @@ export const createVuexCRUD =
             privateState.fetchAbortController = new AbortController()
 
             const filteredQuery = Object.fromEntries(
-              Object.entries({ ...(queryParams.get || {}), ...(query || {}) }).filter(
-                ([, value]) => !isNil(value),
-              ),
+              Object.entries(
+                assign({}, GLOBAL_QUERY_PARAMS, queryParams.get || {}, query || {}),
+              ).filter(([, value]) => !isNil(value)),
             )
 
             commit(StoreMutations.SetQueryParams, filteredQuery)
@@ -187,7 +192,7 @@ export const createVuexCRUD =
             commit(StoreMutations.SetMeta, data.meta)
             commit(StoreMutations.SetData, data.data)
             commit(StoreMutations.SetLoading, false)
-            return true
+            return data.data
           } catch (error: any) {
             commit(StoreMutations.SetLoading, false)
             // If request was canceled, do not report error
@@ -199,7 +204,9 @@ export const createVuexCRUD =
           commit(StoreMutations.SetError, null)
           commit(StoreMutations.SetLoading, true)
           try {
-            const stringQuery = stringifyQuery(queryParams.get || {})
+            const stringQuery = stringifyQuery(
+              assign({}, GLOBAL_QUERY_PARAMS, queryParams.get || {}),
+            )
             const { data } = await api.get<{ data: Item }>(`/${endpoint}/id:${id}${stringQuery}`)
             // @ts-ignore type is correct, but TS is screaming
             commit(StoreMutations.SetSelected, data.data)
@@ -216,7 +223,9 @@ export const createVuexCRUD =
           commit(StoreMutations.SetError, null)
           commit(StoreMutations.SetLoading, true)
           try {
-            const stringQuery = stringifyQuery(queryParams.add || {})
+            const stringQuery = stringifyQuery(
+              assign({}, GLOBAL_QUERY_PARAMS, queryParams.add || {}),
+            )
             const { data } = await api.post<{ data: Item }>(`/${endpoint}${stringQuery}`, item)
             // @ts-ignore type is correct, but TS is screaming
             commit(StoreMutations.AddData, data.data)
@@ -233,7 +242,9 @@ export const createVuexCRUD =
           commit(StoreMutations.SetLoading, true)
           commit(StoreMutations.SetError, null)
           try {
-            const stringQuery = stringifyQuery(queryParams.edit || {})
+            const stringQuery = stringifyQuery(
+              assign({}, GLOBAL_QUERY_PARAMS, queryParams.edit || {}),
+            )
             const { data } = await api.put<{ data: Item }>(
               `/${endpoint}/id:${id}${stringQuery}`,
               item,
@@ -252,7 +263,9 @@ export const createVuexCRUD =
           commit(StoreMutations.SetLoading, true)
           commit(StoreMutations.SetError, null)
           try {
-            const stringQuery = stringifyQuery(queryParams.update || {})
+            const stringQuery = stringifyQuery(
+              assign({}, GLOBAL_QUERY_PARAMS, queryParams.update || {}),
+            )
             const { data } = await api.patch<{ data: Item }>(
               `/${endpoint}/id:${id}${stringQuery}`,
               item,
@@ -273,7 +286,9 @@ export const createVuexCRUD =
           commit(StoreMutations.SetLoading, true)
           commit(StoreMutations.SetError, null)
           try {
-            const stringQuery = stringifyQuery(queryParams.update || {})
+            const stringQuery = stringifyQuery(
+              assign({}, GLOBAL_QUERY_PARAMS, queryParams.update || {}),
+            )
             const { data } = await api.patch<{ data: Item }>(
               `/${endpoint}/${value}${stringQuery}`,
               item,
@@ -296,7 +311,7 @@ export const createVuexCRUD =
             const id = typeof payload === 'string' ? payload : payload.value
 
             const payloadParams = typeof payload === 'string' ? {} : payload.params || {}
-            const params = assign({}, queryParams.remove || {}, payloadParams)
+            const params = assign({}, GLOBAL_QUERY_PARAMS, queryParams.remove || {}, payloadParams)
             const stringQuery = stringifyQuery(params)
 
             await api.delete(`/${endpoint}/id:${id}${stringQuery}`)
@@ -313,7 +328,9 @@ export const createVuexCRUD =
           commit(StoreMutations.SetLoading, true)
           commit(StoreMutations.SetError, null)
           try {
-            const stringQuery = stringifyQuery(queryParams.remove || {})
+            const stringQuery = stringifyQuery(
+              assign({}, GLOBAL_QUERY_PARAMS, queryParams.remove || {}),
+            )
             await api.delete(`/${endpoint}/${value}${stringQuery}`)
             commit(StoreMutations.RemoveData, { key, value })
             commit(StoreMutations.SetLoading, false)
@@ -330,7 +347,9 @@ export const createVuexCRUD =
           commit(StoreMutations.SetError, null)
           commit(StoreMutations.SetLoading, true)
           try {
-            const stringQuery = stringifyQuery(queryParams.get || {})
+            const stringQuery = stringifyQuery(
+              assign({}, GLOBAL_QUERY_PARAMS, queryParams.get || {}),
+            )
             const { data } = await api.get<{ data: AuditEntry[] }>(
               `/audits/${endpoint}/id:${id}${stringQuery}`,
             )

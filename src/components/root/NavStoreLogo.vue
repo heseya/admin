@@ -59,10 +59,10 @@ export default Vue.extend({
   }),
   computed: {
     storeName(): string {
-      return this.$accessor.env.store_name
+      return this.$accessor.config.env.store_name
     },
     envStoreLogo(): string {
-      return this.$accessor.env[ENV_NAME]
+      return this.$accessor.config.env[ENV_NAME]
     },
     canModify(): boolean {
       return this.$can(this.$p.Settings.Edit)

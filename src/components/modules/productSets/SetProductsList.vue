@@ -112,7 +112,7 @@ export default Vue.extend({
   }),
   computed: {
     objectFit(): string {
-      return +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'
+      return +this.$accessor.config.env.dashboard_products_contain ? 'contain' : 'cover'
     },
   },
   watch: {
@@ -122,7 +122,7 @@ export default Vue.extend({
   },
   methods: {
     formatCurrency(amount: number) {
-      return formatCurrency(amount, this.$accessor.currency)
+      return formatCurrency(amount, this.$accessor.config.currency)
     },
     addProduct(product: Product) {
       this.products.push(product)

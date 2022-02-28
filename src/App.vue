@@ -6,8 +6,9 @@
     <AppHeader class="app__header"></AppHeader>
 
     <main class="app__content">
+      {{ viewKey }}
       <transition name="fade" mode="out-in">
-        <router-view :key="$route.path" />
+        <router-view :key="viewKey" />
       </transition>
     </main>
 
@@ -46,6 +47,9 @@ export default Vue.extend({
     SwUpdatePopup,
   },
   computed: {
+    viewKey(): string {
+      return `${this.$accessor.config.apiLanguage}:${this.$route.path}`
+    },
     isLoading(): boolean {
       return this.$accessor.loading
     },
@@ -71,7 +75,8 @@ export default Vue.extend({
   },
   created() {
     initMicroApps()
-    this.$accessor.fetchEnv()
+    this.$accessor.config.fetchEnv()
+    this.$accessor.config.initLanguages()
     if (this.$accessor.auth.isLogged) this.$accessor.auth.fetchProfile()
 
     // MicroFrontend Events Start

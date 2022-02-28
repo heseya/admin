@@ -82,7 +82,7 @@ export default Vue.extend({
       return this.item?.product?.cover?.url
     },
     objectFit(): string {
-      return +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'
+      return +this.$accessor.config.env.dashboard_products_contain ? 'contain' : 'cover'
     },
     discountedPrice(): number {
       if (!this.discount) return this.item.price
@@ -95,7 +95,7 @@ export default Vue.extend({
   },
   methods: {
     formatCurrency(amount: number) {
-      return formatCurrency(amount, this.$accessor.currency)
+      return formatCurrency(amount, this.$accessor.config.currency)
     },
   },
 })

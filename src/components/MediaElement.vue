@@ -47,7 +47,7 @@ export default Vue.extend({
       return CdnMediaType
     },
     objectFit(): string {
-      return +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'
+      return +this.$accessor.config.env.dashboard_products_contain ? 'contain' : 'cover'
     },
   },
 })

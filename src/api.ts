@@ -39,6 +39,7 @@ export const createApiInstance = (baseURL: string, useAccessToken = true) => {
     }
 
     config.headers['X-Core-Url'] = CORE_API_URL
+    if (accessor.config.apiLanguage) config.headers['Accept-Language'] = accessor.config.apiLanguage
 
     return config
   })

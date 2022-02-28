@@ -340,7 +340,7 @@ export default Vue.extend({
       return this.order.created_at && formatDate(this.order.created_at)
     },
     storefrontPaymentUrl(): string | undefined {
-      return this.$accessor.env.storefront_payment_url || undefined
+      return this.$accessor.config.env.storefront_payment_url || undefined
     },
   },
   watch: {
@@ -365,7 +365,7 @@ export default Vue.extend({
   },
   methods: {
     formatCurrency(amount: number) {
-      return formatCurrency(amount, this.$accessor.currency)
+      return formatCurrency(amount, this.$accessor.config.currency)
     },
     async setStatus(newStatus: OrderStatus) {
       this.isLoading = true

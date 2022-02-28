@@ -18,21 +18,25 @@
       <div v-else class="header__text">{{ storeName }}</div>
     </transition>
 
-    <div v-if="user" class="header__user user">
-      <div class="user__role"><i class="bx bx-user"></i> {{ userRole }}</div>
+    <div class="header__right-side">
+      <api-lang-switch class="header__lang-select" />
 
-      <a-dropdown :trigger="['click']">
-        <div class="user__email">{{ user.email }}</div>
+      <div v-if="user" class="header__user user">
+        <div class="user__role"><i class="bx bx-user"></i> {{ userRole }}</div>
 
-        <template #overlay>
-          <a-menu>
-            <a-menu-item>
-              <router-link to="/settings"> {{ $t('settings') }}</router-link>
-            </a-menu-item>
-            <a-menu-item @click="logout"> {{ $t('logout') }} </a-menu-item>
-          </a-menu>
-        </template>
-      </a-dropdown>
+        <a-dropdown :trigger="['click']">
+          <div class="user__email">{{ user.email }}</div>
+
+          <template #overlay>
+            <a-menu>
+              <a-menu-item>
+                <router-link to="/settings"> {{ $t('settings') }}</router-link>
+              </a-menu-item>
+              <a-menu-item @click="logout"> {{ $t('logout') }} </a-menu-item>
+            </a-menu>
+          </template>
+        </a-dropdown>
+      </div>
     </div>
   </header>
 </template>
@@ -57,15 +61,17 @@ import Vue from 'vue'
 import last from 'lodash/last'
 
 import { User } from '@/interfaces/User'
+import ApiLangSwitch from '../ApiLangSwitch.vue'
 
 export default Vue.extend({
   name: 'AppHeader',
+  components: { ApiLangSwitch },
   computed: {
     isHidden(): boolean {
       return !!this.$route.meta?.hiddenNav || false
     },
     storeName(): string {
-      return this.$accessor.env.store_name
+      return this.$accessor.config.env.store_name
     },
     returnUrl(): string | null {
       return this.$route.meta?.returnUrl || null
@@ -103,7 +109,11 @@ export default Vue.extend({
     justify-content: space-between;
   }
 
-  &__return-btn {
+  &__right-side {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-left: auto;
   }
 
   &--hidden {
@@ -116,15 +126,19 @@ export default Vue.extend({
     font-size: 0.9em;
   }
 
+  &__lang-select {
+    margin-right: 8px;
+
+    ::v-deep .app-input {
+      margin-bottom: 0;
+    }
+  }
+
   @media ($max-viewport-4) {
     &__text,
     &__return-btn {
       display: none;
     }
-  }
-
-  &__user {
-    margin-left: auto;
   }
 }
 

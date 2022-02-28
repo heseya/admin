@@ -368,6 +368,7 @@ export default Vue.extend({
     async saveProduct() {
       const apiPayload: ProductDTO = {
         ...this.form,
+        order: this.form.order || 0,
         media: this.form.gallery.map(({ id }) => id),
         tags: this.form.tags.map(({ id }) => id),
         schemas: this.form.schemas.map(({ id }) => id),

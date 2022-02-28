@@ -45,10 +45,24 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .api-lang-switch {
+  position: relative;
+
+  &::before {
+    font-family: boxicons !important;
+    content: '\eaf8';
+    position: absolute;
+    left: 8px;
+    top: 6px;
+    color: $primary-color-500;
+    pointer-events: none;
+  }
+
   &__select {
     all: unset;
-    padding: 4px 16px;
-    padding-right: 32px;
+    box-sizing: border-box;
+    padding: 4px 22px;
+    width: 46px;
+    color: #fff;
     border-radius: 24px;
     background-color: #fff;
     border: solid 1px $background-color-600;
@@ -56,6 +70,12 @@ export default Vue.extend({
     background-repeat: no-repeat;
     background-position-x: 90%;
     background-position-y: 4px;
+
+    @media ($viewport-5) {
+      width: auto;
+      padding: 4px 28px;
+      color: $font-color;
+    }
   }
 }
 </style>

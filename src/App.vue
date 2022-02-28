@@ -6,7 +6,6 @@
     <AppHeader class="app__header"></AppHeader>
 
     <main class="app__content">
-      {{ viewKey }}
       <transition name="fade" mode="out-in">
         <router-view :key="viewKey" />
       </transition>

@@ -512,7 +512,7 @@ export default Vue.extend({
 
 .order-page {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 3fr 2fr;
   grid-gap: 16px;
   grid-template-areas: 'summary status' 'cart address' 'cart shipping';
 

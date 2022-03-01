@@ -4,7 +4,7 @@
       <slot name="label">
         {{ label }}
       </slot>
-      <slot name="label-suffix"></slot>
+      <slot name="labelSuffix"></slot>
     </span>
     <div class="order-field__value">
       <slot>{{ value }}</slot>
@@ -30,9 +30,12 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .order-field {
-  margin: 4px 12px;
+  padding: 4px 12px;
+  position: relative;
 
   &__label {
+    display: flex;
+    align-items: center;
     color: $gray-color-500;
     font-size: 0.9em;
   }

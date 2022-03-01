@@ -9,6 +9,8 @@
     <div v-else class="cart-item__cover" />
     <div class="cart-item__content">
       <span class="cart-item__title">
+        <span class="cart-item__name"> {{ item.product.name }} </span>
+
         <info-tooltip
           v-if="item.product.sets.length"
           v-bind="item.product.sets.length === 0 ? { visible: false } : {}"
@@ -16,16 +18,20 @@
           <small>{{ $t('productSets') }}:</small>
           <div v-for="set in item.product.sets" :key="set.id">{{ set.name }}</div>
         </info-tooltip>
-
-        {{ item.product.name }}&nbsp;
-        <small v-if="item.quantity !== 1">(x{{ item.quantity }})</small>
       </span>
-      <small v-for="schema in item.schemas" :key="schema.id">
-        <span>{{ schema.name }}:</span> {{ schema.value }}
-        <small v-if="schema.price !== 0">(+ {{ formatCurrency(schema.price) }} )</small>
-      </small>
+
+      <div class="cart-item__schema-list">
+        <div v-for="schema in item.schemas" :key="schema.id" class="cart-item__schema">
+          <span class="cart-item__schema-name">{{ schema.name }}:</span>
+          <span class="cart-item__schema-value">
+            {{ schema.value }}
+            <small v-if="schema.price !== 0">(+ {{ formatCurrency(schema.price) }} )</small>
+          </span>
+        </div>
+      </div>
     </div>
-    <span v-if="discount" class="cart-item__price">
+
+    <span v-if="discount" class="cart-item__value">
       <info-tooltip icon="bx bxs-error">
         {{ $t('priceTooltip') }}
         <template #title>
@@ -34,8 +40,18 @@
       </info-tooltip>
       <small v-if="discount">{{ $t('beforeDiscount') }}: {{ formatCurrency(item.price) }} </small>
     </span>
-    <span v-else class="cart-item__price">
+    <span v-else class="cart-item__value">
       {{ formatCurrency(item.price) }}
+    </span>
+
+    <span class="cart-item__value">
+      {{ formatCurrency(discountedPrice) }}
+    </span>
+    <span class="cart-item__value">
+      {{ item.quantity }}
+    </span>
+    <span class="cart-item__value">
+      {{ formatCurrency(totalPrice) }}
     </span>
   </div>
 </template>
@@ -92,6 +108,9 @@ export default Vue.extend({
       // Amount
       return this.item.price - this.discount.discount / this.productsCount
     },
+    totalPrice(): number {
+      return this.discountedPrice * this.item.quantity
+    },
   },
   methods: {
     formatCurrency(amount: number) {
@@ -107,13 +126,15 @@ export default Vue.extend({
   padding: 12px;
   border-radius: 12px;
   transition: 0.3s;
-  display: flex;
+  display: grid;
+  align-items: flex-start;
+  grid-template-columns: 58px 4fr 1fr 1.2fr 0.5fr 1fr;
 
   &__cover {
-    width: 48px;
-    height: 48px;
+    width: 58px;
+    height: 58px;
     object-fit: cover;
-    border-radius: 12px;
+    border-radius: 4px;
     background-color: #eeeeee;
     text-indent: -10000px;
   }
@@ -122,34 +143,50 @@ export default Vue.extend({
     display: flex;
     flex-direction: column;
     justify-content: center;
+    width: 100%;
     margin-left: 12px;
   }
 
   &__title {
     display: block;
-    padding: 12px 0;
+    // margin-bottom: 8px;
 
     .info-tooltip__icon {
-      color: $primary-color-300;
-    }
-
-    span {
-      color: #333333;
-    }
-
-    small {
-      color: #cccccc;
+      color: $blue-color-400;
     }
   }
 
-  &__price {
+  &__name {
+    font-weight: 500;
+    font-size: 1.1em;
+  }
+
+  &__schema-list {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  &__schema {
+    margin-right: 14px;
+  }
+
+  &__schema-name {
+    color: $gray-color-500;
+  }
+
+  &__value {
     display: flex;
     justify-content: center;
-    align-items: flex-end;
-    margin-left: auto;
-    font-weight: 600;
+    align-items: center;
     white-space: nowrap;
     flex-direction: column;
+
+    &:last-of-type {
+      justify-content: flex-end;
+      align-items: flex-end;
+      text-align: right;
+    }
 
     small {
       font-weight: 400;

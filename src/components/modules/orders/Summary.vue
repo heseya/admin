@@ -2,6 +2,10 @@
   <card class="order-summary">
     <OrderField :label="$t('labels.code')" :value="order.code" />
     <OrderField :label="$t('labels.date')" :value="formattedDate" />
+    <OrderField
+      :label="$t('labels.shipping')"
+      :value="order.shipping_method && order.shipping_method.name"
+    />
 
     <OrderField :label="$t('labels.payment')" class="order-summary__payment">
       <SummaryPayment :order="order" />
@@ -24,6 +28,7 @@
     "labels": {
       "code": "Order code",
       "date": "Creation date",
+      "shipping": "Shipping method",
       "payment": "Payment",
       "history": "Payment history"
     },
@@ -33,6 +38,7 @@
     "labels": {
       "code": "Nr zamówienia",
       "date": "Data utworzenia",
+      "shipping": "Metoda dostawy",
       "payment": "Płatność",
       "history": "Historia płatności"
     },
@@ -72,7 +78,7 @@ export default Vue.extend({
 .order-summary {
   display: grid;
   align-items: center;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
 
   &__payment {
     grid-column: span 2;

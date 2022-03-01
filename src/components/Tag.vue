@@ -44,6 +44,7 @@ export default Vue.extend({
   border-radius: 16px;
   display: flex;
   align-items: center;
+  white-space: nowrap;
 
   > .bx {
     border-radius: 50%;

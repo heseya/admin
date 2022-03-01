@@ -1,5 +1,5 @@
 <template>
-  <div class="order-field">
+  <div class="order-field" :class="{ 'order-field--horizontal': horizontal }">
     <span class="order-field__label">
       <slot name="label">
         {{ label }}
@@ -24,6 +24,10 @@ export default Vue.extend({
       type: String,
       default: '',
     },
+    horizontal: {
+      type: Boolean,
+      default: false,
+    },
   },
 })
 </script>
@@ -43,6 +47,15 @@ export default Vue.extend({
   &__value {
     display: flex;
     align-items: center;
+  }
+
+  &--horizontal {
+    display: flex;
+    align-items: center;
+  }
+  &--horizontal &__label {
+    font-size: 1em;
+    margin-right: 8px;
   }
 }
 </style>

@@ -38,27 +38,48 @@ export default Vue.extend({
   margin-right: 3px;
   margin-top: 3px;
   background-color: var(--bg-color, #000000);
-  padding: 3px 6px;
-  color: #ffffff;
+  padding: 4px 12px;
+  color: #fff;
   font-size: 0.9em;
-  border-radius: 3px;
+  border-radius: 16px;
   display: flex;
   align-items: center;
+
+  > .bx {
+    border-radius: 50%;
+    background-color: var(--bg-color, #000000);
+    color: #fff !important;
+  }
 
   &--small {
     font-size: 0.7em;
   }
 
   &--success {
-    background-color: $green-color-500;
+    background-color: $green-color-200;
+    color: $green-color-500;
+
+    > .bx {
+      background-color: $green-color-500;
+    }
   }
 
   &--error {
-    background-color: $red-color-500;
+    background-color: $red-color-200;
+    color: $red-color-500;
+
+    > .bx {
+      background-color: $red-color-500;
+    }
   }
 
   &--primary {
-    background-color: $primary-color-500;
+    background-color: $primary-color-100;
+    color: $primary-color-500;
+
+    > .bx {
+      background-color: $primary-color-500;
+    }
   }
 
   i {

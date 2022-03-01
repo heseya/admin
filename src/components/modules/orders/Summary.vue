@@ -1,25 +1,81 @@
 <template>
-  <card class="order-summary"> {{ order.code }} </card>
+  <card class="order-summary">
+    <OrderField :label="$t('labels.code')" :value="order.code" />
+    <OrderField :label="$t('labels.date')" :value="formattedDate" />
+
+    <OrderField :label="$t('labels.payment')" class="order-summary__payment">
+      <SummaryPayment :order="order" />
+    </OrderField>
+
+    <OrderField :label="$t('labels.history')">
+      <icon-button reversed size="small">
+        <template #icon>
+          <i class="bx bx-list-ul"></i>
+        </template>
+        {{ $t('showList') }}
+      </icon-button>
+    </OrderField>
+  </card>
 </template>
+
+<i18n>
+{
+  "en": {
+    "labels": {
+      "code": "Order code",
+      "date": "Creation date",
+      "payment": "Payment",
+      "history": "Payment history"
+    },
+    "showList": "Show list"
+  },
+  "pl": {
+    "labels": {
+      "code": "Nr zamówienia",
+      "date": "Data utworzenia",
+      "payment": "Płatność",
+      "history": "Historia płatności"
+    },
+    "showList": "Pokaż listę"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
+
 import Card from '@/components/layout/Card.vue'
+import SummaryPayment from './SummaryPayment.vue'
+import OrderField from './Field.vue'
+
 import { Order } from '@/interfaces/Order'
+import { formatDate } from '@/utils/dates'
 
 export default Vue.extend({
-  components: { Card },
+  components: { Card, OrderField, SummaryPayment },
   props: {
     order: {
       type: Object,
       required: true,
     } as Vue.PropOptions<Order>,
   },
+  computed: {
+    formattedDate(): string | null {
+      return this.order.created_at && formatDate(this.order.created_at)
+    },
+  },
+  methods: {},
 })
 </script>
 
 <style lang="scss" scoped>
 .order-summary {
-  color: red;
+  display: grid;
+  align-items: center;
+  grid-template-columns: repeat(5, 1fr);
+
+  &__payment {
+    grid-column: span 2;
+  }
 }
 </style>

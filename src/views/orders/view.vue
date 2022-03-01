@@ -10,21 +10,6 @@
           {{ $t('goToPayment') }}
         </icon-button>
       </a>
-      <pop-confirm
-        v-if="order.payable"
-        :title="$t('payTheOrderConfirm')"
-        :ok-text="$t('pay')"
-        ok-color="success"
-        :cancel-text="$t('common.cancel')"
-        @confirm="payOffline"
-      >
-        <icon-button>
-          <template #icon>
-            <i class="bx bxs-diamond"></i>
-          </template>
-          {{ $t('payTheOrder') }}
-        </icon-button>
-      </pop-confirm>
 
       <next-prev-buttons />
     </top-nav>
@@ -35,8 +20,12 @@
       <card class="order-page__status">
         <StatusInput :order="order" />
       </card>
-      <card class="order-page__cart">Cart</card>
-      <card class="order-page__address">Address</card>
+      <card class="order-page__cart">
+        <Cart :order="order" />
+      </card>
+      <card class="order-page__address">
+        <CustomerDetails :order="order" />
+      </card>
       <card class="order-page__shipping">
         <send-package
           v-if="order.id"
@@ -274,7 +263,6 @@ import Address from '@/components/modules/orders/OrderAddress.vue'
 import CartItem from '@/components/layout/CartItem.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import PartialUpdateForm from '@/components/modules/orders/PartialUpdateForm.vue'
-import PopConfirm from '@/components/layout/PopConfirm.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 import NextPrevButtons from '@/components/modules/orders/NextPrevButtons.vue'
 import SendPackage from '@/components/modules/orders/SendPackage.vue'
@@ -287,7 +275,8 @@ import { formatDate } from '@/utils/dates'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { formatCurrency } from '@/utils/currency'
-import { api } from '@/api'
+import CustomerDetails from '@/components/modules/orders/CustomerDetails.vue'
+import Cart from '@/components/modules/orders/Cart.vue'
 
 const DEFAULT_FORM = {
   address: '',
@@ -311,12 +300,13 @@ export default Vue.extend({
     appCartItem: CartItem,
     ModalForm,
     PartialUpdateForm,
-    PopConfirm,
     AuditsModal,
     NextPrevButtons,
     SendPackage,
     Summary,
     StatusInput,
+    CustomerDetails,
+    Cart,
   },
   data: () => ({
     packageTemplateId: '',
@@ -410,24 +400,11 @@ export default Vue.extend({
       this.$toast.success(this.$t('updatedSuccess') as string)
       this.$accessor.stopLoading()
     },
-
-    async payOffline() {
-      this.$accessor.startLoading()
-      try {
-        await api.post(`/orders/${this.order.code}/pay/offline`)
-        await this.$accessor.orders.get(this.$route.params.id)
-        this.$toast.success(this.$t('paymentsTries.paidSuccess') as string)
-      } catch {
-        this.$toast.error(this.$t('paymentsTries.paidError') as string)
-      }
-
-      this.$accessor.stopLoading()
-    },
   },
 })
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .section-title {
   font-weight: 600;
   margin: 0;
@@ -500,6 +477,39 @@ export default Vue.extend({
   }
 }
 
+.payment-method {
+  display: flex;
+  align-items: center;
+  margin: 3px 0;
+
+  &__name {
+    font-family: $primaryFont;
+    margin-left: 10px;
+    margin-right: 4px;
+    text-transform: capitalize;
+  }
+
+  &__amount {
+    font-size: 0.7em;
+    line-height: 1rem;
+  }
+
+  .bx {
+    font-size: 1.3em;
+    margin-top: 1px;
+  }
+
+  &__failed {
+    color: $red-color-400;
+  }
+
+  &__success {
+    color: $green-color-400;
+  }
+}
+
+// -----------------------------------------------------
+
 .order-page {
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -531,34 +541,9 @@ export default Vue.extend({
   }
 }
 
-.payment-method {
-  display: flex;
-  align-items: center;
-  margin: 3px 0;
-
-  &__name {
-    font-family: $primaryFont;
-    margin-left: 10px;
-    margin-right: 4px;
-    text-transform: capitalize;
-  }
-
-  &__amount {
-    font-size: 0.7em;
-    line-height: 1rem;
-  }
-
-  .bx {
-    font-size: 1.3em;
-    margin-top: 1px;
-  }
-
-  &__failed {
-    color: $red-color-400;
-  }
-
-  &__success {
-    color: $green-color-400;
-  }
+.order-title {
+  display: block;
+  font-size: 1em;
+  color: $gray-color-500;
 }
 </style>

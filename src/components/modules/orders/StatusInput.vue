@@ -7,8 +7,12 @@
       :label="$t('statusLabel')"
       :disabled="!$can($p.Orders.EditStatus)"
     >
-      <a-select-option v-for="{ id, name } in statuses" :key="id" :label="name">
-        {{ name }}
+      <a-select-option v-for="{ id, name, color } in statuses" :key="id" :label="name">
+        <div class="order-status-input__option">
+          <span class="order-status-input__option-dot" :style="{ backgroundColor: `#${color}` }">
+          </span>
+          {{ name }}
+        </div>
       </a-select-option>
     </app-select>
   </div>
@@ -74,3 +78,21 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.order-status-input {
+  &__option {
+    display: flex;
+    align-items: center;
+  }
+
+  &__option-dot {
+    display: block;
+    width: 12px;
+    height: 12px;
+    background-color: $primary-color-500;
+    border-radius: 50%;
+    margin-right: 8px;
+  }
+}
+</style>

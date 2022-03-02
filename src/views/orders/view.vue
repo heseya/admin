@@ -63,9 +63,7 @@ import SendPackage from '@/components/modules/orders/SendPackage.vue'
 import Summary from '@/components/modules/orders/Summary.vue'
 import StatusInput from '@/components/modules/orders/StatusInput.vue'
 
-import { Order, OrderStatus } from '@/interfaces/Order'
-import { getRelativeDate } from '@/utils/utils'
-import { formatDate } from '@/utils/dates'
+import { Order } from '@/interfaces/Order'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import CustomerDetails from '@/components/modules/orders/CustomerDetails.vue'
@@ -115,6 +113,11 @@ export default Vue.extend({
       this.$accessor.statuses.fetch(),
     ])
     this.$accessor.stopLoading()
+  },
+  methods: {
+    onPackageCreated(shippingNumber: string) {
+      this.order.shipping_number = shippingNumber
+    },
   },
 })
 </script>

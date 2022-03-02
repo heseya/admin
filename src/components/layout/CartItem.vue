@@ -31,6 +31,10 @@
       </div>
     </div>
 
+    <span class="cart-item__value">
+      {{ formatCurrency(item.price) }}
+    </span>
+
     <span v-if="discount" class="cart-item__value">
       <info-tooltip icon="bx bxs-error">
         {{ $t('priceTooltip') }}
@@ -38,15 +42,11 @@
           {{ formatCurrency(discountedPrice) }}
         </template>
       </info-tooltip>
-      <small v-if="discount">{{ $t('beforeDiscount') }}: {{ formatCurrency(item.price) }} </small>
     </span>
     <span v-else class="cart-item__value">
       {{ formatCurrency(item.price) }}
     </span>
 
-    <span class="cart-item__value">
-      {{ formatCurrency(discountedPrice) }}
-    </span>
     <span class="cart-item__value">
       {{ item.quantity }}
     </span>
@@ -193,7 +193,7 @@ export default Vue.extend({
     }
 
     .info-tooltip__icon {
-      color: $red-color-500;
+      color: $orange-color-500;
     }
   }
 }

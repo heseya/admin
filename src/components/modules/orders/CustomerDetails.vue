@@ -15,7 +15,7 @@
         </icon-button>
       </template>
 
-      <a :href="`mailto:${order.email}`" class="email__name">{{ order.email }}</a>
+      <a :href="`mailto:${order.email}`" class="order-customer-details__email">{{ order.email }}</a>
     </field>
 
     <div class="order-customer-details__addresses">
@@ -43,7 +43,7 @@
         <icon-button
           v-can="$p.Orders.Edit"
           size="small"
-          type="transparent-white"
+          :type="order.comment ? 'transparent-white' : 'transparent'"
           class="section-edit-btn"
           @click="editComment"
         >
@@ -184,6 +184,14 @@ export default Vue.extend({
     grid-template-columns: 1fr 1fr;
     grid-gap: 16px;
     margin-bottom: 12px;
+  }
+
+  &__email {
+    color: $font-color;
+
+    &:hover {
+      color: $primary-color-500;
+    }
   }
 }
 

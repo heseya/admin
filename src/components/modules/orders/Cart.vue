@@ -20,8 +20,30 @@
       <field :label="$t('summary.shipping')" horizontal>
         {{ formatCurrency(order.shipping_price) }}
       </field>
-      <field v-if="totalDiscount !== 0" :label="$t('summary.discounts')" horizontal>
-        {{ formatCurrency(-totalDiscount) }}
+      <field
+        v-if="order.discounts && order.discounts.length"
+        :label="$t('summary.discounts')"
+        horizontal
+      >
+        <div class="discount-summary">
+          <span class="discount-summary__total">
+            {{ formatCurrency(-totalDiscount) }}
+          </span>
+          <info-tooltip>
+            <div
+              v-for="discount in order.discounts"
+              :key="discount.id"
+              class="discount-summary__item"
+            >
+              <b>{{ discount.code }}</b> :
+              {{
+                discount.type === DiscountCodeType.Percentage
+                  ? `${discount.discount}%`
+                  : formatCurrency(-discount.discount)
+              }}
+            </div>
+          </info-tooltip>
+        </div>
       </field>
       <field class="order-cart__summary-total" :label="$t('summary.total')" horizontal>
         {{ formatCurrency(order.summary) }}
@@ -82,6 +104,7 @@ import CartItem from '@/components/layout/CartItem.vue'
 import { Order } from '@/interfaces/Order'
 import { formatCurrency } from '@/utils/currency'
 import Field from './Field.vue'
+import { DiscountCodeType } from '@/interfaces/DiscountCode'
 
 export default Vue.extend({
   components: { CartItem, Field },
@@ -93,13 +116,16 @@ export default Vue.extend({
   },
   computed: {
     productsCount(): number {
-      return this.order.products.reduce((sum, item) => sum + item.quantity, 0)
+      return this.order.products?.reduce((sum, item) => sum + item.quantity, 0) || 0
     },
     cartTotal(): number {
-      return this.order.products.reduce((sum, item) => sum + item.price * item.quantity, 0)
+      return this.order.products?.reduce((sum, item) => sum + item.price * item.quantity, 0) || 0
     },
     totalDiscount(): number {
       return this.order.summary - this.order.shipping_price - this.cartTotal
+    },
+    DiscountCodeType(): typeof DiscountCodeType {
+      return DiscountCodeType
     },
   },
   methods: {
@@ -146,6 +172,21 @@ export default Vue.extend({
     > :last-child {
       text-align: right;
     }
+  }
+}
+
+.discount-summary {
+  &__total {
+    margin-right: 5px;
+  }
+
+  &__item {
+    display: flex;
+  }
+
+  .bx {
+    color: $primary-color-500;
+    font-size: 0.8em;
   }
 }
 </style>

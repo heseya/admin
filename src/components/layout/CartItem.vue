@@ -171,6 +171,7 @@ export default Vue.extend({
   &__product {
     width: 100%;
     display: flex;
+    align-items: flex-start;
     grid-column: 1/-1;
 
     @media ($viewport-8) {

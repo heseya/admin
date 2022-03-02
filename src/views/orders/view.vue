@@ -125,9 +125,14 @@ export default Vue.extend({
 <style lang="scss">
 .order-page {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 1fr;
+  grid-template-areas: 'summary' 'status' 'cart' 'address' 'shipping';
   grid-gap: 16px;
-  grid-template-areas: 'summary status' 'cart address' 'cart shipping';
+
+  @media ($viewport-10) {
+    grid-template-columns: 2fr 1fr;
+    grid-template-areas: 'summary status' 'cart address' 'cart shipping';
+  }
 
   .card {
     margin-bottom: 0 !important;

@@ -155,10 +155,10 @@ export default Vue.extend({
 
     @media ($viewport-8) {
       flex-direction: row;
-    }
 
-    > *:first-child {
-      margin-right: 8px;
+      > *:first-child {
+        margin-right: 8px;
+      }
     }
   }
 }

@@ -52,8 +52,8 @@
           </template>
         </icon-button>
       </template>
-
-      {{ order.comment || $t('commentEmpty') }}
+      <span v-if="order.comment">{{ order.comment }}</span>
+      <span v-else class="comment-field__empty">{{ $t('commentEmpty') }}</span>
     </field>
 
     <a-modal
@@ -181,9 +181,13 @@ export default Vue.extend({
 .order-customer-details {
   &__addresses {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     grid-gap: 16px;
     margin-bottom: 12px;
+
+    @media ($viewport-4) {
+      grid-template-columns: 1fr 1fr;
+    }
   }
 
   &__email {
@@ -198,6 +202,11 @@ export default Vue.extend({
 .comment-field {
   border-radius: 6px;
   padding-bottom: 8px;
+
+  &__empty {
+    font-style: italic;
+    color: $gray-color-600;
+  }
 
   &--filled {
     background: $primary-color-500;

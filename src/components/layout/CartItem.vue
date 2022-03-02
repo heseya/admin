@@ -128,7 +128,11 @@ export default Vue.extend({
   transition: 0.3s;
   display: grid;
   align-items: flex-start;
-  grid-template-columns: 58px 4fr 1fr 1.2fr 0.5fr 1fr;
+  grid-template-columns: auto 1fr 1fr;
+
+  @media ($viewport-10) {
+    grid-template-columns: 58px 4fr 1fr 1.2fr 0.5fr 1fr;
+  }
 
   &__cover {
     width: 58px;

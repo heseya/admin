@@ -15,7 +15,7 @@
     </info-tooltip>
 
     <span v-if="lastSuccessfullPayment" class="order-summary-payment__name">
-      {{ lastSuccessfullPayment.method }}
+      {{ PAYMENT_METHODS[lastSuccessfullPayment.method] || lastSuccessfullPayment.method }}
     </span>
 
     <boolean-tag
@@ -46,7 +46,7 @@
 {
   "en": {
     "offlinePayment": {
-      "buttonText": "Pay the order",
+      "buttonText": "Mark payed",
       "confirmText": "Are you sure you want to manually mark the order as paid? (E.g. by cash or bank transfer)",
       "successText": "Pay",
       "resultSuccess": "The order has been marked as paid",
@@ -59,7 +59,7 @@
   },
   "pl": {
     "offlinePayment": {
-      "buttonText": "Opłać zamówienie",
+      "buttonText": "Opłać",
       "confirmText": "Czy na pewno chcesz ręcznie oznaczyć zamówienie jako opłacone? (Np. przelewem tradycyjnym lub gotówką)",
       "successText": "Opłać",
       "resultSuccess": "Zamówienie zostało opłacone",
@@ -85,6 +85,7 @@ import { Payment } from '@/interfaces/Payment'
 
 import { api } from '@/api'
 import { formatCurrency } from '@/utils/currency'
+import { PAYMENT_METHODS } from '@/consts/paymentMethods'
 
 export default Vue.extend({
   components: { PopConfirm, InfoTooltip },
@@ -97,6 +98,9 @@ export default Vue.extend({
   computed: {
     lastSuccessfullPayment(): Payment | undefined {
       return this.order.payments?.find((payment) => payment.paid)
+    },
+    PAYMENT_METHODS(): Record<string, string> {
+      return PAYMENT_METHODS
     },
   },
   methods: {

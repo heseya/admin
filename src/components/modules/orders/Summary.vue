@@ -1,17 +1,22 @@
 <template>
   <card class="order-summary">
-    <OrderField :label="$t('labels.code')" :value="order.code" />
-    <OrderField :label="$t('labels.date')" :value="formattedDate" />
+    <OrderField :label="$t('labels.code')" :value="order.code" :horizontal="isHorizontal" />
+    <OrderField :label="$t('labels.date')" :value="formattedDate" :horizontal="isHorizontal" />
     <OrderField
       :label="$t('labels.shipping')"
       :value="order.shipping_method && order.shipping_method.name"
+      :horizontal="isHorizontal"
     />
 
-    <OrderField :label="$t('labels.payment')" class="order-summary__payment">
+    <OrderField
+      :label="$t('labels.payment')"
+      class="order-summary__payment"
+      :horizontal="isHorizontal"
+    >
       <SummaryPayment :order="order" />
     </OrderField>
 
-    <OrderField :label="$t('labels.history')">
+    <OrderField :label="$t('labels.history')" :horizontal="isHorizontal">
       <icon-button reversed size="small">
         <template #icon>
           <i class="bx bx-list-ul"></i>
@@ -32,7 +37,7 @@
       "payment": "Payment",
       "history": "Payment history"
     },
-    "showList": "Show list"
+    "showList": "Show"
   },
   "pl": {
     "labels": {
@@ -42,7 +47,7 @@
       "payment": "Płatność",
       "history": "Historia płatności"
     },
-    "showList": "Pokaż listę"
+    "showList": "Pokaż"
   }
 }
 </i18n>
@@ -65,20 +70,50 @@ export default Vue.extend({
       required: true,
     } as Vue.PropOptions<Order>,
   },
+  data: () => ({
+    viewportWidth: window.innerWidth,
+  }),
   computed: {
     formattedDate(): string | null {
       return this.order.created_at && formatDate(this.order.created_at)
     },
+    isHorizontal(): boolean {
+      return this.viewportWidth > 460 && this.viewportWidth < 850
+    },
   },
-  methods: {},
+  created() {
+    window.addEventListener('resize', this.updateWidth)
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.updateWidth)
+  },
+  methods: {
+    updateWidth(): void {
+      this.viewportWidth = window.innerWidth
+    },
+  },
 })
 </script>
 
 <style lang="scss" scoped>
 .order-summary {
-  display: grid;
-  align-items: center;
-  grid-template-columns: repeat(6, 1fr);
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+
+  @media ($viewport-8) {
+    align-items: center;
+    flex-direction: row;
+  }
+
+  @media ($viewport-13) {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  ::v-deep .order-field--horizontal .order-field__label {
+    width: 140px;
+  }
 
   &__payment {
     grid-column: span 2;

@@ -3,7 +3,7 @@
     <template #title>
       <slot>{{ text }}</slot>
     </template>
-    <i v-if="icon" :class="['info-tooltip__icon', icon]"></i>
+    <i v-if="icon" :class="['info-tooltip__icon', icon]" :style="{ color }"></i>
     <slot name="title"></slot>
   </a-tooltip>
 </template>
@@ -19,6 +19,10 @@ export default Vue.extend({
     icon: {
       type: String,
       default: 'bx bxs-info-circle',
+    },
+    color: {
+      type: String,
+      default: null,
     },
   },
 })

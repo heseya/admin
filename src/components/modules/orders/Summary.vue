@@ -17,13 +17,23 @@
     </OrderField>
 
     <OrderField :label="$t('labels.history')" :horizontal="isHorizontal">
-      <icon-button reversed size="small">
+      <icon-button reversed size="small" @click="showPaymentHistory">
         <template #icon>
           <i class="bx bx-list-ul"></i>
         </template>
         {{ $t('showList') }}
       </icon-button>
     </OrderField>
+
+    <a-modal
+      :visible="isPaymentHistoryVisible"
+      width="750px"
+      :footer="null"
+      :title="$t('labels.history')"
+      @cancel="closePaymentHistory"
+    >
+      <cms-table :value="order.payments" :config="paymentsTableConfig" />
+    </a-modal>
   </card>
 </template>
 
@@ -37,6 +47,12 @@
       "payment": "Payment",
       "history": "Payment history"
     },
+    "table": {
+      "date": "Date of transaction",
+      "method": "Payment method",
+      "amount": "Amount",
+      "success": "Is payment successful?"
+    },
     "showList": "Show list"
   },
   "pl": {
@@ -46,6 +62,12 @@
       "shipping": "Metoda dostawy",
       "payment": "Płatność",
       "history": "Historia płatności"
+    },
+    "table": {
+      "date": "Data transakcji",
+      "method": "Metoda płatności",
+      "amount": "Kwota",
+      "success": "Płatność się powiodła?"
     },
     "showList": "Pokaż listę"
   }
@@ -58,12 +80,16 @@ import Vue from 'vue'
 import Card from '@/components/layout/Card.vue'
 import SummaryPayment from './SummaryPayment.vue'
 import OrderField from './Field.vue'
+import CmsTable from '@/components/cms/CmsTable.vue'
 
 import { Order } from '@/interfaces/Order'
 import { formatDate } from '@/utils/dates'
+import { TableConfig } from '@/interfaces/CmsTable'
+import { PAYMENT_METHODS } from '@/consts/paymentMethods'
+import { formatCurrency } from '@/utils/currency'
 
 export default Vue.extend({
-  components: { Card, OrderField, SummaryPayment },
+  components: { Card, OrderField, SummaryPayment, CmsTable },
   props: {
     order: {
       type: Object,
@@ -72,6 +98,7 @@ export default Vue.extend({
   },
   data: () => ({
     viewportWidth: window.innerWidth,
+    isPaymentHistoryVisible: false,
   }),
   computed: {
     formattedDate(): string | null {
@@ -79,6 +106,24 @@ export default Vue.extend({
     },
     isHorizontal(): boolean {
       return this.viewportWidth > 460 && this.viewportWidth < 850
+    },
+    paymentsTableConfig(): TableConfig {
+      return {
+        headers: [
+          // { key: 'created_at', label: this.$t('table.date') as string },
+          {
+            key: 'method',
+            label: this.$t('table.method') as string,
+            render: (v: keyof typeof PAYMENT_METHODS) => PAYMENT_METHODS[v] || v,
+          },
+          {
+            key: 'amount',
+            label: this.$t('table.amount') as string,
+            render: (v: number) => this.formatCurrency(v),
+          },
+          { key: 'paid', label: this.$t('table.success') as string },
+        ],
+      }
     },
   },
   created() {
@@ -88,8 +133,17 @@ export default Vue.extend({
     window.removeEventListener('resize', this.updateWidth)
   },
   methods: {
+    formatCurrency(amount: number) {
+      return formatCurrency(amount, this.$accessor.currency)
+    },
     updateWidth(): void {
       this.viewportWidth = window.innerWidth
+    },
+    showPaymentHistory() {
+      this.isPaymentHistoryVisible = true
+    },
+    closePaymentHistory() {
+      this.isPaymentHistoryVisible = false
     },
   },
 })

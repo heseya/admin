@@ -34,7 +34,6 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .tag {
-  display: inline-block;
   margin-right: 3px;
   margin-top: 3px;
   background-color: var(--bg-color, #000000);
@@ -42,7 +41,7 @@ export default Vue.extend({
   color: #fff;
   font-size: 0.9em;
   border-radius: 16px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   white-space: nowrap;
 

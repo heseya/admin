@@ -63,7 +63,7 @@ export default Vue.extend({
     },
     rowEl: {
       type: String,
-      default: null,
+      default: undefined,
     },
     sortFilters: {
       type: String,

@@ -1,5 +1,6 @@
 <template>
   <div class="order-cart">
+    <span class="order-cart__header-title order-title">{{ $t('header.title') }}</span>
     <div class="order-cart__header">
       <span class="order-title">{{ $t('header.title') }}</span>
       <span class="order-title">{{ $t('header.perItem') }}</span>
@@ -80,7 +81,7 @@
     "header": {
       "title": "Produkty w koszyku",
       "perItem": "Cena szt.",
-      "discounted": "Cena po rabacie",
+      "discounted": "Po rabacie",
       "quantity": "Ilość",
       "total": "Wartość"
     },
@@ -157,16 +158,36 @@ export default Vue.extend({
     font-weight: 600;
   }
 
+  &__header-title {
+    margin-left: 12px;
+
+    @media ($viewport-8) {
+      display: none;
+    }
+  }
+
   &__header {
-    display: grid;
+    display: none;
     align-items: flex-start;
-    grid-template-columns: 58px 4fr 1fr 1.2fr 0.5fr 1fr;
+    grid-template-columns: 4fr 1fr 1.2fr 0.5fr 1fr;
     text-align: center;
     padding: 0 12px;
 
+    @media ($viewport-8) {
+      font-size: 0.8em;
+      display: grid;
+    }
+
+    @media ($viewport-14) {
+      font-size: 1em;
+    }
+
+    > * {
+      padding: 4px;
+    }
+
     > :first-child {
       text-align: left;
-      grid-column: span 2;
     }
 
     > :last-child {

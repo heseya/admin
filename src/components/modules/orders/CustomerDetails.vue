@@ -188,6 +188,14 @@ export default Vue.extend({
     @media ($viewport-4) {
       grid-template-columns: 1fr 1fr;
     }
+
+    @media ($viewport-10) {
+      grid-template-columns: 1fr;
+    }
+
+    @media ($viewport-14) {
+      grid-template-columns: 1fr 1fr;
+    }
   }
 
   &__email {

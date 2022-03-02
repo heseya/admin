@@ -37,7 +37,7 @@
       "payment": "Payment",
       "history": "Payment history"
     },
-    "showList": "Show"
+    "showList": "Show list"
   },
   "pl": {
     "labels": {
@@ -47,7 +47,7 @@
       "payment": "Płatność",
       "history": "Historia płatności"
     },
-    "showList": "Pokaż"
+    "showList": "Pokaż listę"
   }
 }
 </i18n>
@@ -98,25 +98,18 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .order-summary {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   flex-direction: column;
+  white-space: nowrap;
 
   @media ($viewport-8) {
-    align-items: center;
+    justify-content: space-between;
     flex-direction: row;
-  }
-
-  @media ($viewport-13) {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    flex-wrap: wrap;
   }
 
   ::v-deep .order-field--horizontal .order-field__label {
     width: 140px;
-  }
-
-  &__payment {
-    grid-column: span 2;
   }
 }
 </style>

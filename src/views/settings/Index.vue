@@ -68,9 +68,7 @@
           url="/settings/roles"
         />
 
-        <h2 v-can.any="[$p.Apps.Show, $p.Settings.Show]" class="section-title">
-          {{ $t('sections.other') }}
-        </h2>
+        <h2 class="section-title">{{ $t('sections.other') }}</h2>
         <SettingsItem
           v-can="$p.Apps.Show"
           :name="$t('models.apps')"
@@ -83,12 +81,7 @@
           icon="bx bxs-bot"
           url="/webhooks"
         />
-        <SettingsItem
-          v-can="$p.Seo.Show"
-          :name="$t('items.seo')"
-          icon="bx bxl-google"
-          url="/settings/seo"
-        />
+        <SettingsItem :name="$t('items.seo')" icon="bx bxl-google" url="/settings/seo" />
         <SettingsItem
           v-can="$p.Settings.Show"
           :name="$t('items.advanced')"

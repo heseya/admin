@@ -162,11 +162,7 @@ export enum RolesPermission {
 }
 
 export enum SeoPermission {
-  Show = 'roles.show',
-  Edit = 'roles.edit',
-  // TODO:
-  // Show = 'seo.show',
-  // Edit = 'seo.edit',
+  Edit = 'seo.edit',
 }
 
 export enum WebhooksPermission {

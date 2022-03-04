@@ -23,6 +23,6 @@ export const getApiURL = () => {
     case 'store-admin-git-feature-languages-***REMOVED***':
       return 'https://sandbox.***REMOVED***'
     default:
-      return import.meta.env.VITE_API_URL || 'https://dev.***REMOVED***'
+      return import.meta.env.VITE_API_URL || '***REMOVED***'
   }
 }

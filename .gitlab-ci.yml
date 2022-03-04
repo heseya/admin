@@ -34,6 +34,7 @@ e2e:
   stage: test
   before_script:
     - yarn
+    - yarn cypress install --force
   script:
     - yarn test:e2e --headless --record --key $CYPRESS_RECORD_KEY
   artifacts:

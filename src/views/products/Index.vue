@@ -17,7 +17,7 @@
           {{ $t('view.message') }} {{ listView ? $t('view.grid') : $t('view.list') }}
         </icon-button>
 
-        <icon-button to="/products/create">
+        <icon-button to="/products/create" data-cy="add-btn">
           <template #icon>
             <i class="bx bx-plus"></i>
           </template>

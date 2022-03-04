@@ -162,7 +162,6 @@ export enum RolesPermission {
 }
 
 export enum SeoPermission {
-  Show = 'seo.show',
   Edit = 'seo.edit',
 }
 

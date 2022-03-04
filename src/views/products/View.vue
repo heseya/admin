@@ -60,7 +60,6 @@
           <validation-observer v-slot="{ handleSubmit }">
             <form class="product__info" @submit.prevent="handleSubmit(saveProduct)">
               <div>
-                <br />
                 <validated-input
                   v-model="form.name"
                   rules="required"
@@ -88,7 +87,6 @@
               </div>
 
               <div>
-                <br />
                 <validation-provider v-slot="{ errors }">
                   <app-select
                     v-model="form.sets"
@@ -116,6 +114,18 @@
                   :label="$t('form.quantityStep')"
                   :disabled="!canModify"
                 />
+
+                <validated-input
+                  v-model="form.order"
+                  type="number"
+                  name="order"
+                  :disabled="!canModify"
+                >
+                  <template #label>
+                    {{ $t('form.order') }}
+                    <info-tooltip>{{ $t('form.orderTooltip') }}</info-tooltip>
+                  </template>
+                </validated-input>
               </div>
 
               <div class="wide">
@@ -183,7 +193,9 @@
       "sets": "Kolekcje",
       "setsPlaceholder": "Wybierz kolekcje",
       "quantityStep": "Format ilości",
-      "shortDescription": "Krótki opis"
+      "shortDescription": "Krótki opis",
+      "order": "Priorytet sortowania",
+      "orderTooltip": "Pozwala na zmianę kolejności produktów na liście. Produkty z mniejszą liczbą wyświetlane są wyżej."
     },
     "stillVisible": {
       "title": "Produkt wciąż jest ukryty",
@@ -205,7 +217,9 @@
       "sets": "Sets",
       "setsPlaceholder": "Select sets",
       "quantityStep": "Quantity format",
-      "shortDescription": "Short description"
+      "shortDescription": "Short description",
+      "order": "Sort priority",
+      "orderTooltip": "Allows you to change the order of the products in the list. Products with a lower number are displayed higher."
     },
     "stillVisible": {
       "title": "Product is still hidden",
@@ -258,6 +272,7 @@ const EMPTY_FORM: ProductComponentForm = {
   public: true,
   sets: [],
   quantity_step: 1,
+  order: null,
   schemas: [],
   gallery: [],
   tags: [],
@@ -371,6 +386,7 @@ export default Vue.extend({
 
       const apiPayload: ProductDTO = {
         ...this.form,
+        order: this.form.order || 0,
         media: this.form.gallery.map(({ id }) => id),
         tags: this.form.tags.map(({ id }) => id),
         schemas: this.form.schemas.map(({ id }) => id),

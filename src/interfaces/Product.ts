@@ -20,6 +20,7 @@ export interface Product {
   public: boolean
   visible: boolean
   quantity_step: number
+  order: number | null
   brand: ProductSet
   category: ProductSet
   sets: ProductSet[]
@@ -41,6 +42,7 @@ export interface ProductDTO {
   digital: boolean
   public: boolean
   quantity_step: number
+  order: number | null
   sets: UUID[]
   tags: UUID[]
   schemas: UUID[]

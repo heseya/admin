@@ -1,53 +1,97 @@
 <template>
   <div class="cart-item">
-    <img
-      v-if="coverUrl"
-      class="cart-item__cover"
-      :src="`${coverUrl}?w=60&h=60`"
-      :style="{ objectFit }"
-    />
-    <div v-else class="cart-item__cover" />
-    <div class="cart-item__content">
-      <span class="cart-item__title">
-        <info-tooltip
-          v-if="item.product.sets.length"
-          v-bind="item.product.sets.length === 0 ? { visible: false } : {}"
-        >
-          <small>{{ $t('productSets') }}:</small>
-          <div v-for="set in item.product.sets" :key="set.id">{{ set.name }}</div>
-        </info-tooltip>
+    <div class="cart-item__product">
+      <img
+        v-if="coverUrl"
+        class="cart-item__cover"
+        :src="`${coverUrl}?w=60&h=60`"
+        :style="{ objectFit }"
+      />
+      <div v-else class="cart-item__cover" />
+      <div class="cart-item__content">
+        <span class="cart-item__title">
+          <span class="cart-item__name"> {{ item.product.name }} </span>
 
-        {{ item.product.name }}&nbsp;
-        <small v-if="item.quantity !== 1">(x{{ item.quantity }})</small>
-      </span>
-      <small v-for="schema in item.schemas" :key="schema.id">
-        <span>{{ schema.name }}:</span> {{ schema.value }}
-        <small v-if="schema.price !== 0">(+ {{ formatCurrency(schema.price) }} )</small>
-      </small>
+          <info-tooltip
+            v-if="item.product.sets.length"
+            v-bind="item.product.sets.length === 0 ? { visible: false } : {}"
+          >
+            <small>{{ $t('productSets') }}:</small>
+            <div v-for="set in item.product.sets" :key="set.id">{{ set.name }}</div>
+          </info-tooltip>
+        </span>
+
+        <div class="cart-item__schema-list">
+          <div v-for="schema in item.schemas" :key="schema.id" class="cart-item__schema">
+            <span class="cart-item__schema-name">{{ schema.name }}:</span>
+            <span class="cart-item__schema-value">
+              {{ schema.value }}
+              <small v-if="schema.price !== 0">(+ {{ formatCurrency(schema.price) }} )</small>
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
-    <span v-if="discount" class="cart-item__price">
-      <info-tooltip icon="bx bxs-error">
-        {{ $t('priceTooltip') }}
-        <template #title>
-          {{ formatCurrency(discountedPrice) }}
-        </template>
-      </info-tooltip>
-      <small v-if="discount">{{ $t('beforeDiscount') }}: {{ formatCurrency(item.price) }} </small>
-    </span>
-    <span v-else class="cart-item__price">
-      {{ formatCurrency(item.price) }}
-    </span>
+
+    <field :label="$t('header.perItem')">
+      <span class="cart-item__value">
+        {{ formatCurrency(item.price) }}
+      </span>
+    </field>
+
+    <field v-if="discount" :label="$t('header.discounted')">
+      <span class="cart-item__value">
+        <info-tooltip icon="bx bxs-error">
+          {{ $t('priceTooltip') }}
+          <template #title>
+            {{ formatCurrency(discountedPrice) }}
+          </template>
+        </info-tooltip>
+      </span>
+    </field>
+
+    <field v-else :label="$t('header.discounted')">
+      <span class="cart-item__value">
+        {{ formatCurrency(item.price) }}
+      </span>
+    </field>
+
+    <field :label="$t('header.quantity')">
+      <span class="cart-item__value">
+        {{ item.quantity }}
+      </span>
+    </field>
+
+    <field :label="$t('header.total')">
+      <span class="cart-item__value">
+        {{ formatCurrency(totalPrice) }}
+      </span>
+    </field>
   </div>
 </template>
 
 <i18n>
 {
   "pl": {
+    "header": {
+      "title": "Produkty w koszyku",
+      "perItem": "Cena szt.",
+      "discounted": "Po rabacie",
+      "quantity": "Ilość",
+      "total": "Wartość"
+    },
     "productSets": "Kolekcje produktu",
     "priceTooltip": "Kwota po rabacie może być błędna, sprawdź czy nie brakuje części groszowej zanim zaczniesz wystawiać dokumenty księgowe.",
     "beforeDiscount": "Przed rabatem"
   },
   "en": {
+    "header": {
+      "title": "Products in cart",
+      "perItem": "Price per item",
+      "discounted": "After discount",
+      "quantity": "Quantity",
+      "total": "Total"
+    },
     "productSets": "Product sets",
     "priceTooltip": "The price may be incorrect, check if there is a penny left before you start issuing invoices.",
     "beforeDiscount": "Before discount"
@@ -61,8 +105,10 @@ import Vue from 'vue'
 import { CartItem } from '@/interfaces/CartItem'
 import { formatCurrency } from '@/utils/currency'
 import { DiscountCode, DiscountCodeType } from '@/interfaces/DiscountCode'
+import Field from '../modules/orders/Field.vue'
 
 export default Vue.extend({
+  components: { Field },
   props: {
     item: {
       type: Object,
@@ -92,6 +138,9 @@ export default Vue.extend({
       // Amount
       return this.item.price - this.discount.discount / this.productsCount
     },
+    totalPrice(): number {
+      return this.discountedPrice * this.item.quantity
+    },
   },
   methods: {
     formatCurrency(amount: number) {
@@ -107,13 +156,34 @@ export default Vue.extend({
   padding: 12px;
   border-radius: 12px;
   transition: 0.3s;
-  display: flex;
+  display: grid;
+  align-items: flex-start;
+  grid-template-columns: 1fr 1fr;
+
+  @media ($viewport-4) {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+
+  @media ($viewport-8) {
+    grid-template-columns: 4fr 1fr 1.2fr 0.5fr 1fr;
+  }
+
+  &__product {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    grid-column: 1/-1;
+
+    @media ($viewport-8) {
+      grid-column: 1/2;
+    }
+  }
 
   &__cover {
-    width: 48px;
-    height: 48px;
+    width: 58px;
+    height: 58px;
     object-fit: cover;
-    border-radius: 12px;
+    border-radius: 4px;
     background-color: #eeeeee;
     text-indent: -10000px;
   }
@@ -122,41 +192,75 @@ export default Vue.extend({
     display: flex;
     flex-direction: column;
     justify-content: center;
+    width: 100%;
     margin-left: 12px;
   }
 
   &__title {
     display: block;
-    padding: 12px 0;
+    // margin-bottom: 8px;
 
     .info-tooltip__icon {
-      color: $primary-color-300;
-    }
-
-    span {
-      color: #333333;
-    }
-
-    small {
-      color: #cccccc;
+      color: $blue-color-400;
     }
   }
 
-  &__price {
+  &__name {
+    font-weight: 500;
+    font-size: 1.1em;
+  }
+
+  &__schema-list {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  &__schema {
+    margin-right: 14px;
+  }
+
+  &__schema-name {
+    color: $gray-color-500;
+  }
+
+  &__value {
+    width: 100%;
     display: flex;
     justify-content: center;
-    align-items: flex-end;
-    margin-left: auto;
-    font-weight: 600;
+    align-items: center;
     white-space: nowrap;
     flex-direction: column;
+    text-align: center;
 
     small {
       font-weight: 400;
     }
 
     .info-tooltip__icon {
-      color: $red-color-500;
+      color: $orange-color-500;
+    }
+  }
+
+  .order-field {
+    padding: 3px;
+  }
+
+  .order-field__label {
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+
+  @media ($viewport-8) {
+    .order-field__label {
+      display: none;
+    }
+
+    .order-field:last-of-type &__value {
+      justify-content: flex-end;
+      align-items: flex-end;
+      text-align: right;
     }
   }
 }

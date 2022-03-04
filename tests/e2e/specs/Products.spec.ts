@@ -2,7 +2,7 @@ describe('Products page', () => {
   it('should load products page', () => {
     cy.login()
     cy.visit('/products')
-    cy.get('h1').should('contain', 'Asortyment')
+    cy.get('h1').should('contain', 'Products')
   })
 
   it('add new product', () => {
@@ -11,7 +11,8 @@ describe('Products page', () => {
 
     cy.intercept('GET', '/products/id:*').as('getProduct')
 
-    cy.get('.icon-button__text').contains('Dodaj produkt').click()
+    cy.dataCy('add-btn').click()
+    // cy.get('.icon-button__text').contains('Add product').click() // TODO : change to data-cy
 
     /*cy.get('#app > main > div > div > div.gallery > div > div').click()
 
@@ -73,8 +74,7 @@ describe('Products page', () => {
     cy.on('uncaught:exception', () => false)
 
     cy.dataCy('delete-btn').click()
-
-    cy.get('.ant-popover .app-button').contains('Usuń').click()
+    cy.dataCy('pop-confirm-btn').click()
 
     cy.url().should('eq', `${Cypress.config().baseUrl}products`)
   })

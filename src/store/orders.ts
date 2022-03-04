@@ -10,8 +10,8 @@ export const orders = createVuexCRUD<Order>()('orders', {
     async changeStatus({ commit }, { orderId, statusId }) {
       commit(StoreMutations.SetError, null)
       try {
-        const { status } = await api.post(`/orders/id:${orderId}/status`, { status_id: statusId })
-        return status === 204
+        await api.post(`/orders/id:${orderId}/status`, { status_id: statusId })
+        return true
       } catch (error: any) {
         commit(StoreMutations.SetError, error)
         return false

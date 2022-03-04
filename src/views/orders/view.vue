@@ -18,7 +18,7 @@
       <Summary class="order-page__summary" :order="order" />
 
       <card class="order-page__status">
-        <StatusInput :order="order" />
+        <StatusInput :order="order" @statusChanged="updateStatus" />
       </card>
       <card class="order-page__cart">
         <Cart :order="order" />
@@ -115,6 +115,9 @@ export default Vue.extend({
     this.$accessor.stopLoading()
   },
   methods: {
+    updateStatus(statusId: string) {
+      this.order.status.id = statusId
+    },
     onPackageCreated(shippingNumber: string) {
       this.order.shipping_number = shippingNumber
     },

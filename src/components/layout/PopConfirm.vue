@@ -6,10 +6,10 @@
       <div class="pop-confirm">
         <p>{{ title || $t('default.question') }}</p>
         <footer>
-          <app-button :type="okColor" size="small" @click="confirm">
+          <app-button :type="okColor" size="small" data-cy="pop-confirm-btn" @click="confirm">
             {{ okText || $t('default.confirm') }}
           </app-button>
-          <app-button size="small" @click="cancel">
+          <app-button size="small" data-cy="pop-cancel-btn" @click="cancel">
             {{ cancelText || $t('default.cancel') }}
           </app-button>
         </footer>

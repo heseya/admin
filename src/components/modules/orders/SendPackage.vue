@@ -1,6 +1,6 @@
 <template>
   <div class="flex-column send-package">
-    <h2 class="section-title send-package__title">{{ $t('sendPackage.title') }}</h2>
+    <span class="order-title send-package__title">{{ $t('sendPackage.title') }}</span>
     <div v-if="!shippingNumber" class="send-package__content">
       <div class="send-package__selects">
         <app-select
@@ -46,11 +46,11 @@
 {
   "pl": {
     "sendPackage": {
-      "title": "Wyślij przesyłkę",
+      "title": "Nadaj przesyłkę",
       "template": "Szablon przesyłki",
       "templatePlaceholder": "-- Wybierz szablon --",
       "provider": "Operator dostawy",
-      "create": "Utwórz przesyłkę",
+      "create": "Kontynuuj",
       "created": "Przesyłka została utworzona",
       "existing": "Przesyłka została już zamówiona (Numer śledzenia: {number})"
     }
@@ -61,7 +61,7 @@
       "template": "Package template",
       "templatePlaceholder": "-- Select template --",
       "provider": "Shipping provider",
-      "create": "Create package",
+      "create": "Continue",
       "created": "Package was created",
       "existing": "Package was already ordered (Tracking number: {number})"
     }
@@ -155,10 +155,10 @@ export default Vue.extend({
 
     @media ($viewport-8) {
       flex-direction: row;
-    }
 
-    > *:first-child {
-      margin-right: 8px;
+      > *:first-child {
+        margin-right: 8px;
+      }
     }
   }
 }

@@ -110,7 +110,7 @@
     "form": {
       "slugOverride": "Nadpisz link",
       "slugOverrideHelp": "Domyślnie, początek linku wynika z linku kolekcji-rodzica. Nadpisując link, sprawiamy, że link będzie dokładnie taki jaki zostanie wpisany.",
-      "hideOnIndex": "Ukryj na stronie głównej",
+      "hideOnIndex": "Ukryj produkty na stronie głównej",
       "public": "Widoczność kolekcji",
       "cover": "Okładka kolekcji"
     }
@@ -122,7 +122,7 @@
     "form": {
       "slugOverride": "Override link",
       "slugOverrideHelp": "By default, the beginning of the link is derived from the parent collection's link. Overriding the link, you make sure that the link is exactly what you enter.",
-      "hideOnIndex": "Hide on main page",
+      "hideOnIndex": "Hide products on home page",
       "public": "Visibility",
       "cover": "Collection cover"
     }

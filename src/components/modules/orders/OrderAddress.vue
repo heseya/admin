@@ -1,32 +1,5 @@
 <template>
   <div class="address">
-    <icon-button
-      v-if="!hideEdit"
-      v-can="$p.Orders.Edit"
-      size="small"
-      type="transparent"
-      class="address__btn address__btn--edit"
-      @click="edit"
-    >
-      <template #icon>
-        <i class="bx bxs-pencil"></i>
-      </template>
-    </icon-button>
-    <pop-confirm
-      v-if="!hideRemove && address"
-      v-can="$p.Orders.Edit"
-      :title="$t('removeConfirm')"
-      :ok-text="$t('common.delete')"
-      :cancel-text="$t('common.cancel')"
-      @confirm="remove"
-    >
-      <icon-button size="small" type="transparent" class="address__btn address__btn--remove">
-        <template #icon>
-          <i class="bx bxs-trash"></i>
-        </template>
-      </icon-button>
-    </pop-confirm>
-
     <template v-if="address">
       <span class="address__name">{{ address.name }}</span>
       <span class="address__field">{{ address.address }}</span>
@@ -52,12 +25,10 @@
 <i18n>
 {
   "pl": {
-    "removeConfirm": "Czy na pewno chcesz usunąć adres?",
     "phone": "Telefon",
     "vat": "NIP"
   },
   "en": {
-    "removeConfirm": "Are you sure you want to remove the address?",
     "phone": "Phone",
     "vat": "VAT"
   }
@@ -67,70 +38,34 @@
 <script lang="ts">
 import { Address } from '@/interfaces/Address'
 import Vue from 'vue'
-import PopConfirm from '../../layout/PopConfirm.vue'
 
 export default Vue.extend({
   name: 'Address',
-  components: { PopConfirm },
   props: {
     address: {
       type: Object,
       default: () => null,
     } as Vue.PropOptions<Address>,
-    hideEdit: {
-      type: Boolean,
-      default: false,
-    },
-    hideRemove: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  methods: {
-    edit() {
-      this.$emit('edit')
-    },
-    remove() {
-      this.$emit('remove')
-    },
   },
 })
 </script>
 
 <style lang="scss" scoped>
 .address {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  margin-top: 8px;
-  color: #666666;
   position: relative;
-
-  &__btn {
-    position: absolute;
-    top: -38px;
-    right: 0;
-
-    &--remove {
-      right: 30px;
-    }
-  }
 
   &__field {
     display: block;
   }
 
-  &__name {
-    font-size: 1.1em;
-    font-weight: 600;
-    margin-bottom: 3px;
-    color: #000000;
-  }
-
   &__subtitle {
-    font-weight: 500;
-    font-size: 0.9em;
-    color: #000000;
+    font-size: 0.8em;
+    color: $gray-color-500;
     margin-top: 4px;
+    margin-bottom: -4px;
   }
 
   &__error {

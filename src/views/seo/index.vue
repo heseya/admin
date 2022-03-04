@@ -5,7 +5,7 @@
     <card>
       <a-alert type="info" show-icon :message="$t('message')" />
       <p></p>
-      <SeoForm v-model="form" force-index />
+      <SeoForm v-model="form" force-index :disabled="!$can($p.Seo.Edit)" />
       <br />
       <AppButton @click="submit"> {{ $t('save') }} </AppButton>
     </card>

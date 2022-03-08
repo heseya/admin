@@ -5,6 +5,7 @@ import { Payment } from './Payment'
 import { ShippingMethod } from './ShippingMethod'
 import { DiscountCode } from './DiscountCode'
 import { CartItem } from './CartItem'
+import { Metadata } from './Metadata'
 
 export interface OrderStatus {
   id: UUID
@@ -14,6 +15,8 @@ export interface OrderStatus {
   cancel: boolean
   hidden: boolean
   no_notifications: boolean
+  metadata: Metadata
+  metadata_private?: Metadata
 }
 
 export interface Order {
@@ -36,4 +39,6 @@ export interface Order {
   status: OrderStatus
   summary: number
   summary_paid: number
+  metadata: Metadata
+  metadata_private?: Metadata
 }

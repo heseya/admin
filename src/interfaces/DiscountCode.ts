@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import { Metadata } from './Metadata'
 import { UUID } from './UUID'
 
 export enum DiscountCodeType {
@@ -17,4 +18,6 @@ export interface DiscountCode {
   available: boolean
   starts_at: string | null
   expires_at: string | null
+  metadata: Metadata
+  metadata_private?: Metadata
 }

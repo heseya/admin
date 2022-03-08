@@ -1,5 +1,7 @@
+/* eslint-disable camelcase */
 import { UUID } from './UUID'
 import { Permission } from './Permissions'
+import { Metadata } from './Metadata'
 
 export interface Role {
   id: UUID
@@ -7,6 +9,8 @@ export interface Role {
   description: string
   assignable: boolean
   permissions: Permission[]
+  metadata: Metadata
+  metadata_private?: Metadata
 }
 
 export interface RoleDTO {

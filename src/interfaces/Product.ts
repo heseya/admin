@@ -15,7 +15,6 @@ export interface Product {
   price_max: number
   description_html: string
   description_short: string
-  digital: boolean
   public: boolean
   visible: boolean
   quantity_step: number
@@ -37,7 +36,6 @@ export interface ProductDTO {
   price: number
   description_html: string
   description_short: string
-  digital: boolean
   public: boolean
   quantity_step: number
   order: number | null

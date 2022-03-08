@@ -42,7 +42,7 @@
   "en": {
     "labels": {
       "code": "Order code",
-      "date": "Creation date",
+      "date": "Order date",
       "shipping": "Shipping method",
       "payment": "Payment",
       "history": "Payment history"
@@ -58,7 +58,7 @@
   "pl": {
     "labels": {
       "code": "Nr zamówienia",
-      "date": "Data utworzenia",
+      "date": "Data zamówienia",
       "shipping": "Metoda dostawy",
       "payment": "Płatność",
       "history": "Historia płatności"

@@ -259,7 +259,6 @@ const EMPTY_FORM: ProductComponentForm = {
   price: 0,
   description_html: '',
   description_short: '',
-  digital: false,
   public: true,
   sets: [],
   quantity_step: 1,

@@ -150,10 +150,9 @@ import SwitchInput from '@/components/form/SwitchInput.vue'
 import Avatar from '@/components/layout/Avatar.vue'
 
 import { UUID } from '@/interfaces/UUID'
-import { OrderStatus } from '@/interfaces/Order'
+import { OrderStatusDto } from '@/interfaces/Order'
 
-const CLEAR_STATUS: OrderStatus = {
-  id: '',
+const CLEAR_STATUS: OrderStatusDto = {
   name: '',
   description: '',
   color: '000000',
@@ -185,7 +184,7 @@ export default Vue.extend({
   },
   data: () => ({
     isModalActive: false,
-    editedItem: clone(CLEAR_STATUS) as OrderStatus,
+    editedItem: clone(CLEAR_STATUS) as OrderStatusDto & { id?: string },
   }),
   computed: {
     canModify(): boolean {
@@ -220,7 +219,7 @@ export default Vue.extend({
     },
     async deleteItem() {
       this.$accessor.startLoading()
-      await this.$accessor.statuses.remove(this.editedItem.id)
+      await this.$accessor.statuses.remove(this.editedItem.id!)
       this.$accessor.stopLoading()
       this.isModalActive = false
     },

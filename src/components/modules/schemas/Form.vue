@@ -236,7 +236,7 @@ import SelectSchemaOptions from '@/components/modules/schemas/SelectSchemaOption
 import ModalForm from '@/components/form/ModalForm.vue'
 import Selector from '@/components/Selector.vue'
 
-import { Schema, SchemaType } from '@/interfaces/Schema'
+import { Schema, SchemaDto, SchemaType } from '@/interfaces/Schema'
 
 import { CLEAR_FORM, CLEAR_OPTION } from '@/consts/schemaConsts'
 
@@ -262,7 +262,7 @@ export default Vue.extend({
     disabled: { type: Boolean, default: false },
   },
   data: () => ({
-    form: cloneDeep(CLEAR_FORM),
+    form: cloneDeep(CLEAR_FORM) as SchemaDto & { id?: string },
     defaultOption: 0,
     isUsedSchemaModalActive: false,
     usedSchemaName: '',

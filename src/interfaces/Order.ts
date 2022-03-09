@@ -19,6 +19,8 @@ export interface OrderStatus {
   metadata_private?: Metadata
 }
 
+export type OrderStatusDto = Omit<OrderStatus, 'id' | 'metadata' | 'metadata_private'>
+
 export interface Order {
   id: UUID
   code: string

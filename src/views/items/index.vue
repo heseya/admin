@@ -112,13 +112,12 @@ import ItemsFilter, {
 } from '@/components/modules/items/ItemsFilter.vue'
 
 import { UUID } from '@/interfaces/UUID'
-import { ProductItem } from '@/interfaces/Product'
+import { ProductItem, ProductItemDto } from '@/interfaces/Product'
 import { TableConfig } from '@/interfaces/CmsTable'
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 import { formatFilters } from '@/utils/utils'
 
-const EMPTY_FORM: ProductItem = {
-  id: '',
+const EMPTY_FORM: ProductItemDto = {
   name: '',
   sku: '',
   quantity: 0,
@@ -146,7 +145,7 @@ export default Vue.extend({
   data: () => ({
     filters: { ...EMPTY_ITEMS_FILTERS } as ItemsFilersType,
     isModalActive: false,
-    editedItem: { ...EMPTY_FORM },
+    editedItem: { ...EMPTY_FORM } as ProductItemDto & { id?: string },
     editedOriginalQuantity: 0,
   }),
   computed: {
@@ -243,7 +242,7 @@ export default Vue.extend({
     },
     async deleteItem() {
       this.$accessor.startLoading()
-      await this.$accessor.items.remove(this.editedItem.id)
+      await this.$accessor.items.remove(this.editedItem.id!)
       this.$accessor.stopLoading()
       this.isModalActive = false
     },

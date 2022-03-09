@@ -21,3 +21,5 @@ export interface DiscountCode {
   metadata: Metadata
   metadata_private?: Metadata
 }
+
+export type DiscountCodeDto = Omit<DiscountCode, 'id' | 'metadata' | 'metadata_private'>

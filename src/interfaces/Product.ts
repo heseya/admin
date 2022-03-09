@@ -52,7 +52,16 @@ export interface ProductDTO {
 export interface ProductComponentForm
   extends Omit<
     Product,
-    'id' | 'sets' | 'brand' | 'category' | 'cover' | 'visible' | 'price_min' | 'price_max'
+    | 'id'
+    | 'sets'
+    | 'brand'
+    | 'category'
+    | 'cover'
+    | 'visible'
+    | 'price_min'
+    | 'price_max'
+    | 'metadata'
+    | 'metadata_private'
   > {
   id?: UUID
   sets: UUID[]
@@ -66,3 +75,5 @@ export interface ProductItem {
   metadata: Metadata
   metadata_private?: Metadata
 }
+
+export type ProductItemDto = Omit<ProductItem, 'id' | 'metadata' | 'metadata_private'>

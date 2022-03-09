@@ -102,16 +102,15 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import DiscountForm from '@/components/modules/discounts/Form.vue'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 
-import { DiscountCode } from '@/interfaces/DiscountCode'
+import { DiscountCode, DiscountCodeDto, DiscountCodeType } from '@/interfaces/DiscountCode'
 import { UUID } from '@/interfaces/UUID'
 
 import { formatCurrency } from '@/utils/currency'
 import { DATETIME_FORMAT, formatDate, formatUTC } from '@/utils/dates'
 import { TableConfig } from '@/interfaces/CmsTable'
 
-const EMPTY_DISCOUNT_CODE: DiscountCode = {
-  id: '',
-  type: 0,
+const EMPTY_DISCOUNT_CODE: DiscountCodeDto = {
+  type: DiscountCodeType.Percentage,
   code: '',
   discount: 0.0,
   max_uses: 1,
@@ -144,7 +143,7 @@ export default Vue.extend({
     isModalActive: false,
     editedItem: {
       ...EMPTY_DISCOUNT_CODE,
-    } as DiscountCode,
+    } as DiscountCodeDto & { id?: string },
   }),
   computed: {
     canModify(): boolean {
@@ -215,7 +214,7 @@ export default Vue.extend({
     },
     async deleteItem() {
       this.$accessor.startLoading()
-      await this.$accessor.discounts.remove(this.editedItem.id)
+      await this.$accessor.discounts.remove(this.editedItem.id!)
       this.$accessor.stopLoading()
       this.isModalActive = false
     },

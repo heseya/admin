@@ -24,6 +24,8 @@ export interface SchemaOption {
   metadata: Metadata
   metadata_private?: Metadata
 }
+
+export type SchemaOptionDto = Omit<SchemaOption, 'id' | 'metadata' | 'metadata_private'>
 export interface Schema {
   id: UUID
   name: string
@@ -45,6 +47,12 @@ export interface Schema {
   auto_dependecy?: boolean // TODO: not implemented on backend
   metadata: Metadata
   metadata_private?: Metadata
+}
+
+// TODO: full Schema DTO
+export interface SchemaDto
+  extends Omit<Schema, 'id' | 'metadata' | 'metadata_private' | 'options'> {
+  options: SchemaOptionDto[]
 }
 
 export interface SchemaValue {

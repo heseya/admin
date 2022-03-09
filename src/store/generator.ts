@@ -10,6 +10,7 @@ import { RootState } from '.'
 import { ResponseMeta } from '@/interfaces/Response'
 import { UUID } from '@/interfaces/UUID'
 import { AuditEntry } from '@/interfaces/AuditEntry'
+import { Metadata, MetadataDto } from '@/interfaces/Metadata'
 
 type QueryPayload = Record<string, any>
 
@@ -333,6 +334,29 @@ export const createVuexCRUD =
             const stringQuery = stringifyQuery(queryParams.get || {})
             const { data } = await api.get<{ data: AuditEntry[] }>(
               `/audits/${endpoint}/id:${id}${stringQuery}`,
+            )
+            commit(StoreMutations.SetLoading, false)
+            return data.data
+          } catch (error: any) {
+            commit(StoreMutations.SetError, error)
+            commit(StoreMutations.SetLoading, false)
+            return []
+          }
+        },
+
+        // Metadata
+        async updateMetadata(
+          { commit },
+          payload: { id: UUID; metadata: MetadataDto; public: boolean },
+        ) {
+          commit(StoreMutations.SetError, null)
+          commit(StoreMutations.SetLoading, true)
+          try {
+            const stringQuery = stringifyQuery(queryParams.update || {})
+            const path = payload.public ? 'metadata' : 'metadata_private'
+            const { data } = await api.post<{ data: Metadata }>(
+              `/audits/${endpoint}/id:${payload.id}/${path}${stringQuery}`,
+              payload.metadata,
             )
             commit(StoreMutations.SetLoading, false)
             return data.data

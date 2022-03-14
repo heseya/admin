@@ -63,6 +63,8 @@ import isEqual from 'lodash/isEqual'
 import { MetadataDto } from '@/interfaces/Metadata'
 import ModalForm from '@/components/form/ModalForm.vue'
 import Empty from '@/components/layout/Empty.vue'
+import { GeneratedStoreModulesKeys } from '@/store'
+import { cloneDeep } from 'lodash'
 
 enum MetadataType {
   String = 'string',
@@ -80,46 +82,51 @@ interface MetadataObject {
 export default Vue.extend({
   components: { ModalForm, Empty },
   props: {
-    value: {
+    originalMetadata: {
       type: Object,
-      required: true,
+      default: () => {},
     } as Vue.PropOptions<MetadataDto>,
     disabled: { type: Boolean, default: false },
-    private: { type: Boolean, default: false },
+    isPrivate: { type: Boolean, default: false },
+    model: {
+      type: String,
+      required: true,
+    } as Vue.PropOptions<GeneratedStoreModulesKeys>,
   },
+
   data: () => ({
     metadataList: [] as MetadataObject[],
   }),
+
   computed: {
-    metadata: {
-      get(): MetadataDto {
-        return this.value
-      },
-      set(v: MetadataDto) {
-        this.$emit('input', v)
-      },
+    mergedMetadata(): MetadataDto {
+      return this.metadataList.reduce(
+        (acc, { key, value }) => ({ ...acc, [key]: value }),
+        {} as MetadataDto,
+      )
     },
   },
+
   watch: {
-    metadata(meta: MetadataDto) {
-      const obj = Object.entries(meta).map(([key, value]) => ({
+    originalMetadata(meta: MetadataDto) {
+      const parsed = this.parseMetadata(meta)
+      if (!isEqual(this.metadataList, parsed)) this.metadataList = cloneDeep(parsed)
+    },
+  },
+
+  beforeMount() {
+    this.metadataList = this.parseMetadata(this.originalMetadata || {})
+  },
+
+  methods: {
+    parseMetadata(meta: MetadataDto): MetadataObject[] {
+      return Object.entries(meta).map(([key, value]) => ({
         key,
         type: typeof value as MetadataType,
         value,
       }))
-      if (!isEqual(this.metadataList, obj)) this.metadataList = obj
     },
-    metadataList: {
-      deep: true,
-      handler(metadataList: MetadataObject[]) {
-        this.metadata = metadataList.reduce(
-          (acc, { key, value }) => ({ ...acc, [key]: value }),
-          {} as MetadataDto,
-        )
-      },
-    },
-  },
-  methods: {
+
     isDeleted(meta: MetadataObject): boolean {
       return meta.type === MetadataType.Deleted
     },
@@ -135,6 +142,14 @@ export default Vue.extend({
       this.metadataList = this.metadataList.map((meta) =>
         meta.key === key ? { ...meta, type: MetadataType.String, value: '' } : meta,
       )
+    },
+
+    async saveMetadata(modelId: string) {
+      await this.$accessor[this.model].updateMetadata({
+        id: modelId,
+        metadata: this.mergedMetadata,
+        public: !this.isPrivate,
+      })
     },
   },
 })

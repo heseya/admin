@@ -15,13 +15,19 @@
     <a-collapse-panel>
       <template #header>
         <span class="metadata-form-accrodion__title">
-          {{ private ? $t('privateTitle') : $t('title') }}
+          {{ isPrivate ? $t('privateTitle') : $t('title') }}
           <info-tooltip>
-            {{ private ? $t('privateTitleTooltip') : $t('titleTooltip') }}
+            {{ isPrivate ? $t('privateTitleTooltip') : $t('titleTooltip') }}
           </info-tooltip>
         </span>
       </template>
-      <MetadataForm v-model="form" :private="private" :disabled="disabled" />
+      <MetadataForm
+        ref="form"
+        :original-metadata="value"
+        :is-private="isPrivate"
+        :disabled="disabled"
+        :model="model"
+      />
     </a-collapse-panel>
   </a-collapse>
 </template>
@@ -48,6 +54,10 @@ import Vue from 'vue'
 
 import MetadataForm from './Form.vue'
 import { MetadataDto } from '@/interfaces/Metadata'
+import { GeneratedStoreModulesKeys } from '@/store'
+
+export type SaveMetadataFunction = (id: string) => Promise<void>
+export type MetadataRef = Vue & { saveMetadata: SaveMetadataFunction }
 
 export default Vue.extend({
   components: {
@@ -56,20 +66,20 @@ export default Vue.extend({
   props: {
     value: {
       type: Object,
-      required: true,
+      default: () => {},
     } as Vue.PropOptions<MetadataDto>,
     disabled: { type: Boolean, default: false },
     white: { type: Boolean, default: false },
-    private: { type: Boolean, default: false },
+    isPrivate: { type: Boolean, default: false },
+    model: {
+      type: String,
+      required: true,
+    } as Vue.PropOptions<GeneratedStoreModulesKeys>,
   },
-  computed: {
-    form: {
-      get(): MetadataDto {
-        return this.value
-      },
-      set(v: MetadataDto) {
-        this.$emit('input', v)
-      },
+  methods: {
+    async saveMetadata(id: string) {
+      // component may not be mounted before the save is triggered, then simply ignore
+      await (this.$refs.form as Vue & { saveMetadata?: SaveMetadataFunction })?.saveMetadata?.(id)
     },
   },
 })

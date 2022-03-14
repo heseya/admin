@@ -151,10 +151,21 @@
                 <br />
                 <br />
                 <div class="wide">
-                  <MetadataForm v-model="metadata" :disabled="!canModify" />
+                  <MetadataForm
+                    ref="publicMeta"
+                    :value="product.metadata"
+                    :disabled="!canModify"
+                    model="products"
+                  />
                 </div>
                 <div v-can="$p.Products.ShowMetadataPrivate" class="wide">
-                  <MetadataForm v-model="metadataPrivate" :disabled="!canModify" private />
+                  <MetadataForm
+                    ref="privateMeta"
+                    :value="product.metadata_private"
+                    :disabled="!canModify"
+                    is-private
+                    model="products"
+                  />
                 </div>
                 <br />
                 <div class="flex">
@@ -250,7 +261,7 @@ import RichEditor from '@/components/form/RichEditor.vue'
 import SchemaConfigurator from '@/components/modules/schemas/Configurator.vue'
 import TagsSelect from '@/components/TagsSelect.vue'
 import SeoForm from '@/components/modules/seo/Accordion.vue'
-import MetadataForm from '@/components/modules/metadata/Accordion.vue'
+import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 import Textarea from '@/components/form/Textarea.vue'
@@ -259,7 +270,6 @@ import { formatApiNotificationError } from '@/utils/errors'
 import { UUID } from '@/interfaces/UUID'
 import { Product, ProductDTO, ProductComponentForm } from '@/interfaces/Product'
 import { ProductSet } from '@/interfaces/ProductSet'
-import { MetadataDto } from '@/interfaces/Metadata'
 
 const EMPTY_FORM: ProductComponentForm = {
   id: '',
@@ -303,8 +313,6 @@ export default Vue.extend({
   },
   data: () => ({
     form: cloneDeep(EMPTY_FORM),
-    metadata: {} as MetadataDto,
-    metadataPrivate: {} as MetadataDto,
   }),
   computed: {
     id(): UUID {
@@ -338,8 +346,6 @@ export default Vue.extend({
           sets: product.sets?.map(({ id }) => id) || [],
           seo: product.seo || {},
         }
-        this.metadata = product.metadata || {}
-        this.metadataPrivate = product.metadata_private || {}
       }
     },
     error(error) {
@@ -402,6 +408,10 @@ export default Vue.extend({
 
       ;(this.$refs.gallery as any).clearMediaToDelete()
 
+      if (item) {
+        await this.saveMetadata(item.id)
+      }
+
       this.$accessor.stopLoading()
 
       if (item) {
@@ -412,6 +422,12 @@ export default Vue.extend({
         }
       }
     },
+
+    async saveMetadata(id: string) {
+      await (this.$refs.privateMeta as MetadataRef).saveMetadata(id)
+      await (this.$refs.publicMeta as MetadataRef).saveMetadata(id)
+    },
+
     async submitAndGoNext() {
       await this.saveProduct()
       this.$router.push('/products/create')

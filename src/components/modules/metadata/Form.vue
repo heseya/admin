@@ -14,16 +14,51 @@
         v-model="meta.key"
         :label="$t('form.key')"
         name="key"
-        :disabled="isDeleted(meta)"
+        :disabled="isDeleted(meta) || wasPreviouslySaved(meta.key)"
         rules="required"
       />
+
+      <app-select
+        :value="meta.type"
+        :label="$t('form.type')"
+        :disabled="isDeleted(meta)"
+        @input="(type) => changeMetaType(meta, type)"
+      >
+        <a-select-option
+          v-for="type in Object.values(MetadataType)"
+          :key="type"
+          :value="type"
+          :disabled="type === MetadataType.Deleted"
+          :label="$t(`form.types.${type}`)"
+        >
+          {{ $t(`form.types.${type}`) }}
+        </a-select-option>
+      </app-select>
+
+      <app-select
+        v-if="meta.type === MetadataType.Boolean"
+        :value="meta.value ? 1 : 0"
+        :label="$t('form.value')"
+        :disabled="isDeleted(meta)"
+        @input="(v) => (meta.value = !!v)"
+      >
+        <a-select-option :value="1" :label="$t('common.true')">
+          {{ $t('common.true') }}
+        </a-select-option>
+        <a-select-option :value="0" :label="$t('common.false')">
+          {{ $t('common.false') }}
+        </a-select-option>
+      </app-select>
       <validated-input
+        v-else
         v-model="meta.value"
+        :type="meta.type === MetadataType.Number ? 'number' : 'text'"
         :label="$t('form.value')"
         name="value"
         :disabled="isDeleted(meta)"
         :placeholder="isDeleted(meta) ? $t('deletedPlaceholder') : ''"
       />
+
       <icon-button v-if="!isDeleted(meta)" type="danger" @click="removeField(meta.key)">
         <template #icon>
           <i class="bx bx-trash"></i>
@@ -48,7 +83,13 @@
     "form": {
       "key": "Key",
       "value": "Value",
-      "type": "Type"
+      "type": "Type",
+      "types": {
+        "string": "String",
+        "number": "Number",
+        "boolean": "Boolean",
+        "object": "Deleted"
+      }
     },
     "add": "Add metadata",
     "deletedPlaceholder": "-- deleted --",
@@ -84,7 +125,7 @@ export default Vue.extend({
   props: {
     originalMetadata: {
       type: Object,
-      default: () => {},
+      default: () => ({}),
     } as Vue.PropOptions<MetadataDto>,
     disabled: { type: Boolean, default: false },
     isPrivate: { type: Boolean, default: false },
@@ -101,9 +142,15 @@ export default Vue.extend({
   computed: {
     mergedMetadata(): MetadataDto {
       return this.metadataList.reduce(
-        (acc, { key, value }) => ({ ...acc, [key]: value }),
+        (acc, { key, type, value }) => ({
+          ...acc,
+          [key]: type === MetadataType.Number ? parseFloat(value as string) : value,
+        }),
         {} as MetadataDto,
       )
+    },
+    MetadataType(): typeof MetadataType {
+      return MetadataType
     },
   },
 
@@ -115,32 +162,50 @@ export default Vue.extend({
   },
 
   beforeMount() {
-    this.metadataList = this.parseMetadata(this.originalMetadata || {})
+    this.metadataList = this.parseMetadata(this.originalMetadata)
   },
 
   methods: {
-    parseMetadata(meta: MetadataDto): MetadataObject[] {
-      return Object.entries(meta).map(([key, value]) => ({
+    parseMetadataKey(key: string, value: MetadataObject['value']): MetadataObject {
+      return {
         key,
         type: typeof value as MetadataType,
         value,
-      }))
+      }
+    },
+    parseMetadata(meta: MetadataDto): MetadataObject[] {
+      return Object.entries(meta).map(([key, value]) => this.parseMetadataKey(key, value))
     },
 
     isDeleted(meta: MetadataObject): boolean {
       return meta.type === MetadataType.Deleted
     },
+    wasPreviouslySaved(key: string): boolean {
+      return key in this.originalMetadata
+    },
+
+    changeMetaType(meta: MetadataObject, type: MetadataType) {
+      meta.type = type
+      if (type === MetadataType.String) meta.value = meta.value?.toString() || ''
+      if (type === MetadataType.Number) meta.value = parseFloat(meta.value?.toString() || '0') || 0
+      if (type === MetadataType.Boolean) meta.value = false
+    },
+
     addField() {
       this.metadataList = [...this.metadataList, { key: '', type: MetadataType.String, value: '' }]
     },
+
     removeField(key: string) {
-      this.metadataList = this.metadataList.map((meta) =>
-        meta.key === key ? { ...meta, type: MetadataType.Deleted, value: null } : meta,
-      )
+      if (this.wasPreviouslySaved(key))
+        this.metadataList = this.metadataList.map((meta) =>
+          meta.key === key ? { ...meta, type: MetadataType.Deleted, value: null } : meta,
+        )
+      else this.metadataList = this.metadataList.filter((meta) => meta.key !== key)
     },
+
     restoreField(key: string) {
       this.metadataList = this.metadataList.map((meta) =>
-        meta.key === key ? { ...meta, type: MetadataType.String, value: '' } : meta,
+        meta.key === key ? this.parseMetadataKey(key, this.originalMetadata[key] || '') : meta,
       )
     },
 
@@ -166,6 +231,10 @@ export default Vue.extend({
     display: flex;
     width: 100%;
     align-items: center;
+
+    > *:not(:last-child) {
+      margin-right: 8px;
+    }
   }
 
   &__empty {

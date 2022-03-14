@@ -14,6 +14,8 @@
     "blockList": "Block list",
     "yes": "Yes",
     "no": "No",
+    "true": "True",
+    "false": "False",
     "edit": "Edit",
     "continue": "Continue",
     "form": {

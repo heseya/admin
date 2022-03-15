@@ -100,6 +100,23 @@
     "deletedPlaceholder": "-- deleted --",
     "empty": "No metadata found",
     "error_title": "There cannot be any duplicated keys"
+  },
+  "pl": {
+    "form": {
+      "key": "Klucz",
+      "value": "Wartość",
+      "type": "Typ",
+      "types": {
+        "string": "Ciąg znaków",
+        "number": "Liczba",
+        "boolean": "Prawda/Fałsz",
+        "object": "Usunięty"
+      }
+    },
+    "add": "Dodaj metadane",
+    "deletedPlaceholder": "-- usunięty --",
+    "empty": "Nie znaleziono metadanych",
+    "error_title": "Nie można dodać metadanych o takim samym kluczu"
   }
 }
 </i18n>

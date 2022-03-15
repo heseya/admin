@@ -2,19 +2,18 @@
   <a-collapse
     accordion
     :bordered="false"
-    class="metadata-form-accrodion"
-    :class="{ 'metadata-form-accrodion--white': white }"
+    class="metadata-form-accordion"
+    :class="{ 'metadata-form-accordion--white': white }"
   >
     <template #expandIcon="{ isActive }">
       <div>
-        <i v-if="isActive" class="bx bx-chevron-up"></i>
-        <i v-else class="bx bx-chevron-down"></i>
+        <i :class="`bx ${isActive ? 'bx-chevron-up' : 'bx-chevron-down'}`"></i>
       </div>
     </template>
 
     <a-collapse-panel>
       <template #header>
-        <span class="metadata-form-accrodion__title">
+        <span class="metadata-form-accordion__title">
           {{ isPrivate ? $t('privateTitle') : $t('title') }}
           <info-tooltip>
             {{ isPrivate ? $t('privateTitleTooltip') : $t('titleTooltip') }}
@@ -86,7 +85,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-.metadata-form-accrodion {
+.metadata-form-accordion {
   &__title {
     font-weight: 600;
   }

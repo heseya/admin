@@ -66,11 +66,7 @@ export default Vue.extend({
   props: {
     value: {
       type: Object,
-      default: () => ({
-        existingString: 'xd',
-        existingNumber: 89,
-        existingBoolean: true,
-      }),
+      default: () => ({}),
     } as Vue.PropOptions<MetadataDto>,
     disabled: { type: Boolean, default: false },
     white: { type: Boolean, default: false },

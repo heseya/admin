@@ -14,8 +14,8 @@
         v-model="meta.key"
         :label="$t('form.key')"
         name="key"
-        :disabled="isDeleted(meta) || wasPreviouslySaved(meta.key)"
-        rules="required"
+        :disabled="isDeleted(meta) || meta.wasSaved"
+        rules="required|letters-only"
       />
 
       <app-select
@@ -59,17 +59,22 @@
         :placeholder="isDeleted(meta) ? $t('deletedPlaceholder') : ''"
       />
 
-      <icon-button v-if="!isDeleted(meta)" type="danger" @click="removeField(meta.key)">
+      <icon-button v-if="!isDeleted(meta)" type="danger" @click="removeField(meta)">
         <template #icon>
           <i class="bx bx-trash"></i>
         </template>
       </icon-button>
-      <icon-button v-else @click="restoreField(meta.key)">
+      <icon-button v-else @click="restoreField(meta)">
         <template #icon>
           <i class="bx bx-reset"></i>
         </template>
       </icon-button>
     </div>
+
+    <validation-provider v-slot="{ errors }" class="metadata-form__error" rules="block-if-error">
+      <input v-model="areKeysDuplicated" name="is-duplicated-error" type="hidden" />
+      <a-alert v-if="errors.length" type="error" show-icon :message="$t('error_title')" />
+    </validation-provider>
 
     <empty v-if="metadataList.length === 0" class="metadata-form__empty">
       {{ $t('empty') }}
@@ -93,13 +98,15 @@
     },
     "add": "Add metadata",
     "deletedPlaceholder": "-- deleted --",
-    "empty": "No metadata found"
+    "empty": "No metadata found",
+    "error_title": "There cannot be any duplicated keys"
   }
 }
 </i18n>
 
 <script lang="ts">
 import Vue from 'vue'
+import { ValidationProvider } from 'vee-validate'
 import isEqual from 'lodash/isEqual'
 import { MetadataDto } from '@/interfaces/Metadata'
 import ModalForm from '@/components/form/ModalForm.vue'
@@ -117,11 +124,12 @@ enum MetadataType {
 interface MetadataObject {
   key: string
   type: MetadataType
+  wasSaved: boolean
   value: string | number | boolean | null
 }
 
 export default Vue.extend({
-  components: { ModalForm, Empty },
+  components: { ModalForm, Empty, ValidationProvider },
   props: {
     originalMetadata: {
       type: Object,
@@ -152,6 +160,11 @@ export default Vue.extend({
     MetadataType(): typeof MetadataType {
       return MetadataType
     },
+
+    areKeysDuplicated(): boolean {
+      const keys = this.metadataList.map(({ key }) => key)
+      return keys.length !== new Set(keys).size
+    },
   },
 
   watch: {
@@ -170,6 +183,7 @@ export default Vue.extend({
       return {
         key,
         type: typeof value as MetadataType,
+        wasSaved: key in this.originalMetadata,
         value,
       }
     },
@@ -180,9 +194,6 @@ export default Vue.extend({
     isDeleted(meta: MetadataObject): boolean {
       return meta.type === MetadataType.Deleted
     },
-    wasPreviouslySaved(key: string): boolean {
-      return key in this.originalMetadata
-    },
 
     changeMetaType(meta: MetadataObject, type: MetadataType) {
       meta.type = type
@@ -192,21 +203,37 @@ export default Vue.extend({
     },
 
     addField() {
-      this.metadataList = [...this.metadataList, { key: '', type: MetadataType.String, value: '' }]
+      this.metadataList = [
+        ...this.metadataList,
+        { key: '', type: MetadataType.String, value: '', wasSaved: false },
+      ]
     },
 
-    removeField(key: string) {
-      if (this.wasPreviouslySaved(key))
-        this.metadataList = this.metadataList.map((meta) =>
-          meta.key === key ? { ...meta, type: MetadataType.Deleted, value: null } : meta,
-        )
-      else this.metadataList = this.metadataList.filter((meta) => meta.key !== key)
+    removeField(meta: MetadataObject) {
+      // finding by reference is intended
+      const index = this.metadataList.indexOf(meta)
+      if (meta.wasSaved)
+        this.metadataList = [
+          ...this.metadataList.slice(0, index),
+          { ...meta, type: MetadataType.Deleted, value: null },
+          ...this.metadataList.slice(index + 1),
+        ]
+      else {
+        this.metadataList = [
+          ...this.metadataList.slice(0, index),
+          ...this.metadataList.slice(index + 1),
+        ]
+      }
     },
 
-    restoreField(key: string) {
-      this.metadataList = this.metadataList.map((meta) =>
-        meta.key === key ? this.parseMetadataKey(key, this.originalMetadata[key] || '') : meta,
-      )
+    restoreField(meta: MetadataObject) {
+      // finding by reference is intended
+      const index = this.metadataList.indexOf(meta)
+      this.metadataList = [
+        ...this.metadataList.slice(0, index),
+        this.parseMetadataKey(meta.key, this.originalMetadata[meta.key] || ''),
+        ...this.metadataList.slice(index + 1),
+      ]
     },
 
     async saveMetadata(modelId: string) {
@@ -228,13 +255,19 @@ export default Vue.extend({
   justify-content: flex-end;
 
   &__row {
-    display: flex;
+    display: grid;
     width: 100%;
-    align-items: center;
+    grid-template-columns: 1fr 0.5fr 1fr auto;
+    align-items: flex-start;
+    grid-gap: 8px;
 
-    > *:not(:last-child) {
-      margin-right: 8px;
+    ::v-deep .icon-button {
+      margin-top: 18px;
     }
+  }
+
+  &__error {
+    width: 100%;
   }
 
   &__empty {

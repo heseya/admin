@@ -10,6 +10,7 @@ import { RootState } from '.'
 import { ResponseMeta } from '@/interfaces/Response'
 import { UUID } from '@/interfaces/UUID'
 import { AuditEntry } from '@/interfaces/AuditEntry'
+import { Metadata, MetadataDto } from '@/interfaces/Metadata'
 
 type QueryPayload = Record<string, any>
 
@@ -125,22 +126,22 @@ export const createVuexCRUD =
       },
       [StoreMutations.EditData](
         state,
-        { key, value, item: editedItem }: { key: keyof Item; value: unknown; item: Item },
+        { key, value, item: editedItem }: { key: keyof Item; value: unknown; item: Partial<Item> },
       ) {
         if (state.selected[key] === value) {
           // Edits selected item
-          state.selected = editedItem
+          state.selected = { ...state.selected, ...editedItem }
         }
 
         const editedItemIndex = state.data.findIndex((item) => item[key] === value)
         if (editedItemIndex >= 0) {
           // Edits any item on the list
           const copy = cloneDeep(state.data)
-          copy[editedItemIndex] = editedItem
+          copy[editedItemIndex] = { ...copy[editedItemIndex], ...editedItem }
           state.data = copy
         } else {
           // appends new item
-          state.data = [...state.data, editedItem]
+          state.data = [...state.data, editedItem as Item]
         }
       },
       [StoreMutations.RemoveData](state, { key, value }: { key: keyof Item; value: unknown }) {
@@ -334,6 +335,37 @@ export const createVuexCRUD =
             const { data } = await api.get<{ data: AuditEntry[] }>(
               `/audits/${endpoint}/id:${id}${stringQuery}`,
             )
+            commit(StoreMutations.SetLoading, false)
+            return data.data
+          } catch (error: any) {
+            commit(StoreMutations.SetError, error)
+            commit(StoreMutations.SetLoading, false)
+            return []
+          }
+        },
+
+        // Metadata
+        async updateMetadata(
+          { commit },
+          payload: { id: UUID; metadata: MetadataDto; public: boolean },
+        ) {
+          commit(StoreMutations.SetError, null)
+          commit(StoreMutations.SetLoading, true)
+          try {
+            const stringQuery = stringifyQuery(queryParams.update || {})
+            const path = payload.public ? 'metadata' : 'metadata_private'
+            const { data } = await api.patch<{ data: Metadata }>(
+              `/audits/${endpoint}/id:${payload.id}/${path}${stringQuery}`,
+              payload.metadata,
+            )
+
+            // ? Typescript is complaining, that Item does not need to have metadata, but if this method is called, it does
+            // @ts-ignore
+            commit(StoreMutations.EditData, {
+              key: 'id',
+              value: payload.id,
+              item: { [path]: data.data },
+            })
             commit(StoreMutations.SetLoading, false)
             return data.data
           } catch (error: any) {

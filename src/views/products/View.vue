@@ -150,23 +150,25 @@
                 />
                 <br />
                 <br />
-                <div class="wide">
-                  <MetadataForm
-                    ref="publicMeta"
-                    :value="product.metadata"
-                    :disabled="!canModify"
-                    model="products"
-                  />
-                </div>
-                <div v-can="$p.Products.ShowMetadataPrivate" class="wide">
-                  <MetadataForm
-                    ref="privateMeta"
-                    :value="product.metadata_private"
-                    :disabled="!canModify"
-                    is-private
-                    model="products"
-                  />
-                </div>
+                <template v-if="!isNew">
+                  <div class="wide">
+                    <MetadataForm
+                      ref="publicMeta"
+                      :value="product.metadata"
+                      :disabled="!canModify"
+                      model="products"
+                    />
+                  </div>
+                  <div v-can="$p.Products.ShowMetadataPrivate" class="wide">
+                    <MetadataForm
+                      ref="privateMeta"
+                      :value="product.metadata_private"
+                      :disabled="!canModify"
+                      is-private
+                      model="products"
+                    />
+                  </div>
+                </template>
                 <br />
                 <div class="flex">
                   <app-button
@@ -402,15 +404,14 @@ export default Vue.extend({
         ? (this.$t('messages.created') as string)
         : (this.$t('messages.updated') as string)
 
+      // Metadata can be saved only after product is created
+      if (!this.isNew) await this.saveMetadata(this.id)
+
       const item = this.isNew
         ? await this.$accessor.products.add(apiPayload)
         : await this.$accessor.products.update({ id: this.id, item: apiPayload })
 
       ;(this.$refs.gallery as any).clearMediaToDelete()
-
-      if (item) {
-        await this.saveMetadata(item.id)
-      }
 
       this.$accessor.stopLoading()
 

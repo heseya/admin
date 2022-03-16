@@ -78,6 +78,22 @@
         <br />
         <small class="label">{{ $t('common.form.description') }}</small>
         <rich-editor v-if="isEditorActive" v-model="form.description_html" :disabled="disabled" />
+
+        <MetadataForm
+          v-if="form.metadata"
+          ref="publicMeta"
+          :value="form.metadata"
+          :disabled="disabled"
+          model="products"
+        />
+        <MetadataForm
+          v-if="form.metadata_private"
+          ref="privateMeta"
+          :value="form.metadata_private"
+          :disabled="disabled"
+          is-private
+          model="products"
+        />
       </modal-form>
       <template #footer>
         <div class="row">
@@ -140,10 +156,12 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import SeoForm from '@/components/modules/seo/Accordion.vue'
 import RichEditor from '@/components/form/RichEditor.vue'
+import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { ProductSetDTO } from '@/interfaces/ProductSet'
 import MediaUploadInput from '@/components/modules/media/MediaUploadInput.vue'
 import { CdnMedia } from '@/interfaces/Media'
+import { Metadata } from '@/interfaces/Metadata'
 
 export const CLEAR_PRODUCT_SET_FORM: ProductSetDTO = {
   id: '',
@@ -160,6 +178,9 @@ export const CLEAR_PRODUCT_SET_FORM: ProductSetDTO = {
   seo: {},
 }
 
+// eslint-disable-next-line camelcase
+type CombinedSetDto = ProductSetDTO & { metadata?: Metadata; metadata_private?: Metadata }
+
 export default Vue.extend({
   components: {
     ModalForm,
@@ -170,12 +191,13 @@ export default Vue.extend({
     SeoForm,
     RichEditor,
     MediaUploadInput,
+    MetadataForm,
   },
   props: {
     value: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<ProductSetDTO>,
+    } as Vue.PropOptions<CombinedSetDto>,
     slugPrefix: {
       type: String,
       default: '',
@@ -194,11 +216,11 @@ export default Vue.extend({
     },
   },
   data: () => ({
-    form: cloneDeep(CLEAR_PRODUCT_SET_FORM) as ProductSetDTO,
+    form: cloneDeep(CLEAR_PRODUCT_SET_FORM) as CombinedSetDto,
     isEditorActive: false,
   }),
   watch: {
-    value(value: ProductSetDTO) {
+    value(value: CombinedSetDto) {
       this.form = { ...cloneDeep(CLEAR_PRODUCT_SET_FORM), ...cloneDeep(value) }
       this.fetchProductSet()
     },
@@ -235,9 +257,16 @@ export default Vue.extend({
         this.form.slug_suffix = slugify(this.form.name, { lower: true, remove: /[.]/g })
       }
     },
+
+    async saveMetadata(id: string) {
+      await (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id)
+      await (this.$refs.publicMeta as MetadataRef)?.saveMetadata(id)
+    },
+
     async saveModal() {
       this.$accessor.startLoading()
       if (this.form.id) {
+        await this.saveMetadata(this.form.id)
         await this.$accessor.productSets.update({
           id: this.form.id,
           item: this.form,

@@ -31,7 +31,7 @@
           </a-select-option>
         </app-select>
       </div>
-      <app-button class="send-package__btn" @click="createPackage">
+      <app-button size="small" class="send-package__btn" @click="createPackage">
         {{ $t('sendPackage.create') }}
       </app-button>
     </div>

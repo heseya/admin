@@ -72,7 +72,10 @@ const CLEAR_FORM: WebHookDto = {
 
 export default Vue.extend({
   metaInfo(this: any): any {
-    return { title: this.webhook?.name || this.webhook?.url || (this.$t('newTitle') as string) }
+    const fallback = this.$t('newTitle') as string
+    return {
+      title: this.isNew ? fallback : this.webhook?.name || this.webhook?.url || fallback,
+    }
   },
   components: {
     TopNav,

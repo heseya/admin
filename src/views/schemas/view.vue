@@ -61,7 +61,10 @@ import { formatApiNotificationError } from '@/utils/errors'
 
 export default Vue.extend({
   metaInfo(this: any): any {
-    return { title: this.schema?.name || 'Nowy schemat' }
+    const fallback = this.$t('newTitle') as string
+    return {
+      title: this.isNew ? fallback : this.schema?.name || fallback,
+    }
   },
   components: {
     TopNav,

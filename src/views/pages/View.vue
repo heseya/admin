@@ -116,7 +116,10 @@ import { UUID } from '@/interfaces/UUID'
 
 export default Vue.extend({
   metaInfo(this: any) {
-    return { title: this.page?.name || (this.$t('newTitle') as string) }
+    const fallback = this.$t('newTitle') as string
+    return {
+      title: this.isNew ? fallback : this.page?.name || fallback,
+    }
   },
   components: {
     TopNav,

@@ -268,7 +268,6 @@ const EMPTY_FORM: ProductComponentForm = {
   price: 0,
   description_html: '',
   description_short: '',
-  digital: false,
   public: true,
   sets: [],
   quantity_step: 1,
@@ -282,7 +281,10 @@ const EMPTY_FORM: ProductComponentForm = {
 
 export default Vue.extend({
   metaInfo(this: any): any {
-    return { title: this.product?.name || 'Nowy produkt' }
+    const fallback = this.$t('newProductTitle') as string
+    return {
+      title: this.isNew ? fallback : this.product?.name || fallback,
+    }
   },
   components: {
     TopNav,

@@ -95,6 +95,9 @@ export default Vue.extend({
       this.fetchAttribute()
     },
   },
+  mounted() {
+    this.fetchAttribute()
+  },
   methods: {
     onInputKeydown(event: KeyboardEvent) {
       if (event.key === 'Enter') this.createOption()

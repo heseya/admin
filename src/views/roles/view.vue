@@ -66,7 +66,10 @@ const CLEAN_FORM: RoleDTO = {
 
 export default Vue.extend({
   metaInfo(this: any): any {
-    return { title: this.role?.name || (this.$t('newTitle') as string) }
+    const fallback = this.$t('newTitle') as string
+    return {
+      title: this.isNew ? fallback : this.role?.name || fallback,
+    }
   },
   components: {
     TopNav,

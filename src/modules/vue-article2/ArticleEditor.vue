@@ -32,7 +32,7 @@ export default Vue.extend({
     },
   },
   watch: {
-    value(value) {
+    value(value: any) {
       this.article.editor.setContent({ html: value })
     },
   },
@@ -81,13 +81,13 @@ export default Vue.extend({
       if (!this.article) return
 
       // Call destroy on article to cleanup event handlers
-      this.article.stop()
+      this.article.destroy()
 
       // unset instance for garbage collection
       this.article = null
       this.$parent.article = null
     },
-    handleInput(val) {
+    handleInput(val: any) {
       this.$emit('input', val)
     },
   },

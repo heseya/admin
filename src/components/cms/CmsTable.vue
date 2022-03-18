@@ -122,9 +122,9 @@ export default Vue.extend({
         position: relative;
 
         &::before {
-          font-family: boxicons !important;
+          font-family: $boxiconsFont;
           font-weight: 400;
-          content: '\ed61';
+          content: '\eb5f';
           position: absolute;
           left: 0px;
           top: 50%;

@@ -917,6 +917,7 @@
   border: 1px solid #D9DBDD;
   color: rgba(0, 11, 29, 0.9); }
   .arx-form-button:hover {
+    color: rgba(0, 11, 29, 0.9);
     background-color: #F5F5F6; }
 
 .arx-form-button-primary {
@@ -924,6 +925,7 @@
   border: 1px solid #000B1D;
   color: #ffffff; }
   .arx-form-button-primary:hover {
+    color: #ffffff;
     background-color: #262F3F; }
 
 .arx-form-button-danger {
@@ -931,6 +933,7 @@
   border: 1px solid #BF3D66;
   color: #BF3D66; }
   .arx-form-button-danger:hover {
+    color: #BF3D66;
     background-color: #F5F5F6; }
 
 .arx-form-button-fullwidth {

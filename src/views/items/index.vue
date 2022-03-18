@@ -50,6 +50,23 @@
             type="number"
             :label="$t('form.quantity')"
           />
+
+          <template v-if="selectedItem">
+            <MetadataForm
+              ref="publicMeta"
+              :value="selectedItem.metadata"
+              :disabled="!canModify"
+              model="items"
+            />
+            <MetadataForm
+              v-if="selectedItem.metadata_private"
+              ref="privateMeta"
+              :value="selectedItem.metadata_private"
+              :disabled="!canModify"
+              is-private
+              model="items"
+            />
+          </template>
         </modal-form>
         <template #footer>
           <div class="row">
@@ -110,6 +127,7 @@ import ItemsFilter, {
   EMPTY_ITEMS_FILTERS,
   ItemsFilersType,
 } from '@/components/modules/items/ItemsFilter.vue'
+import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import { ProductItem, ProductItemDto } from '@/interfaces/Product'
@@ -133,6 +151,7 @@ export default Vue.extend({
     ValidationObserver,
     PaginatedList,
     ItemsFilter,
+    MetadataForm,
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {
@@ -146,6 +165,7 @@ export default Vue.extend({
     filters: { ...EMPTY_ITEMS_FILTERS } as ItemsFilersType,
     isModalActive: false,
     editedItem: { ...EMPTY_FORM } as ProductItemDto & { id?: string },
+    selectedItem: null as null | ProductItem,
     editedOriginalQuantity: 0,
   }),
   computed: {
@@ -209,15 +229,20 @@ export default Vue.extend({
       this.isModalActive = true
       if (id) {
         this.editedItem = this.$accessor.items.getFromListById(id)
+        this.selectedItem = this.$accessor.items.getFromListById(id)
         this.editedOriginalQuantity = this.editedItem.quantity || 0
       } else {
         this.editedItem = { ...EMPTY_FORM }
+        this.selectedItem = null
       }
     },
     async saveModal() {
       this.$accessor.startLoading()
       let success = false
       if (this.editedItem.id) {
+        // Metadata can be saved only after product is created
+        await this.saveMetadata(this.editedItem.id)
+
         const quantityDiff = this.editedItem.quantity - this.editedOriginalQuantity
         if (quantityDiff) {
           // @ts-ignore // TODO: fix extended store actions typings
@@ -245,6 +270,11 @@ export default Vue.extend({
       await this.$accessor.items.remove(this.editedItem.id!)
       this.$accessor.stopLoading()
       this.isModalActive = false
+    },
+
+    async saveMetadata(id: string) {
+      await (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id)
+      await (this.$refs.publicMeta as MetadataRef)?.saveMetadata(id)
     },
   },
 })

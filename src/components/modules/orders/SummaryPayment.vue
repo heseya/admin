@@ -127,6 +127,7 @@ export default Vue.extend({
 .order-summary-payment {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
 
   > * {
     margin-right: 8px;

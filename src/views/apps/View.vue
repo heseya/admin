@@ -8,9 +8,11 @@
 <i18n>
 {
   "pl": {
+    "title": "Aplikacja",
     "error": "Ta aplikacja nie posiada dedykowanego widoku"
   },
   "en": {
+    "title": "Application",
     "error": "This application has no dedicated view"
   }
 }
@@ -26,7 +28,7 @@ import { App } from '@/interfaces/App'
 
 export default Vue.extend({
   metaInfo(this: any) {
-    return { title: this.app?.name }
+    return { title: this.app?.name || (this.$t('title') as string) }
   },
   components: { MicroFrontend, Loading },
   data: () => ({

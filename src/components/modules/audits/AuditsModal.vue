@@ -40,11 +40,13 @@
         <a-collapse-panel v-for="entry in audits" :key="entry.id" class="audit-entry">
           <template #header>
             <div class="audit-entry__header">
-              <span>{{ entry.user ? entry.user.email : $t('unauthenticated') }}</span>
+              <span class="audit-entry__header-user">
+                {{ entry.user ? entry.user.email : $t('unauthenticated') }}
+              </span>
               <span class="audit-entry__tag">
                 {{ entry.event === 'updated' ? $t('eventChanged') : entry.event }}
               </span>
-              <span>{{ formatDateTime(entry.created_at) }}</span>
+              <span class="audit-entry__header-date">{{ formatDateTime(entry.created_at) }}</span>
             </div>
           </template>
 
@@ -83,6 +85,13 @@
     "unauthenticated": "Niezalogowany użytkownik",
     "eventChanged": "zmieniono",
     "keyValues": {
+      "code": "Kod",
+      "email": "Email",
+      "comment": "Komentarz",
+      "currency": "Waluta",
+      "discounts": "Kody rabatowe",
+      "shipping_method_id": "Metoda dostawy",
+      "shipping_price": "Koszt dostawy",
       "delivery_address_id": "Adres dostawy",
       "invoice_address_id": "Adres rozliczeniowy",
       "status_id": "Status zamówienia",
@@ -90,6 +99,7 @@
       "slug": "Link",
       "name": "Nazwa",
       "public": "Widoczność",
+      "available": "Dostępność",
       "price": "Cena",
       "quantity_step": "Format ilości",
       "description_html": "Opis"
@@ -108,6 +118,13 @@
     "unauthenticated": "Unauthenticated user",
     "eventChanged": "changed",
     "keyValues": {
+      "code": "Code",
+      "email": "Email",
+      "comment": "Comment",
+      "currency": "Currency",
+      "discounts": "Discounts",
+      "shipping_method_id": "Shipping method",
+      "shipping_price": "Shipping price",
       "delivery_address_id": "Delivery address",
       "invoice_address_id": "Invoice address",
       "status_id": "Order status",
@@ -115,6 +132,7 @@
       "slug": "Link",
       "name": "Name",
       "public": "Visibility",
+      "available": "Availability",
       "price": "Price",
       "quantity_step": "Quantity format",
       "description_html": "Description"
@@ -222,6 +240,11 @@ export default Vue.extend({
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+
+    > *:last-child {
+      margin-left: auto;
+    }
   }
 }
 
@@ -229,13 +252,30 @@ export default Vue.extend({
   &__header {
     display: flex;
     align-items: center;
+    flex-direction: column;
+    line-height: 1.1em;
 
-    > span:first-child {
-      margin-right: auto;
+    @media ($viewport-5) {
+      padding: 0.5em 0;
+      flex-direction: row;
     }
+  }
 
-    > *:not(:last-child) {
+  &__header-user {
+    margin-right: auto;
+
+    @media ($viewport-5) {
       margin-right: 12px;
+    }
+  }
+
+  &__header-date {
+    color: $gray-color-500;
+    margin-left: auto;
+    font-size: 0.8em;
+
+    @media ($viewport-5) {
+      font-size: 1em;
     }
   }
 
@@ -256,6 +296,11 @@ export default Vue.extend({
     letter-spacing: 1px;
     color: $green-color-500;
     font-size: 0.8em;
+    margin-left: auto;
+
+    @media ($viewport-5) {
+      margin: 0 8px;
+    }
   }
 }
 </style>

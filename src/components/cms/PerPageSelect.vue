@@ -72,8 +72,8 @@ export default Vue.extend({
     }
 
     &::after {
-      content: '\ea27';
-      font-family: boxicons !important;
+      content: '\ea4a';
+      font-family: $boxiconsFont;
       font-weight: 400;
       color: #d9dbe0;
       position: absolute;

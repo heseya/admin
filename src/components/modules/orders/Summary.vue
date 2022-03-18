@@ -32,7 +32,7 @@
       :title="$t('labels.history')"
       @cancel="closePaymentHistory"
     >
-      <cms-table :value="order.payments" :config="paymentsTableConfig" />
+      <cms-table :value="order.payments" :config="paymentsTableConfig" no-hover />
     </a-modal>
   </card>
 </template>
@@ -110,7 +110,11 @@ export default Vue.extend({
     paymentsTableConfig(): TableConfig {
       return {
         headers: [
-          // { key: 'created_at', label: this.$t('table.date') as string },
+          {
+            key: 'date',
+            label: this.$t('table.date') as string,
+            render: (v: string) => formatDate(v) || v,
+          },
           {
             key: 'method',
             label: this.$t('table.method') as string,

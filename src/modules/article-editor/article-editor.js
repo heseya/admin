@@ -1,14 +1,14 @@
 /*
     Article Editor JS
-    Version 2.3.9
-    Updated: October 20, 2021
+    Version 2.4.1
+    Updated: February 20, 2022
 
     http://imperavi.com/article/
 
-    Copyright (c) 2009-2021, Imperavi Ltd.
+    Copyright (c) 2009-2022, Imperavi Ltd.
     License: http://imperavi.com/article/license/
 */
-if (typeof CodeMirror === 'undefined') { var CodeMirror = undefined; }
+if (typeof CodeMirror === 'undefined') { var CodeMirror; }
 (function() {
 // Version 2.0
 var Ajax = {};
@@ -49,7 +49,11 @@ var AjaxRequest = function(method, options) {
 
 AjaxRequest.prototype = {
     extend: function(obj1, obj2) {
-        if (obj2) for (var name in obj2) { obj1[name] = obj2[name]; }
+        if (obj2) {
+            Object.keys(obj2).forEach(function(key) {
+                obj1[key] = obj2[key];
+            });
+        }
         return obj1;
     },
     prepareData: function() {
@@ -62,9 +66,9 @@ AjaxRequest.prototype = {
     },
     setHeaders: function() {
         this.xhr.setRequestHeader('X-Requested-With', this.p.headers['X-Requested-With'] || 'XMLHttpRequest');
-        for (var name in this.p.headers) {
-            this.xhr.setRequestHeader(name, this.p.headers[name]);
-        }
+        Object.keys(this.p.headers).forEach(function(key) {
+            this.xhr.setRequestHeader(key, this.p.headers[key]);
+        }.bind(this));
     },
     isFormData: function() {
         return (typeof window.FormData !== 'undefined' && this.p.data instanceof window.FormData);
@@ -395,7 +399,7 @@ Dom.prototype = {
         });
     },
     data: function(name, value) {
-        if (name === undefined) {
+        if (name === undefined || name === true) {
             var reDataAttr = /^data-(.+)$/;
             var attrs = this.get().attributes;
 
@@ -406,7 +410,9 @@ Dom.prototype = {
                 if (attrs[key] && reDataAttr.test(attrs[key].nodeName)) {
                     var dataName = attrs[key].nodeName.match(reDataAttr)[1];
                     var val = attrs[key].value;
-                    dataName = dataName.replace(/-([a-z])/g, replacer);
+                    if (name !== true) {
+                        dataName = dataName.replace(/-([a-z])/g, replacer);
+                    }
 
                     if (val.search(/^{/) !== -1) val = this._object(val);
                     else val = (this._number(val)) ? parseFloat(val) : this._boolean(val);
@@ -745,7 +751,7 @@ Dom.prototype = {
         var anim = this._anim(speed, fn, 500);
 
         return this.each(function($n) {
-            $n.css({ 'display': 'block', 'opacity': 0, 'animation': 'fadeIn ' + anim.speed + 's ease-in-out' });
+            $n.css({ 'display': 'block', 'opacity': 0, 'animation': 'fadeIn ' + anim.speed + 's ease-in-out' }).removeClass('hidden');
             $n.one('animationend', function() {
                 $n.css({ 'opacity': '', 'animation': '' });
                 if (anim.fn) anim.fn($n);
@@ -780,7 +786,7 @@ Dom.prototype = {
 
         return this.each(function($n) {
             $n.height($n.height());
-            $n.css({ 'display': 'block', 'overflow': 'hidden', 'animation': 'slideDown ' + anim.speed + 's ease-in-out' });
+            $n.css({ 'display': 'block', 'overflow': 'hidden', 'animation': 'slideDown ' + anim.speed + 's ease-in-out' }).removeClass('hidden');
             $n.one('animationend', function() {
                 $n.css({ 'overflow': '', 'height': '', 'animation': '' });
                 if (anim.fn) anim.fn($n);
@@ -850,13 +856,17 @@ Dom.prototype = {
         return (o instanceof Dom) ? o.nodes : o;
     },
     _object: function(str) {
-        return (new Function("return " + str))();
+        var jsonStr = str.replace(/(\w+:)|(\w+ :)/g, function(matchedStr) {
+            return '"' + matchedStr.substring(0, matchedStr.length - 1) + '":';
+        });
+
+        return JSON.parse(jsonStr);
     },
     _params: function(obj) {
         var params = '';
-        for (var key in obj) {
+        Object.keys(obj).forEach(function(key) {
             params += '&' + this._encodeUri(key) + '=' + this._encodeUri(obj[key]);
-        }
+        }.bind(this));
 
         return params.replace(/^&/, '');
     },
@@ -898,8 +908,10 @@ Dom.prototype = {
         if (events) {
             copy._e = events;
             for (var name in events._events) {
-                for (var i = 0; i < events._events[name].length; i++) {
-                    copy.addEventListener(name, events._events[name][i]);
+                if (events._events.hasOwnProperty(name)) {
+                    for (var i = 0; i < events._events[name].length; i++) {
+                        copy.addEventListener(name, events._events[name][i]);
+                    }
                 }
             }
         }
@@ -1020,19 +1032,21 @@ Dom.prototype = {
     },
     _offEvent: function(node, event, namespace, handler, condition) {
         for (var key in node._e) {
-            for (var name in node._e[key]) {
-                if (condition(name, key, event, namespace)) {
-                    var handlers = node._e[key][name];
-                    for (var i = 0; i < handlers.length; i++) {
-                        if (typeof handler !== 'undefined' && handlers[i].toString() !== handler.toString()) {
-                            continue;
+            if (node._e.hasOwnProperty(key)) {
+                for (var name in node._e[key]) {
+                    if (condition(name, key, event, namespace)) {
+                        var handlers = node._e[key][name];
+                        for (var i = 0; i < handlers.length; i++) {
+                            if (typeof handler !== 'undefined' && handlers[i].toString() !== handler.toString()) {
+                                continue;
+                            }
+
+                            node.removeEventListener(name, handlers[i]);
+                            node._e[key][name].splice(i, 1);
+
+                            if (node._e[key][name].length === 0) delete node._e[key][name];
+                            if (Object.keys(node._e[key]).length === 0) delete node._e[key];
                         }
-
-                        node.removeEventListener(name, handlers[i]);
-                        node._e[key][name].splice(i, 1);
-
-                        if (node._e[key][name].length === 0) delete node._e[key][name];
-                        if (Object.keys(node._e[key]).length === 0) delete node._e[key];
                     }
                 }
             }
@@ -1095,7 +1109,7 @@ $ARX.ajax = Ajax;
 $ARX.instances = [];
 $ARX.namespace = 'article-editor';
 $ARX.prefix = 'arx';
-$ARX.version = '2.3.9';
+$ARX.version = '2.4.1';
 $ARX.settings = {};
 $ARX.lang = {};
 $ARX._mixins = {};
@@ -1151,11 +1165,13 @@ $ARX.add = function(type, name, obj) {
         // subscribe
         if (obj.subscribe) {
             for (var key in obj.subscribe) {
-                var arr = key.split(',');
-                for (var i = 0; i < arr.length; i++) {
-                    var ns = arr[i].trim();
-                    if (typeof $ARX._subscribe[ns] === 'undefined') $ARX._subscribe[ns] = [];
-                    $ARX._subscribe[ns].push({ module: name, func: obj.subscribe[key] });
+                if (obj.subscribe.hasOwnProperty(key)) {
+                    var arr = key.split(',');
+                    for (var i = 0; i < arr.length; i++) {
+                        var ns = arr[i].trim();
+                        if (typeof $ARX._subscribe[ns] === 'undefined') $ARX._subscribe[ns] = [];
+                        $ARX._subscribe[ns].push({ module: name, func: obj.subscribe[key] });
+                    }
                 }
             }
         }
@@ -1263,7 +1279,8 @@ ArticleEditor.opts = {
         reloadmarker: true,
         minHeight: '100px', // string, '500px'
         maxHeight: false, // string, '500px'
-        doctype: '<!doctype html>'
+        doctype: '<!doctype html>',
+        csscache: false
     },
     selection: {
         multiple: true,
@@ -1590,7 +1607,7 @@ ArticleEditor.opts = {
     bsmodal: false,
     regex: {
         youtube: /^https?\:\/\/(?:www\.youtube(?:\-nocookie)?\.com\/|m\.youtube\.com\/|youtube\.com\/)?(?:ytscreeningroom\?vi?=|youtu\.be\/|vi?\/|user\/.+\/u\/\w{1,2}\/|embed\/|watch\?(?:.*\&)?vi?=|\&vi?=|\?(?:.*\&)?vi?=)([^#\&\?\n\/<>"']*)/gi,
-        vimeo: /(http|https)?:\/\/(?:www.|player.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^/]*)\/videos\/|album\/(?:\d+)\/video\/|video\/|)(\d+)(?:\/[a-zA-Z0-9_-]+)?/gi,
+        vimeo: /(http|https)?:\/\/(?:www.|player.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^\/]*)\/videos\/|album\/(?:\d+)\/video\/|video\/|)(\d+)(?:\/[a-zA-Z0-9_-]+)?/gi,
         imageurl: /((https?|www)[^\s]+\.)(jpe?g|png|gif)(\?[^\s-]+)?/gi,
         url: /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z\u00F0-\u02AF0-9()!@:%_+.~#?&//=]*)/gi,
         aurl1: /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim,
@@ -1681,7 +1698,7 @@ ArticleEditor.opts = {
         }
     }
 };
-ArticleEditor.lang['en'] = {
+ArticleEditor.lang.en = {
     "accessibility": {
         "help-label": "Rich text editor"
     },
@@ -2074,7 +2091,7 @@ App.prototype = {
         instance._name = name;
         instance.app = this;
 
-        var maps = ['uuid', 'prefix', 'dom', 'ajax']
+        var maps = ['uuid', 'prefix', 'dom', 'ajax'];
         for (var i = 0; i < maps.length; i++) {
            instance[maps[i]] = this[maps[i]];
         }
@@ -2170,9 +2187,11 @@ App.prototype = {
     // iterate
     _iterate: function(type, method) {
         for (var key in this._repository) {
-            var isIn = (type === 'module') ? (method === 'load' || this._priority.indexOf(key) === -1) : (this._plugins.indexOf(key) !== -1);
-            if (this._repository[key].type === type && isIn) {
-                this._call(this[key], method);
+            if (this._repository.hasOwnProperty(key)) {
+                var isIn = (type === 'module') ? (method === 'load' || this._priority.indexOf(key) === -1) : (this._plugins.indexOf(key) !== -1);
+                if (this._repository[key].type === type && isIn) {
+                    this._call(this[key], method);
+                }
             }
         }
     },
@@ -2375,9 +2394,9 @@ ArticleEditor.add('mixin', 'block', {
     // get
     getData: function(name) {
         var data = {};
-        for (var key in this.data) {
+        Object.keys(this.data).forEach(function(key) {
             data[key] = this[this.data[key].getter].apply(this);
-        }
+        }.bind(this));
 
         return (name) ? data[name] : data;
     },
@@ -2398,7 +2417,7 @@ ArticleEditor.add('mixin', 'block', {
         var offset = this.app.editor.getFrame().offset();
         var elOffset = this.$block.offset();
 
-        return { top: offset.top + elOffset.top, left: offset.left + elOffset.left }
+        return { top: offset.top + elOffset.top, left: offset.left + elOffset.left };
     },
     getBlock: function() {
         return this.$block;
@@ -3176,7 +3195,7 @@ ArticleEditor.add('module', 'lang', {
     get: function(name) {
         var value = this._get(name, this.vars);
         if (typeof value === 'undefined' && this.langKey !== 'en') {
-            value = this._get(name, $ARX.lang['en']);
+            value = this._get(name, $ARX.lang.en);
         }
 
         return (typeof value === 'undefined') ? '' : value;
@@ -3206,7 +3225,7 @@ ArticleEditor.add('module', 'lang', {
         return value;
     },
     _build: function() {
-        var vars = $ARX.lang['en'];
+        var vars = $ARX.lang.en;
         if (this.langKey !== 'en') {
             vars = ($ARX.lang[this.langKey] !== 'undefined') ? $ARX.lang[this.langKey] : vars;
         }
@@ -3443,9 +3462,9 @@ ArticleEditor.add('module', 'utils', {
         this.dom(value).each(function($node) {
             if ($node.get().tagName === 'FORM') {
                 var serializedData = $node.serialize(true);
-                for (var z in serializedData) {
-                    data = this._setData(data, z, serializedData[z]);
-                }
+                Object.keys(serializedData).forEach(function(key) {
+                    data = this._setData(data, key, serializedData[key]);
+                }.bind(this));
             }
             else {
                 var name = ($node.attr('name')) ? $node.attr('name') : $node.attr('id');
@@ -4028,7 +4047,7 @@ ArticleEditor.add('module', 'button', {
     },
     _buildIcon: function() {
         var isIcon = this._has('icon');
-        var span = '<span class="' + this.prefix + '-icon-' + this.name + '"></span>'
+        var span = '<span class="' + this.prefix + '-icon-' + this.name + '"></span>';
 
         this.$icon = this._buildIconElement();
 
@@ -4161,7 +4180,7 @@ ArticleEditor.add('module', 'tooltip', {
 
     // private
     _create: function($btn) {
-        return this.dom('<span>').addClass(this.classname).html($btn.attr('data-tooltip'))
+        return this.dom('<span>').addClass(this.classname).html($btn.attr('data-tooltip'));
     },
     _cleanTitle: function(title) {
         return (title) ? title.replace(/(<([^>]+)>)/gi, '') : false;
@@ -4615,7 +4634,7 @@ ArticleEditor.add('class', 'upload', {
         }
 
         setTimeout(function() {
-            this.app.progress.hide()
+            this.app.progress.hide();
         }.bind(this), 500);
     },
     _trigger: function(response) {
@@ -4808,7 +4827,9 @@ ArticleEditor.add('module', 'shortcut', {
         // build
         if (e.ctrlKey || e.metaKey || e.shoftKey || e.altKey) {
             for (var key in this.shortcuts) {
-                this._build(e, key, this.shortcuts[key]);
+                if (this.shortcuts.hasOwnProperty(key)) {
+                    this._build(e, key, this.shortcuts[key]);
+                }
             }
         }
 
@@ -4818,25 +4839,27 @@ ArticleEditor.add('module', 'shortcut', {
     // private
     _buildPopupItems: function(items, z, shortcuts, meta, type) {
         for (var key in shortcuts) {
-            var $item = this.dom('<div>').addClass(this.prefix + '-popup-shortcut-item');
-            var title = (type === 'base') ? shortcuts[key] : shortcuts[key].title;
+            if (shortcuts.hasOwnProperty(key)) {
+                var $item = this.dom('<div>').addClass(this.prefix + '-popup-shortcut-item');
+                var title = (type === 'base') ? shortcuts[key] : shortcuts[key].title;
 
-            var $title = this.dom('<span>').addClass(this.prefix + '-popup-shortcut-title').html(this.lang.parse(title));
-            var $kbd = this.dom('<span>').addClass(this.prefix + '-popup-shortcut-kbd');
+                var $title = this.dom('<span>').addClass(this.prefix + '-popup-shortcut-title').html(this.lang.parse(title));
+                var $kbd = this.dom('<span>').addClass(this.prefix + '-popup-shortcut-kbd');
 
-            var name = (type === 'base') ? key.replace('meta', meta) : shortcuts[key].name.replace('meta', meta);
-            var arr = name.split('+');
-            for (var i = 0; i < arr.length; i++) {
-                arr[i] = '<span>' + arr[i] + '</span>';
+                var name = (type === 'base') ? key.replace('meta', meta) : shortcuts[key].name.replace('meta', meta);
+                var arr = name.split('+');
+                for (var i = 0; i < arr.length; i++) {
+                    arr[i] = '<span>' + arr[i] + '</span>';
+                }
+                $kbd.html(arr.join('+'));
+
+                $item.append($title);
+                $item.append($kbd);
+
+                items[z] = { html: $item };
+
+                z++;
             }
-            $kbd.html(arr.join('+'));
-
-            $item.append($title);
-            $item.append($kbd);
-
-            items[z] = { html: $item };
-
-            z++;
         }
 
         return z;
@@ -4895,7 +4918,7 @@ ArticleEditor.add('module', 'shortcut', {
     },
     _remove: function(keys, obj) {
         return Object.keys(obj).reduce(function(object, key) {
-            if (key !== keys) { object[key] = obj[key] }
+            if (key !== keys) { object[key] = obj[key]; }
             return object;
         }, {});
     }
@@ -5349,9 +5372,20 @@ ArticleEditor.add('module', 'placeholder', {
     hide: function() {
         this.$layout.removeClass(this.prefix + '-placeholder');
     },
+    change: function(value) {
+        this.opts.placeholder = value;
+        this._rebuild();
+        if (this.app.editor.isEmpty(true)) {
+            this.app.editor.setEmpty();
+        }
+    },
 
     // private
     _build: function() {
+        this._rebuild()
+        this.toggle();
+    },
+    _rebuild: function() {
         var o = this.opts.placeholder;
         var p = this.app.$element.attr('placeholder');
         var is = (o !== false || p);
@@ -5359,7 +5393,6 @@ ArticleEditor.add('module', 'placeholder', {
 
         this.$layout.attr('placeholder', (o !== false) ? o : p);
         this.placeholder = true;
-        this.toggle();
     }
 });
 ArticleEditor.add('module', 'list', {
@@ -6231,18 +6264,18 @@ ArticleEditor.add('module', 'content', {
     // get
     getPredefinedBlocks: function() {
         var blocks = [];
-        for (var z in this.opts.classes.blocks) {
-            blocks.push(z);
-        }
+        Object.keys(this.opts.classes.blocks).forEach(function(key) {
+            blocks.push(key);
+        });
 
         return blocks;
     },
     getPredefinedTags: function() {
         var tags = [];
         var classes = (typeof this.opts.classes.tags !== 'undefined') ? this.opts.classes.tags : this.opts.classes;
-        for (var z in classes) {
-            tags.push(z);
-        }
+        Object.keys(classes).forEach(function(key) {
+            tags.push(key);
+        });
 
         return tags;
     },
@@ -6607,9 +6640,10 @@ ArticleEditor.add('module', 'autoparse', {
         var singleTags = ['div', 'img', 'html', 'span'];
         var stored = [];
         var z = 0;
+        var i;
 
         // store tags
-        for (var i = 0; i < tags.length; i++) {
+        for (i = 0; i < tags.length; i++) {
             var reTags = (singleTags.indexOf(tags[i]) !== -1) ? '<' + tags[i] + '[^>]*>' : '<' + tags[i] + '[^>]*>([\\w\\W]*?)</' + tags[i] + '>';
             var matched = html.match(new RegExp(reTags, 'gi'));
 
@@ -6631,7 +6665,7 @@ ArticleEditor.add('module', 'autoparse', {
         // images
         if (html.match(this.opts.regex.imageurl)) {
             var imagesMatches = html.match(this.opts.regex.imageurl);
-            for (var i = 0; i < imagesMatches.length; i++) {
+            for (i = 0; i < imagesMatches.length; i++) {
                 html = html.replace(imagesMatches[i], this._splitBlock(instance, '<img src="' + imagesMatches[i] + '">'));
             }
         }
@@ -7066,7 +7100,7 @@ ArticleEditor.add('module', 'selection', {
         if (selection.isCollapsed) return false;
 
         if (isNode) {
-            return ((typeof node.textContent !== 'undefined') && (node.textContent.trim().length === range.toString().trim().length))
+            return ((typeof node.textContent !== 'undefined') && (node.textContent.trim().length === range.toString().trim().length));
         }
         else {
             return false;
@@ -7157,7 +7191,7 @@ ArticleEditor.add('module', 'selection', {
         return this.app.editor.getSelection();
     },
     _getRange: function(selection) {
-        return (selection) ? ((selection.rangeCount > 0) ? selection.getRangeAt(0) : false) : false
+        return (selection) ? ((selection.rangeCount > 0) ? selection.getRangeAt(0) : false) : false;
     },
     _getCurrent: function(selection) {
         return (selection) ? selection.anchorNode : false;
@@ -7362,9 +7396,7 @@ ArticleEditor.add('module', 'selection', {
         var text = (node.nodeType !== 9) ? this.app.utils.removeInvisibleChars(node.textContent) : '';
 
         return (
-            selected === text
-            || text.search(selected) !== -1
-            || selected.search(new RegExp('^' + this.app.utils.escapeRegExp(text) + '$')) !== -1
+            selected === text || text.search(selected) !== -1 || selected.search(new RegExp('^' + this.app.utils.escapeRegExp(text) + '$')) !== -1
         );
     },
     _isBackwards: function() {
@@ -7501,9 +7533,9 @@ ArticleEditor.add('module', 'inline', {
         // apply attr
         if (node && this.params && typeof this.params.attr !== 'undefined') {
             var $node = this.dom(node);
-            for (var name in this.params.attr) {
-                $node.attr(name, this.params.attr[name]);
-            }
+            Object.keys(this.params.attr).forEach(function(key) {
+                $node.attr(key, this.params.attr[key]);
+            }.bind(this));
         }
 
         return (node) ? node : [];
@@ -7553,9 +7585,7 @@ ArticleEditor.add('module', 'inline', {
         // apply attr
         if (this.params && typeof this.params.attr !== 'undefined') {
             for (var z = 0; z < finalNodes.length; z++) {
-                for (var name in this.params.attr) {
-                    finalNodes[z].setAttribute(name, this.params.attr[name]);
-                }
+                this._applyAttrs(finalNodes[z]);
             }
         }
 
@@ -7577,6 +7607,11 @@ ArticleEditor.add('module', 'inline', {
     },
 
     // private
+    _applyAttrs: function(node) {
+        Object.keys(this.params.attr).forEach(function(key) {
+            node.setAttribute(key, this.params.attr[key]);
+        }.bind(this));
+    },
     _clearEmptyStyle: function() {
         var inlines = this.app.selection.getNodes({ type: 'inline' });
         for (var i = 0; i < inlines.length; i++) {
@@ -7969,7 +8004,7 @@ ArticleEditor.add('module', 'popup', {
             pos = {
                 top: (offset.top + editorRect.top + dim.height),
                 left: (offset.left + editorRect.left + (dim.width/2) - (popupWidth/2))
-            }
+            };
 
             // out of the right edge
             if ((pos.left + popupWidth) > editorRect.right) {
@@ -8475,9 +8510,9 @@ ArticleEditor.add('class', 'popup.stack', {
         }
         else {
             data = {};
-            for (var key in this.tools) {
+            Object.keys(this.tools).forEach(function(key) {
                 data[key] = this.tools[key].getValue();
-            }
+            }.bind(this));
         }
 
         return data;
@@ -8592,10 +8627,12 @@ ArticleEditor.add('class', 'popup.stack', {
     _getPrev: function() {
         var prev;
         for (var key in this.popup.stacks) {
-            if (key === this.name) {
-                return prev;
+            if (this.popup.stacks.hasOwnProperty(key)) {
+                if (key === this.name) {
+                    return prev;
+                }
+                prev = this.popup.stacks[key];
             }
-            prev = this.popup.stacks[key];
         }
     },
 
@@ -8664,19 +8701,21 @@ ArticleEditor.add('class', 'popup.stack', {
 
         // build items
         for (var name in this.items) {
-            if (Object.prototype.hasOwnProperty.call(this.items[name], 'observer') && this.items[name].observer) {
-                var res = this.app.api(this.items[name].observer, this.items[name], name, this);
-                if (typeof res !== 'undefined') {
-                    this.items[name] = res;
+            if (this.items.hasOwnProperty(name)) {
+                if (Object.prototype.hasOwnProperty.call(this.items[name], 'observer') && this.items[name].observer) {
+                    var res = this.app.api(this.items[name].observer, this.items[name], name, this);
+                    if (typeof res !== 'undefined') {
+                        this.items[name] = res;
+                    }
                 }
+
+                if (this.items[name] === false) continue;
+
+                var item = this.app.create('popup.item', this, name, this.items[name]);
+                var $item = item.getElement();
+
+                this._renderItemPosition(this.$items, $item, this.items[name]);
             }
-
-            if (this.items[name] === false) continue;
-
-            var item = this.app.create('popup.item', this, name, this.items[name]);
-            var $item = item.getElement();
-
-            this._renderItemPosition(this.$items, $item, this.items[name]);
         }
     },
     _renderItemPosition: function($container, $item, params) {
@@ -8727,11 +8766,18 @@ ArticleEditor.add('class', 'popup.stack', {
         this._renderTools();
         this._renderData();
 
+        // enter events
+        this.$form.find('input[type=text],input[type=url],input[type=email]').on('keydown.' + this.prefix + '-popup', function(e) {
+            if (e.which === 13) {
+                e.preventDefault();
+                return false;
+            }
+        }.bind(this));
     },
     _renderTools: function() {
-        for (var name in this.formitems) {
-            this._renderTool(name, this.formitems[name]);
-        }
+        Object.keys(this.formitems).forEach(function(key) {
+            this._renderTool(key, this.formitems[key]);
+        }.bind(this));
     },
     _renderTool: function(name, obj) {
         var tool = this.app.create('tool.' + obj.type, name, obj, this, this.data);
@@ -8758,11 +8804,13 @@ ArticleEditor.add('class', 'popup.stack', {
 
         // buttons
         for (var key in buttons) {
-            if (buttons[key] === false) continue;
+            if (buttons.hasOwnProperty(key)) {
+                if (buttons[key] === false) continue;
 
-            var button = this.app.create('popup.button', key, this, buttons[key]);
-            this.$footer.append(button.getElement());
-            this.footerbuttons++;
+                var button = this.app.create('popup.button', key, this, buttons[key]);
+                this.$footer.append(button.getElement());
+                this.footerbuttons++;
+            }
         }
     },
 
@@ -8820,20 +8868,21 @@ ArticleEditor.add('class', 'popup.header', {
         var count = 0;
         var z = 0;
         for (var key in stacks) {
-            if (typeof stacks[key] !== 'object') {
-                continue;
+            if (stacks.hasOwnProperty(key)) {
+                if (typeof stacks[key] !== 'object') {
+                    continue;
+                }
+                z++;
+                var title = stacks[key].get('title');
+                if (title) {
+                    count++;
+                    this._buildItem(stacks[key], title, len);
+                }
+                else if (z === 1 && len > 1) {
+                    count++;
+                    this._buildItem(stacks[key], '## popup.back ##', len);
+                }
             }
-            z++;
-            var title = stacks[key].get('title');
-            if (title) {
-                count++;
-                this._buildItem(stacks[key], title, len);
-            }
-            else if (z === 1 && len > 1) {
-                count++;
-                this._buildItem(stacks[key], '## popup.back ##', len);
-            }
-
         }
 
         return count;
@@ -9055,10 +9104,12 @@ ArticleEditor.add('module', 'editor', {
         var buttons = this.getButtonsFromArr(this.opts.buttons.editor);
         var res = {};
         for (var name in buttons) {
-            if (name === 'html' && !this.opts.source) continue;
-            if (name === 'templates' && !this.opts.templates.json) continue;
+            if (buttons.hasOwnProperty(name)) {
+                if (name === 'html' && !this.opts.source) continue;
+                if (name === 'templates' && !this.opts.templates.json) continue;
 
-            res[name] = buttons[name];
+                res[name] = buttons[name];
+            }
         }
 
         // custom buttons
@@ -9360,7 +9411,8 @@ ArticleEditor.add('module', 'editor', {
     },
     _buildCssLink: function(href) {
         var obj = (typeof href === 'object') ? href : { href: href };
-        obj.href = obj.href + '?' + new Date().getTime();
+        var tstamp = (this.opts.editor.csscache) ? '' : '?' + new Date().getTime();
+        obj.href = obj.href + tstamp;
 
         // link tag
         var $css = this.dom('<link>').attr({ 'class': this.prefix + '-css', 'rel': 'stylesheet' });
@@ -9623,9 +9675,9 @@ ArticleEditor.add('module', 'parser', {
         var content = this.app.content;
         var findTags = true;
         var findBlocks = false;
-        if (typeof this.opts.classes['blocks'] !== 'undefined') {
+        if (typeof this.opts.classes.blocks !== 'undefined') {
             findBlocks = true;
-            if (typeof this.opts.classes['tags'] === 'undefined') {
+            if (typeof this.opts.classes.tags === 'undefined') {
                 findTags = false;
             }
         }
@@ -9634,7 +9686,7 @@ ArticleEditor.add('module', 'parser', {
         if (findBlocks) {
             var types = content.getPredefinedBlocks();
             var datatype = 'data-' + this.prefix + '-type';
-            var selector = '[' + datatype + '=' + types.join('],[' + datatype + '=') + ']'
+            var selector = '[' + datatype + '=' + types.join('],[' + datatype + '=') + ']';
             $el.find(selector).each(content.addPredefinedBlockClass.bind(this));
         }
     },
@@ -10039,9 +10091,9 @@ ArticleEditor.add('module', 'parser', {
     // get
     _getPredefinedTags: function() {
         var tags = [];
-        for (var z in this.opts.classes) {
-            tags.push(z);
-        }
+        Object.keys(this.opts.classes).forEach(function(key) {
+            tags.push(key);
+        });
 
         return tags;
     },
@@ -10086,6 +10138,11 @@ ArticleEditor.add('module', 'parser', {
     },
     _unparseByType: function($node) {
         var type = $node.attr('data-' + this.prefix + '-type');
+
+        if (type === 'list') {
+            this.app.content.unfixListMargin($node);
+        }
+
         if (this.opts.parser[type] && this.opts.parser[type].unparse) {
             this.opts.parser[type].unparse.call(this.app, $node);
         }
@@ -10519,7 +10576,7 @@ ArticleEditor.add('module', 'block', {
         }
     },
     observe: function(obj, name) {
-        var types = ['line', 'quote', 'layer', 'code']
+        var types = ['line', 'quote', 'layer', 'code'];
         if (types.indexOf(name) !== -1 && !this.opts[name]) return false;
 
         // align / valign / outset
@@ -10565,7 +10622,7 @@ ArticleEditor.add('module', 'block', {
         $el.css(name, value);
 
         // save
-        var name = 'data-' + this.prefix + '-style-cache';
+        name = 'data-' + this.prefix + '-style-cache';
         var style = $el.attr('style');
         if (style) {
             style = style.replace(/"/g, '');
@@ -10930,8 +10987,20 @@ ArticleEditor.add('module', 'event', {
 
     // on doc
     ondockeydown: function(e) {
-        if (this._isEsc(e) && this.app.popup.isOpen()) {
-            this.app.popup.close(false);
+        if (this.app.popup.isOpen()) {
+            if (this._isEnter(e)) {
+                var stack = this.app.popup.getStack();
+                if (stack.hasForm() !== false && e.target.tagName !== 'TEXTAREA') {
+                    e.preventDefault();
+                    var $btn = stack.getFooterPrimary();
+                    $btn.dataget('instance').invokeCommand();
+                    return;
+                }
+            }
+
+            if (this._isEsc(e)) {
+                this.app.popup.close(false);
+            }
         }
     },
     ondocmousedown: function(e) {
@@ -11112,6 +11181,9 @@ ArticleEditor.add('module', 'event', {
     },
     _isEsc: function(e) {
         return (e.which === this.app.keycodes.ESC);
+    },
+    _isEnter: function(e) {
+        return (e.which === this.app.keycodes.ENTER);
     },
     _isEditorClick: function(e) {
         if (this.app.editor.isEditor(e.target)) {
@@ -11424,7 +11496,7 @@ ArticleEditor.add('module', 'event', {
         this.app.utils.wrap(html, function($w) {
             $w.find('img').each(function($node) {
                 if ($node.attr('src').search(/^file:\/\//) !== -1) {
-                    images.push($node.attr('src'))
+                    images.push($node.attr('src'));
                 }
             });
         });
@@ -12115,7 +12187,7 @@ ArticleEditor.add('module', 'toolbar', {
 
     },
     stop: function() {
-        if (!this._isToolbar()) return
+        if (!this._isToolbar()) return;
         this.$toolbar.remove();
         this.customButtons = {};
         this.editorButtons = {};
@@ -12252,13 +12324,13 @@ ArticleEditor.add('module', 'toolbar', {
         this.aTypes = (this.opts.buttons.types) ? this.opts.buttons.types : {};
 
         var btns = this.customButtons;
-        for (var key in btns) {
+        Object.keys(btns).forEach(function(key) {
             var active = btns[key].active;
             if (active) {
                 this._buildActiveButton(key, active.tags, this.aTags);
                 this._buildActiveButton(key, active.types, this.aTypes);
             }
-        }
+        }.bind(this));
     },
     _buildActiveButton: function(key, arr, obj) {
         if (!arr) return;
@@ -12288,10 +12360,12 @@ ArticleEditor.add('module', 'toolbar', {
     },
     _createButtons: function(buttons, instance) {
         for (var name in buttons) {
-            if (instance && !instance.isAllowedButton(name, buttons[name])) continue;
-            if (this._isHidden(name)) continue;
+            if (buttons.hasOwnProperty(name)) {
+                if (instance && !instance.isAllowedButton(name, buttons[name])) continue;
+                if (this._isHidden(name)) continue;
 
-            this.app.create('button', name, buttons[name], this.$toolbar, 'toolbar');
+                this.app.create('button', name, buttons[name], this.$toolbar, 'toolbar');
+            }
         }
     },
     _observeSticky: function() {
@@ -12524,11 +12598,13 @@ ArticleEditor.add('module', 'topbar', {
     _buildButtons: function() {
         var buttons = this.app.editor.getButtonsFromArr(this.opts.buttons.topbar);
         for (var name in buttons) {
-            if (name === 'undo' && !this.opts.topbar.undoredo) continue;
-            if (name === 'redo' && !this.opts.topbar.undoredo) continue;
-            if (name === 'shortcut' && !this.opts.topbar.shortcuts) continue;
+            if (buttons.hasOwnProperty(name)) {
+                if (name === 'undo' && !this.opts.topbar.undoredo) continue;
+                if (name === 'redo' && !this.opts.topbar.undoredo) continue;
+                if (name === 'shortcut' && !this.opts.topbar.shortcuts) continue;
 
-            this.app.create('button', name, buttons[name], this.$topbar, 'topbar');
+                this.app.create('button', name, buttons[name], this.$topbar, 'topbar');
+            }
         }
     },
     _findButtons: function() {
@@ -13154,7 +13230,7 @@ ArticleEditor.add('module', 'insertion', {
             // detect position
             if (this.app.content.isEmptyHtml($block.html())) {
                 position = 'after';
-                remove = true
+                remove = true;
             }
             else {
                 position = this.detectPosition($block, position);
@@ -13173,8 +13249,9 @@ ArticleEditor.add('module', 'insertion', {
         }
     },
     _insertFragment: function(obj, caret) {
+        var fragment;
         if (obj.html || obj.fragment) {
-            var fragment = this.app.fragment.build(obj.html || obj.fragment);
+            fragment = this.app.fragment.build(obj.html || obj.fragment);
             this.app.fragment.insert(fragment);
         }
         else {
@@ -13268,7 +13345,7 @@ ArticleEditor.add('module', 'insertion', {
             }
             // ui
             this.app.toolbar.observe();
-        }.bind(this), 0)
+        }.bind(this), 0);
     },
     _buildInserted: function() {
 
@@ -13417,14 +13494,14 @@ ArticleEditor.add('module', 'addbar', {
         var instance = this.app.block.get();
 
         // build custom
-        for (var key in customItems) {
+        Object.keys(customItems).forEach(function(key) {
             items[key] = customItems[key];
-        }
+        });
 
         // build all
-        for (var index in items) {
-            this._buildItem(instance, items, items[index], index);
-        }
+        Object.keys(items).forEach(function(key) {
+            this._buildItem(instance, items, items[key], key);
+        }.bind(this));
 
         return items;
     },
@@ -13451,7 +13528,7 @@ ArticleEditor.add('module', 'addbar', {
             command: item.command,
             observer: item.observer || false,
             params: { name: key }
-        }
+        };
     }
 });
 ArticleEditor.add('module', 'format', {
@@ -13476,13 +13553,13 @@ ArticleEditor.add('module', 'format', {
         // build format add
         if (this.opts.formatAdd) {
             var obj = this.opts.formatAdd;
-            for (var name in obj) {
+            Object.keys(obj).forEach(function(name) {
                 items[name] = {
                     title: obj[name].title,
                     params: obj[name].params,
                     command: 'block.format'
                 };
-            }
+            });
         }
 
         // active item
@@ -13675,14 +13752,16 @@ ArticleEditor.add('module', 'format', {
 
         var name;
         for (var key in items) {
-            var classname = items[key].params.classname || false;
-            var paramstag = items[key].params.tag;
-            if (tag === paramstag) {
-                if (!classname) {
-                    name = key;
-                }
-                else if (classname && this.app.element.hasClass($el, classname)) {
-                    name = key;
+            if (items.hasOwnProperty(key)) {
+                var classname = items[key].params.classname || false;
+                var paramstag = items[key].params.tag;
+                if (tag === paramstag) {
+                    if (!classname) {
+                        name = key;
+                    }
+                    else if (classname && this.app.element.hasClass($el, classname)) {
+                        name = key;
+                    }
                 }
             }
         }
@@ -13854,6 +13933,7 @@ ArticleEditor.add('module', 'link', {
         }
 
         data = this._setTarget($link, data);
+        data.element = $link;
 
         this.app.broadcast('link.' + type, data);
     },
@@ -14129,14 +14209,16 @@ ArticleEditor.add('module', 'grid', {
 
         var z = 0;
         for (var pattern in this.opts.grid.patterns) {
-            z++;
-            var $item = this._createPattern(pattern);
+            if (this.opts.grid.patterns.hasOwnProperty(pattern)) {
+                z++;
+                var $item = this._createPattern(pattern);
 
-            items['column' + z] = {
-                html: $item,
-                command: 'grid.add',
-                params: { pattern: pattern, columns: this.opts.grid.patterns[pattern] }
-            };
+                items['column' + z] = {
+                    html: $item,
+                    command: 'grid.add',
+                    params: { pattern: pattern, columns: this.opts.grid.patterns[pattern] }
+                };
+            }
         }
 
         return items;
@@ -14320,7 +14402,7 @@ ArticleEditor.add('module', 'image', {
                           if (xhr.status == 200) {
                             var blob = xhr.response;
                             var file = new File([blob], 'image' + i, { type: "image/png" });
-                            self.resolved.push(file)
+                            self.resolved.push(file);
                           }
                         };
                         xhr.send();
@@ -14466,14 +14548,18 @@ ArticleEditor.add('module', 'image', {
     insertFromInserted: function(response) {
         var z = 0;
         for (var key in response) {
-            this.pasteInsertedImages[z].setImage(response[key]);
-            z++;
+            if (response.hasOwnProperty(key)) {
+                this.pasteInsertedImages[z].setImage(response[key]);
+                z++;
+            }
         }
     },
     changeClone: function(response) {
         for (var key in response) {
-            this.$imageclone.attr('src', response[key].url);
-            break;
+            if (response.hasOwnProperty(key)) {
+                this.$imageclone.attr('src', response[key].url);
+                break;
+            }
         }
 
         this.change(response, false);
@@ -14485,12 +14571,14 @@ ArticleEditor.add('module', 'image', {
 
         var instance = this.app.block.get();
         for (var key in response) {
-            instance.setImage(response[key]);
+            if (response.hasOwnProperty(key)) {
+                instance.setImage(response[key]);
 
-            // broadcast
-            this.app.broadcast('image.change', response[key]);
-            this.app.broadcast('image.upload', { instance: instance, data: response[key] });
-            return;
+                // broadcast
+                this.app.broadcast('image.change', response[key]);
+                this.app.broadcast('image.upload', { instance: instance, data: response[key] });
+                return;
+            }
         }
     },
     save: function(stack) {
@@ -14510,28 +14598,29 @@ ArticleEditor.add('module', 'image', {
 
         // loop
         for (var key in response) {
+            if (response.hasOwnProperty(key)) {
+                var $source = this.dom('<' + tag + '>');
+                var $image = this._createImageFromResponseItem(response[key]);
 
-            var $source = this.dom('<' + tag + '>');
-            var $image = this._createImageFromResponseItem(response[key]);
+                $source.append($image);
 
-            $source.append($image);
+                var instance = this.app.create('block.image', $source);
+                this.app.block.add({ instance: instance, type: 'image' });
 
-            var instance = this.app.create('block.image', $source);
-            this.app.block.add({ instance: instance, type: 'image' });
+                // caption
+                if (Object.prototype.hasOwnProperty.call(response[key], 'caption')) {
+                    var $caption = this.dom('<figcaption>').html(response[key].caption);
+                    instance.$block.append($caption);
+                    this.app.create('block.figcaption', $caption);
+                }
 
-            // caption
-            if (Object.prototype.hasOwnProperty.call(response[key], 'caption')) {
-                var $caption = this.dom('<figcaption>').html(response[key].caption);
-                instance.$block.append($caption);
-                this.app.create('block.figcaption', $caption);
+                // broadcast
+                var eventType = (select) ? 'select' : 'upload';
+                this.app.broadcast('image.' + eventType, { instance: instance, data: response[key] });
+
+                this.$last = instance.getBlock();
+                this.imageslen++;
             }
-
-            // broadcast
-            var eventType = (select) ? 'select' : 'upload';
-            this.app.broadcast('image.' + eventType, { instance: instance, data: response[key] });
-
-            this.$last = instance.getBlock();
-            this.imageslen++;
         }
     },
     error: function(response) {
@@ -14542,9 +14631,11 @@ ArticleEditor.add('module', 'image', {
 
         // check status
         for (var key in this.dataStates) {
-            var data = this.dataStates[key];
-            var status = $images.is('[data-image="' + data.id + '"]');
-            this._setImageState(data.id, status);
+            if (this.dataStates.hasOwnProperty(key)) {
+                var data = this.dataStates[key];
+                var status = $images.is('[data-image="' + data.id + '"]');
+                this._setImageState(data.id, status);
+            }
         }
 
         return this.dataStates;
@@ -14727,33 +14818,35 @@ ArticleEditor.add('module', 'image', {
     },
     _parseList: function(data, callback) {
         for (var key in data) {
-            var obj = data[key];
-            if (typeof obj !== 'object') continue;
+            if (data.hasOwnProperty(key)) {
+                var obj = data[key];
+                if (typeof obj !== 'object') continue;
 
-            var $img = this.dom('<img>');
-            var url = (obj.thumb) ? obj.thumb : obj.url;
+                var $img = this.dom('<img>');
+                var url = (obj.thumb) ? obj.thumb : obj.url;
 
-            $img.addClass(this.prefix + '-popup-event');
-            $img.attr('src', url);
-            $img.attr('data-url', obj.url);
-            $img.attr('data-callback', callback);
+                $img.addClass(this.prefix + '-popup-event');
+                $img.attr('src', url);
+                $img.attr('data-url', obj.url);
+                $img.attr('data-callback', callback);
 
-            var attrs = ['id', 'alt', 'caption', 'link', 'width', 'height'];
-            for (var i = 0; i < attrs.length; i++) {
-                if (Object.prototype.hasOwnProperty.call(obj, attrs[i])) {
-                    $img.attr('data-' + attrs[i], obj[attrs[i]]);
+                var attrs = ['id', 'alt', 'caption', 'link', 'width', 'height'];
+                for (var i = 0; i < attrs.length; i++) {
+                    if (Object.prototype.hasOwnProperty.call(obj, attrs[i])) {
+                        $img.attr('data-' + attrs[i], obj[attrs[i]]);
+                    }
                 }
+
+                $img.on('click.' + this.prefix + '-popup-event-' + this.uuid, function(e) {
+                    var $target = this.dom(e.target);
+                    var callback = $target.attr('data-callback');
+
+                    this.app.api(callback, e);
+
+                }.bind(this));
+
+                this.$selectbox.append($img);
             }
-
-            $img.on('click.' + this.prefix + '-popup-event-' + this.uuid, function(e) {
-                var $target = this.dom(e.target);
-                var callback = $target.attr('data-callback');
-
-                this.app.api(callback, e);
-
-            }.bind(this));
-
-            this.$selectbox.append($img);
         }
     },
     _dataURLtoFile: function(dataurl, filename) {
@@ -14912,7 +15005,7 @@ ArticleEditor.add('module', 'table', {
             var cell = $node.find('td, th').get(index);
             var $cell = this.dom(cell);
             $cell.remove();
-        }.bind(this))
+        }.bind(this));
     },
     cellSetting: function(params, button) {
         var instance = this.app.block.get();
@@ -15089,14 +15182,13 @@ ArticleEditor.add('module', 'snippet', {
             this.json = JSON.parse(data);
         }
 
-        for (var key in this.json) {
-
+        Object.keys(this.json).forEach(function(key) {
             var $container = this._buildPreviewContainer($body, key);
 
             // preview
             this._buildPreview($container, key);
             this._buildPreviewName($container, key);
-        }
+        }.bind(this));
     },
     _buildPreviewContainer: function($body, key) {
         var $div = this.dom('<div>').addClass(this.prefix + '-snippet-container');
@@ -15185,15 +15277,13 @@ ArticleEditor.add('module', 'template', {
         this.json = (typeof data === 'string') ? JSON.parse(data) : data;
 
         // items
-        for (var key in this.json) {
-
-            // container
+        Object.keys(this.json).forEach(function(key) {
             var $container = this._buildPreviewContainer($body, key);
 
             // preview
             this._buildPreview($container, key);
             this._buildPreviewName($container, key);
-        }
+        }.bind(this));
 
         // open
         this.app.popup.open({ button: button });
@@ -15307,17 +15397,19 @@ ArticleEditor.add('class', 'tool.segment', {
 
         var segments = this.obj.segments;
         for (var name in segments) {
-            var $segment = this.dom('<span>').addClass(this.prefix + '-form-segment-item');
-            $segment.attr('data-segment', name).on('click', this._catchSegment.bind(this));
+            if (segments.hasOwnProperty(name)) {
+                var $segment = this.dom('<span>').addClass(this.prefix + '-form-segment-item');
+                $segment.attr('data-segment', name).on('click', this._catchSegment.bind(this));
 
-            if (Object.prototype.hasOwnProperty.call(segments[name], 'icon')) {
-                $segment.html(segments[name].icon);
-            }
-            else {
-                $segment.addClass(this.prefix + '-icon-' + segments[name].prefix + '-' + name);
-            }
+                if (Object.prototype.hasOwnProperty.call(segments[name], 'icon')) {
+                    $segment.html(segments[name].icon);
+                }
+                else {
+                    $segment.addClass(this.prefix + '-icon-' + segments[name].prefix + '-' + name);
+                }
 
-            this.$segment.append($segment);
+                this.$segment.append($segment);
+            }
         }
 
         this.$segment.append(this.$input);
@@ -15349,11 +15441,13 @@ ArticleEditor.add('class', 'tool.select', {
     // private
     _buildInput: function() {
         for (var value in this.obj.options) {
-            var $option = this.dom('<option>');
-            $option.val(value);
-            $option.html(this.lang.parse(this.obj.options[value]));
+            if (this.obj.options.hasOwnProperty(value)) {
+                var $option = this.dom('<option>');
+                $option.val(value);
+                $option.html(this.lang.parse(this.obj.options[value]));
 
-            this.$input.append($option);
+                this.$input.append($option);
+            }
         }
 
         this.$tool.append(this.$input);
@@ -15375,7 +15469,7 @@ ArticleEditor.add('class', 'tool.textarea', {
     // private
     _buildInput: function() {
         if (this._has('rows')) {
-            this.$input.attr('rows', this._get('rows'))
+            this.$input.attr('rows', this._get('rows'));
         }
 
         this.$input.attr('data-gramm_editor', false);
@@ -15476,7 +15570,7 @@ ArticleEditor.add('block', 'block.paragraph', {
                             var clonedInline = inlines[i].cloneNode();
                             clonedInline.removeAttribute('id');
                             clonedInline.innerHTML = '';
-                            cloned.appendChild(clonedInline)
+                            cloned.appendChild(clonedInline);
                         }
 
                     }
@@ -15580,7 +15674,6 @@ ArticleEditor.add('block', 'block.address', {
                 return;
             }
         }
-
 
         // insert br
         this.app.insertion.insertBreakline();
@@ -15726,7 +15819,7 @@ ArticleEditor.add('block', 'block.cell', {
             func($cell);
             //content.cacheBlocksStyle($cell);
 
-        }.bind(this))
+        }.bind(this));
     }
 });
 ArticleEditor.add('block', 'block.code', {
@@ -16215,6 +16308,8 @@ ArticleEditor.add('block', 'block.image', {
     },
     setAlt: function(value) {
         var $img = this.getImage();
+
+        value = value.replace(/"/g, "'");
         $img.attr('alt', value);
     },
     setTarget: function(value) {

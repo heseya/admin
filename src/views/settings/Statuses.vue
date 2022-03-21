@@ -80,6 +80,24 @@
               </info-tooltip>
             </template>
           </SwitchInput>
+
+          <template v-if="selectedItem">
+            <hr />
+            <MetadataForm
+              ref="publicMeta"
+              :value="selectedItem.metadata"
+              :disabled="!canModify"
+              model="statuses"
+            />
+            <MetadataForm
+              v-if="selectedItem.metadata_private"
+              ref="privateMeta"
+              :value="selectedItem.metadata_private"
+              :disabled="!canModify"
+              is-private
+              model="statuses"
+            />
+          </template>
         </modal-form>
         <template #footer>
           <div class="row">
@@ -148,9 +166,10 @@ import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import Avatar from '@/components/layout/Avatar.vue'
+import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { UUID } from '@/interfaces/UUID'
-import { OrderStatusDto } from '@/interfaces/Order'
+import { OrderStatus, OrderStatusDto } from '@/interfaces/Order'
 
 const CLEAR_STATUS: OrderStatusDto = {
   name: '',
@@ -173,6 +192,7 @@ export default Vue.extend({
     ValidationObserver,
     SwitchInput,
     Avatar,
+    MetadataForm,
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {
@@ -185,6 +205,7 @@ export default Vue.extend({
   data: () => ({
     isModalActive: false,
     editedItem: clone(CLEAR_STATUS) as OrderStatusDto & { id?: string },
+    selectedItem: null as OrderStatus | null,
   }),
   computed: {
     canModify(): boolean {
@@ -198,7 +219,8 @@ export default Vue.extend({
     openModal(id?: UUID) {
       this.isModalActive = true
       if (id) {
-        this.editedItem = this.$accessor.statuses.getFromListById(id)
+        this.editedItem = clone(this.$accessor.statuses.getFromListById(id))
+        this.selectedItem = this.$accessor.statuses.getFromListById(id)
         this.setColor(this.editedItem.color)
       } else {
         this.editedItem = clone(CLEAR_STATUS)
@@ -207,6 +229,9 @@ export default Vue.extend({
     async saveModal() {
       this.$accessor.startLoading()
       if (this.editedItem.id) {
+        // Metadata can be saved only after status is created
+        await this.saveMetadata(this.editedItem.id)
+
         await this.$accessor.statuses.update({
           id: this.editedItem.id,
           item: this.editedItem,
@@ -222,6 +247,11 @@ export default Vue.extend({
       await this.$accessor.statuses.remove(this.editedItem.id!)
       this.$accessor.stopLoading()
       this.isModalActive = false
+    },
+
+    async saveMetadata(id: string) {
+      await (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id)
+      await (this.$refs.publicMeta as MetadataRef)?.saveMetadata(id)
     },
   },
 })

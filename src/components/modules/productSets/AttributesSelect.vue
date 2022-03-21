@@ -57,8 +57,11 @@ export default Vue.extend({
       return this.$accessor.attributes.data
     },
   },
+  created() {
+    this.searchAttributes()
+  },
   methods: {
-    async searchAttributes(value: string) {
+    async searchAttributes(value?: string) {
       this.isLoading = true
       await this.$accessor.attributes.fetch({ search: value, global: 0 })
       this.isLoading = false

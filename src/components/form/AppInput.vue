@@ -49,6 +49,7 @@ export default Vue.extend({
         return this.value
       },
       set(v: any) {
+        if (this.type === 'number') v = Number(v)
         this.$emit('input', v)
       },
     },

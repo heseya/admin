@@ -43,6 +43,12 @@
         </card>
       </div>
 
+      <div class="product__inner-items">
+        <card>
+          <WarehouseItemsConfigurator v-model="form.items" :disabled="!canModify" />
+        </card>
+      </div>
+
       <div class="product__schemas">
         <card>
           <SchemaConfigurator v-model="form.schemas" :disabled="!canModify" />
@@ -251,6 +257,7 @@ import { formatApiNotificationError } from '@/utils/errors'
 import { UUID } from '@/interfaces/UUID'
 import { Product, ProductDTO, ProductComponentForm } from '@/interfaces/Product'
 import { ProductSet } from '@/interfaces/ProductSet'
+import WarehouseItemsConfigurator from '@/components/modules/products/WarehouseItemsConfigurator.vue'
 
 const EMPTY_FORM: ProductComponentForm = {
   id: '',
@@ -267,6 +274,7 @@ const EMPTY_FORM: ProductComponentForm = {
   gallery: [],
   tags: [],
   seo: {},
+  items: [],
 }
 
 export default Vue.extend({
@@ -290,6 +298,7 @@ export default Vue.extend({
     SeoForm,
     AuditsModal,
     Textarea,
+    WarehouseItemsConfigurator,
   },
   data: () => ({
     form: cloneDeep(EMPTY_FORM),
@@ -415,7 +424,8 @@ export default Vue.extend({
   }
 
   &__details,
-  &__schemas {
+  &__schemas,
+  &__inner-items {
     grid-column: 1/-1;
   }
 

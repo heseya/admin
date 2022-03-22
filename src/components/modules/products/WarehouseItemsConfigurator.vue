@@ -74,7 +74,7 @@
   "pl": {
     "title": "Przedmioty magazynowe",
     "titleTooltip": "Lista przedmiotów magazynowych dostępnych w danym produkcie, jeśli produkt zostanie zakupiony, to z magazynu zostanie zdjęte tyle przedmiotów, ile podane jest poniżej. Produkt nie będzie dostępny, gdy nie będzie już wystarczająco przedmiotów w magazynie.",
-    "addItem": "Dodaj wymaganie przedmiotu magazynowego",
+    "addItem": "Dodaj przedmiot magazynowy",
     "noItemsInProduct": "Ten produkt nie posiada jeszcze przedmiotów magazynowych",
     "chooseExisting": "Wybierz istniejący przedmiot magazynowy",
     "typeName": "przedmiot magazynowy",

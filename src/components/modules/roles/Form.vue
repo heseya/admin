@@ -15,6 +15,8 @@
       <br />
       <permissions-manager v-model="form.permissions" :disabled="disabled" />
       <br />
+      <slot></slot>
+      <br />
       <app-button v-if="!disabled" @click="handleSubmit(submit)">
         {{ $t('common.save') }}
       </app-button>

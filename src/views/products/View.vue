@@ -159,7 +159,7 @@
                       model="products"
                     />
                   </div>
-                  <div v-can="$p.Products.ShowMetadataPrivate" class="wide">
+                  <div v-if="product.metadata_private" class="wide">
                     <MetadataForm
                       ref="privateMeta"
                       :value="product.metadata_private"
@@ -425,8 +425,8 @@ export default Vue.extend({
     },
 
     async saveMetadata(id: string) {
-      await (this.$refs.privateMeta as MetadataRef).saveMetadata(id)
-      await (this.$refs.publicMeta as MetadataRef).saveMetadata(id)
+      await (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id)
+      await (this.$refs.publicMeta as MetadataRef)?.saveMetadata(id)
     },
 
     async submitAndGoNext() {

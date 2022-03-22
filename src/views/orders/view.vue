@@ -23,6 +23,9 @@
       <card class="order-page__cart">
         <Cart :order="order" />
       </card>
+      <card class="order-page__metadata">
+        <OrderMetadatas :order="order" />
+      </card>
       <card class="order-page__address">
         <CustomerDetails :order="order" />
       </card>
@@ -68,6 +71,7 @@ import { Order } from '@/interfaces/Order'
 import { formatApiNotificationError } from '@/utils/errors'
 import CustomerDetails from '@/components/modules/orders/CustomerDetails.vue'
 import Cart from '@/components/modules/orders/Cart.vue'
+import OrderMetadatas from '@/components/modules/orders/OrderMetadatas.vue'
 
 export default Vue.extend({
   metaInfo(this: any): any {
@@ -83,6 +87,7 @@ export default Vue.extend({
     StatusInput,
     CustomerDetails,
     Cart,
+    OrderMetadatas,
   },
   data: () => ({
     packageTemplateId: '',
@@ -129,12 +134,12 @@ export default Vue.extend({
 .order-page {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-areas: 'summary' 'status' 'cart' 'address' 'shipping';
+  grid-template-areas: 'summary' 'status' 'cart' 'address' 'shipping' 'metadata';
   grid-gap: 16px;
 
   @media ($viewport-10) {
     grid-template-columns: 2fr 1fr;
-    grid-template-areas: 'summary status' 'cart address' 'cart shipping';
+    grid-template-areas: 'summary status' 'cart address' 'cart shipping' 'cart metadata';
   }
 
   .card {
@@ -159,6 +164,10 @@ export default Vue.extend({
 
   &__address {
     grid-area: address;
+  }
+
+  &__metadata {
+    grid-area: metadata;
   }
 }
 

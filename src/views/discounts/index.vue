@@ -37,6 +37,24 @@
       >
         <DiscountForm v-model="editedItem" :disabled="!canModify" />
 
+        <template v-if="selectedItem">
+          <hr />
+          <MetadataForm
+            ref="publicMeta"
+            :value="selectedItem.metadata"
+            :disabled="!canModify"
+            model="discounts"
+          />
+          <MetadataForm
+            v-if="selectedItem.metadata_private"
+            ref="privateMeta"
+            :value="selectedItem.metadata_private"
+            :disabled="!canModify"
+            is-private
+            model="discounts"
+          />
+        </template>
+
         <template #footer>
           <div class="row">
             <app-button v-if="canModify" @click="handleSubmit(saveModal)">
@@ -101,6 +119,7 @@ import PaginatedList from '@/components/PaginatedList.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import DiscountForm from '@/components/modules/discounts/Form.vue'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
+import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { DiscountCode, DiscountCodeDto, DiscountCodeType } from '@/interfaces/DiscountCode'
 import { UUID } from '@/interfaces/UUID'
@@ -130,6 +149,7 @@ export default Vue.extend({
     PaginatedList,
     PopConfirm,
     CmsTableRow,
+    MetadataForm,
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {
@@ -144,6 +164,7 @@ export default Vue.extend({
     editedItem: {
       ...EMPTY_DISCOUNT_CODE,
     } as DiscountCodeDto & { id?: string },
+    selectedItem: null as DiscountCode | null,
   }),
   computed: {
     canModify(): boolean {
@@ -184,12 +205,14 @@ export default Vue.extend({
       this.isModalActive = true
       if (id) {
         const item = this.$accessor.discounts.getFromListById(id)
+        this.selectedItem = item
         this.editedItem = {
           ...(item || {}),
           starts_at: formatDate(item.starts_at, DATETIME_FORMAT),
           expires_at: formatDate(item.expires_at, DATETIME_FORMAT),
         }
       } else {
+        this.selectedItem = null
         this.editedItem = {
           ...EMPTY_DISCOUNT_CODE,
         }
@@ -198,6 +221,9 @@ export default Vue.extend({
     async saveModal() {
       this.$accessor.startLoading()
       if (this.editedItem.id) {
+        // Metadata can be saved only after discount is created
+        await this.saveMetadata(this.editedItem.id)
+
         await this.$accessor.discounts.update({
           id: this.editedItem.id,
           item: {
@@ -217,6 +243,11 @@ export default Vue.extend({
       await this.$accessor.discounts.remove(this.editedItem.id!)
       this.$accessor.stopLoading()
       this.isModalActive = false
+    },
+
+    async saveMetadata(id: string) {
+      await (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id)
+      await (this.$refs.publicMeta as MetadataRef)?.saveMetadata(id)
     },
   },
 })

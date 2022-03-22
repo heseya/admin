@@ -6,6 +6,12 @@ import { CdnMedia } from './Media'
 import { ProductSet } from './ProductSet'
 import { SeoMetadata, SeoMetadataDto } from './SeoMetadata'
 
+export interface ProductInnerItem {
+  id: UUID
+  name: string
+  required_quantity: number
+}
+
 export interface Product {
   id: UUID
   name: string
@@ -27,6 +33,7 @@ export interface Product {
   cover: CdnMedia
   tags: Tag[]
   seo: SeoMetadata
+  items: ProductInnerItem[]
 }
 
 export interface ProductDTO {
@@ -44,6 +51,7 @@ export interface ProductDTO {
   schemas: UUID[]
   media: UUID[]
   seo: SeoMetadataDto
+  items: Omit<ProductInnerItem, 'name'>[]
 }
 
 export interface ProductComponentForm

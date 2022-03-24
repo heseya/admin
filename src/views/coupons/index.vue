@@ -23,6 +23,11 @@
           <template #description="{ rawValue }">
             <small>{{ rawValue || '-' }}</small>
           </template>
+          <template #value="{ rawValue }">
+            -{{
+              coupon.type === DiscountType.Percentage ? `${rawValue}%` : formatCurrency(rawValue)
+            }}
+          </template>
         </cms-table-row>
       </template>
     </PaginatedList>
@@ -36,6 +41,7 @@
     "add": "Dodaj kod rabatowy",
     "table": {
       "code": "Kod",
+      "value": "Wartość",
       "used": "Wykorzystano"
     }
   },
@@ -44,6 +50,7 @@
     "add": "Add discount coupon",
     "table": {
       "code": "Code",
+      "value": "Value",
       "used": "Used"
     }
   }
@@ -56,9 +63,10 @@ import Vue from 'vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 
-import { Coupon } from '@/interfaces/SalesAndCoupons'
+import { Coupon, DiscountType } from '@/interfaces/SalesAndCoupons'
 
 import { TableConfig } from '@/interfaces/CmsTable'
+import { formatCurrency } from '@/utils/currency'
 
 export default Vue.extend({
   metaInfo(this: any) {
@@ -69,6 +77,9 @@ export default Vue.extend({
     CmsTableRow,
   },
   computed: {
+    DiscountType(): typeof DiscountType {
+      return DiscountType
+    },
     tableConfig(): TableConfig<Coupon> {
       return {
         headers: [
@@ -78,9 +89,16 @@ export default Vue.extend({
             key: 'description',
             label: this.$t('common.form.description') as string,
           },
+          { key: 'value', label: this.$t('table.value') as string, width: '0.5fr' },
           { key: 'uses', label: this.$t('table.used') as string, width: '0.5fr' },
         ],
       }
+    },
+  },
+
+  methods: {
+    formatCurrency(amount: number) {
+      return formatCurrency(amount, this.$accessor.currency)
     },
   },
 })

@@ -30,6 +30,8 @@
             :disabled="!canModify"
           />
 
+          <hr />
+
           <SaleForm v-model="form" :disabled="!canModify" />
 
           <hr />
@@ -77,6 +79,7 @@ import { Coupon, CouponDto, DiscountTargetType, DiscountType } from '@/interface
 
 import { formatApiNotificationError } from '@/utils/errors'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
+import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 
 const EMPTY_COUPON_FORM: CouponDto = {
   code: '',
@@ -93,7 +96,7 @@ const EMPTY_COUPON_FORM: CouponDto = {
 }
 
 export default Vue.extend({
-  components: { ValidationObserver, TopNav, Card, PopConfirm, SaleForm },
+  components: { ValidationObserver, TopNav, Card, PopConfirm, SaleForm, AuditsModal },
   data: () => ({
     form: cloneDeep(EMPTY_COUPON_FORM) as CouponDto,
   }),
@@ -176,8 +179,8 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.coupon-view {
-  &__form {
-  }
-}
+// .coupon-view {
+//   &__form {
+//   }
+// }
 </style>

@@ -68,6 +68,7 @@ import { Sale, SaleDto, DiscountTargetType, DiscountType } from '@/interfaces/Sa
 
 import { formatApiNotificationError } from '@/utils/errors'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
+import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 
 const EMPTY_SALE_FORM: SaleDto = {
   name: '',
@@ -83,7 +84,7 @@ const EMPTY_SALE_FORM: SaleDto = {
 }
 
 export default Vue.extend({
-  components: { ValidationObserver, TopNav, Card, PopConfirm, SaleForm },
+  components: { ValidationObserver, TopNav, Card, PopConfirm, SaleForm, AuditsModal },
   data: () => ({
     form: cloneDeep(EMPTY_SALE_FORM) as SaleDto,
   }),
@@ -166,8 +167,8 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.sale-view {
-  &__form {
-  }
-}
+// .sale-view {
+//   &__form {
+//   }
+// }
 </style>

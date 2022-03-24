@@ -71,6 +71,13 @@ export const MENU_ITEMS: MenuItem[] = [
     icon: 'icons/coupons-icon.svg',
     label: 'models.coupons',
   },
+  {
+    type: MenuItemType.Link,
+    can: PERMISSIONS_TREE.Sales.Show,
+    to: '/sales',
+    icon: 'icons/sales-icon.svg',
+    label: 'models.sales',
+  },
   { type: MenuItemType.Spacer },
   {
     type: MenuItemType.Link,

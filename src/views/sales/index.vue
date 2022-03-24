@@ -1,8 +1,8 @@
 <template>
   <div>
-    <PaginatedList :title="$t('title')" store-key="coupons" :table="tableConfig">
+    <PaginatedList :title="$t('title')" store-key="sales" :table="tableConfig">
       <template #nav>
-        <icon-button v-can="$p.Coupons.Add" to="/coupons/new">
+        <icon-button v-can="$p.Sales.Add" to="/sales/new">
           <template #icon>
             <i class="bx bx-plus"></i>
           </template>
@@ -10,16 +10,13 @@
         </icon-button>
       </template>
 
-      <template #default="{ item: coupon }">
+      <template #default="{ item: sale }">
         <cms-table-row
-          :key="coupon.id"
-          :item="coupon"
+          :key="sale.id"
+          :item="sale"
           :headers="tableConfig.headers"
-          :to="`/coupons/${coupon.id}`"
+          :to="`/sales/${sale.id}`"
         >
-          <template #code>
-            <b>{{ coupon.code }}</b>
-          </template>
           <template #description="{ rawValue }">
             <small>{{ rawValue || '-' }}</small>
           </template>
@@ -32,19 +29,19 @@
 <i18n>
 {
   "pl": {
-    "title": "Kody rabatowe",
-    "add": "Dodaj kod rabatowy",
+    "title": "Promocje",
+    "add": "Dodaj promocje",
     "table": {
       "code": "Kod",
-      "used": "Wykorzystano"
+      "used": "Zastosowano"
     }
   },
   "en": {
-    "title": "Discount coupon",
-    "add": "Add discount coupon",
+    "title": "Sales",
+    "add": "Add sale",
     "table": {
       "code": "Code",
-      "used": "Used"
+      "used": "Applied"
     }
   }
 }
@@ -56,7 +53,7 @@ import Vue from 'vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 
-import { Coupon } from '@/interfaces/SalesAndCoupons'
+import { Sale } from '@/interfaces/SalesAndCoupons'
 
 import { TableConfig } from '@/interfaces/CmsTable'
 
@@ -69,10 +66,9 @@ export default Vue.extend({
     CmsTableRow,
   },
   computed: {
-    tableConfig(): TableConfig<Coupon> {
+    tableConfig(): TableConfig<Sale> {
       return {
         headers: [
-          { key: 'code', label: this.$t('table.code') as string, width: '0.5fr' },
           { key: 'name', label: this.$t('common.form.name') as string, width: '0.5fr' },
           {
             key: 'description',

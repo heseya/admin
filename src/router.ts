@@ -137,6 +137,35 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/coupons/:id',
+      name: 'CouponsView',
+      component: () => import('./views/coupons/view.vue'),
+      meta: {
+        returnUrl: '/coupons',
+        requiresAuth: true,
+        permissions: [Permissions.Coupons.ShowDetails],
+      },
+    },
+    {
+      path: '/sales',
+      name: 'Sales',
+      component: () => import('./views/sales/index.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Sales.Show],
+      },
+    },
+    {
+      path: '/sales/:id',
+      name: 'SalesView',
+      component: () => import('./views/sales/view.vue'),
+      meta: {
+        returnUrl: '/sales',
+        requiresAuth: true,
+        permissions: [Permissions.Sales.Show],
+      },
+    },
+    {
       path: '/pages',
       name: 'Pages',
       component: () => import('./views/pages/Index.vue'),

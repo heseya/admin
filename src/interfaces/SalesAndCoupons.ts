@@ -43,7 +43,7 @@ export interface Coupon extends Sale {
 
 export interface SaleDto {
   name: string
-  description?: string
+  description: string | null
   value: number
   type: DiscountType
   priority: number

@@ -1,8 +1,8 @@
 <template>
   <div>
-    <PaginatedList :title="$t('title')" store-key="discounts" :table="tableConfig">
+    <PaginatedList :title="$t('title')" store-key="coupons" :table="tableConfig">
       <template #nav>
-        <icon-button v-can="$p.Discounts.Add" @click="openModal()">
+        <icon-button v-can="$p.Coupons.Add" @click="openModal()">
           <template #icon>
             <i class="bx bx-plus"></i>
           </template>
@@ -19,12 +19,10 @@
         >
           <template #code>
             <b>{{ discount.code }}</b>
-            <small v-if="discount.description">&nbsp;({{ discount.description }})</small>
           </template>
-          <template #discount="{ rawValue }">
-            -{{ discount.type === 0 ? `${rawValue}%` : formatCurrency(rawValue) }}
+          <template #description="{ rawValue }">
+            <small>{{ rawValue || '-' }}</small>
           </template>
-          <template #uses> {{ discount.uses }} {{ $t('from') }} {{ discount.max_uses }} </template>
         </cms-table-row>
       </template>
     </PaginatedList>
@@ -35,7 +33,7 @@
         width="550px"
         :title="editedItem.id ? $t('editTitle') : $t('newTitle')"
       >
-        <DiscountForm v-model="editedItem" :disabled="!canModify" />
+        <CouponForm v-model="editedItem" :disabled="!canModify" />
 
         <template #footer>
           <div class="row">
@@ -43,7 +41,7 @@
               {{ $t('common.save') }}
             </app-button>
             <pop-confirm
-              v-can="$p.Discounts.Remove"
+              v-can="$p.Coupons.Remove"
               :title="$t('deleteText')"
               :ok-text="$t('common.delete')"
               :cancel-text="$t('common.cancel')"
@@ -99,14 +97,14 @@ import { ValidationObserver } from 'vee-validate'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import DiscountForm from '@/components/modules/discounts/Form.vue'
+import CouponForm from '@/components/modules/coupons/Form.vue'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 
+import { Coupon } from '@/interfaces/SalesAndCoupons'
 import { DiscountCode } from '@/interfaces/DiscountCode'
 import { UUID } from '@/interfaces/UUID'
 
 import { formatCurrency } from '@/utils/currency'
-import { DATETIME_FORMAT, formatDate, formatUTC } from '@/utils/dates'
 import { TableConfig } from '@/interfaces/CmsTable'
 
 const EMPTY_DISCOUNT_CODE: DiscountCode = {
@@ -126,7 +124,7 @@ export default Vue.extend({
     return { title: this.$t('title') as string }
   },
   components: {
-    DiscountForm,
+    CouponForm,
     ValidationObserver,
     PaginatedList,
     PopConfirm,
@@ -148,27 +146,19 @@ export default Vue.extend({
   }),
   computed: {
     canModify(): boolean {
-      return this.$can(this.editedItem.id ? this.$p.Discounts.Edit : this.$p.Discounts.Add)
+      return this.$can(this.editedItem.id ? this.$p.Coupons.Edit : this.$p.Coupons.Add)
     },
-    tableConfig(): TableConfig<DiscountCode> {
+    tableConfig(): TableConfig<Coupon> {
       return {
         rowOnClick: (item) => this.openModal(item.id),
         headers: [
-          { key: 'code', label: this.$t('table.code') as string },
-          { key: 'discount', label: this.$t('table.discount') as string, width: '0.5fr' },
+          { key: 'code', label: this.$t('table.code') as string, width: '0.5fr' },
+          { key: 'name', label: this.$t('common.form.name') as string, width: '0.5fr' },
+          {
+            key: 'description',
+            label: this.$t('common.form.description') as string,
+          },
           { key: 'uses', label: this.$t('table.used') as string, width: '0.5fr' },
-          {
-            key: 'starts_at',
-            label: this.$t('table.startsAt') as string,
-            render: (v) => formatDate(v) || '-',
-            width: '0.5fr',
-          },
-          {
-            key: 'expires_at',
-            label: this.$t('table.expiresAt') as string,
-            render: (v) => formatDate(v) || '-',
-            width: '0.5fr',
-          },
         ],
       }
     },
@@ -177,19 +167,14 @@ export default Vue.extend({
     formatCurrency(amount: number) {
       return formatCurrency(amount, this.$accessor.currency)
     },
-    formatDateTime(date: string) {
-      return formatDate(date)
-    },
     openModal(id?: UUID) {
-      if (!this.$verboseCan(this.$p.Discounts.ShowDetails)) return
+      if (!this.$verboseCan(this.$p.Coupons.ShowDetails)) return
       this.isModalActive = true
       if (id) {
-        const item = this.$accessor.discounts.getFromListById(id)
+        const item = this.$accessor.coupons.getFromListById(id)
         this.editedItem = {
           ...(item || {}),
-          starts_at: formatDate(item.starts_at, DATETIME_FORMAT),
-          expires_at: formatDate(item.expires_at, DATETIME_FORMAT),
-        }
+        } as any // TODO: temporary
       } else {
         this.editedItem = {
           ...EMPTY_DISCOUNT_CODE,
@@ -199,23 +184,19 @@ export default Vue.extend({
     async saveModal() {
       this.$accessor.startLoading()
       if (this.editedItem.id) {
-        await this.$accessor.discounts.update({
+        await this.$accessor.coupons.update({
           id: this.editedItem.id,
-          item: {
-            ...this.editedItem,
-            starts_at: formatUTC(this.editedItem.starts_at),
-            expires_at: formatUTC(this.editedItem.expires_at),
-          },
+          item: this.editedItem as any, // TODO: temporary
         })
       } else {
-        await this.$accessor.discounts.add(this.editedItem)
+        await this.$accessor.coupons.add(this.editedItem as any) // TODO: temporary
       }
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
     async deleteItem() {
       this.$accessor.startLoading()
-      await this.$accessor.discounts.remove(this.editedItem.id)
+      await this.$accessor.coupons.remove(this.editedItem.id)
       this.$accessor.stopLoading()
       this.isModalActive = false
     },

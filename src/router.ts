@@ -128,12 +128,12 @@ const router = new VueRouter({
       },
     },
     {
-      path: '/discounts',
-      name: 'Discounts',
-      component: () => import('./views/discounts/index.vue'),
+      path: '/coupons',
+      name: 'Coupons',
+      component: () => import('./views/coupons/index.vue'),
       meta: {
         requiresAuth: true,
-        permissions: [Permissions.Discounts.Show],
+        permissions: [Permissions.Coupons.Show],
       },
     },
     {

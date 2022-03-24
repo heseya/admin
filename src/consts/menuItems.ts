@@ -66,10 +66,10 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     type: MenuItemType.Link,
-    can: PERMISSIONS_TREE.Discounts.Show,
-    to: '/discounts',
-    icon: 'icons/discounts-icon.svg',
-    label: 'models.discounts',
+    can: PERMISSIONS_TREE.Coupons.Show,
+    to: '/coupons',
+    icon: 'icons/coupons-icon.svg',
+    label: 'models.coupons',
   },
   { type: MenuItemType.Spacer },
   {

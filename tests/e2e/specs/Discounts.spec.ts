@@ -1,7 +1,7 @@
-describe('Discounts page', () => {
-  it('should load discounts page', () => {
+describe('Coupons page', () => {
+  it('should load coupons page', () => {
     cy.login()
-    cy.visit('/discounts')
+    cy.visit('/coupons')
     cy.get('h1').should('contain', 'Discount codes')
   })
 })

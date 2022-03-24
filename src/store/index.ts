@@ -24,7 +24,7 @@ import { settings } from './settings'
 import { authSessions } from './authSessions'
 import { apps } from './apps'
 import { webhooks } from './webhooks'
-import { discounts } from './discounts'
+import { coupons } from './coupons'
 import { tags } from './tags'
 import { productSets } from './productSets'
 
@@ -81,7 +81,7 @@ const storeModules = {
   paymentMethods,
   packageTemplates,
   settings,
-  discounts,
+  coupons,
   authSessions,
   apps,
   webhooks,

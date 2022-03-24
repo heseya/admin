@@ -74,18 +74,42 @@
     </ValidationProvider>
 
     <template v-if="form.target_type === DiscountTargetType.Products">
-      target_products: {{ form.target_products }} <br />
-      target_sets: {{ form.target_sets }} <br />
+      <autocomplete-input
+        v-model="form.target_products"
+        label="target_products"
+        model="products"
+        :disabled="disabled"
+      />
 
-      <flex-input>
-        <switch-input
-          v-model="form.target_is_allow_list"
-          horizontal
-          :label="$t('form.target_is_allow_list')"
-          :disabled="disabled"
-        />
-      </flex-input>
+      <autocomplete-input
+        v-model="form.target_sets"
+        label="target_sets"
+        model="productSets"
+        :disabled="disabled"
+      />
     </template>
+
+    <autocomplete-input
+      v-if="form.target_type === DiscountTargetType.ShippingPrice"
+      v-model="form.target_shipping_methods"
+      label="target_shipping_methods"
+      model="shippingMethods"
+      :disabled="disabled"
+    />
+
+    <flex-input
+      v-if="
+        form.target_type === DiscountTargetType.ShippingPrice ||
+        form.target_type === DiscountTargetType.Products
+      "
+    >
+      <switch-input
+        v-model="form.target_is_allow_list"
+        horizontal
+        :label="$t('form.target_is_allow_list')"
+        :disabled="disabled"
+      />
+    </flex-input>
 
     <hr />
 
@@ -100,7 +124,7 @@
       "code": "Kod",
       "discount": "Wartość zniżki",
       "priority": "Priorytet",
-      "priorityTooltip": "TODO",
+      "priorityTooltip": "Określa który w kolei będzie dany rabat przy naliczaniu wszystkich rabatów (w kolejności od największego do najmniejszego). Przy czym priorytet brany jest pod uwagę dopiero, gdy dwa rabaty mają ten sam typ przeceny i typ celu przeceny.",
       "type": "Typ przeceny",
       "target_type": "Typ celu przeceny",
       "target_is_allow_list": "Czy lista dozwolonych"
@@ -121,7 +145,7 @@
       "code": "Code",
       "discount": "Discount value",
       "priority": "Priority",
-      "priorityTooltip": "TODO",
+      "priorityTooltip": "Defines which discount will be applied first (in order of priority). Only discounts with the same type and target type will be considered.",
       "type": "Discount type",
       "target_type": "Discount target type",
       "target_is_allow_list": "Is allow list"
@@ -146,13 +170,14 @@ import { ValidationProvider } from 'vee-validate'
 
 import FlexInput from '@/components/layout/FlexInput.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
+import AutocompleteInput from '../../AutocompleteInput.vue'
 
-import { DiscountTargetType, DiscountType, SaleDto } from '@/interfaces/SalesAndCoupons'
+import { DiscountTargetType, DiscountType, SaleFormDto } from '@/interfaces/SalesAndCoupons'
 
 export default Vue.extend({
-  components: { ValidationProvider, FlexInput, SwitchInput },
+  components: { ValidationProvider, FlexInput, SwitchInput, AutocompleteInput },
   props: {
-    value: { type: Object, required: true } as Vue.PropOptions<SaleDto>,
+    value: { type: Object, required: true } as Vue.PropOptions<SaleFormDto>,
     disabled: { type: Boolean, default: false },
   },
   computed: {
@@ -163,10 +188,10 @@ export default Vue.extend({
       return DiscountTargetType
     },
     form: {
-      get(): SaleDto {
+      get(): SaleFormDto {
         return this.value
       },
-      set(v: SaleDto) {
+      set(v: SaleFormDto) {
         this.$emit('input', v)
       },
     },

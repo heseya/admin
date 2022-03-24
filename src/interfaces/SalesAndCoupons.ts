@@ -51,9 +51,21 @@ export interface SaleDto {
   target_type: DiscountTargetType
   target_products: UUID[]
   target_sets: UUID[]
+  target_shipping_methods: UUID[]
   target_is_allow_list: boolean
 }
 
+export interface SaleFormDto
+  extends Omit<SaleDto, 'target_products' | 'target_sets' | 'target_shipping_methods'> {
+  target_products: Product[]
+  target_sets: ProductSet[]
+  target_shipping_methods: ShippingMethod[]
+}
+
 export interface CouponDto extends SaleDto {
+  code: string
+}
+
+export interface CouponFormDto extends SaleFormDto {
   code: string
 }

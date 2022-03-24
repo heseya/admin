@@ -75,13 +75,19 @@ import Card from '@/components/layout/Card.vue'
 import SaleForm from '@/components/modules/sales/Form.vue'
 
 import { UUID } from '@/interfaces/UUID'
-import { Coupon, CouponDto, DiscountTargetType, DiscountType } from '@/interfaces/SalesAndCoupons'
+import {
+  Coupon,
+  CouponDto,
+  CouponFormDto,
+  DiscountTargetType,
+  DiscountType,
+} from '@/interfaces/SalesAndCoupons'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 
-const EMPTY_COUPON_FORM: CouponDto = {
+const EMPTY_COUPON_FORM: CouponFormDto = {
   code: '',
   name: '',
   description: '',
@@ -92,13 +98,14 @@ const EMPTY_COUPON_FORM: CouponDto = {
   target_type: DiscountTargetType.OrderValue,
   target_products: [],
   target_sets: [],
+  target_shipping_methods: [],
   target_is_allow_list: false,
 }
 
 export default Vue.extend({
   components: { ValidationObserver, TopNav, Card, PopConfirm, SaleForm, AuditsModal },
   data: () => ({
-    form: cloneDeep(EMPTY_COUPON_FORM) as CouponDto,
+    form: cloneDeep(EMPTY_COUPON_FORM) as CouponFormDto,
   }),
   computed: {
     id(): UUID {
@@ -123,11 +130,7 @@ export default Vue.extend({
   watch: {
     coupon(coupon: Coupon) {
       if (!this.isNew) {
-        this.form = {
-          ...cloneDeep(coupon),
-          target_products: coupon.target_products.map(({ id }) => id),
-          target_sets: coupon.target_sets.map(({ id }) => id),
-        }
+        this.form = cloneDeep(coupon)
       }
     },
     error(error) {
@@ -147,8 +150,15 @@ export default Vue.extend({
   methods: {
     async save() {
       this.$accessor.startLoading()
+      const dto: CouponDto = {
+        ...cloneDeep(this.form),
+        target_products: this.form.target_products.map(({ id }) => id),
+        target_sets: this.form.target_sets.map(({ id }) => id),
+        target_shipping_methods: this.form.target_shipping_methods.map(({ id }) => id),
+      }
+
       if (this.isNew) {
-        const coupon = await this.$accessor.coupons.add(this.form)
+        const coupon = await this.$accessor.coupons.add(dto)
         if (coupon && coupon.id) {
           this.$toast.success(this.$t('createdMessage') as string)
           this.$router.push(`/coupons/${coupon.id}`)
@@ -156,7 +166,7 @@ export default Vue.extend({
       } else {
         const success = await this.$accessor.coupons.update({
           id: this.id,
-          item: this.form,
+          item: dto,
         })
         if (success) {
           this.$toast.success(this.$t('updatedMessage') as string)

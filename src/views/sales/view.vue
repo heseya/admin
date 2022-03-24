@@ -64,13 +64,19 @@ import Card from '@/components/layout/Card.vue'
 import SaleForm from '@/components/modules/sales/Form.vue'
 
 import { UUID } from '@/interfaces/UUID'
-import { Sale, SaleDto, DiscountTargetType, DiscountType } from '@/interfaces/SalesAndCoupons'
+import {
+  Sale,
+  SaleFormDto,
+  DiscountTargetType,
+  DiscountType,
+  SaleDto,
+} from '@/interfaces/SalesAndCoupons'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 
-const EMPTY_SALE_FORM: SaleDto = {
+const EMPTY_SALE_FORM: SaleFormDto = {
   name: '',
   description: '',
   value: 0,
@@ -80,13 +86,14 @@ const EMPTY_SALE_FORM: SaleDto = {
   target_type: DiscountTargetType.OrderValue,
   target_products: [],
   target_sets: [],
+  target_shipping_methods: [],
   target_is_allow_list: false,
 }
 
 export default Vue.extend({
   components: { ValidationObserver, TopNav, Card, PopConfirm, SaleForm, AuditsModal },
   data: () => ({
-    form: cloneDeep(EMPTY_SALE_FORM) as SaleDto,
+    form: cloneDeep(EMPTY_SALE_FORM) as SaleFormDto,
   }),
   computed: {
     id(): UUID {
@@ -111,11 +118,7 @@ export default Vue.extend({
   watch: {
     sale(sale: Sale) {
       if (!this.isNew) {
-        this.form = {
-          ...cloneDeep(sale),
-          target_products: sale.target_products.map(({ id }) => id),
-          target_sets: sale.target_sets.map(({ id }) => id),
-        }
+        this.form = cloneDeep(sale)
       }
     },
     error(error) {
@@ -135,8 +138,16 @@ export default Vue.extend({
   methods: {
     async save() {
       this.$accessor.startLoading()
+
+      const dto: SaleDto = {
+        ...cloneDeep(this.form),
+        target_products: this.form.target_products.map(({ id }) => id),
+        target_sets: this.form.target_sets.map(({ id }) => id),
+        target_shipping_methods: this.form.target_shipping_methods.map(({ id }) => id),
+      }
+
       if (this.isNew) {
-        const sale = await this.$accessor.sales.add(this.form)
+        const sale = await this.$accessor.sales.add(dto)
         if (sale && sale.id) {
           this.$toast.success(this.$t('createdMessage') as string)
           this.$router.push(`/sales/${sale.id}`)
@@ -144,7 +155,7 @@ export default Vue.extend({
       } else {
         const success = await this.$accessor.sales.update({
           id: this.id,
-          item: this.form,
+          item: dto,
         })
         if (success) {
           this.$toast.success(this.$t('updatedMessage') as string)

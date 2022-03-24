@@ -24,6 +24,8 @@ export const getApiURL = () => {
       return '***REMOVED***'
     case 'store-admin-git-feature-languages-***REMOVED***':
       return 'https://sandbox.***REMOVED***'
+    case 'store-admin-git-feature-sales-***REMOVED***':
+      return 'https://feature-sales.***REMOVED***'
     default:
       return process.env.VUE_APP_API_URL || '***REMOVED***'
   }

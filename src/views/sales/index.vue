@@ -2,7 +2,7 @@
   <div>
     <PaginatedList :title="$t('title')" store-key="sales" :table="tableConfig">
       <template #nav>
-        <icon-button v-can="$p.Sales.Add" to="/sales/new">
+        <icon-button v-can="$p.Sales.Add" to="/sales/create">
           <template #icon>
             <i class="bx bx-plus"></i>
           </template>

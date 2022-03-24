@@ -19,6 +19,7 @@
     "form": {
       "name": "Nazwa",
       "description": "Opis",
+      "type": "Typ",
       "slug": "Link"
     }
   },

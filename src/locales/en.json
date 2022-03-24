@@ -19,6 +19,7 @@
     "form": {
       "name": "Name",
       "description": "Description",
+      "type": "Type",
       "slug": "Link"
     }
   },

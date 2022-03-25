@@ -16,13 +16,15 @@
 
     <empty v-if="groups.length === 0"> {{ $t('empty') }} </empty>
 
-    <condition-group
-      v-for="(group, i) in groups"
-      :key="i"
-      v-model="groups[i]"
-      :disabled="disabled"
-      @remove="removeConditionGroup(i)"
-    />
+    <div class="condition-groups-configurator__groups">
+      <condition-group
+        v-for="(group, i) in groups"
+        :key="i"
+        v-model="groups[i]"
+        :disabled="disabled"
+        @remove="removeConditionGroup(i)"
+      />
+    </div>
   </fieldset>
 </template>
 
@@ -91,6 +93,17 @@ export default Vue.extend({
     .icon-button {
       white-space: nowrap;
     }
+  }
+
+  &__title {
+    margin-bottom: 0;
+  }
+
+  &__groups {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 8px;
+    margin-top: 12px;
   }
 }
 </style>

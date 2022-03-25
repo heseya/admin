@@ -17,13 +17,15 @@
 
     <empty v-if="group.conditions.length === 0" small> {{ $t('empty') }} </empty>
 
-    <condition-form
-      v-for="(condition, i) in group.conditions"
-      :key="i"
-      v-model="group.conditions[i]"
-      :disabled="disabled"
-      @remove="removeCondition(i)"
-    />
+    <div class="condition-group__content">
+      <condition-form
+        v-for="(condition, i) in group.conditions"
+        :key="i"
+        v-model="group.conditions[i]"
+        :disabled="disabled"
+        @remove="removeCondition(i)"
+      />
+    </div>
   </div>
 </template>
 
@@ -72,8 +74,13 @@ export default Vue.extend({
     addCondition() {
       this.group.conditions = [
         ...this.group.conditions,
+        // TODO: template from some const
         {
           type: DiscountConditionType.OrderValue,
+          min_value: 0,
+          max_value: 0,
+          include_taxes: false,
+          is_in_range: false,
         },
       ]
     },
@@ -91,13 +98,8 @@ export default Vue.extend({
 .condition-group {
   border: dashed 1px $background-color-700;
   border-radius: 4px;
-  margin: 8px 0;
   padding: 8px;
   transition: 0.3s;
-
-  &:hover {
-    background-color: $background-color-500;
-  }
 
   &__header {
     display: flex;

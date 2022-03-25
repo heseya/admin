@@ -61,6 +61,17 @@
     "file": "File"
   },
 
+  "discountTypes": {
+    "percent": "Percentage discount",
+    "amount": "Amount discount"
+  },
+  "discountTargetTypes": {
+    "order-value": "Order total value",
+    "products": "Selected products",
+    "shipping-price": "Shipping price",
+    "cheapest-product": "Cheapest product in cart"
+  },
+
   "validation": {
     "required": "This field is required",
     "email": "Enter a valid email address",

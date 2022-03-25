@@ -1,7 +1,7 @@
 <template>
   <div class="coupon-view narrower-page">
     <top-nav :title="!isNew ? coupon.name : $t('newTitle')">
-      <audits-modal :id="coupon.id" model="coupons" />
+      <!-- <audits-modal :id="coupon.id" model="coupons" /> -->
 
       <pop-confirm
         v-if="!isNew"
@@ -85,7 +85,6 @@ import {
 
 import { formatApiNotificationError } from '@/utils/errors'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 
 const EMPTY_COUPON_FORM: CouponFormDto = {
   code: '',
@@ -103,7 +102,7 @@ const EMPTY_COUPON_FORM: CouponFormDto = {
 }
 
 export default Vue.extend({
-  components: { ValidationObserver, TopNav, Card, PopConfirm, SaleForm, AuditsModal },
+  components: { ValidationObserver, TopNav, Card, PopConfirm, SaleForm },
   data: () => ({
     form: cloneDeep(EMPTY_COUPON_FORM) as CouponFormDto,
   }),
@@ -130,7 +129,7 @@ export default Vue.extend({
   watch: {
     coupon(coupon: Coupon) {
       if (!this.isNew) {
-        this.form = cloneDeep(coupon)
+        this.form = cloneDeep({ ...EMPTY_COUPON_FORM, ...coupon })
       }
     },
     error(error) {

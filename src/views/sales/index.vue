@@ -36,7 +36,8 @@
     "add": "Dodaj promocje",
     "table": {
       "code": "Kod",
-      "value": "Wartość",
+      "value": "Wartość rabatu",
+      "target_type": "Typ celu przeceny",
       "used": "Zastosowano"
     }
   },
@@ -46,6 +47,7 @@
     "table": {
       "code": "Code",
       "value": "Value",
+      "target_type": "Target type",
       "used": "Applied"
     }
   }
@@ -78,13 +80,18 @@ export default Vue.extend({
     tableConfig(): TableConfig<Sale> {
       return {
         headers: [
-          { key: 'name', label: this.$t('common.form.name') as string, width: '0.5fr' },
+          { key: 'name', label: this.$t('common.form.name') as string },
           {
             key: 'description',
             label: this.$t('common.form.description') as string,
           },
-          { key: 'value', label: this.$t('table.value') as string, width: '0.5fr' },
-          { key: 'uses', label: this.$t('table.used') as string, width: '0.5fr' },
+          {
+            key: 'target_type',
+            label: this.$t('table.target_type') as string,
+            render: (key) => this.$t(`discountTargetTypes.${key}`) as string,
+          },
+          { key: 'value', label: this.$t('table.value') as string },
+          { key: 'uses', label: this.$t('table.used') as string },
         ],
       }
     },

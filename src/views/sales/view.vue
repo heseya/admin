@@ -1,7 +1,7 @@
 <template>
   <div class="sale-view narrower-page">
     <top-nav :title="!isNew ? sale.name : $t('newTitle')">
-      <audits-modal :id="sale.id" model="sales" />
+      <!-- <audits-modal :id="sale.id" model="sales" /> -->
 
       <pop-confirm
         v-if="!isNew"
@@ -74,7 +74,6 @@ import {
 
 import { formatApiNotificationError } from '@/utils/errors'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 
 const EMPTY_SALE_FORM: SaleFormDto = {
   name: '',
@@ -91,7 +90,7 @@ const EMPTY_SALE_FORM: SaleFormDto = {
 }
 
 export default Vue.extend({
-  components: { ValidationObserver, TopNav, Card, PopConfirm, SaleForm, AuditsModal },
+  components: { ValidationObserver, TopNav, Card, PopConfirm, SaleForm },
   data: () => ({
     form: cloneDeep(EMPTY_SALE_FORM) as SaleFormDto,
   }),
@@ -118,7 +117,7 @@ export default Vue.extend({
   watch: {
     sale(sale: Sale) {
       if (!this.isNew) {
-        this.form = cloneDeep(sale)
+        this.form = cloneDeep({ ...EMPTY_SALE_FORM, ...sale })
       }
     },
     error(error) {

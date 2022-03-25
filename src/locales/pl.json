@@ -61,6 +61,17 @@
     "file": "Plik"
   },
 
+  "discountTypes": {
+    "percent": "Rabat procentowy",
+    "amount": "Rabat kwotowy"
+  },
+  "discountTargetTypes": {
+    "order-value": "Całkowita wartość zamówienia",
+    "products": "Wybrane produkty",
+    "shipping-price": "Cena dostawy",
+    "cheapest-product": "Najtańszy produkt w koszyku"
+  },
+
   "validation": {
     "required": "To pole jest wymagane",
     "email": "Wprowadź poprawny adres email",

@@ -79,7 +79,7 @@
     "password": "Password must be at least 12 characters long",
     "positive": "This field must be greater than zero",
     "notNegative": "This field shall not be less than 0",
-    "lessThan": "The value must be less than or equal to {_target_}",
+    "lessThan": "The value must be less than or equal to {target}",
     "slug": "The link can only consist of lower case letters, numbers and dashes",
     "url": "The value must be a valid URL",
     "lettersOnly": "The value can only consist of letters and underscores (_)",

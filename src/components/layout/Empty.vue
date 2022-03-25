@@ -1,5 +1,5 @@
 <template>
-  <div class="empty">
+  <div class="empty" :class="{ 'empty--small': small }">
     <div class="empty__icon">
       <slot name="icon">
         <i class="bx bx-box"></i>
@@ -13,7 +13,11 @@
 
 <script lang="ts">
 import Vue from 'vue'
-export default Vue.extend({})
+export default Vue.extend({
+  props: {
+    small: { type: Boolean, default: false },
+  },
+})
 </script>
 
 <style lang="scss">
@@ -37,6 +41,22 @@ $color: lighten($font-color, 50%);
     color: $color;
     font-weight: 600;
     font-size: 1.3em;
+  }
+
+  &--small {
+    font-size: 0.9rem;
+    flex-direction: row;
+    padding: 8px;
+  }
+
+  &--small &__icon {
+    font-size: 1.4em;
+    margin-right: 10px;
+  }
+
+  &--small &__message {
+    font-weight: 300;
+    font-size: 1em;
   }
 }
 </style>

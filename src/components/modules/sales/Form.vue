@@ -27,7 +27,7 @@
         <validated-input
           v-model="form.value"
           :disabled="disabled"
-          rules="required"
+          :rules="form.type === DiscountType.Percentage ? 'required|less-than:100' : 'required'"
           type="number"
           :label="$t('form.discount')"
         />
@@ -115,7 +115,7 @@
 
     <hr />
 
-    condition_groups: {{ form.condition_groups }}
+    <ConditionsConfigurator v-model="form.condition_groups" :disabled="disabled" />
   </div>
 </template>
 
@@ -160,9 +160,10 @@ import FlexInput from '@/components/layout/FlexInput.vue'
 import AutocompleteInput from '../../AutocompleteInput.vue'
 
 import { DiscountTargetType, DiscountType, SaleFormDto } from '@/interfaces/SalesAndCoupons'
+import ConditionsConfigurator from './ConditionsConfigurator.vue'
 
 export default Vue.extend({
-  components: { ValidationProvider, FlexInput, AutocompleteInput },
+  components: { ValidationProvider, FlexInput, AutocompleteInput, ConditionsConfigurator },
   props: {
     value: { type: Object, required: true } as Vue.PropOptions<SaleFormDto>,
     disabled: { type: Boolean, default: false },

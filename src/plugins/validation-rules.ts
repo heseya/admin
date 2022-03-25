@@ -48,9 +48,9 @@ extend('not-negative', {
 extend('less-than', {
   params: ['target'],
   validate(value, { target }: Record<string, any>) {
-    return value <= target
+    return value <= Number(target)
   },
-  message: (_, v) => i18n.t('validation.lessThan', v) as string,
+  message: (_, { target }) => i18n.t('validation.lessThan', { target }) as string,
 })
 
 extend('id-required', {

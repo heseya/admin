@@ -79,7 +79,7 @@
     "password": "Hasło musi mieć przynajmniej 12 znaków",
     "positive": "To pole musi być większe od zera",
     "notNegative": "To pole nie może być mniejsze od 0",
-    "lessThan": "Wartość musi być mniejsza bądź równa od {_target_}",
+    "lessThan": "Wartość musi być mniejsza bądź równa od {target}",
     "idRequired": "Wymagane jest podanie ID",
     "slug": "Link może składać się tylko z małych liter, cyfr i myślników",
     "url": "Wartość musi być poprawnym adresem URL",

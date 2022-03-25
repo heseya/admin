@@ -1,5 +1,16 @@
 import { UUID } from './UUID'
 
+export interface DiscountConditionGroup {
+  id: UUID
+  conditions: DiscountCondition[]
+}
+
+export interface DiscountConditionGroupDto {
+  conditions: DiscountConditionDto[]
+}
+
+// ? ------------------------------------------------------------------------------------
+
 export enum DiscountConditionType {
   OrderValue = 'order-value',
   UserInRole = 'user-in-role',
@@ -14,11 +25,9 @@ export enum DiscountConditionType {
   CartLength = 'cart-length',
 }
 
-export interface DiscountConditionGroup {
+export interface DiscountCondition {
   id: UUID
   type: DiscountConditionType
 }
 
-export interface DiscountConditionGroupDto {
-  type: DiscountConditionType
-}
+export type DiscountConditionDto = Omit<DiscountCondition, 'id'>

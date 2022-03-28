@@ -40,16 +40,20 @@
   "en": {
     "newTitle": "New sale",
     "deleteText": "Are you sure, you want to delete this sale?",
-    "deletedMessage": "Sale has been deleted",
-    "createdMessage": "Sale has been created",
-    "updatedMessage": "Sale has been updated"
+    "alerts": {
+      "deleted": "Sale has been deleted",
+      "created": "Sale has been created",
+      "updated": "Sale has been updated"
+    }
   },
   "pl": {
     "newTitle": "Nowa promocja",
     "deleteText": "Jesteś pewien, że chcesz usunąć tą promocje?",
-    "deletedMessage": "Promocja została usunięta",
-    "createdMessage": "Promocja została utworzona",
-    "updatedMessage": "Promocja została zaktualizowana"
+    "alerts": {
+      "deleted": "Promocja została usunięta",
+      "created": "Promocja została utworzona",
+      "updated": "Promocja została zaktualizowana"
+    }
   }
 }
 </i18n>
@@ -148,7 +152,7 @@ export default Vue.extend({
       if (this.isNew) {
         const sale = await this.$accessor.sales.add(dto)
         if (sale && sale.id) {
-          this.$toast.success(this.$t('createdMessage') as string)
+          this.$toast.success(this.$t('alerts.created') as string)
           this.$router.push(`/sales/${sale.id}`)
         }
       } else {
@@ -157,7 +161,7 @@ export default Vue.extend({
           item: dto,
         })
         if (success) {
-          this.$toast.success(this.$t('updatedMessage') as string)
+          this.$toast.success(this.$t('alerts.updated') as string)
         }
       }
       this.$accessor.stopLoading()
@@ -167,7 +171,7 @@ export default Vue.extend({
       this.$accessor.startLoading()
       const success = await this.$accessor.sales.remove(this.id)
       if (success) {
-        this.$toast.success(this.$t('deletedMessage') as string)
+        this.$toast.success(this.$t('alerts.deleted') as string)
         this.$router.push('/sales')
       }
       this.$accessor.stopLoading()

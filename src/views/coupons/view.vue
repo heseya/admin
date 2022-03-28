@@ -49,17 +49,21 @@
   "en": {
     "newTitle": "New coupon",
     "deleteText": "Are you sure, you want to delete this coupon?",
-    "deletedMessage": "Coupon has been deleted",
-    "createdMessage": "Coupon has been created",
-    "updatedMessage": "Coupon has been updated",
+    "alerts": {
+      "deleted": "Coupon has been deleted",
+      "created": "Coupon has been created",
+      "updated": "Coupon has been updated"
+    },
     "formCode": "Code"
   },
   "pl": {
     "newTitle": "Nowy kod rabatowy",
     "deleteText": "Jesteś pewien, że chcesz usunąć ten kod rabatowy?",
-    "deletedMessage": "Kod rabatowy został usunięty",
-    "createdMessage": "Kod rabatowy został utworzony",
-    "updatedMessage": "Kod rabatowy został zaktualizowany",
+    "alerts": {
+      "deleted": "Kod rabatowy został usunięty",
+      "created": "Kod rabatowy został utworzony",
+      "updated": "Kod rabatowy został zaktualizowany"
+    },
     "formCode": "Kod"
   }
 }
@@ -159,7 +163,7 @@ export default Vue.extend({
       if (this.isNew) {
         const coupon = await this.$accessor.coupons.add(dto)
         if (coupon && coupon.id) {
-          this.$toast.success(this.$t('createdMessage') as string)
+          this.$toast.success(this.$t('alerts.created') as string)
           this.$router.push(`/coupons/${coupon.id}`)
         }
       } else {
@@ -168,7 +172,7 @@ export default Vue.extend({
           item: dto,
         })
         if (success) {
-          this.$toast.success(this.$t('updatedMessage') as string)
+          this.$toast.success(this.$t('alerts.updated') as string)
         }
       }
       this.$accessor.stopLoading()
@@ -178,7 +182,7 @@ export default Vue.extend({
       this.$accessor.startLoading()
       const success = await this.$accessor.coupons.remove(this.id)
       if (success) {
-        this.$toast.success(this.$t('deletedMessage') as string)
+        this.$toast.success(this.$t('alerts.deleted') as string)
         this.$router.push('/coupons')
       }
       this.$accessor.stopLoading()

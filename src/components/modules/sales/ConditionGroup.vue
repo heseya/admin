@@ -46,10 +46,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import cloneDeep from 'lodash/cloneDeep'
 
 import { DiscountConditionGroupDto, DiscountConditionType } from '@/interfaces/SaleCondition'
 import Empty from '@/components/layout/Empty.vue'
 import ConditionForm from './ConditionForm.vue'
+
+import { EMPTY_ORDER_VALUE_FORM } from '@/consts/salesConditionsForms'
 
 export default Vue.extend({
   components: { Empty, ConditionForm },
@@ -72,17 +75,7 @@ export default Vue.extend({
   },
   methods: {
     addCondition() {
-      this.group.conditions = [
-        ...this.group.conditions,
-        // TODO: template from some const
-        {
-          type: DiscountConditionType.OrderValue,
-          min_value: 0,
-          max_value: 0,
-          include_taxes: false,
-          is_in_range: false,
-        },
-      ]
+      this.group.conditions = [...this.group.conditions, cloneDeep(EMPTY_ORDER_VALUE_FORM)]
     },
     removeCondition(i: number) {
       this.group.conditions = this.group.conditions.filter((_, index) => index !== i)

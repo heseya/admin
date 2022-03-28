@@ -25,7 +25,7 @@ export enum DiscountConditionType {
   DateBetween = 'date-between',
   TimeBetween = 'time-between',
   MaxUses = 'max-uses',
-  MaxUsesPerUser = 'max-user-per-user',
+  MaxUsesPerUser = 'max-uses-per-user',
   WeekdayIn = 'weekday-in',
   CartLength = 'cart-length',
 }

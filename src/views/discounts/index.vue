@@ -91,6 +91,11 @@
       "used": "Wykorzystano",
       "startsAt": "Ważny od",
       "expiresAt": "Ważny do"
+    },
+    "alerts": {
+      "deleted": "Kod rabatowy został usunięty.",
+      "created": "Kod rabatowy został dodany.",
+      "updated": "Kod rabatowy został zaktualizowany."
     }
   },
   "en": {
@@ -106,6 +111,11 @@
       "used": "Used",
       "startsAt": "Valid from",
       "expiresAt": "Valid to"
+    },
+    "alerts": {
+      "deleted": "Discount code has been deleted.",
+      "created": "Discount code has been created.",
+      "updated": "Discount code has been updated."
     }
   }
 }
@@ -232,8 +242,10 @@ export default Vue.extend({
             expires_at: formatUTC(this.editedItem.expires_at),
           },
         })
+        this.$toast.success(this.$t('alerts.updated') as string)
       } else {
         await this.$accessor.discounts.add(this.editedItem)
+        this.$toast.success(this.$t('alerts.created') as string)
       }
       this.$accessor.stopLoading()
       this.isModalActive = false
@@ -241,6 +253,7 @@ export default Vue.extend({
     async deleteItem() {
       this.$accessor.startLoading()
       await this.$accessor.discounts.remove(this.editedItem.id!)
+      this.$toast.success(this.$t('alerts.deleted') as string)
       this.$accessor.stopLoading()
       this.isModalActive = false
     },

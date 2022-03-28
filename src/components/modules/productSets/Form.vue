@@ -78,13 +78,14 @@
         <br />
         <small class="label">{{ $t('common.form.description') }}</small>
         <rich-editor v-if="isEditorActive" v-model="form.description_html" :disabled="disabled" />
+        <br />
 
         <MetadataForm
           v-if="form.metadata"
           ref="publicMeta"
           :value="form.metadata"
           :disabled="disabled"
-          model="products"
+          model="productSets"
         />
         <MetadataForm
           v-if="form.metadata_private"
@@ -92,7 +93,7 @@
           :value="form.metadata_private"
           :disabled="disabled"
           is-private
-          model="products"
+          model="productSets"
         />
       </modal-form>
       <template #footer>
@@ -121,6 +122,11 @@
     "newTitle": "Nowa kolekcja",
     "editTitle": "Edycja kolekcji",
     "deleteText": "Czy na pewno chcesz usunąć tę kolekcję? Wraz z nią usuniesz wszystkie jej subkolekcje!",
+    "alerts": {
+      "updated": "Kolekcja została zaktualizowana",
+      "created": "Kolekcja została utworzona",
+      "deleted": "Kolekcja została usunięta"
+    },
     "form": {
       "slugOverride": "Nadpisz link",
       "slugOverrideHelp": "Domyślnie, początek linku wynika z linku kolekcji-rodzica. Nadpisując link, sprawiamy, że link będzie dokładnie taki jaki zostanie wpisany.",
@@ -133,6 +139,11 @@
     "newTitle": "New collection",
     "editTitle": "Edit collection",
     "deleteText": "Are you sure you want to delete this collection? All subcollections will be deleted as well!",
+    "alerts": {
+      "updated": "Collection has been updated",
+      "created": "Collection has been created",
+      "deleted": "Collection has been deleted"
+    },
     "form": {
       "slugOverride": "Override link",
       "slugOverrideHelp": "By default, the beginning of the link is derived from the parent collection's link. Overriding the link, you make sure that the link is exactly what you enter.",
@@ -271,8 +282,10 @@ export default Vue.extend({
           id: this.form.id,
           item: this.form,
         })
+        this.$toast.success(this.$t('alerts.updated') as string)
       } else {
         await this.$accessor.productSets.add(this.form)
+        this.$toast.success(this.$t('alerts.created') as string)
       }
       this.$accessor.stopLoading()
       this.$emit('close')
@@ -282,6 +295,7 @@ export default Vue.extend({
       this.$accessor.startLoading()
       await this.$accessor.productSets.remove(this.form.id)
       this.$accessor.stopLoading()
+      this.$toast.success(this.$t('alerts.deleted') as string)
       this.$emit('close')
     },
 

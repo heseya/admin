@@ -135,6 +135,11 @@
       "hiddenTooltip": "Zamówienia z tym statusem nie będą domyślnie pokazywać się na liście zamówień. Wciąż będzie można po nim filtrować.",
       "noNotification": "Nie wysyłaj powiadomień",
       "noNotificationTooltip": "Przy zmianie statusu zamówienia na ten, klientowi nie zostanie wysłane powiadomienie mailowe."
+    },
+    "alerts": {
+      "deleted": "Status zamówienia został usunięty.",
+      "created": "Status zamówienia został dodany.",
+      "updated": "Status zamówienia został zaktualizowany."
     }
   },
   "en": {
@@ -150,6 +155,11 @@
       "hiddenTooltip": "Orders with this status will not be shown on the list by default. You can still filter by them.",
       "noNotification": "Don't send notifications",
       "noNotificationTooltip": "When changing order status to this one, the customer will not receive a notification email."
+    },
+    "alerts": {
+      "deleted": "Order status has been deleted.",
+      "created": "Order status has been added.",
+      "updated": "Order status has been updated."
     }
   }
 }
@@ -236,8 +246,12 @@ export default Vue.extend({
           id: this.editedItem.id,
           item: this.editedItem,
         })
+
+        this.$toast.success(this.$t('alerts.updated') as string)
       } else {
         await this.$accessor.statuses.add(this.editedItem)
+
+        this.$toast.success(this.$t('alerts.created') as string)
       }
       this.$accessor.stopLoading()
       this.isModalActive = false
@@ -245,6 +259,8 @@ export default Vue.extend({
     async deleteItem() {
       this.$accessor.startLoading()
       await this.$accessor.statuses.remove(this.editedItem.id!)
+
+      this.$toast.success(this.$t('alerts.deleted') as string)
       this.$accessor.stopLoading()
       this.isModalActive = false
     },

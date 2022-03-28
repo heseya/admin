@@ -352,10 +352,9 @@ export const createVuexCRUD =
           commit(StoreMutations.SetError, null)
           commit(StoreMutations.SetLoading, true)
           try {
-            const stringQuery = stringifyQuery(queryParams.update || {})
             const path = payload.public ? 'metadata' : 'metadata-private'
             const { data } = await api.patch<{ data: Metadata }>(
-              `/${endpoint}/id:${payload.id}/${path}${stringQuery}`,
+              `/${endpoint}/id:${payload.id}/${path}`,
               payload.metadata,
             )
 

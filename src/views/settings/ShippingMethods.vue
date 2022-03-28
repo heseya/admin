@@ -88,6 +88,11 @@
       "allDisabled": "Metoda niedostepna w żadnym kraju",
       "whiteList": "Tylko wybrane kraje:",
       "blackList": "Wszystkie kraje poza:"
+    },
+    "alerts": {
+      "deleted": "Metoda dostawy została usunięta.",
+      "created": "Metoda dostawy została dodana.",
+      "updated": "Metoda dostawy została zaktualizowana."
     }
   },
   "en": {
@@ -101,6 +106,11 @@
       "allDisabled": "Shipping method unavailable in any country",
       "whiteList": "Only selected countries:",
       "blackList": "All countries except:"
+    },
+    "alerts": {
+      "deleted": "Shipping method has been deleted.",
+      "created": "Shipping method has been created.",
+      "updated": "Shipping method has been updated."
     }
   }
 }
@@ -205,8 +215,12 @@ export default Vue.extend({
           id: this.editedItem.id,
           item: this.editedItem,
         })
+
+        this.$toast.success(this.$t('alerts.updated') as string)
       } else {
         await this.$accessor.shippingMethods.add(this.editedItem)
+
+        this.$toast.success(this.$t('alerts.created') as string)
       }
       this.$accessor.stopLoading()
       this.isModalActive = false
@@ -215,6 +229,8 @@ export default Vue.extend({
       if (!this.editedItem.id) return
       this.$accessor.startLoading()
       await this.$accessor.shippingMethods.remove(this.editedItem.id)
+
+      this.$toast.success(this.$t('alerts.deleted') as string)
       this.$accessor.stopLoading()
       this.isModalActive = false
     },

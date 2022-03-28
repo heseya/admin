@@ -100,6 +100,11 @@
     "form": {
       "sku": "SKU",
       "quantity": "Ilość w magazynie"
+    },
+    "alerts": {
+      "deleted": "Przedmiot magazynowy został usunięty.",
+      "created": "Przedmiot magazynowy został dodany.",
+      "updated": "Przedmiot magazynowy został zaktualizowany."
     }
   },
   "en": {
@@ -111,6 +116,11 @@
     "form": {
       "sku": "SKU",
       "quantity": "Quantity in stock"
+    },
+    "alerts": {
+      "deleted": "Item in warehouse has been deleted.",
+      "created": "Item in warehouse has been added.",
+      "updated": "Item in warehouse has been updated."
     }
   }
 }
@@ -238,6 +248,7 @@ export default Vue.extend({
     },
     async saveModal() {
       this.$accessor.startLoading()
+      const isNew = !this.editedItem.id
       let success = false
       if (this.editedItem.id) {
         // Metadata can be saved only after product is created
@@ -263,11 +274,15 @@ export default Vue.extend({
 
       if (success) {
         this.isModalActive = false
+
+        if (!isNew) this.$toast.success(this.$t('alerts.updated') as string)
+        else this.$toast.success(this.$t('alerts.created') as string)
       }
     },
     async deleteItem() {
       this.$accessor.startLoading()
       await this.$accessor.items.remove(this.editedItem.id!)
+      this.$toast.success(this.$t('alerts.deleted') as string)
       this.$accessor.stopLoading()
       this.isModalActive = false
     },

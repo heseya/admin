@@ -127,6 +127,11 @@
       "height": "Wysokość (cm)",
       "width": "Szerokość (cm)",
       "depth": "Głębokość (cm)"
+    },
+    "alerts": {
+      "deleted": "Szablon przesyłki został usunięty.",
+      "created": "Szablon przesyłki został dodany.",
+      "updated": "Szablon przesyłki został zaktualizowany."
     }
   },
   "en": {
@@ -146,6 +151,11 @@
       "height": "Height (cm)",
       "width": "Width (cm)",
       "depth": "Depth (cm)"
+    },
+    "alerts": {
+      "deleted": "Package template has been deleted.",
+      "created": "Package template has been added.",
+      "updated": "Package template has been updated."
     }
   }
 }
@@ -226,8 +236,12 @@ export default Vue.extend({
           id: this.editedItem.id,
           item: this.editedItem,
         })
+
+        this.$toast.success(this.$t('alerts.updated') as string)
       } else {
         await this.$accessor.packageTemplates.add(this.editedItem)
+
+        this.$toast.success(this.$t('alerts.created') as string)
       }
       this.$accessor.stopLoading()
       this.isModalActive = false
@@ -235,6 +249,8 @@ export default Vue.extend({
     async deleteItem() {
       this.$accessor.startLoading()
       await this.$accessor.packageTemplates.remove(this.editedItem.id)
+
+      this.$toast.success(this.$t('alerts.deleted') as string)
       this.$accessor.stopLoading()
       this.isModalActive = false
     },

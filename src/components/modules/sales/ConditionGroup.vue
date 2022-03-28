@@ -93,6 +93,7 @@ export default Vue.extend({
   border-radius: 4px;
   padding: 8px;
   transition: 0.3s;
+  margin-top: 24px;
 
   &__header {
     display: flex;
@@ -102,6 +103,12 @@ export default Vue.extend({
     .icon-button {
       white-space: nowrap;
     }
+  }
+
+  &__content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 8px;
   }
 }
 </style>

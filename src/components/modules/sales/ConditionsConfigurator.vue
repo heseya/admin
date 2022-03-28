@@ -98,12 +98,5 @@ export default Vue.extend({
   &__title {
     margin-bottom: 0;
   }
-
-  &__groups {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 8px;
-    margin-top: 12px;
-  }
 }
 </style>

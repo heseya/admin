@@ -85,6 +85,7 @@
     "lettersOnly": "The value can only consist of letters and underscores (_)",
     "dateBefore": "The end date must be before the start date",
     "priceRangesDuplicates": "Price ranges shall not contain duplicate thresholds",
-    "schemaCheckbox": "A scheme cannot be both hidden and required"
+    "schemaCheckbox": "A scheme cannot be both hidden and required",
+    "timeBefore": "The end time must be before the start time"
   }
 }

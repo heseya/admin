@@ -60,7 +60,7 @@
       "product-in-set": "Produkt w kolekcji",
       "product-in": "Grupa produktów",
       "date-between": "Data pomiędzy",
-      "time-between": "Czas pomiędzy",
+      "time-between": "Godzina pomiędzy",
       "max-uses": "Maksymalna liczba użyć",
       "max-uses-per-user": "Maksymalna liczba użyć na użytkownika",
       "weekday-in": "Dzień tygodnia",
@@ -78,11 +78,22 @@ import { ValidationProvider } from 'vee-validate'
 import { DiscountConditionDto, DiscountConditionType } from '@/interfaces/SaleCondition'
 
 import OrderValueForm from './forms/OrderValueForm.vue'
+import MaxUsesForm from './forms/MaxUsesForm.vue'
+import CartLengthForm from './forms/CartLengthForm.vue'
+import DateBetweenForm from './forms/DateBetweenForm.vue'
+import TimeBetweenForm from './forms/TimeBetweenForm.vue'
 
 import * as SALES_FORMS from '@/consts/salesConditionsForms'
 
 export default Vue.extend({
-  components: { ValidationProvider, OrderValueForm },
+  components: {
+    ValidationProvider,
+    OrderValueForm,
+    MaxUsesForm,
+    CartLengthForm,
+    DateBetweenForm,
+    TimeBetweenForm,
+  },
   props: {
     value: { type: Object, required: true } as Vue.PropOptions<DiscountConditionDto>,
     disabled: { type: Boolean, default: false },
@@ -110,16 +121,20 @@ export default Vue.extend({
       switch (this.condition.type) {
         case DiscountConditionType.OrderValue:
           return 'OrderValueForm'
+        case DiscountConditionType.MaxUses:
+        case DiscountConditionType.MaxUsesPerUser:
+          return 'MaxUsesForm'
+        case DiscountConditionType.CartLength:
+          return 'CartLengthForm'
+        case DiscountConditionType.DateBetween:
+          return 'DateBetweenForm'
+        case DiscountConditionType.TimeBetween:
+          return 'TimeBetweenForm'
+        case DiscountConditionType.WeekdayIn:
         case DiscountConditionType.UserInRole:
         case DiscountConditionType.UserIn:
         case DiscountConditionType.ProductInSet:
         case DiscountConditionType.ProductIn:
-        case DiscountConditionType.DateBetween:
-        case DiscountConditionType.TimeBetween:
-        case DiscountConditionType.MaxUses:
-        case DiscountConditionType.MaxUsesPerUser:
-        case DiscountConditionType.WeekdayIn:
-        case DiscountConditionType.CartLength:
         default:
           return 'div'
       }
@@ -167,7 +182,6 @@ export default Vue.extend({
 .condition-form {
   border: dashed 1px $background-color-700;
   border-radius: 4px;
-  margin: 8px 0;
   padding: 8px;
 
   &:hover {

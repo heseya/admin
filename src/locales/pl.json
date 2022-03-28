@@ -23,7 +23,6 @@
       "slug": "Link"
     }
   },
-
   "nav": {
     "dashboard": "Dashboard",
     "settings": "Ustawienia",
@@ -31,7 +30,6 @@
     "analytics": "Statystyka",
     "moreLink": "Więcej"
   },
-
   "models": {
     "orders": "Zamówienia",
     "products": "Produkty",
@@ -49,7 +47,6 @@
     "apps": "Aplikacje",
     "webhooks": "Webhooki"
   },
-
   "schemaTypes": {
     "string": "Wartość tekstowa",
     "select": "Wybór spośród kilku opcji",
@@ -60,7 +57,6 @@
     "date": "Data",
     "file": "Plik"
   },
-
   "discountTypes": {
     "percent": "Rabat procentowy",
     "amount": "Rabat kwotowy"
@@ -71,7 +67,6 @@
     "shipping-price": "Cena dostawy",
     "cheapest-product": "Najtańszy produkt w koszyku"
   },
-
   "validation": {
     "required": "To pole jest wymagane",
     "email": "Wprowadź poprawny adres email",
@@ -86,6 +81,7 @@
     "lettersOnly": "Wartość może składać się tylko z liter i podkreślników (_)",
     "dateBefore": "Data zakończenia musi być przed datą startu",
     "priceRangesDuplicates": "Zakresy cen nie mogą zawierać zduplikowanych progów",
-    "schemaCheckbox": "Schemat nie może być jednocześnie ukryty i wymagany"
+    "schemaCheckbox": "Schemat nie może być jednocześnie ukryty i wymagany",
+    "timeBefore": "Godzina zakończenia musi być przed godziną startu"
   }
 }

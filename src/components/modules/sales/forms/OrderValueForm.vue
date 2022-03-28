@@ -5,19 +5,22 @@
         v-model="form.min_value"
         :name="`${formId}.min_value`"
         type="number"
-        :rules="`less-than:@${formId}.max_value`"
+        :rules="`not-negative|less-than:@${formId}.max_value`"
+        :disabled="disabled"
         :label="$t('form.min_value')"
       />
       <validated-input
         v-model="form.max_value"
         :name="`${formId}.max_value`"
+        rules="not-negative"
         type="number"
+        :disabled="disabled"
         :label="$t('form.max_value')"
       />
     </div>
 
     <div class="condition-form__row">
-      <switch-input v-model="form.is_in_range">
+      <switch-input v-model="form.is_in_range" :disabled="disabled">
         <template #title>
           {{ $t('form.is_in_range') }}
           <info-tooltip>{{ $t('tooltips.is_in_range') }}</info-tooltip>

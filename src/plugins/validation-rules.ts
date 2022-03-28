@@ -50,7 +50,8 @@ extend('less-than', {
   validate(value, { target }: Record<string, any>) {
     return value <= Number(target)
   },
-  message: (_, { target }) => i18n.t('validation.lessThan', { target }) as string,
+  message: (_, props) =>
+    i18n.t('validation.lessThan', { target: props._target_ || props.target }) as string,
 })
 
 extend('id-required', {

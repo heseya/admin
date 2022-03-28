@@ -3,14 +3,14 @@
     <div class="condition-form__row">
       <validated-input
         v-model="form.min_value"
-        name="min_value"
+        :name="`${formId}.min_value`"
         type="number"
-        rules="less-than:@max_value"
+        :rules="`less-than:@${formId}.max_value`"
         :label="$t('form.min_value')"
       />
       <validated-input
         v-model="form.max_value"
-        name="max_value"
+        :name="`${formId}.max_value`"
         type="number"
         :label="$t('form.max_value')"
       />
@@ -69,6 +69,11 @@ export default Vue.extend({
     disabled: { type: Boolean, default: false },
   },
   computed: {
+    formId(): string {
+      // ? Unofficial Vue api
+      // @ts-ignore
+      return this._uid
+    },
     form: {
       get(): OrderValueDiscountCondition {
         return this.value

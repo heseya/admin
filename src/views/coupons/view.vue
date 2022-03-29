@@ -77,6 +77,7 @@ import { ValidationObserver } from 'vee-validate'
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import SaleForm from '@/components/modules/sales/Form.vue'
+import PopConfirm from '@/components/layout/PopConfirm.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import {
@@ -88,7 +89,7 @@ import {
 } from '@/interfaces/SalesAndCoupons'
 
 import { formatApiNotificationError } from '@/utils/errors'
-import PopConfirm from '@/components/layout/PopConfirm.vue'
+import { mapCouponFormToCouponDto } from '@/utils/sales'
 
 const EMPTY_COUPON_FORM: CouponFormDto = {
   code: '',
@@ -102,7 +103,7 @@ const EMPTY_COUPON_FORM: CouponFormDto = {
   target_products: [],
   target_sets: [],
   target_shipping_methods: [],
-  target_is_allow_list: false,
+  target_is_allow_list: true,
 }
 
 export default Vue.extend({
@@ -153,12 +154,7 @@ export default Vue.extend({
   methods: {
     async save() {
       this.$accessor.startLoading()
-      const dto: CouponDto = {
-        ...cloneDeep(this.form),
-        target_products: this.form.target_products.map(({ id }) => id),
-        target_sets: this.form.target_sets.map(({ id }) => id),
-        target_shipping_methods: this.form.target_shipping_methods.map(({ id }) => id),
-      }
+      const dto: CouponDto = mapCouponFormToCouponDto(this.form)
 
       if (this.isNew) {
         const coupon = await this.$accessor.coupons.add(dto)

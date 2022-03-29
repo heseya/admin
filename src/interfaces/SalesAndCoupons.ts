@@ -56,7 +56,11 @@ export interface SaleDto {
 }
 
 export interface SaleFormDto
-  extends Omit<SaleDto, 'target_products' | 'target_sets' | 'target_shipping_methods'> {
+  extends Omit<
+    SaleDto,
+    'target_products' | 'target_sets' | 'target_shipping_methods' | 'condition_groups'
+  > {
+  condition_groups: DiscountConditionGroup[]
   target_products: Product[]
   target_sets: ProductSet[]
   target_shipping_methods: ShippingMethod[]

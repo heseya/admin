@@ -5,7 +5,7 @@
         <app-select
           :value="condition.type"
           :disabled="disabled"
-          :label="$t('common.form.type')"
+          :label="$t('type')"
           @input="changeConditionType"
         >
           <a-select-option
@@ -28,7 +28,13 @@
     </div>
 
     <div class="condition-form__content">
-      <component :is="formComponent" v-model="condition" :disabled="disabled">
+      <component
+        :is="formComponent"
+        :key="condition.type"
+        v-model="condition"
+        :disabled="disabled"
+        :type="condition.type"
+      >
         {{ condition }}
       </component>
     </div>
@@ -38,6 +44,7 @@
 <i18n>
 {
   "en": {
+    "type": "Condition type",
     "discountConditionTypes": {
       "order-value": "Order value",
       "user-in-role": "User belongs to role",
@@ -53,6 +60,7 @@
     }
   },
   "pl": {
+    "type": "Typ warunku",
     "discountConditionTypes": {
       "order-value": "Wartość zamówienia",
       "user-in-role": "Użytkownik należący do roli",
@@ -82,6 +90,8 @@ import MaxUsesForm from './forms/MaxUsesForm.vue'
 import CartLengthForm from './forms/CartLengthForm.vue'
 import DateBetweenForm from './forms/DateBetweenForm.vue'
 import TimeBetweenForm from './forms/TimeBetweenForm.vue'
+import WeekdayInForm from './forms/WeekdayInForm.vue'
+import EntitiesForm from './forms/EntitiesForm.vue'
 
 import * as SALES_FORMS from '@/consts/salesConditionsForms'
 
@@ -93,6 +103,8 @@ export default Vue.extend({
     CartLengthForm,
     DateBetweenForm,
     TimeBetweenForm,
+    WeekdayInForm,
+    EntitiesForm,
   },
   props: {
     value: { type: Object, required: true } as Vue.PropOptions<DiscountConditionDto>,
@@ -131,10 +143,12 @@ export default Vue.extend({
         case DiscountConditionType.TimeBetween:
           return 'TimeBetweenForm'
         case DiscountConditionType.WeekdayIn:
+          return 'WeekdayInForm'
         case DiscountConditionType.UserInRole:
         case DiscountConditionType.UserIn:
         case DiscountConditionType.ProductInSet:
         case DiscountConditionType.ProductIn:
+          return 'EntitiesForm'
         default:
           return 'div'
       }

@@ -32,79 +32,105 @@ export enum DiscountConditionType {
 
 // ? ------------------------------------------------------------------------------------
 
-export interface OrderValueDiscountCondition {
+export interface OrderValueDiscountConditionDto {
   type: DiscountConditionType.OrderValue
   min_value: number | null
   max_value: number | null
   include_taxes: boolean
   is_in_range: boolean
 }
+export type OrderValueDiscountCondition = OrderValueDiscountConditionDto & { id: UUID }
 
-export interface UserInRoleDiscountCondition {
+export interface UserInRoleDiscountConditionDto {
   type: DiscountConditionType.UserInRole
+  roles: UUID[]
+  is_allow_list: boolean
+}
+export type UserInRoleDiscountCondition = Omit<UserInRoleDiscountConditionDto, 'roles'> & {
+  id: UUID
   roles: Role[]
-  is_allow_list: boolean
 }
 
-export interface UserInDiscountCondition {
+export interface UserInDiscountConditionDto {
   type: DiscountConditionType.UserIn
+  users: UUID[]
+  is_allow_list: boolean
+}
+export type UserInDiscountCondition = Omit<UserInDiscountConditionDto, 'users'> & {
+  id: UUID
   users: User[]
-  is_allow_list: boolean
 }
 
-export interface ProductInSetDiscountCondition {
+export interface ProductInSetDiscountConditionDto {
   type: DiscountConditionType.ProductInSet
+  product_sets: UUID[]
+  is_allow_list: boolean
+}
+export type ProductInSetDiscountCondition = Omit<
+  ProductInSetDiscountConditionDto,
+  'product_sets'
+> & {
+  id: UUID
   product_sets: ProductSet[]
-  is_allow_list: boolean
 }
 
-export interface ProductInDiscountCondition {
+export interface ProductInDiscountConditionDto {
   type: DiscountConditionType.ProductIn
-  products: Product[]
+  products: UUID[]
   is_allow_list: boolean
 }
+export type ProductInDiscountCondition = Omit<ProductInDiscountConditionDto, 'products'> & {
+  id: UUID
+  products: Product[]
+}
 
-export interface DateBetweenDiscountCondition {
+export interface DateBetweenDiscountConditionDto {
   type: DiscountConditionType.DateBetween
   start_at: string | null // Date
   end_at: string | null // Date
   is_in_range: boolean
 }
+export type DateBetweenDiscountCondition = DateBetweenDiscountConditionDto & { id: UUID }
 
-export interface TimeBetweenDiscountCondition {
+export interface TimeBetweenDiscountConditionDto {
   type: DiscountConditionType.TimeBetween
   start_at: string | null // H:i:s
   end_at: string | null // H:i:s
   is_in_range: boolean
 }
+export type TimeBetweenDiscountCondition = TimeBetweenDiscountConditionDto & { id: UUID }
 
-export interface MaxUsesDiscountCondition {
+export interface MaxUsesDiscountConditionDto {
   type: DiscountConditionType.MaxUses
   max_uses: number
 }
+export type MaxUsesDiscountCondition = MaxUsesDiscountConditionDto & { id: UUID }
 
-export interface MaxUsesPerUserDiscountCondition {
+export interface MaxUsesPerUserDiscountConditionDto {
   type: DiscountConditionType.MaxUsesPerUser
   max_uses: number
 }
+export type MaxUsesPerUserDiscountCondition = MaxUsesPerUserDiscountConditionDto & { id: UUID }
 
-export interface WeekDayInDiscountCondition {
+export interface WeekdayInDiscountConditionDto {
   type: DiscountConditionType.WeekdayIn
   /**
    * [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
    */
   weekday: [boolean, boolean, boolean, boolean, boolean, boolean, boolean]
 }
+export type WeekdayInDiscountCondition = WeekdayInDiscountConditionDto & { id: UUID }
 
-export interface CartLengthDiscountCondition {
+export interface CartLengthDiscountConditionDto {
   type: DiscountConditionType.CartLength
   min_value: number | null
   max_value: number | null
 }
+export type CartLengthDiscountCondition = CartLengthDiscountConditionDto & { id: UUID }
 
 // ? ------------------------------------------------------------------------------------
 
-export type DiscountConditionDto =
+export type DiscountCondition =
   | OrderValueDiscountCondition
   | UserInRoleDiscountCondition
   | UserInDiscountCondition
@@ -114,7 +140,18 @@ export type DiscountConditionDto =
   | TimeBetweenDiscountCondition
   | MaxUsesDiscountCondition
   | MaxUsesPerUserDiscountCondition
-  | WeekDayInDiscountCondition
+  | WeekdayInDiscountCondition
   | CartLengthDiscountCondition
 
-export type DiscountCondition = DiscountConditionDto & { id: UUID }
+export type DiscountConditionDto =
+  | OrderValueDiscountConditionDto
+  | UserInRoleDiscountConditionDto
+  | UserInDiscountConditionDto
+  | ProductInSetDiscountConditionDto
+  | ProductInDiscountConditionDto
+  | DateBetweenDiscountConditionDto
+  | TimeBetweenDiscountConditionDto
+  | MaxUsesDiscountConditionDto
+  | MaxUsesPerUserDiscountConditionDto
+  | WeekdayInDiscountConditionDto
+  | CartLengthDiscountConditionDto

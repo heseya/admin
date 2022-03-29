@@ -157,6 +157,26 @@
         :label="$t('form.validation')"
       />
     </Zone>
+
+    <br />
+
+    <template v-if="form.id">
+      <MetadataForm
+        ref="publicMeta"
+        :value="schema.metadata"
+        :disabled="disabled"
+        model="schemas"
+      />
+      <MetadataForm
+        v-if="schema.metadata_private"
+        ref="privateMeta"
+        :value="schema.metadata_private"
+        :disabled="disabled"
+        is-private
+        model="schemas"
+      />
+    </template>
+
     <br />
     <app-button data-cy="submit-btn" :disabled="disabled" @click.stop="handleSubmit(submit)">
       {{ $t('common.save') }}
@@ -235,8 +255,9 @@ import Zone from '@/components/layout/Zone.vue'
 import SelectSchemaOptions from '@/components/modules/schemas/SelectSchemaOptions.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import Selector from '@/components/Selector.vue'
+import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
-import { Schema, SchemaType } from '@/interfaces/Schema'
+import { Schema, SchemaDto, SchemaType } from '@/interfaces/Schema'
 
 import { CLEAR_FORM, CLEAR_OPTION } from '@/consts/schemaConsts'
 
@@ -249,6 +270,7 @@ export default Vue.extend({
     SelectSchemaOptions,
     ModalForm,
     Selector,
+    MetadataForm,
   },
   props: {
     schema: {
@@ -262,7 +284,7 @@ export default Vue.extend({
     disabled: { type: Boolean, default: false },
   },
   data: () => ({
-    form: cloneDeep(CLEAR_FORM),
+    form: cloneDeep(CLEAR_FORM) as SchemaDto & { id?: string },
     defaultOption: 0,
     isUsedSchemaModalActive: false,
     usedSchemaName: '',
@@ -350,6 +372,9 @@ export default Vue.extend({
             id = schema.id
           }
         } else {
+          // Metadata can be saved only after product is created
+          await this.saveMetadata(this.form.id)
+
           const success = await this.$accessor.schemas.update({
             id: this.form.id,
             // @ts-ignore // TODO: Schema DTO
@@ -365,6 +390,11 @@ export default Vue.extend({
       } finally {
         this.$accessor.stopLoading()
       }
+    },
+
+    async saveMetadata(id: string) {
+      await (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id)
+      await (this.$refs.publicMeta as MetadataRef)?.saveMetadata(id)
     },
   },
 })

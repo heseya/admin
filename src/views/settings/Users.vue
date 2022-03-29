@@ -36,6 +36,25 @@
       >
         <UserForm v-model="editedUser" :disabled="!canModify" @close="isModalActive = false" />
 
+        <hr />
+
+        <template v-if="selectedUser">
+          <MetadataForm
+            ref="publicMeta"
+            :value="selectedUser.metadata"
+            :disabled="!canModify"
+            model="users"
+          />
+          <MetadataForm
+            v-if="selectedUser.metadata_private"
+            ref="privateMeta"
+            :value="selectedUser.metadata_private"
+            :disabled="!canModify"
+            is-private
+            model="users"
+          />
+        </template>
+
         <template #footer>
           <div class="row">
             <app-button v-if="canModify" @click="handleSubmit(saveModal)">
@@ -94,9 +113,10 @@ import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import UserForm from '@/components/modules/users/Form.vue'
 import Avatar from '@/components/layout/Avatar.vue'
+import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { UUID } from '@/interfaces/UUID'
-import { CreateUserDTO, EditUserDTO } from '@/interfaces/User'
+import { CreateUserDTO, EditUserDTO, User } from '@/interfaces/User'
 
 const CLEAR_USER: CreateUserDTO = {
   name: '',
@@ -116,6 +136,7 @@ export default Vue.extend({
     PopConfirm,
     ValidationObserver,
     Avatar,
+    MetadataForm,
   },
   beforeRouteLeave(_to, _from, next) {
     if (this.isModalActive) {
@@ -128,6 +149,7 @@ export default Vue.extend({
   data: () => ({
     isModalActive: false,
     editedUser: clone(CLEAR_USER) as CreateUserDTO | EditUserDTO,
+    selectedUser: null as User | null,
   }),
   computed: {
     isEditedUserCurrentUser(): boolean {
@@ -148,12 +170,16 @@ export default Vue.extend({
           ...user,
           roles: user.roles?.map(({ id }) => id) || [],
         }
+        this.selectedUser = user
       } else {
         this.editedUser = clone(CLEAR_USER)
       }
     },
     async saveModal() {
       this.$accessor.startLoading()
+
+      // Metadata can be saved only after user is created
+      if (!this.isNewUser(this.editedUser)) await this.saveMetadata(this.editedUser.id)
 
       const updated = this.isNewUser(this.editedUser)
         ? await this.$accessor.users.add(this.editedUser)
@@ -180,6 +206,11 @@ export default Vue.extend({
 
     isNewUser(user: CreateUserDTO | EditUserDTO): user is CreateUserDTO {
       return 'id' in user === false
+    },
+
+    async saveMetadata(id: string) {
+      await (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id)
+      await (this.$refs.publicMeta as MetadataRef)?.saveMetadata(id)
     },
   },
 })

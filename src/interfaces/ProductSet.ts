@@ -3,6 +3,7 @@ import { UUID } from './UUID'
 import { SeoMetadata, SeoMetadataDto } from './SeoMetadata'
 import { CdnMedia } from './Media'
 import { Attribute } from './Attribute'
+import { Metadata } from './Metadata'
 
 export interface ProductSet {
   id: UUID
@@ -19,6 +20,8 @@ export interface ProductSet {
   children: ProductSet[]
   seo: SeoMetadata
   attributes: Attribute[]
+  metadata: Metadata
+  metadata_private?: Metadata
 }
 
 export interface ProductSetDTO {

@@ -6,6 +6,7 @@ import { CdnMedia } from './Media'
 import { ProductSet } from './ProductSet'
 import { SeoMetadata, SeoMetadataDto } from './SeoMetadata'
 import { ProductAttribute } from './Attribute'
+import { Metadata } from './Metadata'
 
 export interface Product {
   id: UUID
@@ -29,6 +30,8 @@ export interface Product {
   tags: Tag[]
   seo: SeoMetadata
   attributes: ProductAttribute[]
+  metadata: Metadata
+  metadata_private?: Metadata
 }
 
 export interface ProductDTO {
@@ -55,7 +58,16 @@ export interface ProductDTO {
 export interface ProductComponentForm
   extends Omit<
     Product,
-    'id' | 'sets' | 'brand' | 'category' | 'cover' | 'visible' | 'price_min' | 'price_max'
+    | 'id'
+    | 'sets'
+    | 'brand'
+    | 'category'
+    | 'cover'
+    | 'visible'
+    | 'price_min'
+    | 'price_max'
+    | 'metadata'
+    | 'metadata_private'
   > {
   id?: UUID
   sets: UUID[]
@@ -66,4 +78,8 @@ export interface ProductItem {
   name: string
   sku: string
   quantity: number
+  metadata: Metadata
+  metadata_private?: Metadata
 }
+
+export type ProductItemDto = Omit<ProductItem, 'id' | 'metadata' | 'metadata_private'>

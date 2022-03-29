@@ -68,6 +68,24 @@
             type="number"
             :label="$t('form.depth')"
           />
+
+          <template v-if="editedItem.id">
+            <hr />
+            <MetadataForm
+              ref="publicMeta"
+              :value="editedItem.metadata"
+              :disabled="!canModify"
+              model="packageTemplates"
+            />
+            <MetadataForm
+              v-if="editedItem.metadata_private"
+              ref="privateMeta"
+              :value="editedItem.metadata_private"
+              :disabled="!canModify"
+              is-private
+              model="packageTemplates"
+            />
+          </template>
         </modal-form>
         <template #footer>
           <div class="row">
@@ -109,6 +127,11 @@
       "height": "Wysokość (cm)",
       "width": "Szerokość (cm)",
       "depth": "Głębokość (cm)"
+    },
+    "alerts": {
+      "deleted": "Szablon przesyłki został usunięty.",
+      "created": "Szablon przesyłki został dodany.",
+      "updated": "Szablon przesyłki został zaktualizowany."
     }
   },
   "en": {
@@ -128,6 +151,11 @@
       "height": "Height (cm)",
       "width": "Width (cm)",
       "depth": "Depth (cm)"
+    },
+    "alerts": {
+      "deleted": "Package template has been deleted.",
+      "created": "Package template has been added.",
+      "updated": "Package template has been updated."
     }
   }
 }
@@ -142,6 +170,7 @@ import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
+import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import { PackageTemplate } from '@/interfaces/PackageTemplate'
@@ -153,6 +182,7 @@ const CLEAR_PACKAGE_TEMPALTE: PackageTemplate = {
   height: 0,
   depth: 0,
   weight: 0,
+  metadata: {},
 }
 
 export default Vue.extend({
@@ -167,6 +197,7 @@ export default Vue.extend({
     ModalForm,
     PopConfirm,
     ValidationObserver,
+    MetadataForm,
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {
@@ -198,12 +229,19 @@ export default Vue.extend({
     async saveModal() {
       this.$accessor.startLoading()
       if (this.editedItem.id) {
+        // Metadata can be saved only after package template is created
+        await this.saveMetadata(this.editedItem.id)
+
         await this.$accessor.packageTemplates.update({
           id: this.editedItem.id,
           item: this.editedItem,
         })
+
+        this.$toast.success(this.$t('alerts.updated') as string)
       } else {
         await this.$accessor.packageTemplates.add(this.editedItem)
+
+        this.$toast.success(this.$t('alerts.created') as string)
       }
       this.$accessor.stopLoading()
       this.isModalActive = false
@@ -211,8 +249,15 @@ export default Vue.extend({
     async deleteItem() {
       this.$accessor.startLoading()
       await this.$accessor.packageTemplates.remove(this.editedItem.id)
+
+      this.$toast.success(this.$t('alerts.deleted') as string)
       this.$accessor.stopLoading()
       this.isModalActive = false
+    },
+
+    async saveMetadata(id: string) {
+      await (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id)
+      await (this.$refs.publicMeta as MetadataRef)?.saveMetadata(id)
     },
   },
 })

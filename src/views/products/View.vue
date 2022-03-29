@@ -156,6 +156,26 @@
                 />
                 <br />
                 <br />
+                <template v-if="!isNew">
+                  <div class="wide">
+                    <MetadataForm
+                      ref="publicMeta"
+                      :value="product.metadata"
+                      :disabled="!canModify"
+                      model="products"
+                    />
+                  </div>
+                  <div v-if="product.metadata_private" class="wide">
+                    <MetadataForm
+                      ref="privateMeta"
+                      :value="product.metadata_private"
+                      :disabled="!canModify"
+                      is-private
+                      model="products"
+                    />
+                  </div>
+                </template>
+                <br />
                 <div class="flex">
                   <app-button
                     v-if="canModify"
@@ -248,6 +268,7 @@ import RichEditor from '@/components/form/RichEditor.vue'
 import SchemaConfigurator from '@/components/modules/schemas/Configurator.vue'
 import TagsSelect from '@/components/TagsSelect.vue'
 import SeoForm from '@/components/modules/seo/Accordion.vue'
+import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 import Textarea from '@/components/form/Textarea.vue'
@@ -301,6 +322,7 @@ export default Vue.extend({
     AuditsModal,
     Textarea,
     AttributesConfigurator,
+    MetadataForm,
   },
   data: () => ({
     form: cloneDeep(EMPTY_FORM),
@@ -402,6 +424,9 @@ export default Vue.extend({
         ? (this.$t('messages.created') as string)
         : (this.$t('messages.updated') as string)
 
+      // Metadata can be saved only after product is created
+      if (!this.isNew) await this.saveMetadata(this.id)
+
       const item = this.isNew
         ? await this.$accessor.products.add(apiPayload)
         : await this.$accessor.products.update({ id: this.id, item: apiPayload })
@@ -418,6 +443,12 @@ export default Vue.extend({
         }
       }
     },
+
+    async saveMetadata(id: string) {
+      await (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id)
+      await (this.$refs.publicMeta as MetadataRef)?.saveMetadata(id)
+    },
+
     async submitAndGoNext() {
       await this.saveProduct()
       this.$router.push('/products/create')

@@ -1,9 +1,12 @@
-import { DiscountCode } from '@/interfaces/DiscountCode'
+import { DiscountCode, DiscountCodeDto } from '@/interfaces/DiscountCode'
 import { createVuexCRUD } from './generator'
 
-export const discounts = createVuexCRUD<DiscountCode>()('discounts', {
-  state: {},
-  getters: {},
-  mutations: {},
-  actions: {},
-})
+export const discounts = createVuexCRUD<DiscountCode, DiscountCodeDto, DiscountCodeDto>()(
+  'discounts',
+  {
+    state: {},
+    getters: {},
+    mutations: {},
+    actions: {},
+  },
+)

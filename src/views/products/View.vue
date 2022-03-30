@@ -383,7 +383,7 @@ export default Vue.extend({
       this.$accessor.startLoading()
 
       const attributes = await updateProductAttributeOptions(
-        this.form.attributes.filter((v) => v.selected_option),
+        this.form.attributes.filter((v) => v.selected_options),
       )
 
       const apiPayload: ProductDTO = {
@@ -393,7 +393,10 @@ export default Vue.extend({
         tags: this.form.tags.map(({ id }) => id),
         schemas: this.form.schemas.map(({ id }) => id),
         attributes: attributes.reduce(
-          (acc, { id, selected_option: option }) => ({ ...acc, [id]: option.id || undefined }),
+          (acc, { id, selected_options: option }) => ({
+            ...acc,
+            [id]: option.map((v) => v.id) || undefined,
+          }),
           {},
         ),
       }

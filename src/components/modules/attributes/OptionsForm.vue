@@ -2,11 +2,7 @@
   <div class="attributes-options-form">
     <div class="attributes-options-form__header">
       <h4>{{ $t('title') }}</h4>
-      <icon-button
-        size="small"
-        :disabled="disabled || type !== AttributeType.SingleOption"
-        @click="addOption"
-      >
+      <icon-button size="small" :disabled="disabled || !areOptionsEditable" @click="addOption">
         <template #icon>
           <i class="bx bx-plus"></i>
         </template>
@@ -125,6 +121,11 @@ export default Vue.extend({
     },
     AttributeType(): typeof AttributeType {
       return AttributeType
+    },
+    areOptionsEditable(): boolean {
+      return (
+        this.type === AttributeType.SingleOption || this.type === AttributeType.MultiChoiceOption
+      )
     },
   },
   methods: {

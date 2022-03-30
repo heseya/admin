@@ -26,7 +26,7 @@
           <div class="product-attribute__content">
             <component
               :is="getInputComponent(attribute.type)"
-              v-model="attribute.selected_option"
+              v-model="attribute.selected_options"
               :attribute="attribute"
               :type="attribute.type"
             />
@@ -136,12 +136,12 @@ export default Vue.extend({
     loadGlobalAttributes() {
       const attributesToAdd = this.globalAttributes
         .filter((attr) => this.attributes.findIndex((a) => a.id === attr.id) === -1)
-        .map((attr) => ({ ...attr, selected_option: undefined as any })) // TODO
+        .map((attr) => ({ ...attr, selected_options: [undefined as any] }))
       if (attributesToAdd.length > 0) this.attributes = [...this.attributes, ...attributesToAdd]
     },
 
-    addAttribute(attribute: ProductAttribute) {
-      this.attributes = [...this.attributes, attribute]
+    addAttribute(attribute: Attribute) {
+      this.attributes = [...this.attributes, { ...attribute, selected_options: [undefined as any] }]
       this.isSelectorModalActive = false
     },
 
@@ -155,6 +155,7 @@ export default Vue.extend({
         case AttributeType.Date:
           return 'DateAndNumberTypeInput'
         case AttributeType.SingleOption:
+        case AttributeType.MultiChoiceOption: // TODO: dedicated component?
           return 'SingleSelectTypeInput'
       }
     },

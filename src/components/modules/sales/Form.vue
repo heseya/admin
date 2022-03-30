@@ -27,7 +27,11 @@
         <validated-input
           v-model="form.value"
           :disabled="disabled"
-          :rules="form.type === DiscountType.Percentage ? 'required|less-than:100' : 'required'"
+          :rules="{
+            required: true,
+            'not-negative': true,
+            'less-than': form.type === DiscountType.Percentage ? 100 : false,
+          }"
           type="number"
           :label="$t('form.discount')"
         />

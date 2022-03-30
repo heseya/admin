@@ -12,7 +12,7 @@ export enum DiscountType {
 
 export enum DiscountTargetType {
   OrderValue = 'order-value',
-  Products = 'products', // (Połączone z product-sets)
+  Products = 'products', // (Includes also product-sets)
   ShippingPrice = 'shipping-price',
   CheapestProduct = 'cheapest-product',
 }

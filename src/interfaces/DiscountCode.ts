@@ -1,11 +1,19 @@
 /* eslint-disable camelcase */
 import { UUID } from './UUID'
 
+/**
+ * @deprecated
+ * ! Deprecated in favor of Coupons & Sales
+ */
 export enum DiscountCodeType {
   Percentage = 0,
   Amount = 1,
 }
 
+/**
+ * @deprecated
+ * ! Deprecated in favor of Coupons & Sales
+ */
 export interface DiscountCode {
   id: UUID
   code: string

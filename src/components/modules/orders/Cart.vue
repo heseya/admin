@@ -23,7 +23,7 @@
       </field>
       <field
         v-if="order.discounts && order.discounts.length"
-        :label="$t('summary.discounts')"
+        :label="$t('summary.coupons')"
         horizontal
       >
         <div class="discount-summary">
@@ -73,7 +73,7 @@
     "summary": {
       "cart": "Cart total",
       "shipping": "Shipping price",
-      "discounts": "Discounts",
+      "coupons": "Coupons",
       "total": "Total"
     }
   },
@@ -90,7 +90,7 @@
     "summary": {
       "cart": "Wartość koszyka",
       "shipping": "Koszt przesyłki",
-      "discounts": "Rabaty",
+      "coupons": "Rabaty",
       "total": "Do zapłaty"
     }
   }

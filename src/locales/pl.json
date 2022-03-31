@@ -54,6 +54,7 @@
 
   "attributeTypes": {
     "single-option": "Tekstowy jednokrotnego wyboru",
+    "multi-choice-option": "Tekstowy wielokrotnego wyboru",
     "date": "Data",
     "number": "Liczbowy jednokrotnego wyboru"
   },

@@ -54,6 +54,7 @@
 
   "attributeTypes": {
     "single-option": "Text single choice",
+    "multi-choice-option": "Text multi choice",
     "date": "Date",
     "number": "Number single choice"
   },

@@ -65,9 +65,9 @@ export default Vue.extend({
   components: { Empty },
   props: {
     value: {
-      type: Object,
-      default: () => undefined,
-    } as Vue.PropOptions<AttributeOption | undefined>,
+      type: Array,
+      default: () => [],
+    } as Vue.PropOptions<AttributeOption[]>,
     attribute: {
       type: Object,
       required: true,
@@ -82,11 +82,11 @@ export default Vue.extend({
   computed: {
     selectedOptionId: {
       get(): UUID | undefined {
-        return this.value?.id || undefined
+        return this.value[0]?.id || undefined
       },
       set(v: UUID | null) {
         const option = this.options.find((o) => o.id === v) || null
-        this.$emit('input', option)
+        this.$emit('input', [option])
       },
     },
   },

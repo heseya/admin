@@ -1,28 +1,30 @@
 <template>
-  <div v-if="type === AttributeType.Date" class="date-input">
-    <app-input
-      v-model="selectedOption.value_date"
-      class="date-input__input"
-      type="date"
-      name="value_date"
-    />
-  </div>
-  <div v-else-if="type === AttributeType.Number" class="number-input">
-    <app-input
-      v-model="selectedOption.name"
-      class="number-input__input"
-      name="name"
-      :label="$t('displayName')"
-      :placeholder="$t('namePlaceholder')"
-    />
-    <app-input
-      v-model="selectedOption.value_number"
-      class="number-input__input"
-      type="number"
-      name="value_number"
-      :label="$t('value')"
-      :placeholder="$t('valuePlaceholder')"
-    />
+  <div v-if="selectedOption[0]">
+    <div v-if="type === AttributeType.Date" class="date-input">
+      <app-input
+        v-model="selectedOption[0].value_date"
+        class="date-input__input"
+        type="date"
+        name="value_date"
+      />
+    </div>
+    <div v-else-if="type === AttributeType.Number" class="number-input">
+      <app-input
+        v-model="selectedOption[0].name"
+        class="number-input__input"
+        name="name"
+        :label="$t('displayName')"
+        :placeholder="$t('namePlaceholder')"
+      />
+      <app-input
+        v-model="selectedOption[0].value_number"
+        class="number-input__input"
+        type="number"
+        name="value_number"
+        :label="$t('value')"
+        :placeholder="$t('valuePlaceholder')"
+      />
+    </div>
   </div>
 </template>
 
@@ -50,7 +52,7 @@ import { cloneDeep } from 'lodash'
 import { AttributeOptionDto, AttributeType, ProductAttribute } from '@/interfaces/Attribute'
 
 const EMPTY_OPTION: AttributeOptionDto = {
-  name: 'temp',
+  name: '',
   value_number: null,
   value_date: null,
 }
@@ -62,9 +64,9 @@ export default Vue.extend({
       required: true,
     } as Vue.PropOptions<AttributeType.Number | AttributeType.Date>,
     value: {
-      type: Object,
-      default: () => undefined,
-    } as Vue.PropOptions<AttributeOptionDto | undefined>,
+      type: Array,
+      default: () => [cloneDeep(EMPTY_OPTION)],
+    } as Vue.PropOptions<AttributeOptionDto[] | undefined[]>,
     attribute: {
       type: Object,
       required: true,
@@ -76,10 +78,10 @@ export default Vue.extend({
   }),
   computed: {
     selectedOption: {
-      get(): AttributeOptionDto {
-        return this.value || cloneDeep(EMPTY_OPTION)
+      get(): AttributeOptionDto[] {
+        return (this.value as AttributeOptionDto[]) || [cloneDeep(EMPTY_OPTION)]
       },
-      set(option: AttributeOptionDto) {
+      set(option: AttributeOptionDto[]) {
         this.$emit('input', option)
       },
     },
@@ -97,7 +99,7 @@ export default Vue.extend({
   },
   methods: {
     setDefaultValue() {
-      if (!this.value) this.selectedOption = cloneDeep(EMPTY_OPTION)
+      if (!this.value?.[0]) this.selectedOption = [cloneDeep(EMPTY_OPTION)]
     },
   },
 })

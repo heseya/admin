@@ -50,9 +50,9 @@ export interface ProductDTO {
   media: UUID[]
   seo: SeoMetadataDto
   /**
-   * Attribute.id -> AttributeOption.id
+   * Attribute.id -> AttributeOption.id[]
    */
-  attributes: Record<UUID, UUID>
+  attributes: Record<UUID, UUID[]>
 }
 
 export interface ProductComponentForm

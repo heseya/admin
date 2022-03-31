@@ -31,10 +31,14 @@ export default Vue.extend({
     } as Vue.PropOptions<object>,
   },
   data: () => ({
-    article: false as any,
+    article: null as any,
   }),
   watch: {
     value(value: string) {
+      console.log('🚀 ~ SET: ArticleEditor.vue ~ line 38 ~ value ~ value', {
+        same: value === this.value,
+        value,
+      })
       if (value !== this.value) this.article.editor.setContent({ html: value })
     },
   },
@@ -54,11 +58,14 @@ export default Vue.extend({
   },
   methods: {
     init() {
-      const me = this
       const subscribe = {
-        'editor.change': function (event: any) {
-          var html = event.get('html')
-          me.handleInput(html)
+        'editor.change': (event: any) => {
+          const html = event.get('html')
+          console.log('🚀 ~ GET: ArticleEditor.vue ~ line 60 ~ init ~ html', {
+            same: html === this.value,
+            html,
+          })
+          if (html !== this.value) this.handleInput(html)
           return html
         },
       }
@@ -73,24 +80,26 @@ export default Vue.extend({
       }
 
       // call
-      var app = ArticleEditor(this.$refs.article, config)
+      const article = ArticleEditor(this.$refs.article, config)
+      console.log('🚀 ~ INIT: ArticleEditor.vue ~ line 77 ~ init ~ article', article)
 
       // set instance
-      this.article = app
-      this.$parent.article = app
+      this.article = article
+      this.$parent.article = article
     },
     destroy() {
       if (!this.article) return
 
       // Call destroy on article to cleanup event handlers
+      this.article.stop()
       this.article.destroy()
 
       // unset instance for garbage collection
       this.article = null
       this.$parent.article = null
     },
-    handleInput(val: any) {
-      this.$emit('input', val)
+    handleInput(value: any) {
+      this.$emit('input', value)
     },
   },
 })

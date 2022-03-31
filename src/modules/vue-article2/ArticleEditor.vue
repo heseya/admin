@@ -35,10 +35,6 @@ export default Vue.extend({
   }),
   watch: {
     value(value: string) {
-      console.log('🚀 ~ SET: ArticleEditor.vue ~ line 38 ~ value ~ value', {
-        same: value === this.value,
-        value,
-      })
       if (value !== this.value) this.article.editor.setContent({ html: value })
     },
   },
@@ -61,10 +57,6 @@ export default Vue.extend({
       const subscribe = {
         'editor.change': (event: any) => {
           const html = event.get('html')
-          console.log('🚀 ~ GET: ArticleEditor.vue ~ line 60 ~ init ~ html', {
-            same: html === this.value,
-            html,
-          })
           if (html !== this.value) this.handleInput(html)
           return html
         },
@@ -81,7 +73,6 @@ export default Vue.extend({
 
       // call
       const article = ArticleEditor(this.$refs.article, config)
-      console.log('🚀 ~ INIT: ArticleEditor.vue ~ line 77 ~ init ~ article', article)
 
       // set instance
       this.article = article

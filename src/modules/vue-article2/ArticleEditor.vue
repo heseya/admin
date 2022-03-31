@@ -12,7 +12,6 @@
 // @ts-nocheck
 import Vue from 'vue'
 export default Vue.extend({
-  article: false,
   props: {
     value: {
       default: '',
@@ -29,24 +28,27 @@ export default Vue.extend({
     config: {
       default: {},
       type: Object,
-    },
+    } as Vue.PropOptions<object>,
   },
+  data: () => ({
+    article: false as any,
+  }),
   watch: {
-    value(value: any) {
-      this.article.editor.setContent({ html: value })
+    value(value: string) {
+      if (value !== this.value) this.article.editor.setContent({ html: value })
     },
   },
   mounted() {
     try {
       this.init()
-    } catch (e) {
+    } catch (e: any) {
       console.error('[Article Editor]', e)
     }
   },
   beforeDestroy() {
     try {
       this.destroy()
-    } catch (e) {
+    } catch (e: any) {
       console.error('[Article Editor]', e)
     }
   },
@@ -54,7 +56,7 @@ export default Vue.extend({
     init() {
       const me = this
       const subscribe = {
-        'editor.change': function (event) {
+        'editor.change': function (event: any) {
           var html = event.get('html')
           me.handleInput(html)
           return html
@@ -93,8 +95,3 @@ export default Vue.extend({
   },
 })
 </script>
-
-<style lang="scss">
-.article-editor {
-}
-</style>

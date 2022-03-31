@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { assign, cloneDeep, isNil } from 'lodash'
+import { assign, cloneDeep, isArray, isNil } from 'lodash'
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 import { ActionTree, GetterTree, MutationTree } from 'vuex'
 
@@ -363,14 +363,15 @@ export const createVuexCRUD =
             commit(StoreMutations.EditData, {
               key: 'id',
               value: payload.id,
-              item: { [path]: data.data },
+              // When removing all metadata, empty response is an array instead of object
+              item: { [path]: isArray(data.data) ? {} : data.data },
             })
             commit(StoreMutations.SetLoading, false)
             return data.data
           } catch (error: any) {
             commit(StoreMutations.SetError, error)
             commit(StoreMutations.SetLoading, false)
-            return []
+            return {}
           }
         },
 

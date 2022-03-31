@@ -75,8 +75,10 @@ export default Vue.extend({
     async saveMetadata(id: string) {
       this.isLoading = true
       try {
-        await (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id)
-        await (this.$refs.publicMeta as MetadataRef)?.saveMetadata(id)
+        await Promise.all([
+          (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id),
+          (this.$refs.publicMeta as MetadataRef)?.saveMetadata(id),
+        ])
         this.$toast.success(this.$t('metadataSaved') as string)
       } catch {
         this.$toast.error(this.$t('metadataError') as string)

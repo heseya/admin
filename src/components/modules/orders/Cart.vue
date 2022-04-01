@@ -8,18 +8,14 @@
       <span class="order-title">{{ $t('header.quantity') }}</span>
       <span class="order-title">{{ $t('header.total') }}</span>
     </div>
-    <CartItem
-      v-for="item in order.products"
-      :key="item.id"
-      :item="item"
-      :discount="order.discounts[0]"
-      :products-count="productsCount"
-    />
+    <CartItem v-for="item in order.products" :key="item.id" :item="item" />
     <hr />
     <div class="order-cart__summary">
-      <field :label="$t('summary.cart')" horizontal> {{ formatCurrency(cartTotal) }} </field>
+      <field :label="$t('summary.cart')" horizontal>
+        {{ formatCurrency(order.cart_total_initial) }}
+      </field>
       <field :label="$t('summary.shipping')" horizontal>
-        {{ formatCurrency(order.shipping_price) }}
+        {{ formatCurrency(order.shipping_price_initial) }}
       </field>
       <field
         v-if="order.discounts && order.discounts.length"
@@ -36,12 +32,9 @@
               :key="discount.id"
               class="discount-summary__item"
             >
-              <b>{{ discount.code }}</b> :
-              {{
-                discount.type === DiscountCodeType.Percentage
-                  ? `${discount.discount}%`
-                  : formatCurrency(-discount.discount)
-              }}
+              <!-- TODO: split discounts by type -->
+              <b>{{ discount.code || discount.name }}</b> :
+              {{ formatCurrency(-discount.applied_discount) }}
             </div>
           </info-tooltip>
         </div>
@@ -105,7 +98,6 @@ import CartItem from '@/components/layout/CartItem.vue'
 import { Order } from '@/interfaces/Order'
 import { formatCurrency } from '@/utils/currency'
 import Field from './Field.vue'
-import { DiscountCodeType } from '@/interfaces/DiscountCode'
 
 export default Vue.extend({
   components: { CartItem, Field },
@@ -116,17 +108,10 @@ export default Vue.extend({
     } as Vue.PropOptions<Order>,
   },
   computed: {
-    productsCount(): number {
-      return this.order.products?.reduce((sum, item) => sum + item.quantity, 0) || 0
-    },
-    cartTotal(): number {
-      return this.order.products?.reduce((sum, item) => sum + item.price * item.quantity, 0) || 0
-    },
     totalDiscount(): number {
-      return this.order.summary - this.order.shipping_price - this.cartTotal
-    },
-    DiscountCodeType(): typeof DiscountCodeType {
-      return DiscountCodeType
+      return this.order.discounts
+        .map((d) => d.applied_discount)
+        .reduce((sum, discount) => sum + discount, 0)
     },
   },
   methods: {

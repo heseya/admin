@@ -1,5 +1,6 @@
 import { accessor } from '@/store'
 import { AttributeOption, ProductAttribute } from '@/interfaces/Attribute'
+import { groupBy } from 'lodash'
 
 type SuccessfulOptionResult = { success: true; option: AttributeOption }
 type FailedOptionResult = { success: false; error: any }
@@ -40,7 +41,8 @@ export const updateProductAttributeOptions = async (rawAttributes: ProductAttrib
 
   const updatedAttributes = await Promise.all(updatesPromises)
 
-  const attributes = updatedAttributes
+  // There are duplicated attributes, all with only one selected option (becouse they've been flatted before)
+  const singleOptionAttributes = updatedAttributes
     .filter((a) => a.selected_options.success)
     .map(
       (a): ProductAttribute =>
@@ -49,6 +51,12 @@ export const updateProductAttributeOptions = async (rawAttributes: ProductAttrib
           selected_options: [(a.selected_options as SuccessfulOptionResult).option],
         } as ProductAttribute),
     )
+
+  // We need to group duplicated attributes by id, and merge their selected options
+  const attributes = Object.values(groupBy(singleOptionAttributes, 'id')).map((attributes) => ({
+    ...attributes[0],
+    selected_options: attributes.map((a) => a.selected_options[0]),
+  }))
 
   return attributes
 }

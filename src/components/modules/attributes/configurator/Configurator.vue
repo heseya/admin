@@ -86,7 +86,7 @@ import ListItem from '@/components/layout/ListItem.vue'
 import AttributeSelector from '@/components/modules/attributes/Selector.vue'
 
 import DateAndNumberTypeInput from '@/components/modules/attributes/configurator/DateAndNumberTypeInput.vue'
-import SingleSelectTypeInput from '@/components/modules/attributes/configurator/SingleSelectTypeInput.vue'
+import SelectTypeInput from '@/components/modules/attributes/configurator/SelectTypeInput.vue'
 
 import { UUID } from '@/interfaces/UUID'
 
@@ -97,7 +97,7 @@ export default Vue.extend({
     ListItem,
     AttributeSelector,
     DateAndNumberTypeInput,
-    SingleSelectTypeInput,
+    SelectTypeInput,
   },
   props: {
     value: {
@@ -155,8 +155,8 @@ export default Vue.extend({
         case AttributeType.Date:
           return 'DateAndNumberTypeInput'
         case AttributeType.SingleOption:
-        case AttributeType.MultiChoiceOption: // TODO: dedicated component?
-          return 'SingleSelectTypeInput'
+        case AttributeType.MultiChoiceOption:
+          return 'SelectTypeInput'
       }
     },
   },

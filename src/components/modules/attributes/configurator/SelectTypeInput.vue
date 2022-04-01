@@ -1,9 +1,10 @@
 <template>
   <div class="single-select-input">
     <app-select
-      v-model="selectedOptionId"
+      :value="isMutipleMode ? multiOptionsIds : singleOptionId"
       class="single-select-input__select"
       option-filter-prop="label"
+      :mode="isMutipleMode ? 'multiple' : 'default'"
       :disabled="disabled"
       show-search
       allow-clear
@@ -11,6 +12,7 @@
       :placeholder="$t('placeholder')"
       @search="onSearch"
       @inputKeydown="onInputKeydown"
+      @change="setValue"
     >
       <a-select-option
         v-for="option in options"
@@ -54,7 +56,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { AttributeOption, ProductAttribute } from '@/interfaces/Attribute'
+import { AttributeOption, AttributeType, ProductAttribute } from '@/interfaces/Attribute'
 import { UUID } from '@/interfaces/UUID'
 import { formatApiNotificationError } from '@/utils/errors'
 import Empty from '@/components/layout/Empty.vue'
@@ -72,6 +74,10 @@ export default Vue.extend({
       type: Object,
       required: true,
     } as Vue.PropOptions<ProductAttribute>,
+    type: {
+      type: String,
+      required: true,
+    } as Vue.PropOptions<AttributeType>,
     disabled: { type: Boolean, default: false },
   },
   data: () => ({
@@ -80,14 +86,16 @@ export default Vue.extend({
     searchedValue: '',
   }),
   computed: {
-    selectedOptionId: {
-      get(): UUID | undefined {
-        return this.value[0]?.id || undefined
-      },
-      set(v: UUID | null) {
-        const option = this.options.find((o) => o.id === v) || null
-        this.$emit('input', [option])
-      },
+    isMutipleMode(): boolean {
+      return this.type === AttributeType.MultiChoiceOption
+    },
+
+    singleOptionId(): UUID | undefined {
+      return this.value?.[0]?.id || undefined
+    },
+
+    multiOptionsIds(): UUID[] {
+      return (this.value || []).map((v) => v?.id).filter(Boolean) || []
     },
   },
   watch: {
@@ -99,6 +107,15 @@ export default Vue.extend({
     this.fetchAttribute()
   },
   methods: {
+    setValue(v: UUID | UUID[] | undefined) {
+      if (this.isMutipleMode) {
+        const options = this.options.filter((o) => (v as UUID[])?.includes(o.id))
+        this.$emit('input', options)
+      } else {
+        const option = this.options.find((o) => o.id === (v as UUID | undefined)) || null
+        this.$emit('input', [option])
+      }
+    },
     onInputKeydown(event: KeyboardEvent) {
       if (event.key === 'Enter') this.createOption()
     },
@@ -126,7 +143,9 @@ export default Vue.extend({
       if (result.success) {
         const option = result.option
         this.options = [...this.options, option]
-        this.selectedOptionId = option.id
+
+        this.setValue(this.isMutipleMode ? [...this.multiOptionsIds, option.id] : option.id)
+
         this.searchedValue = ''
       } else {
         this.$toast.error(formatApiNotificationError(result.error))

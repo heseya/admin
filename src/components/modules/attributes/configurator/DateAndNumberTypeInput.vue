@@ -1,5 +1,5 @@
 <template>
-  <div v-if="selectedOption[0]">
+  <div v-if="selectedOption[0]" class="input-wrapper">
     <div v-if="type === AttributeType.Date" class="date-input">
       <app-input
         v-model="selectedOption[0].value_date"
@@ -106,22 +106,43 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
+.input-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
 .date-input {
   &__input {
-    min-width: 330px;
+    width: 100%;
+    max-width: 380px;
     margin-bottom: 0;
   }
 }
 
 .number-input {
   display: flex;
+  flex-direction: column;
+
+  @media ($viewport-4) {
+    flex-direction: row;
+  }
 
   &__input {
     display: block;
     margin-bottom: 0;
-    margin-left: 10px;
-    margin-top: -20px;
-    width: 160px;
+    width: 100%;
+
+    @media ($viewport-4) {
+      &:not(:first-child) {
+        margin-left: 10px;
+      }
+    }
+
+    @media ($viewport-6) {
+      max-width: 185px;
+      margin-top: -20px;
+    }
   }
 }
 </style>

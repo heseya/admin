@@ -191,8 +191,15 @@ export default Vue.extend({
 .product-attribute {
   width: 100%;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: column;
+
+  @media ($viewport-6) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
 
   &__title {
     display: flex;
@@ -204,6 +211,9 @@ export default Vue.extend({
   }
 
   &__content {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
     font-weight: 400;
   }
 }

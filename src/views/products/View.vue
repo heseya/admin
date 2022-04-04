@@ -49,6 +49,12 @@
         </card>
       </div>
 
+      <div class="product__attributes">
+        <card>
+          <AttributesConfigurator v-model="form.attributes" :disabled="!canModify" />
+        </card>
+      </div>
+
       <div class="product__details">
         <card>
           <validation-observer v-slot="{ handleSubmit }">
@@ -150,6 +156,26 @@
                 />
                 <br />
                 <br />
+                <template v-if="!isNew">
+                  <div class="wide">
+                    <MetadataForm
+                      ref="publicMeta"
+                      :value="product.metadata"
+                      :disabled="!canModify"
+                      model="products"
+                    />
+                  </div>
+                  <div v-if="product.metadata_private" class="wide">
+                    <MetadataForm
+                      ref="privateMeta"
+                      :value="product.metadata_private"
+                      :disabled="!canModify"
+                      is-private
+                      model="products"
+                    />
+                  </div>
+                </template>
+                <br />
                 <div class="flex">
                   <app-button
                     v-if="canModify"
@@ -231,7 +257,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import slugify from 'slugify'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import cloneDeep from 'lodash/cloneDeep'
 
@@ -243,11 +268,16 @@ import RichEditor from '@/components/form/RichEditor.vue'
 import SchemaConfigurator from '@/components/modules/schemas/Configurator.vue'
 import TagsSelect from '@/components/TagsSelect.vue'
 import SeoForm from '@/components/modules/seo/Accordion.vue'
+import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 import Textarea from '@/components/form/Textarea.vue'
+import AttributesConfigurator from '@/components/modules/attributes/configurator/Configurator.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
+import { generateSlug } from '@/utils/generateSlug'
+import { updateProductAttributeOptions } from '@/services/updateProductAttributeOptions'
+
 import { UUID } from '@/interfaces/UUID'
 import { Product, ProductDTO, ProductComponentForm } from '@/interfaces/Product'
 import { ProductSet } from '@/interfaces/ProductSet'
@@ -267,6 +297,7 @@ const EMPTY_FORM: ProductComponentForm = {
   gallery: [],
   tags: [],
   seo: {},
+  attributes: [],
 }
 
 export default Vue.extend({
@@ -290,6 +321,8 @@ export default Vue.extend({
     SeoForm,
     AuditsModal,
     Textarea,
+    MetadataForm,
+    AttributesConfigurator,
   },
   data: () => ({
     form: cloneDeep(EMPTY_FORM),
@@ -355,7 +388,7 @@ export default Vue.extend({
     },
     editSlug() {
       if (this.isNew) {
-        this.form.slug = slugify(this.form.name, { lower: true, remove: /[.]/g })
+        this.form.slug = generateSlug(this.form.name)
       }
     },
     async deleteProduct() {
@@ -367,20 +400,35 @@ export default Vue.extend({
       }
       this.$accessor.stopLoading()
     },
+
     async saveProduct() {
+      this.$accessor.startLoading()
+
+      const attributes = await updateProductAttributeOptions(
+        this.form.attributes.filter((v) => v.selected_options),
+      )
+
       const apiPayload: ProductDTO = {
         ...this.form,
         order: this.form.order || 0,
         media: this.form.gallery.map(({ id }) => id),
         tags: this.form.tags.map(({ id }) => id),
         schemas: this.form.schemas.map(({ id }) => id),
+        attributes: attributes.reduce(
+          (acc, { id, selected_options: option }) => ({
+            ...acc,
+            [id]: option.map((v) => v.id) || undefined,
+          }),
+          {},
+        ),
       }
-
-      this.$accessor.startLoading()
 
       const successMessage = this.isNew
         ? (this.$t('messages.created') as string)
         : (this.$t('messages.updated') as string)
+
+      // Metadata can be saved only after product is created
+      if (!this.isNew) await this.saveMetadata(this.id)
 
       const item = this.isNew
         ? await this.$accessor.products.add(apiPayload)
@@ -398,6 +446,14 @@ export default Vue.extend({
         }
       }
     },
+
+    async saveMetadata(id: string) {
+      await Promise.all([
+        (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id),
+        (this.$refs.publicMeta as MetadataRef)?.saveMetadata(id),
+      ])
+    },
+
     async submitAndGoNext() {
       await this.saveProduct()
       this.$router.push('/products/create')
@@ -415,7 +471,8 @@ export default Vue.extend({
   }
 
   &__details,
-  &__schemas {
+  &__schemas,
+  &__attributes {
     grid-column: 1/-1;
   }
 

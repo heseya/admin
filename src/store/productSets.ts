@@ -31,11 +31,15 @@ export const productSets = createVuexCRUD<ProductSet, ProductSetDTO, ProductSetD
 
       [StoreMutations.EditData](
         state,
-        { key, value, item }: { key: keyof ProductSet; value: unknown; item: ProductSet },
+        {
+          key,
+          value,
+          item,
+        }: { key: keyof ProductSet; value: unknown; item: Partial<ProductSet> & { id: UUID } },
       ) {
         if (state.selected[key] === value) {
           // Edits selected item
-          state.selected = item
+          state.selected = { ...state.selected, ...item }
           return
         }
 

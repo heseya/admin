@@ -26,6 +26,7 @@ import { discounts } from './discounts'
 import { tags } from './tags'
 import { productSets } from './productSets'
 import { languages } from './languages'
+import { attributes } from './attributes'
 
 Vue.use(Vuex)
 
@@ -78,6 +79,7 @@ const storeModules = {
   tags,
   productSets,
   languages,
+  attributes,
 }
 
 const storePattern = {

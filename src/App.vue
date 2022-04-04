@@ -71,6 +71,10 @@ export default Vue.extend({
     '$accessor.auth.getIdentityToken'(token) {
       this.tokenChannel.emit('set', token)
     },
+
+    '$i18n.locale'(locale) {
+      this.mainChannel.emit('uiLanguage:set', locale)
+    },
   },
   created() {
     initMicroApps()
@@ -87,6 +91,7 @@ export default Vue.extend({
         coreUrl: getApiURL(),
         token: this.$accessor.auth.getIdentityToken,
         user: this.$accessor.auth.user,
+        uiLanguage: this.$i18n.locale,
       })
     })
 

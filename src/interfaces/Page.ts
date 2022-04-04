@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 import { UUID } from './UUID'
 import { SeoMetadata, SeoMetadataDto } from './SeoMetadata'
+import { Metadata } from './Metadata'
 
 export interface Page {
   id: UUID
@@ -9,6 +10,8 @@ export interface Page {
   content_html: string
   public: boolean
   seo: SeoMetadata
+  metadata: Metadata
+  metadata_private?: Metadata
 }
 
 export interface PageDto {

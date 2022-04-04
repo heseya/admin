@@ -23,6 +23,12 @@
           url="/settings/tags"
         />
         <SettingsItem
+          v-can="$p.Tags.Show"
+          :name="$t('models.attributes')"
+          icon="bx bx-spreadsheet"
+          url="/settings/attributes"
+        />
+        <SettingsItem
           v-can="$p.Products.Show"
           :name="$t('models.schemas')"
           icon="bx bxs-customize"

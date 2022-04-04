@@ -14,12 +14,17 @@
     "blockList": "Lista zabronionych",
     "yes": "Tak",
     "no": "Nie",
+    "true": "Prawda",
+    "false": "Fałsz",
     "edit": "Edytuj",
     "continue": "Kontynuuj",
     "form": {
       "name": "Nazwa",
       "description": "Opis",
-      "slug": "Link"
+      "type": "Typ",
+      "slug": "Link",
+      "label": "Etykieta",
+      "value": "Wartość"
     }
   },
 
@@ -46,7 +51,15 @@
     "roles": "Role",
     "apps": "Aplikacje",
     "webhooks": "Webhooki",
-    "languages": "Języki"
+    "languages": "Języki",
+    "attributes": "Cechy"
+  },
+
+  "attributeTypes": {
+    "single-option": "Tekstowy jednokrotnego wyboru",
+    "multi-choice-option": "Tekstowy wielokrotnego wyboru",
+    "date": "Data",
+    "number": "Liczbowy jednokrotnego wyboru"
   },
 
   "schemaTypes": {
@@ -64,7 +77,7 @@
     "required": "To pole jest wymagane",
     "email": "Wprowadź poprawny adres email",
     "repeatPassword": "Powtórzone hasło różni się od nowego hasła",
-    "password": "Hasło musi mieć przynajmniej 10 znaków oraz zawierać małą, dużą literę, cyfrę i znak specjalny",
+    "password": "Hasło musi mieć przynajmniej 12 znaków",
     "positive": "To pole musi być większe od zera",
     "notNegative": "To pole nie może być mniejsze od 0",
     "lessThan": "Wartość musi być mniejsza bądź równa od {_target_}",

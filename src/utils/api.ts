@@ -10,6 +10,8 @@ export const getApiURL = () => {
       return 'https://***REMOVED***.***REMOVED***'
     case '***REMOVED***':
       return '***REMOVED***'
+    case '***REMOVED***.heseya.com':
+      return 'https://store-api.***REMOVED***.pl'
     case '***REMOVED***':
       return 'https://rc.***REMOVED***'
     case '***REMOVED***':
@@ -18,6 +20,8 @@ export const getApiURL = () => {
       return 'https://client-demo.***REMOVED***'
     case 'client-2-demo-admin.heseya.com':
       return 'https://client-2-demo.***REMOVED***'
+    case 'client-3-demo-admin.heseya.com':
+      return 'https://client-3-demo.***REMOVED***'
     case '***REMOVED***':
       return '***REMOVED***'
     case 'store-admin-git-feature-languages-***REMOVED***':

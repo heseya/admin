@@ -12,7 +12,6 @@
 // @ts-nocheck
 import Vue from 'vue'
 export default Vue.extend({
-  article: false,
   props: {
     value: {
       default: '',
@@ -29,34 +28,36 @@ export default Vue.extend({
     config: {
       default: {},
       type: Object,
-    },
+    } as Vue.PropOptions<object>,
   },
+  data: () => ({
+    article: null as any,
+  }),
   watch: {
-    value(value: any) {
-      this.article.editor.setContent({ html: value })
+    value(value: string) {
+      if (value !== this.value) this.article.editor.setContent({ html: value })
     },
   },
   mounted() {
     try {
       this.init()
-    } catch (e) {
+    } catch (e: any) {
       console.error('[Article Editor]', e)
     }
   },
   beforeDestroy() {
     try {
       this.destroy()
-    } catch (e) {
+    } catch (e: any) {
       console.error('[Article Editor]', e)
     }
   },
   methods: {
     init() {
-      const me = this
       const subscribe = {
-        'editor.change': function (event) {
-          var html = event.get('html')
-          me.handleInput(html)
+        'editor.change': (event: any) => {
+          const html = event.get('html')
+          if (html !== this.value) this.handleInput(html)
           return html
         },
       }
@@ -71,30 +72,26 @@ export default Vue.extend({
       }
 
       // call
-      var app = ArticleEditor(this.$refs.article, config)
+      const article = ArticleEditor(this.$refs.article, config)
 
       // set instance
-      this.article = app
-      this.$parent.article = app
+      this.article = article
+      this.$parent.article = article
     },
     destroy() {
       if (!this.article) return
 
       // Call destroy on article to cleanup event handlers
+      this.article.stop()
       this.article.destroy()
 
       // unset instance for garbage collection
       this.article = null
       this.$parent.article = null
     },
-    handleInput(val: any) {
-      this.$emit('input', val)
+    handleInput(value: any) {
+      this.$emit('input', value)
     },
   },
 })
 </script>
-
-<style lang="scss">
-.article-editor {
-}
-</style>

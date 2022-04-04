@@ -14,6 +14,12 @@
         {{ allText || $t('all') }}
       </a-select-option>
       <slot></slot>
+
+      <template #notFoundContent>
+        <slot name="notFoundContent">
+          <empty> {{ $t('notFoundContent') }} </empty>
+        </slot>
+      </template>
     </a-select>
     <span class="app-input__error">
       <slot name="error"> {{ error }} </slot>
@@ -24,10 +30,12 @@
 <i18n>
 {
   "pl": {
-    "all": "Wszystkie"
+    "all": "Wszystkie",
+    "notFoundContent": "Brak wyników"
   },
   "en": {
-    "all": "All"
+    "all": "All",
+    "notFoundContent": "No results found"
   }
 }
 </i18n>
@@ -35,9 +43,11 @@
 <script lang="ts">
 /* eslint-disable vue/require-default-prop */
 import Vue from 'vue'
+import Empty from '../layout/Empty.vue'
 
 export default Vue.extend({
   name: 'AppSelect',
+  components: { Empty },
   props: {
     value: [String, Number, Array],
     label: String,

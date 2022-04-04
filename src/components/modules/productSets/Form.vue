@@ -78,6 +78,23 @@
         <br />
         <small class="label">{{ $t('common.form.description') }}</small>
         <rich-editor v-if="isEditorActive" v-model="form.description_html" :disabled="disabled" />
+        <br />
+
+        <MetadataForm
+          v-if="form.metadata"
+          ref="publicMeta"
+          :value="form.metadata"
+          :disabled="disabled"
+          model="productSets"
+        />
+        <MetadataForm
+          v-if="form.metadata_private"
+          ref="privateMeta"
+          :value="form.metadata_private"
+          :disabled="disabled"
+          is-private
+          model="productSets"
+        />
       </modal-form>
       <template #footer>
         <div class="row">
@@ -105,6 +122,11 @@
     "newTitle": "Nowa kolekcja",
     "editTitle": "Edycja kolekcji",
     "deleteText": "Czy na pewno chcesz usunąć tę kolekcję? Wraz z nią usuniesz wszystkie jej subkolekcje!",
+    "alerts": {
+      "updated": "Kolekcja została zaktualizowana",
+      "created": "Kolekcja została utworzona",
+      "deleted": "Kolekcja została usunięta"
+    },
     "form": {
       "slugOverride": "Nadpisz link",
       "slugOverrideHelp": "Domyślnie, początek linku wynika z linku kolekcji-rodzica. Nadpisując link, sprawiamy, że link będzie dokładnie taki jaki zostanie wpisany.",
@@ -117,6 +139,11 @@
     "newTitle": "New collection",
     "editTitle": "Edit collection",
     "deleteText": "Are you sure you want to delete this collection? All subcollections will be deleted as well!",
+    "alerts": {
+      "updated": "Collection has been updated",
+      "created": "Collection has been created",
+      "deleted": "Collection has been deleted"
+    },
     "form": {
       "slugOverride": "Override link",
       "slugOverrideHelp": "By default, the beginning of the link is derived from the parent collection's link. Overriding the link, you make sure that the link is exactly what you enter.",
@@ -130,7 +157,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import slugify from 'slugify'
 import { cloneDeep } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
 
@@ -140,10 +166,13 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import SeoForm from '@/components/modules/seo/Accordion.vue'
 import RichEditor from '@/components/form/RichEditor.vue'
+import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { ProductSetDTO } from '@/interfaces/ProductSet'
 import MediaUploadInput from '@/components/modules/media/MediaUploadInput.vue'
 import { CdnMedia } from '@/interfaces/Media'
+import { Metadata } from '@/interfaces/Metadata'
+import { generateSlug } from '@/utils/generateSlug'
 
 export const CLEAR_PRODUCT_SET_FORM: ProductSetDTO = {
   id: '',
@@ -160,6 +189,9 @@ export const CLEAR_PRODUCT_SET_FORM: ProductSetDTO = {
   seo: {},
 }
 
+// eslint-disable-next-line camelcase
+type CombinedSetDto = ProductSetDTO & { metadata?: Metadata; metadata_private?: Metadata }
+
 export default Vue.extend({
   components: {
     ModalForm,
@@ -170,12 +202,13 @@ export default Vue.extend({
     SeoForm,
     RichEditor,
     MediaUploadInput,
+    MetadataForm,
   },
   props: {
     value: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<ProductSetDTO>,
+    } as Vue.PropOptions<CombinedSetDto>,
     slugPrefix: {
       type: String,
       default: '',
@@ -194,11 +227,11 @@ export default Vue.extend({
     },
   },
   data: () => ({
-    form: cloneDeep(CLEAR_PRODUCT_SET_FORM) as ProductSetDTO,
+    form: cloneDeep(CLEAR_PRODUCT_SET_FORM) as CombinedSetDto,
     isEditorActive: false,
   }),
   watch: {
-    value(value: ProductSetDTO) {
+    value(value: CombinedSetDto) {
       this.form = { ...cloneDeep(CLEAR_PRODUCT_SET_FORM), ...cloneDeep(value) }
       this.fetchProductSet()
     },
@@ -232,18 +265,29 @@ export default Vue.extend({
     },
     editSlug() {
       if (!this.form.id) {
-        this.form.slug_suffix = slugify(this.form.name, { lower: true, remove: /[.]/g })
+        this.form.slug_suffix = generateSlug(this.form.name)
       }
     },
+
+    async saveMetadata(id: string) {
+      await Promise.all([
+        (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id),
+        (this.$refs.publicMeta as MetadataRef)?.saveMetadata(id),
+      ])
+    },
+
     async saveModal() {
       this.$accessor.startLoading()
       if (this.form.id) {
+        await this.saveMetadata(this.form.id)
         await this.$accessor.productSets.update({
           id: this.form.id,
           item: this.form,
         })
+        this.$toast.success(this.$t('alerts.updated') as string)
       } else {
         await this.$accessor.productSets.add(this.form)
+        this.$toast.success(this.$t('alerts.created') as string)
       }
       this.$accessor.stopLoading()
       this.$emit('close')
@@ -253,6 +297,7 @@ export default Vue.extend({
       this.$accessor.startLoading()
       await this.$accessor.productSets.remove(this.form.id)
       this.$accessor.stopLoading()
+      this.$toast.success(this.$t('alerts.deleted') as string)
       this.$emit('close')
     },
 

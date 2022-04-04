@@ -2,6 +2,7 @@
 
 import { UUID } from './UUID'
 import { PaymentMethod } from './PaymentMethod'
+import { Metadata } from './Metadata'
 
 export interface ShippingMethodCountry {
   code: string
@@ -32,6 +33,8 @@ export interface ShippingMethod {
   shipping_time_max: number
   countries: ShippingMethodCountry[]
   price_ranges: ShippingMethodPriceRange[]
+  metadata: Metadata
+  metadata_private?: Metadata
 }
 
 export interface ShippingMethodDTO {

@@ -5,6 +5,7 @@ import { Tag } from './Tag'
 import { CdnMedia } from './Media'
 import { ProductSet } from './ProductSet'
 import { SeoMetadata, SeoMetadataDto } from './SeoMetadata'
+import { Sale } from './SalesAndCoupons'
 
 export interface Product {
   id: UUID
@@ -13,6 +14,9 @@ export interface Product {
   price: number
   price_min: number
   price_max: number
+  min_price_discounted: number
+  max_price_discounted: number
+  sales: Sale[]
   description_html: string
   description_short: string
   public: boolean
@@ -49,7 +53,17 @@ export interface ProductDTO {
 export interface ProductComponentForm
   extends Omit<
     Product,
-    'id' | 'sets' | 'brand' | 'category' | 'cover' | 'visible' | 'price_min' | 'price_max'
+    | 'id'
+    | 'sets'
+    | 'brand'
+    | 'category'
+    | 'cover'
+    | 'visible'
+    | 'price_min'
+    | 'price_max'
+    | 'min_price_discounted'
+    | 'max_price_discounted'
+    | 'sales'
   > {
   id?: UUID
   sets: UUID[]

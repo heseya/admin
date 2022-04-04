@@ -73,3 +73,16 @@ export interface CouponDto extends SaleDto {
 export interface CouponFormDto extends SaleFormDto {
   code: string
 }
+
+// ? ---------------------------------------------------------------------------------------------------------------
+
+export interface OrderDiscount {
+  id: UUID
+  discount_id: UUID
+  name: string
+  code: string | null
+  type: DiscountType
+  target_type: DiscountTargetType
+  value: number // Wartość zniżki np. 10 dla %
+  applied_discount: number // Kwota którą nakliczła dana zniżka
+}

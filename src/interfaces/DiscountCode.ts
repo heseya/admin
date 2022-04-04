@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import { Metadata } from './Metadata'
 import { UUID } from './UUID'
 
 /**
@@ -25,4 +26,8 @@ export interface DiscountCode {
   available: boolean
   starts_at: string | null
   expires_at: string | null
+  metadata: Metadata
+  metadata_private?: Metadata
 }
+
+export type DiscountCodeDto = Omit<DiscountCode, 'id' | 'metadata' | 'metadata_private'>

@@ -27,6 +27,7 @@ import {
   SeoPermission,
   WebhooksPermission,
   SalesPermission,
+  AttributesPermission,
 } from '@/enums/permissions'
 
 export const PERMISSIONS_TREE = {
@@ -57,6 +58,7 @@ export const PERMISSIONS_TREE = {
   Roles: RolesPermission,
   Seo: SeoPermission,
   Webhooks: WebhooksPermission,
+  Attributes: AttributesPermission,
 }
 
 export const ALL_PERMISSIONS: Permission[] = Object.values(PERMISSIONS_TREE)

@@ -80,6 +80,24 @@
               </info-tooltip>
             </template>
           </SwitchInput>
+
+          <template v-if="selectedItem">
+            <hr />
+            <MetadataForm
+              ref="publicMeta"
+              :value="selectedItem.metadata"
+              :disabled="!canModify"
+              model="statuses"
+            />
+            <MetadataForm
+              v-if="selectedItem.metadata_private"
+              ref="privateMeta"
+              :value="selectedItem.metadata_private"
+              :disabled="!canModify"
+              is-private
+              model="statuses"
+            />
+          </template>
         </modal-form>
         <template #footer>
           <div class="row">
@@ -117,6 +135,11 @@
       "hiddenTooltip": "Zamówienia z tym statusem nie będą domyślnie pokazywać się na liście zamówień. Wciąż będzie można po nim filtrować.",
       "noNotification": "Nie wysyłaj powiadomień",
       "noNotificationTooltip": "Przy zmianie statusu zamówienia na ten, klientowi nie zostanie wysłane powiadomienie mailowe."
+    },
+    "alerts": {
+      "deleted": "Status zamówienia został usunięty.",
+      "created": "Status zamówienia został dodany.",
+      "updated": "Status zamówienia został zaktualizowany."
     }
   },
   "en": {
@@ -132,6 +155,11 @@
       "hiddenTooltip": "Orders with this status will not be shown on the list by default. You can still filter by them.",
       "noNotification": "Don't send notifications",
       "noNotificationTooltip": "When changing order status to this one, the customer will not receive a notification email."
+    },
+    "alerts": {
+      "deleted": "Order status has been deleted.",
+      "created": "Order status has been added.",
+      "updated": "Order status has been updated."
     }
   }
 }
@@ -148,12 +176,12 @@ import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import Avatar from '@/components/layout/Avatar.vue'
+import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { UUID } from '@/interfaces/UUID'
-import { OrderStatus } from '@/interfaces/Order'
+import { OrderStatus, OrderStatusDto } from '@/interfaces/Order'
 
-const CLEAR_STATUS: OrderStatus = {
-  id: '',
+const CLEAR_STATUS: OrderStatusDto = {
   name: '',
   description: '',
   color: '000000',
@@ -174,6 +202,7 @@ export default Vue.extend({
     ValidationObserver,
     SwitchInput,
     Avatar,
+    MetadataForm,
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {
@@ -185,7 +214,8 @@ export default Vue.extend({
   },
   data: () => ({
     isModalActive: false,
-    editedItem: clone(CLEAR_STATUS) as OrderStatus,
+    editedItem: clone(CLEAR_STATUS) as OrderStatusDto & { id?: string },
+    selectedItem: null as OrderStatus | null,
   }),
   computed: {
     canModify(): boolean {
@@ -199,7 +229,8 @@ export default Vue.extend({
     openModal(id?: UUID) {
       this.isModalActive = true
       if (id) {
-        this.editedItem = this.$accessor.statuses.getFromListById(id)
+        this.editedItem = clone(this.$accessor.statuses.getFromListById(id))
+        this.selectedItem = this.$accessor.statuses.getFromListById(id)
         this.setColor(this.editedItem.color)
       } else {
         this.editedItem = clone(CLEAR_STATUS)
@@ -208,21 +239,37 @@ export default Vue.extend({
     async saveModal() {
       this.$accessor.startLoading()
       if (this.editedItem.id) {
+        // Metadata can be saved only after status is created
+        await this.saveMetadata(this.editedItem.id)
+
         await this.$accessor.statuses.update({
           id: this.editedItem.id,
           item: this.editedItem,
         })
+
+        this.$toast.success(this.$t('alerts.updated') as string)
       } else {
         await this.$accessor.statuses.add(this.editedItem)
+
+        this.$toast.success(this.$t('alerts.created') as string)
       }
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
     async deleteItem() {
       this.$accessor.startLoading()
-      await this.$accessor.statuses.remove(this.editedItem.id)
+      await this.$accessor.statuses.remove(this.editedItem.id!)
+
+      this.$toast.success(this.$t('alerts.deleted') as string)
       this.$accessor.stopLoading()
       this.isModalActive = false
+    },
+
+    async saveMetadata(id: string) {
+      await Promise.all([
+        (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id),
+        (this.$refs.publicMeta as MetadataRef)?.saveMetadata(id),
+      ])
     },
   },
 })

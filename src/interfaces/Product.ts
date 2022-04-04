@@ -6,6 +6,8 @@ import { CdnMedia } from './Media'
 import { ProductSet } from './ProductSet'
 import { SeoMetadata, SeoMetadataDto } from './SeoMetadata'
 import { Sale } from './SalesAndCoupons'
+import { Metadata } from './Metadata'
+import { ProductAttribute } from './Attribute'
 
 export interface Product {
   id: UUID
@@ -31,6 +33,9 @@ export interface Product {
   cover: CdnMedia
   tags: Tag[]
   seo: SeoMetadata
+  metadata: Metadata
+  metadata_private?: Metadata
+  attributes: ProductAttribute[]
 }
 
 export interface ProductDTO {
@@ -48,6 +53,10 @@ export interface ProductDTO {
   schemas: UUID[]
   media: UUID[]
   seo: SeoMetadataDto
+  /**
+   * Attribute.id -> AttributeOption.id[]
+   */
+  attributes: Record<UUID, UUID[]>
 }
 
 export interface ProductComponentForm
@@ -64,6 +73,8 @@ export interface ProductComponentForm
     | 'min_price_discounted'
     | 'max_price_discounted'
     | 'sales'
+    | 'metadata_private'
+    | 'metadata'
   > {
   id?: UUID
   sets: UUID[]
@@ -74,4 +85,8 @@ export interface ProductItem {
   name: string
   sku: string
   quantity: number
+  metadata: Metadata
+  metadata_private?: Metadata
 }
+
+export type ProductItemDto = Omit<ProductItem, 'id' | 'metadata' | 'metadata_private'>

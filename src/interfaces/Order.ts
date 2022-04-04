@@ -5,6 +5,7 @@ import { Payment } from './Payment'
 import { ShippingMethod } from './ShippingMethod'
 import { OrderProduct } from './OrderProduct'
 import { OrderDiscount } from './SalesAndCoupons'
+import { Metadata } from './Metadata'
 
 export interface OrderStatus {
   id: UUID
@@ -14,7 +15,11 @@ export interface OrderStatus {
   cancel: boolean
   hidden: boolean
   no_notifications: boolean
+  metadata: Metadata
+  metadata_private?: Metadata
 }
+
+export type OrderStatusDto = Omit<OrderStatus, 'id' | 'metadata' | 'metadata_private'>
 
 export interface Order {
   id: UUID
@@ -60,4 +65,6 @@ export interface Order {
    * amount already paid by client
    */
   summary_paid: number
+  metadata: Metadata
+  metadata_private?: Metadata
 }

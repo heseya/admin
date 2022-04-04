@@ -14,13 +14,17 @@
     "blockList": "Block list",
     "yes": "Yes",
     "no": "No",
+    "true": "True",
+    "false": "False",
     "edit": "Edit",
     "continue": "Continue",
     "form": {
       "name": "Name",
       "description": "Description",
       "type": "Type",
-      "slug": "Link"
+      "slug": "Link",
+      "label": "Label",
+      "value": "Value"
     }
   },
 
@@ -47,7 +51,15 @@
     "users": "Users",
     "roles": "Roles",
     "apps": "Apps",
-    "webhooks": "Webhooks"
+    "webhooks": "Webhooks",
+    "attributes": "Attributes"
+  },
+
+  "attributeTypes": {
+    "single-option": "Text single choice",
+    "multi-choice-option": "Text multi choice",
+    "date": "Date",
+    "number": "Number single choice"
   },
 
   "schemaTypes": {

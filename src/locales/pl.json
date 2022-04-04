@@ -14,13 +14,17 @@
     "blockList": "Lista zabronionych",
     "yes": "Tak",
     "no": "Nie",
+    "true": "Prawda",
+    "false": "Fałsz",
     "edit": "Edytuj",
     "continue": "Kontynuuj",
     "form": {
       "name": "Nazwa",
       "description": "Opis",
       "type": "Typ",
-      "slug": "Link"
+      "slug": "Link",
+      "label": "Etykieta",
+      "value": "Wartość"
     }
   },
   "nav": {
@@ -45,8 +49,17 @@
     "users": "Użytkownicy",
     "roles": "Role",
     "apps": "Aplikacje",
-    "webhooks": "Webhooki"
+    "webhooks": "Webhooki",
+    "attributes": "Cechy"
   },
+
+  "attributeTypes": {
+    "single-option": "Tekstowy jednokrotnego wyboru",
+    "multi-choice-option": "Tekstowy wielokrotnego wyboru",
+    "date": "Data",
+    "number": "Liczbowy jednokrotnego wyboru"
+  },
+
   "schemaTypes": {
     "string": "Wartość tekstowa",
     "select": "Wybór spośród kilku opcji",

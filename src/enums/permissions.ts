@@ -126,6 +126,9 @@ export enum ProductsPermission {
   Add = 'products.add',
   Edit = 'products.edit',
   Remove = 'products.remove',
+  // TODO: change permission when API will add it
+  // ShowMetadataPrivate = 'products.show_metadata_private',
+  ShowMetadataPrivate = 'products.show',
 }
 
 export enum SettingsPermission {
@@ -177,4 +180,11 @@ export enum WebhooksPermission {
   Add = 'webhooks.add',
   Edit = 'webhooks.edit',
   Remove = 'webhooks.remove',
+}
+
+export enum AttributesPermission {
+  Show = 'attributes.show',
+  Add = 'attributes.add',
+  Edit = 'attributes.edit',
+  Remove = 'attributes.remove',
 }

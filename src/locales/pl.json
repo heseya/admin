@@ -21,7 +21,10 @@
     "form": {
       "name": "Nazwa",
       "description": "Opis",
-      "slug": "Link"
+      "type": "Typ",
+      "slug": "Link",
+      "label": "Etykieta",
+      "value": "Wartość"
     }
   },
 
@@ -47,7 +50,15 @@
     "users": "Użytkownicy",
     "roles": "Role",
     "apps": "Aplikacje",
-    "webhooks": "Webhooki"
+    "webhooks": "Webhooki",
+    "attributes": "Cechy"
+  },
+
+  "attributeTypes": {
+    "single-option": "Tekstowy jednokrotnego wyboru",
+    "multi-choice-option": "Tekstowy wielokrotnego wyboru",
+    "date": "Data",
+    "number": "Liczbowy jednokrotnego wyboru"
   },
 
   "schemaTypes": {

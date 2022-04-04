@@ -174,3 +174,10 @@ export enum WebhooksPermission {
   Edit = 'webhooks.edit',
   Remove = 'webhooks.remove',
 }
+
+export enum AttributesPermission {
+  Show = 'attributes.show',
+  Add = 'attributes.add',
+  Edit = 'attributes.edit',
+  Remove = 'attributes.remove',
+}

@@ -188,7 +188,7 @@ export const createVuexCRUD =
             commit(StoreMutations.SetMeta, data.meta)
             commit(StoreMutations.SetData, data.data)
             commit(StoreMutations.SetLoading, false)
-            return true
+            return data.data
           } catch (error: any) {
             commit(StoreMutations.SetLoading, false)
             // If request was canceled, do not report error
@@ -205,7 +205,7 @@ export const createVuexCRUD =
             // @ts-ignore type is correct, but TS is screaming
             commit(StoreMutations.SetSelected, data.data)
             commit(StoreMutations.SetLoading, false)
-            return true
+            return data.data
           } catch (error: any) {
             commit(StoreMutations.SetError, error)
             commit(StoreMutations.SetLoading, false)

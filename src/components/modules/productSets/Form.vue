@@ -157,7 +157,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import slugify from 'slugify'
 import { cloneDeep } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
 
@@ -173,6 +172,7 @@ import { ProductSetDTO } from '@/interfaces/ProductSet'
 import MediaUploadInput from '@/components/modules/media/MediaUploadInput.vue'
 import { CdnMedia } from '@/interfaces/Media'
 import { Metadata } from '@/interfaces/Metadata'
+import { generateSlug } from '@/utils/generateSlug'
 
 export const CLEAR_PRODUCT_SET_FORM: ProductSetDTO = {
   id: '',
@@ -265,7 +265,7 @@ export default Vue.extend({
     },
     editSlug() {
       if (!this.form.id) {
-        this.form.slug_suffix = slugify(this.form.name, { lower: true, remove: /[.]/g })
+        this.form.slug_suffix = generateSlug(this.form.name)
       }
     },
 

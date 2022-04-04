@@ -21,7 +21,10 @@
     "form": {
       "name": "Name",
       "description": "Description",
-      "slug": "Link"
+      "type": "Type",
+      "slug": "Link",
+      "label": "Label",
+      "value": "Value"
     }
   },
 
@@ -47,7 +50,15 @@
     "users": "Users",
     "roles": "Roles",
     "apps": "Apps",
-    "webhooks": "Webhooks"
+    "webhooks": "Webhooks",
+    "attributes": "Attributes"
+  },
+
+  "attributeTypes": {
+    "single-option": "Text single choice",
+    "multi-choice-option": "Text multi choice",
+    "date": "Date",
+    "number": "Number single choice"
   },
 
   "schemaTypes": {

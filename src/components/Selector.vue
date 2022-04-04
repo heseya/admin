@@ -57,6 +57,8 @@ import ListItem from '@/components/layout/ListItem.vue'
 import { Schema } from '@/interfaces/Schema'
 import { UUID } from '@/interfaces/UUID'
 import Loading from './layout/Loading.vue'
+import { ProductItem } from '@/interfaces/Product'
+import { Attribute } from '@/interfaces/Attribute'
 
 interface Item {
   id: UUID
@@ -125,14 +127,18 @@ export default Vue.extend({
     onSelect(item: Item) {
       this.$emit('select', item)
     },
-    // TODO: better typing
-    getSubText(item: any) {
+
+    getSubText(item: unknown) {
       if (this.type === 'schemas') {
         const schema = item as Schema
         const schemaType = this.$t(`schemaTypes.${schema.type}`)
         return schema.description ? `${schemaType} | ${schema.description}` : schemaType
       }
-      if (this.type === 'items') return `SKU: ${item.sku}`
+      if (this.type === 'items') return `SKU: ${(item as ProductItem).sku}`
+      if (this.type === 'attributes')
+        return `${this.$t('common.form.type')}: ${this.$t(
+          'attributeTypes.' + (item as Attribute).type,
+        )}`
       return ''
     },
   },

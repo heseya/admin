@@ -28,6 +28,8 @@ export const getApiURL = () => {
       return 'https://sandbox.***REMOVED***'
     case 'store-admin-git-feature-metadata-***REMOVED***':
       return 'https://feature-metadata.***REMOVED***'
+    case 'store-admin-git-feature-attributes-***REMOVED***':
+      return 'https://feature-attributes.***REMOVED***'
     default:
       return process.env.VUE_APP_API_URL || '***REMOVED***'
   }

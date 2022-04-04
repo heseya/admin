@@ -44,10 +44,7 @@
         {{ formatCurrency(item.price) }}
 
         <info-tooltip v-if="item.discounts.length">
-          <div v-for="discount in item.discounts" :key="discount.id">
-            <b>{{ discount.code || discount.name }}:&nbsp;</b>
-            <span>{{ formatCurrency(-discount.applied_discount) }}</span>
-          </div>
+          <OrderDiscountSummary :discounts="item.discounts" />
         </info-tooltip>
       </span>
     </field>
@@ -102,9 +99,10 @@ import { OrderProduct } from '@/interfaces/OrderProduct'
 import { formatCurrency } from '@/utils/currency'
 import Field from '../modules/orders/Field.vue'
 import InfoTooltip from './InfoTooltip.vue'
+import OrderDiscountSummary from '../modules/orders/OrderDiscountSummary.vue'
 
 export default Vue.extend({
-  components: { Field, InfoTooltip },
+  components: { Field, InfoTooltip, OrderDiscountSummary },
   props: {
     item: {
       type: Object,

@@ -27,15 +27,7 @@
             {{ formatCurrency(-totalDiscount) }}
           </span>
           <info-tooltip>
-            <div
-              v-for="discount in order.discounts"
-              :key="discount.id"
-              class="discount-summary__item"
-            >
-              <!-- TODO: split discounts by type -->
-              <b>{{ discount.code || discount.name }}</b> :
-              {{ formatCurrency(-discount.applied_discount) }}
-            </div>
+            <OrderDiscountSummary :discounts="order.discounts" />
           </info-tooltip>
         </div>
       </field>
@@ -94,13 +86,14 @@
 import Vue from 'vue'
 
 import CartItem from '@/components/layout/CartItem.vue'
+import Field from './Field.vue'
+import OrderDiscountSummary from './OrderDiscountSummary.vue'
 
 import { Order } from '@/interfaces/Order'
 import { formatCurrency } from '@/utils/currency'
-import Field from './Field.vue'
 
 export default Vue.extend({
-  components: { CartItem, Field },
+  components: { CartItem, Field, OrderDiscountSummary },
   props: {
     order: {
       type: Object,

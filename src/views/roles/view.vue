@@ -8,7 +8,7 @@
         :title="$t('deleteText')"
         :ok-text="$t('common.delete')"
         :cancel-text="$t('common.cancel')"
-        @confirm="deletePage"
+        @confirm="deleteRole"
       >
         <icon-button type="danger">
           <template #icon>
@@ -19,11 +19,24 @@
       </pop-confirm>
     </top-nav>
 
-    <RolesForm
-      v-model="form"
-      :disabled="isNew ? !$can($p.Roles.Add) : !$can($p.Roles.Edit)"
-      @submit="save"
-    />
+    <RolesForm v-model="form" :disabled="isDisabled" @submit="save">
+      <template v-if="selectedRole">
+        <MetadataForm
+          ref="publicMeta"
+          :value="selectedRole.metadata"
+          :disabled="isDisabled"
+          model="roles"
+        />
+        <MetadataForm
+          v-if="selectedRole.metadata_private"
+          ref="privateMeta"
+          :value="selectedRole.metadata_private"
+          :disabled="isDisabled"
+          is-private
+          model="roles"
+        />
+      </template>
+    </RolesForm>
   </div>
 </template>
 
@@ -39,9 +52,9 @@
   "en": {
     "newTitle": "New role",
     "deleteText": "Are you sure you want to delete this role?",
-    "deletedMessage": "role has been deleted",
-    "createdMessage": "role has been created",
-    "updatedMessage": "role has been updated"
+    "deletedMessage": "Role has been deleted",
+    "createdMessage": "Role has been created",
+    "updatedMessage": "Role has been updated"
   }
 }
 </i18n>
@@ -54,6 +67,7 @@ import TopNav from '@/components/layout/TopNav.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 import RolesForm from '@/components/modules/roles/Form.vue'
+import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { Role, RoleDTO } from '@/interfaces/Role'
@@ -76,9 +90,11 @@ export default Vue.extend({
     PopConfirm,
     RolesForm,
     AuditsModal,
+    MetadataForm,
   },
   data: () => ({
     form: cloneDeep(CLEAN_FORM),
+    selectedRole: null as Role | null,
   }),
   computed: {
     id(): string {
@@ -96,11 +112,15 @@ export default Vue.extend({
     isLoading(): boolean {
       return this.$accessor.roles.isLoading
     },
+    isDisabled(): boolean {
+      return this.isNew ? !this.$can(this.$p.Roles.Add) : !this.$can(this.$p.Roles.Edit)
+    },
   },
   watch: {
     role(role: Role) {
       if (!this.isNew) {
         this.form = cloneDeep(role)
+        this.selectedRole = role
       }
     },
     error(error: any) {
@@ -123,6 +143,9 @@ export default Vue.extend({
         ? (this.$t('createdMessage') as string)
         : (this.$t('updatedMessage') as string)
 
+      // Metadata can be saved only after role is created
+      if (this.selectedRole) await this.saveMetadata(this.selectedRole.id)
+
       const role = this.isNew
         ? await this.$accessor.roles.add(this.form)
         : await this.$accessor.roles.update({ id: this.id, item: this.form })
@@ -139,7 +162,7 @@ export default Vue.extend({
 
       this.$accessor.stopLoading()
     },
-    async deletePage() {
+    async deleteRole() {
       this.$accessor.startLoading()
       const success = await this.$accessor.roles.remove(this.id)
       if (success) {
@@ -147,6 +170,13 @@ export default Vue.extend({
         this.$router.push('/settings/roles')
       }
       this.$accessor.stopLoading()
+    },
+
+    async saveMetadata(id: string) {
+      await Promise.all([
+        (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id),
+        (this.$refs.publicMeta as MetadataRef)?.saveMetadata(id),
+      ])
     },
   },
 })

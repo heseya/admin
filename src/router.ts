@@ -197,6 +197,26 @@ const router = new VueRouter({
         permissions: [Permissions.ProductSets.Show],
       },
     },
+
+    {
+      path: '/settings/attributes',
+      name: 'Attributes',
+      component: () => import('./views/attributes/index.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Attributes.Show],
+      },
+    },
+    {
+      path: '/settings/attributes/:id',
+      name: 'AttributesView',
+      component: () => import('./views/attributes/view.vue'),
+      meta: {
+        returnUrl: '/settings/attributes',
+        requiresAuth: true,
+        permissions: [Permissions.Attributes.Show],
+      },
+    },
     {
       path: '/settings/shipping-methods',
       name: 'ShippingMethods',

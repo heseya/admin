@@ -37,6 +37,24 @@
       >
         <DiscountForm v-model="editedItem" :disabled="!canModify" />
 
+        <template v-if="selectedItem">
+          <hr />
+          <MetadataForm
+            ref="publicMeta"
+            :value="selectedItem.metadata"
+            :disabled="!canModify"
+            model="discounts"
+          />
+          <MetadataForm
+            v-if="selectedItem.metadata_private"
+            ref="privateMeta"
+            :value="selectedItem.metadata_private"
+            :disabled="!canModify"
+            is-private
+            model="discounts"
+          />
+        </template>
+
         <template #footer>
           <div class="row">
             <app-button v-if="canModify" @click="handleSubmit(saveModal)">
@@ -73,6 +91,11 @@
       "used": "Wykorzystano",
       "startsAt": "Ważny od",
       "expiresAt": "Ważny do"
+    },
+    "alerts": {
+      "deleted": "Kod rabatowy został usunięty.",
+      "created": "Kod rabatowy został dodany.",
+      "updated": "Kod rabatowy został zaktualizowany."
     }
   },
   "en": {
@@ -88,6 +111,11 @@
       "used": "Used",
       "startsAt": "Valid from",
       "expiresAt": "Valid to"
+    },
+    "alerts": {
+      "deleted": "Discount code has been deleted.",
+      "created": "Discount code has been created.",
+      "updated": "Discount code has been updated."
     }
   }
 }
@@ -101,17 +129,17 @@ import PaginatedList from '@/components/PaginatedList.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import DiscountForm from '@/components/modules/discounts/Form.vue'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
+import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
-import { DiscountCode } from '@/interfaces/DiscountCode'
+import { DiscountCode, DiscountCodeDto, DiscountCodeType } from '@/interfaces/DiscountCode'
 import { UUID } from '@/interfaces/UUID'
 
 import { formatCurrency } from '@/utils/currency'
 import { DATETIME_FORMAT, formatDate, formatUTC } from '@/utils/dates'
 import { TableConfig } from '@/interfaces/CmsTable'
 
-const EMPTY_DISCOUNT_CODE: DiscountCode = {
-  id: '',
-  type: 0,
+const EMPTY_DISCOUNT_CODE: DiscountCodeDto = {
+  type: DiscountCodeType.Percentage,
   code: '',
   discount: 0.0,
   max_uses: 1,
@@ -131,6 +159,7 @@ export default Vue.extend({
     PaginatedList,
     PopConfirm,
     CmsTableRow,
+    MetadataForm,
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {
@@ -144,7 +173,8 @@ export default Vue.extend({
     isModalActive: false,
     editedItem: {
       ...EMPTY_DISCOUNT_CODE,
-    } as DiscountCode,
+    } as DiscountCodeDto & { id?: string },
+    selectedItem: null as DiscountCode | null,
   }),
   computed: {
     canModify(): boolean {
@@ -185,12 +215,14 @@ export default Vue.extend({
       this.isModalActive = true
       if (id) {
         const item = this.$accessor.discounts.getFromListById(id)
+        this.selectedItem = item
         this.editedItem = {
           ...(item || {}),
           starts_at: formatDate(item.starts_at, DATETIME_FORMAT),
           expires_at: formatDate(item.expires_at, DATETIME_FORMAT),
         }
       } else {
+        this.selectedItem = null
         this.editedItem = {
           ...EMPTY_DISCOUNT_CODE,
         }
@@ -199,6 +231,9 @@ export default Vue.extend({
     async saveModal() {
       this.$accessor.startLoading()
       if (this.editedItem.id) {
+        // Metadata can be saved only after discount is created
+        await this.saveMetadata(this.editedItem.id)
+
         await this.$accessor.discounts.update({
           id: this.editedItem.id,
           item: {
@@ -207,17 +242,27 @@ export default Vue.extend({
             expires_at: formatUTC(this.editedItem.expires_at),
           },
         })
+        this.$toast.success(this.$t('alerts.updated') as string)
       } else {
         await this.$accessor.discounts.add(this.editedItem)
+        this.$toast.success(this.$t('alerts.created') as string)
       }
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
     async deleteItem() {
       this.$accessor.startLoading()
-      await this.$accessor.discounts.remove(this.editedItem.id)
+      await this.$accessor.discounts.remove(this.editedItem.id!)
+      this.$toast.success(this.$t('alerts.deleted') as string)
       this.$accessor.stopLoading()
       this.isModalActive = false
+    },
+
+    async saveMetadata(id: string) {
+      await Promise.all([
+        (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id),
+        (this.$refs.publicMeta as MetadataRef)?.saveMetadata(id),
+      ])
     },
   },
 })

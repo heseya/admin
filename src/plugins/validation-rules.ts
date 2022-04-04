@@ -4,7 +4,7 @@ import v from 'validator'
 
 import { ShippingMethodPriceRangeDTO } from '@/interfaces/ShippingMethod'
 
-import { ONLY_LETTERS_REGEX, PASSWORD_REGEX, SLUG_REGEX } from '@/consts/regexes'
+import { ONLY_LETTERS_REGEX, SLUG_REGEX } from '@/consts/regexes'
 import { isBefore } from 'date-fns'
 import i18n from '@/i18n'
 
@@ -27,7 +27,7 @@ extend('repeatPassword', {
 
 extend('password', {
   validate(password: string) {
-    return PASSWORD_REGEX.test(password)
+    return password.trim().length >= 12
   },
   message: () => i18n.t('validation.password') as string,
 })
@@ -112,4 +112,11 @@ extend('schema-checkbox', {
     return !(value && target)
   },
   message: () => i18n.t('validation.schemaCheckbox') as string,
+})
+
+extend('block-if-error', {
+  message: 'error',
+  validate(isError) {
+    return !isError
+  },
 })

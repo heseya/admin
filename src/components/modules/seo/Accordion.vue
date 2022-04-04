@@ -2,19 +2,18 @@
   <a-collapse
     accordion
     :bordered="false"
-    class="seo-form-accrodion"
-    :class="{ 'seo-form-accrodion--white': white }"
+    class="seo-form-accordion"
+    :class="{ 'seo-form-accordion--white': white }"
   >
     <template #expandIcon="{ isActive }">
       <div>
-        <i v-if="isActive" class="bx bx-chevron-up"></i>
-        <i v-else class="bx bx-chevron-down"></i>
+        <i :class="`bx ${isActive ? 'bx-chevron-up' : 'bx-chevron-down'}`"></i>
       </div>
     </template>
 
     <a-collapse-panel>
       <template #header>
-        <span class="seo-form-accrodion__title">{{ $t('title') }}</span>
+        <span class="seo-form-accordion__title">{{ $t('title') }}</span>
       </template>
       <SeoForm v-model="form" :current="current" />
     </a-collapse-panel>
@@ -75,7 +74,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-.seo-form-accrodion {
+.seo-form-accordion {
   &__title {
     font-weight: 600;
   }

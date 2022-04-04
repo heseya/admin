@@ -73,6 +73,10 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .order-discount-summary {
+  &__section:not(:last-child) {
+    margin-bottom: 8px;
+  }
+
   &__title {
     color: $gray-color-500;
     font-weight: 600;
@@ -82,7 +86,10 @@ export default Vue.extend({
   &__row {
     display: flex;
     justify-content: space-between;
-    min-width: 100px;
+
+    @media ($viewport-4) {
+      min-width: 240px;
+    }
 
     b {
       margin-right: 8px;

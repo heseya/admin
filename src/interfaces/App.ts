@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 
+import { Metadata } from './Metadata'
 import { Permission, PermissionObject } from './Permissions'
 import { UUID } from './UUID'
 
@@ -19,6 +20,8 @@ export interface App {
   icon?: string
   author?: string
   permissions: string[]
+  metadata: Metadata
+  metadata_private?: Metadata
 }
 
 export interface CreateAppDto {

@@ -35,6 +35,25 @@
         :title="editedItem.id ? $t('editTitle') : $t('newTitle')"
       >
         <ShippingMethodsForm v-model="editedItem" :countries="countries" :disabled="!canModify" />
+
+        <template v-if="selectedItem">
+          <hr />
+          <MetadataForm
+            ref="publicMeta"
+            :value="selectedItem.metadata"
+            :disabled="!canModify"
+            model="shippingMethods"
+          />
+          <MetadataForm
+            v-if="selectedItem.metadata_private"
+            ref="privateMeta"
+            :value="selectedItem.metadata_private"
+            :disabled="!canModify"
+            is-private
+            model="shippingMethods"
+          />
+        </template>
+
         <template #footer>
           <div class="row">
             <app-button v-if="canModify" @click="handleSubmit(saveModal)">
@@ -69,6 +88,11 @@
       "allDisabled": "Metoda niedostepna w żadnym kraju",
       "whiteList": "Tylko wybrane kraje:",
       "blackList": "Wszystkie kraje poza:"
+    },
+    "alerts": {
+      "deleted": "Metoda dostawy została usunięta.",
+      "created": "Metoda dostawy została dodana.",
+      "updated": "Metoda dostawy została zaktualizowana."
     }
   },
   "en": {
@@ -82,6 +106,11 @@
       "allDisabled": "Shipping method unavailable in any country",
       "whiteList": "Only selected countries:",
       "blackList": "All countries except:"
+    },
+    "alerts": {
+      "deleted": "Shipping method has been deleted.",
+      "created": "Shipping method has been created.",
+      "updated": "Shipping method has been updated."
     }
   }
 }
@@ -96,9 +125,10 @@ import PaginatedList from '@/components/PaginatedList.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ShippingMethodsForm from '@/components/modules/shippingMethods/Index.vue'
+import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { UUID } from '@/interfaces/UUID'
-import { ShippingMethodDTO } from '@/interfaces/ShippingMethod'
+import { ShippingMethod, ShippingMethodDTO } from '@/interfaces/ShippingMethod'
 import { Country } from '@/interfaces/Country'
 
 export default Vue.extend({
@@ -111,6 +141,7 @@ export default Vue.extend({
     ValidationObserver,
     PaginatedList,
     ShippingMethodsForm,
+    MetadataForm,
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {
@@ -123,6 +154,7 @@ export default Vue.extend({
   data: () => ({
     isModalActive: false,
     editedItem: {} as ShippingMethodDTO,
+    selectedItem: null as ShippingMethod | null,
     countries: [] as Country[],
   }),
   computed: {
@@ -144,6 +176,7 @@ export default Vue.extend({
       this.isModalActive = true
       if (id) {
         const item = this.$accessor.shippingMethods.getFromListById(id)
+        this.selectedItem = item
         this.editedItem = {
           ...item,
           payment_methods: item.payment_methods.map(({ id }) => id),
@@ -154,6 +187,7 @@ export default Vue.extend({
           })),
         }
       } else {
+        this.selectedItem = null
         this.editedItem = {
           name: '',
           black_list: false,
@@ -174,12 +208,19 @@ export default Vue.extend({
     async saveModal() {
       this.$accessor.startLoading()
       if (this.editedItem.id) {
+        // Metadata can be saved only after shipping method is created
+        await this.saveMetadata(this.editedItem.id)
+
         await this.$accessor.shippingMethods.update({
           id: this.editedItem.id,
           item: this.editedItem,
         })
+
+        this.$toast.success(this.$t('alerts.updated') as string)
       } else {
         await this.$accessor.shippingMethods.add(this.editedItem)
+
+        this.$toast.success(this.$t('alerts.created') as string)
       }
       this.$accessor.stopLoading()
       this.isModalActive = false
@@ -188,8 +229,17 @@ export default Vue.extend({
       if (!this.editedItem.id) return
       this.$accessor.startLoading()
       await this.$accessor.shippingMethods.remove(this.editedItem.id)
+
+      this.$toast.success(this.$t('alerts.deleted') as string)
       this.$accessor.stopLoading()
       this.isModalActive = false
+    },
+
+    async saveMetadata(id: string) {
+      await Promise.all([
+        (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id),
+        (this.$refs.publicMeta as MetadataRef)?.saveMetadata(id),
+      ])
     },
   },
 })

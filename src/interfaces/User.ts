@@ -2,6 +2,7 @@
 import { UUID } from './UUID'
 import { Permission } from './Permissions'
 import { Role } from './Role'
+import { Metadata } from './Metadata'
 
 export interface User {
   id: UUID
@@ -11,6 +12,8 @@ export interface User {
   is_tfa_active: boolean
   roles: Role[]
   permissions: Permission[]
+  metadata: Metadata
+  metadata_private?: Metadata
 }
 
 export interface CreateUserDTO {

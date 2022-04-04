@@ -50,6 +50,23 @@
             type="number"
             :label="$t('form.quantity')"
           />
+
+          <template v-if="selectedItem">
+            <MetadataForm
+              ref="publicMeta"
+              :value="selectedItem.metadata"
+              :disabled="!canModify"
+              model="items"
+            />
+            <MetadataForm
+              v-if="selectedItem.metadata_private"
+              ref="privateMeta"
+              :value="selectedItem.metadata_private"
+              :disabled="!canModify"
+              is-private
+              model="items"
+            />
+          </template>
         </modal-form>
         <template #footer>
           <div class="row">
@@ -83,6 +100,11 @@
     "form": {
       "sku": "SKU",
       "quantity": "Ilość w magazynie"
+    },
+    "alerts": {
+      "deleted": "Przedmiot magazynowy został usunięty.",
+      "created": "Przedmiot magazynowy został dodany.",
+      "updated": "Przedmiot magazynowy został zaktualizowany."
     }
   },
   "en": {
@@ -94,6 +116,11 @@
     "form": {
       "sku": "SKU",
       "quantity": "Quantity in stock"
+    },
+    "alerts": {
+      "deleted": "Item in warehouse has been deleted.",
+      "created": "Item in warehouse has been added.",
+      "updated": "Item in warehouse has been updated."
     }
   }
 }
@@ -110,15 +137,15 @@ import ItemsFilter, {
   EMPTY_ITEMS_FILTERS,
   ItemsFilersType,
 } from '@/components/modules/items/ItemsFilter.vue'
+import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { UUID } from '@/interfaces/UUID'
-import { ProductItem } from '@/interfaces/Product'
+import { ProductItem, ProductItemDto } from '@/interfaces/Product'
 import { TableConfig } from '@/interfaces/CmsTable'
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 import { formatFilters } from '@/utils/utils'
 
-const EMPTY_FORM: ProductItem = {
-  id: '',
+const EMPTY_FORM: ProductItemDto = {
   name: '',
   sku: '',
   quantity: 0,
@@ -134,6 +161,7 @@ export default Vue.extend({
     ValidationObserver,
     PaginatedList,
     ItemsFilter,
+    MetadataForm,
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {
@@ -146,7 +174,8 @@ export default Vue.extend({
   data: () => ({
     filters: { ...EMPTY_ITEMS_FILTERS } as ItemsFilersType,
     isModalActive: false,
-    editedItem: { ...EMPTY_FORM },
+    editedItem: { ...EMPTY_FORM } as ProductItemDto & { id?: string },
+    selectedItem: null as null | ProductItem,
     editedOriginalQuantity: 0,
   }),
   computed: {
@@ -210,15 +239,21 @@ export default Vue.extend({
       this.isModalActive = true
       if (id) {
         this.editedItem = this.$accessor.items.getFromListById(id)
+        this.selectedItem = this.$accessor.items.getFromListById(id)
         this.editedOriginalQuantity = this.editedItem.quantity || 0
       } else {
         this.editedItem = { ...EMPTY_FORM }
+        this.selectedItem = null
       }
     },
     async saveModal() {
       this.$accessor.startLoading()
+      const isNew = !this.editedItem.id
       let success = false
       if (this.editedItem.id) {
+        // Metadata can be saved only after product is created
+        await this.saveMetadata(this.editedItem.id)
+
         const quantityDiff = this.editedItem.quantity - this.editedOriginalQuantity
         if (quantityDiff) {
           // @ts-ignore // TODO: fix extended store actions typings
@@ -239,13 +274,24 @@ export default Vue.extend({
 
       if (success) {
         this.isModalActive = false
+
+        if (!isNew) this.$toast.success(this.$t('alerts.updated') as string)
+        else this.$toast.success(this.$t('alerts.created') as string)
       }
     },
     async deleteItem() {
       this.$accessor.startLoading()
-      await this.$accessor.items.remove(this.editedItem.id)
+      await this.$accessor.items.remove(this.editedItem.id!)
+      this.$toast.success(this.$t('alerts.deleted') as string)
       this.$accessor.stopLoading()
       this.isModalActive = false
+    },
+
+    async saveMetadata(id: string) {
+      await Promise.all([
+        (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id),
+        (this.$refs.publicMeta as MetadataRef)?.saveMetadata(id),
+      ])
     },
   },
 })

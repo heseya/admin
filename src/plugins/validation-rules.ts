@@ -113,3 +113,10 @@ extend('schema-checkbox', {
   },
   message: () => i18n.t('validation.schemaCheckbox') as string,
 })
+
+extend('block-if-error', {
+  message: 'error',
+  validate(isError) {
+    return !isError
+  },
+})

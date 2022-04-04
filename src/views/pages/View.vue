@@ -59,6 +59,25 @@
           <RichEditor v-if="!isLoading" v-model="form.content_html" :disabled="!canModify" />
 
           <br />
+
+          <template v-if="!isNew">
+            <MetadataForm
+              ref="publicMeta"
+              :value="page.metadata"
+              :disabled="!canModify"
+              model="pages"
+            />
+            <MetadataForm
+              v-if="page.metadata_private"
+              ref="privateMeta"
+              :value="page.metadata_private"
+              :disabled="!canModify"
+              is-private
+              model="pages"
+            />
+          </template>
+
+          <br />
           <app-button v-if="canModify" @click="handleSubmit(save)">
             {{ $t('common.save') }}
           </app-button>
@@ -108,6 +127,7 @@ import RichEditor from '@/components/form/RichEditor.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import SeoForm from '@/components/modules/seo/Accordion.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
+import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { Page, PageDto } from '@/interfaces/Page'
@@ -130,6 +150,7 @@ export default Vue.extend({
     SwitchInput,
     SeoForm,
     AuditsModal,
+    MetadataForm,
   },
   data: () => ({
     form: {
@@ -194,6 +215,9 @@ export default Vue.extend({
           this.$router.push(`/pages/${page.id}`)
         }
       } else {
+        // Metadata can be saved only after product is created
+        await this.saveMetadata(this.id)
+
         const success = await this.$accessor.pages.update({
           id: this.id,
           item: this.form,
@@ -212,6 +236,13 @@ export default Vue.extend({
         this.$router.push('/pages')
       }
       this.$accessor.stopLoading()
+    },
+
+    async saveMetadata(id: string) {
+      await Promise.all([
+        (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id),
+        (this.$refs.publicMeta as MetadataRef)?.saveMetadata(id),
+      ])
     },
   },
 })

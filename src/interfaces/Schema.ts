@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 import { UUID } from './UUID'
 import { Product, ProductItem } from './Product'
+import { Metadata } from './Metadata'
 
 export enum SchemaType {
   String = 'string',
@@ -20,7 +21,11 @@ export interface SchemaOption {
   disabled: boolean
   price: number
   items: ProductItem[]
+  metadata: Metadata
+  metadata_private?: Metadata
 }
+
+export type SchemaOptionDto = Omit<SchemaOption, 'id' | 'metadata' | 'metadata_private'>
 export interface Schema {
   id: UUID
   name: string
@@ -40,6 +45,14 @@ export interface Schema {
   used_schemas: any[] // TODO: SchemaDTO
   validation: string
   auto_dependecy?: boolean // TODO: not implemented on backend
+  metadata: Metadata
+  metadata_private?: Metadata
+}
+
+// TODO: full Schema DTO
+export interface SchemaDto
+  extends Omit<Schema, 'id' | 'metadata' | 'metadata_private' | 'options'> {
+  options: SchemaOptionDto[]
 }
 
 export interface SchemaValue {

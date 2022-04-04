@@ -321,8 +321,8 @@ export default Vue.extend({
     SeoForm,
     AuditsModal,
     Textarea,
-    AttributesConfigurator,
     MetadataForm,
+    AttributesConfigurator,
   },
   data: () => ({
     form: cloneDeep(EMPTY_FORM),

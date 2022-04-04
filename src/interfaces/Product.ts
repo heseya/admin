@@ -5,8 +5,8 @@ import { Tag } from './Tag'
 import { CdnMedia } from './Media'
 import { ProductSet } from './ProductSet'
 import { SeoMetadata, SeoMetadataDto } from './SeoMetadata'
-import { ProductAttribute } from './Attribute'
 import { Metadata } from './Metadata'
+import { ProductAttribute } from './Attribute'
 
 export interface Product {
   id: UUID

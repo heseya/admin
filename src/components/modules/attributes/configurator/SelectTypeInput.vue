@@ -1,11 +1,11 @@
 <template>
   <div class="single-select-input">
     <app-select
-      :value="isMutipleMode ? multiOptionsIds : singleOptionId"
+      :value="inputValue"
       class="single-select-input__select"
       option-filter-prop="label"
       :mode="isMutipleMode ? 'multiple' : 'default'"
-      :disabled="disabled"
+      :disabled="disabled || isLoading"
       show-search
       allow-clear
       :loading="isLoading"
@@ -97,6 +97,11 @@ export default Vue.extend({
     multiOptionsIds(): UUID[] {
       return (this.value || []).map((v) => v?.id).filter(Boolean) || []
     },
+
+    inputValue(): UUID | UUID[] | undefined {
+      if (this.isLoading) return this.isMutipleMode ? [] : undefined
+      return this.isMutipleMode ? this.multiOptionsIds : this.singleOptionId
+    },
   },
   watch: {
     attribute() {
@@ -124,8 +129,10 @@ export default Vue.extend({
     },
 
     async fetchAttribute() {
+      this.isLoading = true
       const attribute = await this.$accessor.attributes.get(this.attribute.id)
       if (attribute) this.options = [...attribute.options] as AttributeOption[]
+      this.isLoading = false
     },
 
     async createOption() {
@@ -159,8 +166,12 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .single-select-input {
+  width: 100%;
+
   &__select {
-    min-width: 330px;
+    margin-left: auto;
+    width: 100%;
+    max-width: 380px;
     margin-bottom: 0;
   }
 }

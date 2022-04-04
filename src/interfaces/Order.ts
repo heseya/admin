@@ -3,7 +3,6 @@ import { UUID } from './UUID'
 import { Address } from './Address'
 import { Payment } from './Payment'
 import { ShippingMethod } from './ShippingMethod'
-
 import { OrderProduct } from './OrderProduct'
 import { OrderDiscount } from './SalesAndCoupons'
 

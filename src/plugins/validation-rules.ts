@@ -4,7 +4,7 @@ import v from 'validator'
 
 import { ShippingMethodPriceRangeDTO } from '@/interfaces/ShippingMethod'
 
-import { ONLY_LETTERS_REGEX, SLUG_REGEX } from '@/consts/regexes'
+import { METADATA_NAME_REGEX, ONLY_LETTERS_REGEX, SLUG_REGEX } from '@/consts/regexes'
 import { isBefore } from 'date-fns'
 import i18n from '@/i18n'
 
@@ -82,6 +82,13 @@ extend('letters-only', {
   message: () => i18n.t('validation.lettersOnly') as string,
   validate: (value) => {
     return ONLY_LETTERS_REGEX.test(value)
+  },
+})
+
+extend('metadata-name', {
+  message: () => i18n.t('validation.metadataName') as string,
+  validate: (value) => {
+    return METADATA_NAME_REGEX.test(value)
   },
 })
 

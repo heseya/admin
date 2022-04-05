@@ -29,9 +29,9 @@ export interface Product {
   cover: CdnMedia
   tags: Tag[]
   seo: SeoMetadata
+  attributes: ProductAttribute[]
   metadata: Metadata
   metadata_private?: Metadata
-  attributes: ProductAttribute[]
 }
 
 export interface ProductDTO {

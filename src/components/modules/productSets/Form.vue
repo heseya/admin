@@ -60,6 +60,8 @@
         </div>
 
         <br />
+        <attributes-select v-model="form.attributes" :disabled="disabled" />
+        <br />
 
         <SeoForm
           v-model="form.seo"
@@ -166,13 +168,14 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import SeoForm from '@/components/modules/seo/Accordion.vue'
 import RichEditor from '@/components/form/RichEditor.vue'
+import AttributesSelect from './AttributesSelect.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { ProductSetDTO } from '@/interfaces/ProductSet'
 import MediaUploadInput from '@/components/modules/media/MediaUploadInput.vue'
 import { CdnMedia } from '@/interfaces/Media'
-import { Metadata } from '@/interfaces/Metadata'
 import { generateSlug } from '@/utils/generateSlug'
+import { Metadata } from '@/interfaces/Metadata'
 
 export const CLEAR_PRODUCT_SET_FORM: ProductSetDTO = {
   id: '',
@@ -187,6 +190,7 @@ export const CLEAR_PRODUCT_SET_FORM: ProductSetDTO = {
   parent_id: null,
   children_ids: [],
   seo: {},
+  attributes: [],
 }
 
 // eslint-disable-next-line camelcase
@@ -202,6 +206,7 @@ export default Vue.extend({
     SeoForm,
     RichEditor,
     MediaUploadInput,
+    AttributesSelect,
     MetadataForm,
   },
   props: {
@@ -256,6 +261,7 @@ export default Vue.extend({
           cover_id: fetched.cover?.id,
           parent_id: fetched.parent?.id || null,
           children_ids: fetched.children?.map((child) => child.id) || [],
+          attributes: fetched.attributes?.map((attr) => attr.id) || [],
           seo: fetched.seo || {},
         }
       } else {

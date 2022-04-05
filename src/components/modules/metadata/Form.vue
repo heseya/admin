@@ -15,7 +15,7 @@
         :label="$t('form.key')"
         name="key"
         :disabled="isDeleted(meta) || meta.wasSaved"
-        rules="required|letters-only"
+        rules="required|metadata-name"
       />
 
       <app-select

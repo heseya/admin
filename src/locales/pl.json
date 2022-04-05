@@ -52,14 +52,12 @@
     "webhooks": "Webhooki",
     "attributes": "Cechy"
   },
-
   "attributeTypes": {
     "single-option": "Tekstowy jednokrotnego wyboru",
     "multi-choice-option": "Tekstowy wielokrotnego wyboru",
     "date": "Data",
     "number": "Liczbowy jednokrotnego wyboru"
   },
-
   "schemaTypes": {
     "string": "Wartość tekstowa",
     "select": "Wybór spośród kilku opcji",
@@ -90,6 +88,7 @@
     "lessThan": "Wartość musi być mniejsza bądź równa od {target}",
     "idRequired": "Wymagane jest podanie ID",
     "slug": "Link może składać się tylko z małych liter, cyfr i myślników",
+    "metadataName": "Nazwa metadanych może składać się tylko z liter, cyfr i podkreślników (_)",
     "url": "Wartość musi być poprawnym adresem URL",
     "lettersOnly": "Wartość może składać się tylko z liter i podkreślników (_)",
     "dateBefore": "Data zakończenia musi być przed datą startu",

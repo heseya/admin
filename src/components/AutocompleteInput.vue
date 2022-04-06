@@ -1,34 +1,41 @@
 <template>
   <div class="autocomplete-input">
-    <app-select
-      :value="antSelectValue"
-      :label="label"
-      mode="multiple"
-      class="autocomplete-input__select"
-      option-filter-prop="label"
-      :disabled="disabled"
-      show-search
-      allow-clear
-      label-in-value
-      :loading="isLoading"
-      :placeholder="`${$t('placeholder')}`"
-      @search="onSearch"
-      @select="onSelect"
-      @deselect="onDeselect"
-    >
-      <a-select-option
-        v-for="option in options"
-        :key="option.id"
-        :value="option.id"
-        :label="option.name || option.code"
+    <ValidationProvider ref="provider" v-slot="{ errors }" :rules="rules">
+      <app-select
+        :value="antSelectValue"
+        :label="label"
+        mode="multiple"
+        :name="`autocomplete-${model}`"
+        class="autocomplete-input__select"
+        option-filter-prop="label"
+        :disabled="disabled"
+        show-search
+        allow-clear
+        label-in-value
+        :loading="isLoading"
+        :placeholder="`${$t('placeholder')}`"
+        @search="onSearch"
+        @select="onSelect"
+        @deselect="onDeselect"
       >
-        {{ option.name || option.code }}
-      </a-select-option>
+        <a-select-option
+          v-for="option in options"
+          :key="option.id"
+          :value="option.id"
+          :label="option.name || option.code"
+        >
+          {{ option.name || option.code }}
+        </a-select-option>
 
-      <template #notFoundContent>
-        <empty />
-      </template>
-    </app-select>
+        <template #notFoundContent>
+          <empty />
+        </template>
+
+        <template #error>
+          {{ errors[0] }}
+        </template>
+      </app-select>
+    </ValidationProvider>
   </div>
 </template>
 
@@ -47,6 +54,7 @@
 import Vue from 'vue'
 import debounce from 'lodash/debounce'
 import uniqBy from 'lodash/uniqBy'
+import { ValidationProvider } from 'vee-validate'
 
 import { GeneratedStoreModulesKeys } from '@/store'
 import Empty from '@/components/layout/Empty.vue'
@@ -61,7 +69,7 @@ interface BaseItem {
 type AntSelectOption = { key: string; label: string }
 
 export default Vue.extend({
-  components: { Empty },
+  components: { Empty, ValidationProvider },
   props: {
     model: {
       type: String,
@@ -74,6 +82,7 @@ export default Vue.extend({
     disabled: { type: Boolean, default: false },
     label: { type: String, default: '' },
     placeholderModel: { type: String, default: '' },
+    rules: { type: [String, Object], default: null },
   },
   data: () => ({
     isLoading: false,

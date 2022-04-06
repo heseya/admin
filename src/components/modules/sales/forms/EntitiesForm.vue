@@ -6,6 +6,7 @@
       :label="$t('form.roles')"
       model="roles"
       :disabled="disabled"
+      :rules="{ required: form.is_allow_list }"
     />
     <autocomplete-input
       v-else-if="type === DiscountConditionType.UserIn"
@@ -13,6 +14,7 @@
       :label="$t('form.users')"
       model="users"
       :disabled="disabled"
+      :rules="{ required: form.is_allow_list }"
     />
     <autocomplete-input
       v-else-if="type === DiscountConditionType.ProductIn"
@@ -20,6 +22,7 @@
       :label="$t('form.products')"
       model="products"
       :disabled="disabled"
+      :rules="{ required: form.is_allow_list }"
     />
     <autocomplete-input
       v-else-if="type === DiscountConditionType.ProductInSet"
@@ -27,6 +30,7 @@
       :label="$t('form.product_sets')"
       model="productSets"
       :disabled="disabled"
+      :rules="{ required: form.is_allow_list }"
     />
 
     <div class="condition-form__row">

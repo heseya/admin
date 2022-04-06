@@ -4,7 +4,7 @@
       v-model="form.max_uses"
       :name="`${formId}.max_uses`"
       type="number"
-      rules="not-negative"
+      rules="positive"
       :disabled="disabled"
       :label="$t('form.max_uses')"
     />

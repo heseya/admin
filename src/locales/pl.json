@@ -86,6 +86,7 @@
     "positive": "To pole musi być większe od zera",
     "notNegative": "To pole nie może być mniejsze od 0",
     "lessThan": "Wartość musi być mniejsza bądź równa od {target}",
+    "lessThanFallback": "maksymalnej wartości",
     "idRequired": "Wymagane jest podanie ID",
     "slug": "Link może składać się tylko z małych liter, cyfr i myślników",
     "metadataName": "Nazwa metadanych może składać się tylko z liter, cyfr i podkreślników (_)",

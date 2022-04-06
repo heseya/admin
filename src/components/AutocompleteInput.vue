@@ -82,7 +82,7 @@ export default Vue.extend({
     disabled: { type: Boolean, default: false },
     label: { type: String, default: '' },
     placeholderModel: { type: String, default: '' },
-    rules: { type: String, default: null },
+    rules: { type: [String, Object], default: null },
   },
   data: () => ({
     isLoading: false,

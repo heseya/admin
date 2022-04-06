@@ -1,7 +1,7 @@
 import { extend } from 'vee-validate'
 import { required, email } from 'vee-validate/dist/rules'
 import v from 'validator'
-import { isNaN, isNull, isNumber } from 'lodash'
+import { isNaN, isNumber } from 'lodash'
 import { isBefore, isSameDay } from 'date-fns'
 
 import { ShippingMethodPriceRangeDTO } from '@/interfaces/ShippingMethod'

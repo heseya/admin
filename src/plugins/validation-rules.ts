@@ -1,13 +1,12 @@
 import { extend } from 'vee-validate'
 import { required, email } from 'vee-validate/dist/rules'
 import v from 'validator'
-import { isNaN, isNumber } from 'lodash'
-import { isBefore } from 'date-fns'
+import { isNaN, isNull, isNumber } from 'lodash'
+import { isBefore, isSameDay } from 'date-fns'
 
 import { ShippingMethodPriceRangeDTO } from '@/interfaces/ShippingMethod'
 
 import { METADATA_NAME_REGEX, ONLY_LETTERS_REGEX, SLUG_REGEX } from '@/consts/regexes'
-import { isBefore } from 'date-fns'
 import i18n from '@/i18n'
 
 extend('required', {
@@ -53,8 +52,11 @@ extend('less-than', {
     const maxValue = isNumber(target) ? target : parseFloat(target)
     return isNaN(maxValue) || value <= maxValue
   },
-  message: (_, props) =>
-    i18n.t('validation.lessThan', { target: props._target_ || props.target }) as string,
+  message: (_, props) => {
+    const value: string = props._target_ || props.target
+    const text = isNaN(Number(value)) ? (i18n.t('validation.lessThanFallback') as string) : value
+    return i18n.t('validation.lessThan', { target: text }) as string
+  },
 })
 
 extend('id-required', {
@@ -104,7 +106,20 @@ extend('date-before', {
   },
 })
 
-extend('time-before', {
+extend('date-same-or-before', {
+  message: () => i18n.t('validation.dateBefore') as string,
+  params: ['target'],
+  validate(date, { target }: Record<string, any>) {
+    if (!target) return true
+
+    const current = new Date(date)
+    const targetDate = new Date(target)
+
+    return isBefore(current, targetDate) || isSameDay(current, targetDate)
+  },
+})
+
+extend('time-same-or-before', {
   message: () => i18n.t('validation.timeBefore') as string,
   params: ['target'],
   validate(date, { target }: Record<string, any>) {
@@ -114,8 +129,8 @@ extend('time-before', {
       .map((v) => parseInt(v))
 
     if (hour < targetHour) return true
-    if (minute < targetMinute) return true
-    if (second <= targetSecond) return true
+    if (hour == targetHour && minute < targetMinute) return true
+    if (hour == targetHour && minute == targetMinute && second <= targetSecond) return true
     return false
   },
 })

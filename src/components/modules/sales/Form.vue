@@ -29,7 +29,7 @@
           :disabled="disabled"
           :rules="{
             required: true,
-            'not-negative': true,
+            positive: true,
             'less-than': form.type === DiscountType.Percentage ? 100 : false,
           }"
           type="number"
@@ -99,6 +99,7 @@
         :label="$t('form.target_products')"
         model="products"
         :disabled="disabled"
+        :rules="form.target_is_allow_list ? 'required' : ''"
       />
 
       <autocomplete-input
@@ -106,6 +107,7 @@
         :label="$t('form.target_sets')"
         model="productSets"
         :disabled="disabled"
+        :rules="form.target_is_allow_list ? 'required' : ''"
       />
     </template>
 
@@ -115,6 +117,7 @@
       :label="$t('form.target_shipping_methods')"
       model="shippingMethods"
       :disabled="disabled"
+      :rules="form.target_is_allow_list ? 'required' : ''"
     />
 
     <hr />

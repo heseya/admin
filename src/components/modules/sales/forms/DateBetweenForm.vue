@@ -5,7 +5,7 @@
         v-model="form.start_at"
         :name="`${formId}.start_at`"
         type="date"
-        :rules="`required|date-before:@${formId}.end_at`"
+        :rules="`required|date-same-or-before:@${formId}.end_at`"
         :disabled="disabled"
         :label="$t('form.start_at')"
       />

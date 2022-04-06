@@ -26,6 +26,11 @@
         @remove="removeCondition(i)"
       />
     </div>
+
+    <ValidationProvider v-slot="{ errors }" class="metadata-form__error" rules="block-if-error">
+      <input :value="group.conditions.length === 0" name="is-duplicated-error" type="hidden" />
+      <a-alert v-if="errors.length" type="error" show-icon :message="$t('errorTitle')" />
+    </ValidationProvider>
   </div>
 </template>
 
@@ -34,12 +39,14 @@
   "en": {
     "addCondition": "Add condition",
     "removeGroup": "Remove group",
-    "empty": "No conditions in the group"
+    "empty": "No conditions in the group",
+    "errorTitle": "Every group needs to have at least one condition"
   },
   "pl": {
     "addCondition": "Dodaj warunek",
     "removeGroup": "Usuń grupę",
-    "empty": "Brak warunków rabatowych w grupie"
+    "empty": "Brak warunków rabatowych w grupie",
+    "errorTitle": "Każda grupa musi zawierać co najmniej jeden warunek"
   }
 }
 </i18n>
@@ -47,6 +54,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
+import { ValidationProvider } from 'vee-validate'
 
 import { DiscountConditionGroupDto, DiscountConditionType } from '@/interfaces/SaleCondition'
 import Empty from '@/components/layout/Empty.vue'
@@ -55,7 +63,7 @@ import ConditionForm from './ConditionForm.vue'
 import { EMPTY_ORDER_VALUE_FORM } from '@/consts/salesConditionsForms'
 
 export default Vue.extend({
-  components: { Empty, ConditionForm },
+  components: { Empty, ConditionForm, ValidationProvider },
   props: {
     value: { type: Object, required: true } as Vue.PropOptions<DiscountConditionGroupDto>,
     disabled: { type: Boolean, default: false },

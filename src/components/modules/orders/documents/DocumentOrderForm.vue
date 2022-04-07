@@ -125,18 +125,18 @@ export default Vue.extend({
     },
 
     async uploadFile() {
-      // if (!this.form.file) return
+      if (!this.form.file) return
 
       this.isLoading = true
 
-      // @ts-ignore
+      // @ts-ignore // TODO: fix extended store actions typings
       const document = await (this.$accessor.orders.createOrderDocument as CreateOrderDocumentFunc)(
         {
           orderId: this.orderId,
           document: {
             name: this.form.name,
             type: this.form.type,
-            file: this.form.file!,
+            file: this.form.file,
           },
         },
       )

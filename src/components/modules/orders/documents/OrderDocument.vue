@@ -1,6 +1,6 @@
 <template>
   <div class="order-document">
-    <div class="order-document__name">{{ document.name }}</div>
+    <div class="order-document__name">{{ document.name || $t('notnamed') }}</div>
     <div class="order-document__type">{{ $t(`orderDocumentsTypes.${document.type}`) }}</div>
 
     <a-dropdown :trigger="['click']" class="order-document__menu">
@@ -22,6 +22,7 @@
 <i18n>
 {
   "pl": {
+    "notnamed": "Nie nazwany plik",
     "openMenu": "Otwórz menu",
     "sendBtn": "Wyślij do klienta",
     "sendConfirmText": "Czy na pewno chcesz wysłać dokument do klienta?",
@@ -33,6 +34,7 @@
     "deleteSuccess": "Dokument został usunięty"
   },
   "en": {
+    "notnamed": "Not named file",
     "openMenu": "Open menu",
     "sendBtn": "Send to the client",
     "sendConfirmText": "Are you sure you want to send the document to the client?",
@@ -69,7 +71,7 @@ export default Vue.extend({
   },
   methods: {
     async download() {
-      // @ts-ignore
+      // @ts-ignore // TODO: fix extended store actions typings
       const file = await (this.$accessor.orders.getOrderDocument as DownloadOrderDocumentFunc)({
         orderId: this.orderId,
         documentId: this.document.id,
@@ -93,7 +95,7 @@ export default Vue.extend({
         okText: this.$t('sendBtn') as string,
         cancelText: this.$t('common.cancel') as string,
         onOk: async () => {
-          const success = await // @ts-ignore
+          const success = await // @ts-ignore // TODO: fix extended store actions typings
           (this.$accessor.orders.sendOrderDocuments as SendOrderDocumentsFunc)({
             orderId: this.orderId,
             documentIds: [this.document.id],
@@ -110,7 +112,7 @@ export default Vue.extend({
         cancelText: this.$t('common.cancel') as string,
         okType: 'danger',
         onOk: async () => {
-          const success = await // @ts-ignore
+          const success = await // @ts-ignore // TODO: fix extended store actions typings
           (this.$accessor.orders.removeOrderDocument as RemoveOrderDocumentFunc)({
             orderId: this.orderId,
             documentId: this.document.id,

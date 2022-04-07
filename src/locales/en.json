@@ -67,6 +67,13 @@
     "date": "Date",
     "file": "File"
   },
+
+  "orderDocumentsTypes": {
+    "invoice": "Invoice",
+    "receipt": "Receipt",
+    "other": "Other"
+  },
+
   "validation": {
     "required": "This field is required",
     "email": "Enter a valid email address",

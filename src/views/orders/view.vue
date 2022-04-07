@@ -38,6 +38,9 @@
           @created="onPackageCreated"
         />
       </card>
+      <card class="order-page__documents">
+        <order-documents v-if="order.id" :order-id="order.id" :documents="order.documents" />
+      </card>
     </main>
   </div>
 </template>
@@ -72,6 +75,7 @@ import { formatApiNotificationError } from '@/utils/errors'
 import CustomerDetails from '@/components/modules/orders/CustomerDetails.vue'
 import Cart from '@/components/modules/orders/Cart.vue'
 import OrderMetadatas from '@/components/modules/orders/OrderMetadatas.vue'
+import OrderDocuments from '@/components/modules/orders/documents/OrderDocumentsList.vue'
 
 export default Vue.extend({
   metaInfo(this: any): any {
@@ -88,6 +92,7 @@ export default Vue.extend({
     CustomerDetails,
     Cart,
     OrderMetadatas,
+    OrderDocuments,
   },
   data: () => ({
     packageTemplateId: '',
@@ -134,12 +139,12 @@ export default Vue.extend({
 .order-page {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-areas: 'summary' 'status' 'cart' 'address' 'shipping' 'metadata';
+  grid-template-areas: 'summary' 'status' 'cart' 'address' 'documents' 'shipping' 'metadata';
   grid-gap: 16px;
 
   @media ($viewport-10) {
     grid-template-columns: 2fr 1fr;
-    grid-template-areas: 'summary status' 'cart address' 'cart shipping' 'cart metadata';
+    grid-template-areas: 'summary status' 'cart address' 'cart shipping' 'cart documents' 'cart metadata';
   }
 
   .card {
@@ -168,6 +173,10 @@ export default Vue.extend({
 
   &__metadata {
     grid-area: metadata;
+  }
+
+  &__documents {
+    grid-area: documents;
   }
 }
 

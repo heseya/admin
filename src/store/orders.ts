@@ -28,6 +28,12 @@ export const orders = createVuexCRUD<Order>()('orders', {
   state: {},
   getters: {},
   mutations: {
+    SET_ORDER_DOCUMENTS(
+      state,
+      { orderId, documents }: { orderId: UUID; documents: OrderDocument[] },
+    ) {
+      if (state.selected.id === orderId) state.selected.documents = documents
+    },
     ADD_ORDER_DOCUMENT(state, { orderId, document }: { orderId: UUID; document: OrderDocument }) {
       if (state.selected.id === orderId) state.selected.documents.push(document)
     },
@@ -59,12 +65,16 @@ export const orders = createVuexCRUD<Order>()('orders', {
         if (document.name) form.append('name', document.name)
         form.append('file', document.file)
 
-        const response = await api.post<{ data: OrderDocument }>(`/orders/id:${orderId}/docs`, form)
-        const orderDocument = response.data.data
+        const response = await api.post<{ data: OrderDocument[] }>(
+          `/orders/id:${orderId}/docs`,
+          form,
+        )
+        const orderDocuments = response.data.data
 
-        commit('ADD_ORDER_DOCUMENT', orderDocument)
+        // TODO: replace with ADD_ORDER_DOCUMENT when api will be fixed
+        commit('SET_ORDER_DOCUMENTS', { orderId, documents: orderDocuments })
 
-        return orderDocument
+        return orderDocuments
       } catch (error: any) {
         commit(StoreMutations.SetError, error)
         return null
@@ -109,7 +119,7 @@ export const orders = createVuexCRUD<Order>()('orders', {
     ) {
       commit(StoreMutations.SetError, null)
       try {
-        await api.post(`/orders/id:${orderId}/docs/send`, documentIds)
+        await api.post(`/orders/id:${orderId}/docs/send`, { uuid: documentIds })
         return true
       } catch (error: any) {
         commit(StoreMutations.SetError, error)

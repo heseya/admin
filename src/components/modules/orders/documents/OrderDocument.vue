@@ -1,7 +1,7 @@
 <template>
   <div class="order-document">
     <div class="order-document__name">{{ document.name }}</div>
-    <div class="order-document__type">{{ $t(`types.${document.type}`) }}</div>
+    <div class="order-document__type">{{ $t(`orderDocumentsTypes.${document.type}`) }}</div>
 
     <a-dropdown :trigger="['click']" class="order-document__menu">
       <button class="order-document__btn" :aria-label="$t('openMenu')">
@@ -26,36 +26,22 @@
     "sendBtn": "Wyślij do klienta",
     "sendConfirmText": "Czy na pewno chcesz wysłać dokument do klienta?",
     "sendSuccess": "Dokument został wysłany do klienta",
-    "sendError": "Wystąpił błąd podczas wysyłania dokumentu",
     "downloadBtn": "Pobierz plik",
     "downloadError": "Wystąpił błąd podczas pobierania pliku, spróbuj ponownie później.",
     "deleteBtn": "Usuń dokument",
     "deleteConfirmText": "Czy na pewno chcesz usunąć ten dokument?",
-    "deleteSuccess": "Dokument został usunięty",
-    "deleteError": "Wystąpił błąd podczas usuwania dokumentu",
-    "types": {
-      "invoice": "Faktura",
-      "receipt": "Rachunek",
-      "other": "Inny"
-    }
+    "deleteSuccess": "Dokument został usunięty"
   },
   "en": {
     "openMenu": "Open menu",
     "sendBtn": "Send to the client",
     "sendConfirmText": "Are you sure you want to send the document to the client?",
     "sendSuccess": "Document was sent to the client",
-    "sendError": "An error occurred while sending the document",
     "downloadBtn": "Download file",
     "downloadError": "An error occurred while downloading the file, try again later.",
     "deleteBtn": "Delete document",
     "deleteConfirmText": "Are you sure you want to delete this document?",
-    "deleteSuccess": "Document was deleted",
-    "deleteError": "An error occurred while deleting the document",
-    "types": {
-      "invoice": "Invoice",
-      "receipt": "Receipt",
-      "other": "Other"
-    }
+    "deleteSuccess": "Document was deleted"
   }
 }
 </i18n>
@@ -113,7 +99,6 @@ export default Vue.extend({
             documentIds: [this.document.id],
           })
           if (success) this.$toast.success(this.$t('sendSuccess') as string)
-          else this.$toast.error(this.$t('sendError') as string)
         },
       })
     },
@@ -131,7 +116,6 @@ export default Vue.extend({
             documentId: this.document.id,
           })
           if (success) this.$toast.success(this.$t('deleteSuccess') as string)
-          else this.$toast.error(this.$t('deleteError') as string)
         },
       })
     },
@@ -147,6 +131,10 @@ export default Vue.extend({
   padding: 10px;
   background-color: #f7f7f8;
   border-radius: 8px;
+
+  &:not(:last-of-type) {
+    margin-bottom: 8px;
+  }
 
   &__name {
     font-weight: 600;

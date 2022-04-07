@@ -10,13 +10,15 @@
     </div>
 
     <div v-if="documents.length" class="order-documents__list">
-      <order-document v-for="doc in documents" :key="doc.id" :document="doc" :order-id="orderId" />
+      <OrderDocument v-for="doc in documents" :key="doc.id" :document="doc" :order-id="orderId" />
     </div>
 
     <empty v-else>{{ $t('empty') }}</empty>
 
-    <a-modal v-model="isUploadModalOpen" width="800px" :title="$t('addFile')" :footer="null">
-      <modal-form> TODO </modal-form>
+    <a-modal v-model="isUploadModalOpen" width="600px" :title="$t('modalTitle')" :footer="null">
+      <modal-form>
+        <DocumentOrderForm :order-id="orderId" @close="isUploadModalOpen = false" />
+      </modal-form>
     </a-modal>
   </div>
 </template>
@@ -26,11 +28,13 @@
   "pl": {
     "title": "Dokumenty zamówienia",
     "addFile": "Dodaj plik",
+    "modalTitle": "Dodaj dokument do zamówienia",
     "empty": "Brak dokumentów"
   },
   "en": {
     "title": "Order documents",
     "addFile": "Add file",
+    "modalTitle": "Add document to order",
     "empty": "No documents"
   }
 }
@@ -40,6 +44,7 @@
 import Vue from 'vue'
 
 import OrderDocumentComponent from './OrderDocument.vue'
+import DocumentOrderForm from './DocumentOrderForm.vue'
 import Empty from '@/components/layout/Empty.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 
@@ -51,6 +56,7 @@ export default Vue.extend({
     OrderDocument: OrderDocumentComponent,
     Empty,
     ModalForm,
+    DocumentOrderForm,
   },
   props: {
     orderId: {

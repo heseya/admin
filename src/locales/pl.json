@@ -67,6 +67,13 @@
     "date": "Data",
     "file": "Plik"
   },
+
+  "orderDocumentsTypes": {
+    "invoice": "Faktura",
+    "receipt": "Rachunek",
+    "other": "Inny"
+  },
+
   "validation": {
     "required": "To pole jest wymagane",
     "email": "Wprowadź poprawny adres email",

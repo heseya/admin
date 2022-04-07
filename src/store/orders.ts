@@ -9,10 +9,10 @@ export type CreateOrderDocumentFunc = (payload: {
   document: OrderDocumentDto
 }) => Promise<OrderDocument | null>
 
-export type GetOrderDocumentFunc = (payload: {
+export type DownloadOrderDocumentFunc = (payload: {
   orderId: UUID
   documentId: UUID
-}) => Promise<BinaryData | null>
+}) => Promise<Blob | null>
 
 export type SendOrderDocumentsFunc = (payload: {
   orderId: UUID
@@ -77,7 +77,10 @@ export const orders = createVuexCRUD<Order>()('orders', {
     ) {
       commit(StoreMutations.SetError, null)
       try {
-        const response = await api.get<BinaryData>(`/orders/id:${orderId}/docs/id:${documentId}`)
+        const response = await api.get<Blob>(
+          `/orders/id:${orderId}/docs/id:${documentId}/download`,
+          { responseType: 'blob' },
+        )
         return response.data
       } catch (e) {
         commit(StoreMutations.SetError, e)

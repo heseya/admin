@@ -8,6 +8,12 @@ import { SeoMetadata, SeoMetadataDto } from './SeoMetadata'
 import { Metadata } from './Metadata'
 import { ProductAttribute } from './Attribute'
 
+export interface ProductInnerItem {
+  id: UUID
+  name: string
+  required_quantity: number
+}
+
 export interface Product {
   id: UUID
   name: string
@@ -29,6 +35,7 @@ export interface Product {
   cover: CdnMedia
   tags: Tag[]
   seo: SeoMetadata
+  items: ProductInnerItem[]
   attributes: ProductAttribute[]
   metadata: Metadata
   metadata_private?: Metadata
@@ -49,6 +56,7 @@ export interface ProductDTO {
   schemas: UUID[]
   media: UUID[]
   seo: SeoMetadataDto
+  items: Omit<ProductInnerItem, 'name'>[]
   /**
    * Attribute.id -> AttributeOption.id[]
    */

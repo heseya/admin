@@ -13,7 +13,7 @@ export const getApiURL = () => {
     case '***REMOVED***.heseya.com':
       return 'https://store-api.***REMOVED***.pl'
     case '***REMOVED***':
-      return 'https://rc.***REMOVED***'
+      return 'https://release-2-2-0.***REMOVED***'
     case '***REMOVED***':
       return '***REMOVED***'
     case 'client-demo-admin.heseya.com':
@@ -27,6 +27,6 @@ export const getApiURL = () => {
     case 'store-admin-git-feature-languages-***REMOVED***':
       return 'https://sandbox.***REMOVED***'
     default:
-      return process.env.VUE_APP_API_URL || '***REMOVED***'
+      return (process.env.VUE_APP_API_URL as string) || '***REMOVED***'
   }
 }

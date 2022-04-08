@@ -43,6 +43,12 @@
         </card>
       </div>
 
+      <div class="product__inner-items">
+        <card>
+          <WarehouseItemsConfigurator v-model="form.items" :disabled="!canModify" />
+        </card>
+      </div>
+
       <div class="product__schemas">
         <card>
           <SchemaConfigurator v-model="form.schemas" :disabled="!canModify" />
@@ -281,6 +287,7 @@ import { updateProductAttributeOptions } from '@/services/updateProductAttribute
 import { UUID } from '@/interfaces/UUID'
 import { Product, ProductDTO, ProductComponentForm } from '@/interfaces/Product'
 import { ProductSet } from '@/interfaces/ProductSet'
+import WarehouseItemsConfigurator from '@/components/modules/products/WarehouseItemsConfigurator.vue'
 
 const EMPTY_FORM: ProductComponentForm = {
   id: '',
@@ -298,6 +305,7 @@ const EMPTY_FORM: ProductComponentForm = {
   tags: [],
   seo: {},
   attributes: [],
+  items: [],
 }
 
 export default Vue.extend({
@@ -323,6 +331,7 @@ export default Vue.extend({
     Textarea,
     MetadataForm,
     AttributesConfigurator,
+    WarehouseItemsConfigurator,
   },
   data: () => ({
     form: cloneDeep(EMPTY_FORM),
@@ -472,7 +481,8 @@ export default Vue.extend({
 
   &__details,
   &__schemas,
-  &__attributes {
+  &__attributes,
+  &__inner-items {
     grid-column: 1/-1;
   }
 

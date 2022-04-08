@@ -40,7 +40,6 @@
       rules="required"
       :label="$t('form.max_uses')"
     />
-    <small v-html="$t('max_uses_description')"> </small>
 
     <hr />
 
@@ -81,7 +80,6 @@
       "percent": "Rabat procentowy",
       "amount": "Rabat kwotowy"
     },
-    "max_uses_description": "W przypadku podania wartości <b>0</b>, kod rabatowy nie będzie miał ograniczeń ilości użyć.",
     "expiry_date_description": "W przypadku braku podania dat, kod rabatowy będzie ważny bez ograniczeń czasowych."
   },
   "en": {
@@ -97,7 +95,6 @@
       "percent": "Percentage discount",
       "amount": "Amount discount"
     },
-    "max_uses_description": "If you enter <b>0</b>, the code will not have a limit of uses.",
     "expiry_date_description": "If you don't enter dates, the code will be valid without any time limit."
   }
 }

@@ -65,16 +65,12 @@ export const orders = createVuexCRUD<Order>()('orders', {
         if (document.name) form.append('name', document.name)
         form.append('file', document.file)
 
-        const response = await api.post<{ data: OrderDocument[] }>(
-          `/orders/id:${orderId}/docs`,
-          form,
-        )
-        const orderDocuments = response.data.data
+        const response = await api.post<{ data: OrderDocument }>(`/orders/id:${orderId}/docs`, form)
+        const orderDocument = response.data.data
 
-        // TODO: replace with ADD_ORDER_DOCUMENT when api will be fixed
-        commit('SET_ORDER_DOCUMENTS', { orderId, documents: orderDocuments })
+        commit('ADD_ORDER_DOCUMENT', { orderId, document: orderDocument })
 
-        return orderDocuments
+        return orderDocument
       } catch (error: any) {
         commit(StoreMutations.SetError, error)
         return null

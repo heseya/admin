@@ -110,7 +110,6 @@ export default Vue.extend({
         title: this.$t('deleteConfirmText') as string,
         okText: this.$t('deleteBtn') as string,
         cancelText: this.$t('common.cancel') as string,
-        okType: 'danger',
         onOk: async () => {
           const success = await // @ts-ignore // TODO: fix extended store actions typings
           (this.$accessor.orders.removeOrderDocument as RemoveOrderDocumentFunc)({

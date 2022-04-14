@@ -17,12 +17,7 @@
     </template>
 
     <template #price>
-      <span v-if="product.price_min !== product.price_max">
-        {{ formatCurrency(product.price_min) }} - {{ formatCurrency(product.price_max) }}
-      </span>
-      <span v-else>
-        {{ formatCurrency(product.price_min) }}
-      </span>
+      <ProductPrice :product="product" />
     </template>
 
     <template #tags>
@@ -46,9 +41,10 @@ import { formatCurrency } from '@/utils/currency'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 import { TableConfig } from '@/interfaces/CmsTable'
 import MediaElement from '@/components/MediaElement.vue'
+import ProductPrice from './ProductPrice.vue'
 
 export default Vue.extend({
-  components: { Avatar, CmsTableRow, MediaElement },
+  components: { Avatar, CmsTableRow, MediaElement, ProductPrice },
   props: {
     product: {
       type: Object,

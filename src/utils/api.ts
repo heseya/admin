@@ -26,6 +26,8 @@ export const getApiURL = () => {
       return '***REMOVED***'
     case 'sandbox-admin.heseya.com':
       return 'https://sandbox.***REMOVED***'
+    case 'store-admin-git-feature-sales-***REMOVED***':
+      return 'https://feature-sales.***REMOVED***'
     default:
       return (process.env.VUE_APP_API_URL as string) || '***REMOVED***'
   }

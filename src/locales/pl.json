@@ -38,7 +38,8 @@
     "orders": "Zamówienia",
     "products": "Produkty",
     "sets": "Kolekcje",
-    "discounts": "Kody rabatowe",
+    "coupons": "Kody rabatowe",
+    "sales": "Promocje",
     "pages": "Strony",
     "tags": "Tagi",
     "schemas": "Schematy",
@@ -67,6 +68,16 @@
     "date": "Data",
     "file": "Plik"
   },
+  "discountTypes": {
+    "percent": "Rabat procentowy",
+    "amount": "Rabat kwotowy"
+  },
+  "discountTargetTypes": {
+    "order-value": "Całkowita wartość zamówienia",
+    "products": "Wybrane produkty",
+    "shipping-price": "Cena dostawy",
+    "cheapest-product": "Najtańszy produkt w koszyku"
+  },
   "validation": {
     "required": "To pole jest wymagane",
     "email": "Wprowadź poprawny adres email",
@@ -74,7 +85,8 @@
     "password": "Hasło musi mieć przynajmniej 12 znaków",
     "positive": "To pole musi być większe od zera",
     "notNegative": "To pole nie może być mniejsze od 0",
-    "lessThan": "Wartość musi być mniejsza bądź równa od {_target_}",
+    "lessThan": "Wartość musi być mniejsza bądź równa od {target}",
+    "lessThanFallback": "maksymalnej wartości",
     "idRequired": "Wymagane jest podanie ID",
     "slug": "Link może składać się tylko z małych liter, cyfr i myślników",
     "metadataName": "Nazwa metadanych może składać się tylko z liter, cyfr i podkreślników (_)",
@@ -82,6 +94,7 @@
     "lettersOnly": "Wartość może składać się tylko z liter i podkreślników (_)",
     "dateBefore": "Data zakończenia musi być przed datą startu",
     "priceRangesDuplicates": "Zakresy cen nie mogą zawierać zduplikowanych progów",
-    "schemaCheckbox": "Schemat nie może być jednocześnie ukryty i wymagany"
+    "schemaCheckbox": "Schemat nie może być jednocześnie ukryty i wymagany",
+    "timeBefore": "Godzina zakończenia musi być przed godziną startu"
   }
 }

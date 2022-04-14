@@ -25,7 +25,7 @@ export const getApiURL = () => {
     case '***REMOVED***':
       return '***REMOVED***'
     case 'sandbox-admin.heseya.com':
-      return 'https://sandbox.***REMOVED***'
+      return 'https://feature-sandbox.***REMOVED***'
     case 'store-admin-git-feature-sales-***REMOVED***':
       return 'https://feature-sales.***REMOVED***'
     default:

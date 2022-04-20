@@ -4,12 +4,20 @@
 
     <card>
       <list>
-        <h2 v-can="$p.Pages.Show" class="section-title">{{ $t('sections.shop') }}</h2>
+        <h2 v-can.any="[$p.Pages.Show, $p.Banners.Show]" class="section-title">
+          {{ $t('sections.shop') }}
+        </h2>
         <SettingsItem
           v-can="$p.Pages.Show"
           :name="$t('models.pages')"
           url="/pages"
           icon="bx bxs-copy-alt"
+        />
+        <SettingsItem
+          v-can="$p.Banners.Show"
+          :name="$t('models.banners')"
+          url="/settings/banners"
+          icon="bx bxs-image"
         />
 
         <h2 v-can.any="[$p.Tags.Show, $p.Products.Show]" class="section-title">

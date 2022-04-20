@@ -50,6 +50,7 @@
     "roles": "Roles",
     "apps": "Apps",
     "webhooks": "Webhooks",
+    "banners": "Banners",
     "attributes": "Attributes"
   },
   "attributeTypes": {

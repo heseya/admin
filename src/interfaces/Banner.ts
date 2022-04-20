@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import { CdnMedia } from './Media'
+import { Metadata } from './Metadata'
 import { UUID } from './UUID'
 
 export interface Banner {
@@ -9,6 +10,8 @@ export interface Banner {
   name: string
   active: boolean
   responsive_media: ResponsiveMedia[]
+  metadata: Metadata
+  metadata_private?: Metadata
 }
 
 export type ResponsiveMedia = { min_screen_width: number; media: CdnMedia }[]

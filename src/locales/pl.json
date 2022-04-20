@@ -50,6 +50,7 @@
     "roles": "Role",
     "apps": "Aplikacje",
     "webhooks": "Webhooki",
+    "banners": "Bannery",
     "attributes": "Cechy"
   },
   "attributeTypes": {

@@ -1,14 +1,13 @@
 <template>
   <div class="narrower-page">
-    <top-nav :title="!isNew ? role.name : $t('newTitle')">
-      <audits-modal :id="role.id" model="roles" />
+    <top-nav :title="!isNew ? banner.name : $t('newTitle')">
       <pop-confirm
         v-if="!isNew"
-        v-can="$p.Roles.Remove"
+        v-can="$p.Banners.Remove"
         :title="$t('deleteText')"
         :ok-text="$t('common.delete')"
         :cancel-text="$t('common.cancel')"
-        @confirm="deleteRole"
+        @confirm="deleteBanner"
       >
         <icon-button type="danger">
           <template #icon>
@@ -19,42 +18,42 @@
       </pop-confirm>
     </top-nav>
 
-    <RolesForm v-model="form" :disabled="isDisabled" @submit="save">
-      <template v-if="selectedRole">
+    <BannerForm v-model="form" :disabled="isDisabled" @submit="save">
+      <template v-if="selectedBanner">
         <MetadataForm
           ref="publicMeta"
-          :value="selectedRole.metadata"
+          :value="selectedBanner.metadata"
           :disabled="isDisabled"
-          model="roles"
+          model="banners"
         />
         <MetadataForm
-          v-if="selectedRole.metadata_private"
+          v-if="selectedBanner.metadata_private"
           ref="privateMeta"
-          :value="selectedRole.metadata_private"
+          :value="selectedBanner.metadata_private"
           :disabled="isDisabled"
           is-private
-          model="roles"
+          model="banners"
         />
       </template>
-    </RolesForm>
+    </BannerForm>
   </div>
 </template>
 
 <i18n>
 {
   "pl": {
-    "newTitle": "Nowa rola",
-    "deleteText": "Czy na pewno chcesz usunąć tę rolę?",
-    "deletedMessage": "Rola została usunięty.",
-    "createdMessage": "Rola została utworzona.",
-    "updatedMessage": "Rola została zaktualizowana."
+    "newTitle": "Nowy banner",
+    "deleteText": "Czy na pewno chcesz usunąć ten banner?",
+    "deletedMessage": "Banner został usunięty.",
+    "createdMessage": "Banner został utworzony.",
+    "updatedMessage": "Banner został zaktualizowany."
   },
   "en": {
-    "newTitle": "New role",
-    "deleteText": "Are you sure you want to delete this role?",
-    "deletedMessage": "Role has been deleted",
-    "createdMessage": "Role has been created",
-    "updatedMessage": "Role has been updated"
+    "newTitle": "New banner",
+    "deleteText": "Are you sure you want to delete this banner?",
+    "deletedMessage": "Banner has been deleted",
+    "createdMessage": "Banner has been created",
+    "updatedMessage": "Banner has been updated"
   }
 }
 </i18n>
@@ -65,17 +64,21 @@ import { cloneDeep } from 'lodash'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
-import RolesForm from '@/components/modules/roles/Form.vue'
+import BannerForm from '@/components/modules/roles/Form.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
-import { Role, RoleDTO } from '@/interfaces/Role'
+import { Banner, BannerDto } from '@/interfaces/Banner'
 
-const CLEAN_FORM: RoleDTO = {
+const CLEAN_FORM: Banner = {
+  id: '',
   name: '',
-  description: '',
-  permissions: [],
+  slug: '',
+  url: '',
+  active: true,
+  responsive_media: [],
+  metadata: {},
+  metadata_private: {},
 }
 
 export default Vue.extend({
@@ -88,13 +91,12 @@ export default Vue.extend({
   components: {
     TopNav,
     PopConfirm,
-    RolesForm,
-    AuditsModal,
+    BannerForm,
     MetadataForm,
   },
   data: () => ({
     form: cloneDeep(CLEAN_FORM),
-    selectedRole: null as Role | null,
+    selectedBanner: null as Banner | null,
   }),
   computed: {
     id(): string {
@@ -103,24 +105,24 @@ export default Vue.extend({
     isNew(): boolean {
       return this.id === 'create'
     },
-    role(): Role {
-      return this.$accessor.roles.getSelected
+    banner(): Banner {
+      return this.$accessor.banners.getSelected
     },
     error(): any {
-      return this.$accessor.roles.getError
+      return this.$accessor.banners.getError
     },
     isLoading(): boolean {
-      return this.$accessor.roles.isLoading
+      return this.$accessor.banners.isLoading
     },
     isDisabled(): boolean {
-      return this.isNew ? !this.$can(this.$p.Roles.Add) : !this.$can(this.$p.Roles.Edit)
+      return this.isNew ? !this.$can(this.$p.Banners.Add) : !this.$can(this.$p.Banners.Edit)
     },
   },
   watch: {
-    role(role: Role) {
+    banner(banner: Banner) {
       if (!this.isNew) {
-        this.form = cloneDeep(role)
-        this.selectedRole = role
+        this.form = cloneDeep(banner)
+        this.selectedBanner = banner
       }
     },
     error(error: any) {
@@ -132,7 +134,7 @@ export default Vue.extend({
   async created() {
     if (!this.isNew) {
       this.$accessor.startLoading()
-      await this.$accessor.roles.get(this.id)
+      await this.$accessor.banners.get(this.id)
       this.$accessor.stopLoading()
     }
   },
@@ -143,31 +145,35 @@ export default Vue.extend({
         ? (this.$t('createdMessage') as string)
         : (this.$t('updatedMessage') as string)
 
-      // Metadata can be saved only after role is created
-      if (this.selectedRole) await this.saveMetadata(this.selectedRole.id)
+      // Metadata can be saved only after banner is created
+      if (this.selectedBanner) await this.saveMetadata(this.selectedBanner.id)
 
-      const role = this.isNew
-        ? await this.$accessor.roles.add(this.form)
-        : await this.$accessor.roles.update({ id: this.id, item: this.form })
-
-      if (role && this.$accessor.auth.hasRole(role.id)) {
-        await this.$accessor.auth.fetchProfile()
+      const form: BannerDto = {
+        ...this.form,
+        responsive_media: this.form.responsive_media.map((media) =>
+          media.map((item) => ({ ...item, media: item.media.id })),
+        ),
       }
 
-      if (role) {
+      const banner = this.isNew
+        ? await this.$accessor.banners.add(form)
+        : await this.$accessor.banners.update({ id: this.id, item: form })
+
+      if (banner) {
         this.$toast.success(successMessage)
       }
 
-      if (role && role.id !== this.id) this.$router.push(`/settings/roles/${role.id}`)
+      if (banner && banner.id !== this.id) this.$router.push(`/settings/banners/${banner.id}`)
 
       this.$accessor.stopLoading()
     },
-    async deleteRole() {
+
+    async deleteBanner() {
       this.$accessor.startLoading()
-      const success = await this.$accessor.roles.remove(this.id)
+      const success = await this.$accessor.banners.remove(this.id)
       if (success) {
         this.$toast.success(this.$t('deletedMessage') as string)
-        this.$router.push('/settings/roles')
+        this.$router.push('/settings/banners')
       }
       this.$accessor.stopLoading()
     },

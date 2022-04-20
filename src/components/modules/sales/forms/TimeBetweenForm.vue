@@ -20,6 +20,7 @@
         :label="$t('form.end_at')"
       />
     </div>
+    <small>{{ $t('info') }}</small>
   </div>
 </template>
 
@@ -29,13 +30,15 @@
     "form": {
       "start_at": "Start at",
       "end_at": "End at"
-    }
+    },
+    "info": "Hours are stored in UTC time zone, if your store operates in a different time zone you have to take this into account when setting the hours."
   },
   "pl": {
     "form": {
       "start_at": "Godzina początkowa",
       "end_at": "Godzina końcowa"
-    }
+    },
+    "info": "Godziny są zapisywane w strefie czasowej UTC, jeśli sklep operuje w innej strefie czasowej, musić wziać na to poprawkę ustawiając godziny."
   }
 }
 </i18n>

@@ -2,7 +2,12 @@
   <div class="sale-configurator">
     <div class="sale-configurator__row">
       <div class="sale-configurator__section">
-        <validated-input v-model="form.name" :disabled="disabled" :label="$t('common.form.name')" />
+        <validated-input
+          v-model="form.name"
+          :disabled="disabled"
+          rules="required"
+          :label="$t('common.form.name')"
+        />
 
         <validated-input
           v-model="form.description"
@@ -99,7 +104,7 @@
         :label="$t('form.target_products')"
         model="products"
         :disabled="disabled"
-        :rules="{ required: form.target_is_allow_list }"
+        :rules="{ required: form.target_is_allow_list && form.target_sets.length === 0 }"
       />
 
       <autocomplete-input
@@ -107,7 +112,7 @@
         :label="$t('form.target_sets')"
         model="productSets"
         :disabled="disabled"
-        :rules="{ required: form.target_is_allow_list }"
+        :rules="{ required: form.target_is_allow_list && form.target_products.length === 0 }"
       />
     </template>
 

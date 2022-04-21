@@ -6,6 +6,7 @@ import { ShippingMethod } from './ShippingMethod'
 import { OrderProduct } from './OrderProduct'
 import { OrderDiscount } from './SalesAndCoupons'
 import { Metadata } from './Metadata'
+import { OrderDocument } from './OrderDocuments'
 
 export interface OrderStatus {
   id: UUID
@@ -67,4 +68,5 @@ export interface Order {
   summary_paid: number
   metadata: Metadata
   metadata_private?: Metadata
+  documents: OrderDocument[]
 }

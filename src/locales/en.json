@@ -69,6 +69,13 @@
     "file": "File"
   },
 
+  "orderDocumentsTypes": {
+    "invoice": "Invoice",
+    "receipt": "Receipt",
+    "other": "Other"
+  },
+
+
   "discountTypes": {
     "percent": "Percentage discount",
     "amount": "Amount discount"

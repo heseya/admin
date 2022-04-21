@@ -68,6 +68,13 @@
     "date": "Data",
     "file": "Plik"
   },
+
+  "orderDocumentsTypes": {
+    "invoice": "Faktura",
+    "receipt": "Rachunek",
+    "other": "Inny"
+  },
+
   "discountTypes": {
     "percent": "Rabat procentowy",
     "amount": "Rabat kwotowy"
@@ -78,6 +85,7 @@
     "shipping-price": "Cena dostawy",
     "cheapest-product": "Najtańszy produkt w koszyku"
   },
+  
   "validation": {
     "required": "To pole jest wymagane",
     "email": "Wprowadź poprawny adres email",

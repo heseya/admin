@@ -56,7 +56,8 @@
       "max-uses": "Max uses",
       "max-uses-per-user": "Max uses per user",
       "weekday-in": "Weekday",
-      "cart-length": "Cart size"
+      "cart-length": "Cart size",
+      "coupons-count": "Coupons count"
     }
   },
   "pl": {
@@ -72,7 +73,8 @@
       "max-uses": "Maksymalna liczba użyć",
       "max-uses-per-user": "Maksymalna liczba użyć na użytkownika",
       "weekday-in": "Dzień tygodnia",
-      "cart-length": "Wielkość koszyka"
+      "cart-length": "Wielkość koszyka",
+      "coupons-count": "Ilość kuponów"
     }
   }
 }
@@ -87,7 +89,7 @@ import { DiscountConditionDto, DiscountConditionType } from '@/interfaces/SaleCo
 
 import OrderValueForm from './forms/OrderValueForm.vue'
 import MaxUsesForm from './forms/MaxUsesForm.vue'
-import CartLengthForm from './forms/CartLengthForm.vue'
+import CartCouponsForm from './forms/CartCouponsForm.vue'
 import DateBetweenForm from './forms/DateBetweenForm.vue'
 import TimeBetweenForm from './forms/TimeBetweenForm.vue'
 import WeekdayInForm from './forms/WeekdayInForm.vue'
@@ -100,7 +102,7 @@ export default Vue.extend({
     ValidationProvider,
     OrderValueForm,
     MaxUsesForm,
-    CartLengthForm,
+    CartCouponsForm,
     DateBetweenForm,
     TimeBetweenForm,
     WeekdayInForm,
@@ -137,7 +139,8 @@ export default Vue.extend({
         case DiscountConditionType.MaxUsesPerUser:
           return 'MaxUsesForm'
         case DiscountConditionType.CartLength:
-          return 'CartLengthForm'
+        case DiscountConditionType.CouponsCount:
+          return 'CartCouponsForm'
         case DiscountConditionType.DateBetween:
           return 'DateBetweenForm'
         case DiscountConditionType.TimeBetween:
@@ -184,6 +187,8 @@ export default Vue.extend({
           return (this.condition = cloneDeep(SALES_FORMS.EMPTY_WEEKDAY_IN_FORM))
         case DiscountConditionType.CartLength:
           return (this.condition = cloneDeep(SALES_FORMS.EMPTY_CART_LENGTH_FORM))
+        case DiscountConditionType.CouponsCount:
+          return (this.condition = cloneDeep(SALES_FORMS.EMPTY_COUPONS_COUNT_FORM))
         default:
           throw new Error(`Unknown condition type: ${newType}`)
       }

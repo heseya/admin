@@ -64,7 +64,7 @@ import { cloneDeep } from 'lodash'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import BannerForm from '@/components/modules/roles/Form.vue'
+import BannerForm from '@/components/modules/banners/Form.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'

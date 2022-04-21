@@ -26,12 +26,12 @@
 <i18n>
 {
   "pl": {
-    "title": "Media",
+    "title": "Media w galerii",
     "addGroup": "Dodaj kolejne zdjęcie",
     "emptyMedia": "Brak zdjęć"
   },
   "en": {
-    "title": "Media",
+    "title": "Media in the gallery",
     "addGroup": "Add another image",
     "emptyMedia": "No images"
   }

@@ -4,12 +4,37 @@
       <i class="bx bx-grid-vertical"></i>
     </div>
 
-    <div class="responsive-media__content" :style="{ backgroundColor: color }">
-      <draggable v-model="media" :disabled="disabled" class="responsive-media__list">
-        <div v-for="image in media" :key="image.media.id" class="single-media"></div>
-      </draggable>
+    <div class="responsive-media__content">
+      <div v-for="(image, i) in media" :key="image.media.id" class="item-wrapper">
+        <div class="single-media">
+          <media-element :media="image.media" :size="120" fit="contain" />
+          <div class="single-media__remove-img">
+            <icon-button v-if="!disabled" type="danger" @click="onMediaDelete(i)">
+              <template #icon>
+                <i class="bx bx-trash"></i>
+              </template>
+            </icon-button>
+          </div>
 
-      <button class="add-box-button" @click="addMedia">+</button>
+          <media-edit-form
+            class="single-media__edit-img"
+            :disabled="disabled"
+            :media="image.media"
+            @update="(m) => updateMedia(m, i)"
+          />
+
+          <validated-input
+            v-model="image.min_screen_width"
+            class="single-media__input"
+            type="number"
+            :label="$t('minWidth')"
+          />
+        </div>
+      </div>
+
+      <div class="item-wrapper">
+        <gallery-upload-button @upload="onImageUpload" />
+      </div>
     </div>
 
     <div class="responsive-media__buttons">
@@ -25,22 +50,28 @@
 <i18n>
 {
   "pl": {
-    "dragTitle": "Przeciągnij zdjęcia"
+    "dragTitle": "Przeciągnij zdjęcia",
+    "minWidth": "Minimalna szerokość ekranu"
   },
   "en": {
-    "dragTitle": "Drag images"
+    "dragTitle": "Drag images",
+    "minWidth": "Minimal screen width"
   }
 }
 </i18n>
 
 <script lang="ts">
 import Vue from 'vue'
-import Draggable from 'vuedraggable'
 
 import { ResponsiveMedia } from '@/interfaces/Banner'
+import { CdnMedia } from '@/interfaces/Media'
+import MediaElement from '@/components/MediaElement.vue'
+
+import GalleryUploadButton from '../products/GalleryUploadButton.vue'
+import MediaEditForm from '../media/MediaEditForm.vue'
 
 export default Vue.extend({
-  components: { Draggable },
+  components: { MediaElement, GalleryUploadButton, MediaEditForm },
   props: {
     value: {
       type: Array,
@@ -51,6 +82,7 @@ export default Vue.extend({
       default: false,
     },
   },
+
   computed: {
     media: {
       get(): ResponsiveMedia {
@@ -60,38 +92,43 @@ export default Vue.extend({
         this.$emit('input', v)
       },
     },
-
-    // TODO: remove
-    color(): string {
-      const colors = ['red', 'orange', 'yellow', 'green', 'blue', 'purple']
-      return colors[Math.floor(Math.random() * colors.length)]
-    },
   },
 
   methods: {
-    // TODO: replace with actual media
-    addMedia() {
-      this.media.push({ min_screen_width: 0, media: { id: Math.random() } as any })
+    updateMedia(media: CdnMedia, index: number) {
+      this.media[index].media = media
+    },
+
+    onMediaDelete(i: number) {
+      this.media = this.media.filter((_, index) => index !== i)
+    },
+
+    onImageUpload(media: CdnMedia) {
+      this.media.push({ min_screen_width: 0, media })
     },
   },
 })
 </script>
 
 <style lang="scss" scoped>
+$item-size: 160px;
+
 .responsive-media {
   display: flex;
   justify-content: space-between;
+  transition: 0.1s;
+  border-radius: 16px;
 
-  &__content {
-    display: flex;
-    align-items: center;
-    padding: 8px;
-    width: 100%;
-    background-color: $gray-color-500;
+  &:hover {
+    background-color: rgba($background-color-700, 0.4);
   }
 
-  &__list {
-    display: flex;
+  &__content {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, $item-size);
+    grid-gap: 8px;
+    padding: 8px;
+    width: 100%;
   }
 
   &__drag {
@@ -106,18 +143,66 @@ export default Vue.extend({
 
   &__buttons {
     align-self: flex-start;
+    padding: 8px;
   }
 }
 
-.add-box-button {
-  padding: 25px;
-  background-color: #fff;
-  cursor: pointer;
+.item-wrapper {
+  width: $item-size;
 }
 
 .single-media {
-  padding: 25px;
-  background-color: teal;
-  margin-right: 8px;
+  position: relative;
+  width: 100%;
+  padding-top: 100%;
+  margin-bottom: 4px;
+  background-color: #ffffff;
+  box-shadow: $shadow;
+  border-radius: 7px;
+
+  .media-element {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    background-color: #ffffff;
+    border-radius: 7px;
+  }
+
+  &__remove-img,
+  &__edit-img {
+    position: absolute;
+    top: -15px;
+    right: -10px;
+    transition: 0.3s;
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  &__edit-img {
+    right: 24px;
+  }
+
+  &:hover &__remove-img,
+  &:hover &__edit-img {
+    top: -10px;
+    visibility: visible;
+    opacity: 1;
+  }
+
+  &__input {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    color: #fff;
+    text-shadow: 0px 0px 4px $font-color;
+
+    ::v-deep .app-input {
+      margin-bottom: 0;
+    }
+  }
 }
 </style>

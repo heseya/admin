@@ -1,5 +1,5 @@
 <template>
-  <div class="narrower-page">
+  <div>
     <top-nav :title="!isNew ? banner.name : $t('newTitle')">
       <pop-confirm
         v-if="!isNew"

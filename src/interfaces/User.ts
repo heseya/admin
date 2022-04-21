@@ -3,6 +3,7 @@ import { UUID } from './UUID'
 import { Permission } from './Permissions'
 import { Role } from './Role'
 import { Metadata } from './Metadata'
+import { Preferences } from './Preferences'
 
 export interface User {
   id: UUID
@@ -14,6 +15,7 @@ export interface User {
   permissions: Permission[]
   metadata: Metadata
   metadata_private?: Metadata
+  preferences: Preferences
 }
 
 export interface CreateUserDTO {

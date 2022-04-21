@@ -55,6 +55,7 @@ export default Vue.extend({
   computed: {
     tableConfig(): TableConfig<Banner> {
       return {
+        rowUrlBuilder: (row) => `/settings/banners/${row.id}`,
         headers: [
           { key: 'name', label: this.$t('common.form.name') as string },
           { key: 'slug', label: this.$t('table.slug') as string },

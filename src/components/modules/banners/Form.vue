@@ -9,12 +9,19 @@
           :disabled="disabled"
           @input="editSlug"
         />
+
         <validated-input v-model="form.slug" :disabled="disabled" rules="required">
           <template #label>
             {{ $t('form.slug') }}
             <info-tooltip> {{ $t('form.slugTooltip') }}</info-tooltip>
           </template>
         </validated-input>
+
+        <switch-input v-model="form.active" :disabled="disabled" horizontal>
+          <template #title>
+            {{ $t('form.active') }}
+          </template>
+        </switch-input>
       </div>
 
       <validated-input v-model="form.url" :disabled="disabled" rules="required">
@@ -23,14 +30,13 @@
           <info-tooltip> {{ $t('form.linkTooltip') }}</info-tooltip>
         </template>
       </validated-input>
-
-      <switch-input v-model="form.active" :disabled="disabled" horizontal>
-        <template #title>
-          {{ $t('form.active') }}
-        </template>
-      </switch-input>
       <br />
-      <ResponsiveMediaForm ref="mediaForm" v-model="form.responsive_media" :disabled="disabled" />
+
+      <validation-provider v-slot="{ errors }" rules="responsive-media-valid|required">
+        <ResponsiveMediaForm ref="mediaForm" v-model="form.responsive_media" :disabled="disabled" />
+        <a-alert v-if="errors.length" type="error" show-icon :message="errors[0]" />
+      </validation-provider>
+
       <br />
       <slot></slot>
       <br />
@@ -66,7 +72,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { ValidationObserver } from 'vee-validate'
+import { ValidationObserver, ValidationProvider } from 'vee-validate'
 
 import Card from '@/components/layout/Card.vue'
 import ResponsiveMediaForm from './ResponsiveMediaForm.vue'
@@ -75,7 +81,7 @@ import { Banner } from '@/interfaces/Banner'
 import { generateSlug } from '@/utils/generateSlug'
 
 export default Vue.extend({
-  components: { ValidationObserver, Card, ResponsiveMediaForm },
+  components: { ValidationObserver, ValidationProvider, Card, ResponsiveMediaForm },
   props: {
     value: {
       type: Object,

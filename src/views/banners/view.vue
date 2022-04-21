@@ -85,7 +85,7 @@ export default Vue.extend({
   metaInfo(this: any): any {
     const fallback = this.$t('newTitle') as string
     return {
-      title: this.isNew ? fallback : this.role?.name || fallback,
+      title: this.isNew ? fallback : this.banner?.name || fallback,
     }
   },
   components: {

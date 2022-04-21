@@ -18,7 +18,7 @@
       </pop-confirm>
     </top-nav>
 
-    <BannerForm v-model="form" :disabled="isDisabled" @submit="save">
+    <BannerForm ref="form" v-model="form" :disabled="isDisabled" @submit="save">
       <template v-if="selectedBanner">
         <MetadataForm
           ref="publicMeta"
@@ -158,6 +158,8 @@ export default Vue.extend({
       const banner = this.isNew
         ? await this.$accessor.banners.add(form)
         : await this.$accessor.banners.update({ id: this.id, item: form })
+
+      ;(this.$refs.form as any).clearMediaToDelete()
 
       if (banner) {
         this.$toast.success(successMessage)

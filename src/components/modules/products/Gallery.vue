@@ -71,13 +71,16 @@ export default Vue.extend({
       },
     },
   },
+
   mounted() {
     window.addEventListener('beforeunload', this.removeTouchedFiles)
   },
+
   destroyed() {
     window.removeEventListener('beforeunload', this.removeTouchedFiles)
     this.removeTouchedFiles()
   },
+
   methods: {
     onImageDelete(deletedId: UUID) {
       this.images = this.images.filter(({ id }) => deletedId !== id)

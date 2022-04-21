@@ -30,7 +30,7 @@
         </template>
       </switch-input>
       <br />
-      <ResponsiveMediaForm v-model="form.responsive_media" :disabled="disabled" />
+      <ResponsiveMediaForm ref="mediaForm" v-model="form.responsive_media" :disabled="disabled" />
       <br />
       <slot></slot>
       <br />
@@ -105,6 +105,10 @@ export default Vue.extend({
 
     submit() {
       this.$emit('submit', this.form)
+    },
+
+    clearMediaToDelete() {
+      ;(this.$refs.mediaForm as any).clearMediaToDelete()
     },
   },
 })

@@ -16,7 +16,7 @@
 
       <draggable v-model="media" :disabled="disabled">
         <div v-for="(item, i) in media" :key="i" class="responsive-media-form__row">
-          <ResponsiveMediaComponent v-model="media[i]" @delete="removeGroup(i)" />
+          <ResponsiveMediaComponent ref="mediaForm" v-model="media[i]" @delete="removeGroup(i)" />
         </div>
       </draggable>
     </div>
@@ -45,6 +45,7 @@ import Draggable from 'vuedraggable'
 import { ResponsiveMedia } from '@/interfaces/Banner'
 import Empty from '@/components/layout/Empty.vue'
 import ResponsiveMediaComponent from './ResponsiveMedia.vue'
+import { isArray } from 'lodash'
 
 export default Vue.extend({
   components: { Draggable, Empty, ResponsiveMediaComponent },
@@ -75,6 +76,14 @@ export default Vue.extend({
     },
     removeGroup(i: number) {
       this.media = this.media.filter((_, index) => index !== i)
+    },
+
+    clearMediaToDelete() {
+      const forms: any[] = isArray(this.$refs.mediaForm)
+        ? this.$refs.mediaForm
+        : [this.$refs.mediaForm]
+
+      forms.map((f) => f.clearMediaToDelete())
     },
   },
 })

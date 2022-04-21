@@ -67,6 +67,8 @@ import { ResponsiveMedia } from '@/interfaces/Banner'
 import { CdnMedia } from '@/interfaces/Media'
 import MediaElement from '@/components/MediaElement.vue'
 
+import { removeMedia } from '@/services/uploadMedia'
+
 import GalleryUploadButton from '../products/GalleryUploadButton.vue'
 import MediaEditForm from '../media/MediaEditForm.vue'
 
@@ -83,6 +85,10 @@ export default Vue.extend({
     },
   },
 
+  data: () => ({
+    mediaToDelete: [] as string[],
+  }),
+
   computed: {
     media: {
       get(): ResponsiveMedia {
@@ -94,17 +100,41 @@ export default Vue.extend({
     },
   },
 
+  mounted() {
+    window.addEventListener('beforeunload', this.removeTouchedFiles)
+  },
+  destroyed() {
+    window.removeEventListener('beforeunload', this.removeTouchedFiles)
+    this.removeTouchedFiles()
+  },
+
   methods: {
     updateMedia(media: CdnMedia, index: number) {
       this.media[index].media = media
     },
 
     onMediaDelete(i: number) {
+      const deletedId = this.media[i].media.id
       this.media = this.media.filter((_, index) => index !== i)
+
+      if (this.mediaToDelete.find((id) => deletedId === id)) {
+        this.mediaToDelete = this.mediaToDelete.filter((id) => deletedId !== id)
+        removeMedia(deletedId)
+      }
     },
 
     onImageUpload(media: CdnMedia) {
       this.media.push({ min_screen_width: 0, media })
+      this.mediaToDelete = [...this.mediaToDelete, media.id]
+    },
+
+    clearMediaToDelete() {
+      this.mediaToDelete = []
+    },
+
+    async removeTouchedFiles() {
+      await Promise.all(this.mediaToDelete.map(removeMedia))
+      this.clearMediaToDelete()
     },
   },
 })
@@ -194,11 +224,11 @@ $item-size: 160px;
 
   &__input {
     position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
+    left: 4px;
+    bottom: 4px;
+    width: calc(100% - 8px);
     color: #fff;
-    text-shadow: 0px 0px 4px $font-color;
+    text-shadow: 0px 0px 8px $font-color;
 
     ::v-deep .app-input {
       margin-bottom: 0;

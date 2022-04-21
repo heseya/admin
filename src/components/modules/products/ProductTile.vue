@@ -16,12 +16,7 @@
     <div class="flex">
       <div class="name">
         {{ product.name }}<br />
-        <small v-if="product.price_min !== product.price_max">
-          {{ formatCurrency(product.price_min) }} - {{ formatCurrency(product.price_max) }}
-        </small>
-        <small v-else>
-          {{ formatCurrency(product.price_min) }}
-        </small>
+        <ProductPrice :product="product" tag="small" />
       </div>
     </div>
   </button>
@@ -35,9 +30,10 @@ import { formatCurrency } from '@/utils/currency'
 
 import Avatar from '@/components/layout/Avatar.vue'
 import MediaElement from '@/components/MediaElement.vue'
+import ProductPrice from './ProductPrice.vue'
 
 export default Vue.extend({
-  components: { Avatar, MediaElement },
+  components: { Avatar, MediaElement, ProductPrice },
   props: {
     product: {
       type: Object,

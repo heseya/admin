@@ -37,12 +37,10 @@ export const productSets = createVuexCRUD<ProductSet, ProductSetDTO, ProductSetD
           item,
         }: { key: keyof ProductSet; value: unknown; item: Partial<ProductSet> & { id: UUID } },
       ) {
-        if (state.selected[key] === value) {
-          // Edits selected item
-          state.selected = { ...state.selected, ...item }
-          return
-        }
+        // Edits selected item
+        if (state.selected[key] === value) state.selected = { ...state.selected, ...item }
 
+        // Edits tree of the items
         state.data = updateItemInTree(state.data, item)
       },
 

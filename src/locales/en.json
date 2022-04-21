@@ -38,7 +38,8 @@
     "orders": "Orders",
     "products": "Products",
     "sets": "Collections",
-    "discounts": "Discount codes",
+    "coupons": "Discount coupons",
+    "sales": "Sales",
     "pages": "Pages",
     "tags": "Tags",
     "schemas": "Schemas",
@@ -74,6 +75,18 @@
     "other": "Other"
   },
 
+
+  "discountTypes": {
+    "percent": "Percentage discount",
+    "amount": "Amount discount"
+  },
+  "discountTargetTypes": {
+    "order-value": "Order total value",
+    "products": "Selected products",
+    "shipping-price": "Shipping price",
+    "cheapest-product": "Cheapest product in cart"
+  },
+
   "validation": {
     "required": "This field is required",
     "email": "Enter a valid email address",
@@ -81,13 +94,15 @@
     "password": "Password must be at least 12 characters long",
     "positive": "This field must be greater than zero",
     "notNegative": "This field shall not be less than 0",
-    "lessThan": "The value must be less than or equal to {_target_}",
+    "lessThan": "The value must be less than or equal to {target}",
+    "lessThanFallback": "maximal value",
     "slug": "The link can only consist of lower case letters, numbers and dashes",
     "metadataName": "The metadata name can only consist of letters, numbers and underscores (_)",
     "url": "The value must be a valid URL",
     "lettersOnly": "The value can only consist of letters and underscores (_)",
     "dateBefore": "The end date must be before the start date",
     "priceRangesDuplicates": "Price ranges shall not contain duplicate thresholds",
-    "schemaCheckbox": "A scheme cannot be both hidden and required"
+    "schemaCheckbox": "A scheme cannot be both hidden and required",
+    "timeBefore": "The end time must be before the start time"
   }
 }

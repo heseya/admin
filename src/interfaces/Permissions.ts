@@ -8,7 +8,7 @@ import {
   CountriesPermission,
   ShippingMethodsPermission,
   DepositsPermission,
-  DiscountsPermission,
+  CouponsPermission,
   ItemsPermission,
   SchemasPermission,
   CartPermission,
@@ -25,6 +25,7 @@ import {
   RolesPermission,
   SeoPermission,
   WebhooksPermission,
+  SalesPermission,
   AttributesPermission,
 } from '@/enums/permissions'
 
@@ -37,7 +38,8 @@ export type Permission =
   | CountriesPermission
   | ShippingMethodsPermission
   | DepositsPermission
-  | DiscountsPermission
+  | CouponsPermission
+  | SalesPermission
   | ItemsPermission
   | SchemasPermission
   | CartPermission

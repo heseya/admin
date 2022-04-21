@@ -9,7 +9,7 @@ import {
   CountriesPermission,
   ShippingMethodsPermission,
   DepositsPermission,
-  DiscountsPermission,
+  CouponsPermission,
   ItemsPermission,
   SchemasPermission,
   CartPermission,
@@ -26,6 +26,7 @@ import {
   RolesPermission,
   SeoPermission,
   WebhooksPermission,
+  SalesPermission,
   AttributesPermission,
 } from '@/enums/permissions'
 
@@ -39,7 +40,8 @@ export const PERMISSIONS_TREE = {
   Countries: CountriesPermission,
   ShippingMethods: ShippingMethodsPermission,
   Deposits: DepositsPermission,
-  Discounts: DiscountsPermission,
+  Coupons: CouponsPermission,
+  Sales: SalesPermission,
   Items: ItemsPermission,
   Schemas: SchemasPermission,
   Cart: CartPermission,

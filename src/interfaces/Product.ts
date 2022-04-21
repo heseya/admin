@@ -5,8 +5,15 @@ import { Tag } from './Tag'
 import { CdnMedia } from './Media'
 import { ProductSet } from './ProductSet'
 import { SeoMetadata, SeoMetadataDto } from './SeoMetadata'
+import { Sale } from './SalesAndCoupons'
 import { Metadata } from './Metadata'
 import { ProductAttribute } from './Attribute'
+
+export interface ProductInnerItem {
+  id: UUID
+  name: string
+  required_quantity: number
+}
 
 export interface Product {
   id: UUID
@@ -15,6 +22,9 @@ export interface Product {
   price: number
   price_min: number
   price_max: number
+  min_price_discounted: number
+  max_price_discounted: number
+  sales: Sale[]
   description_html: string
   description_short: string
   public: boolean
@@ -29,6 +39,7 @@ export interface Product {
   cover: CdnMedia
   tags: Tag[]
   seo: SeoMetadata
+  items: ProductInnerItem[]
   attributes: ProductAttribute[]
   metadata: Metadata
   metadata_private?: Metadata
@@ -49,6 +60,7 @@ export interface ProductDTO {
   schemas: UUID[]
   media: UUID[]
   seo: SeoMetadataDto
+  items: Omit<ProductInnerItem, 'name'>[]
   /**
    * Attribute.id -> AttributeOption.id[]
    */
@@ -66,8 +78,11 @@ export interface ProductComponentForm
     | 'visible'
     | 'price_min'
     | 'price_max'
-    | 'metadata'
+    | 'min_price_discounted'
+    | 'max_price_discounted'
+    | 'sales'
     | 'metadata_private'
+    | 'metadata'
   > {
   id?: UUID
   sets: UUID[]

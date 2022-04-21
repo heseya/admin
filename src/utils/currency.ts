@@ -11,5 +11,5 @@ export const formatCurrency = (value: number, currency: string) => {
 
   formattersMap.set(currency, formatter)
 
-  return formatter.format(value)
+  return formatter.format(value ?? 0)
 }

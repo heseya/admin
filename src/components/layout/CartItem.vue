@@ -35,24 +35,17 @@
 
     <field :label="$t('header.perItem')">
       <span class="cart-item__value">
-        {{ formatCurrency(item.price) }}
+        {{ formatCurrency(item.price_initial) }}
       </span>
     </field>
 
-    <field v-if="discount" :label="$t('header.discounted')">
+    <field :label="$t('header.discounted')">
       <span class="cart-item__value">
-        <info-tooltip icon="bx bxs-error">
-          {{ $t('priceTooltip') }}
-          <template #title>
-            {{ formatCurrency(discountedPrice) }}
-          </template>
+        {{ formatCurrency(item.price) }}
+
+        <info-tooltip v-if="item.discounts.length">
+          <OrderDiscountSummary :discounts="item.discounts" />
         </info-tooltip>
-      </span>
-    </field>
-
-    <field v-else :label="$t('header.discounted')">
-      <span class="cart-item__value">
-        {{ formatCurrency(item.price) }}
       </span>
     </field>
 
@@ -102,26 +95,19 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import { CartItem } from '@/interfaces/CartItem'
+import { OrderProduct } from '@/interfaces/OrderProduct'
 import { formatCurrency } from '@/utils/currency'
-import { DiscountCode, DiscountCodeType } from '@/interfaces/DiscountCode'
 import Field from '../modules/orders/Field.vue'
+import InfoTooltip from './InfoTooltip.vue'
+import OrderDiscountSummary from '../modules/orders/OrderDiscountSummary.vue'
 
 export default Vue.extend({
-  components: { Field },
+  components: { Field, InfoTooltip, OrderDiscountSummary },
   props: {
     item: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<CartItem>,
-    discount: {
-      type: Object,
-      default: () => null,
-    } as Vue.PropOptions<DiscountCode>,
-    productsCount: {
-      type: Number,
-      required: true,
-    },
+    } as Vue.PropOptions<OrderProduct>,
   },
   computed: {
     coverUrl(): string {
@@ -130,16 +116,8 @@ export default Vue.extend({
     objectFit(): string {
       return +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'
     },
-    discountedPrice(): number {
-      if (!this.discount) return this.item.price
-      if (this.discount.type === DiscountCodeType.Percentage)
-        return (this.item.price * (100 - this.discount.discount)) / 100
-
-      // Amount
-      return this.item.price - this.discount.discount / this.productsCount
-    },
     totalPrice(): number {
-      return this.discountedPrice * this.item.quantity
+      return this.item.price * this.item.quantity
     },
   },
   methods: {
@@ -230,7 +208,6 @@ export default Vue.extend({
     justify-content: center;
     align-items: center;
     white-space: nowrap;
-    flex-direction: column;
     text-align: center;
 
     small {
@@ -238,7 +215,9 @@ export default Vue.extend({
     }
 
     .info-tooltip__icon {
-      color: $orange-color-500;
+      margin-left: 4px;
+      font-size: 0.8em;
+      color: $primary-color-500;
     }
   }
 

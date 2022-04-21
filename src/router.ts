@@ -128,12 +128,41 @@ const router = new VueRouter({
       },
     },
     {
-      path: '/discounts',
-      name: 'Discounts',
-      component: () => import('./views/discounts/index.vue'),
+      path: '/coupons',
+      name: 'Coupons',
+      component: () => import('./views/coupons/index.vue'),
       meta: {
         requiresAuth: true,
-        permissions: [Permissions.Discounts.Show],
+        permissions: [Permissions.Coupons.Show],
+      },
+    },
+    {
+      path: '/coupons/:id',
+      name: 'CouponsView',
+      component: () => import('./views/coupons/view.vue'),
+      meta: {
+        returnUrl: '/coupons',
+        requiresAuth: true,
+        permissions: [Permissions.Coupons.ShowDetails],
+      },
+    },
+    {
+      path: '/sales',
+      name: 'Sales',
+      component: () => import('./views/sales/index.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Sales.Show],
+      },
+    },
+    {
+      path: '/sales/:id',
+      name: 'SalesView',
+      component: () => import('./views/sales/view.vue'),
+      meta: {
+        returnUrl: '/sales',
+        requiresAuth: true,
+        permissions: [Permissions.Sales.Show],
       },
     },
     {

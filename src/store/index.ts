@@ -24,7 +24,8 @@ import { settings } from './settings'
 import { authSessions } from './authSessions'
 import { apps } from './apps'
 import { webhooks } from './webhooks'
-import { discounts } from './discounts'
+import { coupons } from './coupons'
+import { sales } from './sales'
 import { tags } from './tags'
 import { productSets } from './productSets'
 import { attributes } from './attributes'
@@ -55,7 +56,9 @@ const actions = actionTree(
   {
     async fetchEnv({ commit }) {
       // Fetch setting wtihout authorization, so it wont crash when auth is invalid
-      const { data } = await axios.get<Record<string, string>>(`${getApiURL()}/settings?array`)
+      const { data } = await axios.get<Record<string, string>>('/settings?array', {
+        baseURL: getApiURL(),
+      })
       commit('SET_ENV', data)
     },
     startLoading({ commit, state }) {
@@ -82,7 +85,8 @@ const storeModules = {
   paymentMethods,
   packageTemplates,
   settings,
-  discounts,
+  coupons,
+  sales,
   authSessions,
   apps,
   webhooks,

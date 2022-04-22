@@ -54,12 +54,11 @@ type CartCouponsForm = CartLengthDiscountCondition | CouponsCountDiscountConditi
 export default Vue.extend({
   props: {
     value: { type: Object, required: true } as Vue.PropOptions<CartCouponsForm>,
-    type: { type: String, required: true } as Vue.PropOptions<DiscountConditionType>,
+    type: { type: String, required: true } as Vue.PropOptions<
+      DiscountConditionType.CouponsCount | DiscountConditionType.CartLength
+    >,
     disabled: { type: Boolean, default: false },
   },
-  data: () => ({
-    formType: '',
-  }),
   computed: {
     DiscountConditionType(): typeof DiscountConditionType {
       return DiscountConditionType
@@ -77,13 +76,9 @@ export default Vue.extend({
         this.$emit('input', v)
       },
     },
-  },
-  created() {
-    if (this.type === DiscountConditionType.CartLength) {
-      this.formType = 'items'
-    } else if (this.type === DiscountConditionType.CouponsCount) {
-      this.formType = 'coupons'
-    }
+    formType(): string {
+      return this.type === DiscountConditionType.CartLength ? 'items' : 'coupons'
+    },
   },
 })
 </script>

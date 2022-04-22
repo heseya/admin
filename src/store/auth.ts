@@ -12,6 +12,7 @@ import { broadcastTokensUpdate } from '@/utils/authSync'
 import { LoginState } from '@/enums/login'
 import { AxiosResponse } from 'axios'
 import { TwoFactorAuthMethod } from '@/enums/twoFactorAuth'
+import { Preferences } from '@/interfaces/Preferences'
 
 interface AuthResponse {
   user: User
@@ -24,6 +25,10 @@ interface ILoginRequest {
   email: string
   password: string
   code?: string
+}
+export interface UpdateUserPreferences {
+  name: string
+  preferences: Preferences
 }
 
 const state = () => ({
@@ -60,7 +65,16 @@ const mutations = mutationTree(state, {
   SET_USER(state, newUser) {
     state.user = newUser
   },
-
+  SET_USER_NAME(state, newName) {
+    if (state.user) {
+      state.user.name = newName
+    }
+  },
+  SET_USER_PREFERENCES(state, newPreferences) {
+    if (state.user) {
+      state.user.preferences = newPreferences
+    }
+  },
   SET_ACCESS_TOKEN(state, newToken = null) {
     state.tokens.accessToken = newToken
   },
@@ -172,6 +186,20 @@ const actions = actionTree(
         const { data } = await api.get<{ data: User }>(`/auth/profile`)
 
         commit('SET_USER', data.data)
+      } catch (e: any) {
+        commit('SET_ERROR', e)
+      }
+    },
+
+    async updatePreferences({ commit }, { name, preferences }: UpdateUserPreferences) {
+      commit('SET_ERROR', null)
+      try {
+        await api.patch<{ data: User }>('/auth/profile', {
+          name,
+          preferences,
+        })
+        commit('SET_USER_NAME', name)
+        commit('SET_USER_PREFERENCES', preferences)
       } catch (e: any) {
         commit('SET_ERROR', e)
       }

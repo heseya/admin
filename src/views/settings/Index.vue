@@ -97,9 +97,14 @@
 
         <h2 class="section-title">{{ $t('sections.account') }}</h2>
         <SettingsItem
-          :name="$t('items.preferences')"
+          :name="$t('items.lang_preferences')"
           icon="bx bxs-user-detail"
           @click="isPreferencesModal = true"
+        />
+        <SettingsItem
+          :name="$t('items.change_preferences')"
+          icon="bx bxs-bell"
+          @click="isChangePreferencesModal = true"
         />
         <SettingsItem
           :name="$t('items.change_password')"
@@ -142,9 +147,18 @@
       v-model="isPreferencesModal"
       width="500px"
       :footer="null"
-      :title="$t('items.preferences')"
+      :title="$t('items.lang_preferences')"
     >
       <user-preferences @close="isPreferencesModal = false" />
+    </a-modal>
+
+    <a-modal
+      v-model="isChangePreferencesModal"
+      width="500px"
+      :footer="null"
+      :title="$t('items.change_preferences')"
+    >
+      <ChangePreferencesForm v-model="$accessor.auth.user" @close="isChangePasswordModal = false" />
     </a-modal>
   </div>
 </template>
@@ -163,7 +177,8 @@
       "roles": "User roles",
       "seo": "SEO settings",
       "advanced": "Advanced settings",
-      "preferences": "User preferences",
+      "lang_preferences": "Language preferences",
+      "change_preferences": "User preferences",
       "change_password": "Change password",
       "2fa": "Two-factor authentication",
       "sessions": "Login history",
@@ -183,7 +198,8 @@
       "roles": "Role użytkowników",
       "seo": "Ustawienia SEO",
       "advanced": "Ustawienia zaawansowane",
-      "preferences": "Preferencje użytkownika",
+      "lang_preferences": "Preferencje językowe",
+      "change_preferences": "Preferencje użytkownika",
       "change_password": "Zmień hasło",
       "2fa": "Weryfikacja dwuetapowa",
       "sessions": "Sesje użytkownika",
@@ -200,6 +216,7 @@ import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import List from '@/components/layout/List.vue'
 import ChangePasswordForm from '@/components/modules/auth/ChangePassword.vue'
+import ChangePreferencesForm from '@/components/modules/settings/ChangePreferences.vue'
 import SettingsItem from '@/components/modules/settings/SettingsItem.vue'
 import UserPreferences from '@/components/modules/settings/UserPreferences.vue'
 
@@ -217,6 +234,7 @@ export default Vue.extend({
     List,
     SettingsItem,
     ChangePasswordForm,
+    ChangePreferencesForm,
     UserPreferences,
   },
   beforeRouteLeave(to, from, next) {
@@ -230,6 +248,7 @@ export default Vue.extend({
   data: () => ({
     isChangePasswordModal: false,
     isPreferencesModal: false,
+    isChangePreferencesModal: false,
   }),
   computed: {
     user(): User {

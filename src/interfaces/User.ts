@@ -3,6 +3,7 @@ import { UUID } from './UUID'
 import { Permission } from './Permissions'
 import { Role } from './Role'
 import { Metadata } from './Metadata'
+import { Preferences } from './Preferences'
 
 export interface User {
   id: UUID
@@ -12,6 +13,7 @@ export interface User {
   is_tfa_active: boolean
   roles: Role[]
   permissions: Permission[]
+  preferences: Preferences
   metadata: Metadata
   metadata_private?: Metadata
 }

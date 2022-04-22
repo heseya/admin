@@ -18,11 +18,11 @@
         >
           {{ shippingMethod.name }}
           <small v-if="shippingMethod.countries.length">
-            {{ shippingMethod.block_list ? $t('list.blockList') : $t('list.whiteList') }}
+            {{ shippingMethod.black_list ? $t('list.blackList') : $t('list.whiteList') }}
             {{ shippingMethod.countries.map((c) => c.name).join(', ') }}
           </small>
           <small v-else>
-            {{ shippingMethod.block_list ? $t('list.allEnabled') : $t('list.allDisabled') }}
+            {{ shippingMethod.black_list ? $t('list.allEnabled') : $t('list.allDisabled') }}
           </small>
         </list-item>
       </template>
@@ -87,7 +87,7 @@
       "allEnabled": "Metoda dostepna w każdym kraju",
       "allDisabled": "Metoda niedostepna w żadnym kraju",
       "whiteList": "Tylko wybrane kraje:",
-      "blockList": "Wszystkie kraje poza:"
+      "blackList": "Wszystkie kraje poza:"
     },
     "alerts": {
       "deleted": "Metoda dostawy została usunięta.",
@@ -105,7 +105,7 @@
       "allEnabled": "Shipping method available in all countries",
       "allDisabled": "Shipping method unavailable in any country",
       "whiteList": "Only selected countries:",
-      "blockList": "All countries except:"
+      "blackList": "All countries except:"
     },
     "alerts": {
       "deleted": "Shipping method has been deleted.",
@@ -190,7 +190,7 @@ export default Vue.extend({
         this.selectedItem = null
         this.editedItem = {
           name: '',
-          block_list: false,
+          black_list: false,
           payment_methods: [],
           countries: [],
           shipping_time_min: 0,

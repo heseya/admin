@@ -64,7 +64,7 @@
       <div class="center">
         <flex-input>
           <label class="title">{{ $t('common.allowList') }}</label>
-          <a-switch v-model="form.block_list" :disabled="disabled" />
+          <a-switch v-model="form.black_list" :disabled="disabled" />
           <label class="title">{{ $t('common.blockList') }}</label>
         </flex-input>
       </div>

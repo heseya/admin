@@ -11,6 +11,7 @@ import {
   UserInDiscountConditionDto,
   UserInRoleDiscountConditionDto,
   WeekdayInDiscountConditionDto,
+  CouponsCountDiscountConditionDto,
 } from '@/interfaces/SaleCondition'
 
 export const EMPTY_ORDER_VALUE_FORM: OrderValueDiscountConditionDto = {
@@ -76,6 +77,12 @@ export const EMPTY_WEEKDAY_IN_FORM: WeekdayInDiscountConditionDto = {
 
 export const EMPTY_CART_LENGTH_FORM: CartLengthDiscountConditionDto = {
   type: DiscountConditionType.CartLength,
+  min_value: 0,
+  max_value: 0,
+}
+
+export const EMPTY_COUPONS_COUNT_FORM: CouponsCountDiscountConditionDto = {
+  type: DiscountConditionType.CouponsCount,
   min_value: 0,
   max_value: 0,
 }

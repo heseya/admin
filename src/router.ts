@@ -185,6 +185,25 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/settings/banners',
+      name: 'Banners',
+      component: () => import('./views/banners/index.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Banners.Show],
+      },
+    },
+    {
+      path: '/settings/banners/:id',
+      name: 'BannersView',
+      component: () => import('./views/banners/view.vue'),
+      meta: {
+        returnUrl: '/settings/banners',
+        requiresAuth: true,
+        permissions: [Permissions.Banners.Show],
+      },
+    },
+    {
       path: '/apps',
       name: 'Apps',
       component: () => import('./views/apps/index.vue'),

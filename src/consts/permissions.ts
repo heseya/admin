@@ -28,6 +28,7 @@ import {
   WebhooksPermission,
   SalesPermission,
   AttributesPermission,
+  BannersPermission,
 } from '@/enums/permissions'
 
 export const PERMISSIONS_TREE = {
@@ -36,6 +37,7 @@ export const PERMISSIONS_TREE = {
   Apps: AppsPermission,
   Auth: AuthPermission,
   Audits: AuditsPermission,
+  Banners: BannersPermission,
   ProductSets: ProductSetsPermission,
   Countries: CountriesPermission,
   ShippingMethods: ShippingMethodsPermission,

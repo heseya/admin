@@ -27,6 +27,7 @@ import {
   WebhooksPermission,
   SalesPermission,
   AttributesPermission,
+  BannersPermission,
 } from '@/enums/permissions'
 
 export type Permission =
@@ -34,6 +35,7 @@ export type Permission =
   | AnalyticsPermission
   | AppsPermission
   | AuthPermission
+  | BannersPermission
   | ProductSetsPermission
   | CountriesPermission
   | ShippingMethodsPermission

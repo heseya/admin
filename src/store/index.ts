@@ -10,6 +10,7 @@ import { getApiURL } from '@/utils/api'
 import { auth } from './auth'
 import { globalSeo } from './globalSeo'
 import { users } from './users'
+import { banners } from './banners'
 import { roles } from './roles'
 import { items } from './items'
 import { products } from './products'
@@ -74,6 +75,7 @@ const storeModules = {
   auth,
   globalSeo,
   users,
+  banners,
   roles,
   items,
   schemas,

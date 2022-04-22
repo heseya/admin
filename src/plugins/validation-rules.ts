@@ -1,7 +1,7 @@
 import { extend } from 'vee-validate'
 import { required, email } from 'vee-validate/dist/rules'
 import v from 'validator'
-import { isNaN, isNumber } from 'lodash'
+import { isArray, isNaN, isNumber } from 'lodash'
 import { isBefore, isSameDay } from 'date-fns'
 
 import { ShippingMethodPriceRangeDTO } from '@/interfaces/ShippingMethod'
@@ -95,6 +95,15 @@ extend('metadata-name', {
   message: () => i18n.t('validation.metadataName') as string,
   validate: (value) => {
     return METADATA_NAME_REGEX.test(value)
+  },
+})
+
+extend('responsive-media-valid', {
+  message: () => i18n.t('validation.responsiveMediaValid') as string,
+  validate: (value) => {
+    return (
+      isArray(value) && value.length > 0 && value.every((list) => isArray(list) && list.length > 0)
+    )
   },
 })
 

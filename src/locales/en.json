@@ -50,6 +50,7 @@
     "roles": "Roles",
     "apps": "Apps",
     "webhooks": "Webhooks",
+    "banners": "Banners",
     "attributes": "Attributes"
   },
   "attributeTypes": {
@@ -99,6 +100,7 @@
     "slug": "The link can only consist of lower case letters, numbers and dashes",
     "metadataName": "The metadata name can only consist of letters, numbers and underscores (_)",
     "url": "The value must be a valid URL",
+    "responsiveMediaValid": "Graphics must consist of at least one size",
     "lettersOnly": "The value can only consist of letters and underscores (_)",
     "dateBefore": "The end date must be before the start date",
     "priceRangesDuplicates": "Price ranges shall not contain duplicate thresholds",

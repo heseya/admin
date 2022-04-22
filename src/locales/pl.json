@@ -50,6 +50,7 @@
     "roles": "Role",
     "apps": "Aplikacje",
     "webhooks": "Webhooki",
+    "banners": "Bannery",
     "attributes": "Cechy"
   },
   "attributeTypes": {
@@ -98,6 +99,7 @@
     "idRequired": "Wymagane jest podanie ID",
     "slug": "Link może składać się tylko z małych liter, cyfr i myślników",
     "metadataName": "Nazwa metadanych może składać się tylko z liter, cyfr i podkreślników (_)",
+    "responsiveMediaValid": "Grafiki musza składać się przynajmniej z jednego rozmiaru",
     "url": "Wartość musi być poprawnym adresem URL",
     "lettersOnly": "Wartość może składać się tylko z liter i podkreślników (_)",
     "dateBefore": "Data zakończenia musi być przed datą startu",

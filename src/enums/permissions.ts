@@ -25,6 +25,13 @@ export enum AuthPermission {
   SessionsRevoke = 'auth.sessions.revoke',
 }
 
+export enum BannersPermission {
+  Show = 'banners.show',
+  Add = 'banners.add',
+  Edit = 'banners.edit',
+  Remove = 'banners.remove',
+}
+
 export enum ProductSetsPermission {
   Show = 'product_sets.show',
   ShowDetails = 'product_sets.show_details',

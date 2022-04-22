@@ -73,8 +73,8 @@ export default Vue.extend({
     content: '';
     display: block;
     position: absolute;
-    top: calc(50% - #{$size / 2});
-    left: calc(50% - #{$size / 2});
+    top: calc(50% - ($size / 2));
+    left: calc(50% - ($size / 2));
     width: $size;
     height: $size;
     border-radius: 50%;

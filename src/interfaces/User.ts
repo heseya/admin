@@ -30,3 +30,8 @@ export interface EditUserDTO {
   email: string
   roles: UUID[]
 }
+
+export interface UserProfileUpdateDTO {
+  name: string
+  preferences: Preferences
+}

@@ -3,7 +3,7 @@ import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 
 import { api } from '../api'
 
-import { User } from '@/interfaces/User'
+import { User, UserProfileUpdateDTO } from '@/interfaces/User'
 import { UUID } from '@/interfaces/UUID'
 import { PERMISSIONS_TREE } from '@/consts/permissions'
 import { hasAccess } from '@/utils/hasAccess'
@@ -12,7 +12,6 @@ import { broadcastTokensUpdate } from '@/utils/authSync'
 import { LoginState } from '@/enums/login'
 import { AxiosResponse } from 'axios'
 import { TwoFactorAuthMethod } from '@/enums/twoFactorAuth'
-import { Preferences } from '@/interfaces/Preferences'
 
 interface AuthResponse {
   user: User
@@ -25,10 +24,6 @@ interface ILoginRequest {
   email: string
   password: string
   code?: string
-}
-export interface UpdateUserPreferences {
-  name: string
-  preferences: Preferences
 }
 
 const state = () => ({
@@ -65,14 +60,10 @@ const mutations = mutationTree(state, {
   SET_USER(state, newUser) {
     state.user = newUser
   },
-  SET_USER_NAME(state, newName) {
+  SET_USER_PROFILE(state, newProfile) {
     if (state.user) {
-      state.user.name = newName
-    }
-  },
-  SET_USER_PREFERENCES(state, newPreferences) {
-    if (state.user) {
-      state.user.preferences = newPreferences
+      state.user.name = newProfile.name
+      state.user.preferences = newProfile.preferences
     }
   },
   SET_ACCESS_TOKEN(state, newToken = null) {
@@ -191,15 +182,14 @@ const actions = actionTree(
       }
     },
 
-    async updatePreferences({ commit }, { name, preferences }: UpdateUserPreferences) {
+    async updateUserProfile({ commit }, { name, preferences }: UserProfileUpdateDTO) {
       commit('SET_ERROR', null)
       try {
         await api.patch<{ data: User }>('/auth/profile', {
           name,
           preferences,
         })
-        commit('SET_USER_NAME', name)
-        commit('SET_USER_PREFERENCES', preferences)
+        commit('SET_USER_PROFILE', { name, preferences })
       } catch (e: any) {
         commit('SET_ERROR', e)
       }

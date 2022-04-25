@@ -158,7 +158,7 @@
       :footer="null"
       :title="$t('items.user_account')"
     >
-      <UserAccountForm :user="user" @close="isUserAccountModal = false" />
+      <UserAccountForm :user="user" @success="isUserAccountModal = false" />
     </a-modal>
   </div>
 </template>

@@ -84,7 +84,7 @@ export default Vue.extend({
     isLoading: false,
   }),
   watch: {
-    user(v) {
+    user(v: User) {
       this.form = cloneDeep({ ...UPDATE_USER_PREFERENCES_FORM, ...v })
     },
   },
@@ -101,7 +101,7 @@ export default Vue.extend({
         this.$toast.error(formatApiNotificationError(error))
       } finally {
         this.isLoading = false
-        this.$emit('close')
+        this.$emit('success')
       }
     },
   },

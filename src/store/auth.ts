@@ -185,11 +185,11 @@ const actions = actionTree(
     async updateUserProfile({ commit }, { name, preferences }: UserProfileUpdateDTO) {
       commit('SET_ERROR', null)
       try {
-        await api.patch<{ data: User }>('/auth/profile', {
+        const { data } = await api.patch<{ data: User }>('/auth/profile', {
           name,
           preferences,
         })
-        commit('SET_USER_PROFILE', { name, preferences })
+        commit('SET_USER_PROFILE', data.data)
       } catch (e: any) {
         commit('SET_ERROR', e)
       }

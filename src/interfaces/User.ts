@@ -16,7 +16,6 @@ export interface User {
   preferences: Preferences
   metadata: Metadata
   metadata_private?: Metadata
-  preferences: Preferences
 }
 
 export interface CreateUserDTO {

@@ -105,9 +105,14 @@
 
         <h2 class="section-title">{{ $t('sections.account') }}</h2>
         <SettingsItem
-          :name="$t('items.preferences')"
+          :name="$t('items.user_account')"
+          icon="bx bxs-bell"
+          @click="isUserAccountModal = true"
+        />
+        <SettingsItem
+          :name="$t('items.lang_preferences')"
           icon="bx bxs-user-detail"
-          @click="isPreferencesModal = true"
+          @click="isLangPreferencesModal = true"
         />
         <SettingsItem
           :name="$t('items.change_password')"
@@ -147,12 +152,21 @@
     </a-modal>
 
     <a-modal
-      v-model="isPreferencesModal"
+      v-model="isLangPreferencesModal"
       width="500px"
       :footer="null"
-      :title="$t('items.preferences')"
+      :title="$t('items.lang_preferences')"
     >
-      <user-preferences @close="isPreferencesModal = false" />
+      <LangPreferencesForm @close="isLangPreferencesModal = false" />
+    </a-modal>
+
+    <a-modal
+      v-model="isUserAccountModal"
+      width="500px"
+      :footer="null"
+      :title="$t('items.user_account')"
+    >
+      <UserAccountForm :user="user" @success="isUserAccountModal = false" />
     </a-modal>
   </div>
 </template>
@@ -171,7 +185,8 @@
       "roles": "User roles",
       "seo": "SEO settings",
       "advanced": "Advanced settings",
-      "preferences": "User preferences",
+      "lang_preferences": "Language preferences",
+      "user_account": "User account",
       "change_password": "Change password",
       "2fa": "Two-factor authentication",
       "sessions": "Login history",
@@ -191,7 +206,8 @@
       "roles": "Role użytkowników",
       "seo": "Ustawienia SEO",
       "advanced": "Ustawienia zaawansowane",
-      "preferences": "Preferencje użytkownika",
+      "lang_preferences": "Preferencje językowe",
+      "user_account": "Konto użytkownika",
       "change_password": "Zmień hasło",
       "2fa": "Weryfikacja dwuetapowa",
       "sessions": "Sesje użytkownika",
@@ -208,8 +224,9 @@ import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import List from '@/components/layout/List.vue'
 import ChangePasswordForm from '@/components/modules/auth/ChangePassword.vue'
+import UserAccountForm from '@/components/modules/settings/UserAccount.vue'
 import SettingsItem from '@/components/modules/settings/SettingsItem.vue'
-import UserPreferences from '@/components/modules/settings/UserPreferences.vue'
+import LangPreferencesForm from '@/components/modules/settings/LangPreferences.vue'
 
 import { User } from '@/interfaces/User'
 
@@ -225,7 +242,8 @@ export default Vue.extend({
     List,
     SettingsItem,
     ChangePasswordForm,
-    UserPreferences,
+    UserAccountForm,
+    LangPreferencesForm,
   },
   beforeRouteLeave(to, from, next) {
     if (this.isChangePasswordModal) {
@@ -237,7 +255,8 @@ export default Vue.extend({
   },
   data: () => ({
     isChangePasswordModal: false,
-    isPreferencesModal: false,
+    isLangPreferencesModal: false,
+    isUserAccountModal: false,
   }),
   computed: {
     user(): User {

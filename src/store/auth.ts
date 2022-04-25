@@ -3,7 +3,7 @@ import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 
 import { api } from '../api'
 
-import { User } from '@/interfaces/User'
+import { User, UserProfileUpdateDTO } from '@/interfaces/User'
 import { UUID } from '@/interfaces/UUID'
 import { PERMISSIONS_TREE } from '@/consts/permissions'
 import { hasAccess } from '@/utils/hasAccess'
@@ -60,7 +60,12 @@ const mutations = mutationTree(state, {
   SET_USER(state, newUser) {
     state.user = newUser
   },
-
+  SET_USER_PROFILE(state, newProfile) {
+    if (state.user) {
+      state.user.name = newProfile.name
+      state.user.preferences = newProfile.preferences
+    }
+  },
   SET_ACCESS_TOKEN(state, newToken = null) {
     state.tokens.accessToken = newToken
   },
@@ -172,6 +177,19 @@ const actions = actionTree(
         const { data } = await api.get<{ data: User }>(`/auth/profile`)
 
         commit('SET_USER', data.data)
+      } catch (e: any) {
+        commit('SET_ERROR', e)
+      }
+    },
+
+    async updateUserProfile({ commit }, { name, preferences }: UserProfileUpdateDTO) {
+      commit('SET_ERROR', null)
+      try {
+        const { data } = await api.patch<{ data: User }>('/auth/profile', {
+          name,
+          preferences,
+        })
+        commit('SET_USER_PROFILE', data.data)
       } catch (e: any) {
         commit('SET_ERROR', e)
       }

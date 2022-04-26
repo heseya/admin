@@ -5,6 +5,7 @@ import {
   AppsPermission,
   AuthPermission,
   ProductSetsPermission,
+  ConsentsPermission,
   CountriesPermission,
   ShippingMethodsPermission,
   DepositsPermission,
@@ -36,6 +37,7 @@ export type Permission =
   | AppsPermission
   | AuthPermission
   | BannersPermission
+  | ConsentsPermission
   | ProductSetsPermission
   | CountriesPermission
   | ShippingMethodsPermission

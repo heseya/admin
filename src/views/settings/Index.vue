@@ -90,6 +90,12 @@
           url="/apps"
         />
         <SettingsItem
+          v-can="$p.Consents.Show"
+          :name="$t('items.consents')"
+          icon="bx bx-file-blank"
+          url="/settings/consents"
+        />
+        <SettingsItem
           v-can="$p.Webhooks.Show"
           :name="$t('models.webhooks')"
           icon="bx bxs-bot"
@@ -183,6 +189,7 @@
     "items": {
       "users": "Users list",
       "roles": "User roles",
+      "consents": "Marketing consents",
       "seo": "SEO settings",
       "advanced": "Advanced settings",
       "lang_preferences": "Language preferences",
@@ -204,6 +211,7 @@
     "items": {
       "users": "Lista użytkowników",
       "roles": "Role użytkowników",
+      "consents": "Zgody marketingowe",
       "seo": "Ustawienia SEO",
       "advanced": "Ustawienia zaawansowane",
       "lang_preferences": "Preferencje językowe",

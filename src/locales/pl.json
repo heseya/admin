@@ -24,7 +24,8 @@
       "type": "Typ",
       "slug": "Link",
       "label": "Etykieta",
-      "value": "Wartość"
+      "value": "Wartość",
+      "required": "Wymagane"
     }
   },
   "nav": {
@@ -86,7 +87,7 @@
     "shipping-price": "Cena dostawy",
     "cheapest-product": "Najtańszy produkt w koszyku"
   },
-  
+
   "validation": {
     "required": "To pole jest wymagane",
     "email": "Wprowadź poprawny adres email",

@@ -60,7 +60,7 @@ export default Vue.extend({
           { key: 'name', label: this.$t('common.form.name') as string },
           { key: 'slug', label: this.$t('table.slug') as string },
           {
-            key: 'responsive_media',
+            key: 'banner_media',
             label: this.$t('table.quantity') as string,
             render: (v) => v.length,
           },

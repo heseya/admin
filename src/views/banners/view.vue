@@ -68,15 +68,14 @@ import BannerForm from '@/components/modules/banners/Form.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
-import { Banner, BannerDto } from '@/interfaces/Banner'
+import { Banner, BannerDto, BannerMediaDto } from '@/interfaces/Banner'
 
 const CLEAN_FORM: Banner = {
   id: '',
   name: '',
   slug: '',
-  url: '',
   active: true,
-  responsive_media: [],
+  banner_media: [],
   metadata: {},
   metadata_private: {},
 }
@@ -150,9 +149,13 @@ export default Vue.extend({
 
       const form: BannerDto = {
         ...this.form,
-        responsive_media: this.form.responsive_media.map((media) =>
-          media.map((item) => ({ ...item, media: item.media.id })),
-        ),
+        banner_media: this.form.banner_media.map((banner) => ({
+          ...banner,
+          media: banner.media.map((item) => ({
+            ...item,
+            media: item.media.id,
+          })),
+        })),
       }
 
       const banner = this.isNew

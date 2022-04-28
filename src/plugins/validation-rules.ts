@@ -102,7 +102,9 @@ extend('responsive-media-valid', {
   message: () => i18n.t('validation.responsiveMediaValid') as string,
   validate: (value) => {
     return (
-      isArray(value) && value.length > 0 && value.every((list) => isArray(list) && list.length > 0)
+      isArray(value) &&
+      value.length > 0 &&
+      value.every(({ media: list }) => isArray(list) && list.length > 0)
     )
   },
 })

@@ -16,7 +16,7 @@
 
       <draggable v-model="media" :disabled="disabled">
         <div v-for="(item, i) in media" :key="i" class="responsive-media-form__row">
-          <ResponsiveMediaComponent ref="mediaForm" v-model="media[i]" @delete="removeGroup(i)" />
+          <BannerMediaComponent ref="mediaForm" v-model="media[i]" @delete="removeGroup(i)" />
         </div>
       </draggable>
     </div>
@@ -42,18 +42,18 @@
 import Vue from 'vue'
 import Draggable from 'vuedraggable'
 
-import { ResponsiveMedia } from '@/interfaces/Banner'
+import { BannerMedia } from '@/interfaces/Banner'
 import Empty from '@/components/layout/Empty.vue'
-import ResponsiveMediaComponent from './ResponsiveMedia.vue'
+import BannerMediaComponent from './BannerMedia.vue'
 import { isArray } from 'lodash'
 
 export default Vue.extend({
-  components: { Draggable, Empty, ResponsiveMediaComponent },
+  components: { Draggable, Empty, BannerMediaComponent },
   props: {
     value: {
       type: Array,
       required: true,
-    } as Vue.PropOptions<ResponsiveMedia[]>,
+    } as Vue.PropOptions<BannerMedia[]>,
     disabled: {
       type: Boolean,
       default: false,
@@ -61,10 +61,10 @@ export default Vue.extend({
   },
   computed: {
     media: {
-      get(): ResponsiveMedia[] {
+      get(): BannerMedia[] {
         return this.value
       },
-      set(v: ResponsiveMedia[]) {
+      set(v: BannerMedia[]) {
         this.$emit('input', v)
       },
     },
@@ -72,7 +72,14 @@ export default Vue.extend({
 
   methods: {
     addGroup() {
-      this.media.push([])
+      this.media.push({
+        id: '',
+        order: 0,
+        title: '',
+        subtitle: '',
+        url: '',
+        responsive_media: [],
+      })
     },
     removeGroup(i: number) {
       this.media = this.media.filter((_, index) => index !== i)

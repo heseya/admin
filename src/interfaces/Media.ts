@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import { UUID } from './UUID'
 import { Metadata } from './Metadata'
 
 export enum CdnMediaType {
@@ -7,7 +8,7 @@ export enum CdnMediaType {
 }
 
 export interface CdnMedia {
-  id: string
+  id: UUID
   type: CdnMediaType
   url: string
   alt?: string

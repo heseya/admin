@@ -5,7 +5,11 @@
     </div>
 
     <div class="responsive-media__content">
-      <div v-for="(image, i) in media" :key="image.media.id" class="item-wrapper">
+      <div
+        v-for="(image, i) in bannerMedia.responsive_media"
+        :key="image.media.id"
+        class="item-wrapper"
+      >
         <div class="single-media">
           <media-element :media="image.media" :size="120" fit="contain" />
           <div class="single-media__remove-img">
@@ -63,7 +67,7 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import { ResponsiveMedia } from '@/interfaces/Banner'
+import { BannerMedia } from '@/interfaces/Banner'
 import { CdnMedia } from '@/interfaces/Media'
 import MediaElement from '@/components/MediaElement.vue'
 
@@ -76,9 +80,9 @@ export default Vue.extend({
   components: { MediaElement, GalleryUploadButton, MediaEditForm },
   props: {
     value: {
-      type: Array,
+      type: Object,
       required: true,
-    } as Vue.PropOptions<ResponsiveMedia>,
+    } as Vue.PropOptions<BannerMedia>,
     disabled: {
       type: Boolean,
       default: false,
@@ -90,11 +94,11 @@ export default Vue.extend({
   }),
 
   computed: {
-    media: {
-      get(): ResponsiveMedia {
+    bannerMedia: {
+      get(): BannerMedia {
         return this.value
       },
-      set(v: ResponsiveMedia) {
+      set(v: BannerMedia) {
         this.$emit('input', v)
       },
     },
@@ -110,12 +114,14 @@ export default Vue.extend({
 
   methods: {
     updateMedia(media: CdnMedia, index: number) {
-      this.media[index].media = media
+      this.bannerMedia.responsive_media[index].media = media
     },
 
     onMediaDelete(i: number) {
-      const deletedId = this.media[i].media.id
-      this.media = this.media.filter((_, index) => index !== i)
+      const deletedId = this.bannerMedia.responsive_media[i].media.id
+      this.bannerMedia.responsive_media = this.bannerMedia.responsive_media.filter(
+        (_, index) => index !== i,
+      )
 
       if (this.mediaToDelete.find((id) => deletedId === id)) {
         this.mediaToDelete = this.mediaToDelete.filter((id) => deletedId !== id)
@@ -124,7 +130,7 @@ export default Vue.extend({
     },
 
     onImageUpload(media: CdnMedia) {
-      this.media.push({ min_screen_width: 0, media })
+      this.bannerMedia.responsive_media.push({ min_screen_width: 0, media })
       this.mediaToDelete = [...this.mediaToDelete, media.id]
     },
 

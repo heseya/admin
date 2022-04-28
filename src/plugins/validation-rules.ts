@@ -104,7 +104,7 @@ extend('responsive-media-valid', {
     return (
       isArray(value) &&
       value.length > 0 &&
-      value.every(({ responsive_media: list }) => isArray(list) && list.length > 0)
+      value.every(({ media: list }) => isArray(list) && list.length > 0)
     )
   },
 })

@@ -78,7 +78,7 @@ export default Vue.extend({
         title: '',
         subtitle: '',
         url: '',
-        responsive_media: [],
+        media: [],
       })
     },
     removeGroup(i: number) {

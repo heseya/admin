@@ -19,7 +19,7 @@ export interface BannerMedia {
   url: string | null
   title: string | null
   subtitle: string | null
-  responsive_media: { min_screen_width: number; media: CdnMedia }[]
+  media: { min_screen_width: number; media: CdnMedia }[]
 }
 
 export interface BannerDto {
@@ -33,5 +33,5 @@ export interface BannerMediaDto {
   url: string | null
   title: string | null
   subtitle: string | null
-  responsive_media: { min_screen_width: number; media: UUID }[]
+  media: { min_screen_width: number; media: UUID }[]
 }

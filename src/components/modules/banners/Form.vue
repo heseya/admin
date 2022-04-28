@@ -45,8 +45,6 @@
     "form": {
       "slug": "Identifier",
       "slugTooltip": "The identifier is used by applications to place banners appropriately on the page",
-      "link": "Redirection url",
-      "linkTooltip": "Addres to which banner will redirect after clicking, can be absolute or relative",
       "active": "Active"
     }
   },
@@ -54,8 +52,6 @@
     "form": {
       "slug": "Identyfikator",
       "slugTooltip": "Identyfikator służy aplikacjom do odpowiedniego rozmieszczenia banerów na stronie",
-      "link": "Adres przekierowania",
-      "linkTooltip": "Adres do którego banner przekieruje po kliknięciu, może być absolutny lub relatywny",
       "active": "Aktywny"
     }
   }

@@ -151,7 +151,7 @@ export default Vue.extend({
         ...this.form,
         banner_media: this.form.banner_media.map((banner) => ({
           ...banner,
-          responsive_media: banner.responsive_media.map((item) => ({
+          media: banner.media.map((item) => ({
             ...item,
             media: item.media.id,
           })),

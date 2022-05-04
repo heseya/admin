@@ -199,7 +199,7 @@ const actions = actionTree(
       _u,
       { oldPassword, newPassword }: { oldPassword: string; newPassword: string },
     ) {
-      return api.patch('users/password', {
+      return api.put('users/password', {
         password: oldPassword,
         password_new: newPassword,
         password_confirmation: newPassword,

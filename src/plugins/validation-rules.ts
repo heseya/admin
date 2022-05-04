@@ -6,7 +6,12 @@ import { isBefore, isSameDay } from 'date-fns'
 
 import { ShippingMethodPriceRangeDTO } from '@/interfaces/ShippingMethod'
 
-import { METADATA_NAME_REGEX, ONLY_LETTERS_REGEX, SLUG_REGEX } from '@/consts/regexes'
+import {
+  METADATA_NAME_REGEX,
+  ONLY_LETTERS_REGEX,
+  SLUG_REGEX,
+  COUPON_CODE_REGEX,
+} from '@/consts/regexes'
 import i18n from '@/i18n'
 
 extend('required', {
@@ -95,6 +100,13 @@ extend('metadata-name', {
   message: () => i18n.t('validation.metadataName') as string,
   validate: (value) => {
     return METADATA_NAME_REGEX.test(value)
+  },
+})
+
+extend('coupon-code', {
+  message: () => i18n.t('validation.couponCode') as string,
+  validate: (value) => {
+    return COUPON_CODE_REGEX.test(value)
   },
 })
 

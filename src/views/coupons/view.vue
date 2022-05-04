@@ -25,7 +25,7 @@
         <card>
           <validated-input
             v-model="form.code"
-            rules="required"
+            rules="required|coupon-code"
             :label="$t('formCode')"
             :disabled="!canModify"
           />

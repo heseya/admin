@@ -234,10 +234,13 @@ const actions = actionTree(
       commit('SET_PERMISSIONS_ERROR', error)
     },
 
-    async requestResetPassword({ commit }, { email }: { email: string }) {
+    async requestResetPassword(
+      { commit },
+      { email, redirectUrl }: { email: string; redirectUrl: string },
+    ) {
       commit('SET_ERROR', null)
       try {
-        await api.post('/users/reset-password', { email })
+        await api.post('/users/reset-password', { email, redirect_url: redirectUrl })
         return true
       } catch (e: any) {
         commit('SET_ERROR', e)

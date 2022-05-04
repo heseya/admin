@@ -109,10 +109,8 @@ export default Vue.extend({
   async created() {
     if (!this.isNew) {
       this.$accessor.startLoading()
-      //TODO: Get consent by id when API is ready
-      const data = await this.$accessor.consents.fetch()
-      const selectedConsent = (data as Consent[]).find((consent: Consent) => consent.id === this.id)
-      if (selectedConsent !== undefined) {
+      const selectedConsent = await this.$accessor.consents.get(this.id)
+      if (selectedConsent) {
         // eslint-disable-next-line camelcase
         const { name, description_html, required } = selectedConsent
         this.form = cloneDeep({ name, description_html, required })

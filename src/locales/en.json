@@ -24,7 +24,8 @@
       "type": "Type",
       "slug": "Link",
       "label": "Label",
-      "value": "Value"
+      "value": "Value",
+      "required": "Required"
     }
   },
   "nav": {

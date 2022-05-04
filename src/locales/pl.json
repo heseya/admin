@@ -24,7 +24,8 @@
       "type": "Typ",
       "slug": "Link",
       "label": "Etykieta",
-      "value": "Wartość"
+      "value": "Wartość",
+      "required": "Wymagane"
     }
   },
   "nav": {

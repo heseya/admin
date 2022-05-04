@@ -347,6 +347,25 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/settings/consents',
+      name: 'Consents',
+      component: () => import('./views/consents/index.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Consents.Show],
+      },
+    },
+    {
+      path: '/settings/consents/:id',
+      name: 'ConsentsView',
+      component: () => import('./views/consents/view.vue'),
+      meta: {
+        returnUrl: '/settings/consents',
+        requiresAuth: true,
+        permissions: [Permissions.Consents.Edit],
+      },
+    },
+    {
       path: '/webhooks',
       name: 'WebHooks',
       component: () => import('./views/webhooks/index.vue'),

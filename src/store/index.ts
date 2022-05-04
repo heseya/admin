@@ -12,6 +12,7 @@ import { globalSeo } from './globalSeo'
 import { users } from './users'
 import { banners } from './banners'
 import { roles } from './roles'
+import { consents } from './consents'
 import { items } from './items'
 import { products } from './products'
 import { schemas } from './schemas'
@@ -77,6 +78,7 @@ const storeModules = {
   users,
   banners,
   roles,
+  consents,
   items,
   schemas,
   products,

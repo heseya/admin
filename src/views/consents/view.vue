@@ -1,7 +1,6 @@
 <template>
   <div class="narrower-page">
     <top-nav :title="!isNew ? $t('editTitle') : $t('newTitle')">
-      <audits-modal :id="consent.id" model="consents" />
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Consents.Remove"
@@ -49,7 +48,6 @@ import { cloneDeep } from 'lodash'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 import ConsentsForm from '@/components/modules/consents/Form.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
@@ -72,11 +70,9 @@ export default Vue.extend({
     TopNav,
     PopConfirm,
     ConsentsForm,
-    AuditsModal,
   },
   data: () => ({
     form: cloneDeep(CLEAN_FORM),
-    selectedConsent: null as Consent | null,
   }),
   computed: {
     id(): string {
@@ -102,7 +98,6 @@ export default Vue.extend({
     consent(consent: Consent) {
       if (!this.isNew) {
         this.form = cloneDeep(consent)
-        this.selectedConsent = consent
       }
     },
     error(error: any) {
@@ -114,6 +109,7 @@ export default Vue.extend({
   async created() {
     if (!this.isNew) {
       this.$accessor.startLoading()
+      //TODO: Get consent by id when API is ready
       const data = await this.$accessor.consents.fetch()
       const selectedConsent = (data as Consent[]).find((consent: Consent) => consent.id === this.id)
       if (selectedConsent !== undefined) {

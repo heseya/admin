@@ -16,8 +16,6 @@ export interface ConsentDTO {
   required: boolean
 }
 
-export interface ConsentUser {
-  consent_id: UUID
-  user_id: UUID
+export interface UserConsent extends Consent {
   value: boolean
 }

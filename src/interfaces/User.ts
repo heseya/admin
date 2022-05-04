@@ -4,7 +4,7 @@ import { Permission } from './Permissions'
 import { Role } from './Role'
 import { Metadata } from './Metadata'
 import { Preferences } from './Preferences'
-import { Consent } from './Consent'
+import { UserConsent } from './Consent'
 
 export interface User {
   id: UUID
@@ -17,7 +17,7 @@ export interface User {
   preferences: Preferences
   metadata: Metadata
   metadata_private?: Metadata
-  consents: (Consent & { value: boolean })[]
+  consents: UserConsent[]
 }
 
 export interface CreateUserDTO {

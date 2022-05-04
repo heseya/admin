@@ -24,7 +24,8 @@
       "type": "Type",
       "slug": "Link",
       "label": "Label",
-      "value": "Value"
+      "value": "Value",
+      "required": "Required"
     }
   },
   "nav": {
@@ -75,7 +76,6 @@
     "receipt": "Receipt",
     "other": "Other"
   },
-
 
   "discountTypes": {
     "percent": "Percentage discount",

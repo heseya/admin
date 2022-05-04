@@ -178,6 +178,13 @@ export enum RolesPermission {
   Remove = 'roles.remove',
 }
 
+export enum ConsentsPermission {
+  Show = 'consents.show',
+  Add = 'consents.add',
+  Edit = 'consents.edit',
+  Remove = 'consents.remove',
+}
+
 export enum SeoPermission {
   Edit = 'seo.edit',
 }

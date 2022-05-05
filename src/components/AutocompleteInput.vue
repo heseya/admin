@@ -107,7 +107,7 @@ export default Vue.extend({
     },
   },
   mounted() {
-    this.$accessor[this.model].fetch()
+    this.fetchItems()
   },
   methods: {
     onSearch: debounce(function (this: any, search: string) {
@@ -127,7 +127,7 @@ export default Vue.extend({
 
     async fetchItems(query?: string) {
       this.isLoading = true
-      await this.$accessor[this.model].fetch({ search: query })
+      await this.$accessor[this.model].fetch({ search: query, tree: 0 })
       this.isLoading = false
     },
   },

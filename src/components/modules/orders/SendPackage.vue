@@ -18,7 +18,7 @@
           </a-select-option>
         </app-select>
         <app-select
-          v-if="packageCreationMode"
+          v-if="isLegacyPackageCreation"
           v-model="providerKey"
           :label="$t('sendPackage.provider')"
           option-filter-prop="label"
@@ -110,8 +110,8 @@ export default Vue.extend({
         { key: 'dhlinternational', label: 'Kurier DHL Express' },
       ]
     },
-    packageCreationMode(): boolean {
-      return Boolean(this.$accessor.env.show_legacy_furgonetka === '1')
+    isLegacyPackageCreation(): boolean {
+      return this.$accessor.env.show_legacy_furgonetka === '1'
     },
   },
   created() {
@@ -124,7 +124,7 @@ export default Vue.extend({
     async createPackage() {
       if (!this.packageTemplateId) return
       this.$accessor.startLoading()
-      const res = this.packageCreationMode
+      const res = this.isLegacyPackageCreation
         ? await createFurgonetkaPackage(this.orderId, this.packageTemplateId, this.providerKey)
         : await createStandardPackage(this.orderId, this.packageTemplateId)
 

@@ -1,6 +1,11 @@
 /* eslint-disable camelcase */
 import { api } from '@/api'
 
+/**
+ * @deprecated
+ * ! Deprecated in favor of new package creation method
+ */
+//TODO: Delete in the future
 export const createFurgonetkaPackage = async (
   orderId: string,
   packageTemplateId: string,

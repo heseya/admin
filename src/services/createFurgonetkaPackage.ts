@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import { api } from '@/api'
 
-export const createPackage = async (
+export const createFurgonetkaPackage = async (
   orderId: string,
   packageTemplateId: string,
   provider: string,

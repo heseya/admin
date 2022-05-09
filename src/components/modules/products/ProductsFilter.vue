@@ -28,8 +28,11 @@
       option-filter-prop="label"
       @change="debouncedSearch"
     >
-      <a-select-option v-for="tag in apiTags" :key="tag.id" :label="tag.name">
-        {{ tag.name }}
+      <a-select-option v-for="{ id, name, color } in apiTags" :key="id" :label="name">
+        <div class="products-filter-tags__option">
+          <div class="products-filter-tags__color" :style="{ backgroundColor: `#${color}` }"></div>
+          {{ name }}
+        </div>
       </a-select-option>
     </app-select>
 
@@ -131,3 +134,19 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.products-filter-tags {
+  &__option {
+    display: flex;
+    align-items: center;
+  }
+
+  &__color {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    margin-right: 4px;
+  }
+}
+</style>

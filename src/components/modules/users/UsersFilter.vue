@@ -26,10 +26,10 @@
 <i18n>
 {
   "pl": {
-    "consents": "Zgody"
+    "consents": "Zaakceptowane zgody"
   },
   "en": {
-    "consents": "Consents"
+    "consents": "Accepted consents"
   }
 }
 </i18n>

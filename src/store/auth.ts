@@ -250,7 +250,7 @@ const actions = actionTree(
     async resetPassword({ commit }, payload: { token: string; email: string; password: string }) {
       commit('SET_ERROR', null)
       try {
-        await api.patch('/users/save-reset-password', payload)
+        await api.put('/users/save-reset-password', payload)
         return true
       } catch (e: any) {
         commit('SET_ERROR', e)

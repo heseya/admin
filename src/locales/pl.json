@@ -70,6 +70,13 @@
     "file": "Plik"
   },
 
+  "shippingTypes": {
+    "none": "Brak",
+    "address": "Adres",
+    "point": "Punkt",
+    "point-external": "Punkt zewnętrzny"
+  },
+
   "orderDocumentsTypes": {
     "invoice": "Faktura",
     "receipt": "Rachunek",
@@ -86,7 +93,7 @@
     "shipping-price": "Cena dostawy",
     "cheapest-product": "Najtańszy produkt w koszyku"
   },
-  
+
   "validation": {
     "required": "To pole jest wymagane",
     "email": "Wprowadź poprawny adres email",
@@ -105,6 +112,7 @@
     "dateBefore": "Data zakończenia musi być przed datą startu",
     "priceRangesDuplicates": "Zakresy cen nie mogą zawierać zduplikowanych progów",
     "schemaCheckbox": "Schemat nie może być jednocześnie ukryty i wymagany",
-    "timeBefore": "Godzina zakończenia musi być przed godziną startu"
+    "timeBefore": "Godzina zakończenia musi być przed godziną startu",
+    "shippingPointsDuplicates": "Punkt o takiej nazwie już istnieje"
   }
 }

@@ -8,6 +8,7 @@ import { ShippingMethodPriceRangeDTO } from '@/interfaces/ShippingMethod'
 
 import { METADATA_NAME_REGEX, ONLY_LETTERS_REGEX, SLUG_REGEX } from '@/consts/regexes'
 import i18n from '@/i18n'
+import { AddressDto } from '@/interfaces/Address'
 
 extend('required', {
   ...required,
@@ -169,5 +170,13 @@ extend('block-if-error', {
   message: 'error',
   validate(isError) {
     return !isError
+  },
+})
+
+extend('shipping-points-duplicates', {
+  params: ['existingPoints'],
+  message: () => i18n.t('validation.shippingPointsDuplicates') as string,
+  validate: (shippingPoint, { existingPoints }: Record<string, any>) => {
+    return !existingPoints.some((point: AddressDto) => point.name === shippingPoint)
   },
 })

@@ -1,6 +1,22 @@
 <template>
   <div class="shipping-methods-form">
     <modal-form>
+      <div class="center">
+        <app-select
+          v-model="form.shipping_type"
+          :disabled="disabled"
+          option-filter-prop="label"
+          :label="$t('form.shippingType')"
+        >
+          <a-select-option
+            v-for="type in Object.values(ShippingType)"
+            :key="type"
+            :label="$t(`shippingTypes.${type}`)"
+          >
+            {{ $t(`shippingTypes.${type}`) }}
+          </a-select-option>
+        </app-select>
+      </div>
       <validated-input
         v-model="form.name"
         :disabled="disabled"
@@ -82,7 +98,42 @@
           </a-select-option>
         </app-select>
       </div>
+
+      <template v-if="form.shipping_type === ShippingType.Point">
+        <hr />
+
+        <h5>{{ $t('form.addShippingPoints') }}</h5>
+        <div class="center">
+          <app-select
+            v-model="parsedShippingPoints"
+            mode="multiple"
+            option-filter-prop="label"
+            :label="$t('form.shippingPoints')"
+          >
+          </app-select>
+        </div>
+        <icon-button @click="isShippingPointModalOpen = true">
+          <template #icon>
+            <i class="bx bx-plus"></i>
+          </template>
+          {{ $t('form.addNewPoint') }}
+        </icon-button>
+      </template>
     </modal-form>
+    <a-modal
+      v-model="isShippingPointModalOpen"
+      width="500px"
+      :footer="null"
+      :title="$t('form.addNewPoint')"
+    >
+      <ShippingPointForm
+        :countries="countries"
+        :shipping-points="form.shipping_points"
+        :validate="isShippingPointModalOpen"
+        @added="addNewPoint"
+        @close="isShippingPointModalOpen = false"
+      />
+    </a-modal>
   </div>
 </template>
 
@@ -90,24 +141,32 @@
 {
   "pl": {
     "form": {
+      "shippingType":"Typ dostawy",
       "paymentMethods": "Dostępne metody płatności",
       "public": "Widoczność opcji dostawy",
       "deliveryTime": "Czas dostawy",
       "minDeliveryDays": "Minimalna ilość dni dostawy",
       "maxDeliveryDays": "Maksymalna ilość dni dostawy",
       "deliveryRegions": "Wysyłka możliwa do",
-      "countries": "Kraje"
+      "countries": "Kraje",
+      "addShippingPoints": "Dodaj punkty dostawy",
+      "shippingPoints":"Punkty dostawy",
+      "addNewPoint":"Dodaj nowy punkt"
     }
   },
   "en": {
     "form": {
+      "shippingType":"Shipping type",
       "paymentMethods": "Available payment methods",
       "public": "Shipping option visibility",
       "deliveryTime": "Delivery time",
       "minDeliveryDays": "Minimal number of days of delivery",
       "maxDeliveryDays": "Maximum number of days of delivery",
       "deliveryRegions": "Delivery is possible to",
-      "countries": "Countries"
+      "countries": "Countries",
+      "addShippingPoints": "Add shipping points",
+      "shippingPoints":"Shipping points",
+      "addNewPoint":"Add shipping point"
     }
   }
 }
@@ -120,10 +179,12 @@ import { ValidationProvider } from 'vee-validate'
 import ModalForm from '@/components/form/ModalForm.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import FlexInput from '@/components/layout/FlexInput.vue'
-
-import { ShippingMethodCountry, ShippingMethodDTO } from '@/interfaces/ShippingMethod'
-import { PaymentMethod } from '@/interfaces/PaymentMethod'
 import PriceRangesForm from './PriceRangesForm.vue'
+import ShippingPointForm from './ShippingPoint.vue'
+
+import { ShippingType, ShippingMethodCountry, ShippingMethodDTO } from '@/interfaces/ShippingMethod'
+import { PaymentMethod } from '@/interfaces/PaymentMethod'
+import { AddressDto } from '@/interfaces/Address'
 
 export default Vue.extend({
   name: 'ShippingMethodsForm',
@@ -133,6 +194,7 @@ export default Vue.extend({
     ValidationProvider,
     SwitchInput,
     PriceRangesForm,
+    ShippingPointForm,
   },
   props: {
     value: {
@@ -148,6 +210,9 @@ export default Vue.extend({
       required: true,
     },
   },
+  data: () => ({
+    isShippingPointModalOpen: false,
+  }),
   computed: {
     form: {
       get(): ShippingMethodDTO {
@@ -160,6 +225,22 @@ export default Vue.extend({
     paymentMethods(): PaymentMethod[] {
       return this.$accessor.paymentMethods.getData
     },
+    ShippingType(): typeof ShippingType {
+      return ShippingType
+    },
+    parsedShippingPoints: {
+      get(): string[] {
+        if (this.form.shipping_points) return this.form.shipping_points.map((point) => point.name)
+        return []
+      },
+      set(value: string[]) {
+        if (this.form.shipping_points) {
+          this.form.shipping_points = [
+            ...this.form.shipping_points.filter((point) => value.includes(point.name)),
+          ]
+        }
+      },
+    },
   },
   watch: {
     'form.price_ranges': {
@@ -168,6 +249,12 @@ export default Vue.extend({
         // @ts-ignore
         this.$refs.priceRange.validate()
       },
+    },
+  },
+  methods: {
+    addNewPoint(v: AddressDto) {
+      this.form?.shipping_points?.push(v)
+      this.isShippingPointModalOpen = false
     },
   },
 })

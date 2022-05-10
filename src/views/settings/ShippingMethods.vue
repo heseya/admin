@@ -35,7 +35,6 @@
         :title="editedItem.id ? $t('editTitle') : $t('newTitle')"
       >
         <ShippingMethodsForm v-model="editedItem" :countries="countries" :disabled="!canModify" />
-
         <template v-if="selectedItem">
           <hr />
           <MetadataForm
@@ -119,6 +118,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
+import omit from 'lodash/omit'
 import { api } from '../../api'
 
 import PaginatedList from '@/components/PaginatedList.vue'
@@ -128,7 +128,7 @@ import ShippingMethodsForm from '@/components/modules/shippingMethods/Index.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { UUID } from '@/interfaces/UUID'
-import { ShippingMethod, ShippingMethodDTO } from '@/interfaces/ShippingMethod'
+import { ShippingMethod, ShippingMethodDTO, ShippingType } from '@/interfaces/ShippingMethod'
 import { Country } from '@/interfaces/Country'
 
 export default Vue.extend({
@@ -185,11 +185,13 @@ export default Vue.extend({
             start,
             value: prices[0].value,
           })),
+          shipping_points: item.shipping_points?.map((point) => omit(point, 'id')),
         }
       } else {
         this.selectedItem = null
         this.editedItem = {
           name: '',
+          shipping_type: ShippingType.None,
           block_list: false,
           payment_methods: [],
           countries: [],
@@ -202,6 +204,7 @@ export default Vue.extend({
             },
           ],
           public: true,
+          shipping_points: [],
         }
       }
     },

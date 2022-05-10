@@ -70,12 +70,18 @@
     "file": "File"
   },
 
+  "shippingTypes": {
+    "none": "None",
+    "address": "Address",
+    "point": "Point",
+    "point-external": "External point"
+  },
+
   "orderDocumentsTypes": {
     "invoice": "Invoice",
     "receipt": "Receipt",
     "other": "Other"
   },
-
 
   "discountTypes": {
     "percent": "Percentage discount",
@@ -105,6 +111,7 @@
     "dateBefore": "The end date must be before the start date",
     "priceRangesDuplicates": "Price ranges shall not contain duplicate thresholds",
     "schemaCheckbox": "A scheme cannot be both hidden and required",
-    "timeBefore": "The end time must be before the start time"
+    "timeBefore": "The end time must be before the start time",
+    "shippingPointsDuplicates": "Point of given name already exists"
   }
 }

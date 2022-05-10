@@ -12,3 +12,14 @@ export interface Address {
   vat?: string
   zip: string
 }
+
+export interface AddressDto {
+  id?: UUID
+  name: string
+  address: string
+  vat: string
+  zip: string
+  city: string
+  country: string
+  phone: string
+}

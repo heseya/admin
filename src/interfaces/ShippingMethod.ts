@@ -2,8 +2,14 @@
 
 import { UUID } from './UUID'
 import { PaymentMethod } from './PaymentMethod'
-import { Metadata } from './Metadata'
+import { AddressDto } from './Address'
 
+export enum ShippingType {
+  None = 'none',
+  Address = 'address',
+  Point = 'point',
+  PointExternal = 'point-external',
+}
 export interface ShippingMethodCountry {
   code: string
   name: string
@@ -26,6 +32,7 @@ export interface ShippingMethodPriceRangeDTO {
 export interface ShippingMethod {
   id: UUID
   name: string
+  shipping_type: ShippingType
   payment_methods: PaymentMethod[]
   public: boolean
   block_list: boolean
@@ -33,18 +40,23 @@ export interface ShippingMethod {
   shipping_time_max: number
   countries: ShippingMethodCountry[]
   price_ranges: ShippingMethodPriceRange[]
-  metadata: Metadata
-  metadata_private?: Metadata
+  integration_key?: string
+  app_id?: UUID
+  shipping_points?: AddressDto[]
 }
 
 export interface ShippingMethodDTO {
   id?: UUID
   name: string
-  payment_methods: string[]
+  shipping_type?: ShippingType
+  payment_methods: UUID[]
   public: boolean
   block_list: boolean
   shipping_time_min: number
   shipping_time_max: number
   countries: string[]
   price_ranges: ShippingMethodPriceRangeDTO[]
+  integration_key?: string
+  app_id?: UUID
+  shipping_points?: AddressDto[]
 }

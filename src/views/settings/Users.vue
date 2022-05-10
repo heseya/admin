@@ -1,6 +1,14 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList :title="$t('title')" store-key="users">
+    <PaginatedList
+      :title="$t('title')"
+      :filters="filters"
+      store-key="users"
+      @clear-filters="clearFilters"
+    >
+      <template #filters>
+        <users-filter :filters="filters" @search="makeSearch" />
+      </template>
       <template #nav>
         <icon-button v-can="$p.Users.Add" @click="openModal()">
           <template #icon>
@@ -18,7 +26,6 @@
           </template>
           {{ user.name }}
           <small>{{ user.roles.map((r) => r.name).join(', ') }}</small>
-
           <template #action>
             <tag v-if="user.is_tfa_active" type="success" small>
               <i class="bx bx-check"></i> {{ $t('tfaActive') }}
@@ -114,7 +121,10 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import UserForm from '@/components/modules/users/Form.vue'
 import Avatar from '@/components/layout/Avatar.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
+import UsersFilter, { EMPTY_USER_FILTERS } from '@/components/modules/users/UsersFilter.vue'
 
+import { ALL_FILTER_VALUE } from '@/consts/filters'
+import { formatFilters } from '@/utils/utils'
 import { UUID } from '@/interfaces/UUID'
 import { CreateUserDTO, EditUserDTO, User } from '@/interfaces/User'
 
@@ -137,6 +147,7 @@ export default Vue.extend({
     ValidationObserver,
     Avatar,
     MetadataForm,
+    UsersFilter,
   },
   beforeRouteLeave(_to, _from, next) {
     if (this.isModalActive) {
@@ -150,6 +161,7 @@ export default Vue.extend({
     isModalActive: false,
     editedUser: clone(CLEAR_USER) as CreateUserDTO | EditUserDTO,
     selectedUser: null as User | null,
+    filters: { ...EMPTY_USER_FILTERS },
   }),
   computed: {
     isEditedUserCurrentUser(): boolean {
@@ -158,6 +170,10 @@ export default Vue.extend({
     canModify(): boolean {
       return this.$can(this.isNewUser(this.editedUser) ? this.$p.Users.Edit : this.$p.Users.Add)
     },
+  },
+  created() {
+    this.filters.search = (this.$route.query.search as string) || ''
+    this.filters.consent_id = (this.$route.query.consents as string) || ALL_FILTER_VALUE
   },
   methods: {
     openModal(id?: UUID) {
@@ -213,6 +229,19 @@ export default Vue.extend({
         (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id),
         (this.$refs.publicMeta as MetadataRef)?.saveMetadata(id),
       ])
+    },
+    makeSearch(filters: typeof EMPTY_USER_FILTERS) {
+      this.filters = filters
+
+      const queryFilters = formatFilters(filters)
+
+      this.$router.push({
+        path: 'users',
+        query: { page: undefined, ...queryFilters },
+      })
+    },
+    clearFilters() {
+      this.makeSearch({ ...EMPTY_USER_FILTERS })
     },
   },
 })

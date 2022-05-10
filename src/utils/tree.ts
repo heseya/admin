@@ -13,7 +13,7 @@ export interface TreeWithParents<T> extends Tree<T> {
 }
 
 const replacePartialyInArray = <T extends { id: UUID }>(array: T[], item: Partial<T>): T[] => {
-  const arrayCopy = cloneDeep(array)
+  const arrayCopy = cloneDeep(array) || []
   const itemIndex = arrayCopy.findIndex(({ id }) => id === item.id)
   if (itemIndex >= 0) arrayCopy[itemIndex] = cloneDeep({ ...arrayCopy[itemIndex], ...item })
   return arrayCopy
@@ -51,7 +51,8 @@ export const updateItemInTree = <T extends TreeWithParents<T>>(
   updatedItem: Partial<T> & { id: UUID },
 ): T[] => {
   const item = findInTree(array, updatedItem.id)
-  if (!item) return [...array, updatedItem as T]
+  // Ignore update when item is not found
+  if (!item) return array
 
   const parent = findInTree(array, item.parent?.id || item.parent_id!)
   if (parent) {

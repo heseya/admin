@@ -11,6 +11,7 @@
 
     <app-select
       v-model="local.consent_id"
+      :all-text="$t('noFilter')"
       :label="$t('consents')"
       add-all
       option-filter-prop="label"
@@ -26,10 +27,12 @@
 <i18n>
 {
   "pl": {
-    "consents": "Zaakceptowane zgody"
+    "consents": "Zaakceptowane zgody",
+    "noFilter": "Brak filtrowania"
   },
   "en": {
-    "consents": "Accepted consents"
+    "consents": "Accepted consents",
+    "noFilter": "No filter"
   }
 }
 </i18n>

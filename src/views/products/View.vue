@@ -145,6 +145,9 @@
               <div class="wide">
                 <tags-select v-model="form.tags" :disabled="!canModify" />
               </div>
+              <div class="wide">
+                <google-category-select v-model="form.tags" :disabled="!canModify" />
+              </div>
 
               <div class="wide">
                 <small class="label">{{ $t('common.form.description') }}</small>
@@ -288,6 +291,7 @@ import { UUID } from '@/interfaces/UUID'
 import { Product, ProductDTO, ProductComponentForm } from '@/interfaces/Product'
 import { ProductSet } from '@/interfaces/ProductSet'
 import WarehouseItemsConfigurator from '@/components/modules/products/WarehouseItemsConfigurator.vue'
+import GoogleCategorySelect from '@/components/modules/products/GoogleCategorySelect.vue'
 
 const EMPTY_FORM: ProductComponentForm = {
   id: '',
@@ -332,6 +336,7 @@ export default Vue.extend({
     MetadataForm,
     AttributesConfigurator,
     WarehouseItemsConfigurator,
+    GoogleCategorySelect,
   },
   data: () => ({
     form: cloneDeep(EMPTY_FORM),

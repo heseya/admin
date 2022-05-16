@@ -2,12 +2,12 @@
   <card class="order-summary">
     <OrderField :label="$t('labels.code')" :value="order.code" :horizontal="isHorizontal" />
     <OrderField :label="$t('labels.date')" :value="formattedDate" :horizontal="isHorizontal" />
-    <OrderField
+    <EditableOrderField
       :label="$t('labels.shipping')"
       :value="order.shipping_method && order.shipping_method.name"
       :horizontal="isHorizontal"
+      @edit="editShipppingMethod"
     />
-
     <OrderField
       :label="$t('labels.payment')"
       class="order-summary__payment"
@@ -34,6 +34,14 @@
     >
       <cms-table :value="order.payments" :config="paymentsTableConfig" no-hover />
     </a-modal>
+    <a-modal
+      v-model="isEditModalActive"
+      width="750px"
+      :footer="null"
+      :title="`${$t('labels.editShippingMethod')}`"
+    >
+      <ShippingMethodForm v-if="isEditModalActive" :order="order" />
+    </a-modal>
   </card>
 </template>
 
@@ -45,7 +53,8 @@
       "date": "Order date",
       "shipping": "Shipping method",
       "payment": "Payment",
-      "history": "Payment history"
+      "history": "Payment history",
+      "editShippingMethod":"Edit shipping method"
     },
     "table": {
       "date": "Date of transaction",
@@ -61,7 +70,8 @@
       "date": "Data zamówienia",
       "shipping": "Metoda dostawy",
       "payment": "Płatność",
-      "history": "Historia płatności"
+      "history": "Historia płatności",
+      "editShippingMethod":"Edytuj metodę dostawy"
     },
     "table": {
       "date": "Data transakcji",
@@ -81,6 +91,8 @@ import Card from '@/components/layout/Card.vue'
 import SummaryPayment from './SummaryPayment.vue'
 import OrderField from './Field.vue'
 import CmsTable from '@/components/cms/CmsTable.vue'
+import EditableOrderField from './EditableField.vue'
+import ShippingMethodForm from './ShippingMethodForm.vue'
 
 import { Order } from '@/interfaces/Order'
 import { formatDate } from '@/utils/dates'
@@ -89,7 +101,14 @@ import { PAYMENT_METHODS } from '@/consts/paymentMethods'
 import { formatCurrency } from '@/utils/currency'
 
 export default Vue.extend({
-  components: { Card, OrderField, SummaryPayment, CmsTable },
+  components: {
+    Card,
+    OrderField,
+    SummaryPayment,
+    CmsTable,
+    ShippingMethodForm,
+    EditableOrderField,
+  },
   props: {
     order: {
       type: Object,
@@ -99,6 +118,7 @@ export default Vue.extend({
   data: () => ({
     viewportWidth: window.innerWidth,
     isPaymentHistoryVisible: false,
+    isEditModalActive: false,
   }),
   computed: {
     formattedDate(): string | null {
@@ -148,6 +168,9 @@ export default Vue.extend({
     },
     closePaymentHistory() {
       this.isPaymentHistoryVisible = false
+    },
+    editShipppingMethod() {
+      this.isEditModalActive = true
     },
   },
 })

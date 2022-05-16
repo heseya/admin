@@ -16,6 +16,10 @@
         <span class="address__field">{{ address.phone }}</span>
       </template>
     </template>
+    <template v-else-if="order && order.shipping_type === ShippingType.PointExternal"
+      ><span class="address__subtitle">{{ $t('externalPoint') }}:</span
+      ><span class="address__name">{{ order.shipping_place }}</span></template
+    >
     <template v-else>
       <small class="address__error">{{ $t('common.none') }}</small>
     </template>
@@ -26,17 +30,21 @@
 {
   "pl": {
     "phone": "Telefon",
-    "vat": "NIP"
+    "vat": "NIP",
+    "externalPoint": "Punkt zewnętrzny"
   },
   "en": {
     "phone": "Phone",
-    "vat": "VAT"
+    "vat": "VAT",
+    "externalPoint": "External Point"
   }
 }
 </i18n>
 
 <script lang="ts">
 import { Address } from '@/interfaces/Address'
+import { Order } from '@/interfaces/Order'
+import { ShippingType } from '@/interfaces/ShippingMethod'
 import Vue from 'vue'
 
 export default Vue.extend({
@@ -46,7 +54,14 @@ export default Vue.extend({
       type: Object,
       default: () => null,
     } as Vue.PropOptions<Address>,
+    order: {
+      type: Object,
+      default: () => {},
+    } as Vue.PropOptions<Order>,
   },
+  data: () => ({
+    ShippingType,
+  }),
 })
 </script>
 

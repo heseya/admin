@@ -1,8 +1,8 @@
 /* eslint-disable camelcase */
 import { UUID } from './UUID'
-import { Address } from './Address'
+import { AddressDto } from './Address'
 import { Payment } from './Payment'
-import { ShippingMethod } from './ShippingMethod'
+import { ShippingMethod, ShippingType } from './ShippingMethod'
 import { OrderProduct } from './OrderProduct'
 import { OrderDiscount } from './SalesAndCoupons'
 import { Metadata } from './Metadata'
@@ -28,16 +28,18 @@ export interface Order {
   comment?: string
   created_at: string
   currency: string
-  delivery_address: Address
-  discounts: OrderDiscount[]
+  shipping_place: AddressDto | string
+  coupons: OrderDiscount[]
   email: string
-  invoice_address: Address
+  billing_address: AddressDto
   payable: boolean
   paid: boolean
   payments: Payment[]
   products: OrderProduct[]
   shipping_method: ShippingMethod
+  shipping_method_id: UUID
   shipping_number?: string
+  shipping_type: ShippingType
   status: OrderStatus
 
   /**

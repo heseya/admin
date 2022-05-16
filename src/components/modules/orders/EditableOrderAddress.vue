@@ -33,7 +33,7 @@
       </pop-confirm>
     </template>
 
-    <OrderAddress :address="address" />
+    <OrderAddress :address="address" :order="order" />
   </field>
 </template>
 
@@ -51,11 +51,12 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import { Address } from '@/interfaces/Address'
-
 import PopConfirm from '../../layout/PopConfirm.vue'
 import OrderAddress from './OrderAddress.vue'
 import Field from './Field.vue'
+
+import { Address } from '@/interfaces/Address'
+import { Order } from '@/interfaces/Order'
 
 export default Vue.extend({
   name: 'Address',
@@ -77,6 +78,10 @@ export default Vue.extend({
       type: Boolean,
       default: false,
     },
+    order: {
+      type: Object,
+      default: () => {},
+    } as Vue.PropOptions<Order>,
   },
   methods: {
     edit() {

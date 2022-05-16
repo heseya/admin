@@ -21,15 +21,17 @@
     <div class="order-customer-details__addresses">
       <EditableOrderAddress
         :title="$t('deliveryAddressSection')"
-        :address="order.delivery_address"
+        :address="order.shipping_place"
+        :order="order"
         hide-remove
-        @edit="editDeliveryAddress"
+        :hide-edit="order.shipping_type === ShippingType.None"
+        @edit="editShippingAddress"
       />
 
       <EditableOrderAddress
         :title="$t('invoiceAddressSection')"
-        :address="order.invoice_address"
-        @edit="editInvoiceAddress"
+        :address="order.billing_address"
+        @edit="editBillingAddress"
         @remove="removeInvoiceAddress"
       />
     </div>
@@ -63,7 +65,12 @@
       :title="`${$t('common.edit')} ${modalFormTitle}`"
     >
       <modal-form>
-        <partial-update-form v-model="form" @save="saveForm" />
+        <partial-update-form
+          v-model="form"
+          :shipping-type="order.shipping_type"
+          :shipping-method="order.shipping_method"
+          @save="saveForm"
+        />
       </modal-form>
     </a-modal>
   </div>
@@ -102,17 +109,9 @@ import ModalForm from '@/components/form/ModalForm.vue'
 import IconButton from '@/components/layout/IconButton.vue'
 
 import { Order } from '@/interfaces/Order'
-
-const DEFAULT_ADDRESS_FORM = {
-  address: '',
-  city: '',
-  country: 'PL',
-  country_name: '',
-  name: '',
-  phone: '',
-  vat: '',
-  zip: '',
-}
+import { ShippingType } from '@/interfaces/ShippingMethod'
+import { AddressDto } from '@/interfaces/Address'
+import { DEFAULT_ADDRESS_FORM } from '@/consts/addressConsts'
 
 export default Vue.extend({
   components: { Field, EditableOrderAddress, PartialUpdateForm, ModalForm, IconButton },
@@ -123,6 +122,7 @@ export default Vue.extend({
     } as Vue.PropOptions<Order>,
   },
   data: () => ({
+    ShippingType,
     isEditModalActive: false,
     modalFormTitle: '',
     form: {},
@@ -142,32 +142,54 @@ export default Vue.extend({
         email: this.order.email,
       }
     },
-    editDeliveryAddress() {
+    editShippingAddress() {
       this.isEditModalActive = true
       this.modalFormTitle = (this.$t('deliveryAddressSection') as string).toLowerCase()
-      this.form = {
-        delivery_address: {
-          ...this.order.delivery_address,
-        },
+      switch (this.order.shipping_type) {
+        case ShippingType.Address:
+          this.form = {
+            shipping_place: {
+              ...(this.order.shipping_place as AddressDto),
+            },
+          }
+          break
+        case ShippingType.Point:
+          this.form = {
+            shipping_place: (this.order.shipping_place as AddressDto).id,
+          }
+          break
+        case ShippingType.PointExternal:
+          this.form = {
+            shipping_place: this.order.shipping_place,
+          }
+          break
       }
     },
-    editInvoiceAddress() {
+    editBillingAddress() {
       this.isEditModalActive = true
       this.modalFormTitle = (this.$t('invoiceAddressSection') as string).toLowerCase()
       this.form = {
-        invoice_address: {
-          ...(this.order.invoice_address || DEFAULT_ADDRESS_FORM),
+        billing_address: {
+          ...(this.order.billing_address || DEFAULT_ADDRESS_FORM),
         },
       }
     },
     removeInvoiceAddress() {
-      this.form = { invoice_address: null }
+      this.form = { billing_address: null }
       this.saveForm()
     },
     async saveForm() {
       this.$accessor.startLoading()
-      const success = await this.$accessor.orders.update({ id: this.order.id, item: this.form })
+      //TODO: Delete this when [PATCH] will works correctly
+      this.form = {
+        shipping_place:
+          this.order.shipping_type === ShippingType.Point
+            ? (this.order.shipping_place as AddressDto).id
+            : this.order.shipping_place,
+        ...this.form,
+      }
 
+      const success = await this.$accessor.orders.update({ id: this.order.id, item: this.form })
       this.isEditModalActive = false
       if (success) this.$toast.success(this.$t('editSuccess') as string)
       else this.$toast.error(this.$t('editFailed') as string)

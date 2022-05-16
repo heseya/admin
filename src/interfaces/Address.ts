@@ -17,7 +17,7 @@ export interface AddressDto {
   id?: UUID
   name: string
   address: string
-  vat: string
+  vat?: string
   zip: string
   city: string
   country: string

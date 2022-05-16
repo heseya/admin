@@ -43,7 +43,7 @@
       <span class="cart-item__value">
         {{ formatCurrency(item.price) }}
 
-        <info-tooltip v-if="item.discounts.length">
+        <info-tooltip v-if="item.discounts && item.discounts.length">
           <OrderDiscountSummary :discounts="item.discounts" />
         </info-tooltip>
       </span>
@@ -102,7 +102,11 @@ import InfoTooltip from './InfoTooltip.vue'
 import OrderDiscountSummary from '../modules/orders/OrderDiscountSummary.vue'
 
 export default Vue.extend({
-  components: { Field, InfoTooltip, OrderDiscountSummary },
+  components: {
+    Field,
+    InfoTooltip,
+    OrderDiscountSummary,
+  },
   props: {
     item: {
       type: Object,

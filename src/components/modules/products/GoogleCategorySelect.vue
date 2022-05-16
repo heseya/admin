@@ -18,6 +18,7 @@
 </i18n>
 
 <script lang="ts">
+import { api } from '@/api'
 import Vue from 'vue'
 
 interface GoogleCategoryOption {
@@ -53,8 +54,16 @@ export default Vue.extend({
   },
 
   methods: {
-    fetchOptions() {
-      // TODO: fetch from api
+    async fetchOptions() {
+      try {
+        const lang = this.$i18n.locale === 'pl' ? 'pl-PL' : 'en-US'
+        const response = await api.get<{ data: GoogleCategoryOption[] }>(
+          `/google-categories/${lang}`,
+        )
+        this.options = response.data.data
+      } catch (e: any) {
+        this.$toast.error(`Google Categories: ${e.message}`)
+      }
     },
   },
 })

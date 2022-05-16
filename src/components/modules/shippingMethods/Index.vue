@@ -68,19 +68,17 @@
           <label class="title">{{ $t('common.blockList') }}</label>
         </flex-input>
       </div>
-
       <div class="center">
-        <app-select
+        <validated-select
           v-model="form.countries"
+          :options="countries"
+          option-key="code"
           :disabled="disabled"
           mode="multiple"
           :label="$t('form.countries')"
           option-filter-prop="label"
-        >
-          <a-select-option v-for="country in countries" :key="country.code" :label="country.name">
-            {{ country.name }}
-          </a-select-option>
-        </app-select>
+          :rules="{ required: !form.black_list && form.countries.length === 0 }"
+        />
       </div>
     </modal-form>
   </div>

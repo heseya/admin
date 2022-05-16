@@ -5,6 +5,7 @@ import AppSelect from '@/components/form/AppSelect.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import ValidatedSwitchInput from '@/components/form/ValidatedSwitchInput.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
+import ValidatedSelect from '@/components/form/ValidatedSelect.vue'
 
 import IconButton from '@/components/layout/IconButton.vue'
 import AppButton from '@/components/layout/AppButton.vue'
@@ -15,6 +16,7 @@ import Tag from '@/components/Tag.vue'
 Vue.component('AppInput', AppInput)
 Vue.component('ValidatedInput', ValidatedInput)
 Vue.component('AppSelect', AppSelect)
+Vue.component('ValidatedSelect', ValidatedSelect)
 Vue.component('SwitchInput', SwitchInput)
 Vue.component('ValidatedSwitchInput', ValidatedSwitchInput)
 

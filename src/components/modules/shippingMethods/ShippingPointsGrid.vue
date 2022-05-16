@@ -1,12 +1,19 @@
 <template>
   <div class="shipping-points">
-    <div v-for="point in shippingPoints" :key="point.id" class="shipping-points__point">
-      <p class="shipping-points__name">{{ point.name }}</p>
+    <div v-for="(point, index) in shippingPoints" :key="point.id" class="shipping-points__point">
+      <div class="shipping-points__info">
+        <span class="shipping-points__name">{{ point.name }}</span>
+        <span>{{ point.address }}</span>
+        <span>{{ point.zip }} {{ point.city }}</span>
+        <span>
+          {{ point.country_name || point.country }}
+        </span>
+      </div>
       <icon-button
         size="small"
         type="transparent"
         class="editable-address__btn editable-address__btn--edit"
-        @click="$emit('edit', point)"
+        @click="$emit('edit', { point, index })"
       >
         <template #icon>
           <i class="bx bxs-pencil"></i>
@@ -16,7 +23,7 @@
         size="small"
         type="transparent"
         class="editable-address__btn editable-address__btn--edit"
-        @click="$emit('remove', point)"
+        @click="$emit('remove', index)"
       >
         <template #icon>
           <i class="bx bxs-trash"></i>
@@ -72,7 +79,14 @@ export default Vue.extend({
     border-radius: 2px;
   }
   &__name {
-    margin: 0;
+    font-weight: 600;
+  }
+  &__info {
+    display: flex;
+    flex-flow: column;
+    span {
+      font-size: 12px;
+    }
   }
 }
 </style>

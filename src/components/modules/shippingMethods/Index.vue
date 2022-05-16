@@ -120,14 +120,15 @@
       v-model="isShippingPointModalOpen"
       width="500px"
       :footer="null"
-      :title="shippingPointEditMode ? $t('form.editPoint') : $t('form.addNewPoint')"
+      :title="isShippingPointEditMode ? $t('form.editPoint') : $t('form.addNewPoint')"
     >
       <ShippingPointForm
+        v-if="isShippingPointModalOpen"
+        v-model="editedPoint"
         :countries="countries"
         :shipping-points="form.shipping_points"
-        :is-open="isShippingPointModalOpen"
-        :edited-point="editedPoint"
-        :edit-mode="shippingPointEditMode"
+        :edit-mode="isShippingPointEditMode"
+        :old-name="oldPointName"
         @added="addNewPoint"
         @edited="editPoint"
         @close="isShippingPointModalOpen = false"
@@ -216,8 +217,9 @@ export default Vue.extend({
   },
   data: () => ({
     isShippingPointModalOpen: false,
-    shippingPointEditMode: false,
-    editedPoint: {} as AddressDto,
+    isShippingPointEditMode: false,
+    editedPoint: { ...DEFAULT_ADDRESS_FORM } as AddressDto,
+    oldPointIndex: 0,
     oldPointName: '',
   }),
   computed: {
@@ -248,29 +250,26 @@ export default Vue.extend({
   methods: {
     add() {
       this.editedPoint = { ...DEFAULT_ADDRESS_FORM }
-      this.shippingPointEditMode = false
+      this.isShippingPointEditMode = false
       this.isShippingPointModalOpen = true
     },
-    edit(v: AddressDto) {
-      this.oldPointName = v.name
-      this.editedPoint = { ...v }
-      this.shippingPointEditMode = true
+    edit({ point, index }: any) {
+      this.oldPointIndex = index
+      this.editedPoint = { ...point }
+      this.oldPointName = this.editedPoint.name
+      this.isShippingPointEditMode = true
       this.isShippingPointModalOpen = true
     },
     addNewPoint(v: AddressDto) {
-      this.form?.shipping_points?.push(v)
+      this.form.shipping_points?.push(v)
       this.isShippingPointModalOpen = false
     },
     editPoint(v: AddressDto) {
-      this.form.shipping_points = this.form?.shipping_points?.filter(
-        (point) => point.name !== this.oldPointName,
-      )
+      this.removePoint(this.oldPointIndex)
       this.addNewPoint(v)
     },
-    removePoint(v: AddressDto) {
-      this.form.shipping_points = this.form?.shipping_points?.filter(
-        (point) => point.name !== v.name,
-      )
+    removePoint(index: number) {
+      this.form.shipping_points?.splice(index, 1)
     },
   },
 })

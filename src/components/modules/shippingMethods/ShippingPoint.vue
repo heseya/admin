@@ -8,17 +8,15 @@
             name="name"
             :label="$t('name')"
             :rules="{
-              required: validate,
-              'shipping-points-duplicates': [shippingPoints, editMode],
+              required: true,
+              'shipping-points-duplicates': [shippingPoints, oldName],
             }"
           />
           <validated-input
             v-model="form.phone"
             name="phone"
             :label="$t('phone')"
-            :rules="{
-              required: validate,
-            }"
+            rules="required"
           />
         </div>
         <div class="address-form__row">
@@ -26,29 +24,13 @@
             v-model="form.address"
             name="address"
             :label="$t('address')"
-            :rules="{
-              required: validate,
-            }"
+            rules="required"
           />
-          <validated-input
-            v-model="form.zip"
-            name="zip"
-            :label="$t('zip')"
-            :rules="{
-              required: validate,
-            }"
-          />
+          <validated-input v-model="form.zip" name="zip" :label="$t('zip')" rules="required" />
         </div>
 
         <div class="address-form__row">
-          <validated-input
-            v-model="form.city"
-            name="city"
-            :label="$t('city')"
-            :rules="{
-              required: validate,
-            }"
-          />
+          <validated-input v-model="form.city" name="city" :label="$t('city')" rules="required" />
           <app-select
             v-model="form.country"
             :label="$t('country')"
@@ -112,6 +94,10 @@ export default Vue.extend({
   name: 'AddressForm',
   components: { ValidationObserver },
   props: {
+    value: {
+      type: Object,
+      required: true,
+    } as Vue.PropOptions<AddressDto>,
     countries: {
       type: Array,
       required: true,
@@ -120,30 +106,23 @@ export default Vue.extend({
       type: Array,
       required: true,
     } as Vue.PropOptions<AddressDto[]>,
-    isOpen: {
-      type: Boolean,
-      required: true,
-    } as Vue.PropOptions<boolean>,
     editMode: {
       type: Boolean,
       required: true,
     } as Vue.PropOptions<boolean>,
-    editedPoint: {
-      type: Object,
-      required: true,
-    } as Vue.PropOptions<AddressDto>,
+    oldName: {
+      type: String,
+      default: '',
+    } as Vue.PropOptions<String>,
   },
   computed: {
     form: {
       get(): AddressDto {
-        return this.editedPoint
+        return this.value
       },
       set(v: AddressDto) {
         this.$emit('input', v)
       },
-    },
-    validate(): boolean {
-      return this.isOpen
     },
   },
   methods: {

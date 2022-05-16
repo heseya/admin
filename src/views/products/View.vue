@@ -146,7 +146,10 @@
                 <tags-select v-model="form.tags" :disabled="!canModify" />
               </div>
               <div class="wide">
-                <google-category-select v-model="form.tags" :disabled="!canModify" />
+                <google-category-select
+                  v-model="form.google_product_category"
+                  :disabled="!canModify"
+                />
               </div>
 
               <div class="wide">
@@ -300,6 +303,7 @@ const EMPTY_FORM: ProductComponentForm = {
   price: 0,
   description_html: '',
   description_short: '',
+  google_product_category: null,
   public: true,
   sets: [],
   quantity_step: 1,

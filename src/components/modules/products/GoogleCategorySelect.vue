@@ -1,5 +1,23 @@
 <template>
-  <app-select v-model="$root.$i18n.locale" :label="$t('name')">
+  <app-select
+    v-model="selectedValue"
+    option-filter-prop="label"
+    filter-option
+    show-search
+    allow-clear
+    :loading="isLoading"
+    @search="(v) => (searchQuery = v)"
+  >
+    <template #label>
+      {{ $t('name') }}
+      <info-tooltip>
+        <!-- eslint-disable-next-line vue/no-bare-strings-in-template -->
+        <a href="https://support.google.com/merchants/answer/6324436" target="_blank">
+          https://support.google.com/merchants/answer/6324436
+        </a>
+      </info-tooltip>
+    </template>
+
     <a-select-option v-for="{ id, name } in options" :key="id" :value="id" :label="name">
       {{ name }}
     </a-select-option>
@@ -18,8 +36,11 @@
 </i18n>
 
 <script lang="ts">
-import { api } from '@/api'
 import Vue from 'vue'
+
+import InfoTooltip from '@/components/layout/InfoTooltip.vue'
+
+import { api } from '@/api'
 
 interface GoogleCategoryOption {
   id: number
@@ -27,6 +48,7 @@ interface GoogleCategoryOption {
 }
 
 export default Vue.extend({
+  components: { InfoTooltip },
   props: {
     value: {
       type: Number,
@@ -35,7 +57,9 @@ export default Vue.extend({
   },
 
   data: () => ({
-    options: [] as GoogleCategoryOption[],
+    searchQuery: '',
+    isLoading: false,
+    allOptions: [] as GoogleCategoryOption[],
   }),
 
   computed: {
@@ -47,6 +71,22 @@ export default Vue.extend({
         this.$emit('input', v)
       },
     },
+
+    options(): GoogleCategoryOption[] {
+      const selected = this.allOptions.find((o) => o.id === this.selectedValue)
+      const searched = this.allOptions
+        .filter(({ name }) => name.toLowerCase().includes(this.searchQuery.toLowerCase()))
+        .filter((_, i) => i < 32) // limit to 32 results only
+
+      // Add selected category if not included already
+      return selected && !searched.includes(selected) ? [selected, ...searched] : searched
+    },
+  },
+
+  watch: {
+    'this.$i18n.locale'() {
+      this.fetchOptions()
+    },
   },
 
   created() {
@@ -55,15 +95,17 @@ export default Vue.extend({
 
   methods: {
     async fetchOptions() {
+      this.isLoading = true
       try {
         const lang = this.$i18n.locale === 'pl' ? 'pl-PL' : 'en-US'
         const response = await api.get<{ data: GoogleCategoryOption[] }>(
           `/google-categories/${lang}`,
         )
-        this.options = response.data.data
+        this.allOptions = response.data.data
       } catch (e: any) {
         this.$toast.error(`Google Categories: ${e.message}`)
       }
+      this.isLoading = false
     },
   },
 })

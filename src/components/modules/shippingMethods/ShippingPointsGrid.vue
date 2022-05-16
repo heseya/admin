@@ -1,0 +1,78 @@
+<template>
+  <div class="shipping-points">
+    <div v-for="point in shippingPoints" :key="point.id" class="shipping-points__point">
+      <p class="shipping-points__name">{{ point.name }}</p>
+      <icon-button
+        size="small"
+        type="transparent"
+        class="editable-address__btn editable-address__btn--edit"
+        @click="$emit('edit', point)"
+      >
+        <template #icon>
+          <i class="bx bxs-pencil"></i>
+        </template>
+      </icon-button>
+      <icon-button
+        size="small"
+        type="transparent"
+        class="editable-address__btn editable-address__btn--edit"
+        @click="$emit('remove', point)"
+      >
+        <template #icon>
+          <i class="bx bxs-trash"></i>
+        </template>
+      </icon-button>
+    </div>
+  </div>
+</template>
+
+<i18n>
+{
+  "pl": {
+    "name": "Nazwa"
+  },
+  "en": {
+    "name": "Name"
+  }
+}
+</i18n>
+
+<script lang="ts">
+import Vue from 'vue'
+import { AddressDto } from '@/interfaces/Address'
+
+export default Vue.extend({
+  name: 'AddressForm',
+  props: {
+    shippingPoints: {
+      type: Array,
+      required: true,
+    } as Vue.PropOptions<AddressDto[]>,
+  },
+})
+</script>
+
+<style lang="scss" scoped>
+.shipping-points-container {
+  width: 100%;
+}
+.shipping-points {
+  display: flex;
+  flex-flow: wrap;
+  padding: 0;
+  width: 100%;
+  &__point {
+    display: flex;
+    align-items: center;
+    margin: 4px 0 4px 4px;
+    padding: 0 0 0 10px;
+    color: rgba(0, 0, 0, 0.65);
+    background-color: #fafafa;
+    border: 1px solid #e8e8e8;
+    border-radius: 2px;
+  }
+  &__name {
+    margin: 0;
+  }
+}
+</style>

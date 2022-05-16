@@ -69,19 +69,25 @@
         </flex-input>
       </div>
 
-      <div class="center">
-        <app-select
-          v-model="form.countries"
-          :disabled="disabled"
-          mode="multiple"
-          :label="$t('form.countries')"
-          option-filter-prop="label"
-        >
-          <a-select-option v-for="country in countries" :key="country.code" :label="country.name">
-            {{ country.name }}
-          </a-select-option>
-        </app-select>
-      </div>
+      <validation-provider
+        v-slot="{ errors }"
+        :rules="{ required: !form.black_list && form.countries.length === 0 }"
+      >
+        <div class="center">
+          <app-select
+            v-model="form.countries"
+            :disabled="disabled"
+            mode="multiple"
+            :label="$t('form.countries')"
+            option-filter-prop="label"
+          >
+            <a-select-option v-for="country in countries" :key="country.code" :label="country.name">
+              {{ country.name }}
+            </a-select-option>
+          </app-select>
+        </div>
+        <small class="error">{{ errors[0] }}</small>
+      </validation-provider>
     </modal-form>
   </div>
 </template>
@@ -189,5 +195,12 @@ export default Vue.extend({
   .ant-switch-checked {
     background-color: #000000;
   }
+}
+.error {
+  display: block;
+  color: red;
+  margin-left: 6px;
+  font-size: 0.7em;
+  margin-bottom: 6px;
 }
 </style>

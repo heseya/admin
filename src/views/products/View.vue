@@ -93,23 +93,8 @@
               </div>
 
               <div>
-                <validation-provider v-slot="{ errors }">
-                  <app-select
-                    v-model="form.sets"
-                    :placeholder="$t('form.setsPlaceholder')"
-                    mode="multiple"
-                    name="sets"
-                    :label="$t('form.sets')"
-                    option-filter-prop="label"
-                    :disabled="!canModify"
-                  >
-                    <a-select-option v-for="set in productSets" :key="set.id" :label="set.name">
-                      <i v-if="!set.public" class="bx bx-lock"></i>
-                      {{ set.name }}&nbsp;<small>(/{{ set.slug }})</small>
-                    </a-select-option>
-                    <template #message-danger>{{ errors[0] }}</template>
-                  </app-select>
-                </validation-provider>
+                <product-set-select v-model="form.sets" :product="product" />
+
                 <validated-input
                   v-model="form.quantity_step"
                   rules="required"
@@ -222,8 +207,6 @@
     "form": {
       "public": "Widoczność produktu",
       "price": "Cena",
-      "sets": "Kolekcje",
-      "setsPlaceholder": "Wybierz kolekcje",
       "quantityStep": "Format ilości",
       "shortDescription": "Krótki opis",
       "order": "Priorytet sortowania",
@@ -246,8 +229,6 @@
     "form": {
       "public": "Product visibility",
       "price": "Price",
-      "sets": "Sets",
-      "setsPlaceholder": "Select sets",
       "quantityStep": "Quantity format",
       "shortDescription": "Short description",
       "order": "Sort priority",
@@ -269,7 +250,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { ValidationProvider, ValidationObserver } from 'vee-validate'
+import { ValidationObserver } from 'vee-validate'
 import cloneDeep from 'lodash/cloneDeep'
 
 import TopNav from '@/components/layout/TopNav.vue'
@@ -285,6 +266,9 @@ import SwitchInput from '@/components/form/SwitchInput.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 import Textarea from '@/components/form/Textarea.vue'
 import AttributesConfigurator from '@/components/modules/attributes/configurator/Configurator.vue'
+import WarehouseItemsConfigurator from '@/components/modules/products/WarehouseItemsConfigurator.vue'
+import GoogleCategorySelect from '@/components/modules/products/GoogleCategorySelect.vue'
+import ProductSetSelect from '@/components/modules/products/ProductSetSelect.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { generateSlug } from '@/utils/generateSlug'
@@ -292,9 +276,6 @@ import { updateProductAttributeOptions } from '@/services/updateProductAttribute
 
 import { UUID } from '@/interfaces/UUID'
 import { Product, ProductDTO, ProductComponentForm } from '@/interfaces/Product'
-import { ProductSet } from '@/interfaces/ProductSet'
-import WarehouseItemsConfigurator from '@/components/modules/products/WarehouseItemsConfigurator.vue'
-import GoogleCategorySelect from '@/components/modules/products/GoogleCategorySelect.vue'
 
 const EMPTY_FORM: ProductComponentForm = {
   id: '',
@@ -328,7 +309,6 @@ export default Vue.extend({
     Gallery,
     Card,
     PopConfirm,
-    ValidationProvider,
     ValidationObserver,
     SchemaConfigurator,
     RichEditor,
@@ -341,6 +321,7 @@ export default Vue.extend({
     AttributesConfigurator,
     WarehouseItemsConfigurator,
     GoogleCategorySelect,
+    ProductSetSelect,
   },
   data: () => ({
     form: cloneDeep(EMPTY_FORM),
@@ -357,9 +338,6 @@ export default Vue.extend({
     },
     product(): Product {
       return this.$accessor.products.getSelected
-    },
-    productSets(): ProductSet[] {
-      return this.$accessor.productSets.getData
     },
     error(): any {
       // @ts-ignore // TODO: fix extended store getters typings
@@ -392,7 +370,6 @@ export default Vue.extend({
   },
   async created() {
     this.$accessor.startLoading()
-    this.$accessor.productSets.fetch({ tree: undefined })
     await this.fetch()
     this.$accessor.stopLoading()
   },

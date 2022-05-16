@@ -1,9 +1,11 @@
 <template>
   <validation-provider v-slot="{ errors }" :rules="rules" :name="name" class="select-wrapper">
     <app-select v-bind="$props" :data-cy="dataCy || name" :error="errors[0]" v-on="$listeners">
-      <a-select-option v-for="option in options" :key="option[optionKey]" :label="option.name">
-        {{ option.name }}
-      </a-select-option>
+      <slot>
+        <a-select-option v-for="option in options" :key="option[optionKey]" :label="option.name">
+          {{ option.name }}
+        </a-select-option>
+      </slot>
     </app-select>
   </validation-provider>
 </template>

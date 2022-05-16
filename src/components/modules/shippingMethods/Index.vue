@@ -253,7 +253,7 @@ export default Vue.extend({
       this.isShippingPointEditMode = false
       this.isShippingPointModalOpen = true
     },
-    edit({ point, index }: any) {
+    edit({ point, index }: { point: AddressDto; index: number }) {
       this.oldPointIndex = index
       this.editedPoint = { ...point }
       this.oldPointName = this.editedPoint.name

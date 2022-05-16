@@ -33,17 +33,6 @@
   </div>
 </template>
 
-<i18n>
-{
-  "pl": {
-    "name": "Nazwa"
-  },
-  "en": {
-    "name": "Name"
-  }
-}
-</i18n>
-
 <script lang="ts">
 import Vue from 'vue'
 import { AddressDto } from '@/interfaces/Address'
@@ -63,11 +52,13 @@ export default Vue.extend({
 .shipping-points-container {
   width: 100%;
 }
+
 .shipping-points {
   display: flex;
   flex-flow: wrap;
   padding: 0;
   width: 100%;
+
   &__point {
     display: flex;
     align-items: center;
@@ -78,12 +69,15 @@ export default Vue.extend({
     border: 1px solid #e8e8e8;
     border-radius: 2px;
   }
+
   &__name {
     font-weight: 600;
   }
+
   &__info {
     display: flex;
     flex-flow: column;
+
     span {
       font-size: 12px;
     }

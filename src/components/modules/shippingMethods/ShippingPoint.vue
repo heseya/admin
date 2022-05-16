@@ -9,7 +9,7 @@
             :label="$t('name')"
             :rules="{
               required: true,
-              'shipping-points-duplicates': [shippingPoints, oldName],
+              'shipping-points-duplicates': [otherPoints],
             }"
           />
           <validated-input
@@ -123,6 +123,9 @@ export default Vue.extend({
       set(v: AddressDto) {
         this.$emit('input', v)
       },
+    },
+    otherPoints(): AddressDto[] {
+      return this.shippingPoints.filter((point) => point.name === this.oldName)
     },
   },
   methods: {

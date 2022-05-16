@@ -8,6 +8,11 @@ body {
   margin: 0;
 }
 
+*::selection {
+  background-color: $primary-color-300 !important;
+  color: #fff !important;
+}
+
 .uppercase {
   text-transform: uppercase;
   letter-spacing: 1px;

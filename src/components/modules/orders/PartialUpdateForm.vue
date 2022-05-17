@@ -31,10 +31,13 @@
           v-else-if="key === 'shipping_place' && shippingType === ShippingType.PointExternal"
           v-model="form[key]"
           name="shipping_place"
-          :label="$t('pointExternalId')"
           rules="required"
-        />
-
+        >
+          <template #label>
+            {{ $t('pointExternalId') }}
+            <info-tooltip> {{ $t('pointExternalInfo') }}</info-tooltip>
+          </template>
+        </validated-input>
         <address-form
           v-else-if="key === 'shipping_place' || key === 'billing_address'"
           v-model="form[key]"
@@ -51,13 +54,15 @@
     "email": "Adres e-mail",
     "comment": "Komentarz do zamówienia",
     "choosePoint":"Wybierz punkt",
-    "pointExternalId": "Zewnętrzny identyfikator punktu"
+    "pointExternalId": "Zewnętrzny identyfikator punktu",
+    "pointExternalInfo": "Zewnętrzny identyfikator punktu może być używany przez integracje do nadawania paczek"
   },
   "en": {
     "email": "Email address",
     "comment": "Order comment",
     "choosePoint":"Choose point",
-    "pointExternalId": "External point ID"
+    "pointExternalId": "External point ID",
+    "pointExternalInfo": "External point ID can be used by integration to send parcels"
   }
 }
 </i18n>

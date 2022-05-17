@@ -17,13 +17,17 @@
       <field :label="$t('summary.shipping')" horizontal>
         {{ formatCurrency(order.shipping_price_initial) }}
       </field>
-      <field v-if="order.coupons && order.coupons.length" :label="$t('summary.coupons')" horizontal>
+      <field
+        v-if="order.discounts && order.discounts.length"
+        :label="$t('summary.coupons')"
+        horizontal
+      >
         <div class="discount-summary">
           <span class="discount-summary__total">
             {{ formatCurrency(-totalDiscount) }}
           </span>
           <info-tooltip>
-            <OrderDiscountSummary :discounts="order.coupons" />
+            <OrderDiscountSummary :discounts="order.discounts" />
           </info-tooltip>
         </div>
       </field>
@@ -98,7 +102,7 @@ export default Vue.extend({
   },
   computed: {
     totalDiscount(): number {
-      return this.order.coupons
+      return this.order.discounts
         .map((d) => d.applied_discount)
         .reduce((sum, discount) => sum + discount, 0)
     },

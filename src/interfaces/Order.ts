@@ -29,9 +29,9 @@ export interface Order {
   created_at: string
   currency: string
   shipping_place: AddressDto | string
-  coupons: OrderDiscount[]
+  discounts: OrderDiscount[]
   email: string
-  billing_address: AddressDto
+  billing_address: AddressDto | null
   payable: boolean
   paid: boolean
   payments: Payment[]

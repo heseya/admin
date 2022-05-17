@@ -2,12 +2,25 @@
   <card class="order-summary">
     <OrderField :label="$t('labels.code')" :value="order.code" :horizontal="isHorizontal" />
     <OrderField :label="$t('labels.date')" :value="formattedDate" :horizontal="isHorizontal" />
-    <EditableOrderField
+    <OrderField
       :label="$t('labels.shipping')"
       :value="order.shipping_method && order.shipping_method.name"
       :horizontal="isHorizontal"
-      @edit="editShipppingMethod"
-    />
+    >
+      <template #labelSuffix>
+        <icon-button
+          v-can="$p.Orders.Edit"
+          size="small"
+          type="transparent"
+          class="order-summary__edit-btn"
+          @click="editShipppingMethod"
+        >
+          <template #icon>
+            <i class="bx bxs-pencil"></i>
+          </template>
+        </icon-button>
+      </template>
+    </OrderField>
     <OrderField
       :label="$t('labels.payment')"
       class="order-summary__payment"
@@ -91,7 +104,6 @@ import Card from '@/components/layout/Card.vue'
 import SummaryPayment from './SummaryPayment.vue'
 import OrderField from './Field.vue'
 import CmsTable from '@/components/cms/CmsTable.vue'
-import EditableOrderField from './EditableField.vue'
 import ShippingMethodForm from './ShippingMethodForm.vue'
 
 import { Order } from '@/interfaces/Order'
@@ -107,7 +119,6 @@ export default Vue.extend({
     SummaryPayment,
     CmsTable,
     ShippingMethodForm,
-    EditableOrderField,
   },
   props: {
     order: {
@@ -182,6 +193,13 @@ export default Vue.extend({
   justify-content: space-between;
   flex-direction: column;
   white-space: nowrap;
+
+  &__edit-btn {
+    @media ($viewport-8) {
+      position: absolute;
+      right: -14px;
+    }
+  }
 
   @media ($viewport-8) {
     justify-content: space-between;

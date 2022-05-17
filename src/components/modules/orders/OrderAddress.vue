@@ -59,9 +59,11 @@ export default Vue.extend({
       default: () => {},
     } as Vue.PropOptions<Order>,
   },
-  data: () => ({
-    ShippingType,
-  }),
+  computed: {
+    ShippingType(): typeof ShippingType {
+      return ShippingType
+    },
+  },
 })
 </script>
 

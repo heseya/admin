@@ -112,6 +112,18 @@ import { Order } from '@/interfaces/Order'
 import { ShippingType } from '@/interfaces/ShippingMethod'
 import { AddressDto } from '@/interfaces/Address'
 import { DEFAULT_ADDRESS_FORM } from '@/consts/addressConsts'
+import { UUID } from '@/interfaces/UUID'
+
+interface OrderUpdate {
+  comment?: string
+  email?: string
+  // eslint-disable-next-line camelcase
+  shipping_method_id?: UUID
+  // eslint-disable-next-line camelcase
+  shipping_place?: AddressDto | string
+  // eslint-disable-next-line camelcase
+  billing_address?: AddressDto | null
+}
 
 export default Vue.extend({
   components: { Field, EditableOrderAddress, PartialUpdateForm, ModalForm, IconButton },
@@ -122,11 +134,15 @@ export default Vue.extend({
     } as Vue.PropOptions<Order>,
   },
   data: () => ({
-    ShippingType,
     isEditModalActive: false,
     modalFormTitle: '',
-    form: {},
+    form: {} as OrderUpdate,
   }),
+  computed: {
+    ShippingType(): typeof ShippingType {
+      return ShippingType
+    },
+  },
   methods: {
     editComment() {
       this.isEditModalActive = true

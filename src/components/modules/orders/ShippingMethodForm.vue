@@ -28,9 +28,13 @@
         v-else-if="shippingType === ShippingType.PointExternal"
         v-model="form.shipping_place"
         name="shipping_place"
-        :label="$t('externalPointId')"
         rules="required"
-      />
+      >
+        <template #label>
+          {{ $t('pointExternalId') }}
+          <info-tooltip> {{ $t('pointExternalInfo') }}</info-tooltip>
+        </template>
+      </validated-input>
       <div class="center">
         <app-button type="primary" @click="handleSubmit(changeShippingMethod)">
           {{ $t('common.save') }}
@@ -45,14 +49,17 @@
   "en": {
     "method": "Shipping method",
     "changeSuccess": "Changed shipping method",
-    "externalPointId": "External point ID",
-    "shippingPoint": "Shipping Point"
+    "pointExternalId": "External point ID",
+    "shippingPoint": "Shipping Point",
+    "pointExternalInfo": "External point ID can be used by integration to send parcels"
   },
   "pl": {
     "method": "Metoda dostawy",
     "changeSuccess": "Zmieniono metodę dostawy",
-    "externalPointId": "Identyfikator zewnętrznego punktu",
-    "shippingPoint": "Punkt dostawy"
+    "pointExternalId": "Zewnętrzny identyfikator punktu",
+    "shippingPoint": "Punkt dostawy",
+    "pointExternalInfo": "Zewnętrzny identyfikator punktu może być używany przez integracje do nadawania paczek"
+
   }
 }
 </i18n>

@@ -284,6 +284,15 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/settings/payment-methods',
+      name: 'Payment methods',
+      component: () => import('./views/settings/PaymentMethods.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.PaymentMethods.Show],
+      },
+    },
+    {
       path: '/settings/tags',
       name: 'Tags',
       component: () => import('./views/settings/Tags.vue'),

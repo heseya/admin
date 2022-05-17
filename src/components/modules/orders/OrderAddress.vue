@@ -56,7 +56,7 @@ export default Vue.extend({
     } as Vue.PropOptions<Address>,
     order: {
       type: Object,
-      default: () => {},
+      required: true,
     } as Vue.PropOptions<Order>,
   },
   computed: {

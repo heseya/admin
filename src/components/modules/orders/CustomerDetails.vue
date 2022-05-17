@@ -31,6 +31,7 @@
       <EditableOrderAddress
         :title="$t('invoiceAddressSection')"
         :address="order.billing_address"
+        :order="order"
         @edit="editBillingAddress"
         @remove="removeInvoiceAddress"
       />

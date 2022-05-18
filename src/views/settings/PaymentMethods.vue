@@ -4,6 +4,12 @@
       <template #default="{ item: paymentMethod }">
         <list-item :key="paymentMethod.id" @click="openModal(paymentMethod.id)">
           {{ paymentMethod.name }}
+          <template #action>
+            <boolean-tag
+              :value="paymentMethod.public"
+              :true-text="$t('common.visible')"
+              :false-text="$t('common.hidden')"
+          /></template>
         </list-item>
       </template>
     </PaginatedList>
@@ -58,7 +64,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { clone } from 'lodash'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ListItem from '@/components/layout/ListItem.vue'
@@ -77,7 +82,7 @@ export default Vue.extend({
 
   methods: {
     openModal(id: UUID) {
-      this.selectedMethod = clone(this.$accessor.paymentMethods.getFromListById(id))
+      this.selectedMethod = this.$accessor.paymentMethods.getFromListById(id)
     },
   },
 })

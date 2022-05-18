@@ -18,6 +18,8 @@
     "false": "Fałsz",
     "edit": "Edytuj",
     "continue": "Kontynuuj",
+    "visible": "Widoczny",
+    "hidden": "Ukryty",
     "form": {
       "name": "Nazwa",
       "description": "Opis",

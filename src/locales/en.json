@@ -18,6 +18,8 @@
     "false": "False",
     "edit": "Edit",
     "continue": "Continue",
+    "visible": "Visible",
+    "hidden": "Hidden",
     "form": {
       "name": "Name",
       "description": "Description",

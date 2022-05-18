@@ -6,8 +6,21 @@
       :label="$t('labels.shipping')"
       :value="order.shipping_method && order.shipping_method.name"
       :horizontal="isHorizontal"
-    />
-
+    >
+      <template #labelSuffix>
+        <icon-button
+          v-can="$p.Orders.Edit"
+          size="small"
+          type="transparent"
+          class="order-summary__edit-btn"
+          @click="editShipppingMethod"
+        >
+          <template #icon>
+            <i class="bx bxs-pencil"></i>
+          </template>
+        </icon-button>
+      </template>
+    </OrderField>
     <OrderField
       :label="$t('labels.payment')"
       class="order-summary__payment"
@@ -34,6 +47,14 @@
     >
       <cms-table :value="order.payments" :config="paymentsTableConfig" no-hover />
     </a-modal>
+    <a-modal
+      v-model="isEditModalActive"
+      width="750px"
+      :footer="null"
+      :title="`${$t('labels.editShippingMethod')}`"
+    >
+      <ShippingMethodForm v-if="isEditModalActive" :order="order" />
+    </a-modal>
   </card>
 </template>
 
@@ -45,7 +66,8 @@
       "date": "Order date",
       "shipping": "Shipping method",
       "payment": "Payment",
-      "history": "Payment history"
+      "history": "Payment history",
+      "editShippingMethod":"Edit shipping method"
     },
     "table": {
       "date": "Date of transaction",
@@ -61,7 +83,8 @@
       "date": "Data zamówienia",
       "shipping": "Metoda dostawy",
       "payment": "Płatność",
-      "history": "Historia płatności"
+      "history": "Historia płatności",
+      "editShippingMethod":"Edytuj metodę dostawy"
     },
     "table": {
       "date": "Data transakcji",
@@ -81,6 +104,7 @@ import Card from '@/components/layout/Card.vue'
 import SummaryPayment from './SummaryPayment.vue'
 import OrderField from './Field.vue'
 import CmsTable from '@/components/cms/CmsTable.vue'
+import ShippingMethodForm from './ShippingMethodForm.vue'
 
 import { Order } from '@/interfaces/Order'
 import { formatDate } from '@/utils/dates'
@@ -89,7 +113,13 @@ import { PAYMENT_METHODS } from '@/consts/paymentMethods'
 import { formatCurrency } from '@/utils/currency'
 
 export default Vue.extend({
-  components: { Card, OrderField, SummaryPayment, CmsTable },
+  components: {
+    Card,
+    OrderField,
+    SummaryPayment,
+    CmsTable,
+    ShippingMethodForm,
+  },
   props: {
     order: {
       type: Object,
@@ -99,6 +129,7 @@ export default Vue.extend({
   data: () => ({
     viewportWidth: window.innerWidth,
     isPaymentHistoryVisible: false,
+    isEditModalActive: false,
   }),
   computed: {
     formattedDate(): string | null {
@@ -149,6 +180,9 @@ export default Vue.extend({
     closePaymentHistory() {
       this.isPaymentHistoryVisible = false
     },
+    editShipppingMethod() {
+      this.isEditModalActive = true
+    },
   },
 })
 </script>
@@ -159,6 +193,13 @@ export default Vue.extend({
   justify-content: space-between;
   flex-direction: column;
   white-space: nowrap;
+
+  &__edit-btn {
+    @media ($viewport-8) {
+      position: absolute;
+      right: -14px;
+    }
+  }
 
   @media ($viewport-8) {
     justify-content: space-between;

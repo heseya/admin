@@ -6,7 +6,7 @@
         :filters="filters"
         @clear-filters="$emit('clear-filters')"
       />
-      <div class="cms-filters__content">
+      <div ref="filters" class="cms-filters__content">
         <slot></slot>
       </div>
 
@@ -50,11 +50,33 @@ export default Vue.extend({
   data: () => ({
     isExpanded: false,
     isModalOpen: false,
+    isMounted: false,
+    filtersHeight: 0,
   }),
   computed: {
     isExpandable(): boolean {
-      // TODO: add logic to determine if filters are expandable
+      if (this.isMounted) {
+        // @ts-ignore
+        return this.$refs.filters.clientHeight < this.filtersHeight
+      }
       return false
+    },
+  },
+  watch: {
+    isExpandable() {
+      if (!this.isExpandable && this.isExpanded) this.isExpanded = false
+    },
+  },
+  mounted() {
+    this.isMounted = true
+    this.onResize()
+    window.addEventListener('resize', this.onResize)
+  },
+
+  methods: {
+    onResize() {
+      // @ts-ignore
+      this.filtersHeight = this.$refs.filters?.children[0].clientHeight
     },
   },
 })

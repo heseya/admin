@@ -8,30 +8,29 @@
             name="name"
             :label="$t('name')"
             :rules="{
-              required: validate,
-              'shipping-points-duplicates': [shippingPoints],
+              required: true,
+              'shipping-points-duplicates': [otherPoints],
             }"
           />
-          <validated-input v-model="form.phone" name="phone" :label="$t('phone')" />
-        </div>
-        <div class="address-form__row">
-          <validated-input v-model="form.vat" name="vat" :label="$t('vat')" />
-          <validated-input v-model="form.address" name="address" :label="$t('address')" />
-        </div>
-
-        <div class="address-form__row">
-          <validated-input v-model="form.zip" name="zip" :label="$t('zip')" />
           <validated-input
-            v-model="form.city"
-            name="city"
-            :label="$t('city')"
-            :rules="{
-              required: validate,
-            }"
+            v-model="form.phone"
+            name="phone"
+            :label="$t('phone')"
+            rules="required"
           />
         </div>
+        <div class="address-form__row">
+          <validated-input
+            v-model="form.address"
+            name="address"
+            :label="$t('address')"
+            rules="required"
+          />
+          <validated-input v-model="form.zip" name="zip" :label="$t('zip')" rules="required" />
+        </div>
 
-        <div class="address-form__select">
+        <div class="address-form__row">
+          <validated-input v-model="form.city" name="city" :label="$t('city')" rules="required" />
           <app-select
             v-model="form.country"
             :label="$t('country')"
@@ -43,8 +42,9 @@
             </a-select-option>
           </app-select>
         </div>
+
         <app-button html-type="submit">
-          {{ $t('addPoint') }}
+          {{ editMode ? $t('editPoint') : $t('addPoint') }}
         </app-button>
       </form>
     </validation-observer>
@@ -62,7 +62,9 @@
     "phone": "Telefon",
     "vat": "NIP",
     "addPoint":"Dodaj",
-    "successMessage": "Dodano nowy punkt dostawy"
+    "editPoint": "Edytuj",
+    "successMessageAdded": "Dodano nowy punkt dostawy",
+    "successMessageEdited": "Edytowano punkt dostawy"
   },
   "en": {
     "name": "Name",
@@ -73,7 +75,9 @@
     "phone": "Phone",
     "vat": "VAT",
     "addPoint":"Add",
-    "successMessage": "Added new shipping point"
+    "editPoint": "Edit",
+    "successMessageAdded": "Added new shipping point",
+    "successMessageEdited": "Edited shipping point"
   }
 }
 </i18n>
@@ -84,21 +88,16 @@ import { ValidationObserver } from 'vee-validate'
 
 import { AddressDto } from '@/interfaces/Address'
 import { ShippingMethodCountry } from '@/interfaces/ShippingMethod'
-
-export const CLEAR_POINT_FORM: AddressDto = {
-  name: '',
-  address: '',
-  vat: '',
-  zip: '',
-  city: '',
-  country: '',
-  phone: '',
-}
+import { DEFAULT_ADDRESS_FORM } from '@/consts/addressConsts'
 
 export default Vue.extend({
   name: 'AddressForm',
   components: { ValidationObserver },
   props: {
+    value: {
+      type: Object,
+      required: true,
+    } as Vue.PropOptions<AddressDto>,
     countries: {
       type: Array,
       required: true,
@@ -107,23 +106,42 @@ export default Vue.extend({
       type: Array,
       required: true,
     } as Vue.PropOptions<AddressDto[]>,
-    validate: {
+    editMode: {
       type: Boolean,
       required: true,
     } as Vue.PropOptions<boolean>,
+    oldName: {
+      type: String,
+      default: '',
+    } as Vue.PropOptions<String>,
   },
-  data: () => ({
-    form: { ...CLEAR_POINT_FORM },
-  }),
+  computed: {
+    form: {
+      get(): AddressDto {
+        return this.value
+      },
+      set(v: AddressDto) {
+        this.$emit('input', v)
+      },
+    },
+    otherPoints(): AddressDto[] {
+      return this.shippingPoints.filter((point) => point.name === this.oldName)
+    },
+  },
   methods: {
     reset() {
-      this.form = { ...CLEAR_POINT_FORM }
+      this.form = { ...DEFAULT_ADDRESS_FORM }
       // @ts-ignore
       this.$refs.observer.reset()
     },
     addPoint() {
-      this.$emit('added', this.form)
-      this.$toast.success(this.$t('successMessage') as string)
+      if (this.editMode) {
+        this.$emit('edited', this.form)
+        this.$toast.success(this.$t('successMessageEdited') as string)
+      } else {
+        this.$emit('added', this.form)
+        this.$toast.success(this.$t('successMessageAdded') as string)
+      }
       this.reset()
     },
   },

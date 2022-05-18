@@ -176,7 +176,7 @@ extend('block-if-error', {
 extend('shipping-points-duplicates', {
   params: ['existingPoints'],
   message: () => i18n.t('validation.shippingPointsDuplicates') as string,
-  validate: (shippingPoint, { existingPoints }: Record<string, any>) => {
-    return !existingPoints.some((point: AddressDto) => point.name === shippingPoint)
+  validate: (newName, { existingPoints }: Record<string, any>) => {
+    return !existingPoints.some((point: AddressDto) => point.name === newName)
   },
 })

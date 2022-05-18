@@ -50,7 +50,6 @@ export default Vue.extend({
   data: () => ({
     isExpanded: false,
     isModalOpen: false,
-    isMounted: false,
     isExpandable: false,
   }),
   watch: {
@@ -59,7 +58,6 @@ export default Vue.extend({
     },
   },
   mounted() {
-    this.isMounted = true
     this.onResize()
     window.addEventListener('resize', this.onResize)
   },

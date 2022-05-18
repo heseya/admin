@@ -6,7 +6,7 @@
         :filters="filters"
         @clear-filters="$emit('clear-filters')"
       />
-      <div class="cms-filters__content">
+      <div ref="filters" class="cms-filters__content">
         <slot></slot>
       </div>
 
@@ -50,11 +50,26 @@ export default Vue.extend({
   data: () => ({
     isExpanded: false,
     isModalOpen: false,
+    isExpandable: false,
   }),
-  computed: {
-    isExpandable(): boolean {
-      // TODO: add logic to determine if filters are expandable
-      return false
+  watch: {
+    isExpandable() {
+      if (!this.isExpandable && this.isExpanded) this.isExpanded = false
+    },
+  },
+  mounted() {
+    this.onResize()
+    window.addEventListener('resize', this.onResize)
+  },
+  destroyed() {
+    window.removeEventListener('resize', this.onResize)
+  },
+  methods: {
+    onResize() {
+      // @ts-ignore
+      if (this.$refs.filters.scrollHeight > this.$refs.filters.offsetHeight)
+        this.isExpandable = true
+      else this.isExpandable = false
     },
   },
 })
@@ -80,7 +95,7 @@ export default Vue.extend({
   &__content {
     position: static;
     padding-top: 8px;
-    max-height: 64px;
+    max-height: 68px;
     overflow: hidden;
     transition: 0.3s;
 

@@ -42,7 +42,7 @@
           url="/schemas"
         />
 
-        <h2 v-can.any="[$p.Statuses.Show] || $p.PaymentMethods.Show" class="section-title">
+        <h2 v-can.any="([$p.Statuses.Show], $p.PaymentMethods.Show)" class="section-title">
           {{ $t('models.orders') }}
         </h2>
         <SettingsItem

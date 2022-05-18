@@ -8,7 +8,14 @@
       </template>
     </PaginatedList>
 
-    <a-modal v-model="isModalActive" width="550px" :title="$t('methodDetails')">
+    <a-modal
+      v-if="selectedMethod"
+      :visible="Boolean(selectedMethod)"
+      width="550px"
+      :title="$t('methodDetails')"
+      :footer="null"
+      @cancel="selectedMethod = null"
+    >
       <div class="payment-method-details">
         <label>{{ $t('common.form.name') }}:</label>
         <span>{{ selectedMethod.name }}</span>
@@ -19,11 +26,9 @@
         <label>{{ $t('method.url') }}:</label>
         <span>{{ selectedMethod.url || $t('common.none') }}</span>
 
-        <label>{{ $t('method.public') }}:</label>
-        <span>{{ isPublic }}</span>
+        <label>{{ $t('method.public') }} :</label>
+        <boolean-tag :value="selectedMethod.public" class="payment-method-details__public" />
       </div>
-
-      <template #footer></template>
     </a-modal>
   </div>
 </template>
@@ -53,21 +58,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { LocaleMessage } from 'vue-i18n'
 import { clone } from 'lodash'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 
 import { UUID } from '@/interfaces/UUID'
-import { PaymentMethodDto } from '@/interfaces/PaymentMethod'
-
-const CLEAR_PAYMENT_METHOD: PaymentMethodDto = {
-  name: '',
-  icon: '',
-  public: false,
-  url: '',
-}
+import { PaymentMethod } from '@/interfaces/PaymentMethod'
 
 export default Vue.extend({
   components: {
@@ -75,17 +72,11 @@ export default Vue.extend({
     ListItem,
   },
   data: () => ({
-    isModalActive: false,
-    selectedMethod: clone(CLEAR_PAYMENT_METHOD) as PaymentMethodDto,
+    selectedMethod: null as PaymentMethod | null,
   }),
-  computed: {
-    isPublic(): LocaleMessage {
-      return this.selectedMethod.public ? this.$t('common.yes') : this.$t('common.no')
-    },
-  },
+
   methods: {
     openModal(id: UUID) {
-      this.isModalActive = true
       this.selectedMethod = clone(this.$accessor.paymentMethods.getFromListById(id))
     },
   },
@@ -96,6 +87,12 @@ export default Vue.extend({
 .payment-method-details {
   display: flex;
   flex-direction: column;
+
+  &__public {
+    margin-top: 6px;
+    width: 65px;
+  }
+
   label {
     font-size: 0.8em;
     color: $gray-color-500;

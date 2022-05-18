@@ -1,14 +1,6 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList :title="$t('title')" store-key="paymentMethods" draggable>
-      <template #nav>
-        <icon-button v-can="$p.PaymentMethods.Add" @click="openModal()">
-          <template #icon>
-            <i class="bx bx-plus"></i>
-          </template>
-          {{ $t('add') }}
-        </icon-button>
-      </template>
+    <PaginatedList :title="$t('title')" store-key="paymentMethods">
       <template #default="{ item: paymentMethod }">
         <list-item :key="paymentMethod.id" @click="openModal(paymentMethod.id)">
           {{ paymentMethod.name }}
@@ -16,60 +8,23 @@
       </template>
     </PaginatedList>
 
-    <validation-observer v-slot="{ handleSubmit }">
-      <a-modal
-        v-model="isModalActive"
-        width="550px"
-        :title="editedItem.id ? $t('editTitle') : $t('newTitle')"
-      >
-        <modal-form>
-          <validated-input
-            v-model="editedItem.name"
-            :disabled="!canModify"
-            rules="required"
-            :label="$t('common.form.name')"
-          />
+    <a-modal v-model="isModalActive" width="550px" :title="$t('methodDetails')">
+      <div class="payment-method-details">
+        <label>{{ $t('common.form.name') }}:</label>
+        <span>{{ selectedMethod.name }}</span>
 
-          <validated-input
-            v-model="editedItem.icon"
-            :disabled="!canModify"
-            rules="required"
-            :label="$t('form.icon')"
-          />
+        <label>{{ $t('method.icon') }}:</label>
+        <span>{{ selectedMethod.icon }}</span>
 
-          <validated-input
-            v-model="editedItem.url"
-            :disabled="!canModify"
-            rules="required"
-            :label="$t('form.url')"
-          />
-          <br />
+        <label>{{ $t('method.url') }}:</label>
+        <span>{{ selectedMethod.url || $t('common.none') }}</span>
 
-          <SwitchInput
-            v-model="editedItem.public"
-            :disabled="!canModify"
-            horizontal
-            :label="$t('form.public')"
-          />
-        </modal-form>
-        <template #footer>
-          <div class="row">
-            <app-button v-if="canModify" @click="handleSubmit(saveModal)">
-              {{ $t('common.save') }}
-            </app-button>
-            <pop-confirm
-              v-can="$p.PaymentMethods.Remove"
-              :title="$t('deleteText')"
-              :ok-text="$t('common.delete')"
-              :cancel-text="$t('common.cancel')"
-              @confirm="deleteItem"
-            >
-              <app-button v-if="editedItem.id" type="danger">{{ $t('common.delete') }}</app-button>
-            </pop-confirm>
-          </div>
-        </template>
-      </a-modal>
-    </validation-observer>
+        <label>{{ $t('method.public') }}:</label>
+        <span>{{ isPublic }}</span>
+      </div>
+
+      <template #footer></template>
+    </a-modal>
   </div>
 </template>
 
@@ -77,36 +32,20 @@
 {
   "pl": {
     "title": "Metody płatności",
-    "add": "Dodaj metodę płatności",
-    "editTitle": "Edycja metody",
-    "newTitle": "Nowa metoda płatności",
-    "deleteText": "Czy na pewno chcesz usunąć tę metodę płatności?",
-    "form": {
+    "methodDetails": "Szczegóły metody płatności",
+    "method": {
       "icon":"Ikona",
       "url":"Url",
       "public":"Publiczna"
-    },
-    "alerts": {
-      "deleted": "Metoda płatności została usunięta.",
-      "created": "Metoda płatności została dodana.",
-      "updated": "Metoda płatności została zaktualizowana."
     }
   },
   "en": {
     "title": "Payment methods",
-    "add": "Add payment method",
-    "editTitle": "Edit payment method",
-    "newTitle": "New payment method",
-    "deleteText": "Are you sure you want to delete this payment method?",
-    "form": {
+    "methodDetails": "Payment method details",
+    "method": {
       "icon":"Icon",
       "url":"Url",
       "public":"Public"
-    },
-    "alerts": {
-      "deleted": "Payment method has been deleted.",
-      "created": "Payment method been added.",
-      "updated": "Payment method has been updated."
     }
   }
 }
@@ -114,17 +53,14 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { ValidationObserver } from 'vee-validate'
+import { LocaleMessage } from 'vue-i18n'
 import { clone } from 'lodash'
 
 import PaginatedList from '@/components/PaginatedList.vue'
-import ModalForm from '@/components/form/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
-import PopConfirm from '@/components/layout/PopConfirm.vue'
-import SwitchInput from '@/components/form/SwitchInput.vue'
 
 import { UUID } from '@/interfaces/UUID'
-import { PaymentMethod, PaymentMethodDto } from '@/interfaces/PaymentMethod'
+import { PaymentMethodDto } from '@/interfaces/PaymentMethod'
 
 const CLEAR_PAYMENT_METHOD: PaymentMethodDto = {
   name: '',
@@ -137,56 +73,34 @@ export default Vue.extend({
   components: {
     PaginatedList,
     ListItem,
-    ModalForm,
-    PopConfirm,
-    ValidationObserver,
-    SwitchInput,
   },
   data: () => ({
     isModalActive: false,
-    editedItem: clone(CLEAR_PAYMENT_METHOD) as PaymentMethodDto & { id?: string },
-    selectedItem: null as PaymentMethod | null,
+    selectedMethod: clone(CLEAR_PAYMENT_METHOD) as PaymentMethodDto,
   }),
   computed: {
-    canModify(): boolean {
-      return this.$can(
-        this.editedItem.id ? this.$p.PaymentMethods.Edit : this.$p.PaymentMethods.Add,
-      )
+    isPublic(): LocaleMessage {
+      return this.selectedMethod.public ? this.$t('common.yes') : this.$t('common.no')
     },
   },
   methods: {
-    openModal(id?: UUID) {
+    openModal(id: UUID) {
       this.isModalActive = true
-      if (id) {
-        this.editedItem = clone(this.$accessor.paymentMethods.getFromListById(id))
-        this.selectedItem = this.$accessor.paymentMethods.getFromListById(id)
-      } else {
-        this.editedItem = clone(CLEAR_PAYMENT_METHOD)
-      }
-    },
-    async saveModal() {
-      this.$accessor.startLoading()
-      if (this.editedItem.id) {
-        const success = await this.$accessor.paymentMethods.update({
-          id: this.editedItem.id,
-          item: this.editedItem,
-        })
-        if (success) this.$toast.success(this.$t('alerts.updated') as string)
-      } else {
-        const success = await this.$accessor.paymentMethods.add(this.editedItem)
-        if (success) this.$toast.success(this.$t('alerts.created') as string)
-      }
-      this.$accessor.stopLoading()
-      this.isModalActive = false
-    },
-    async deleteItem() {
-      this.$accessor.startLoading()
-      const success = await this.$accessor.paymentMethods.remove(this.editedItem.id!)
-
-      if (success) this.$toast.success(this.$t('alerts.deleted') as string)
-      this.$accessor.stopLoading()
-      this.isModalActive = false
+      this.selectedMethod = clone(this.$accessor.paymentMethods.getFromListById(id))
     },
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.payment-method-details {
+  display: flex;
+  flex-direction: column;
+  label {
+    font-size: 0.8em;
+    color: $gray-color-500;
+    margin-top: 4px;
+    margin-bottom: -4px;
+  }
+}
+</style>

@@ -51,17 +51,8 @@ export default Vue.extend({
     isExpanded: false,
     isModalOpen: false,
     isMounted: false,
-    filtersHeight: 0,
+    isExpandable: false,
   }),
-  computed: {
-    isExpandable(): boolean {
-      if (this.isMounted) {
-        // @ts-ignore
-        return this.$refs.filters.clientHeight < this.filtersHeight
-      }
-      return false
-    },
-  },
   watch: {
     isExpandable() {
       if (!this.isExpandable && this.isExpanded) this.isExpanded = false
@@ -72,11 +63,15 @@ export default Vue.extend({
     this.onResize()
     window.addEventListener('resize', this.onResize)
   },
-
+  destroyed() {
+    window.removeEventListener('resize', this.onResize)
+  },
   methods: {
     onResize() {
       // @ts-ignore
-      this.filtersHeight = this.$refs.filters?.children[0].clientHeight
+      if (this.$refs.filters.scrollHeight > this.$refs.filters.offsetHeight)
+        this.isExpandable = true
+      else this.isExpandable = false
     },
   },
 })
@@ -102,7 +97,7 @@ export default Vue.extend({
   &__content {
     position: static;
     padding-top: 8px;
-    max-height: 64px;
+    max-height: 68px;
     overflow: hidden;
     transition: 0.3s;
 

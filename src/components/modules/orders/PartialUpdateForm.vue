@@ -93,9 +93,6 @@ export default Vue.extend({
       default: () => null,
     } as Vue.PropOptions<ShippingType>,
   },
-  data: () => ({
-    ShippingType,
-  }),
   computed: {
     form: {
       get(): Partial<Order> {
@@ -108,8 +105,11 @@ export default Vue.extend({
     formKeys(): string[] {
       return Object.keys(this.form)
     },
+    ShippingType(): typeof ShippingType {
+      return ShippingType
+    },
     shippingPoints(): AddressDto[] {
-      return this.shippingMethod.shipping_points as AddressDto[]
+      return this.shippingMethod.shipping_points
     },
   },
   methods: {

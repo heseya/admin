@@ -109,22 +109,10 @@ import PartialUpdateForm from './PartialUpdateForm.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import IconButton from '@/components/layout/IconButton.vue'
 
-import { Order } from '@/interfaces/Order'
+import { Order, OrderUpdate } from '@/interfaces/Order'
 import { ShippingType } from '@/interfaces/ShippingMethod'
 import { AddressDto } from '@/interfaces/Address'
 import { DEFAULT_ADDRESS_FORM } from '@/consts/addressConsts'
-import { UUID } from '@/interfaces/UUID'
-
-interface OrderUpdate {
-  comment?: string
-  email?: string
-  // eslint-disable-next-line camelcase
-  shipping_method_id?: UUID
-  // eslint-disable-next-line camelcase
-  shipping_place?: AddressDto | string
-  // eslint-disable-next-line camelcase
-  billing_address?: AddressDto | null
-}
 
 export default Vue.extend({
   components: { Field, EditableOrderAddress, PartialUpdateForm, ModalForm, IconButton },

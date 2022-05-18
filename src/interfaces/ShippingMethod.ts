@@ -42,13 +42,13 @@ export interface ShippingMethod {
   price_ranges: ShippingMethodPriceRange[]
   integration_key?: string
   app_id?: UUID
-  shipping_points?: AddressDto[]
+  shipping_points: AddressDto[]
 }
 
 export interface ShippingMethodDTO {
   id?: UUID
   name: string
-  shipping_type?: ShippingType
+  shipping_type: ShippingType
   payment_methods: UUID[]
   public: boolean
   block_list: boolean
@@ -58,5 +58,5 @@ export interface ShippingMethodDTO {
   price_ranges: ShippingMethodPriceRangeDTO[]
   integration_key?: string
   app_id?: UUID
-  shipping_points?: AddressDto[]
+  shipping_points: AddressDto[]
 }

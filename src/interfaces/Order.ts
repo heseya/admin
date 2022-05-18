@@ -72,3 +72,11 @@ export interface Order {
   metadata_private?: Metadata
   documents: OrderDocument[]
 }
+
+export interface OrderUpdate {
+  comment?: string
+  email?: string
+  shipping_method_id?: UUID
+  shipping_place?: AddressDto | string
+  billing_address?: AddressDto | null
+}

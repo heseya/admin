@@ -50,4 +50,5 @@ export interface WebHookEventObject {
   key: WebHookEvent
   name: string
   description: string
+  encrypted: boolean
 }

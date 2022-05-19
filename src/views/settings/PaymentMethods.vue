@@ -3,6 +3,12 @@
     <PaginatedList :title="$t('title')" store-key="paymentMethods">
       <template #default="{ item: paymentMethod }">
         <list-item :key="paymentMethod.id" @click="openModal(paymentMethod.id)">
+          <template #avatar>
+            <avatar color="#eee">
+              <img v-if="paymentMethod.icon" :src="paymentMethod.icon" />
+              <i v-else class="bx bx-image"></i>
+            </avatar>
+          </template>
           {{ paymentMethod.name }}
           <template #action>
             <boolean-tag
@@ -27,7 +33,10 @@
         <span>{{ selectedMethod.name }}</span>
 
         <label>{{ $t('method.icon') }}:</label>
-        <span>{{ selectedMethod.icon }}</span>
+        <avatar color="#eee" class="payment-method-details__icon">
+          <img v-if="selectedMethod.icon" :src="selectedMethod.icon" />
+          <i v-else class="bx bx-image"></i>
+        </avatar>
 
         <label>{{ $t('method.url') }}:</label>
         <span>{{ selectedMethod.url || $t('common.none') }}</span>
@@ -67,6 +76,7 @@ import Vue from 'vue'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ListItem from '@/components/layout/ListItem.vue'
+import Avatar from '@/components/layout/Avatar.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import { PaymentMethod } from '@/interfaces/PaymentMethod'
@@ -75,6 +85,7 @@ export default Vue.extend({
   components: {
     PaginatedList,
     ListItem,
+    Avatar,
   },
   data: () => ({
     selectedMethod: null as PaymentMethod | null,
@@ -93,8 +104,12 @@ export default Vue.extend({
   display: flex;
   flex-direction: column;
 
-  &__public {
+  &__public,
+  &__icon {
     margin-top: 6px;
+  }
+
+  &__public {
     width: 65px;
   }
 
@@ -103,6 +118,10 @@ export default Vue.extend({
     color: $gray-color-500;
     margin-top: 4px;
     margin-bottom: -4px;
+  }
+
+  :first-child {
+    margin-top: 0;
   }
 }
 </style>

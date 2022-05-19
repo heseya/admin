@@ -125,7 +125,7 @@ export default Vue.extend({
       },
     },
     otherPoints(): AddressDto[] {
-      return this.shippingPoints.filter((point) => point.name === this.oldName)
+      return this.shippingPoints.filter((point) => point.name !== this.oldName)
     },
   },
   methods: {

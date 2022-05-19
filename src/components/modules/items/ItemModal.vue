@@ -21,16 +21,46 @@
             rules="required"
             :label="$t('form.sku')"
           />
-          <validated-input
-            v-if="form.id"
-            v-model="form.quantity"
-            :disabled="disabled"
-            rules="required"
-            type="number"
-            :label="$t('form.quantity')"
-          />
+
+          <div class="warehouse-item-modal__row">
+            <validated-input
+              v-model="form.unlimited_stock_shipping_date"
+              :disabled="disabled"
+              type="date"
+              rules="required"
+            >
+              <template #label>
+                {{ $t('form.unlimited_stock_shipping_date') }}
+                <info-tooltip>
+                  {{ $t('form.unlimited_stock_shipping_date_tooltip') }}
+                </info-tooltip>
+              </template>
+            </validated-input>
+
+            <validated-input
+              v-model="form.unlimited_stock_shipping_time"
+              :disabled="disabled"
+              type="number"
+              rules="required|not-negative"
+            >
+              <template #label>
+                {{ $t('form.unlimited_stock_shipping_time') }}
+                <info-tooltip>
+                  {{ $t('form.unlimited_stock_shipping_time_tooltip') }}
+                </info-tooltip>
+              </template>
+            </validated-input>
+          </div>
+
+          <field v-if="item" :label="$t('form.quantity')">{{ item.quantity }}</field>
 
           <template v-if="item">
+            <hr />
+            <items-availibility :item="item" />
+          </template>
+
+          <template v-if="item">
+            <hr />
             <MetadataForm
               ref="publicMeta"
               :value="item.metadata"
@@ -76,7 +106,11 @@
     "deleteText": "Czy na pewno chcesz usunąć ten przedmiot?",
     "form": {
       "sku": "SKU",
-      "quantity": "Ilość w magazynie"
+      "quantity": "Łączna ilość w magazynie",
+      "unlimited_stock_shipping_time": "Czas wysyłki w nielimitowanej ilości",
+      "unlimited_stock_shipping_time_tooltip": "Oznacza czas wysyłki w dniach przedmiotów w nielimitowanej ilości. Oznacza to, że produkt będzie można kupić, nawet jeśli nie będzie dostępny na magazynie.",
+      "unlimited_stock_shipping_date": "Data wysyłki w nielimitowanej ilości",
+      "unlimited_stock_shipping_date_tooltip": "Oznacza, że wysyłka będzie realizowana po danej dacie. Przedmiot ma nielimitowany stan do podanej daty włącznie. Gdy ta data minie, produkt staje się niedostępny."
     },
     "alerts": {
       "deleted": "Przedmiot magazynowy został usunięty.",
@@ -90,7 +124,11 @@
     "deleteText": "Are you sure you want to delete this item?",
     "form": {
       "sku": "SKU",
-      "quantity": "Quantity in stock"
+      "quantity": "Total quantity in stock",
+      "unlimited_stock_shipping_time": "Unlimited stock shipping time",
+      "unlimited_stock_shipping_time_tooltip": "Indicates the time of shipping in days before the item is unavailable. This means that the item can be purchased even if it is not available in stock.",
+      "unlimited_stock_shipping_date": "Unlimited stock shipping date",
+      "unlimited_stock_shipping_date_tooltip": "Indicates that the shipping will be carried out on the given date. The item will be unavailable until that date. When that date is reached, the item will be unavailable."
     },
     "alerts": {
       "deleted": "Item in warehouse has been deleted.",
@@ -104,15 +142,19 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
+
 import { WarehouseItem, WarehouseItemCreateDto } from '@/interfaces/WarehouseItem'
+
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
+import Field from '@/components/Field.vue'
+import ItemsAvailibility from './ItemsAvailibility.vue'
 
 type Form = WarehouseItemCreateDto & Partial<WarehouseItem>
 
 export default Vue.extend({
-  components: { ValidationObserver, ModalForm, PopConfirm, MetadataForm },
+  components: { ValidationObserver, ModalForm, PopConfirm, MetadataForm, Field, ItemsAvailibility },
   props: {
     item: { type: Object, default: null } as Vue.PropOptions<WarehouseItem | null>,
     value: { type: Object, required: true } as Vue.PropOptions<Form>,
@@ -152,15 +194,6 @@ export default Vue.extend({
         // Metadata can be saved only after product is created
         await this.saveMetadata(this.form.id)
 
-        const quantityDiff = (this.form.quantity || 0) - this.item!.quantity
-        if (quantityDiff) {
-          // @ts-ignore // TODO: fix extended store actions typings
-          success = await this.$accessor.items.updateQuantity({
-            id: this.form.id,
-            deposit: { quantity: quantityDiff },
-          })
-        }
-
         success = !!(await this.$accessor.items.update({
           id: this.form.id,
           item: this.form,
@@ -187,3 +220,15 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.warehouse-item-modal {
+  &__row {
+    display: flex;
+
+    *:not(:last-of-type) {
+      margin-right: 8px;
+    }
+  }
+}
+</style>

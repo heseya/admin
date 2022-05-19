@@ -97,7 +97,7 @@ import Vue from 'vue'
 
 import { OrderProduct } from '@/interfaces/OrderProduct'
 import { formatCurrency } from '@/utils/currency'
-import Field from '../modules/orders/Field.vue'
+import Field from '../Field.vue'
 import InfoTooltip from './InfoTooltip.vue'
 import OrderDiscountSummary from '../modules/orders/OrderDiscountSummary.vue'
 

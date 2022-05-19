@@ -67,11 +67,11 @@ export interface WarehouseDeposit {
 export type WarehouseDepositDto =
   | {
       quantity: number
-      shipping_time: number
+      shipping_time?: number
     }
   | {
       quantity: number
-      shipping_date: string
+      shipping_date?: string
     }
 
 /**

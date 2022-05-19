@@ -42,12 +42,20 @@
           url="/schemas"
         />
 
-        <h2 v-can.any="[$p.Statuses.Show]" class="section-title">{{ $t('models.orders') }}</h2>
+        <h2 v-can.any="[$p.Statuses.Show, $p.PaymentMethods.Show]" class="section-title">
+          {{ $t('models.orders') }}
+        </h2>
         <SettingsItem
           v-can="$p.Statuses.Show"
           :name="$t('models.statuses')"
           icon="bx bxs-check-circle"
           url="/settings/statuses"
+        />
+        <SettingsItem
+          v-can="$p.PaymentMethods.Show"
+          :name="$t('items.payment_methods')"
+          icon="bx bxs-credit-card"
+          url="/settings/payment-methods"
         />
 
         <h2 v-can.any="[$p.ShippingMethods.Show, $p.Packages.Show]" class="section-title">
@@ -189,6 +197,7 @@
     "items": {
       "users": "Users list",
       "roles": "User roles",
+      "payment_methods": "Payment methods",
       "consents": "Marketing consents",
       "seo": "SEO settings",
       "advanced": "Advanced settings",
@@ -212,6 +221,7 @@
       "users": "Lista użytkowników",
       "roles": "Role użytkowników",
       "consents": "Zgody marketingowe",
+      "payment_methods": "Metody płatności",
       "seo": "Ustawienia SEO",
       "advanced": "Ustawienia zaawansowane",
       "lang_preferences": "Preferencje językowe",

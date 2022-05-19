@@ -89,7 +89,8 @@ import Vue from 'vue'
 import Empty from '@/components/layout/Empty.vue'
 import List from '@/components/layout/List.vue'
 import Selector from '@/components/Selector.vue'
-import { ProductInnerItem, ProductItem } from '@/interfaces/Product'
+import { ProductInnerItem } from '@/interfaces/Product'
+import { WarehouseItem } from '@/interfaces/WarehouseItem'
 import ListItem from '@/components/layout/ListItem.vue'
 import { UUID } from '@/interfaces/UUID'
 
@@ -116,7 +117,7 @@ export default Vue.extend({
     },
   },
   methods: {
-    addItem(item: ProductItem) {
+    addItem(item: WarehouseItem) {
       this.items.push({
         id: item.id,
         name: item.name,

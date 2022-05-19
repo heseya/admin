@@ -1,8 +1,19 @@
 import { createVuexCRUD } from './generator'
 import { api } from '../api'
-import { ProductItem, ProductItemDto } from '@/interfaces/Product'
 
-export const items = createVuexCRUD<ProductItem, ProductItemDto, ProductItemDto>()('items', {
+import {
+  WarehouseDeposit,
+  WarehouseDepositDto,
+  WarehouseItem,
+  WarehouseItemCreateDto,
+  WarehouseItemUpdateDto,
+} from '../interfaces/WarehouseItem'
+
+export const items = createVuexCRUD<
+  WarehouseItem,
+  WarehouseItemCreateDto,
+  WarehouseItemUpdateDto
+>()('items', {
   state: {
     depositError: null as Error | null,
   },
@@ -17,24 +28,31 @@ export const items = createVuexCRUD<ProductItem, ProductItemDto, ProductItemDto>
     },
   },
   actions: {
-    async updateQuantity({ commit }, { id, quantity }) {
+    async updateQuantity(
+      { commit },
+      { id, deposit }: { id: string; deposit: WarehouseDepositDto },
+    ): Promise<WarehouseDeposit | false> {
       commit('PRODUCTS_SET_DEPOSITS_ERROR', null)
       try {
-        const { data } = await api.post(`/items/id:${id}/deposits`, { quantity })
-        return data
+        const { data } = await api.post<{ data: WarehouseDeposit }>(
+          `/items/id:${id}/deposits`,
+          deposit,
+        )
+        return data.data
       } catch (error: any) {
         commit('PRODUCTS_SET_DEPOSITS_ERROR', error)
         return false
       }
     },
-    async getQuantity({ commit }, id) {
+
+    async getDeposits({ commit }, id: string): Promise<WarehouseDeposit[]> {
       commit('PRODUCTS_SET_DEPOSITS_ERROR', null)
       try {
-        const { data } = await api.get<{ data: { quantity: number }[] }>(`/items/id:${id}/deposits`)
-        return data.data.reduce((acc, { quantity }) => acc + quantity, 0)
+        const { data } = await api.get<{ data: WarehouseDeposit[] }>(`/items/id:${id}/deposits`)
+        return data.data
       } catch (error: any) {
         commit('PRODUCTS_SET_DEPOSITS_ERROR', error)
-        return false
+        return []
       }
     },
   },

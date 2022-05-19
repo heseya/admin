@@ -140,15 +140,16 @@ import ItemsFilter, {
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { UUID } from '@/interfaces/UUID'
-import { ProductItem, ProductItemDto } from '@/interfaces/Product'
+import { WarehouseItem, WarehouseItemCreateDto } from '@/interfaces/WarehouseItem'
 import { TableConfig } from '@/interfaces/CmsTable'
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 import { formatFilters } from '@/utils/utils'
 
-const EMPTY_FORM: ProductItemDto = {
+const EMPTY_FORM: WarehouseItemCreateDto = {
   name: '',
   sku: '',
-  quantity: 0,
+  unlimited_stock_shipping_time: null,
+  unlimited_stock_shipping_date: null,
 }
 
 export default Vue.extend({
@@ -174,19 +175,19 @@ export default Vue.extend({
   data: () => ({
     filters: { ...EMPTY_ITEMS_FILTERS } as ItemsFilersType,
     isModalActive: false,
-    editedItem: { ...EMPTY_FORM } as ProductItemDto & { id?: string },
-    selectedItem: null as null | ProductItem,
+    editedItem: { ...EMPTY_FORM } as WarehouseItemCreateDto & Partial<WarehouseItem>,
+    selectedItem: null as null | WarehouseItem,
     editedOriginalQuantity: 0,
   }),
   computed: {
-    depositsError(): any {
+    depositsError(): Error | null {
       // @ts-ignore // TODO: fix extended store getters typings
       return this.$accessor.items.getDepositError
     },
     canModify(): boolean {
       return this.$can(this.editedItem.id ? this.$p.Items.Edit : this.$p.Items.Add)
     },
-    tableConfig(): TableConfig<ProductItem> {
+    tableConfig(): TableConfig<WarehouseItem> {
       return {
         rowOnClick: (item) => this.openModal(item.id),
         headers: [
@@ -254,12 +255,12 @@ export default Vue.extend({
         // Metadata can be saved only after product is created
         await this.saveMetadata(this.editedItem.id)
 
-        const quantityDiff = this.editedItem.quantity - this.editedOriginalQuantity
+        const quantityDiff = (this.editedItem.quantity || 0) - this.editedOriginalQuantity
         if (quantityDiff) {
           // @ts-ignore // TODO: fix extended store actions typings
           success = await this.$accessor.items.updateQuantity({
             id: this.editedItem.id,
-            quantity: quantityDiff,
+            deposit: { quantity: quantityDiff },
           })
         }
 

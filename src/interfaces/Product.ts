@@ -89,14 +89,3 @@ export interface ProductComponentForm
   id?: UUID
   sets: UUID[]
 }
-
-export interface ProductItem {
-  id: UUID
-  name: string
-  sku: string
-  quantity: number
-  metadata: Metadata
-  metadata_private?: Metadata
-}
-
-export type ProductItemDto = Omit<ProductItem, 'id' | 'metadata' | 'metadata_private'>

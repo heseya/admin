@@ -97,6 +97,12 @@
     "editTitle": "Edycja przedmiotu",
     "newTitle": "Nowy przedmiot",
     "deleteText": "Czy na pewno chcesz usunąć ten przedmiot?",
+    "table": {
+      "unlimited": "Nieograniczona możliwość zakupu",
+      "availibility": "Dostępność",
+      "availibilityTime": "w {time} dni",
+      "availibilityDate": "od {date}"
+    },
     "form": {
       "sku": "SKU",
       "quantity": "Ilość w magazynie"
@@ -113,6 +119,12 @@
     "editTitle": "Edit item",
     "newTitle": "New item",
     "deleteText": "Are you sure you want to delete this item?",
+    "table": {
+      "unlimited": "Unlimited purchase",
+      "availibility": "Availibility",
+      "availibilityTime": "in {time} days",
+      "availibilityDate": "from {date}"
+    },
     "form": {
       "sku": "SKU",
       "quantity": "Quantity in stock"
@@ -192,12 +204,33 @@ export default Vue.extend({
         rowOnClick: (item) => this.openModal(item.id),
         headers: [
           { key: 'name', label: this.$t('common.form.name') as string, sortable: true },
-          { key: 'sku', label: this.$t('form.sku') as string, width: '0.5fr', sortable: true },
+          { key: 'sku', label: this.$t('form.sku') as string, width: '0.6fr', sortable: true },
           {
             key: 'quantity',
             label: this.$t('form.quantity') as string,
-            width: '0.5fr',
+            width: '0.6fr',
             sortable: true,
+          },
+          {
+            key: 'availibility',
+            label: this.$t('table.availibility') as string,
+            width: '0.6fr',
+            sortable: true,
+            render: (_v, item) => {
+              if (item.shipping_time)
+                return this.$t('table.availibilityTime', { time: item.shipping_time }) as string
+              if (item.shipping_date)
+                return this.$t('table.availibilityDate', { date: item.shipping_date }) as string
+              return '-'
+            },
+          },
+          {
+            key: 'unlimited',
+            label: this.$t('table.unlimited') as string,
+            width: '0.6fr',
+            sortable: true,
+            render: (_v, item) =>
+              !!item.unlimited_stock_shipping_time || !!item.unlimited_stock_shipping_date,
           },
         ],
       }

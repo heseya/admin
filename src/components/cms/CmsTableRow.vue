@@ -58,7 +58,7 @@ export default Vue.extend({
         return {
           key,
           label,
-          value: render?.(rawValue) ?? rawValue,
+          value: render?.(rawValue, this.item) ?? rawValue,
           rawValue,
         }
       })

@@ -35,6 +35,17 @@
               <a-menu-item v-can="$p.ProductSets.ShowDetails" @click="edit">
                 <i class="bx bx-edit"></i> &nbsp; {{ $t('menu.edit') }}
               </a-menu-item>
+              <a-menu-item v-can="$p.ProductSets.Remove">
+                <pop-confirm
+                  :title="`${$t('collection')}: ${set.name}. ${$t('deleteText')}`"
+                  :ok-text="$t('common.delete')"
+                  :cancel-text="$t('common.cancel')"
+                  placement="bottom"
+                  @confirm="deleteCollection"
+                >
+                  <i class="bx bx-trash"></i> &nbsp; {{ $t('menu.delete') }}
+                </pop-confirm>
+              </a-menu-item>
             </a-menu>
           </template>
         </a-dropdown>
@@ -60,15 +71,24 @@
     "menu": {
       "addSubset": "Dodaj subkolekcję",
       "edit": "Edytuj kolekcję",
+      "delete": "Usuń kolekcję",
       "showProducts": "Zobacz produkty w kolekcji"
-    }
+    },
+     "collection": "Kolekcja",
+     "deleteText": "Czy na pewno chcesz usunąć tę kolekcję? Wraz z nią usuniesz wszystkie jej subkolekcje!",
+     "deleteSuccess": "Kolekcja została usunięta"
+
   },
   "en": {
     "menu": {
       "addSubset": "Add subset",
       "edit": "Edit collection",
+      "delete": "Delete collection",
       "showProducts": "Show products in collection"
-    }
+    },
+    "collection": "Collection",
+    "deleteText": "Are you sure you want to delete this collection? All subcollections will be deleted as well!",
+    "deleteSuccess": "Collection has been deleted"
   }
 }
 </i18n>
@@ -77,11 +97,14 @@
 import Vue from 'vue'
 import Draggable from 'vuedraggable'
 
+import PopConfirm from '@/components/layout/PopConfirm.vue'
+
 import { ProductSet } from '@/interfaces/ProductSet'
+import { formatApiNotificationError } from '@/utils/errors'
 
 export default Vue.extend({
   name: 'ProductSet',
-  components: { Draggable },
+  components: { Draggable, PopConfirm },
   props: {
     set: {
       type: Object,
@@ -119,6 +142,18 @@ export default Vue.extend({
     },
     toggleChildrenVisibility() {
       if (this.set.children.length) this.areChildrenVisible = !this.areChildrenVisible
+    },
+    async deleteCollection() {
+      this.$accessor.startLoading()
+
+      try {
+        await this.$accessor.productSets.remove(this.set.id)
+        this.$toast.success(this.$t('deleteSuccess') as string)
+      } catch (error: any) {
+        this.$toast.error(formatApiNotificationError(error))
+      }
+
+      this.$accessor.stopLoading()
     },
   },
 })

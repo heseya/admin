@@ -16,7 +16,7 @@
       <span> {{ $t('table.quantity') }} </span>
     </div>
     <div
-      v-for="{ delivery_time, delivery_date, quantity } in tempAvailibility"
+      v-for="{ delivery_time, delivery_date, quantity } in availibility"
       :key="`${delivery_time}-${delivery_date}`"
       class="items-availibility__row"
     >
@@ -90,15 +90,17 @@ export default Vue.extend({
   }),
 
   computed: {
-    // TODO: cause api does not return this
-    tempAvailibility(): WarehouseItem['availibility'] {
-      return [
-        { quantity: 0, delivery_time: null, delivery_date: null },
-        { quantity: 0, delivery_time: 0, delivery_date: null },
-        { quantity: 1, delivery_time: null, delivery_date: '20-01-2022' },
-        { quantity: 2, delivery_time: 3, delivery_date: null },
-        { quantity: 0, delivery_time: 4, delivery_date: null },
-      ]
+    availibility(): WarehouseItem['availibility'] {
+      return (
+        this.item.availibility || [
+          // TODO: cause api does not return this
+          { quantity: 0, delivery_time: null, delivery_date: null },
+          { quantity: 0, delivery_time: 0, delivery_date: null },
+          { quantity: 1, delivery_time: null, delivery_date: '20-01-2022' },
+          { quantity: 2, delivery_time: 3, delivery_date: null },
+          { quantity: 0, delivery_time: 4, delivery_date: null },
+        ]
+      )
     },
   },
 

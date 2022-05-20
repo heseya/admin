@@ -3,7 +3,7 @@
     <div class="items-availibility__header">
       <h4>{{ $t('title') }}</h4>
 
-      <icon-button size="small" @click="openDepositModal()">
+      <icon-button size="small" @click="openDepositModal(null)">
         <template #icon>
           <i class="bx bx-plus"></i>
         </template>
@@ -16,16 +16,16 @@
       <span> {{ $t('table.quantity') }} </span>
     </div>
     <div
-      v-for="{ delivery_time: time, quantity } in tempAvailibility"
-      :key="time"
+      v-for="{ delivery_time, delivery_date, quantity } in tempAvailibility"
+      :key="`${delivery_time}-${delivery_date}`"
       class="items-availibility__row"
     >
-      <span> {{ formatDeliveryTime(time) }} </span>
+      <span> {{ formatDeliveryTime(delivery_date || delivery_time) }} </span>
       <span> {{ quantity }} </span>
 
       <a-tooltip>
         <template #title> {{ $t('addDepositTime') }} </template>
-        <icon-button size="small" @click="openDepositModal(time)">
+        <icon-button size="small" @click="openDepositModal(delivery_date || delivery_time)">
           <template #icon>
             <i class="bx bx-edit"></i>
           </template>
@@ -76,21 +76,23 @@ export default Vue.extend({
     // TODO: cause api does not return this
     tempAvailibility(): WarehouseItem['availibility'] {
       return [
-        { quantity: 0, delivery_time: 0 },
-        { quantity: 1, delivery_time: '20-01-2022' },
-        { quantity: 2, delivery_time: 3 },
-        { quantity: 0, delivery_time: 4 },
+        { quantity: 0, delivery_time: null, delivery_date: null },
+        { quantity: 0, delivery_time: 0, delivery_date: null },
+        { quantity: 1, delivery_time: null, delivery_date: '20-01-2022' },
+        { quantity: 2, delivery_time: 3, delivery_date: null },
+        { quantity: 0, delivery_time: 4, delivery_date: null },
       ]
     },
   },
 
   methods: {
-    formatDeliveryTime(time: number | string) {
+    formatDeliveryTime(time: number | string | null) {
       if (isNumber(time)) return this.$t('availibilityTime', { time })
-      else return this.$t('availibilityDate', { date: time })
+      if (time) return this.$t('availibilityDate', { date: time })
+      return '-'
     },
 
-    openDepositModal(time?: string | number) {
+    openDepositModal(time: string | number | null) {
       // TODO
       console.log('🚀 ~ file: ItemsAvailibility.vue ~ line 94 ~ openDepositModal ~ time', time)
     },

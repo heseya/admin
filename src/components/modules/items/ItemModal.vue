@@ -23,7 +23,29 @@
           />
 
           <div class="warehouse-item-modal__row">
+            <app-select v-model="unlimitedStockType" :label="$t('unlimitedStockType.label')">
+              <a-select-option
+                :value="UnlimitedStockType.None"
+                :label="$t(`unlimitedStockType.${UnlimitedStockType.None}`)"
+              >
+                {{ $t(`unlimitedStockType.${UnlimitedStockType.None}`) }}
+              </a-select-option>
+              <a-select-option
+                :value="UnlimitedStockType.Time"
+                :label="$t(`unlimitedStockType.${UnlimitedStockType.Time}`)"
+              >
+                {{ $t(`unlimitedStockType.${UnlimitedStockType.Time}`) }}
+              </a-select-option>
+              <a-select-option
+                :value="UnlimitedStockType.Date"
+                :label="$t(`unlimitedStockType.${UnlimitedStockType.Date}`)"
+              >
+                {{ $t(`unlimitedStockType.${UnlimitedStockType.Date}`) }}
+              </a-select-option>
+            </app-select>
+
             <validated-input
+              v-if="unlimitedStockType === UnlimitedStockType.Date"
               v-model="form.unlimited_stock_shipping_date"
               :disabled="disabled"
               type="date"
@@ -38,6 +60,7 @@
             </validated-input>
 
             <validated-input
+              v-if="unlimitedStockType === UnlimitedStockType.Time"
               v-model="form.unlimited_stock_shipping_time"
               :disabled="disabled"
               type="number"
@@ -112,6 +135,12 @@
       "unlimited_stock_shipping_date": "Data wysyłki w nielimitowanej ilości",
       "unlimited_stock_shipping_date_tooltip": "Oznacza, że wysyłka będzie realizowana po danej dacie. Przedmiot ma nielimitowany stan do podanej daty włącznie. Gdy ta data minie, produkt staje się niedostępny."
     },
+    "unlimitedStockType": {
+      "label": "Tryb nieskończonej dostępności",
+      "none": "Brak nieskończonej dostępności",
+      "time": "W ilościach dni",
+      "date": "Od określonej daty"
+    },
     "alerts": {
       "deleted": "Przedmiot magazynowy został usunięty.",
       "created": "Przedmiot magazynowy został dodany.",
@@ -129,6 +158,12 @@
       "unlimited_stock_shipping_time_tooltip": "Indicates the time of shipping in days before the item is unavailable. This means that the item can be purchased even if it is not available in stock.",
       "unlimited_stock_shipping_date": "Unlimited stock shipping date",
       "unlimited_stock_shipping_date_tooltip": "Indicates that the shipping will be carried out on the given date. The item will be unavailable until that date. When that date is reached, the item will be unavailable."
+    },
+    "unlimitedStockType": {
+      "label": "Unlimited stock type",
+      "none": "No unlimited stock",
+      "time": "In quantities of days",
+      "date": "From a given date"
     },
     "alerts": {
       "deleted": "Item in warehouse has been deleted.",
@@ -153,6 +188,12 @@ import ItemsAvailibility from './ItemsAvailibility.vue'
 
 type Form = WarehouseItemCreateDto & Partial<WarehouseItem>
 
+enum UnlimitedStockType {
+  None = 'none',
+  Date = 'date',
+  Time = 'time',
+}
+
 export default Vue.extend({
   components: { ValidationObserver, ModalForm, PopConfirm, MetadataForm, Field, ItemsAvailibility },
   props: {
@@ -162,6 +203,10 @@ export default Vue.extend({
     disabled: { type: Boolean, default: false },
   },
 
+  data: () => ({
+    unlimitedStockType: UnlimitedStockType.None,
+  }),
+
   computed: {
     form: {
       get(): Form {
@@ -170,6 +215,25 @@ export default Vue.extend({
       set(v: Form) {
         this.$emit('input', v)
       },
+    },
+
+    UnlimitedStockType(): typeof UnlimitedStockType {
+      return UnlimitedStockType
+    },
+  },
+
+  watch: {
+    item() {
+      if (this.item?.unlimited_stock_shipping_date)
+        this.unlimitedStockType = UnlimitedStockType.Date
+      else if (this.item?.unlimited_stock_shipping_time)
+        this.unlimitedStockType = UnlimitedStockType.Time
+      else this.unlimitedStockType = UnlimitedStockType.None
+    },
+
+    unlimitedStockType() {
+      this.form.unlimited_stock_shipping_time = null
+      this.form.unlimited_stock_shipping_date = null
     },
   },
 
@@ -221,14 +285,11 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .warehouse-item-modal {
   &__row {
     display: flex;
-
-    *:not(:last-of-type) {
-      margin-right: 8px;
-    }
+    gap: 8px;
   }
 }
 </style>

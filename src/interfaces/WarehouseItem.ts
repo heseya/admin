@@ -65,15 +65,11 @@ export interface WarehouseDeposit {
   order_product_id: UUID
 }
 
-export type WarehouseDepositDto =
-  | {
-      quantity: number
-      shipping_time?: number
-    }
-  | {
-      quantity: number
-      shipping_date?: string
-    }
+export type WarehouseDepositDto = {
+  quantity: number
+  shipping_time?: number
+  shipping_date?: string
+}
 
 /**
  * ? Product items

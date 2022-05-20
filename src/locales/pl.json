@@ -95,6 +95,7 @@
     "password": "Hasło musi mieć przynajmniej 12 znaków",
     "positive": "To pole musi być większe od zera",
     "notNegative": "To pole nie może być mniejsze od 0",
+    "nonZero": "To pole nie może być równe 0",
     "lessThan": "Wartość musi być mniejsza bądź równa od {target}",
     "lessThanFallback": "maksymalnej wartości",
     "idRequired": "Wymagane jest podanie ID",

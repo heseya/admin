@@ -110,7 +110,7 @@ export default Vue.extend({
     filters: { ...EMPTY_ITEMS_FILTERS } as ItemsFilersType,
     isModalActive: false,
     editedItem: { ...EMPTY_FORM } as WarehouseItemCreateDto & Partial<WarehouseItem>,
-    selectedItem: null as null | WarehouseItem,
+    selectedItemId: null as null | UUID,
   }),
   computed: {
     depositsError(): Error | null {
@@ -119,6 +119,9 @@ export default Vue.extend({
     },
     canModify(): boolean {
       return this.$can(this.editedItem.id ? this.$p.Items.Edit : this.$p.Items.Add)
+    },
+    selectedItem(): null | WarehouseItem {
+      return this.selectedItemId ? this.$accessor.items.getFromListById(this.selectedItemId) : null
     },
     tableConfig(): TableConfig<WarehouseItem> {
       return {
@@ -194,10 +197,10 @@ export default Vue.extend({
       this.isModalActive = true
       if (id) {
         this.editedItem = cloneDeep(this.$accessor.items.getFromListById(id))
-        this.selectedItem = this.$accessor.items.getFromListById(id)
+        this.selectedItemId = id
       } else {
         this.editedItem = { ...EMPTY_FORM }
-        this.selectedItem = null
+        this.selectedItemId = null
       }
     },
   },

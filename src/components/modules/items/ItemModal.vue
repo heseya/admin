@@ -3,7 +3,7 @@
     <validation-observer v-slot="{ handleSubmit }">
       <a-modal
         :visible="visible"
-        width="550px"
+        width="600px"
         :title="form.id ? $t('editTitle') : $t('newTitle')"
         @cancel="close"
       >

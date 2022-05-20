@@ -3,7 +3,7 @@
     <div class="items-availibility__header">
       <h4>{{ $t('title') }}</h4>
 
-      <icon-button size="small" @click="openDepositModal(null)">
+      <icon-button v-can="$p.Deposits.Add" size="small" @click="openDepositModal(null)">
         <template #icon>
           <i class="bx bx-plus"></i>
         </template>
@@ -23,7 +23,7 @@
       <span> {{ formatDeliveryTime(delivery_date || delivery_time) }} </span>
       <span> {{ quantity }} </span>
 
-      <a-tooltip>
+      <a-tooltip v-can="$p.Deposits.Add">
         <template #title> {{ $t('addDepositTime') }} </template>
         <icon-button size="small" @click="openDepositModal(delivery_date || delivery_time)">
           <template #icon>
@@ -32,6 +32,14 @@
         </icon-button>
       </a-tooltip>
     </div>
+
+    <deposit-form-modal
+      :visible="isDepositModalOpen"
+      :default-time="defaultDepositDeliveryTime"
+      :disabled="!$can($p.Deposits.Add)"
+      :item-id="item.id"
+      @close="closeDepositModal"
+    />
   </div>
 </template>
 
@@ -65,12 +73,21 @@
 <script lang="ts">
 import Vue from 'vue'
 import isNumber from 'lodash/isNumber'
+
 import { WarehouseItem } from '@/interfaces/WarehouseItem'
 
+import DepositFormModal from './DepositFormModal.vue'
+
 export default Vue.extend({
+  components: { DepositFormModal },
   props: {
     item: { type: Object, default: null } as Vue.PropOptions<WarehouseItem>,
   },
+
+  data: () => ({
+    isDepositModalOpen: false,
+    defaultDepositDeliveryTime: null as string | number | null,
+  }),
 
   computed: {
     // TODO: cause api does not return this
@@ -93,8 +110,13 @@ export default Vue.extend({
     },
 
     openDepositModal(time: string | number | null) {
-      // TODO
-      console.log('🚀 ~ file: ItemsAvailibility.vue ~ line 94 ~ openDepositModal ~ time', time)
+      this.defaultDepositDeliveryTime = time
+      this.isDepositModalOpen = true
+    },
+
+    closeDepositModal() {
+      this.isDepositModalOpen = false
+      this.defaultDepositDeliveryTime = null
     },
   },
 })

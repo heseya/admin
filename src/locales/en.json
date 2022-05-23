@@ -95,6 +95,7 @@
     "password": "Password must be at least 12 characters long",
     "positive": "This field must be greater than zero",
     "notNegative": "This field shall not be less than 0",
+    "nonZero": "This field shall not be equal 0",
     "lessThan": "The value must be less than or equal to {target}",
     "lessThanFallback": "maximal value",
     "slug": "The link can only consist of lower case letters, numbers and dashes",

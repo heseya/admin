@@ -44,6 +44,12 @@ extend('positive', {
     return value > 0
   },
 })
+extend('non-zero', {
+  message: () => i18n.t('validation.nonZero') as string,
+  validate: (value) => {
+    return value !== 0
+  },
+})
 extend('not-negative', {
   message: () => i18n.t('validation.notNegative') as string,
   validate: (value) => {

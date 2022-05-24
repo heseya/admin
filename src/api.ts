@@ -73,7 +73,7 @@ export const createApiInstance = (baseURL: string, useAccessToken = true) => {
             accessor.auth.clearAuth()
             broadcastTokensUpdate(null)
             accessor.stopLoading()
-            router.push('/login')
+            router.push(`/login?next=${router.currentRoute.fullPath}`)
             throw error
           }
 

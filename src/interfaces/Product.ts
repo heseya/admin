@@ -27,6 +27,7 @@ export interface Product {
   sales: Sale[]
   description_html: string
   description_short: string
+  vat_rate: number
   google_product_category: null | number
   public: boolean
   visible: boolean
@@ -53,6 +54,7 @@ export interface ProductDTO {
   price: number
   description_html: string
   description_short: string
+  vat_rate?: number
   google_product_category: null | number
   public: boolean
   quantity_step: number

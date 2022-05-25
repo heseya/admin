@@ -4,6 +4,7 @@
       :title="form.id ? $t('editTitle') : $t('newTitle')"
       :visible="isOpen"
       :width="900"
+      :mask-closable="false"
       @cancel="$emit('close')"
     >
       <modal-form :key="form.id || 'new'" class="product-set-form">

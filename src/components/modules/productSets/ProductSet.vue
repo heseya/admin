@@ -144,7 +144,7 @@ export default Vue.extend({
   data: () => ({
     childrenQuantity: 0,
     page: 1,
-    limit: 10,
+    limit: 50,
     children: [] as ProductSet[],
     selectedSet: null as null | ProductSet,
     editedItem: cloneDeep(CLEAR_PRODUCT_SET_FORM) as ProductSetDTO,

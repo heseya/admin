@@ -1,6 +1,6 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList :title="$t('title')" store-key="productSets" :params="{ tree: 0 }" draggable>
+    <PaginatedList :title="$t('title')" store-key="productSets" draggable>
       <template #nav>
         <icon-button v-can="$p.ProductSets.Add" @click="createProductSet()">
           <template #icon>

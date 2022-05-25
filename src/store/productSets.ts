@@ -3,7 +3,7 @@ import { createVuexCRUD, StoreMutations } from './generator'
 import { UUID } from '@/interfaces/UUID'
 import { reorderCollection } from '@/services/reorderCollection'
 
-const PARAM = { tree: 1 }
+const PARAM = { tree: 0 }
 
 const reorderSets = reorderCollection('product-sets', 'product_sets')
 

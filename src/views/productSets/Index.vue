@@ -1,6 +1,6 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList :title="$t('title')" store-key="productSets" draggable>
+    <PaginatedList :title="$t('title')" store-key="productSets" :params="{ tree: 0 }" draggable>
       <template #nav>
         <icon-button v-can="$p.ProductSets.Add" @click="createProductSet()">
           <template #icon>
@@ -94,7 +94,6 @@ export default Vue.extend({
         this.editedItem = {
           ...cloneDeep(set),
           parent_id: set.parent?.id || null,
-          children_ids: set.children.map((child) => child.id),
           attributes: set.attributes?.map((attr) => attr.id) || [],
         }
         this.editedItemSlugPrefix = set.parent?.slug || ''

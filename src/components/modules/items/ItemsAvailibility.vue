@@ -12,7 +12,7 @@
     </div>
 
     <div class="items-availability__row items-availability__row--header">
-      <span> {{ $t('table.delivery_time') }} </span>
+      <span> {{ $t('table.shippingTime') }} </span>
       <span> {{ $t('table.quantity') }} </span>
     </div>
     <div
@@ -50,7 +50,7 @@
     "addDeposit": "Dodaj wpis magazynowy",
     "addDepositTime": "Zmodyfikuj ilość dla danej dostępności",
     "table": {
-      "delivery_time": "Czas dostawy",
+      "shippingTime": "Czas wysyłki",
       "quantity": "Ilość w magazynie"
     },
     "availabilityTime": "w {time} dni",
@@ -61,7 +61,7 @@
     "addDeposit": "Add deposit",
     "addDepositTime": "Edit quantity for this availability",
     "table": {
-      "delivery_time": "Delivery time",
+      "shippingTime": "Shipping time",
       "quantity": "Quantity in stock"
     },
     "availabilityTime": "in {time} days",

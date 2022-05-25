@@ -72,16 +72,16 @@
     "title": "Dodawanie depozytu do magazynu",
     "form": {
       "quantity": "Ilość",
-      "shipping_date": "Data dostawy",
+      "shipping_date": "Data wysyłki",
       "shipping_date_tooltip": "Oznacza, że wysyłka będzie realizowana po danej dacie. Przedmioty są traktowane jako dostępne do tej daty włącznie, chyba że wyczerpie się ilość.",
-      "shipping_time": "Czas dostawy w dniach",
-      "shipping_time_tooltip": "Oznacza czas wysyłki w dniach przedmiotów dla podanej ilości, jeśli ilość się skończy, przedmiot staje się niedostępny w ramach tej ilości dni dostawy."
+      "shipping_time": "Czas wysyłki w dniach",
+      "shipping_time_tooltip": "Oznacza czas wysyłki w dniach przedmiotów dla podanej ilości, jeśli ilość się skończy, przedmiot staje się niedostępny w ramach tej ilości dni wysyłki."
     },
     "addedSuccessfully": "Dodano depozyt do magazynu",
     "stockTimeType": {
-      "label": "Typ czasu dostawy",
-      "time": "Czas dostawy w dniach",
-      "date": "Data dostawy"
+      "label": "Typ czasu wysyłki",
+      "time": "Czas wysyłki w dniach",
+      "date": "Data wysyłki"
     }
   },
   "en": {

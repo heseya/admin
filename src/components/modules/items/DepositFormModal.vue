@@ -31,7 +31,7 @@
           v-if="stockTimeType === StockTimeType.Date"
           v-model="form.shipping_date"
           :disabled="disabled"
-          type="date"
+          type="datetime-local"
           rules="required"
         >
           <template #label>

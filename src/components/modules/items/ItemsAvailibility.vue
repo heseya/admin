@@ -1,6 +1,6 @@
 <template>
-  <div class="items-availibility">
-    <div class="items-availibility__header">
+  <div class="items-availability">
+    <div class="items-availability__header">
       <h4>{{ $t('title') }}</h4>
 
       <icon-button v-can="$p.Deposits.Add" size="small" @click="openDepositModal(null)">
@@ -11,21 +11,21 @@
       </icon-button>
     </div>
 
-    <div class="items-availibility__row items-availibility__row--header">
+    <div class="items-availability__row items-availability__row--header">
       <span> {{ $t('table.delivery_time') }} </span>
       <span> {{ $t('table.quantity') }} </span>
     </div>
     <div
-      v-for="{ delivery_time, delivery_date, quantity } in availibility"
-      :key="`${delivery_time}-${delivery_date}`"
-      class="items-availibility__row"
+      v-for="{ shipping_time, shipping_date, quantity } in availability"
+      :key="`${shipping_time}-${shipping_date}`"
+      class="items-availability__row"
     >
-      <span> {{ formatDeliveryTime(delivery_date || delivery_time) }} </span>
+      <span> {{ formatShippingTime(shipping_date || shipping_time) }} </span>
       <span> {{ quantity }} </span>
 
       <a-tooltip v-can="$p.Deposits.Add">
         <template #title> {{ $t('addDepositTime') }} </template>
-        <icon-button size="small" @click="openDepositModal(delivery_date || delivery_time)">
+        <icon-button size="small" @click="openDepositModal(shipping_date || shipping_time)">
           <template #icon>
             <i class="bx bx-edit"></i>
           </template>
@@ -53,19 +53,19 @@
       "delivery_time": "Czas dostawy",
       "quantity": "Ilość w magazynie"
     },
-    "availibilityTime": "w {time} dni",
-    "availibilityDate": "od {date}"
+    "availabilityTime": "w {time} dni",
+    "availabilityDate": "od {date}"
   },
   "en": {
-    "title": "Product availibility",
+    "title": "Product availability",
     "addDeposit": "Add deposit",
-    "addDepositTime": "Edit quantity for this availibility",
+    "addDepositTime": "Edit quantity for this availability",
     "table": {
       "delivery_time": "Delivery time",
       "quantity": "Quantity in stock"
     },
-    "availibilityTime": "in {time} days",
-    "availibilityDate": "from {date}"
+    "availabilityTime": "in {time} days",
+    "availabilityDate": "from {date}"
   }
 }
 </i18n>
@@ -90,24 +90,15 @@ export default Vue.extend({
   }),
 
   computed: {
-    availibility(): WarehouseItem['availibility'] {
-      return (
-        this.item.availibility || [
-          // TODO: cause api does not return this
-          { quantity: 0, delivery_time: null, delivery_date: null },
-          { quantity: 0, delivery_time: 0, delivery_date: null },
-          { quantity: 1, delivery_time: null, delivery_date: '20-01-2022' },
-          { quantity: 2, delivery_time: 3, delivery_date: null },
-          { quantity: 0, delivery_time: 4, delivery_date: null },
-        ]
-      )
+    availability(): WarehouseItem['availability'] {
+      return this.item.availability
     },
   },
 
   methods: {
-    formatDeliveryTime(time: number | string | null) {
-      if (isNumber(time)) return this.$t('availibilityTime', { time })
-      if (time) return this.$t('availibilityDate', { date: time })
+    formatShippingTime(time: number | string | null) {
+      if (isNumber(time)) return this.$t('availabilityTime', { time })
+      if (time) return this.$t('availabilityDate', { date: time })
       return '-'
     },
 
@@ -125,7 +116,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.items-availibility {
+.items-availability {
   &__header {
     display: flex;
     justify-content: space-between;

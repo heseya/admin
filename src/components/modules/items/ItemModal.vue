@@ -23,7 +23,11 @@
           />
 
           <div class="warehouse-item-modal__row">
-            <app-select v-model="unlimitedStockType" :label="$t('unlimitedStockType.label')">
+            <app-select
+              :value="unlimitedStockType"
+              :label="$t('unlimitedStockType.label')"
+              @input="changeUnlimitedStockType"
+            >
               <a-select-option
                 :value="UnlimitedStockType.None"
                 :label="$t(`unlimitedStockType.${UnlimitedStockType.None}`)"
@@ -48,7 +52,7 @@
               v-if="unlimitedStockType === UnlimitedStockType.Date"
               v-model="form.unlimited_stock_shipping_date"
               :disabled="disabled"
-              type="date"
+              type="datetime-local"
               rules="required"
             >
               <template #label>
@@ -230,16 +234,17 @@ export default Vue.extend({
         this.unlimitedStockType = UnlimitedStockType.Time
       else this.unlimitedStockType = UnlimitedStockType.None
     },
-
-    unlimitedStockType() {
-      this.form.unlimited_stock_shipping_time = null
-      this.form.unlimited_stock_shipping_date = null
-    },
   },
 
   methods: {
     close() {
       this.$emit('close')
+    },
+
+    changeUnlimitedStockType(v: UnlimitedStockType) {
+      this.unlimitedStockType = v
+      this.form.unlimited_stock_shipping_time = null
+      this.form.unlimited_stock_shipping_date = null
     },
 
     async deleteWarehouseItem() {

@@ -24,6 +24,24 @@
       <validation-observer v-slot="{ handleSubmit }">
         <card>
           <SaleForm v-model="form" :disabled="!canModify" />
+          <hr />
+
+          <template v-if="!isNew">
+            <MetadataForm
+              ref="publicMeta"
+              :value="sale.metadata"
+              :disabled="!canModify"
+              model="sales"
+            />
+            <MetadataForm
+              v-if="sale.metadata_private"
+              ref="privateMeta"
+              :value="sale.metadata_private"
+              :disabled="!canModify"
+              is-private
+              model="sales"
+            />
+          </template>
 
           <hr />
           <app-button v-if="canModify" @click="handleSubmit(save)">
@@ -67,6 +85,7 @@ import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import SaleForm from '@/components/modules/sales/Form.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
+import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import {
@@ -95,7 +114,7 @@ const EMPTY_SALE_FORM: SaleFormDto = {
 }
 
 export default Vue.extend({
-  components: { ValidationObserver, TopNav, Card, PopConfirm, SaleForm },
+  components: { ValidationObserver, TopNav, Card, PopConfirm, SaleForm, MetadataForm },
   data: () => ({
     form: cloneDeep(EMPTY_SALE_FORM) as SaleFormDto,
   }),
@@ -152,6 +171,9 @@ export default Vue.extend({
           this.$router.push(`/sales/${sale.id}`)
         }
       } else {
+        // Metadata can be saved only after product is created
+        await this.saveMetadata(this.id)
+
         const success = await this.$accessor.sales.update({
           id: this.id,
           item: dto,
@@ -171,6 +193,13 @@ export default Vue.extend({
         this.$router.push('/sales')
       }
       this.$accessor.stopLoading()
+    },
+
+    async saveMetadata(id: string) {
+      await Promise.all([
+        (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id),
+        (this.$refs.publicMeta as MetadataRef)?.saveMetadata(id),
+      ])
     },
   },
 })

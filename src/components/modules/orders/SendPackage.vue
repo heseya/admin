@@ -39,6 +39,25 @@
       <i class="bx bxs-check-circle"></i>
       {{ $t('sendPackage.existing', { number: shippingNumber }) }}
     </small>
+    <span class="order-title send-package__title send-package__title--shipping">{{
+      $t('setShippingNumber.title')
+    }}</span>
+    <div class="send-package__content">
+      <input
+        v-model="packageShippingNumber"
+        type="text"
+        class="ant-input send-package__input"
+        :placeholder="$t('setShippingNumber.templatePlaceholder')"
+      />
+      <app-button
+        type="primary"
+        size="small"
+        class="send-package__btn send-package__btn--shipping"
+        @click="setShippingNumber"
+      >
+        {{ $t('setShippingNumber.save') }}
+      </app-button>
+    </div>
   </div>
 </template>
 
@@ -53,6 +72,11 @@
       "create": "Kontynuuj",
       "created": "Przesyłka została utworzona",
       "existing": "Przesyłka została już zamówiona (Numer śledzenia: {number})"
+    },
+    "setShippingNumber": {
+      "title": "Numer przesyłki",
+      "templatePlaceholder": "-- Wpisz numer przesyłki --",
+      "save": "Zapisz"
     }
   },
   "en": {
@@ -64,6 +88,11 @@
       "create": "Continue",
       "created": "Package was created",
       "existing": "Package was already ordered (Tracking number: {number})"
+    },
+    "setShippingNumber": {
+      "title": "Shipping number",
+      "templatePlaceholder": "-- Enter Shipping Number --",
+      "save": "Save"
     }
   }
 }
@@ -72,6 +101,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { createPackage } from '@/services/createPackage'
+import { setShippingNumber } from '@/services/setShippingNumber'
 import { formatApiNotificationError } from '@/utils/errors'
 import { PackageTemplate } from '@/interfaces/PackageTemplate'
 
@@ -92,6 +122,7 @@ export default Vue.extend({
   },
   data: () => ({
     packageTemplateId: undefined as string | undefined,
+    packageShippingNumber: undefined as string | undefined,
     providerKey: 'dpd',
   }),
   computed: {
@@ -115,7 +146,32 @@ export default Vue.extend({
       this.PROVIDERS.find(({ key }) => this.shippingMethod.toLowerCase().includes(key))?.key ||
       'dpd'
   },
+
+  mounted() {
+    this.packageShippingNumber = this.shippingNumber || ''
+  },
+
   methods: {
+    async setShippingNumber() {
+      if (typeof this.packageShippingNumber === 'undefined') return
+      if (!this.packageShippingNumber.trim().length) return
+      if (this.packageShippingNumber.trim() === this.shippingNumber) {
+        this.$toast.warning('Podany numer przesyłki nie różni się od obecnego')
+        return
+      }
+      this.$accessor.startLoading()
+      const res = await setShippingNumber(this.orderId, this.packageShippingNumber)
+
+      if (res.success) {
+        this.$emit('updated', res.shippingNumber)
+        this.$toast.success('Numer przesyłki został zmieniony')
+      } else {
+        this.$toast.error(formatApiNotificationError(res.error))
+      }
+
+      this.$accessor.stopLoading()
+    },
+
     async createPackage() {
       if (!this.packageTemplateId) return
       this.$accessor.startLoading()
@@ -138,6 +194,10 @@ export default Vue.extend({
 .send-package {
   &__title {
     margin-bottom: 8px;
+
+    &--shipping {
+      margin-top: 8px;
+    }
   }
 
   &__selects {
@@ -146,6 +206,14 @@ export default Vue.extend({
 
   &__btn {
     margin-bottom: 8px;
+
+    &--shipping {
+      margin: 8px 0 0;
+
+      @media ($viewport-10) {
+        margin-top: 0;
+      }
+    }
   }
 
   &__content {
@@ -159,6 +227,10 @@ export default Vue.extend({
       > *:first-child {
         margin-right: 8px;
       }
+    }
+
+    &--shipping {
+      margin-top: 8px;
     }
   }
 }

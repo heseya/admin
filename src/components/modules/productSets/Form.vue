@@ -239,7 +239,6 @@ export default Vue.extend({
   watch: {
     value(value: CombinedSetDto) {
       this.form = { ...cloneDeep(CLEAR_PRODUCT_SET_FORM), ...cloneDeep(value) }
-      this.fetchProductSet()
     },
     isOpen(isOpen: boolean) {
       this.$nextTick(() => {
@@ -249,27 +248,6 @@ export default Vue.extend({
     },
   },
   methods: {
-    async fetchProductSet() {
-      if (!this.value?.id) return
-
-      this.$accessor.startLoading()
-      const success = await this.$accessor.productSets.get(this.value.id)
-      if (success) {
-        const fetched = this.$accessor.productSets.getSelected
-        this.form = {
-          ...cloneDeep(CLEAR_PRODUCT_SET_FORM),
-          ...cloneDeep(fetched),
-          cover_id: fetched.cover?.id,
-          parent_id: fetched.parent?.id || null,
-          children_ids: fetched.children?.map((child) => child.id) || [],
-          attributes: fetched.attributes?.map((attr) => attr.id) || [],
-          seo: fetched.seo || {},
-        }
-      } else {
-        this.$emit('close')
-      }
-      this.$accessor.stopLoading()
-    },
     editSlug() {
       if (!this.form.id) {
         this.form.slug_suffix = generateSlug(this.form.name)
@@ -287,13 +265,15 @@ export default Vue.extend({
       this.$accessor.startLoading()
       if (this.form.id) {
         await this.saveMetadata(this.form.id)
-        await this.$accessor.productSets.update({
+        const success = await this.$accessor.productSets.update({
           id: this.form.id,
           item: this.form,
         })
+        this.$emit('edit-success', success)
         this.$toast.success(this.$t('alerts.updated') as string)
       } else {
-        await this.$accessor.productSets.add(this.form)
+        const success = await this.$accessor.productSets.add(this.form)
+        this.$emit('create-success', success)
         this.$toast.success(this.$t('alerts.created') as string)
       }
       this.$accessor.stopLoading()
@@ -303,6 +283,7 @@ export default Vue.extend({
       if (!this.form.id) return
       this.$accessor.startLoading()
       await this.$accessor.productSets.remove(this.form.id)
+      this.$emit('delete-success', this.form.id)
       this.$accessor.stopLoading()
       this.$toast.success(this.$t('alerts.deleted') as string)
       this.$emit('close')

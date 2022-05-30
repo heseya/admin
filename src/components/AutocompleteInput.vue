@@ -4,7 +4,7 @@
       <app-select
         :value="antSelectValue"
         :label="label"
-        mode="multiple"
+        :mode="mode"
         :name="`autocomplete-${model}`"
         class="autocomplete-input__select"
         option-filter-prop="label"
@@ -56,6 +56,7 @@ import debounce from 'lodash/debounce'
 import uniqBy from 'lodash/uniqBy'
 import { ValidationProvider } from 'vee-validate'
 
+import { api } from '@/api'
 import { GeneratedStoreModulesKeys } from '@/store'
 import Empty from '@/components/layout/Empty.vue'
 import { UUID } from '@/interfaces/UUID'
@@ -83,9 +84,13 @@ export default Vue.extend({
     label: { type: String, default: '' },
     placeholderModel: { type: String, default: '' },
     rules: { type: [String, Object], default: null },
+    mode: { type: String, default: 'multiple' },
+    api: { type: Boolean, default: false },
+    filterItems: { type: Array, default: () => [] },
   },
   data: () => ({
     isLoading: false,
+    apiOptions: [] as BaseItem[],
   }),
   computed: {
     selectedItems: {
@@ -97,7 +102,9 @@ export default Vue.extend({
       },
     },
     options(): BaseItem[] {
-      return uniqBy([...this.selectedItems, ...this.$accessor[this.model].getData], 'id') || []
+      if (!this.api)
+        return uniqBy([...this.selectedItems, ...this.$accessor[this.model].getData], 'id') || []
+      else return this.apiOptions
     },
     antSelectValue(): AntSelectOption[] {
       return this.selectedItems.map((item) => ({
@@ -107,11 +114,11 @@ export default Vue.extend({
     },
   },
   mounted() {
-    this.fetchItems()
+    if (!this.api) this.fetchItems()
   },
   methods: {
     onSearch: debounce(function (this: any, search: string) {
-      this.fetchItems(search)
+      this.api ? this.fetchItemsFromApi(search) : this.fetchItems(search)
     }, 500),
 
     onDeselect({ key }: AntSelectOption) {
@@ -128,6 +135,15 @@ export default Vue.extend({
     async fetchItems(query?: string) {
       this.isLoading = true
       await this.$accessor[this.model].fetch({ search: query, tree: 0 })
+      this.isLoading = false
+    },
+    async fetchItemsFromApi(query?: string) {
+      this.isLoading = true
+      const {
+        data: { data: data },
+      } = await api.get<{ data: BaseItem[] }>(`/${this.model}?search=${query}`)
+
+      this.apiOptions = [...data].filter((item) => !this.filterItems.includes(item.id))
       this.isLoading = false
     },
   },

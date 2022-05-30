@@ -27,7 +27,7 @@ export const productSets = createVuexCRUD<ProductSet, ProductSetDTO, ProductSetD
             if (state.id === item.id) return { ...state, ...item }
             return state
           })
-        }
+        } else state.data = state.data.filter((state) => state.id !== item.id)
       },
 
       [StoreMutations.RemoveData](state, { value: id }: { value: UUID }) {

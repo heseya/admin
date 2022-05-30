@@ -19,7 +19,7 @@ export const updateProductAttributeOptions = async (rawAttributes: ProductAttrib
   const updatesPromises = rawAttributes
     .map((attribute) => attribute.selected_options.map((option) => ({ ...attribute, option })))
     .flat()
-    .filter(({ option }) => option.value_date || option.value_number || option.name)
+    .filter(({ option }) => option?.value_date || option?.value_number || option?.name)
     .map(
       async (attribute): Promise<UpdatedAttributesStructure> => ({
         ...attribute,

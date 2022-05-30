@@ -40,7 +40,7 @@ export const attributes = createVuexCRUD<Attribute, AttributeCreateDto, Attribut
       },
     },
     actions: {
-      async fetchOptions(
+      async getOptions(
         { commit },
         { attributeId, params }: { attributeId: UUID; params: Record<string, any> },
       ) {
@@ -50,9 +50,9 @@ export const attributes = createVuexCRUD<Attribute, AttributeCreateDto, Attribut
             `/attributes/id:${attributeId}/options${queryString}`,
           )
           commit('SET_OPTIONS', data.data)
-          return { success: true, option: data.data } as const
-        } catch (e) {
-          return { success: false, error: e } as const
+          return data.data
+        } catch {
+          return false
         }
       },
 

@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { CreateMetadataFields, MetadataFields } from './Metadata'
+import { CreateMetadataFields } from './Metadata'
 import { UUID } from './UUID'
 
 // ? ---------------------------------------------------------------
@@ -136,7 +136,7 @@ export interface ProductListAttribute {
   selected_options: AttributeOption[]
 }
 
-interface ProductAttributeBase extends ProductListAttribute, MetadataFields {
+interface ProductAttributeBase extends ProductListAttribute {
   id: UUID
   slug: string
   description: string

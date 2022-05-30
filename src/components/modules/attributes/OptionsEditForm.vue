@@ -71,8 +71,10 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import { AttributeOptionDto, AttributeType } from '@/interfaces/Attribute'
+import { AttributeOption, AttributeOptionDto, AttributeType } from '@/interfaces/Attribute'
 import { formatApiNotificationError } from '@/utils/errors'
+
+type AddOptionResult = { success: true; option: AttributeOption } | { success: false; error: any }
 
 export default Vue.extend({
   props: {
@@ -120,17 +122,19 @@ export default Vue.extend({
       try {
         if (this.editedOption.id) {
           // @ts-ignore // TODO: fix extended store actions typings
-          await this.$accessor.attributes.updateOption({
+          const result: AddOptionResult = await this.$accessor.attributes.updateOption({
             attributeId: this.attributeId,
             optionId: this.editedOption.id,
             option: this.editedOption,
           })
+          if (!result.success) throw result.error
         } else {
           // @ts-ignore // TODO: fix extended store actions typings
-          await this.$accessor.attributes.addOption({
+          const result: AddOptionResult = await this.$accessor.attributes.addOption({
             attributeId: this.attributeId,
             option: this.editedOption,
           })
+          if (!result.success) throw result.error
         }
         this.$toast.success(this.$t('formSuccess') as string)
         this.editedOption = null

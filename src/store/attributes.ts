@@ -63,21 +63,29 @@ export const attributes = createVuexCRUD<Attribute, AttributeCreateDto, Attribut
       },
 
       async addOption({ commit }, { attributeId, option }: CreateOptionAction) {
-        const { data } = await api.post<{ data: AttributeOption }>(
-          `/attributes/id:${attributeId}/options`,
-          option,
-        )
-        commit('ADD_OPTION', data.data)
-        return data.data
+        try {
+          const { data } = await api.post<{ data: AttributeOption }>(
+            `/attributes/id:${attributeId}/options`,
+            option,
+          )
+          commit('ADD_OPTION', data.data)
+          return { success: true, option: data.data }
+        } catch (error) {
+          return { success: false, error } as const
+        }
       },
 
       async updateOption({ commit }, { attributeId, optionId, option }: UpdateOptionAction) {
-        const { data } = await api.patch<{ data: AttributeOption }>(
-          `/attributes/id:${attributeId}/options/id:${optionId}`,
-          option,
-        )
-        commit('UPDATE_OPTION', { optionId, option: data.data })
-        return data.data
+        try {
+          const { data } = await api.patch<{ data: AttributeOption }>(
+            `/attributes/id:${attributeId}/options/id:${optionId}`,
+            option,
+          )
+          commit('UPDATE_OPTION', { optionId, option: data.data })
+          return { success: true, option: data.data }
+        } catch (error) {
+          return { success: false, error } as const
+        }
       },
 
       async deleteOption({ commit }, { attributeId, optionId }: DeleteOptionAction) {

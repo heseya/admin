@@ -10,6 +10,7 @@ import {
 import { UUID } from '@/interfaces/UUID'
 import { api } from '@/api'
 import { stringifyQuery } from '@/utils/utils'
+import { ResponseMeta } from '@/interfaces/Response'
 
 type CreateOptionAction = { attributeId: UUID; option: AttributeOptionDto }
 type UpdateOptionAction = { attributeId: UUID; optionId: UUID; option: AttributeOptionDto }
@@ -21,10 +22,14 @@ export const attributes = createVuexCRUD<Attribute, AttributeCreateDto, Attribut
   'attributes',
   {
     state: {
+      optionsMeta: {} as ResponseMeta,
       options: [] as AttributeOption[],
     },
     getters: {},
     mutations: {
+      SET_OPTIONS_META(state, meta: ResponseMeta) {
+        state.optionsMeta = meta
+      },
       SET_OPTIONS(state, options: AttributeOption[]) {
         state.options = options
       },
@@ -33,7 +38,7 @@ export const attributes = createVuexCRUD<Attribute, AttributeCreateDto, Attribut
       },
       UPDATE_OPTION(state, { optionId, option }: UpdateOptionMutation) {
         const index = state.options.findIndex((o) => o.id === optionId)
-        state.options[index] = option
+        if (index >= 0) state.options[index] = option
       },
       DELETE_OPTION(state, optionId: UUID) {
         state.options = state.options.filter((o) => o.id !== optionId)
@@ -46,9 +51,10 @@ export const attributes = createVuexCRUD<Attribute, AttributeCreateDto, Attribut
       ) {
         try {
           const queryString = stringifyQuery(params)
-          const { data } = await api.get<{ data: AttributeOption[] }>(
+          const { data } = await api.get<{ data: AttributeOption[]; meta: ResponseMeta }>(
             `/attributes/id:${attributeId}/options${queryString}`,
           )
+          commit('SET_OPTIONS_META', data.meta)
           commit('SET_OPTIONS', data.data)
           return data.data
         } catch {
@@ -57,39 +63,27 @@ export const attributes = createVuexCRUD<Attribute, AttributeCreateDto, Attribut
       },
 
       async addOption({ commit }, { attributeId, option }: CreateOptionAction) {
-        try {
-          const { data } = await api.post<{ data: AttributeOption }>(
-            `/attributes/id:${attributeId}/options`,
-            option,
-          )
-          commit('ADD_OPTION', data.data)
-          return { success: true, option: data.data } as const
-        } catch (e) {
-          return { success: false, error: e } as const
-        }
+        const { data } = await api.post<{ data: AttributeOption }>(
+          `/attributes/id:${attributeId}/options`,
+          option,
+        )
+        commit('ADD_OPTION', data.data)
+        return data.data
       },
 
       async updateOption({ commit }, { attributeId, optionId, option }: UpdateOptionAction) {
-        try {
-          const { data } = await api.patch<{ data: AttributeOption }>(
-            `/attributes/id:${attributeId}/options/id:${optionId}`,
-            option,
-          )
-          commit('UPDATE_OPTION', { optionId, option: data.data })
-          return { success: true, option: data.data } as const
-        } catch (e) {
-          return { success: false, error: e } as const
-        }
+        const { data } = await api.patch<{ data: AttributeOption }>(
+          `/attributes/id:${attributeId}/options/id:${optionId}`,
+          option,
+        )
+        commit('UPDATE_OPTION', { optionId, option: data.data })
+        return data.data
       },
 
       async deleteOption({ commit }, { attributeId, optionId }: DeleteOptionAction) {
-        try {
-          await api.delete(`/attributes/id:${attributeId}/options/id:${optionId}`)
-          commit('DELETE_OPTION', optionId)
-          return { success: true } as const
-        } catch (e) {
-          return { success: false, error: e } as const
-        }
+        await api.delete(`/attributes/id:${attributeId}/options/id:${optionId}`)
+        commit('DELETE_OPTION', optionId)
+        return true
       },
     },
   },

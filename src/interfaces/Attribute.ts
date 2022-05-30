@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import { CreateMetadataFields, MetadataFields } from './Metadata'
 import { UUID } from './UUID'
 
 // ? ---------------------------------------------------------------
@@ -11,14 +12,14 @@ export enum AttributeType {
   Number = 'number',
   Date = 'date',
 }
-interface AttributeOptionBase {
+interface AttributeOptionBase extends CreateMetadataFields {
   id: UUID
   index: number
   name: string
   value_number: number | null
   value_date: string | null // Date
 }
-interface AttributeBase {
+interface AttributeBase extends CreateMetadataFields {
   id: UUID
   name: string
   slug: string
@@ -28,7 +29,6 @@ interface AttributeBase {
   type: AttributeType
   min: number | string | null
   max: number | string | null
-  options: AttributeOption[]
 }
 
 // ? ---------------------------------------------------------------
@@ -36,69 +36,64 @@ interface AttributeBase {
 // ? ---------------------------------------------------------------
 
 // DtoHelper
-type MakeAttributeDto<Attr, OptionDto> = Omit<Attr, 'id' | 'min' | 'max' | 'options'> & {
-  options: (OptionDto & { id?: UUID })[]
-}
+type MakeAttributeDto<Attr> = Omit<Attr, 'id' | 'min' | 'max'>
 
 // * Single Option -------------------------------------------------
 interface AttributeSingleOptionOption extends AttributeOptionBase {
   value_number: null
   value_date: null
 }
-type AttributeSingleOptionOptionDto = Omit<AttributeSingleOptionOption, 'id' | 'index'>
 
 interface AttributeSingleOption extends AttributeBase {
   type: AttributeType.SingleOption
   min: null
   max: null
-  options: AttributeSingleOptionOption[]
 }
-type AttributeSingleOptionDto = MakeAttributeDto<
-  AttributeSingleOption,
-  AttributeSingleOptionOptionDto
+type AttributeSingleOptionCreateDto = MakeAttributeDto<AttributeSingleOption>
+type AttributeSingleOptionUpdateDto = MakeAttributeDto<
+  Omit<AttributeSingleOption, keyof CreateMetadataFields>
 >
 
 // * Multi Option --------------------------------------------------------
 type AttributeMultiOptionOption = AttributeSingleOptionOption
-type AttributeMultiOptionOptionDto = AttributeSingleOptionOptionDto
 
 interface AttributeMultiOption extends AttributeBase {
   type: AttributeType.MultiChoiceOption
   min: null
   max: null
-  options: AttributeMultiOptionOption[]
 }
-type AttributeMultiOptionDto = MakeAttributeDto<AttributeMultiOption, AttributeMultiOptionOptionDto>
+type AttributeMultiOptionCreateDto = MakeAttributeDto<AttributeMultiOption>
+type AttributeMultiOptionUpdateDto = MakeAttributeDto<
+  Omit<AttributeMultiOption, keyof CreateMetadataFields>
+>
 
 // * Number --------------------------------------------------------
 interface AttributeNumberOption extends AttributeOptionBase {
   value_number: number
   value_date: null
 }
-type AttributeNumberOptionDto = Omit<AttributeNumberOption, 'id' | 'index'>
 
 interface AttributeNumber extends AttributeBase {
-  type: AttributeType.Date
+  type: AttributeType.Number
   min: number
   max: number
-  options: AttributeNumberOption[]
 }
-type AttributeNumberDto = MakeAttributeDto<AttributeNumber, AttributeNumberOptionDto>
+type AttributeNumberCreateDto = MakeAttributeDto<AttributeNumber>
+type AttributeNumberUpdateDto = MakeAttributeDto<Omit<AttributeNumber, keyof CreateMetadataFields>>
 
 // * Date ----------------------------------------------------------
 interface AttributeDateOption extends AttributeOptionBase {
   value_number: null
   value_date: string // Date
 }
-type AttributeDateOptionDto = Omit<AttributeDateOption, 'id' | 'index'> | { id?: UUID }
-
 interface AttributeDate extends AttributeBase {
   type: AttributeType.Date
   min: string // Date
   max: string // Date
   options: AttributeDateOption[]
 }
-type AttributeDateDto = MakeAttributeDto<AttributeDate, AttributeDateOptionDto>
+type AttributeDateCreateDto = MakeAttributeDto<AttributeDate>
+type AttributeDateUpdateDto = MakeAttributeDto<Omit<AttributeDate, keyof CreateMetadataFields>>
 
 // ? ---------------------------------------------------------------
 // ? SUMMARY
@@ -118,11 +113,19 @@ export type Attribute =
   | AttributeNumber
   | AttributeDate
 
-export type AttributeDto =
-  | AttributeSingleOptionDto
-  | AttributeMultiOptionDto
-  | AttributeNumberDto
-  | AttributeDateDto
+export type ProductSetAttribute = Omit<Attribute, 'options'>
+
+export type AttributeCreateDto =
+  | AttributeSingleOptionCreateDto
+  | AttributeMultiOptionCreateDto
+  | AttributeNumberCreateDto
+  | AttributeDateCreateDto
+
+export type AttributeUpdateDto =
+  | AttributeSingleOptionUpdateDto
+  | AttributeMultiOptionUpdateDto
+  | AttributeNumberUpdateDto
+  | AttributeDateUpdateDto
 
 // ? ---------------------------------------------------------------
 // ? Attributes in products
@@ -133,10 +136,12 @@ export interface ProductListAttribute {
   selected_options: AttributeOption[]
 }
 
-interface ProductAttributeBase extends ProductListAttribute {
+interface ProductAttributeBase extends ProductListAttribute, MetadataFields {
   id: UUID
+  slug: string
   description: string
   global: boolean
+  sortable: boolean
 }
 
 interface ProductAttributeSingleOption extends ProductAttributeBase {

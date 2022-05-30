@@ -118,6 +118,7 @@ export default Vue.extend({
   methods: {
     async saveModalForm() {
       if (!this.editedOption) return
+      this.$accessor.startLoading()
 
       try {
         if (this.editedOption.id) {
@@ -141,6 +142,7 @@ export default Vue.extend({
       } catch (e: any) {
         this.$toast.error(formatApiNotificationError(e))
       }
+      this.$accessor.stopLoading()
     },
   },
 })

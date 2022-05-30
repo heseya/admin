@@ -146,6 +146,7 @@ export default Vue.extend({
 
   methods: {
     async fetchOptions(page: number) {
+      this.$accessor.startLoading()
       // @ts-ignore // TODO: fix extended store actions typings
       await this.$accessor.attributes.getOptions({
         attributeId: this.attributeId,
@@ -154,9 +155,11 @@ export default Vue.extend({
           page,
         },
       })
+      this.$accessor.stopLoading()
     },
 
     async removeOption(option: AttributeOption) {
+      this.$accessor.startLoading()
       try {
         // @ts-ignore // TODO: fix extended store actions typings
         await this.$accessor.attributes.deleteOption({
@@ -167,6 +170,7 @@ export default Vue.extend({
       } catch (e: any) {
         this.$toast.error(formatApiNotificationError(e))
       }
+      this.$accessor.stopLoading()
     },
 
     openAddOptionModal() {

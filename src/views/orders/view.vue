@@ -36,7 +36,6 @@
           :shipping-method="order.shipping_method.name"
           :shipping-number="order.shipping_number"
           @created="onPackageCreated"
-          @updated="onPackageCreated"
         />
       </card>
       <card class="order-page__documents">

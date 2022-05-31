@@ -43,10 +43,9 @@
       $t('setShippingNumber.title')
     }}</span>
     <div class="send-package__content">
-      <input
+      <app-input
         v-model="packageShippingNumber"
-        type="text"
-        class="ant-input send-package__input"
+        class="send-package__input"
         :placeholder="$t('setShippingNumber.templatePlaceholder')"
       />
       <app-button
@@ -91,7 +90,7 @@
     },
     "setShippingNumber": {
       "title": "Shipping number",
-      "templatePlaceholder": "-- Enter Shipping Number --",
+      "templatePlaceholder": "-- Enter shipping number --",
       "save": "Save"
     }
   }
@@ -101,7 +100,6 @@
 <script lang="ts">
 import Vue from 'vue'
 import { createPackage } from '@/services/createPackage'
-import { setShippingNumber } from '@/services/setShippingNumber'
 import { formatApiNotificationError } from '@/utils/errors'
 import { PackageTemplate } from '@/interfaces/PackageTemplate'
 
@@ -160,13 +158,15 @@ export default Vue.extend({
         return
       }
       this.$accessor.startLoading()
-      const res = await setShippingNumber(this.orderId, this.packageShippingNumber)
+      const res = this.$accessor.orders.update({
+        id: this.orderId,
+        item: { shipping_number: this.packageShippingNumber },
+      })
 
-      if (res.success) {
-        this.$emit('updated', res.shippingNumber)
+      if (Boolean(res)) {
         this.$toast.success('Numer przesyłki został zmieniony')
       } else {
-        this.$toast.error(formatApiNotificationError(res.error))
+        this.$toast.error('Nie można zmienić numeru przesyłki')
       }
 
       this.$accessor.stopLoading()
@@ -232,6 +232,10 @@ export default Vue.extend({
     &--shipping {
       margin-top: 8px;
     }
+  }
+
+  &__input {
+    margin-bottom: 0;
   }
 }
 </style>

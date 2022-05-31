@@ -49,16 +49,15 @@
       </a-select-option>
     </app-select>
 
-    <template v-if="!isNew">
-      <hr />
-      <options-form v-model="form.options" :disabled="disabled" :type="form.type" />
-    </template>
-
     <br />
-
     <app-button data-cy="submit-btn" :disabled="disabled" @click.stop="handleSubmit(submit)">
       {{ $t('common.save') }}
     </app-button>
+
+    <template v-if="!isNew">
+      <hr />
+      <OptionsList :attribute-id="attribute.id" :disabled="disabled" :type="form.type" />
+    </template>
   </validation-observer>
 </template>
 
@@ -99,25 +98,29 @@ import cloneDeep from 'lodash/cloneDeep'
 import { ValidationObserver } from 'vee-validate'
 import { generateSlug } from '@/utils/generateSlug'
 
-import { Attribute, AttributeDto, AttributeType } from '@/interfaces/Attribute'
+import {
+  Attribute,
+  AttributeCreateDto,
+  AttributeUpdateDto,
+  AttributeType,
+} from '@/interfaces/Attribute'
 import { UUID } from '@/interfaces/UUID'
 
-import OptionsForm from './OptionsForm.vue'
+import OptionsList from './OptionsList.vue'
 
-const CLEAR_FORM: AttributeDto = {
+const CLEAR_FORM: AttributeCreateDto = {
   name: '',
   slug: '',
   description: '',
   type: AttributeType.SingleOption,
   sortable: false,
   global: false,
-  options: [],
 }
 
 export default Vue.extend({
   components: {
     ValidationObserver,
-    OptionsForm,
+    OptionsList,
   },
   props: {
     attribute: {
@@ -127,7 +130,7 @@ export default Vue.extend({
     disabled: { type: Boolean, default: false },
   },
   data: () => ({
-    form: {} as AttributeDto & { id?: UUID },
+    form: {} as (AttributeCreateDto | AttributeUpdateDto) & { id?: UUID },
     AttributeType: AttributeType,
   }),
   computed: {

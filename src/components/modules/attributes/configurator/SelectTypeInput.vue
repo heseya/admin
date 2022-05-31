@@ -44,18 +44,22 @@
   "en": {
     "placeholder": "Select or create an option",
     "createOption": "Create new option",
-    "empty": "Start typing to create a new option"
+    "empty": "Start typing to create a new option",
+    "optionsFetchError": "Error fetching options"
   },
   "pl": {
     "placeholder": "Wybierz lub utwórz opcję",
     "createOption": "Utwórz nową opcję",
-    "empty": "Zacznij pisać, aby utworzyć nową opcje"
+    "empty": "Zacznij pisać, aby utworzyć nową opcje",
+    "optionsFetchError": "Błąd pobierania opcji"
   }
 }
 </i18n>
 
 <script lang="ts">
 import Vue from 'vue'
+import debounce from 'lodash/debounce'
+
 import { AttributeOption, AttributeType, ProductAttribute } from '@/interfaces/Attribute'
 import { UUID } from '@/interfaces/UUID'
 import { formatApiNotificationError } from '@/utils/errors'
@@ -105,11 +109,11 @@ export default Vue.extend({
   },
   watch: {
     attribute() {
-      this.fetchAttribute()
+      this.fetchOptions()
     },
   },
   mounted() {
-    this.fetchAttribute()
+    this.fetchOptions()
   },
   methods: {
     setValue(v: UUID | UUID[] | undefined) {
@@ -126,12 +130,28 @@ export default Vue.extend({
     },
     onSearch(value: string) {
       this.searchedValue = value
+      this.debouncedFetchOptions()
     },
 
-    async fetchAttribute() {
+    debouncedFetchOptions: debounce(function (this: any) {
+      this.fetchOptions()
+    }, 300),
+
+    async fetchOptions() {
       this.isLoading = true
-      const attribute = await this.$accessor.attributes.get(this.attribute.id)
-      if (attribute) this.options = [...attribute.options] as AttributeOption[]
+      // @ts-ignore // TODO: fix extended store actions typings
+      const options = await this.$accessor.attributes.getOptions({
+        attributeId: this.attribute.id,
+        params: { search: this.searchedValue },
+      })
+
+      if (!options) {
+        this.$toast.error(this.$t('optionsFetchError') as string)
+        this.isLoading = false
+        return
+      }
+
+      this.options = options
       this.isLoading = false
     },
 

@@ -94,7 +94,6 @@ export default Vue.extend({
         this.editedItem = {
           ...cloneDeep(set),
           parent_id: set.parent?.id || null,
-          children_ids: set.children.map((child) => child.id),
           attributes: set.attributes?.map((attr) => attr.id) || [],
         }
         this.editedItemSlugPrefix = set.parent?.slug || ''

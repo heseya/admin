@@ -1,7 +1,7 @@
 <template>
   <div class="product-set" @click.stop="toggleChildrenVisibility">
     <div class="product-set__content">
-      <icon-button type="transparent" size="small" :disabled="!children.length">
+      <icon-button type="transparent" size="small" :disabled="!childrenQuantity">
         <template #icon>
           <i v-if="areChildrenVisible" class="bx bx-minus"></i>
           <i v-else class="bx bx-plus"></i>

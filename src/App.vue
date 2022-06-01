@@ -80,9 +80,6 @@ export default Vue.extend({
 
     // MicroFrontend Events Start
     onMounted(() => {
-      // ! deprecated: remove before 3.0.0
-      this.tokenChannel.emit('set', this.$accessor.auth.getIdentityToken)
-
       this.mainChannel.emit('init', {
         coreUrl: getApiURL(),
         token: this.$accessor.auth.getIdentityToken,

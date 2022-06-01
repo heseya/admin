@@ -2,7 +2,7 @@
   <div class="autocomplete-input">
     <ValidationProvider ref="provider" v-slot="{ errors }" :rules="rules">
       <app-select
-        :value="antSelectValue"
+        :value="inputValue"
         :label="label"
         :mode="mode"
         :name="`autocomplete-${model}`"
@@ -54,12 +54,14 @@
 import Vue from 'vue'
 import debounce from 'lodash/debounce'
 import uniqBy from 'lodash/uniqBy'
+import isEmpty from 'lodash/isEmpty'
 import { ValidationProvider } from 'vee-validate'
 
 import { api } from '@/api'
 import { GeneratedStoreModulesKeys } from '@/store'
 import Empty from '@/components/layout/Empty.vue'
 import { UUID } from '@/interfaces/UUID'
+import { SelectType } from '@/enums/select'
 
 interface BaseItem {
   id: UUID
@@ -77,7 +79,7 @@ export default Vue.extend({
       required: true,
     } as Vue.PropOptions<GeneratedStoreModulesKeys>,
     value: {
-      type: Array,
+      type: [Object, Array],
       default: () => [],
     } as Vue.PropOptions<BaseItem[]>,
     disabled: { type: Boolean, default: false },
@@ -85,15 +87,32 @@ export default Vue.extend({
     placeholderModel: { type: String, default: '' },
     rules: { type: [String, Object], default: null },
     mode: { type: String, default: 'multiple' },
-    api: { type: Boolean, default: false },
-    filterItems: { type: Array, default: () => [] },
+    bannedSetIds: { type: Array, default: () => [] },
   },
   data: () => ({
     isLoading: false,
-    apiOptions: [] as BaseItem[],
+    data: [] as BaseItem[],
   }),
   computed: {
-    selectedItems: {
+    SelectType(): typeof SelectType {
+      return SelectType
+    },
+    url(): string {
+      return this.model
+        .split(/(?=[A-Z])/)
+        .join('-')
+        .toLowerCase()
+    },
+    singleOptionId: {
+      get(): BaseItem | undefined {
+        if (isEmpty(this.value)) return undefined
+        return this.value?.[0] || this.value
+      },
+      set(v: BaseItem) {
+        this.$emit('input', v)
+      },
+    },
+    multiOptionsIds: {
       get(): BaseItem[] {
         return this.value
       },
@@ -101,49 +120,67 @@ export default Vue.extend({
         this.$emit('input', v)
       },
     },
-    options(): BaseItem[] {
-      if (!this.api)
-        return uniqBy([...this.selectedItems, ...this.$accessor[this.model].getData], 'id') || []
-      else return this.apiOptions
+    inputValue(): string | AntSelectOption[] | undefined {
+      if (this.mode === this.SelectType.Multiple) {
+        return this.multiOptionsIds.map((item) => ({
+          key: item.id,
+          label: item.name || item.code!,
+        }))
+      } else {
+        if (this.singleOptionId)
+          return [
+            {
+              key: this.singleOptionId.id,
+              label: this.singleOptionId.name || this.singleOptionId.code!,
+            },
+          ]
+        else return undefined
+      }
     },
-    antSelectValue(): AntSelectOption[] {
-      return this.selectedItems.map((item) => ({
-        key: item.id,
-        label: item.name || item.code!,
-      }))
+    options(): BaseItem[] {
+      if (this.mode === this.SelectType.Multiple)
+        return (
+          uniqBy([...this.multiOptionsIds, ...this.data], 'id').filter(
+            (item) => !this.bannedSetIds.includes(item.id),
+          ) || []
+        )
+      else
+        return (
+          uniqBy([...this.data], 'id').filter((item) => !this.bannedSetIds.includes(item.id)) || []
+        )
     },
   },
   mounted() {
-    if (!this.api) this.fetchItems()
+    this.fetchItems()
   },
   methods: {
     onSearch: debounce(function (this: any, search: string) {
-      this.api ? this.fetchItemsFromApi(search) : this.fetchItems(search)
+      this.fetchItems(search)
     }, 500),
 
     onDeselect({ key }: AntSelectOption) {
-      this.selectedItems = this.selectedItems.filter(({ id }) => id !== key)
+      if (this.mode === this.SelectType.Multiple)
+        this.multiOptionsIds = this.multiOptionsIds.filter(({ id }) => id !== key)
     },
 
-    onSelect(option: AntSelectOption) {
-      this.selectedItems = [
-        ...this.selectedItems,
-        this.options.find(({ id }) => id === option.key)!,
-      ]
+    onSelect(selectedOption: AntSelectOption) {
+      if (this.mode === this.SelectType.Multiple) {
+        this.multiOptionsIds = [
+          ...this.multiOptionsIds,
+          this.options.find(({ id }) => id === selectedOption.key)!,
+        ]
+      } else {
+        this.singleOptionId = this.options.find(({ id }) => id === selectedOption.key)
+      }
     },
-
-    async fetchItems(query?: string) {
-      this.isLoading = true
-      await this.$accessor[this.model].fetch({ search: query, tree: 0 })
-      this.isLoading = false
-    },
-    async fetchItemsFromApi(query?: string) {
+    async fetchItems(query: string = '') {
       this.isLoading = true
       const {
         data: { data: data },
-      } = await api.get<{ data: BaseItem[] }>(`/${this.model}?search=${query}`)
+      } = await api.get<{ data: BaseItem[] }>(`/${this.url}?search=${query}`)
 
-      this.apiOptions = [...data].filter((item) => !this.filterItems.includes(item.id))
+      this.data = data
+
       this.isLoading = false
     },
   },

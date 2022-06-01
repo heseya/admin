@@ -1,7 +1,7 @@
 <template>
   <div class="product-set" @click.stop="toggleChildrenVisibility">
     <div class="product-set__content">
-      <icon-button type="transparent" size="small" :disabled="!children.length">
+      <icon-button type="transparent" size="small" :disabled="!childrenQuantity">
         <template #icon>
           <i v-if="areChildrenVisible" class="bx bx-minus"></i>
           <i v-else class="bx bx-plus"></i>
@@ -32,7 +32,7 @@
               <a-menu-item v-can="$p.ProductSets.ShowDetails" @click="showSetProducts">
                 <i class="bx bx-customize"></i> &nbsp; {{ $t('menu.showProducts') }}
               </a-menu-item>
-              <a-menu-item v-can="$p.ProductSets.Edit" @click="editProductSet">
+              <a-menu-item v-can="$p.ProductSets.ShowDetails" @click="editProductSet">
                 <i class="bx bx-edit"></i> &nbsp; {{ $t('menu.edit') }}
               </a-menu-item>
               <a-menu-item v-can="$p.ProductSets.Edit" @click="changeParent">
@@ -176,8 +176,10 @@ export default Vue.extend({
   },
   methods: {
     createSuccess(set: ProductSet) {
-      this.children.push({ ...set, children_ids: [] })
-      this.childrenQuantity++
+      if (this.children.length) {
+        this.children.push({ ...set, children_ids: [] })
+        this.childrenQuantity++
+      }
     },
     editSuccess(set: ProductSet) {
       this.$emit('update-parent', set)

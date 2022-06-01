@@ -11,8 +11,7 @@
         :label="$t('title')"
         mode="default"
         model="product-sets"
-        api
-        :filter-items="filterItems"
+        :banned-set-ids="bannedSetIds"
       />
     </div>
 
@@ -57,17 +56,18 @@ export default Vue.extend({
   },
 
   data: () => ({
-    selectedParent: [] as ProductSet[],
-    filterItems: [] as string[],
+    selectedParent: {} as ProductSet,
   }),
-  async created() {
-    if (this.set.id)
-      this.filterItems = [...this.set.children_ids, this.set.id, this.set.parent_id as string]
+  computed: {
+    bannedSetIds(): string[] {
+      if (this.set.id) return [...this.set.children_ids, this.set.id, this.set.parent_id as string]
+      return []
+    },
   },
 
   methods: {
     async save() {
-      if (!this.set) return
+      if (!this.selectedParent.id) return
       this.$accessor.startLoading()
 
       try {
@@ -75,11 +75,12 @@ export default Vue.extend({
           id: this.set.id as string,
           item: {
             ...this.set,
-            parent_id: this.selectedParent[0].id,
+            parent_id: this.selectedParent.id,
           },
         })
 
-        if (this.set.parent_id) this.$emit('delete', this.set.id)
+        //Refresh product sets to properly update changes in the tree
+        await this.refreshProductSets()
 
         this.$toast.success(this.$t('successMessage') as string)
         this.$emit('close')
@@ -87,6 +88,10 @@ export default Vue.extend({
         this.$toast.error(formatApiNotificationError(e))
       }
       this.$accessor.stopLoading()
+    },
+    async refreshProductSets() {
+      this.$accessor.productSets.clearData()
+      await this.$accessor.productSets.fetch()
     },
   },
 })

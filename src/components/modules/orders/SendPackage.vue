@@ -75,7 +75,10 @@
     "setShippingNumber": {
       "title": "Numer przesyłki",
       "templatePlaceholder": "-- Wpisz numer przesyłki --",
-      "save": "Zapisz"
+      "save": "Zapisz",
+      "sameAsBefore": "Podany numer przesyłki nie różni się od obecnego",
+      "changed": "Numer przesyłki został zmieniony",
+      "cantChange": "Nie można zmienić numeru przesyłki"
     }
   },
   "en": {
@@ -91,7 +94,10 @@
     "setShippingNumber": {
       "title": "Shipping number",
       "templatePlaceholder": "-- Enter shipping number --",
-      "save": "Save"
+      "save": "Save",
+      "sameAsBefore": "Given shipping number doesn't differ from the present one",
+      "changed": "Shipping number was changed",
+      "cantChange": "Can't change shipping number"
     }
   }
 }
@@ -154,7 +160,7 @@ export default Vue.extend({
       if (typeof this.packageShippingNumber === 'undefined') return
       if (!this.packageShippingNumber.trim().length) return
       if (this.packageShippingNumber.trim() === this.shippingNumber) {
-        this.$toast.warning('Podany numer przesyłki nie różni się od obecnego')
+        this.$toast.warning(this.$t('setShippingNumber.sameAsBefore') as string)
         return
       }
       this.$accessor.startLoading()
@@ -164,9 +170,9 @@ export default Vue.extend({
       })
 
       if (Boolean(res)) {
-        this.$toast.success('Numer przesyłki został zmieniony')
+        this.$toast.success(this.$t('setShippingNumber.changed') as string)
       } else {
-        this.$toast.error('Nie można zmienić numeru przesyłki')
+        this.$toast.error(this.$t('setShippingNumber.cantChange') as string)
       }
 
       this.$accessor.stopLoading()
@@ -179,7 +185,7 @@ export default Vue.extend({
 
       if (res.success) {
         this.$emit('created', res.shippingNumber)
-        this.$toast.success('Przesyłka utworzona poprawnie')
+        this.$toast.success(this.$t('sendPackage.created') as string)
       } else {
         this.$toast.error(formatApiNotificationError(res.error))
       }

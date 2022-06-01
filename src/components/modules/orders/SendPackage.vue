@@ -144,6 +144,13 @@ export default Vue.extend({
       ]
     },
   },
+
+  watch: {
+    shippingNumber() {
+      this.packageShippingNumber = this.shippingNumber || ''
+    },
+  },
+
   created() {
     this.$accessor.packageTemplates.fetch()
     this.providerKey =

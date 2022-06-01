@@ -5,7 +5,7 @@
         :value="inputValue"
         :label="label"
         :mode="mode"
-        :name="`autocomplete-${model}`"
+        :name="`autocomplete-${modelUrl}`"
         class="autocomplete-input__select"
         option-filter-prop="label"
         :disabled="disabled"
@@ -58,7 +58,6 @@ import isEmpty from 'lodash/isEmpty'
 import { ValidationProvider } from 'vee-validate'
 
 import { api } from '@/api'
-import { GeneratedStoreModulesKeys } from '@/store'
 import Empty from '@/components/layout/Empty.vue'
 import { UUID } from '@/interfaces/UUID'
 import { SelectType } from '@/enums/select'
@@ -74,14 +73,11 @@ type AntSelectOption = { key: string; label: string }
 export default Vue.extend({
   components: { Empty, ValidationProvider },
   props: {
-    model: {
-      type: String,
-      required: true,
-    } as Vue.PropOptions<GeneratedStoreModulesKeys>,
     value: {
       type: [Object, Array],
       default: () => [],
-    } as Vue.PropOptions<BaseItem[]>,
+    } as Vue.PropOptions<BaseItem | BaseItem[]>,
+    modelUrl: { type: String, required: true },
     disabled: { type: Boolean, default: false },
     label: { type: String, default: '' },
     placeholderModel: { type: String, default: '' },
@@ -91,22 +87,16 @@ export default Vue.extend({
   },
   data: () => ({
     isLoading: false,
-    data: [] as BaseItem[],
+    searchedOptions: [] as BaseItem[],
   }),
   computed: {
     SelectType(): typeof SelectType {
       return SelectType
     },
-    url(): string {
-      return this.model
-        .split(/(?=[A-Z])/)
-        .join('-')
-        .toLowerCase()
-    },
     singleOptionId: {
       get(): BaseItem | undefined {
         if (isEmpty(this.value)) return undefined
-        return this.value?.[0] || this.value
+        return (this.value as BaseItem[])?.[0] || this.value
       },
       set(v: BaseItem) {
         this.$emit('input', v)
@@ -114,7 +104,7 @@ export default Vue.extend({
     },
     multiOptionsIds: {
       get(): BaseItem[] {
-        return this.value
+        return this.value as BaseItem[]
       },
       set(v: BaseItem[]) {
         this.$emit('input', v)
@@ -140,13 +130,15 @@ export default Vue.extend({
     options(): BaseItem[] {
       if (this.mode === this.SelectType.Multiple)
         return (
-          uniqBy([...this.multiOptionsIds, ...this.data], 'id').filter(
+          uniqBy([...this.multiOptionsIds, ...this.searchedOptions], 'id').filter(
             (item) => !this.bannedSetIds.includes(item.id),
           ) || []
         )
       else
         return (
-          uniqBy([...this.data], 'id').filter((item) => !this.bannedSetIds.includes(item.id)) || []
+          uniqBy([...this.searchedOptions], 'id').filter(
+            (item) => !this.bannedSetIds.includes(item.id),
+          ) || []
         )
     },
   },
@@ -177,9 +169,9 @@ export default Vue.extend({
       this.isLoading = true
       const {
         data: { data: data },
-      } = await api.get<{ data: BaseItem[] }>(`/${this.url}?search=${query}`)
+      } = await api.get<{ data: BaseItem[] }>(`/${this.modelUrl}?search=${query}`)
 
-      this.data = data
+      this.searchedOptions = data
 
       this.isLoading = false
     },

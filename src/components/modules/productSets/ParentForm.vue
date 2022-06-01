@@ -10,7 +10,7 @@
         v-model="selectedParent"
         :label="$t('title')"
         mode="default"
-        model="product-sets"
+        model-url="product-sets"
         :banned-set-ids="bannedSetIds"
       />
     </div>
@@ -60,8 +60,9 @@ export default Vue.extend({
   }),
   computed: {
     bannedSetIds(): string[] {
-      if (this.set.id) return [...this.set.children_ids, this.set.id, this.set.parent_id as string]
-      return []
+      return this.set.id
+        ? [...this.set.children_ids, this.set.id, this.set.parent_id as string]
+        : []
     },
   },
 

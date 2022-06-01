@@ -1,6 +1,13 @@
 <template>
   <div :key="webhook.id" class="narrower-page">
     <top-nav :title="!isNew ? webhook.name : $t('newTitle')">
+      <icon-button @click="toggleEventsModal">
+        <template #icon>
+          <i class="bx bx-list-ul"></i>
+        </template>
+        {{ $t('showEvents') }}
+      </icon-button>
+
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Webhooks.Remove"
@@ -26,6 +33,20 @@
         @submit="saveWebhook"
       />
     </card>
+
+    <!-- <a-modal v-if="true" width="800px" title="HELLO"> hello </a-modal> -->
+    <!-- <div v-if="eventsModalVisible" class="events-modal">TEST</div> -->
+    <a-modal
+      :visible="eventsModalVisible"
+      width="750px"
+      :footer="null"
+      title="Eventy"
+      @cancel="toggleEventsModal"
+    >
+      <div v-for="event in editedWebhook.events" :key="event">{{ event }}</div>
+      <!-- <cms-table :value="editedWebhook.events" /> -->
+      <!-- <cms-table :value="order.payments" :config="paymentsTableConfig" no-hover /> -->
+    </a-modal>
   </div>
 </template>
 
@@ -36,14 +57,16 @@
     "deleteText": "Czy na pewno chcesz usunąć ten webhook?",
     "deletedMessage": "Webhook został usunięty.",
     "createdMessage": "Webhook został zaktualizowany.",
-    "updatedMessage": "Webhook został utworzony."
+    "updatedMessage": "Webhook został utworzony.",
+    "showEvents": "Pokaż eventy"
   },
   "en": {
     "newTitle": "New webhook",
     "deleteText": "Are you sure you want to delete this webhook?",
     "deletedMessage": "Webhook has been deleted.",
     "createdMessage": "Webhook has been created.",
-    "updatedMessage": "Webhook has been updated."
+    "updatedMessage": "Webhook has been updated.",
+    "showEvents": "Show events"
   }
 }
 </i18n>
@@ -58,6 +81,7 @@ import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import WebhookForm from '@/components/modules/webhooks/Form.vue'
+// import CmsTable from '@/components/cms/CmsTable.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 
@@ -82,9 +106,11 @@ export default Vue.extend({
     Card,
     WebhookForm,
     PopConfirm,
+    // CmsTable,
   },
   data: () => ({
     editedWebhook: cloneDeep(CLEAR_FORM),
+    eventsModalVisible: false,
   }),
   computed: {
     id(): string {
@@ -115,6 +141,8 @@ export default Vue.extend({
 
     // @ts-ignore // TODO: fix extended store actions typings
     await this.$accessor.webhooks.fetchEvents()
+    await this.$accessor.webhooks.fetchActiveEvents()
+
     if (!this.isNew) await this.$accessor.webhooks.get(this.id)
 
     this.$accessor.stopLoading()
@@ -144,6 +172,9 @@ export default Vue.extend({
         this.$router.push('/webhooks')
       }
       this.$accessor.stopLoading()
+    },
+    toggleEventsModal() {
+      this.eventsModalVisible = !this.eventsModalVisible
     },
   },
 })

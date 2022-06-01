@@ -384,6 +384,14 @@ const router = new VueRouter({
         permissions: [Permissions.Webhooks.Show],
       },
     },
+    {
+      path: '/settings/menu',
+      name: 'Menu',
+      component: () => import('./views/menu/index.vue'),
+      meta: {
+        requiresAuth: true,
+      },
+    },
     // {
     //   path: '/settings/login-history',
     //   name: 'LoginHistory',

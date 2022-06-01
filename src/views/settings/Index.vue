@@ -24,6 +24,18 @@
           {{ $t('models.products') }}
         </h2>
         <SettingsItem
+          v-can="$p.Products.Show"
+          :name="$t('models.products')"
+          predefined-icon="icons/products-icon.svg"
+          url="/products"
+        />
+        <SettingsItem
+          v-can="$p.Products.Show"
+          :name="$t('models.sets')"
+          predefined-icon="icons/collections-icon.svg"
+          url="/collections"
+        />
+        <SettingsItem
           v-can="$p.Tags.Show"
           :name="$t('models.tags')"
           icon="bx bxs-purchase-tag"
@@ -41,8 +53,26 @@
           icon="bx bxs-customize"
           url="/schemas"
         />
+        <SettingsItem
+          v-can="$p.Coupons.Show"
+          :name="$t('models.coupons')"
+          predefined-icon="icons/coupons-icon.svg"
+          url="/coupons"
+        />
+        <SettingsItem
+          v-can="$p.Sales.Show"
+          :name="$t('models.sales')"
+          predefined-icon="icons/sales-icon.svg"
+          url="/sales"
+        />
 
         <h2 v-can.any="[$p.Statuses.Show]" class="section-title">{{ $t('models.orders') }}</h2>
+        <SettingsItem
+          v-can="$p.Statuses.Show"
+          :name="$t('nav.warehouse')"
+          predefined-icon="icons/warehouse-icon.svg"
+          url="/items"
+        />
         <SettingsItem
           v-can="$p.Statuses.Show"
           :name="$t('models.statuses')"
@@ -115,6 +145,7 @@
           icon="bx bxs-bell"
           @click="isUserAccountModal = true"
         />
+        <SettingsItem :name="$t('items.menu')" icon="bx bx-menu" url="/settings/menu" />
         <SettingsItem
           :name="$t('items.lang_preferences')"
           icon="bx bxs-user-detail"
@@ -194,6 +225,7 @@
       "advanced": "Advanced settings",
       "lang_preferences": "Language preferences",
       "user_account": "User account",
+      "menu": "Customize menu",
       "change_password": "Change password",
       "2fa": "Two-factor authentication",
       "sessions": "Login history",
@@ -216,6 +248,7 @@
       "advanced": "Ustawienia zaawansowane",
       "lang_preferences": "Preferencje językowe",
       "user_account": "Konto użytkownika",
+      "menu": "Dostosuj menu",
       "change_password": "Zmień hasło",
       "2fa": "Weryfikacja dwuetapowa",
       "sessions": "Sesje użytkownika",

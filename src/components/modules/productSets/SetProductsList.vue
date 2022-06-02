@@ -29,7 +29,7 @@
           </avatar>
           <div class="set-product-item__main">
             <span class="set-product-item__name">{{ product.name }}</span>
-            <span class="set-product-item__price">{{ formatCurrency(product.price) }}</span>
+            <product-price tag="span" class="set-product-item__price" :product="product" />
           </div>
           <div class="set-product-item__actions">
             <icon-button
@@ -92,17 +92,19 @@ import Draggable from 'vuedraggable'
 import Selector from '@/components/Selector.vue'
 import Empty from '@/components/layout/Empty.vue'
 import Avatar from '@/components/layout/Avatar.vue'
+import ProductPrice from '@/components/modules/products/ProductPrice.vue'
 
 import { ProductSet } from '@/interfaces/ProductSet'
 import { Product } from '@/interfaces/Product'
 import { UUID } from '@/interfaces/UUID'
+import { ResponseMeta } from '@/interfaces/Response'
 
 import { api } from '@/api'
 import { formatCurrency } from '@/utils/currency'
 import { formatApiNotificationError } from '@/utils/errors'
 
 export default Vue.extend({
-  components: { Draggable, Selector, Empty, Avatar },
+  components: { Draggable, Selector, Empty, Avatar, ProductPrice },
   props: {
     set: {
       type: Object,
@@ -141,11 +143,23 @@ export default Vue.extend({
     async fetchProducts() {
       if (!this.set) return
       this.$accessor.startLoading()
+
+      // TODO: this could be bad for performance, but it cannot be done any other way
       try {
-        const {
-          data: { data: products },
-        } = await api.get<{ data: Product[] }>(`/product-sets/id:${this.set.id}/products?limit=500`)
-        this.products = products
+        let page = 1
+        let lastPage = 1
+        this.products = []
+
+        do {
+          const {
+            data: { data: products, meta },
+          } = await api.get<{ data: Product[]; meta: ResponseMeta }>(
+            `/product-sets/id:${this.set.id}/products?limit=500&page=${page}`,
+          )
+          this.products.push(...products)
+          page++
+          lastPage = meta.last_page
+        } while (page < lastPage)
       } catch (e: any) {
         this.$toast.error(formatApiNotificationError(e))
       }

@@ -20,7 +20,10 @@
           icon="bx bxs-image"
         />
 
-        <h2 v-can.any="[$p.Tags.Show, $p.Products.Show]" class="section-title">
+        <h2
+          v-can.any="[$p.Tags.Show, $p.Products.Show, $p.Coupons.Show, $p.Sales.Show]"
+          class="section-title"
+        >
           {{ $t('models.products') }}
         </h2>
         <SettingsItem
@@ -30,7 +33,7 @@
           url="/products"
         />
         <SettingsItem
-          v-can="$p.Products.Show"
+          v-can="$p.ProductSets.Show"
           :name="$t('models.sets')"
           predefined-icon="icons/collections-icon.svg"
           url="/collections"
@@ -66,9 +69,11 @@
           url="/sales"
         />
 
-        <h2 v-can.any="[$p.Statuses.Show]" class="section-title">{{ $t('models.orders') }}</h2>
+        <h2 v-can.any="[$p.Statuses.Show, $p.Items.Show]" class="section-title">
+          {{ $t('models.orders') }}
+        </h2>
         <SettingsItem
-          v-can="$p.Statuses.Show"
+          v-can="$p.Items.Show"
           :name="$t('nav.warehouse')"
           predefined-icon="icons/warehouse-icon.svg"
           url="/items"

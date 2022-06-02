@@ -1,48 +1,69 @@
 <template>
   <div>
     <top-nav :title="$t('title')" />
-    <div class="menu">
-      <draggable
-        class="dragArea list-group"
-        handle=".draggable"
-        :list="menu"
-        :group="{ name: 'menu-items' }"
-      >
-        <div v-for="item in menu" :key="item.id">
-          <list-item :key="item.id" :class="{ draggable: !item.permanent }">
-            <template #avatar>
-              <InlineSvg
-                v-if="item.image"
-                class="nav-link-img"
-                :src="require(`@/assets/images/${item.image}`)"
-              />
-              <i v-else :class="item.icon"></i>
-            </template>
-            {{ $t(item.label) }}
-          </list-item>
+    <card>
+      <a-alert type="info" show-icon>
+        <template #message>
+          <span v-html="$t('info')"></span>
+        </template>
+      </a-alert>
+      <div class="menu-items">
+        <div class="menu-items__container">
+          <legend class="menu-items__title">
+            {{ $t('options') }}
+          </legend>
+          <draggable
+            class="dragArea list-group menu-items__inactive"
+            :list="items"
+            :group="{ name: 'menu-items' }"
+          >
+            <div v-for="item in items" :key="item.id">
+              <list-item :key="item.id">
+                <template #avatar>
+                  <InlineSvg
+                    v-if="item.predefinedIcon"
+                    :src="require(`@/assets/images/${item.predefinedIcon}`)"
+                  />
+                  <i v-else :class="item.icon"></i>
+                </template>
+                {{ $t(item.label) }}
+              </list-item>
+            </div>
+          </draggable>
         </div>
-      </draggable>
-      <div class="col-3">
-        <draggable class="dragArea list-group" :list="items" :group="{ name: 'menu-items' }">
-          <div v-for="item in items" :key="item.id">
-            <list-item :key="item.id">
-              <template #avatar>
-                <InlineSvg
-                  v-if="item.image"
-                  class="nav-link-img"
-                  :src="require(`@/assets/images/${item.image}`)"
-                />
-                <i v-else :class="item.icon"></i>
-              </template>
-              {{ $t(item.label) }}
-            </list-item>
-          </div>
-        </draggable>
+        <div class="menu-items__container">
+          <legend class="menu-items__title">
+            {{ $t('menu') }}
+          </legend>
+          <draggable
+            class="dragArea list-group menu-items__active"
+            handle=".draggable"
+            :list="menu"
+            :group="{ name: 'menu-items' }"
+          >
+            <div v-for="item in menu" :key="item.id">
+              <list-item :key="item.id" :class="{ draggable: !item.disabled }">
+                <template #avatar>
+                  <InlineSvg
+                    v-if="item.predefinedIcon"
+                    :src="require(`@/assets/images/${item.predefinedIcon}`)"
+                  />
+                  <i v-else :class="item.icon"></i>
+                </template>
+                {{ $t(item.label) }}
+                <template #action>
+                  <i class="bx bx-menu"></i>
+                </template>
+              </list-item>
+            </div>
+          </draggable>
+        </div>
       </div>
-    </div>
-    <app-button @click="changeMenu">
-      {{ $t('common.save') }}
-    </app-button>
+      <hr />
+      <app-button @click="saveMenu">
+        {{ $t('common.save') }}
+      </app-button>
+    </card>
   </div>
 </template>
 
@@ -50,11 +71,18 @@
 {
   "pl": {
     "title": "Edycja menu",
-    "success": "Zapisano menu"
+    "menu": "Menu",
+    "options":"Dostępne zakładki",
+    "success": "Menu zostało zmienione",
+
+    "info": "Tutaj możesz edytować swoje menu. Zakładki: <b>Dashboard</b>, <b>Zamówienia</b> oraz <b>Ustawienia</b> jako jedyne nie mogą zostać z niego usunięte."
   },
   "en": {
     "title": "Edit menu",
-    "success": "Menu has been changed"
+    "menu": "Menu",
+    "options":"Available tabs",
+    "success": "Menu has been changed",
+    "info": "You can customize your menu. The tabs: <b>Dashboard</b>, <b>Orders</b> and <b>Settings</b> cannot be modified."
   }
 }
 </i18n>
@@ -63,19 +91,13 @@
 import Vue from 'vue'
 import InlineSvg from 'vue-inline-svg'
 import Draggable from 'vuedraggable'
+
+import Card from '@/components/layout/Card.vue'
 import TopNav from '@/components/layout/TopNav.vue'
 
 import ListItem from '@/components/layout/ListItem.vue'
 
-import { MenuItem, MENU_ITEMS, DEFAULT_MENU_ITEMS, AVAILABLE_MENU_ITEMS } from '@/consts/menuItems'
-
-interface IMenuItem {
-  exact?: boolean
-  icon: string
-  label: string
-  to: string
-  image?: string
-}
+import { DEFAULT_MENU_ITEMS, AVAILABLE_MENU_ITEMS } from '@/consts/menuItems'
 
 export default Vue.extend({
   metaInfo(this: any) {
@@ -86,16 +108,12 @@ export default Vue.extend({
     Draggable,
     InlineSvg,
     ListItem,
+    Card,
   },
   data: () => ({
     menu: [...DEFAULT_MENU_ITEMS],
     items: [...AVAILABLE_MENU_ITEMS],
   }),
-  computed: {
-    MENU_ITEMS(): MenuItem[] {
-      return MENU_ITEMS
-    },
-  },
   created() {
     const savedMenu = JSON.parse(window.localStorage.getItem('menu') || '[]')
     const savedItems = JSON.parse(window.localStorage.getItem('items') || '[]')
@@ -103,17 +121,10 @@ export default Vue.extend({
     if (savedItems.length) this.items = [...savedItems]
   },
   methods: {
-    changeMenu() {
-      // @ts-ignore
+    saveMenu() {
       window.localStorage.setItem('menu', JSON.stringify(this.menu))
       window.localStorage.setItem('items', JSON.stringify(this.items))
-      window.dispatchEvent(
-        new CustomEvent('menu-localstorage-changed', {
-          detail: {
-            storage: localStorage.getItem('menu'),
-          },
-        }),
-      )
+      window.dispatchEvent(new CustomEvent('menuChanged'))
       this.$toast.success(this.$t('success') as string)
     },
   },
@@ -121,10 +132,38 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.menu {
+.menu-items {
   display: flex;
-  div {
-    width: 50%;
+  flex-direction: column;
+
+  &__container {
+    width: 100%;
+  }
+
+  &__title {
+    margin-top: 1em;
+    padding: 0 10px;
+  }
+
+  &__active {
+    width: 100%;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    padding: 10px;
+
+    button:not(.draggable) {
+      cursor: auto;
+    }
+
+    @media ($max-viewport-5) {
+      padding: 0;
+    }
+  }
+
+  &__inactive {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
   }
 }
 </style>

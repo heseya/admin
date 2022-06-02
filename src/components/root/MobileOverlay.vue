@@ -5,13 +5,14 @@
     </button>
 
     <menu-link
-      v-for="item in MENU_LINKS"
+      v-for="item in menu"
       :key="item.to"
       v-can="item.can"
       :to="item.to"
       :exact="item.exact"
       :label="item.label"
       :icon="item.icon"
+      :predefined-icon="item.predefinedIcon"
       root-class="mobile-nav-overlay"
       @click.native="close"
     />
@@ -20,7 +21,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { MenuLink, MENU_LINKS } from '@/consts/menuItems'
+import { DEFAULT_MENU_ITEMS } from '@/consts/menuItems'
 
 import MenuLinkComponent from './MenuLink.vue'
 
@@ -33,14 +34,25 @@ export default Vue.extend({
       default: false,
     },
   },
-  computed: {
-    MENU_LINKS(): MenuLink[] {
-      return MENU_LINKS
-    },
+  data: () => ({
+    menu: [...DEFAULT_MENU_ITEMS],
+  }),
+  created() {
+    this.getSavedMenu()
+  },
+  mounted() {
+    window.addEventListener('menuChanged', this.getSavedMenu)
+  },
+  destroyed() {
+    window.removeEventListener('menuChanged', this.getSavedMenu)
   },
   methods: {
     close() {
       this.$emit('close')
+    },
+    getSavedMenu() {
+      const savedMenu = JSON.parse(window.localStorage.getItem('menu') || '[]')
+      if (savedMenu.length) this.menu = [...savedMenu]
     },
   },
 })
@@ -54,12 +66,13 @@ export default Vue.extend({
   width: 100vw;
   height: 100vh;
   box-sizing: border-box;
-  padding: 20vh 10% 0;
+  padding: 20vh 10%;
   background-color: #ffffff;
   z-index: $mobile-nav-overlay-z-index;
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow-y: auto;
   visibility: hidden;
   opacity: 0;
   transition: 0.3s;

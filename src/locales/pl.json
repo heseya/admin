@@ -33,7 +33,14 @@
     "settings": "Ustawienia",
     "warehouse": "Magazyn",
     "analytics": "Statystyka",
-    "moreLink": "Więcej"
+    "moreLink": "Więcej",
+    "users": "Lista użytkowników",
+    "roles": "Role użytkowników",
+    "apps": "Aplikacje",
+    "consents": "Zgody",
+    "webhooks": "Webhooki",
+    "seo": "Ustawienia SEO",
+    "advanced": "Zaawansowane"
   },
   "models": {
     "orders": "Zamówienia",

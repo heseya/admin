@@ -1,21 +1,19 @@
 <template>
   <nav class="nav" :class="{ 'nav--hidden': isHidden }">
     <nav-store-logo />
-
-    <template v-for="(item, i) in MENU_ITEMS">
-      <router-link
-        v-if="item.type === 'link'"
-        :key="i"
-        class="nav__link"
-        :to="item.to"
-        :exact="item.exact"
-      >
-        <InlineSvg class="nav-link-img" :src="require(`@/assets/images/${item.icon}`)" />
-        <span class="nav__link-label">{{ $t(item.label) }}</span>
-      </router-link>
-
-      <div v-else-if="item.type === 'spacer'" :key="i" class="nav__spacer"></div>
-    </template>
+    <div class="nav__wrapper">
+      <template v-for="(item, i) in menu">
+        <router-link :key="i" class="nav__link" :to="item.to" :exact="item.exact">
+          <InlineSvg
+            v-if="item.predefinedIcon"
+            class="nav-link-img"
+            :src="require(`@/assets/images/${item.predefinedIcon}`)"
+          />
+          <i v-else :class="item.icon" class="nav-link-img" />
+          <span class="nav__link-label">{{ $t(item.label) }}</span>
+        </router-link>
+      </template>
+    </div>
 
     <powered-by class="nav__author" />
   </nav>
@@ -29,17 +27,32 @@ import InlineSvg from 'vue-inline-svg'
 import NavStoreLogo from './NavStoreLogo.vue'
 import PoweredBy from './PoweredBy.vue'
 
-import { MenuItem, MENU_ITEMS } from '@/consts/menuItems'
+import { DEFAULT_MENU_ITEMS } from '@/consts/menuItems'
 
 export default Vue.extend({
   name: 'DesktopNavigation',
   components: { NavStoreLogo, InlineSvg, PoweredBy },
+  data: () => ({
+    menu: [...DEFAULT_MENU_ITEMS],
+  }),
   computed: {
     isHidden(): boolean {
       return !!this.$route.meta?.hiddenNav || false
     },
-    MENU_ITEMS(): MenuItem[] {
-      return MENU_ITEMS
+  },
+  created() {
+    this.getSavedMenu()
+  },
+  mounted() {
+    window.addEventListener('menuChanged', this.getSavedMenu)
+  },
+  destroyed() {
+    window.removeEventListener('menuChanged', this.getSavedMenu)
+  },
+  methods: {
+    getSavedMenu() {
+      const savedMenu = JSON.parse(window.localStorage.getItem('menu') || '[]')
+      if (savedMenu.length) this.menu = [...savedMenu]
     },
   },
 })
@@ -62,6 +75,10 @@ export default Vue.extend({
   align-items: flex-start;
   transition: 0.2s;
   transition-timing-function: ease-out;
+
+  &__wrapper {
+    overflow-y: auto;
+  }
 
   &--hidden {
     transform: translateX(-100%);
@@ -90,6 +107,7 @@ export default Vue.extend({
       width: 18px;
       height: 18px;
       margin-right: 16px;
+      line-height: 21px;
       box-sizing: border-box;
       opacity: 0.5;
       transition: color 0.3s;

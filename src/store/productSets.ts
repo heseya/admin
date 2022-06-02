@@ -2,7 +2,6 @@ import { ProductSet, ProductSetDTO } from '@/interfaces/ProductSet'
 import { createVuexCRUD, StoreMutations } from './generator'
 import { UUID } from '@/interfaces/UUID'
 import { reorderCollection } from '@/services/reorderCollection'
-import { api } from '@/api'
 
 const PARAM = { root: 1, tree: 0 }
 

@@ -178,8 +178,8 @@ export default Vue.extend({
     createSuccess(set: ProductSet) {
       if (this.children.length) {
         this.children.push({ ...set, children_ids: [] })
-        this.childrenQuantity++
       }
+      this.childrenQuantity++
     },
     editSuccess(set: ProductSet) {
       this.$emit('update-parent', set)

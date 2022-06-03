@@ -173,8 +173,8 @@ export default Vue.extend({
     }) {
       if (!this.set) return
       try {
-        await api.post(`/product-sets/${this.set.id}/products/reorder`, {
-          products: [{ id: moved.element.id, order: moved.newIndex }],
+        await api.post(`/product-sets/id:${this.set.id}/products/reorder`, {
+          products: [{ id: moved.element.id, order: moved.newIndex + 1 }],
         })
         // Move element in local array to the new index
         this.products.splice(moved.newIndex, 0, this.products.splice(moved.oldIndex, 1)[0])

@@ -88,6 +88,13 @@ export enum CartPermission {
   Verify = 'cart.verify',
 }
 
+export enum MediaPermission {
+  Show = 'media.show',
+  Add = 'media.add',
+  Edit = 'media.edit',
+  Remove = 'media.remove',
+}
+
 export enum OrdersPermission {
   Show = 'orders.show',
   Add = 'orders.add',

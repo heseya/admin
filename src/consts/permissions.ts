@@ -30,6 +30,7 @@ import {
   SalesPermission,
   AttributesPermission,
   BannersPermission,
+  MediaPermission,
 } from '@/enums/permissions'
 
 export const PERMISSIONS_TREE = {
@@ -49,6 +50,7 @@ export const PERMISSIONS_TREE = {
   Items: ItemsPermission,
   Schemas: SchemasPermission,
   Cart: CartPermission,
+  Media: MediaPermission,
   Orders: OrdersPermission,
   Packages: PackagesPermission,
   Pages: PagesPermission,

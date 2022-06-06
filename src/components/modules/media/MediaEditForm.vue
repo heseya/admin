@@ -16,9 +16,27 @@
         </small>
 
         <br />
-        <app-button type="primary" html-type="submit" size="small" :loading="isLoading">
-          {{ $t('common.save') }}
-        </app-button>
+        <div class="media-edit-modal__form-buttons">
+          <app-button
+            type="primary"
+            html-type="submit"
+            size="small"
+            :loading="isLoading"
+            class="media-edit-modal__form-button"
+          >
+            {{ $t('common.save') }}
+          </app-button>
+          <app-button
+            type="danger"
+            html-type="button"
+            size="small"
+            :loading="isLoadingRemoval"
+            class="media-edit-modal__form-button"
+            @click="() => handleMediaRemove(media.id)"
+          >
+            {{ $t('common.delete') }}
+          </app-button>
+        </div>
       </form>
     </template>
 
@@ -70,10 +88,12 @@ export default Vue.extend({
     disabled: { type: Boolean, default: false },
     placement: { type: String, default: 'bottomRight' },
     media: { type: Object, required: true } as Vue.PropOptions<CdnMedia>,
+    allowDeletion: { type: Boolean, required: false, default: false },
   },
   data: () => ({
     isOpen: false,
     isLoading: false,
+    isLoadingRemoval: false,
     form: { ...EMPTY_FORM },
   }),
   watch: {
@@ -103,6 +123,12 @@ export default Vue.extend({
 
       this.isLoading = false
     },
+    async handleMediaRemove(id: Pick<CdnMedia, 'id'>) {
+      if (this.isLoadingRemoval) return
+      this.isLoadingRemoval = true
+      this.$emit('remove', id)
+      this.isLoadingRemoval = false
+    },
   },
 })
 </script>
@@ -119,6 +145,16 @@ export default Vue.extend({
 
     > span {
       width: 100%;
+    }
+  }
+
+  &__form-buttons {
+    display: flex;
+  }
+
+  &__form-button {
+    &:not(:first-child) {
+      margin-left: 8px;
     }
   }
 }

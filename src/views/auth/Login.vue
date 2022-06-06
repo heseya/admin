@@ -84,7 +84,7 @@ export default Vue.extend({
       this.$accessor.startLoading()
       const response = await this.$accessor.auth.login({
         ...this.form,
-        code: this.twoFactorAuthMethod ? this.securityCode : undefined,
+        // code: this.twoFactorAuthMethod ? this.securityCode : undefined,
       })
 
       if (response.state === LoginState.Success) this.$router.push(this.nextURL)

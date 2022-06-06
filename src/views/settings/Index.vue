@@ -19,6 +19,12 @@
           url="/settings/banners"
           icon="bx bxs-image"
         />
+        <SettingsItem
+          v-can="$p.Banners.Show || $p.Media.Show"
+          :name="$t('models.media')"
+          url="/settings/media"
+          icon="bx bxs-image"
+        />
 
         <h2 v-can.any="[$p.Tags.Show, $p.Products.Show]" class="section-title">
           {{ $t('models.products') }}

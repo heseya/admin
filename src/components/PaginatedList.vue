@@ -164,6 +164,7 @@ export default Vue.extend({
     this.itemsPerPage = +(localStorage.getItem(`${this.storeKey}_per_page`) || 24)
     this.getItems()
   },
+
   methods: {
     changePage(page: number) {
       if (this.page !== page) {

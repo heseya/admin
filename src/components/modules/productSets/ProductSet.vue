@@ -35,6 +35,9 @@
               <a-menu-item v-can="$p.ProductSets.ShowDetails" @click="editProductSet">
                 <i class="bx bx-edit"></i> &nbsp; {{ $t('menu.edit') }}
               </a-menu-item>
+              <a-menu-item v-can="$p.ProductSets.Edit" @click="changeParent">
+                <i class="bx bx-move-vertical"></i> &nbsp; {{ $t('menu.editParent') }}
+              </a-menu-item>
               <a-menu-item v-can="$p.ProductSets.Remove">
                 <pop-confirm
                   :title="`${$t('collection')}: ${set.name}. ${$t('deleteText')}`"
@@ -84,6 +87,13 @@
       @close="isFormModalActive = false"
     />
     <SetProductsList :set="selectedSet" :is-open="!!selectedSet" @close="selectedSet = null" />
+    <ChangeParentForm
+      v-if="!!selectedChildren"
+      :set="selectedChildren"
+      :is-open="!!selectedChildren"
+      @close="selectedChildren = null"
+      @delete="deleteSuccess"
+    />
   </div>
 </template>
 
@@ -93,6 +103,7 @@
     "menu": {
       "addSubset": "Dodaj subkolekcję",
       "edit": "Edytuj kolekcję",
+      "editParent": "Zmień nadrzędną kolekcję",
       "delete": "Usuń kolekcję",
       "showProducts": "Zobacz produkty w kolekcji"
     },
@@ -107,6 +118,7 @@
     "menu": {
       "addSubset": "Add subset",
       "edit": "Edit collection",
+      "editParent": "Change parent collection",
       "delete": "Delete collection",
       "showProducts": "Show products in collection"
     },
@@ -127,6 +139,7 @@ import { api } from '@/api'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ProductSetForm, { CLEAR_PRODUCT_SET_FORM } from '@/components/modules/productSets/Form.vue'
 import SetProductsList from '@/components/modules/productSets/SetProductsList.vue'
+import ChangeParentForm from '@/components/modules/productSets/ParentForm.vue'
 
 import { ProductSet, ProductSetDTO } from '@/interfaces/ProductSet'
 import { UUID } from '@/interfaces/UUID'
@@ -134,7 +147,7 @@ import { formatApiNotificationError } from '@/utils/errors'
 
 export default Vue.extend({
   name: 'ProductSet',
-  components: { Draggable, PopConfirm, ProductSetForm, SetProductsList },
+  components: { Draggable, PopConfirm, ProductSetForm, SetProductsList, ChangeParentForm },
   props: {
     set: {
       type: Object,
@@ -147,6 +160,7 @@ export default Vue.extend({
     limit: 50,
     children: [] as ProductSet[],
     selectedSet: null as null | ProductSet,
+    selectedChildren: null as null | ProductSet,
     editedItem: cloneDeep(CLEAR_PRODUCT_SET_FORM) as ProductSetDTO,
     editedItemSlugPrefix: '',
     areChildrenVisible: false,
@@ -162,7 +176,9 @@ export default Vue.extend({
   },
   methods: {
     createSuccess(set: ProductSet) {
-      this.children.push({ ...set, children_ids: [] })
+      if (this.children.length) {
+        this.children.push({ ...set, children_ids: [] })
+      }
       this.childrenQuantity++
     },
     editSuccess(set: ProductSet) {
@@ -257,6 +273,9 @@ export default Vue.extend({
     },
     showSetProducts() {
       this.selectedSet = this.set
+    },
+    changeParent() {
+      this.selectedChildren = this.set
     },
   },
 })

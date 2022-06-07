@@ -34,18 +34,17 @@
       />
     </card>
 
-    <!-- <a-modal v-if="true" width="800px" title="HELLO"> hello </a-modal> -->
-    <!-- <div v-if="eventsModalVisible" class="events-modal">TEST</div> -->
     <a-modal
       :visible="eventsModalVisible"
       width="750px"
       :footer="null"
-      title="Eventy"
+      :title="$t('events')"
       @cancel="toggleEventsModal"
     >
-      <div v-for="event in editedWebhook.events" :key="event">{{ event }}</div>
-      <!-- <cms-table :value="editedWebhook.events" /> -->
-      <!-- <cms-table :value="order.payments" :config="paymentsTableConfig" no-hover /> -->
+      <template v-if="events.length">
+        <single-webhook v-for="event in events" :key="event.id" :event="event" />
+      </template>
+      <span v-else>{{ $t('noEvents') }}</span>
     </a-modal>
   </div>
 </template>
@@ -58,7 +57,9 @@
     "deletedMessage": "Webhook został usunięty.",
     "createdMessage": "Webhook został zaktualizowany.",
     "updatedMessage": "Webhook został utworzony.",
-    "showEvents": "Pokaż eventy"
+    "showEvents": "Pokaż eventy",
+    "events": "Eventy",
+    "noEvents": "Brak eventów do wyświetlenia"
   },
   "en": {
     "newTitle": "New webhook",
@@ -66,7 +67,9 @@
     "deletedMessage": "Webhook has been deleted.",
     "createdMessage": "Webhook has been created.",
     "updatedMessage": "Webhook has been updated.",
-    "showEvents": "Show events"
+    "showEvents": "Show events",
+    "events": "Events",
+    "noEvents": "No events to show"
   }
 }
 </i18n>
@@ -75,13 +78,13 @@
 import Vue from 'vue'
 import { cloneDeep } from 'lodash'
 
-import { WebHook, WebHookDto } from '@/interfaces/Webhook'
+import { WebHook, WebHookDto, WebHookEventLogEntry } from '@/interfaces/Webhook'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import WebhookForm from '@/components/modules/webhooks/Form.vue'
-// import CmsTable from '@/components/cms/CmsTable.vue'
+import SingleWebhook from '@/components/modules/webhooks/SingleWebhook.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 
@@ -106,7 +109,7 @@ export default Vue.extend({
     Card,
     WebhookForm,
     PopConfirm,
-    // CmsTable,
+    SingleWebhook,
   },
   data: () => ({
     editedWebhook: cloneDeep(CLEAR_FORM),
@@ -125,6 +128,9 @@ export default Vue.extend({
     error(): any {
       return this.$accessor.webhooks.getError
     },
+    events(): WebHookEventLogEntry[] {
+      return this.$accessor.webhooks.activeEvents
+    },
   },
   watch: {
     error(error) {
@@ -141,7 +147,8 @@ export default Vue.extend({
 
     // @ts-ignore // TODO: fix extended store actions typings
     await this.$accessor.webhooks.fetchEvents()
-    await this.$accessor.webhooks.fetchActiveEvents()
+    // @ts-ignore
+    await this.$accessor.webhooks.fetchActiveEvents({ web_hook_id: this.id })
 
     if (!this.isNew) await this.$accessor.webhooks.get(this.id)
 

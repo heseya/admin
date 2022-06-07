@@ -1,5 +1,6 @@
 import { api } from '@/api'
 import { WebHook, WebHookDto, WebHookEventLogEntry, WebHookEventObject } from '@/interfaces/Webhook'
+import { stringifyQuery } from '@/utils/utils'
 import { createVuexCRUD, StoreMutations } from './generator'
 
 const BASE_URL = 'webhooks'
@@ -32,12 +33,12 @@ export const webhooks = createVuexCRUD<WebHook, WebHookDto, WebHookDto>()(BASE_U
       commit(StoreMutations.SetLoading, false)
     },
 
-    async fetchActiveEvents({ commit }) {
+    async fetchActiveEvents({ commit }, parameters: Record<string, any>) {
       commit(StoreMutations.SetLoading, true)
       try {
-        const response = await api.get<{ data: WebHookEventLogEntry[] }>(`/${BASE_URL}/logs`)
+        const params = stringifyQuery(parameters)
+        const response = await api.get<{ data: WebHookEventLogEntry[] }>(`/webhooks/logs${params}`)
         commit('SET_ACTIVE_EVENTS', response.data.data)
-        console.log('X__', response.data.data)
 
         commit(StoreMutations.SetError, null)
       } catch (e: any) {

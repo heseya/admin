@@ -20,7 +20,9 @@ describe('add new items', () => {
     cy.get('.app-button__text').contains('Save').click() // TODO : change to data-cy
     cy.get('.app__content').contains(skuName).should('be.visible')
     cy.get('.app__content').contains(skuName).click()
-    cy.get('input[label="Quantity in stock"]').clear().type('100') // TODO : change to data-cy
+    cy.get('.icon-button__text').contains('Add deposit').click()
+    cy.get('input[label="Quantity"]').clear().type('100') // TODO : change to data-cy
+    cy.get('.app-button__text').contains('Add').click()
     cy.get('.app-button__text').contains('Save').click() // TODO : change to data-cy
     cy.get('.app__content').contains(skuName).should('be.visible')
   })

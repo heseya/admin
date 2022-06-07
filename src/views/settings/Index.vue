@@ -151,7 +151,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import groupBy from 'lodash/groupBy'
+import { groupBy, Dictionary } from 'lodash'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
@@ -163,7 +163,6 @@ import LangPreferencesForm from '@/components/modules/settings/LangPreferences.v
 
 import { User } from '@/interfaces/User'
 import { SettingsSection, SETTINGS_LINKS, MenuLink } from '@/consts/menuItems'
-import { Dictionary } from 'lodash'
 
 export default Vue.extend({
   metaInfo(this: any) {

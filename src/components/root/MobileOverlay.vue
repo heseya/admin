@@ -23,6 +23,7 @@
 import Vue from 'vue'
 
 import MenuLinkComponent from './MenuLink.vue'
+import { MenuLink } from '@/consts/menuItems'
 
 export default Vue.extend({
   name: 'MobileOverlay',
@@ -36,8 +37,7 @@ export default Vue.extend({
     },
   },
   computed: {
-    menu(): any {
-      // @ts-ignore // TODO: fix extended store actions typings
+    menu(): MenuLink[] {
       return this.$accessor.menuItems.getMenuLinks
     },
   },

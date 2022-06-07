@@ -4,7 +4,7 @@
     <div class="nav__wrapper">
       <template v-for="(item, i) in menu">
         <router-link
-          v-if="item.type === 'link'"
+          v-if="item.type === MenuItemType.Link"
           :key="i"
           class="nav__link"
           :to="item.to"
@@ -18,7 +18,7 @@
           <i v-else :class="item.iconClass" class="nav-link-svg" />
           <span class="nav__link-label">{{ $t(item.label) }}</span>
         </router-link>
-        <div v-else-if="item.type === 'spacer'" :key="i" class="nav__spacer"></div>
+        <div v-else-if="item.type === MenuItemType.Spacer" :key="i" class="nav__spacer"></div>
       </template>
     </div>
 
@@ -34,14 +34,19 @@ import InlineSvg from 'vue-inline-svg'
 import NavStoreLogo from './NavStoreLogo.vue'
 import PoweredBy from './PoweredBy.vue'
 
+import { MenuItem, MenuItemType } from '@/consts/menuItems'
+
 export default Vue.extend({
   name: 'DesktopNavigation',
   components: { NavStoreLogo, InlineSvg, PoweredBy },
   computed: {
+    MenuItemType(): typeof MenuItemType {
+      return MenuItemType
+    },
     isHidden(): boolean {
       return !!this.$route.meta?.hiddenNav || false
     },
-    menu(): any {
+    menu(): MenuItem[] {
       return this.$accessor.menuItems.activeItems
     },
   },

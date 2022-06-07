@@ -62,7 +62,7 @@
                 </template>
               </list-item>
               <div
-                v-else-if="item.type === 'spacer'"
+                v-else-if="item.type === MenuItemType.Spacer"
                 :key="item.id"
                 class="menu-items__spacer"
               ></div>
@@ -114,7 +114,7 @@ import TopNav from '@/components/layout/TopNav.vue'
 
 import ListItem from '@/components/layout/ListItem.vue'
 
-import { MenuLink } from '@/consts/menuItems'
+import { MenuItem, MenuItemType, MenuLink } from '@/consts/menuItems'
 
 export default Vue.extend({
   metaInfo(this: any) {
@@ -128,14 +128,17 @@ export default Vue.extend({
     Card,
   },
   data: () => ({
-    menu: [] as MenuLink[],
+    menu: [] as MenuItem[],
     items: [] as MenuLink[],
   }),
   computed: {
-    activeItems(): any {
+    MenuItemType(): typeof MenuItemType {
+      return MenuItemType
+    },
+    activeItems(): MenuItem[] {
       return this.$accessor.menuItems.activeItems
     },
-    availableItems(): any {
+    availableItems(): MenuLink[] {
       return this.$accessor.menuItems.availableItems
     },
   },
@@ -144,7 +147,6 @@ export default Vue.extend({
   },
   methods: {
     saveMenu() {
-      // @ts-ignore // TODO: fix extended store actions typings
       this.$accessor.menuItems.setMenuItems({
         activeItems: [...this.menu],
         availableItems: [...this.items],
@@ -152,7 +154,6 @@ export default Vue.extend({
       this.$toast.success(this.$t('success') as string)
     },
     resetMenu() {
-      // @ts-ignore // TODO: fix extended store actions typings
       this.$accessor.menuItems.resetMenu()
       this.setDefaultMenu()
       this.$toast.success(this.$t('successReset') as string)

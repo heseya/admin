@@ -1,3 +1,4 @@
+import { Permission } from '@/interfaces/Permissions'
 import { PERMISSIONS_TREE } from './permissions'
 
 export enum MenuItemType {
@@ -19,7 +20,7 @@ export interface MenuLink {
   id: string
   default?: boolean
   to: string
-  can?: string | string[]
+  can?: Permission | Permission[]
   exact?: boolean
   iconClass?: string
   svgIconPath?: string
@@ -146,7 +147,7 @@ export const MENU_ITEMS: MenuItem[] = [
     section: SettingsSection.Products,
   },
   {
-    id: '12',
+    id: '15',
     type: MenuItemType.Link,
     to: '/settings/tags',
     iconClass: 'bx bxs-purchase-tag',
@@ -155,7 +156,7 @@ export const MENU_ITEMS: MenuItem[] = [
     section: SettingsSection.Products,
   },
   {
-    id: '15',
+    id: '16',
     type: MenuItemType.Link,
     to: '/schemas',
     iconClass: 'bx bxs-customize',
@@ -164,7 +165,7 @@ export const MENU_ITEMS: MenuItem[] = [
     section: SettingsSection.Products,
   },
   {
-    id: '16',
+    id: '17',
     type: MenuItemType.Link,
     to: '/settings/statuses',
     iconClass: 'bx bxs-check-circle',
@@ -173,7 +174,7 @@ export const MENU_ITEMS: MenuItem[] = [
     section: SettingsSection.Orders,
   },
   {
-    id: '17',
+    id: '18',
     type: MenuItemType.Link,
     to: '/settings/shipping-methods',
     iconClass: 'bx bxs-truck',
@@ -182,7 +183,7 @@ export const MENU_ITEMS: MenuItem[] = [
     section: SettingsSection.Shipping,
   },
   {
-    id: '18',
+    id: '19',
     type: MenuItemType.Link,
     to: '/settings/package-templates',
     iconClass: 'bx bxs-box',
@@ -191,7 +192,7 @@ export const MENU_ITEMS: MenuItem[] = [
     section: SettingsSection.Shipping,
   },
   {
-    id: '19',
+    id: '20',
     type: MenuItemType.Link,
     to: '/settings/users',
     iconClass: 'bx bxs-group',
@@ -200,7 +201,7 @@ export const MENU_ITEMS: MenuItem[] = [
     section: SettingsSection.Users,
   },
   {
-    id: '20',
+    id: '21',
     type: MenuItemType.Link,
     to: '/settings/roles',
     iconClass: 'bx bx-task',
@@ -209,7 +210,7 @@ export const MENU_ITEMS: MenuItem[] = [
     section: SettingsSection.Users,
   },
   {
-    id: '21',
+    id: '22',
     type: MenuItemType.Link,
     to: '/apps',
     iconClass: 'bx bxs-store-alt',
@@ -218,7 +219,7 @@ export const MENU_ITEMS: MenuItem[] = [
     section: SettingsSection.Other,
   },
   {
-    id: '22',
+    id: '23',
     type: MenuItemType.Link,
     to: '/settings/consents',
     iconClass: 'bx bx-file-blank',
@@ -227,7 +228,7 @@ export const MENU_ITEMS: MenuItem[] = [
     section: SettingsSection.Other,
   },
   {
-    id: '23',
+    id: '24',
     type: MenuItemType.Link,
     to: '/webhooks',
     iconClass: 'bx bxs-bot',
@@ -236,7 +237,7 @@ export const MENU_ITEMS: MenuItem[] = [
     section: SettingsSection.Other,
   },
   {
-    id: '24',
+    id: '25',
     type: MenuItemType.Link,
     to: '/settings/seo',
     iconClass: 'bx bxl-google',
@@ -245,7 +246,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
 
   {
-    id: '25',
+    id: '26',
     type: MenuItemType.Link,
     to: '/settings/advanced',
     iconClass: 'bx bxs-cog',

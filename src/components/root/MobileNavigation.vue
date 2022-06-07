@@ -32,6 +32,8 @@ import Vue from 'vue'
 import MenuLinkComponent from './MenuLink.vue'
 import MobileOverlay from './MobileOverlay.vue'
 
+import { MenuLink } from '@/consts/menuItems'
+
 export default Vue.extend({
   name: 'MobileNavigation',
   components: { MobileOverlay, MenuLink: MenuLinkComponent },
@@ -42,8 +44,7 @@ export default Vue.extend({
     isHidden(): boolean {
       return !!this.$route.meta?.hiddenNav || false
     },
-    menu(): any {
-      // @ts-ignore // TODO: fix extended store actions typings
+    menu(): MenuLink[] {
       return this.$accessor.menuItems.getMenuLinks
     },
   },

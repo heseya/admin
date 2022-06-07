@@ -98,7 +98,6 @@ const storeModules = {
   tags,
   productSets,
   attributes,
-  menuItems,
 }
 
 const storePattern = {
@@ -106,12 +105,12 @@ const storePattern = {
   getters,
   mutations,
   actions,
-  modules: storeModules,
+  modules: { ...storeModules, menuItems },
 }
 
 const store = new Vuex.Store({
   ...storePattern,
-  plugins: [new VuexPersistence({ modules: ['auth'] }).plugin],
+  plugins: [new VuexPersistence({ modules: ['auth', 'menuItems'] }).plugin],
 })
 
 export const accessor = useAccessor(store, storePattern)

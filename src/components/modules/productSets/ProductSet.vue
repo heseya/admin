@@ -8,6 +8,8 @@
         </template>
       </icon-button>
 
+      <loading :active="isLoading" />
+
       <span class="product-set__name">
         <i v-if="!set.public" class="product-set__hidden-icon bx bx-low-vision"></i>
         {{ set.name }} <small>(/{{ set.slug }})</small>
@@ -136,18 +138,20 @@ import Draggable from 'vuedraggable'
 import { cloneDeep } from 'lodash'
 import { api } from '@/api'
 
+import Loading from '@/components/layout/Loading.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ProductSetForm, { CLEAR_PRODUCT_SET_FORM } from '@/components/modules/productSets/Form.vue'
 import SetProductsList from '@/components/modules/productSets/SetProductsList.vue'
 import ChangeParentForm from '@/components/modules/productSets/ParentForm.vue'
 
 import { ProductSet, ProductSetDTO } from '@/interfaces/ProductSet'
+import { ResponseLinks, ResponseMeta } from '@/interfaces/Response'
 import { UUID } from '@/interfaces/UUID'
 import { formatApiNotificationError } from '@/utils/errors'
 
 export default Vue.extend({
   name: 'ProductSet',
-  components: { Draggable, PopConfirm, ProductSetForm, SetProductsList, ChangeParentForm },
+  components: { Draggable, PopConfirm, ProductSetForm, SetProductsList, ChangeParentForm, Loading },
   props: {
     set: {
       type: Object,
@@ -165,10 +169,14 @@ export default Vue.extend({
     editedItemSlugPrefix: '',
     areChildrenVisible: false,
     isFormModalActive: false,
+    isLoading: false,
   }),
   computed: {
     areMoreChildren(): boolean {
       return this.children.length < this.childrenQuantity
+    },
+    isFetchAllChildren(): boolean {
+      return this.$accessor.env.autoload_all_product_set_children === '1'
     },
   },
   created() {
@@ -200,7 +208,11 @@ export default Vue.extend({
       if (this.areMoreChildren) {
         this.$accessor.stopLoading()
         try {
-          const subcollections = await this.fetchByParentId(this.set.id, this.limit, this.page - 1)
+          const { data: subcollections } = await this.fetchByParentId(
+            this.set.id,
+            this.limit,
+            this.page - 1,
+          )
           this.children.push(subcollections.pop() as ProductSet)
         } catch (error: any) {}
         this.$accessor.stopLoading()
@@ -223,22 +235,30 @@ export default Vue.extend({
     },
     async fetchChildren() {
       this.$accessor.stopLoading()
+      this.isLoading = true
       try {
-        const subcollections = await this.fetchByParentId(this.set.id, this.limit, this.page)
+        const { data: subcollections, links } = await this.fetchByParentId(
+          this.set.id,
+          this.limit,
+          this.page,
+        )
         this.children = [...this.children, ...subcollections]
         this.page++
+        if (links.next && this.isFetchAllChildren) await this.fetchChildren()
       } catch (e: any) {
         this.$toast.error(formatApiNotificationError(e))
       }
       this.$accessor.stopLoading()
+      this.isLoading = false
     },
     async fetchByParentId(parentId: UUID, limit: number, page: number) {
-      const {
-        data: { data: subcollections },
-      } = await api.get<{ data: ProductSet[] }>(
-        `/product-sets?parent_id=${parentId}&limit=${limit}&page=${page}&tree=0`,
-      )
-      return subcollections
+      const limitChildren = this.isFetchAllChildren ? '' : `&limit=${limit}`
+      const { data: res } = await api.get<{
+        data: ProductSet[]
+        links: ResponseLinks
+        meta: ResponseMeta
+      }>(`/product-sets?parent_id=${parentId}&page=${page}&tree=0${limitChildren}`)
+      return res
     },
     async deleteCollection() {
       this.$accessor.startLoading()

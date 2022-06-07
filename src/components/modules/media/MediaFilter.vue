@@ -2,28 +2,29 @@
   <div class="media-filter">
     <app-select
       v-model="local.type"
-      :label="'Media type:'"
+      :label="$t('mediaType')"
       add-all
       option-filter-prop="label"
       @change="debouncedSearch"
     >
       <a-select-option :value="MediaType.Photo" :label="MediaType.Photo">
-        {{ $t('photo') }}
+        {{ $t('mediaTypes.photo') }}
       </a-select-option>
       <a-select-option :value="MediaType.Video" :label="MediaType.Video">
-        {{ $t('video') }}
+        {{ $t('mediaTypes.video') }}
       </a-select-option>
+      <a-select-option :value="MediaType.Pdf" :label="MediaType.Pdf"> PDF </a-select-option>
     </app-select>
 
     <app-select
       v-model="local.has_relationships"
-      :label="'Has relationships:'"
+      :label="$t('hasRelationships')"
       add-all
       option-filter-prop="label"
       @change="debouncedSearch"
     >
-      <a-select-option :value="'1'" :label="true"> {{ $t('yes') }} </a-select-option>
-      <a-select-option :value="'0'" :label="false"> {{ $t('no') }} </a-select-option>
+      <a-select-option :value="'1'" :label="true"> {{ $t('common.yes') }} </a-select-option>
+      <a-select-option :value="'0'" :label="false"> {{ $t('common.no') }} </a-select-option>
     </app-select>
   </div>
 </template>
@@ -31,16 +32,12 @@
 <i18n>
 {
   "pl": {
-    "photo": "Zdjęcie",
-    "video": "Video",
-    "yes": "Tak",
-    "no": "Nie"
+    "hasRelationships": "Czy posiada relacje",
+    "mediaType": "Typ mediów"
   },
   "en": {
-    "photo": "Photo",
-    "video": "Video",
-    "yes": "Yes",
-    "no": "No"
+    "hasRelationships": "Has relationships",
+    "mediaType": "Media type"
   }
 }
 </i18n>
@@ -48,17 +45,13 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import Vue from 'vue'
-import { debounce } from 'lodash'
+import debounce from 'lodash/debounce'
 
 import { ALL_FILTER_VALUE } from '@/consts/filters'
-
-export enum MediaType {
-  Photo = 'photo',
-  Video = 'video',
-}
+import { CdnMediaType } from '@/interfaces/Media'
 
 export type MediaFiltersType = {
-  type: MediaType | typeof ALL_FILTER_VALUE
+  type: CdnMediaType | typeof ALL_FILTER_VALUE
   has_relationships: boolean | typeof ALL_FILTER_VALUE
 }
 
@@ -81,8 +74,8 @@ export default Vue.extend({
   }),
 
   computed: {
-    MediaType(): typeof MediaType {
-      return MediaType
+    MediaType(): typeof CdnMediaType {
+      return CdnMediaType
     },
   },
 

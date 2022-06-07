@@ -31,6 +31,7 @@ import { sales } from './sales'
 import { tags } from './tags'
 import { productSets } from './productSets'
 import { attributes } from './attributes'
+import { media } from './media'
 
 Vue.use(Vuex)
 
@@ -97,6 +98,7 @@ const storeModules = {
   tags,
   productSets,
   attributes,
+  media,
 }
 
 const storePattern = {

@@ -13,12 +13,12 @@
 
       <template #default="{ item: singleMedia }">
         <div class="media-list-item">
-          <div class="media-list-item__thumbnail">
-            <single-media-item
-              :key="singleMedia.id"
-              :thumbnail-object="{ type: singleMedia.type, url: singleMedia.url }"
-            />
-          </div>
+          <media-thumbnail
+            fit="cover"
+            :media="singleMedia"
+            :size="60"
+            class="media-list-item__thumbnail"
+          />
 
           <div class="media-list-item__data">
             <p class="media-list-item__text">
@@ -28,7 +28,7 @@
             </p>
             <p class="media-list-item__text">
               <span>{{ $t('alternativeText') }}: </span
-              ><span class="media-list-item__text--value">{{ singleMedia.alt || 'brak' }}</span>
+              ><span class="media-list-item__text--value">{{ singleMedia.alt || '-' }}</span>
             </p>
             <p class="media-list-item__text">
               <span>{{ $t('relationsCount') }}: </span
@@ -39,6 +39,7 @@
           <media-edit-form
             class="media-list-item__form"
             :media="singleMedia"
+            allow-deletion
             @update="(m) => updateMedia(m, i)"
             @remove="removeMedia"
           />
@@ -75,7 +76,6 @@ import Vue from 'vue'
 import { updateMedia, removeMedia } from '@/services/uploadMedia'
 
 import PaginatedList from '@/components/PaginatedList.vue'
-import SingleMediaItem from '@/components/modules/media/SingleMediaItem.vue'
 import MediaEditForm from '@/components/modules/media/MediaEditForm.vue'
 
 import { CdnMedia } from '@/interfaces/Media'
@@ -83,6 +83,7 @@ import { formatApiNotificationError } from '@/utils/errors'
 import { formatFilters } from '@/utils/utils'
 import { EMPTY_MEDIA_FILTERS, MediaFiltersType } from '@/components/modules/media/MediaFilter.vue'
 import MediaFilter from '@/components/modules/media/MediaFilter.vue'
+import MediaThumbnail from '@/components/modules/media/MediaThumbnail.vue'
 
 export default Vue.extend({
   metaInfo(this: any) {
@@ -90,9 +91,9 @@ export default Vue.extend({
   },
   components: {
     PaginatedList,
-    SingleMediaItem,
     MediaEditForm,
     MediaFilter,
+    MediaThumbnail,
   },
 
   data: () => ({
@@ -161,16 +162,6 @@ input[type='color'] {
     box-shadow: $shadow;
     width: 100px;
     height: 100px;
-
-    .media-element {
-      position: absolute;
-      top: 0;
-      left: 0;
-      object-fit: cover;
-      width: 100%;
-      height: 100%;
-      transition: transform 0.3s;
-    }
   }
 
   &__text {
@@ -184,13 +175,8 @@ input[type='color'] {
 
     &--value {
       color: $primary-color-300;
-      // display: block;
     }
   }
-
-  // &__data {
-  //   word-break: break-all;
-  // }
 
   &__form {
     width: 50px;

@@ -27,6 +27,7 @@
             {{ $t('common.save') }}
           </app-button>
           <app-button
+            v-if="allowDeletion"
             type="danger"
             html-type="button"
             size="small"
@@ -125,9 +126,7 @@ export default Vue.extend({
     },
     async handleMediaRemove(id: Pick<CdnMedia, 'id'>) {
       if (this.isLoadingRemoval) return
-      this.isLoadingRemoval = true
       this.$emit('remove', id)
-      this.isLoadingRemoval = false
     },
   },
 })

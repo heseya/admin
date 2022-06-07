@@ -194,15 +194,6 @@ const router = new VueRouter({
       },
     },
     {
-      path: '/settings/media',
-      name: 'Banners',
-      component: () => import('./views/settings/Media.vue'),
-      meta: {
-        requiresAuth: true,
-        permissions: [Permissions.Banners.Show],
-      },
-    },
-    {
       path: '/settings/banners/:id',
       name: 'BannersView',
       component: () => import('./views/banners/view.vue'),
@@ -210,6 +201,15 @@ const router = new VueRouter({
         returnUrl: '/settings/banners',
         requiresAuth: true,
         permissions: [Permissions.Banners.Show],
+      },
+    },
+    {
+      path: '/settings/media',
+      name: 'Media',
+      component: () => import('./views/settings/Media.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Media.Show],
       },
     },
     {

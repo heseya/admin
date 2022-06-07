@@ -110,5 +110,10 @@
     "schemaCheckbox": "Schemat nie może być jednocześnie ukryty i wymagany",
     "timeBefore": "Godzina zakończenia musi być przed godziną startu",
     "couponCode": "Kod kuponu może składać się tylko z małych liter, cyfr, myślników i podkreślników (_)"
+  },
+
+  "mediaTypes": {
+    "photo": "Zdjęcie",
+    "video": "Video"
   }
 }

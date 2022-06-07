@@ -29,6 +29,6 @@ export const getApiURL = () => {
     case 'sandbox-admin.heseya.com':
       return 'https://feature-sandbox.***REMOVED***'
     default:
-      return (process.env.VUE_APP_API_URL as string) || 'https://feature-media-crud.***REMOVED***'
+      return (process.env.VUE_APP_API_URL as string) || '***REMOVED***'
   }
 }

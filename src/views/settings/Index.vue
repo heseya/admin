@@ -20,7 +20,7 @@
           icon="bx bxs-image"
         />
         <SettingsItem
-          v-can="$p.Banners.Show || $p.Media.Show"
+          v-can="$p.Media.Show"
           :name="$t('models.media')"
           url="/settings/media"
           icon="bx bxs-image"

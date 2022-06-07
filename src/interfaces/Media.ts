@@ -5,6 +5,7 @@ import { Metadata } from './Metadata'
 export enum CdnMediaType {
   Photo = 'photo',
   Video = 'video',
+  Pdf = 'pdf',
 }
 
 export interface CdnMedia {

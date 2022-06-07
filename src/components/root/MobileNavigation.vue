@@ -8,15 +8,15 @@
         :to="item.to"
         :exact="item.exact"
         :label="item.label"
-        :icon="item.icon"
-        :predefined-icon="item.predefinedIcon"
+        :icon-class="item.iconClass"
+        :svg-icon-path="item.svgIconPath"
         root-class="mobile-nav"
       />
 
       <menu-link
         root-class="mobile-nav"
         class="mobile-nav__more-btn"
-        predefined-icon="icons/more-icon.svg"
+        svg-icon-path="icons/more-icon.svg"
         :label="`nav.moreLink`"
         @click="isMenuVisible = true"
       />
@@ -31,33 +31,20 @@ import Vue from 'vue'
 
 import MenuLinkComponent from './MenuLink.vue'
 import MobileOverlay from './MobileOverlay.vue'
-import { DEFAULT_MENU_ITEMS } from '@/consts/menuItems'
 
 export default Vue.extend({
   name: 'MobileNavigation',
   components: { MobileOverlay, MenuLink: MenuLinkComponent },
   data: () => ({
     isMenuVisible: false,
-    menu: [...DEFAULT_MENU_ITEMS],
   }),
   computed: {
     isHidden(): boolean {
       return !!this.$route.meta?.hiddenNav || false
     },
-  },
-  created() {
-    this.getSavedMenu()
-  },
-  mounted() {
-    window.addEventListener('menuChanged', this.getSavedMenu)
-  },
-  destroyed() {
-    window.removeEventListener('menuChanged', this.getSavedMenu)
-  },
-  methods: {
-    getSavedMenu() {
-      const savedMenu = JSON.parse(window.localStorage.getItem('menu') || '[]')
-      if (savedMenu.length) this.menu = [...savedMenu]
+    menu(): any {
+      // @ts-ignore // TODO: fix extended store actions typings
+      return this.$accessor.menuItems.getMenuLinks
     },
   },
 })

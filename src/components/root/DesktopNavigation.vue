@@ -3,15 +3,22 @@
     <nav-store-logo />
     <div class="nav__wrapper">
       <template v-for="(item, i) in menu">
-        <router-link :key="i" class="nav__link" :to="item.to" :exact="item.exact">
+        <router-link
+          v-if="item.type === 'link'"
+          :key="i"
+          class="nav__link"
+          :to="item.to"
+          :exact="item.exact"
+        >
           <InlineSvg
-            v-if="item.predefinedIcon"
+            v-if="item.svgIconPath"
             class="nav-link-img"
-            :src="require(`@/assets/images/${item.predefinedIcon}`)"
+            :src="require(`@/assets/images/${item.svgIconPath}`)"
           />
-          <i v-else :class="item.icon" class="nav-link-img" />
+          <i v-else :class="item.iconClass" class="nav-link-svg" />
           <span class="nav__link-label">{{ $t(item.label) }}</span>
         </router-link>
+        <div v-else-if="item.type === 'spacer'" :key="i" class="nav__spacer"></div>
       </template>
     </div>
 
@@ -27,32 +34,15 @@ import InlineSvg from 'vue-inline-svg'
 import NavStoreLogo from './NavStoreLogo.vue'
 import PoweredBy from './PoweredBy.vue'
 
-import { DEFAULT_MENU_ITEMS } from '@/consts/menuItems'
-
 export default Vue.extend({
   name: 'DesktopNavigation',
   components: { NavStoreLogo, InlineSvg, PoweredBy },
-  data: () => ({
-    menu: [...DEFAULT_MENU_ITEMS],
-  }),
   computed: {
     isHidden(): boolean {
       return !!this.$route.meta?.hiddenNav || false
     },
-  },
-  created() {
-    this.getSavedMenu()
-  },
-  mounted() {
-    window.addEventListener('menuChanged', this.getSavedMenu)
-  },
-  destroyed() {
-    window.removeEventListener('menuChanged', this.getSavedMenu)
-  },
-  methods: {
-    getSavedMenu() {
-      const savedMenu = JSON.parse(window.localStorage.getItem('menu') || '[]')
-      if (savedMenu.length) this.menu = [...savedMenu]
+    menu(): any {
+      return this.$accessor.menuItems.activeItems
     },
   },
 })
@@ -77,6 +67,7 @@ export default Vue.extend({
   transition-timing-function: ease-out;
 
   &__wrapper {
+    width: 100%;
     overflow-y: auto;
   }
 
@@ -111,6 +102,11 @@ export default Vue.extend({
       box-sizing: border-box;
       opacity: 0.5;
       transition: color 0.3s;
+    }
+
+    .nav-link-svg {
+      @extend .nav-link-img;
+      font-size: 18px;
     }
 
     &:hover {

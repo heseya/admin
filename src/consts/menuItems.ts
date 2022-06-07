@@ -1,143 +1,263 @@
 import { PERMISSIONS_TREE } from './permissions'
+
+export enum MenuItemType {
+  Link = 'link',
+  Spacer = 'spacer',
+}
+
+export enum SettingsSection {
+  Shop = 'shop',
+  Products = 'products',
+  Orders = 'orders',
+  Shipping = 'shipping',
+  Users = 'users',
+  Other = 'other',
+}
+
 export interface MenuLink {
+  type: MenuItemType.Link
+  id: string
+  default?: boolean
   to: string
   can?: string | string[]
   exact?: boolean
-  icon?: string
-  predefinedIcon?: string
+  iconClass?: string
+  svgIconPath?: string
   label: string
   disabled?: boolean
+  section?: SettingsSection
 }
+export interface MenuSpacer {
+  id: string
+  type: MenuItemType.Spacer
+  disabled: boolean
+}
+export type MenuItem = MenuLink | MenuSpacer
 
-export const DEFAULT_MENU_ITEMS: MenuLink[] = [
+export const MENU_ITEMS: MenuItem[] = [
   {
+    id: '1',
+    type: MenuItemType.Link,
     exact: true,
+    default: true,
     to: '/',
-    predefinedIcon: 'icons/dashboard-icon.svg',
+    svgIconPath: 'icons/dashboard-icon.svg',
     label: 'nav.dashboard',
     disabled: true,
   },
+  { id: '2', type: MenuItemType.Spacer, disabled: true },
   {
+    id: '3',
+    type: MenuItemType.Link,
+    default: true,
     to: '/orders',
-    predefinedIcon: 'icons/orders-icon.svg',
+    svgIconPath: 'icons/orders-icon.svg',
     label: 'models.orders',
     disabled: true,
     can: PERMISSIONS_TREE.Orders.Show,
   },
+  { id: '4', type: MenuItemType.Spacer, disabled: true },
   {
+    id: '5',
+    type: MenuItemType.Link,
+    to: '/pages',
+    iconClass: 'bx bxs-copy-alt',
+    label: 'models.pages',
+    can: PERMISSIONS_TREE.Pages.Show,
+    section: SettingsSection.Shop,
+  },
+  {
+    id: '6',
+    type: MenuItemType.Link,
+    to: '/settings/banners',
+    iconClass: 'bx bxs-image',
+    label: 'models.banners',
+    can: PERMISSIONS_TREE.Banners.Show,
+    section: SettingsSection.Shop,
+  },
+  {
+    id: '7',
+    type: MenuItemType.Link,
+    default: true,
     to: '/products',
-    predefinedIcon: 'icons/products-icon.svg',
+    svgIconPath: 'icons/products-icon.svg',
     label: 'models.products',
     can: PERMISSIONS_TREE.Products.Show,
+    section: SettingsSection.Products,
   },
   {
+    id: '8',
+    type: MenuItemType.Link,
+    default: true,
     to: '/collections',
-    predefinedIcon: 'icons/collections-icon.svg',
+    svgIconPath: 'icons/collections-icon.svg',
     label: 'models.sets',
     can: PERMISSIONS_TREE.ProductSets.Show,
+    section: SettingsSection.Products,
   },
   {
+    id: '9',
+    type: MenuItemType.Link,
+    default: true,
     to: '/items',
-    predefinedIcon: 'icons/warehouse-icon.svg',
+    svgIconPath: 'icons/warehouse-icon.svg',
     label: 'nav.warehouse',
     can: PERMISSIONS_TREE.Items.Show,
+    section: SettingsSection.Orders,
   },
   {
+    id: '10',
+    type: MenuItemType.Link,
+    default: true,
     to: '/coupons',
-    predefinedIcon: 'icons/coupons-icon.svg',
+    svgIconPath: 'icons/coupons-icon.svg',
     label: 'models.coupons',
     can: PERMISSIONS_TREE.Coupons.Show,
+    section: SettingsSection.Products,
   },
   {
+    id: '11',
+    type: MenuItemType.Link,
+    default: true,
     to: '/sales',
-    predefinedIcon: 'icons/sales-icon.svg',
+    svgIconPath: 'icons/sales-icon.svg',
     label: 'models.sales',
     can: PERMISSIONS_TREE.Sales.Show,
+    section: SettingsSection.Products,
   },
+  { id: '12', type: MenuItemType.Spacer, disabled: true },
   {
+    id: '13',
+    type: MenuItemType.Link,
+    default: true,
     exact: true,
     to: '/settings',
-    predefinedIcon: 'icons/settings-icon.svg',
+    svgIconPath: 'icons/settings-icon.svg',
     label: 'nav.settings',
     disabled: true,
   },
-]
-
-export const AVAILABLE_MENU_ITEMS: MenuLink[] = [
   {
-    to: '/pages',
-    icon: 'bx bxs-copy-alt',
-    label: 'models.pages',
-  },
-  {
-    to: '/settings/banners',
-    icon: 'bx bxs-image',
-    label: 'models.banners',
-  },
-  {
+    id: '14',
+    type: MenuItemType.Link,
     to: '/settings/attributes',
-    icon: 'bx bx-spreadsheet',
+    iconClass: 'bx bx-spreadsheet',
     label: 'models.attributes',
+    can: PERMISSIONS_TREE.Attributes.Show,
+    section: SettingsSection.Products,
   },
   {
+    id: '12',
+    type: MenuItemType.Link,
     to: '/settings/tags',
-    icon: 'bx bxs-purchase-tag',
+    iconClass: 'bx bxs-purchase-tag',
     label: 'models.tags',
+    can: PERMISSIONS_TREE.Tags.Show,
+    section: SettingsSection.Products,
   },
   {
+    id: '15',
+    type: MenuItemType.Link,
     to: '/schemas',
-    icon: 'bx bxs-customize',
+    iconClass: 'bx bxs-customize',
     label: 'models.schemas',
+    can: PERMISSIONS_TREE.Products.Show,
+    section: SettingsSection.Products,
   },
   {
+    id: '16',
+    type: MenuItemType.Link,
     to: '/settings/statuses',
-    icon: 'bx bxs-check-circle',
+    iconClass: 'bx bxs-check-circle',
     label: 'models.statuses',
+    can: PERMISSIONS_TREE.Statuses.Show,
+    section: SettingsSection.Orders,
   },
   {
+    id: '17',
+    type: MenuItemType.Link,
     to: '/settings/shipping-methods',
-    icon: 'bx bxs-truck',
+    iconClass: 'bx bxs-truck',
     label: 'models.shipping_methods',
+    can: PERMISSIONS_TREE.ShippingMethods.Show,
+    section: SettingsSection.Shipping,
   },
   {
+    id: '18',
+    type: MenuItemType.Link,
     to: '/settings/package-templates',
-    icon: 'bx bxs-box',
+    iconClass: 'bx bxs-box',
     label: 'models.package_templates',
+    can: PERMISSIONS_TREE.Packages.Show,
+    section: SettingsSection.Shipping,
   },
   {
+    id: '19',
+    type: MenuItemType.Link,
     to: '/settings/users',
-    icon: 'bx bxs-group',
+    iconClass: 'bx bxs-group',
     label: 'nav.users',
+    can: PERMISSIONS_TREE.Users.Show,
+    section: SettingsSection.Users,
   },
   {
+    id: '20',
+    type: MenuItemType.Link,
     to: '/settings/roles',
-    icon: 'bx bx-task',
+    iconClass: 'bx bx-task',
     label: 'nav.roles',
+    can: PERMISSIONS_TREE.Roles.Show,
+    section: SettingsSection.Users,
   },
   {
+    id: '21',
+    type: MenuItemType.Link,
     to: '/apps',
-    icon: 'bx bxs-store-alt',
+    iconClass: 'bx bxs-store-alt',
     label: 'nav.apps',
+    can: PERMISSIONS_TREE.Apps.Show,
+    section: SettingsSection.Other,
   },
   {
+    id: '22',
+    type: MenuItemType.Link,
     to: '/settings/consents',
-    icon: 'bx bx-file-blank',
+    iconClass: 'bx bx-file-blank',
     label: 'nav.consents',
+    can: PERMISSIONS_TREE.Consents.Show,
+    section: SettingsSection.Other,
   },
   {
+    id: '23',
+    type: MenuItemType.Link,
     to: '/webhooks',
-    icon: 'bx bxs-bot',
+    iconClass: 'bx bxs-bot',
     label: 'nav.webhooks',
+    can: PERMISSIONS_TREE.Webhooks.Show,
+    section: SettingsSection.Other,
   },
   {
+    id: '24',
+    type: MenuItemType.Link,
     to: '/settings/seo',
-    icon: 'bx bxl-google',
+    iconClass: 'bx bxl-google',
     label: 'nav.seo',
+    section: SettingsSection.Other,
   },
 
   {
+    id: '25',
+    type: MenuItemType.Link,
     to: '/settings/advanced',
-    icon: 'bx bxs-cog',
+    iconClass: 'bx bxs-cog',
     label: 'nav.advanced',
+    can: PERMISSIONS_TREE.Settings.Show,
+    section: SettingsSection.Other,
   },
 ]
+
+export const MENU_LINKS = MENU_ITEMS.filter((item) => item.type === MenuItemType.Link) as MenuLink[]
+export const DEFAULT_MENU_ITEMS = MENU_ITEMS.filter(
+  (item) => item.type === MenuItemType.Spacer || item.default,
+)
+export const DEFAULT_AVAILABLE_ITEMS = MENU_LINKS.filter((item) => !item.default)
+export const SETTINGS_LINKS = MENU_LINKS.filter((item) => item.section) as MenuLink[]

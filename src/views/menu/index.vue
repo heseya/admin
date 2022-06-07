@@ -17,14 +17,15 @@
             :list="items"
             :group="{ name: 'menu-items' }"
           >
-            <div v-for="item in items" :key="item.id">
+            <div v-for="item in items" :key="item.id" v-can="item.can">
               <list-item :key="item.id">
                 <template #avatar>
                   <InlineSvg
-                    v-if="item.predefinedIcon"
-                    :src="require(`@/assets/images/${item.predefinedIcon}`)"
+                    v-if="item.svgIconPath"
+                    :src="require(`@/assets/images/${item.svgIconPath}`)"
+                    class="menu-items__svg-icon"
                   />
-                  <i v-else :class="item.icon"></i>
+                  <i v-else :class="item.iconClass" class="menu-items__icon"></i>
                 </template>
                 {{ $t(item.label) }}
               </list-item>
@@ -41,28 +42,43 @@
             :list="menu"
             :group="{ name: 'menu-items' }"
           >
-            <div v-for="item in menu" :key="item.id">
-              <list-item :key="item.id" :class="{ draggable: !item.disabled }">
+            <div v-for="item in menu" :key="item.id" v-can="item.can">
+              <list-item
+                v-if="item.type === 'link'"
+                :key="item.id"
+                :class="{ draggable: !item.disabled }"
+              >
                 <template #avatar>
                   <InlineSvg
-                    v-if="item.predefinedIcon"
-                    :src="require(`@/assets/images/${item.predefinedIcon}`)"
+                    v-if="item.svgIconPath"
+                    :src="require(`@/assets/images/${item.svgIconPath}`)"
+                    class="menu-items__svg-icon"
                   />
-                  <i v-else :class="item.icon"></i>
+                  <i v-else :class="item.iconClass" class="menu-items__icon"></i>
                 </template>
                 {{ $t(item.label) }}
                 <template #action>
                   <i class="bx bx-menu"></i>
                 </template>
               </list-item>
+              <div
+                v-else-if="item.type === 'spacer'"
+                :key="item.id"
+                class="menu-items__spacer"
+              ></div>
             </div>
           </draggable>
         </div>
       </div>
       <hr />
-      <app-button @click="saveMenu">
-        {{ $t('common.save') }}
-      </app-button>
+      <div class="row">
+        <app-button @click="saveMenu">
+          {{ $t('common.save') }}
+        </app-button>
+        <app-button type="danger" @click="resetMenu">
+          {{ $t('common.reset') }}
+        </app-button>
+      </div>
     </card>
   </div>
 </template>
@@ -74,7 +90,7 @@
     "menu": "Menu",
     "options":"Dostępne zakładki",
     "success": "Menu zostało zmienione",
-
+    "successReset": "Menu zostało zresetowane",
     "info": "Tutaj możesz edytować swoje menu. Zakładki: <b>Dashboard</b>, <b>Zamówienia</b> oraz <b>Ustawienia</b> jako jedyne nie mogą zostać z niego usunięte."
   },
   "en": {
@@ -82,6 +98,7 @@
     "menu": "Menu",
     "options":"Available tabs",
     "success": "Menu has been changed",
+    "successReset": "Menu has been reseted",
     "info": "You can customize your menu. The tabs: <b>Dashboard</b>, <b>Orders</b> and <b>Settings</b> cannot be modified."
   }
 }
@@ -97,7 +114,7 @@ import TopNav from '@/components/layout/TopNav.vue'
 
 import ListItem from '@/components/layout/ListItem.vue'
 
-import { DEFAULT_MENU_ITEMS, AVAILABLE_MENU_ITEMS } from '@/consts/menuItems'
+import { MenuLink } from '@/consts/menuItems'
 
 export default Vue.extend({
   metaInfo(this: any) {
@@ -111,21 +128,38 @@ export default Vue.extend({
     Card,
   },
   data: () => ({
-    menu: [...DEFAULT_MENU_ITEMS],
-    items: [...AVAILABLE_MENU_ITEMS],
+    menu: [] as MenuLink[],
+    items: [] as MenuLink[],
   }),
+  computed: {
+    activeItems(): any {
+      return this.$accessor.menuItems.activeItems
+    },
+    availableItems(): any {
+      return this.$accessor.menuItems.availableItems
+    },
+  },
   created() {
-    const savedMenu = JSON.parse(window.localStorage.getItem('menu') || '[]')
-    const savedItems = JSON.parse(window.localStorage.getItem('items') || '[]')
-    if (savedMenu.length) this.menu = [...savedMenu]
-    if (savedItems.length) this.items = [...savedItems]
+    this.setDefaultMenu()
   },
   methods: {
     saveMenu() {
-      window.localStorage.setItem('menu', JSON.stringify(this.menu))
-      window.localStorage.setItem('items', JSON.stringify(this.items))
-      window.dispatchEvent(new CustomEvent('menuChanged'))
+      // @ts-ignore // TODO: fix extended store actions typings
+      this.$accessor.menuItems.setMenuItems({
+        activeItems: [...this.menu],
+        availableItems: [...this.items],
+      })
       this.$toast.success(this.$t('success') as string)
+    },
+    resetMenu() {
+      // @ts-ignore // TODO: fix extended store actions typings
+      this.$accessor.menuItems.resetMenu()
+      this.setDefaultMenu()
+      this.$toast.success(this.$t('successReset') as string)
+    },
+    setDefaultMenu() {
+      this.menu = [...this.activeItems]
+      this.items = [...this.availableItems]
     },
   },
 })
@@ -158,6 +192,22 @@ export default Vue.extend({
     @media ($max-viewport-5) {
       padding: 0;
     }
+  }
+
+  &__icon {
+    display: block;
+    font-size: 18px;
+  }
+
+  &__svg-icon {
+    display: block;
+    width: 18px;
+    height: 18px;
+    box-sizing: border-box;
+  }
+
+  &__spacer {
+    height: 10px;
   }
 
   &__inactive {

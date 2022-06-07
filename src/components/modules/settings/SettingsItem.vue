@@ -3,11 +3,11 @@
     <template #avatar>
       <avatar>
         <InlineSvg
-          v-if="predefinedIcon"
+          v-if="svgIconPath"
           class="nav-link-img"
-          :src="require(`@/assets/images/${predefinedIcon}`)"
+          :src="require(`@/assets/images/${svgIconPath}`)"
         />
-        <i v-else :class="icon"></i>
+        <i v-else :class="iconClass"></i>
       </avatar>
     </template>
     {{ name }}
@@ -34,11 +34,11 @@ export default Vue.extend({
       type: String,
       default: null,
     },
-    icon: {
+    iconClass: {
       type: String,
       default: 'bx bx-question-mark',
     },
-    predefinedIcon: {
+    svgIconPath: {
       type: String,
       default: '',
     },

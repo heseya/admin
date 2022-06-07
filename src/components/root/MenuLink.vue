@@ -6,11 +6,11 @@
     :exact="exact"
     @click="$emit('click')"
     ><InlineSvg
-      v-if="predefinedIcon"
+      v-if="svgIconPath"
       class="nav-link-img"
-      :src="require(`@/assets/images/${predefinedIcon}`)"
+      :src="require(`@/assets/images/${svgIconPath}`)"
     />
-    <i v-else :class="icon" class="nav-link-img" />
+    <i v-else :class="iconClass" class="nav-link-img nav-link-svg" />
     <span :class="`${rootClass}__link-label`">{{ $t(label) }}</span>
   </component>
 </template>
@@ -36,11 +36,11 @@ export default Vue.extend({
       type: String,
       required: true,
     },
-    icon: {
+    iconClass: {
       type: String,
       default: null,
     },
-    predefinedIcon: {
+    svgIconPath: {
       type: String,
       default: null,
     },

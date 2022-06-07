@@ -11,8 +11,8 @@
       :to="item.to"
       :exact="item.exact"
       :label="item.label"
-      :icon="item.icon"
-      :predefined-icon="item.predefinedIcon"
+      :icon-class="item.iconClass"
+      :svg-icon-path="item.svgIconPath"
       root-class="mobile-nav-overlay"
       @click.native="close"
     />
@@ -21,38 +21,29 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { DEFAULT_MENU_ITEMS } from '@/consts/menuItems'
 
 import MenuLinkComponent from './MenuLink.vue'
 
 export default Vue.extend({
   name: 'MobileOverlay',
-  components: { MenuLink: MenuLinkComponent },
+  components: {
+    MenuLink: MenuLinkComponent,
+  },
   props: {
     isVisible: {
       type: Boolean,
       default: false,
     },
   },
-  data: () => ({
-    menu: [...DEFAULT_MENU_ITEMS],
-  }),
-  created() {
-    this.getSavedMenu()
-  },
-  mounted() {
-    window.addEventListener('menuChanged', this.getSavedMenu)
-  },
-  destroyed() {
-    window.removeEventListener('menuChanged', this.getSavedMenu)
+  computed: {
+    menu(): any {
+      // @ts-ignore // TODO: fix extended store actions typings
+      return this.$accessor.menuItems.getMenuLinks
+    },
   },
   methods: {
     close() {
       this.$emit('close')
-    },
-    getSavedMenu() {
-      const savedMenu = JSON.parse(window.localStorage.getItem('menu') || '[]')
-      if (savedMenu.length) this.menu = [...savedMenu]
     },
   },
 })
@@ -125,6 +116,11 @@ export default Vue.extend({
         height: 24px;
         margin-right: 30px;
       }
+    }
+
+    .nav-link-svg {
+      font-size: 22px;
+      line-height: 24px;
     }
 
     &.router-link-active {

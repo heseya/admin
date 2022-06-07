@@ -18,6 +18,7 @@
     "false": "Fałsz",
     "edit": "Edytuj",
     "continue": "Kontynuuj",
+    "reset": "Przywróć domyślne",
     "form": {
       "name": "Nazwa",
       "description": "Opis",

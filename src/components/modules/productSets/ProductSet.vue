@@ -252,12 +252,12 @@ export default Vue.extend({
       this.isLoading = false
     },
     async fetchByParentId(parentId: UUID, limit: number, page: number) {
-      const limitChildren = this.isFetchAllChildren ? '' : `&limit=${limit}`
+      const childrenLimit = this.isFetchAllChildren ? 500 : limit
       const { data: res } = await api.get<{
         data: ProductSet[]
         links: ResponseLinks
         meta: ResponseMeta
-      }>(`/product-sets?parent_id=${parentId}&page=${page}&tree=0${limitChildren}`)
+      }>(`/product-sets?parent_id=${parentId}&page=${page}&tree=0&limit=${childrenLimit}`)
       return res
     },
     async deleteCollection() {

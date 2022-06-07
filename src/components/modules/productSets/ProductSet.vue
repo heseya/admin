@@ -76,6 +76,7 @@
     </div>
 
     <ProductSetForm
+      v-if="isFormModalActive"
       :value="editedItem"
       :slug-prefix="editedItemSlugPrefix"
       :is-open="isFormModalActive"

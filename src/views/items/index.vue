@@ -9,7 +9,7 @@
       @clear-filters="clearFilters"
     >
       <template #nav>
-        <icon-button v-can="$p.Items.Add" @click="openModal()">
+        <icon-button v-can="$p.Items.Add" data-cy="add-btn" @click="openModal()">
           <template #icon>
             <i class="bx bx-plus"></i>
           </template>

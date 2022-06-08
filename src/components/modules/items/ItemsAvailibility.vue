@@ -3,7 +3,12 @@
     <div class="items-availability__header">
       <h4>{{ $t('title') }}</h4>
 
-      <icon-button v-can="$p.Deposits.Add" size="small" @click="openDepositModal(null)">
+      <icon-button
+        v-can="$p.Deposits.Add"
+        size="small"
+        data-cy="deposit-create-btn"
+        @click="openDepositModal(null)"
+      >
         <template #icon>
           <i class="bx bx-plus"></i>
         </template>

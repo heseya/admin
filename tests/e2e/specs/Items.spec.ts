@@ -8,21 +8,24 @@ describe('Items page', () => {
 
 describe('add new items', () => {
   it('add new items', () => {
-    cy.get('.icon-button__text').contains('Add item').click() // TODO : change to data-cy
+    cy.dataCy('add-btn').click()
 
     const uuid = () => Cypress._.random(0, 1e6)
     const id = uuid()
     const itemName = `Item${id}`
     const skuName = `SKU${id}`
 
-    cy.get('input[label="Name"]').type(itemName) // TODO : change to data-cy
-    cy.get('input[label="SKU"]').type(skuName) // TODO : change to data-cy
-    cy.get('.app-button__text').contains('Save').click() // TODO : change to data-cy
+    cy.dataCy('name').type(itemName)
+    cy.dataCy('sku').type(skuName)
+    cy.dataCy('save-btn').click()
+
     cy.get('.app__content').contains(skuName).should('be.visible')
     cy.get('.app__content').contains(skuName).click()
-    cy.get('.icon-button__text').contains('Add deposit').click()
-    cy.get('input[label="Quantity"]').clear().type('100') // TODO : change to data-cy
-    cy.get('.app-button__text').contains('Add').click()
-    cy.get('.app-button__text').contains('Save').click() // TODO : change to data-cy
+
+    cy.dataCy('deposit-create-btn').click()
+    cy.dataCy('quantity').clear().type('100')
+    cy.dataCy('deposit-add-btn').click()
+
+    cy.dataCy('total-quantity').should('have.text', '100')
   })
 })

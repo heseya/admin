@@ -105,7 +105,7 @@ export default Vue.extend({
       return this.id === 'create'
     },
     banner(): Banner {
-      return this.$accessor.banners.getSelected!
+      return this.$accessor.banners.getSelected || ({} as any)
     },
     error(): any {
       return this.$accessor.banners.getError

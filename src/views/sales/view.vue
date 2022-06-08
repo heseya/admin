@@ -126,7 +126,7 @@ export default Vue.extend({
       return this.id === 'create'
     },
     sale(): Sale {
-      return this.$accessor.sales.getSelected!
+      return this.$accessor.sales.getSelected || ({} as any)
     },
     error(): any {
       return this.$accessor.sales.getError

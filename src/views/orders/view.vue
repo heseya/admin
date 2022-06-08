@@ -105,7 +105,7 @@ export default Vue.extend({
       return this.$accessor.orders.getError
     },
     order(): Order {
-      return this.$accessor.orders.getSelected!
+      return this.$accessor.orders.getSelected || ({} as any)
     },
     storefrontPaymentUrl(): string | undefined {
       return this.$accessor.env.storefront_payment_url || undefined

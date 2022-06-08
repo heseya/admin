@@ -349,7 +349,7 @@ export default Vue.extend({
       return this.id === 'create'
     },
     product(): Product {
-      return this.$accessor.products.getSelected!
+      return this.$accessor.products.getSelected || ({} as any)
     },
     error(): any {
       // @ts-ignore // TODO: fix extended store getters typings

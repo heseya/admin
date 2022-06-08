@@ -104,7 +104,7 @@ export default Vue.extend({
       return this.id === 'create'
     },
     role(): Role {
-      return this.$accessor.roles.getSelected
+      return this.$accessor.roles.getSelected!
     },
     error(): any {
       return this.$accessor.roles.getError

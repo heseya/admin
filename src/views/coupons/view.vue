@@ -138,7 +138,7 @@ export default Vue.extend({
       return this.id === 'create'
     },
     coupon(): Coupon {
-      return this.$accessor.coupons.getSelected
+      return this.$accessor.coupons.getSelected!
     },
     error(): any {
       return this.$accessor.coupons.getError

@@ -69,7 +69,7 @@ export default Vue.extend({
   },
   computed: {
     currentOrder(): Order {
-      return this.$accessor.orders.getSelected
+      return this.$accessor.orders.getSelected!
     },
     orders(): Order[] {
       return this.$accessor.orders.getData

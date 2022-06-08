@@ -68,7 +68,7 @@ import BannerForm from '@/components/modules/banners/Form.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
-import { Banner, BannerDto, BannerMediaDto } from '@/interfaces/Banner'
+import { Banner, BannerDto } from '@/interfaces/Banner'
 
 const CLEAN_FORM: Banner = {
   id: '',
@@ -105,7 +105,7 @@ export default Vue.extend({
       return this.id === 'create'
     },
     banner(): Banner {
-      return this.$accessor.banners.getSelected
+      return this.$accessor.banners.getSelected!
     },
     error(): any {
       return this.$accessor.banners.getError

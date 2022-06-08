@@ -82,7 +82,7 @@ export default Vue.extend({
       return this.id === 'create'
     },
     consent(): Consent {
-      return this.$accessor.consents.getSelected
+      return this.$accessor.consents.getSelected!
     },
     error(): any {
       return this.$accessor.consents.getError

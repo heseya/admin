@@ -170,7 +170,7 @@ export default Vue.extend({
       return this.id === 'create'
     },
     page(): Page {
-      return this.$accessor.pages.getSelected
+      return this.$accessor.pages.getSelected!
     },
     error(): any {
       return this.$accessor.pages.getError

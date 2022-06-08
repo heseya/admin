@@ -76,7 +76,7 @@ export default Vue.extend({
       return this.id === 'create'
     },
     attribute(): Attribute {
-      return this.$accessor.attributes.getSelected
+      return this.$accessor.attributes.getSelected!
     },
     error(): any {
       return this.$accessor.attributes.getError

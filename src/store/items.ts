@@ -39,7 +39,7 @@ export const items = createVuexCRUD<
           deposit,
         )
 
-        await dispatch('fetch', state.queryParams)
+        await Promise.all([dispatch('fetch', state.queryParams), dispatch('get', id)])
 
         return data.data
       } catch (error: any) {

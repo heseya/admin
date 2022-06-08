@@ -6,6 +6,7 @@
 
         <validated-input
           v-model="form.quantity"
+          data-cy="quantity"
           :disabled="disabled"
           rules="required|non-zero"
           type="number"
@@ -58,7 +59,12 @@
         </validated-input>
       </div>
       <template #footer>
-        <app-button v-if="!disabled" type="primary" @click="handleSubmit(saveDeposit)">
+        <app-button
+          v-if="!disabled"
+          data-cy="deposit-add-btn"
+          type="primary"
+          @click="handleSubmit(saveDeposit)"
+        >
           {{ $t('common.add') }}
         </app-button>
       </template>

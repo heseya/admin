@@ -36,7 +36,7 @@ interface DefaultStore<Item extends BaseItem> {
   meta: ResponseMeta
   data: Item[]
   queryParams: Record<string, any>
-  selected: Item
+  selected: Item | null
 }
 
 interface ExtendStore<State, Item extends BaseItem> {
@@ -74,7 +74,7 @@ export const createVuexCRUD =
         isLoading: false,
         meta: {} as ResponseMeta,
         data: [] as Item[],
-        selected: {} as Item,
+        selected: null as Item | null,
         queryParams: {},
         ...(extend?.state || {}),
       } as DefaultStore<Item> & State)
@@ -128,8 +128,9 @@ export const createVuexCRUD =
         state,
         { key, value, item: editedItem }: { key: keyof Item; value: unknown; item: Partial<Item> },
       ) {
-        if (state.selected[key] === value) {
+        if (state.selected?.[key] === value) {
           // Edits selected item
+          // @ts-ignore
           state.selected = { ...state.selected, ...editedItem }
         }
 

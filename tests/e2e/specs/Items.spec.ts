@@ -24,6 +24,5 @@ describe('add new items', () => {
     cy.get('input[label="Quantity"]').clear().type('100') // TODO : change to data-cy
     cy.get('.app-button__text').contains('Add').click()
     cy.get('.app-button__text').contains('Save').click() // TODO : change to data-cy
-    cy.get('.app__content').contains(skuName).should('be.visible')
   })
 })

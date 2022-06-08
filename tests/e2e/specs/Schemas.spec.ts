@@ -11,6 +11,9 @@ describe('Schemas page', () => {
     cy.dataCy('add-btn').click()
 
     const schemaName = `Cypress Schema ${cy.util.uuid()}`
+    const schemaDescription = `Cypress Schema Description ${cy.util.uuid()}`
+    const schemaDefault = `${cy.util.uuid()}`
+    const schemaString = `$Cypress Schema String${cy.util.uuid()}`
 
     cy.dataCy('name').type(schemaName)
     cy.dataCy('price').clear().type('100')
@@ -20,6 +23,11 @@ describe('Schemas page', () => {
       .get('.ant-select-dropdown-menu-item')
       .contains('Text value') // TODO : change to data-cy
       .click()
+
+    cy.dataCy('description').type(schemaDescription)
+    cy.dataCy('default').type(schemaDefault)
+    cy.dataCy('pattern').type(schemaString)
+    cy.dataCy('validation').type(schemaString)
 
     cy.dataCy('submit-btn').click()
 

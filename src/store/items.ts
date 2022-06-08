@@ -29,7 +29,7 @@ export const items = createVuexCRUD<
   },
   actions: {
     async createDeposit(
-      { commit, dispatch, state },
+      { commit, dispatch },
       { id, deposit }: { id: string; deposit: WarehouseDepositDto },
     ): Promise<WarehouseDeposit | false> {
       commit('PRODUCTS_SET_DEPOSITS_ERROR', null)
@@ -39,7 +39,7 @@ export const items = createVuexCRUD<
           deposit,
         )
 
-        await dispatch('fetch', state.queryParams)
+        await dispatch('get', id)
 
         return data.data
       } catch (error: any) {

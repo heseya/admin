@@ -23,9 +23,9 @@ describe('add new items', () => {
     cy.get('.app__content').contains(skuName).click()
 
     cy.dataCy('deposit-create-btn').click()
-    cy.dataCy('quantity').clear().type('100')
+    cy.dataCy('quantity').clear().type('12')
     cy.dataCy('deposit-add-btn').click()
 
-    cy.dataCy('total-quantity').should('have.text', '100')
+    cy.dataCy('total-quantity').should('have.text', ' 120 ')
   })
 })

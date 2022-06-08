@@ -121,7 +121,10 @@ export default Vue.extend({
       return this.$can(this.editedItem.id ? this.$p.Items.Edit : this.$p.Items.Add)
     },
     selectedItem(): null | WarehouseItem {
-      return this.selectedItemId ? this.$accessor.items.getFromListById(this.selectedItemId) : null
+      return this.selectedItemId
+        ? this.$accessor.items.getSelected ||
+            this.$accessor.items.getFromListById(this.selectedItemId)
+        : null
     },
     tableConfig(): TableConfig<WarehouseItem> {
       return {

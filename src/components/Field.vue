@@ -6,8 +6,8 @@
       </slot>
       <slot name="labelSuffix"></slot>
     </span>
-    <div class="order-field__value">
-      <slot :data-cy="dataCy">{{ value }}</slot>
+    <div class="order-field__value" :data-cy="dataCy">
+      <slot>{{ value }}</slot>
     </div>
   </div>
 </template>

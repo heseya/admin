@@ -22,11 +22,10 @@ const getters = getterTree(state, {
 })
 
 const mutations = mutationTree(state, {
-  SET_MENU_ITEMS(
-    state,
-    { activeItems, availableItems }: { activeItems: MenuItem[]; availableItems: MenuLink[] },
-  ) {
+  SET_ACTIVE_ITEMS(state, { activeItems }: { activeItems: MenuItem[] }) {
     state.activeItems = activeItems
+  },
+  SET_AVAILABLE_ITEMS(state, { availableItems }: { availableItems: MenuLink[] }) {
     state.availableItems = availableItems
   },
   SET_DEFAULT(state) {
@@ -42,7 +41,8 @@ const actions = actionTree(
       { commit },
       { activeItems, availableItems }: { activeItems: MenuItem[]; availableItems: MenuLink[] },
     ) {
-      commit('SET_MENU_ITEMS', { activeItems, availableItems })
+      commit('SET_ACTIVE_ITEMS', { activeItems })
+      commit('SET_AVAILABLE_ITEMS', { availableItems })
     },
     resetMenu({ commit }) {
       commit('SET_DEFAULT')
@@ -51,7 +51,7 @@ const actions = actionTree(
 )
 
 export const menuItems = {
-  namespaced: false,
+  namespaced: true,
   state,
   getters,
   mutations,

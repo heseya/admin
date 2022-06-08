@@ -12,7 +12,6 @@
             v-for="item in group"
             :key="item.id"
             :v-can="item.can"
-            class="setting"
             :name="$t(item.label)"
             :url="item.to"
             :icon-class="item.iconClass"

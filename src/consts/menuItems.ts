@@ -25,13 +25,13 @@ export interface MenuLink {
   iconClass?: string
   svgIconPath?: string
   label: string
-  disabled?: boolean
+  disabled?: true
   section?: SettingsSection
 }
 export interface MenuSpacer {
   id: string
   type: MenuItemType.Spacer
-  disabled: boolean
+  disabled: true
 }
 export type MenuItem = MenuLink | MenuSpacer
 

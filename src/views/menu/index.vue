@@ -15,6 +15,7 @@
           <draggable
             class="dragArea list-group menu-items__inactive"
             :list="items"
+            :move="checkMove"
             :group="{ name: 'menu-items' }"
           >
             <div v-for="item in items" :key="item.id" v-can="item.can">
@@ -39,12 +40,13 @@
           <draggable
             class="dragArea list-group menu-items__active"
             handle=".draggable"
+            :move="checkMove"
             :list="menu"
             :group="{ name: 'menu-items' }"
           >
             <div v-for="item in menu" :key="item.id" v-can="item.can">
               <list-item
-                v-if="item.type === 'link'"
+                v-if="item.type === MenuItemType.Link"
                 :key="item.id"
                 :class="{ draggable: !item.disabled }"
               >
@@ -146,6 +148,15 @@ export default Vue.extend({
     this.setDefaultMenu()
   },
   methods: {
+    checkMove(evt: any) {
+      const index = evt.draggedContext.futureIndex
+      const list = evt.relatedContext.list
+      const isFromInactiveList = evt.from.className.includes('inactive')
+
+      // Block moving disabled elements by dropping diffrent element
+      if (isFromInactiveList && index === this.menu.length - 2) return true
+      if (index === list.length || list[index].disabled) return false
+    },
     saveMenu() {
       this.$accessor.menuItems.setMenuItems({
         activeItems: [...this.menu],
@@ -187,7 +198,7 @@ export default Vue.extend({
     padding: 10px;
 
     button:not(.draggable) {
-      cursor: auto;
+      cursor: not-allowed;
     }
 
     @media ($max-viewport-5) {

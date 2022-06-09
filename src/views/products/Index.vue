@@ -84,6 +84,7 @@ import { formatFilters } from '@/utils/utils'
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 import { TableConfig } from '@/interfaces/CmsTable'
 import { Product } from '@/interfaces/Product'
+import { cloneDeep } from 'lodash'
 
 const LOCAL_STORAGE_KEY = 'products-list-view'
 
@@ -98,7 +99,7 @@ export default Vue.extend({
     ProductListItem,
   },
   data: () => ({
-    filters: { ...EMPTY_PRODUCT_FILTERS },
+    filters: cloneDeep(EMPTY_PRODUCT_FILTERS),
     listView: false,
   }),
   computed: {
@@ -132,7 +133,10 @@ export default Vue.extend({
     this.filters.tags = Array.isArray(tags) ? (tags as string[]) : [tags]
 
     this.filters.public = (this.$route.query.public as string) || ALL_FILTER_VALUE
-    this.filters.sort = (this.$route.query.sort as string) || ''
+    this.filters.available = (this.$route.query.available as string) || ALL_FILTER_VALUE
+    this.filters.has_cover = (this.$route.query.has_cover as string) || ALL_FILTER_VALUE
+    this.filters['price.min'] = Number(this.$route.query['price.min'] as string) || undefined
+    this.filters['price.max'] = Number(this.$route.query['price.max'] as string) || undefined
 
     this.listView = !!+(window.localStorage.getItem(LOCAL_STORAGE_KEY) || 0)
   },
@@ -148,7 +152,7 @@ export default Vue.extend({
       })
     },
     clearFilters() {
-      this.makeSearch({ ...EMPTY_PRODUCT_FILTERS })
+      this.makeSearch(cloneDeep(EMPTY_PRODUCT_FILTERS))
     },
   },
 })

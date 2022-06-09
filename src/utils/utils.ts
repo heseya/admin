@@ -1,5 +1,3 @@
-import queryString from 'query-string'
-
 import { ALL_FILTER_VALUE } from '../consts/filters'
 import { DateInput } from './dates'
 
@@ -50,9 +48,4 @@ export const formatApiNotification = ({ title, text }: { title: string; text?: s
   <span class="notification__text">${text}</span>
   `
     : title
-}
-
-export const stringifyQuery = (payload: Record<string, any>) => {
-  const query = queryString.stringify(payload, { arrayFormat: 'bracket' })
-  return query ? `?${query}` : ''
 }

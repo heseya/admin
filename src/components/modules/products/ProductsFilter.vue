@@ -36,8 +36,27 @@
       </a-select-option>
     </app-select>
 
+    <boolean-select v-model="local.available" :label="$t('available')" @change="debouncedSearch" />
     <boolean-select v-model="local.public" :label="$t('public')" @change="debouncedSearch" />
     <boolean-select v-model="local.has_cover" :label="$t('has_cover')" @change="debouncedSearch" />
+
+    <app-input
+      v-model="local['price.min']"
+      type="number"
+      :label="$t('price.min')"
+      min="0"
+      :addon-after="$accessor.currency"
+      @input="debouncedSearch"
+    />
+    <app-input
+      v-model="local['price.max']"
+      type="number"
+      :label="$t('price.max')"
+      min="0"
+      :addon-after="$accessor.currency"
+      @input="debouncedSearch"
+      @clear="debouncedSearch"
+    />
   </div>
 </template>
 
@@ -47,13 +66,23 @@
     "sets": "Kolekcja",
     "tags": "Tagi",
     "public": "Widoczność",
-    "has_cover": "Posiada okładkę"
+    "available": "Dostępne",
+    "has_cover": "Posiada okładkę",
+    "price": {
+      "min": "Cena minimalna",
+      "max": "Cena maksymalna"
+    }
   },
   "en": {
     "sets": "Collection",
     "tags": "Tags",
     "public": "Public",
-    "has_cover": "Has cover"
+    "available": "Available",
+    "has_cover": "Has cover",
+    "price": {
+      "min": "Minimal price",
+      "max": "Maximal price"
+    }
   }
 }
 </i18n>
@@ -70,8 +99,11 @@ export const EMPTY_PRODUCT_FILTERS = {
   search: '',
   sets: [ALL_FILTER_VALUE],
   tags: [ALL_FILTER_VALUE],
+  available: ALL_FILTER_VALUE,
   public: ALL_FILTER_VALUE,
   has_cover: ALL_FILTER_VALUE,
+  'price.min': undefined as number | undefined,
+  'price.max': undefined as number | undefined,
   sort: undefined as string | undefined,
 }
 
@@ -82,11 +114,11 @@ export default Vue.extend({
   props: {
     filters: {
       type: Object,
-      default: () => ({ ...EMPTY_PRODUCT_FILTERS }),
+      default: () => cloneDeep(EMPTY_PRODUCT_FILTERS),
     } as Vue.PropOptions<ProductFilers>,
   },
   data: () => ({
-    local: { ...cloneDeep(EMPTY_PRODUCT_FILTERS) },
+    local: cloneDeep(EMPTY_PRODUCT_FILTERS),
   }),
   computed: {
     productSets() {

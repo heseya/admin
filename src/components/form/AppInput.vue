@@ -29,6 +29,7 @@ export default Vue.extend({
     'value',
     'label',
     'placeholder',
+    'defaultValue',
     'name',
     'dataCy',
     'error',
@@ -42,6 +43,7 @@ export default Vue.extend({
     'rows',
     'loading',
     'addonBefore',
+    'addonAfter',
   ],
   computed: {
     innerValue: {

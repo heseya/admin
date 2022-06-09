@@ -27,7 +27,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { first, isArray, isNull } from 'lodash'
+import { first, isNull } from 'lodash'
 
 import CentralScreenForm from '@/components/form/CentralScreenForm.vue'
 import LoginForm from '@/components/modules/auth/LoginForm.vue'
@@ -61,7 +61,7 @@ export default Vue.extend({
   computed: {
     nextURL(): string {
       const { next } = this.$route.query
-      return (isArray(next) ? first(next) : next) || '/'
+      return (Array.isArray(next) ? first(next) : next) || '/'
     },
     isTwoFactorAuth(): boolean {
       return !isNull(this.twoFactorAuthMethod)

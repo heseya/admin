@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { first, isArray } from 'lodash'
+import { first } from 'lodash'
 import { init as initMicroApps, onMounted, openCommunicationChannel } from 'bout'
 
 import DesktopNavigation from './components/root/DesktopNavigation.vue'
@@ -107,7 +107,7 @@ export default Vue.extend({
           await this.$accessor.auth.fetchProfile()
 
           const { next } = this.$route.query
-          const nextURL = (isArray(next) ? first(next) : next) || '/'
+          const nextURL = (Array.isArray(next) ? first(next) : next) || '/'
           this.$router.push(nextURL)
         }
       } else {

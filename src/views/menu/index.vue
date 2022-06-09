@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="narrower-page">
     <top-nav :title="$t('title')" />
     <card>
       <a-alert type="info" show-icon>
@@ -44,10 +44,11 @@
             :list="menu"
             :group="{ name: 'menu-items' }"
           >
-            <div v-for="item in menu" :key="item.id" v-can="item.can">
+            <div v-for="item in menu" :key="item.id">
               <list-item
                 v-if="item.type === MenuItemType.Link"
                 :key="item.id"
+                v-can="item.can"
                 :class="{ draggable: !item.disabled }"
               >
                 <template #avatar>
@@ -197,8 +198,12 @@ export default Vue.extend({
     border-radius: 4px;
     padding: 10px;
 
-    button:not(.draggable) {
-      cursor: not-allowed;
+    button {
+      cursor: move;
+
+      &:not(.draggable) {
+        cursor: not-allowed;
+      }
     }
 
     @media ($max-viewport-5) {

@@ -72,7 +72,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { isArray } from 'lodash'
 
 import ProductTile from '@/components/modules/products/ProductTile.vue'
 import ProductListItem from '@/components/modules/products/ProductListItem.vue'
@@ -128,9 +127,9 @@ export default Vue.extend({
   created() {
     this.filters.search = (this.$route.query.search as string) || ''
     const sets = this.$route.query.sets || [ALL_FILTER_VALUE]
-    this.filters.sets = isArray(sets) ? (sets as string[]) : [sets]
+    this.filters.sets = Array.isArray(sets) ? (sets as string[]) : [sets]
     const tags = this.$route.query.tags || [ALL_FILTER_VALUE]
-    this.filters.tags = isArray(tags) ? (tags as string[]) : [tags]
+    this.filters.tags = Array.isArray(tags) ? (tags as string[]) : [tags]
 
     this.filters.public = (this.$route.query.public as string) || ALL_FILTER_VALUE
     this.filters.sort = (this.$route.query.sort as string) || ''

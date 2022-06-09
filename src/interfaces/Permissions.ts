@@ -29,6 +29,7 @@ import {
   SalesPermission,
   AttributesPermission,
   BannersPermission,
+  MediaPermission,
 } from '@/enums/permissions'
 
 export type Permission =
@@ -61,6 +62,7 @@ export type Permission =
   | WebhooksPermission
   | SeoPermission
   | AttributesPermission
+  | MediaPermission
 
 export interface PermissionObject {
   id: UUID

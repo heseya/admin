@@ -16,16 +16,11 @@
       <a-select-option :value="MediaType.Pdf" :label="MediaType.Pdf"> PDF </a-select-option>
     </app-select>
 
-    <app-select
+    <boolean-select
       v-model="local.has_relationships"
       :label="$t('hasRelationships')"
-      add-all
-      option-filter-prop="label"
       @change="debouncedSearch"
-    >
-      <a-select-option :value="'1'" :label="true"> {{ $t('common.yes') }} </a-select-option>
-      <a-select-option :value="'0'" :label="false"> {{ $t('common.no') }} </a-select-option>
-    </app-select>
+    />
   </div>
 </template>
 
@@ -47,6 +42,7 @@
 import Vue from 'vue'
 import debounce from 'lodash/debounce'
 
+import BooleanSelect from '@/components/form/BooleanSelect.vue'
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 import { CdnMediaType } from '@/interfaces/Media'
 
@@ -67,11 +63,16 @@ export default Vue.extend({
       default: () => ({ ...EMPTY_MEDIA_FILTERS }),
     } as Vue.PropOptions<MediaFiltersType>,
   },
+
   data: () => ({
     local: {
       ...EMPTY_MEDIA_FILTERS,
     },
   }),
+
+  components: {
+    BooleanSelect,
+  },
 
   computed: {
     MediaType(): typeof CdnMediaType {

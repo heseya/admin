@@ -9,7 +9,7 @@
       @clear-filters="clearFilters"
     >
       <template #nav>
-        <icon-button v-can="$p.Items.Add" @click="openModal()">
+        <icon-button v-can="$p.Items.Add" data-cy="add-btn" @click="openModal()">
           <template #icon>
             <i class="bx bx-plus"></i>
           </template>
@@ -121,7 +121,10 @@ export default Vue.extend({
       return this.$can(this.editedItem.id ? this.$p.Items.Edit : this.$p.Items.Add)
     },
     selectedItem(): null | WarehouseItem {
-      return this.selectedItemId ? this.$accessor.items.getFromListById(this.selectedItemId) : null
+      return this.selectedItemId
+        ? this.$accessor.items.getSelected ||
+            this.$accessor.items.getFromListById(this.selectedItemId)
+        : null
     },
     tableConfig(): TableConfig<WarehouseItem> {
       return {

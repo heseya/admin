@@ -13,6 +13,7 @@
     loop
     muted
   />
+  <i v-else-if="media.type === CdnMediaType.Pdf" class="bx bxs-file-pdf media-element--pdf"></i>
   <div v-else class="media-element media-element--unknown">{{ $t('unknownType') }}</div>
 </template>
 
@@ -56,3 +57,15 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.media-element {
+  background: red;
+
+  &--pdf {
+    font-size: 2rem;
+    display: grid;
+    place-items: center;
+  }
+}
+</style>

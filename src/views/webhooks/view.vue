@@ -94,7 +94,7 @@ export default Vue.extend({
       return this.id === 'create'
     },
     webhook(): WebHook {
-      return this.$accessor.webhooks.getSelected
+      return this.$accessor.webhooks.getSelected || ({} as any)
     },
     error(): any {
       return this.$accessor.webhooks.getError

@@ -5,13 +5,14 @@
     </button>
 
     <menu-link
-      v-for="item in MENU_LINKS"
+      v-for="item in menu"
       :key="item.to"
       v-can="item.can"
       :to="item.to"
       :exact="item.exact"
       :label="item.label"
-      :icon="item.icon"
+      :icon-class="item.iconClass"
+      :svg-icon-path="item.svgIconPath"
       root-class="mobile-nav-overlay"
       @click.native="close"
     />
@@ -20,13 +21,15 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { MenuLink, MENU_LINKS } from '@/consts/menuItems'
 
 import MenuLinkComponent from './MenuLink.vue'
+import { MenuLink } from '@/consts/menuItems'
 
 export default Vue.extend({
   name: 'MobileOverlay',
-  components: { MenuLink: MenuLinkComponent },
+  components: {
+    MenuLink: MenuLinkComponent,
+  },
   props: {
     isVisible: {
       type: Boolean,
@@ -34,8 +37,8 @@ export default Vue.extend({
     },
   },
   computed: {
-    MENU_LINKS(): MenuLink[] {
-      return MENU_LINKS
+    menu(): MenuLink[] {
+      return this.$accessor.menuItems.getMenuLinks
     },
   },
   methods: {
@@ -54,12 +57,13 @@ export default Vue.extend({
   width: 100vw;
   height: 100vh;
   box-sizing: border-box;
-  padding: 20vh 10% 0;
+  padding: 20vh 10%;
   background-color: #ffffff;
   z-index: $mobile-nav-overlay-z-index;
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow-y: auto;
   visibility: hidden;
   opacity: 0;
   transition: 0.3s;
@@ -112,6 +116,11 @@ export default Vue.extend({
         height: 24px;
         margin-right: 30px;
       }
+    }
+
+    .nav-link-svg {
+      font-size: 22px;
+      line-height: 24px;
     }
 
     &.router-link-active {

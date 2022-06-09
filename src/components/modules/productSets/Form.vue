@@ -247,6 +247,9 @@ export default Vue.extend({
       })
     },
   },
+  created() {
+    this.form = { ...cloneDeep(CLEAR_PRODUCT_SET_FORM), ...cloneDeep(this.value) }
+  },
   methods: {
     editSlug() {
       if (!this.form.id) {

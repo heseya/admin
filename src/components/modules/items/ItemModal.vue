@@ -10,6 +10,7 @@
         <modal-form>
           <validated-input
             v-model="form.name"
+            data-cy="name"
             :disabled="disabled"
             rules="required"
             :label="$t('common.form.name')"
@@ -17,6 +18,7 @@
 
           <validated-input
             v-model="form.sku"
+            data-cy="sku"
             :disabled="disabled"
             rules="required"
             :label="$t('form.sku')"
@@ -79,7 +81,9 @@
             </validated-input>
           </div>
 
-          <field v-if="item" :label="$t('form.quantity')">{{ item.quantity }}</field>
+          <field v-if="item" :label="$t('form.quantity')" data-cy="total-quantity">
+            {{ item.quantity }}
+          </field>
 
           <template v-if="item">
             <hr />
@@ -106,7 +110,11 @@
         </modal-form>
         <template #footer>
           <div class="row">
-            <app-button v-if="!disabled" @click="handleSubmit(saveWarehouseItem)">
+            <app-button
+              v-if="!disabled"
+              data-cy="save-btn"
+              @click="handleSubmit(saveWarehouseItem)"
+            >
               {{ $t('common.save') }}
             </app-button>
             <pop-confirm

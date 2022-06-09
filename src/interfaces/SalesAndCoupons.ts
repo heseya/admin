@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import { MetadataFields } from './Metadata'
 import { Product } from './Product'
 import { ProductSet } from './ProductSet'
 import { DiscountConditionGroup, DiscountConditionGroupDto } from './SaleCondition'
@@ -19,7 +20,7 @@ export enum DiscountTargetType {
 
 // ? ---------------------------------------------------------------------------------------------------------------
 
-export interface Sale {
+export interface Sale extends MetadataFields {
   id: UUID
   name: string
   description: string | null

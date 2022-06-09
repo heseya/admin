@@ -1,4 +1,3 @@
-import { isArray } from 'lodash'
 import queryString from 'query-string'
 
 import { ALL_FILTER_VALUE } from '../consts/filters'
@@ -38,7 +37,7 @@ export const getRelativeDate = (date: DateInput, lang = 'pl') => {
 export const formatFilters = (filters: Record<string, unknown>) => {
   return Object.fromEntries(
     Object.entries(filters).filter(([, v]) => {
-      if (isArray(v)) return v.filter((x) => x !== ALL_FILTER_VALUE).length > 0
+      if (Array.isArray(v)) return v.filter((x) => x !== ALL_FILTER_VALUE).length > 0
       return v !== ALL_FILTER_VALUE && v !== ''
     }),
   )

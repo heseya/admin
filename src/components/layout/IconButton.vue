@@ -4,6 +4,7 @@
     :to="to"
     class="icon-button"
     :type="htmlType"
+    :data-cy="dataCy"
     :class="[
       `icon-button--${type}`,
       `icon-button--${size}`,
@@ -59,6 +60,7 @@ export default Vue.extend({
       type: String,
       default: 'default',
     } as Vue.PropOptions<'small' | 'default'>,
+    dataCy: { type: String, default: '' },
   },
   computed: {
     component(): string {

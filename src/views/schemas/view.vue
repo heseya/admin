@@ -83,7 +83,7 @@ export default Vue.extend({
       return this.id === 'create'
     },
     schema(): Schema {
-      return this.$accessor.schemas.getSelected
+      return this.$accessor.schemas.getSelected || ({} as any)
     },
     error(): any {
       return this.$accessor.schemas.getError

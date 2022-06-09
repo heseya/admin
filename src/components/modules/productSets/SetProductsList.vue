@@ -13,32 +13,38 @@
     </template>
 
     <div v-if="products.length" class="set-products__list">
-      <div v-for="product in products" :key="product.id" class="set-product-item">
-        <avatar color="#eee">
-          <img
-            v-if="product.cover"
-            :src="`${product.cover.url}?w=100&h=100`"
-            :style="{ objectFit }"
-          />
-          <i v-else class="product-list-item__img-icon bx bx-image"></i>
-        </avatar>
-        <div class="set-product-item__main">
-          <span class="set-product-item__name">{{ product.name }}</span>
-          <span class="set-product-item__price">{{ formatCurrency(product.price) }}</span>
+      <draggable
+        :value="products"
+        :disabled="!$can($p.ProductSets.Edit)"
+        @change="reorderSetProducts"
+      >
+        <div v-for="product in products" :key="product.id" class="set-product-item">
+          <avatar color="#eee">
+            <img
+              v-if="product.cover"
+              :src="`${product.cover.url}?w=100&h=100`"
+              :style="{ objectFit }"
+            />
+            <i v-else class="product-list-item__img-icon bx bx-image"></i>
+          </avatar>
+          <div class="set-product-item__main">
+            <span class="set-product-item__name">{{ product.name }}</span>
+            <product-price tag="span" class="set-product-item__price" :product="product" />
+          </div>
+          <div class="set-product-item__actions">
+            <icon-button
+              v-can="$p.ProductSets.Edit"
+              size="small"
+              type="danger"
+              @click.stop="removeProduct(product.id)"
+            >
+              <template #icon>
+                <i class="bx bx-trash"></i>
+              </template>
+            </icon-button>
+          </div>
         </div>
-        <div class="set-product-item__actions">
-          <icon-button
-            v-can="$p.ProductSets.Edit"
-            size="small"
-            type="danger"
-            @click.stop="removeProduct(product.id)"
-          >
-            <template #icon>
-              <i class="bx bx-trash"></i>
-            </template>
-          </icon-button>
-        </div>
-      </div>
+      </draggable>
     </div>
 
     <empty v-else>{{ $t('empty') }}</empty>
@@ -81,21 +87,24 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import Draggable from 'vuedraggable'
 
 import Selector from '@/components/Selector.vue'
 import Empty from '@/components/layout/Empty.vue'
 import Avatar from '@/components/layout/Avatar.vue'
+import ProductPrice from '@/components/modules/products/ProductPrice.vue'
 
 import { ProductSet } from '@/interfaces/ProductSet'
 import { Product } from '@/interfaces/Product'
 import { UUID } from '@/interfaces/UUID'
+import { ResponseMeta } from '@/interfaces/Response'
 
 import { api } from '@/api'
 import { formatCurrency } from '@/utils/currency'
 import { formatApiNotificationError } from '@/utils/errors'
 
 export default Vue.extend({
-  components: { Selector, Empty, Avatar },
+  components: { Draggable, Selector, Empty, Avatar, ProductPrice },
   props: {
     set: {
       type: Object,
@@ -134,15 +143,44 @@ export default Vue.extend({
     async fetchProducts() {
       if (!this.set) return
       this.$accessor.startLoading()
+
+      // TODO: this could be bad for performance, but it cannot be done any other way
       try {
-        const {
-          data: { data: products },
-        } = await api.get<{ data: Product[] }>(`/product-sets/id:${this.set.id}/products?limit=500`)
-        this.products = products
+        let page = 1
+        let lastPage = 1
+        this.products = []
+
+        do {
+          const {
+            data: { data: products, meta },
+          } = await api.get<{ data: Product[]; meta: ResponseMeta }>(
+            `/product-sets/id:${this.set.id}/products?limit=500&page=${page}`,
+          )
+          this.products.push(...products)
+          page++
+          lastPage = meta.last_page
+        } while (page < lastPage)
       } catch (e: any) {
         this.$toast.error(formatApiNotificationError(e))
       }
       this.$accessor.stopLoading()
+    },
+
+    async reorderSetProducts({
+      moved,
+    }: {
+      moved: { element: Product; newIndex: number; oldIndex: number }
+    }) {
+      if (!this.set) return
+      try {
+        await api.post(`/product-sets/id:${this.set.id}/products/reorder`, {
+          products: [{ id: moved.element.id, order: moved.newIndex + 1 }],
+        })
+        // Move element in local array to the new index
+        this.products.splice(moved.newIndex, 0, this.products.splice(moved.oldIndex, 1)[0])
+      } catch (e: any) {
+        this.$toast.error(formatApiNotificationError(e))
+      }
     },
 
     async save() {
@@ -177,8 +215,7 @@ export default Vue.extend({
 
   &__list {
     overflow: auto;
-    max-height: 50vh;
-    margin-bottom: 24px;
+    max-height: 60vh;
   }
 }
 
@@ -188,6 +225,7 @@ export default Vue.extend({
   padding: 4px;
   border-radius: 8px;
   transition: 0.3s;
+  cursor: move;
 
   &:hover {
     background-color: #f5f5f5;

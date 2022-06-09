@@ -1,7 +1,7 @@
 import { extend } from 'vee-validate'
 import { required, email } from 'vee-validate/dist/rules'
 import v from 'validator'
-import { isArray, isNaN, isNumber } from 'lodash'
+import { isNaN, isNumber } from 'lodash'
 import { isBefore, isSameDay } from 'date-fns'
 
 import { ShippingMethodPriceRangeDTO } from '@/interfaces/ShippingMethod'
@@ -120,9 +120,9 @@ extend('responsive-media-valid', {
   message: () => i18n.t('validation.responsiveMediaValid') as string,
   validate: (value) => {
     return (
-      isArray(value) &&
+      Array.isArray(value) &&
       value.length > 0 &&
-      value.every(({ media: list }) => isArray(list) && list.length > 0)
+      value.every(({ media: list }) => Array.isArray(list) && list.length > 0)
     )
   },
 })

@@ -5,8 +5,12 @@
     :to="to"
     :exact="exact"
     @click="$emit('click')"
-  >
-    <InlineSvg class="nav-link-img" :src="require(`@/assets/images/${icon}`)" />
+    ><InlineSvg
+      v-if="svgIconPath"
+      class="nav-link-img"
+      :src="require(`@/assets/images/${svgIconPath}`)"
+    />
+    <i v-else :class="iconClass" class="nav-link-img nav-link-svg" />
     <span :class="`${rootClass}__link-label`">{{ $t(label) }}</span>
   </component>
 </template>
@@ -32,9 +36,13 @@ export default Vue.extend({
       type: String,
       required: true,
     },
-    icon: {
+    iconClass: {
       type: String,
-      required: true,
+      default: null,
+    },
+    svgIconPath: {
+      type: String,
+      default: null,
     },
     exact: {
       type: Boolean,

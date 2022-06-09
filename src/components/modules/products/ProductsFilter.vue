@@ -36,20 +36,8 @@
       </a-select-option>
     </app-select>
 
-    <app-select
-      v-model="local.public"
-      :label="$t('public')"
-      add-all
-      option-filter-prop="label"
-      @change="debouncedSearch"
-    >
-      <a-select-option :value="'1'" :label="$t('common.yes')">
-        {{ $t('common.yes') }}
-      </a-select-option>
-      <a-select-option :value="'0'" :label="$t('common.no')">
-        {{ $t('common.no') }}
-      </a-select-option>
-    </app-select>
+    <boolean-select v-model="local.public" :label="$t('public')" @change="debouncedSearch" />
+    <boolean-select v-model="local.has_cover" :label="$t('has_cover')" @change="debouncedSearch" />
   </div>
 </template>
 
@@ -58,12 +46,14 @@
   "pl": {
     "sets": "Kolekcja",
     "tags": "Tagi",
-    "public": "Widoczność"
+    "public": "Widoczność",
+    "has_cover": "Posiada okładkę"
   },
   "en": {
     "sets": "Collection",
     "tags": "Tags",
-    "public": "Public"
+    "public": "Public",
+    "has_cover": "Has cover"
   }
 }
 </i18n>
@@ -74,18 +64,21 @@ import { debounce } from 'lodash'
 import cloneDeep from 'lodash/cloneDeep'
 
 import { ALL_FILTER_VALUE } from '@/consts/filters'
+import BooleanSelect from '@/components/form/BooleanSelect.vue'
 
 export const EMPTY_PRODUCT_FILTERS = {
   search: '',
   sets: [ALL_FILTER_VALUE],
   tags: [ALL_FILTER_VALUE],
   public: ALL_FILTER_VALUE,
+  has_cover: ALL_FILTER_VALUE,
   sort: undefined as string | undefined,
 }
 
 type ProductFilers = typeof EMPTY_PRODUCT_FILTERS
 
 export default Vue.extend({
+  components: { BooleanSelect },
   props: {
     filters: {
       type: Object,

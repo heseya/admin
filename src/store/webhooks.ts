@@ -8,7 +8,7 @@ const BASE_URL = 'webhooks'
 export const webhooks = createVuexCRUD<WebHook, WebHookDto, WebHookDto>()(BASE_URL, {
   state: {
     events: [] as WebHookEventObject[],
-    activeEvents: [] as WebHookEventLogEntry[],
+    logs: [] as WebHookEventLogEntry[],
   },
   getters: {},
   mutations: {
@@ -16,7 +16,7 @@ export const webhooks = createVuexCRUD<WebHook, WebHookDto, WebHookDto>()(BASE_U
       state.events = events
     },
     SET_ACTIVE_EVENTS(state, events: WebHookEventLogEntry[]) {
-      state.activeEvents = events
+      state.logs = events
     },
   },
   actions: {
@@ -33,7 +33,7 @@ export const webhooks = createVuexCRUD<WebHook, WebHookDto, WebHookDto>()(BASE_U
       commit(StoreMutations.SetLoading, false)
     },
 
-    async fetchActiveEvents({ commit }, parameters: Record<string, any>) {
+    async fetchLogs({ commit }, parameters: Record<string, any>) {
       commit(StoreMutations.SetLoading, true)
       try {
         const params = stringifyQuery(parameters)

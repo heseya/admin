@@ -1,33 +1,33 @@
 <template>
-  <div class="single-webhook">
-    <div :class="singleWebhookClass">
-      {{ event.status_code || 'Brak informacji o statusie' }}
+  <div class="log">
+    <div :class="singleLogClass">
+      {{ data.status_code || 'Brak informacji o statusie' }}
     </div>
 
-    <div class="single-webhook__data">
-      <span class="single-webhook__data-key single-webhook__data-key--id">id:</span>
-      <span class="single-webhook__data-value">
-        {{ event.id }}
+    <div class="log__data">
+      <span class="log__data-key log__data-key--id">id:</span>
+      <span class="log__data-value">
+        {{ data.id }}
       </span>
 
-      <span class="single-webhook__data-key">url:</span>
+      <span class="log__data-key">url:</span>
 
-      <div class="single-webhook__data-value">
-        <a :href="event.url" class="single-webhook__data-link">{{ event.url }}</a>
+      <div class="log__data-value">
+        <a :href="data.url" class="log__data-link">{{ data.url }}</a>
       </div>
 
-      <span class="single-webhook__data-key">{{ $t('triggered_at') }}:</span>
-      <span class="single-webhook__data-value">
-        {{ new Date(event.triggered_at).toLocaleString('pl-PL') }}
-        <span class="single-webhook__data-value-relative">({{ relativeTime }})</span>
+      <span class="log__data-key">{{ $t('triggered_at') }}:</span>
+      <span class="log__data-value">
+        {{ new Date(data.triggered_at).toLocaleString('pl-PL') }}
+        <span class="log__data-value-relative">({{ relativeTime }})</span>
       </span>
 
-      <span class="single-webhook__data-key">{{ $t('response') }}:</span>
-      <span class="single-webhook__data-value">
-        {{ event.response || '-' }}
+      <span class="log__data-key">{{ $t('response') }}:</span>
+      <span class="log__data-value">
+        {{ data.response || '-' }}
       </span>
 
-      <span class="single-webhook__data-key">{{ $t('payload') }}:</span>
+      <span class="log__data-key">{{ $t('payload') }}:</span>
       <a-collapse :bordered="false">
         <template #expandIcon="{ isActive }">
           <div>
@@ -35,14 +35,14 @@
           </div>
         </template>
 
-        <a-collapse-panel class="single-webhook__data-value">
+        <a-collapse-panel class="log__data-value">
           <template #header>
-            <span v-if="event.payload">{{ $t('expand') }}</span>
+            <span v-if="data.payload">{{ $t('expand') }}</span>
             <span v-else>-</span>
           </template>
         </a-collapse-panel>
 
-        <pre v-if="event.payload">{{ JSON.stringify(event.payload, null, 2) }}</pre>
+        <pre v-if="data.payload">{{ JSON.stringify(data.payload, null, 2) }}</pre>
       </a-collapse>
     </div>
   </div>
@@ -73,30 +73,30 @@ import { ComputedClassNameType } from '@/utils/computedClassName'
 
 export default Vue.extend({
   props: {
-    event: { type: Object, required: true },
+    data: { type: Object, required: true },
   },
 
   computed: {
-    singleWebhookClass(): ComputedClassNameType {
+    singleLogClass(): ComputedClassNameType {
       return [
-        `single-webhook__status`,
-        { 'single-webhook__status--100': String(this.event.status_code).startsWith('1') },
-        { 'single-webhook__status--200': String(this.event.status_code).startsWith('2') },
-        { 'single-webhook__status--300': String(this.event.status_code).startsWith('3') },
-        { 'single-webhook__status--400': String(this.event.status_code).startsWith('4') },
-        { 'single-webhook__status--500': String(this.event.status_code).startsWith('5') },
-        { 'single-webhook__status--no-info': !this.event.status_code },
+        `log__status`,
+        { 'log__status--100': String(this.data.status_code).startsWith('1') },
+        { 'log__status--200': String(this.data.status_code).startsWith('2') },
+        { 'log__status--300': String(this.data.status_code).startsWith('3') },
+        { 'log__status--400': String(this.data.status_code).startsWith('4') },
+        { 'log__status--500': String(this.data.status_code).startsWith('5') },
+        { 'log__status--no-info': !this.data.status_code },
       ]
     },
     relativeTime(): string {
-      return calculateRelativeTime(this.event.triggered_at)
+      return calculateRelativeTime(this.data.triggered_at)
     },
   },
 })
 </script>
 
 <style scoped lang="scss">
-.single-webhook {
+.log {
   display: grid;
   column-gap: 1rem;
 

@@ -1,11 +1,11 @@
 <template>
   <div :key="webhook.id" class="narrower-page">
     <top-nav :title="!isNew ? webhook.name : $t('newTitle')">
-      <icon-button @click="toggleEventsModal">
+      <icon-button v-if="!isNew" @click="toggleEventsModal">
         <template #icon>
           <i class="bx bx-list-ul"></i>
         </template>
-        {{ $t('showEvents') }}
+        {{ $t('showLogs') }}
       </icon-button>
 
       <pop-confirm
@@ -35,16 +35,16 @@
     </card>
 
     <a-modal
-      :visible="eventsModalVisible"
+      :visible="logsModalVisible"
       width="750px"
       :footer="null"
-      :title="$t('events')"
+      :title="$t('logs')"
       @cancel="toggleEventsModal"
     >
-      <template v-if="events.length">
-        <single-webhook v-for="event in events" :key="event.id" :event="event" />
+      <template v-if="logs.length">
+        <Log v-for="log in logs" :key="log.id" :data="log" />
       </template>
-      <span v-else>{{ $t('noEvents') }}</span>
+      <span v-else>{{ $t('noLogs') }}</span>
     </a-modal>
   </div>
 </template>
@@ -57,9 +57,9 @@
     "deletedMessage": "Webhook został usunięty.",
     "createdMessage": "Webhook został zaktualizowany.",
     "updatedMessage": "Webhook został utworzony.",
-    "showEvents": "Pokaż eventy",
-    "events": "Eventy",
-    "noEvents": "Brak eventów do wyświetlenia"
+    "showLogs": "Pokaż logi",
+    "logs": "Logi",
+    "noLogs": "Brak logów do wyświetlenia"
   },
   "en": {
     "newTitle": "New webhook",
@@ -67,16 +67,16 @@
     "deletedMessage": "Webhook has been deleted.",
     "createdMessage": "Webhook has been created.",
     "updatedMessage": "Webhook has been updated.",
-    "showEvents": "Show events",
-    "events": "Events",
-    "noEvents": "No events to show"
+    "showLogs": "Show logs",
+    "logs": "Logs",
+    "noLogs": "No logs to show"
   }
 }
 </i18n>
 
 <script lang="ts">
 import Vue from 'vue'
-import { cloneDeep } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 
 import { WebHook, WebHookDto, WebHookEventLogEntry } from '@/interfaces/Webhook'
 
@@ -84,7 +84,7 @@ import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import WebhookForm from '@/components/modules/webhooks/Form.vue'
-import SingleWebhook from '@/components/modules/webhooks/SingleWebhook.vue'
+import Log from '@/components/modules/webhooks/Log.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 
@@ -109,11 +109,11 @@ export default Vue.extend({
     Card,
     WebhookForm,
     PopConfirm,
-    SingleWebhook,
+    Log,
   },
   data: () => ({
     editedWebhook: cloneDeep(CLEAR_FORM),
-    eventsModalVisible: false,
+    logsModalVisible: false,
   }),
   computed: {
     id(): string {
@@ -128,8 +128,8 @@ export default Vue.extend({
     error(): any {
       return this.$accessor.webhooks.getError
     },
-    events(): WebHookEventLogEntry[] {
-      return this.$accessor.webhooks.activeEvents
+    logs(): WebHookEventLogEntry[] {
+      return this.$accessor.webhooks.logs
     },
   },
   watch: {
@@ -142,13 +142,14 @@ export default Vue.extend({
       this.editedWebhook = cloneDeep(this.webhook)
     },
   },
+
   async created() {
     this.$accessor.startLoading()
 
     // @ts-ignore // TODO: fix extended store actions typings
     await this.$accessor.webhooks.fetchEvents()
     // @ts-ignore
-    await this.$accessor.webhooks.fetchActiveEvents({ web_hook_id: this.id })
+    await this.$accessor.webhooks.fetchLogs({ web_hook_id: this.id })
 
     if (!this.isNew) await this.$accessor.webhooks.get(this.id)
 
@@ -181,7 +182,7 @@ export default Vue.extend({
       this.$accessor.stopLoading()
     },
     toggleEventsModal() {
-      this.eventsModalVisible = !this.eventsModalVisible
+      this.logsModalVisible = !this.logsModalVisible
     },
   },
 })

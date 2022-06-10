@@ -183,6 +183,7 @@ export default Vue.extend({
   &__switches {
     display: flex;
     justify-content: space-evenly;
+    gap: 8px;
   }
 }
 </style>

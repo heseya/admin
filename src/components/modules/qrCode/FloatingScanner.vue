@@ -41,7 +41,7 @@ export default Vue.extend({
   position: fixed;
   z-index: 100;
   right: 32px;
-  bottom: 32px;
+  bottom: 80px;
   width: 64px;
   height: 64px;
   font-size: 2em;
@@ -51,6 +51,10 @@ export default Vue.extend({
   box-shadow: $shadow;
   cursor: pointer;
   transition: 0.2s;
+
+  @media ($viewport-11) {
+    bottom: 32px;
+  }
 
   &:hover {
     background-color: $primary-color-500;

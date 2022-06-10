@@ -15,7 +15,7 @@
 
     <sw-update-popup />
 
-    <floating-qr-scanner />
+    <floating-qr-scanner v-if="$accessor.auth.isLogged" />
   </div>
 </template>
 

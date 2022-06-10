@@ -62,7 +62,7 @@ export default Vue.extend({
   position: relative;
   width: 100%;
   padding-top: 100%;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
   background-color: #ffffff;
   box-shadow: $shadow;
   border-radius: 7px;

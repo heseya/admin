@@ -208,8 +208,9 @@ export default Vue.extend({
   }
 
   &__switches {
-    display: flex;
-    justify-content: space-around;
+    display: grid;
+    grid-auto-flow: column;
+    gap: 8px;
   }
 
   &__events {

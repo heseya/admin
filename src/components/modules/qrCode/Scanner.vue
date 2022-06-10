@@ -7,6 +7,10 @@
 <script lang="ts">
 import Vue from 'vue'
 import QrScanner from 'qr-scanner'
+import { QrCodePayload } from '@/interfaces/QrCode'
+
+const validateQrCode = (object: any): object is QrCodePayload =>
+  object?.v === 1 && typeof object.cty === 'string' && typeof object.body === 'object'
 
 export default Vue.extend({
   data: () => ({
@@ -29,8 +33,12 @@ export default Vue.extend({
     handleScanError(e: Error | string) {
       if (e instanceof Error) this.$toast.error(e.message)
     },
-    handleScanResult(result: QrScanner.ScanResult) {
-      console.log('Scan result', result)
+    handleScanResult({ data }: QrScanner.ScanResult) {
+      try {
+        const object = JSON.parse(data)
+        if (!validateQrCode(object)) throw new Error('QR Code is not a Heseya Code')
+        console.log('Scan result:', object) // TODO: redirect to order
+      } catch {}
     },
   },
 })

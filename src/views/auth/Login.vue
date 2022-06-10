@@ -34,11 +34,11 @@ import { first, isNull } from 'lodash'
 import CentralScreenForm from '@/components/form/CentralScreenForm.vue'
 import LoginForm from '@/components/modules/auth/LoginForm.vue'
 import TwoFactorAuthCodeForm from '@/components/modules/auth/TwoFactorAuthCodeForm.vue'
+import QrCodeScanner from '@/components/modules/qrCode/Scanner.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { TwoFactorAuthMethod } from '@/enums/twoFactorAuth'
 import { LoginState } from '@/enums/login'
-import QrCodeScanner from '@/components/QrCodeScanner.vue'
 
 const DEFAULT_CREDENTIALS = process.env.NODE_ENV === 'development'
 

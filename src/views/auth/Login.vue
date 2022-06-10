@@ -1,5 +1,7 @@
 <template>
   <central-screen-form :title="isTwoFactorAuth ? $t('twoFactorAuthTitle') : $t('loginTitle')">
+    <qr-code-scanner />
+
     <login-form v-if="!isTwoFactorAuth" v-model="form" @submit="login" />
 
     <two-factor-auth-code-form
@@ -36,6 +38,7 @@ import TwoFactorAuthCodeForm from '@/components/modules/auth/TwoFactorAuthCodeFo
 import { formatApiNotificationError } from '@/utils/errors'
 import { TwoFactorAuthMethod } from '@/enums/twoFactorAuth'
 import { LoginState } from '@/enums/login'
+import QrCodeScanner from '@/components/QrCodeScanner.vue'
 
 const DEFAULT_CREDENTIALS = process.env.NODE_ENV === 'development'
 
@@ -52,6 +55,7 @@ export default Vue.extend({
     CentralScreenForm,
     LoginForm,
     TwoFactorAuthCodeForm,
+    QrCodeScanner,
   },
   data: () => ({
     twoFactorAuthMethod: null as TwoFactorAuthMethod | null,

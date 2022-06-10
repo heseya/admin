@@ -40,6 +40,9 @@ export default Vue.extend({
 .order-field {
   padding: 4px 12px;
   position: relative;
+  display: grid;
+  grid-auto-flow: row;
+  justify-content: flex-start;
 
   &__label {
     display: flex;

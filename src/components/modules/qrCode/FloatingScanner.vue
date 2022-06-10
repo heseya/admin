@@ -5,7 +5,7 @@
     </button>
 
     <a-modal v-model="isOpen" width="600px" :footer="null">
-      <scanner @scan="handleScan" />
+      <scanner v-if="isOpen" @scan="handleScan" />
     </a-modal>
   </div>
 </template>

@@ -92,7 +92,7 @@ import CustomerDetails from '@/components/modules/orders/CustomerDetails.vue'
 import Cart from '@/components/modules/orders/Cart.vue'
 import OrderMetadatas from '@/components/modules/orders/OrderMetadatas.vue'
 import OrderDocuments from '@/components/modules/orders/documents/OrderDocumentsList.vue'
-import QrCodeModal from '@/components/modules/qrCode/Modal.vue'
+import QrCodeModal from '@/components/modules/qrCode/CodeModal.vue'
 
 export default Vue.extend({
   metaInfo(this: any): any {

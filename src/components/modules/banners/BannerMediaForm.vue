@@ -98,6 +98,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .responsive-media-form {
   width: 100%;
+  margin-top: 16px;
 
   &__header {
     display: flex;

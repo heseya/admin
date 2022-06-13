@@ -227,6 +227,7 @@ export default Vue.extend({
   display: flex;
   column-gap: 8px;
   align-items: center;
+  justify-content: space-between;
   margin-top: 0;
   margin-bottom: 0;
 }

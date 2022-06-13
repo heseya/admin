@@ -42,31 +42,36 @@
     <boolean-select v-model="local.public" :label="$t('public')" @change="debouncedSearch" />
     <boolean-select v-model="local.has_cover" :label="$t('has_cover')" @change="debouncedSearch" />
 
-    <app-input
-      v-model="local['price.min']"
-      type="number"
-      :label="$t('price.min')"
-      min="0"
-      default-value="0"
+    <range-input
+      :value="{ min: local['price.min'], max: local['price.max'] }"
+      :label="$t('price')"
       :addon-after="$accessor.currency"
-      @input="debouncedSearch"
-    />
-    <app-input
-      v-model="local['price.max']"
-      type="number"
-      :label="$t('price.max')"
       min="0"
-      default-value="0"
-      :addon-after="$accessor.currency"
-      @input="debouncedSearch"
+      @input="
+        (v) => {
+          updateRangeValue('price', v)
+          debouncedSearch()
+        }
+      "
     />
 
     <attribute-filter-input
       v-for="attr in customFilters"
       :key="attr.id"
-      v-model="local[`attribute.${attr.slug}`]"
+      :value="
+        attr.type === AttributeType.Date || attr.type === AttributeType.Number
+          ? local[`attribute.${attr.slug}`]
+          : { min: local[`attribute.${attr.slug}.min`], max: local[`attribute.${attr.slug}.max`] }
+      "
       :attribute="attr"
-      @input="debouncedSearch"
+      @input="
+        (v) => {
+          attr.type === AttributeType.Date || attr.type === AttributeType.Number
+            ? updateRangeValue(`attribute.${attr.slug}`, v)
+            : (local[`attribute.${attr.slug}`] = v)
+          debouncedSearch()
+        }
+      "
     />
   </div>
 </template>
@@ -79,10 +84,7 @@
     "public": "Widoczność",
     "available": "Dostępne",
     "has_cover": "Posiada okładkę",
-    "price": {
-      "min": "Cena minimalna",
-      "max": "Cena maksymalna"
-    }
+    "price": "Cena"
   },
   "en": {
     "sets": "Collection",
@@ -90,10 +92,7 @@
     "public": "Public",
     "available": "Available",
     "has_cover": "Has cover",
-    "price": {
-      "min": "Minimal price",
-      "max": "Maximal price"
-    }
+    "price": "Price"
   }
 }
 </i18n>
@@ -111,7 +110,8 @@ import BooleanSelect from '@/components/form/BooleanSelect.vue'
 import { api } from '@/api'
 import { formatApiNotificationError } from '@/utils/errors'
 
-import { Attribute } from '@/interfaces/Attribute'
+import { Attribute, AttributeType } from '@/interfaces/Attribute'
+import RangeInput from '@/components/form/RangeInput.vue'
 
 export interface ProductFilers extends Record<string, string | [string] | undefined> {
   search: string
@@ -138,7 +138,7 @@ export const EMPTY_PRODUCT_FILTERS: ProductFilers = {
 }
 
 export default Vue.extend({
-  components: { BooleanSelect, AttributeFilterInput },
+  components: { BooleanSelect, AttributeFilterInput, RangeInput },
   props: {
     filters: {
       type: Object,
@@ -155,6 +155,9 @@ export default Vue.extend({
     },
     apiTags() {
       return this.$accessor.tags.getData
+    },
+    AttributeType(): typeof AttributeType {
+      return AttributeType
     },
   },
   watch: {
@@ -174,6 +177,11 @@ export default Vue.extend({
     this.local = { ...this.local, ...this.filters }
   },
   methods: {
+    updateRangeValue(key: string, range: { min: string; max: string }) {
+      this.local[`${key}.min`] = range.min
+      this.local[`${key}.max`] = range.max
+    },
+
     async fetchCustomFilters() {
       try {
         const { data } = await api.get<{ data: Attribute[] }>('/filters')

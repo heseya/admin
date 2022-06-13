@@ -1,16 +1,19 @@
 <template>
-  <!-- <app-input
-    v-if="attribute.type === AttributeType.Date"
-    :value="value"
-    type="date"
-    allow-clear
+  <range-input
+    v-if="attribute.type === AttributeType.Number"
     :label="attribute.name"
+    :value="value"
     @input="updateValue"
-  /> -->
+  />
 
-  <div v-if="attribute.type === AttributeType.Number || attribute.type === AttributeType.Date">
-    {{ attribute.name }}
-  </div>
+  <range-input
+    v-else-if="attribute.type === AttributeType.Date"
+    :label="attribute.name"
+    class="span-2"
+    type="date"
+    :value="value"
+    @input="updateValue"
+  />
 
   <autocomplete-input
     v-else
@@ -29,12 +32,13 @@ import Vue from 'vue'
 import { Attribute, AttributeType } from '@/interfaces/Attribute'
 
 import AutocompleteInput from '@/components/AutocompleteInput.vue'
+import RangeInput from '@/components/form/RangeInput.vue'
 
 export default Vue.extend({
-  components: { AutocompleteInput },
+  components: { AutocompleteInput, RangeInput },
   props: {
     attribute: { type: Object, required: true } as Vue.PropOptions<Attribute>,
-    value: { type: String, default: undefined },
+    value: { type: [String, Object], default: undefined },
   },
   computed: {
     AttributeType(): typeof AttributeType {

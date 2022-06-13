@@ -108,6 +108,7 @@ export default Vue.extend({
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       grid-gap: 10px;
+      grid-auto-flow: dense;
     }
 
     & ::v-deep {

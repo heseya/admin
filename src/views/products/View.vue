@@ -471,6 +471,14 @@ export default Vue.extend({
 
 <style lang="scss">
 .product {
+  & > * {
+    &:not(:first-child) {
+      @media ($max-viewport-11) {
+        margin-top: 8px;
+      }
+    }
+  }
+
   &__info {
     input {
       width: 100%;

@@ -196,8 +196,11 @@ $item-size: 160px;
   &__inputs {
     display: grid;
     grid-gap: 16px;
-    grid-template-columns: 1fr 1fr 1fr;
     padding-top: 8px;
+
+    @media ($viewport-6) {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
   }
 
   &__media-list {

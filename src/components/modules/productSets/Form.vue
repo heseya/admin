@@ -307,6 +307,7 @@ export default Vue.extend({
     justify-content: space-between;
     margin-top: 12px;
     padding: 0 10px;
+    gap: 8px;
   }
 
   .slug-input {

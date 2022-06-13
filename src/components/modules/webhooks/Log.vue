@@ -1,7 +1,7 @@
 <template>
   <div class="log">
     <div :class="singleLogClass">
-      {{ data.status_code || 'Brak informacji o statusie' }}
+      {{ data.status_code || $t('noStatusInfo') }}
     </div>
 
     <div class="log__data">
@@ -18,14 +18,27 @@
 
       <span class="log__data-key">{{ $t('triggered_at') }}:</span>
       <span class="log__data-value">
-        {{ new Date(data.triggered_at).toLocaleString('pl-PL') }}
+        {{ triggerTime }}
         <span class="log__data-value-relative">({{ relativeTime }})</span>
       </span>
 
       <span class="log__data-key">{{ $t('response') }}:</span>
-      <span class="log__data-value">
-        {{ data.response || '-' }}
-      </span>
+      <a-collapse :bordered="false">
+        <template #expandIcon="{ isActive }">
+          <div>
+            <i :class="`bx ${isActive ? 'bx-chevron-up' : 'bx-chevron-down'}`"></i>
+          </div>
+        </template>
+
+        <a-collapse-panel class="log__data-value">
+          <template #header>
+            <span v-if="data.response">{{ $t('expand') }}</span>
+            <span v-else>-</span>
+          </template>
+        </a-collapse-panel>
+
+        <pre v-if="data.response">{{ logReponse }}</pre>
+      </a-collapse>
 
       <span class="log__data-key">{{ $t('payload') }}:</span>
       <a-collapse :bordered="false">
@@ -42,7 +55,7 @@
           </template>
         </a-collapse-panel>
 
-        <pre v-if="data.payload">{{ JSON.stringify(data.payload, null, 2) }}</pre>
+        <pre v-if="data.payload">{{ payloadResponse }}</pre>
       </a-collapse>
     </div>
   </div>
@@ -54,30 +67,33 @@
     "triggered_at": "wywołany",
     "response": "odpowiedź",
     "payload": "dane",
-    "expand": "Rozwiń aby zobaczyć"
+    "expand": "Rozwiń aby zobaczyć",
+    "noStatusInfo": "Brak informacji o statusie"
   },
   "en": {
     "triggered_at": "triggered at",
     "response": "response",
     "payload": "payload",
-    "expand": "Expand to see more"
+    "expand": "Expand to see more",
+    "noStatusInfo": "No status information"
   }
 }
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropOptions } from 'vue'
 
-import { calculateRelativeTime } from '@/utils/calculateRelativeTime'
-import { ComputedClassNameType } from '@/utils/computedClassName'
+import { ComputedClassName } from '@/interfaces/computedClassName'
+import { WebHookEventLogEntry } from '@/interfaces/Webhook'
+import { getRelativeDate } from '@/utils/utils'
 
 export default Vue.extend({
   props: {
-    data: { type: Object, required: true },
+    data: { type: Object, required: true } as PropOptions<WebHookEventLogEntry>,
   },
 
   computed: {
-    singleLogClass(): ComputedClassNameType {
+    singleLogClass(): ComputedClassName {
       return [
         `log__status`,
         { 'log__status--100': String(this.data.status_code).startsWith('1') },
@@ -89,7 +105,16 @@ export default Vue.extend({
       ]
     },
     relativeTime(): string {
-      return calculateRelativeTime(this.data.triggered_at)
+      return getRelativeDate(this.data.triggered_at, this.$i18n.locale)
+    },
+    triggerTime(): string {
+      return new Date(this.data.triggered_at).toLocaleString(this.$i18n.locale)
+    },
+    logResponse(): string {
+      return JSON.stringify(this.data.response, null, 2)
+    },
+    payloadResponse(): string {
+      return JSON.stringify(this.data.payload, null, 2)
     },
   },
 })

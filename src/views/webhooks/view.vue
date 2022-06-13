@@ -146,10 +146,12 @@ export default Vue.extend({
   async created() {
     this.$accessor.startLoading()
 
-    // @ts-ignore // TODO: fix extended store actions typings
-    await this.$accessor.webhooks.fetchEvents()
-    // @ts-ignore
-    await this.$accessor.webhooks.fetchLogs({ web_hook_id: this.id })
+    await Promise.all([
+      // @ts-ignore TODO: fix extended store actions typings
+      this.$accessor.webhooks.fetchEvents(),
+      // @ts-ignore
+      this.$accessor.webhooks.fetchLogs({ web_hook_id: this.id }),
+    ])
 
     if (!this.isNew) await this.$accessor.webhooks.get(this.id)
 

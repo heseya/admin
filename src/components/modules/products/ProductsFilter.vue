@@ -13,6 +13,7 @@
       v-model="local.sets[0]"
       :label="$t('sets')"
       add-all
+      show-search
       option-filter-prop="label"
       @change="debouncedSearch"
     >
@@ -25,6 +26,7 @@
       v-model="local.tags[0]"
       :label="$t('tags')"
       add-all
+      show-search
       option-filter-prop="label"
       @change="debouncedSearch"
     >
@@ -45,6 +47,7 @@
       type="number"
       :label="$t('price.min')"
       min="0"
+      default-value="0"
       :addon-after="$accessor.currency"
       @input="debouncedSearch"
     />
@@ -53,9 +56,9 @@
       type="number"
       :label="$t('price.max')"
       min="0"
+      default-value="0"
       :addon-after="$accessor.currency"
       @input="debouncedSearch"
-      @clear="debouncedSearch"
     />
   </div>
 </template>

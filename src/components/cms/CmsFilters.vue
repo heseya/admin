@@ -48,7 +48,8 @@ export default Vue.extend({
     } as Vue.PropOptions<Record<string, any>>,
   },
   data: () => ({
-    isExpanded: false,
+    // TODO: change to default false before merge !!!!!!
+    isExpanded: true,
     isModalOpen: false,
     isExpandable: false,
   }),

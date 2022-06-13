@@ -60,6 +60,14 @@
       :addon-after="$accessor.currency"
       @input="debouncedSearch"
     />
+
+    <attribute-filter-input
+      v-for="attr in customFilters"
+      :key="attr.id"
+      v-model="local[`attribute.${attr.slug}`]"
+      :attribute="attr"
+      @input="debouncedSearch"
+    />
   </div>
 </template>
 
@@ -91,29 +99,46 @@
 </i18n>
 
 <script lang="ts">
+/* eslint-disable camelcase */
 import Vue from 'vue'
-import { debounce } from 'lodash'
+import debounce from 'lodash/debounce'
 import cloneDeep from 'lodash/cloneDeep'
 
 import { ALL_FILTER_VALUE } from '@/consts/filters'
+import AttributeFilterInput from './AttributeFilterInput.vue'
 import BooleanSelect from '@/components/form/BooleanSelect.vue'
 
-export const EMPTY_PRODUCT_FILTERS = {
+import { api } from '@/api'
+import { formatApiNotificationError } from '@/utils/errors'
+
+import { Attribute } from '@/interfaces/Attribute'
+
+export interface ProductFilers extends Record<string, string | [string] | undefined> {
+  search: string
+  sets: [string]
+  tags: [string]
+  available: string
+  public: string
+  has_cover: string
+  'price.min'?: string
+  'price.max'?: string
+  sort?: string
+}
+
+export const EMPTY_PRODUCT_FILTERS: ProductFilers = {
   search: '',
   sets: [ALL_FILTER_VALUE],
   tags: [ALL_FILTER_VALUE],
   available: ALL_FILTER_VALUE,
   public: ALL_FILTER_VALUE,
   has_cover: ALL_FILTER_VALUE,
-  'price.min': undefined as number | undefined,
-  'price.max': undefined as number | undefined,
-  sort: undefined as string | undefined,
+  'price.min': undefined,
+  'price.max': undefined,
+  sort: undefined,
 }
 
-type ProductFilers = typeof EMPTY_PRODUCT_FILTERS
-
 export default Vue.extend({
-  components: { BooleanSelect },
+  components: { BooleanSelect, AttributeFilterInput },
   props: {
     filters: {
       type: Object,
@@ -122,6 +147,7 @@ export default Vue.extend({
   },
   data: () => ({
     local: cloneDeep(EMPTY_PRODUCT_FILTERS),
+    customFilters: [] as Attribute[],
   }),
   computed: {
     productSets() {
@@ -132,18 +158,31 @@ export default Vue.extend({
     },
   },
   watch: {
-    filters(filters: ProductFilers) {
-      this.local = { ...this.local, ...filters }
+    filters: {
+      handler(filters: ProductFilers) {
+        this.local = cloneDeep(filters)
+      },
+      deep: true,
     },
   },
   created() {
     this.$accessor.productSets.fetch({ tree: undefined })
     this.$accessor.tags.fetch({ limit: 500 })
+    this.fetchCustomFilters()
   },
   mounted() {
     this.local = { ...this.local, ...this.filters }
   },
   methods: {
+    async fetchCustomFilters() {
+      try {
+        const { data } = await api.get<{ data: Attribute[] }>('/filters')
+        this.customFilters = data.data
+      } catch (error: any) {
+        this.$toast.error(formatApiNotificationError(error))
+      }
+    },
+
     makeSearch() {
       this.$emit('search', {
         ...this.filters,

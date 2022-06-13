@@ -77,6 +77,7 @@ import ProductTile from '@/components/modules/products/ProductTile.vue'
 import ProductListItem from '@/components/modules/products/ProductListItem.vue'
 import ProductsFilter, {
   EMPTY_PRODUCT_FILTERS,
+  ProductFilers,
 } from '@/components/modules/products/ProductsFilter.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 
@@ -128,20 +129,20 @@ export default Vue.extend({
   created() {
     this.filters.search = (this.$route.query.search as string) || ''
     const sets = this.$route.query.sets || [ALL_FILTER_VALUE]
-    this.filters.sets = Array.isArray(sets) ? (sets as string[]) : [sets]
+    this.filters.sets = Array.isArray(sets) ? (sets as [string]) : [sets]
     const tags = this.$route.query.tags || [ALL_FILTER_VALUE]
-    this.filters.tags = Array.isArray(tags) ? (tags as string[]) : [tags]
+    this.filters.tags = Array.isArray(tags) ? (tags as [string]) : [tags]
 
     this.filters.public = (this.$route.query.public as string) || ALL_FILTER_VALUE
     this.filters.available = (this.$route.query.available as string) || ALL_FILTER_VALUE
     this.filters.has_cover = (this.$route.query.has_cover as string) || ALL_FILTER_VALUE
-    this.filters['price.min'] = Number(this.$route.query['price.min'] as string) || undefined
-    this.filters['price.max'] = Number(this.$route.query['price.max'] as string) || undefined
+    this.filters['price.min'] = (this.$route.query['price.min'] as string) || undefined
+    this.filters['price.max'] = (this.$route.query['price.max'] as string) || undefined
 
     this.listView = !!+(window.localStorage.getItem(LOCAL_STORAGE_KEY) || 0)
   },
   methods: {
-    makeSearch(filters: typeof EMPTY_PRODUCT_FILTERS) {
+    makeSearch(filters: ProductFilers) {
       this.filters = filters
 
       const queryFilters = formatFilters(filters)

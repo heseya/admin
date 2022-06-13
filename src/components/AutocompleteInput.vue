@@ -16,6 +16,7 @@
         :placeholder="`${$t('placeholder')}`"
         @search="onSearch"
         @select="onSelect"
+        @input="onInput"
         @deselect="onDeselect"
       >
         <a-select-option
@@ -74,11 +75,12 @@ export default Vue.extend({
   components: { Empty, ValidationProvider },
   props: {
     value: {
-      type: [Object, Array],
+      type: [String, Object, Array],
       default: () => [],
-    } as Vue.PropOptions<BaseItem | BaseItem[]>,
+    } as Vue.PropOptions<UUID | BaseItem | UUID[] | BaseItem[]>,
     modelUrl: { type: String, required: true },
     disabled: { type: Boolean, default: false },
+    idMode: { type: Boolean, default: false },
     label: { type: String, default: '' },
     placeholderModel: { type: String, default: '' },
     rules: { type: [String, Object], default: null },
@@ -96,18 +98,24 @@ export default Vue.extend({
     singleOptionId: {
       get(): BaseItem | undefined {
         if (isEmpty(this.value)) return undefined
+        if (this.idMode)
+          return this.searchedOptions.find((option) => option.id === (this.value as string))
         return (this.value as BaseItem[])?.[0] || this.value
       },
       set(v: BaseItem) {
-        this.$emit('input', v)
+        this.$emit('input', this.idMode ? v.id : v)
       },
     },
     multiOptionsIds: {
       get(): BaseItem[] {
+        if (this.idMode)
+          return this.searchedOptions.filter((option) =>
+            (this.value as string[]).includes(option.id),
+          )
         return this.value as BaseItem[]
       },
       set(v: BaseItem[]) {
-        this.$emit('input', v)
+        this.$emit('input', this.idMode ? v.map((e) => e.id) : v)
       },
     },
     inputValue(): string | AntSelectOption[] | undefined {
@@ -150,6 +158,10 @@ export default Vue.extend({
       this.fetchItems(search)
     }, 500),
 
+    onInput(v: any) {
+      if (v === undefined) this.$emit('input', undefined)
+    },
+
     onDeselect({ key }: AntSelectOption) {
       if (this.mode === this.SelectType.Multiple)
         this.multiOptionsIds = this.multiOptionsIds.filter(({ id }) => id !== key)
@@ -165,6 +177,7 @@ export default Vue.extend({
         this.singleOptionId = this.options.find(({ id }) => id === selectedOption.key)
       }
     },
+
     async fetchItems(query: string = '') {
       this.isLoading = true
       const {

@@ -132,8 +132,8 @@ export default Vue.extend({
     })
 
     const { sets, tags, public: isPublic, available, has_cover: hasCover } = this.$route.query
-    this.filters.sets = Array.isArray(sets) ? (sets as string[]) : [sets]
-    this.filters.tags = Array.isArray(tags) ? (tags as string[]) : [tags]
+    this.filters.sets = (Array.isArray(sets) ? (sets as string[]) : [sets]).filter(Boolean)
+    this.filters.tags = (Array.isArray(tags) ? (tags as string[]) : [tags]).filter(Boolean)
     this.filters.public = (isPublic as string) || ALL_FILTER_VALUE
     this.filters.available = (available as string) || ALL_FILTER_VALUE
     this.filters.has_cover = (hasCover as string) || ALL_FILTER_VALUE

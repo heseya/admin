@@ -9,34 +9,32 @@
       @input="debouncedSearch"
     />
 
-    <app-select
-      v-model="local.sets[0]"
+    <autocomplete-input
+      v-model="local.sets"
+      prop-mode="slug"
+      model-url="product-sets"
       :label="$t('sets')"
-      add-all
-      show-search
-      option-filter-prop="label"
-      @change="debouncedSearch"
+      @input="debouncedSearch"
     >
-      <a-select-option v-for="set in productSets" :key="set.slug" :label="set.name">
+      <template #option="set">
         {{ set.name }}&nbsp;<small>(/{{ set.slug }})</small>
-      </a-select-option>
-    </app-select>
+      </template>
+    </autocomplete-input>
 
-    <app-select
-      v-model="local.tags[0]"
+    <autocomplete-input
+      v-model="local.tags"
+      prop-mode="id"
+      model-url="tags"
       :label="$t('tags')"
-      add-all
-      show-search
-      option-filter-prop="label"
-      @change="debouncedSearch"
+      @input="debouncedSearch"
     >
-      <a-select-option v-for="{ id, name, color } in apiTags" :key="id" :label="name">
+      <template #option="{ name, color }">
         <div class="products-filter-tags__option">
           <div class="products-filter-tags__color" :style="{ backgroundColor: `#${color}` }"></div>
           {{ name }}
         </div>
-      </a-select-option>
-    </app-select>
+      </template>
+    </autocomplete-input>
 
     <boolean-select v-model="local.available" :label="$t('available')" @change="debouncedSearch" />
     <boolean-select v-model="local.public" :label="$t('public')" @change="debouncedSearch" />
@@ -112,11 +110,12 @@ import { formatApiNotificationError } from '@/utils/errors'
 
 import { Attribute, AttributeType } from '@/interfaces/Attribute'
 import RangeInput from '@/components/form/RangeInput.vue'
+import AutocompleteInput from '@/components/AutocompleteInput.vue'
 
-export interface ProductFilers extends Record<string, string | [string] | undefined> {
+export interface ProductFilers extends Record<string, string | string[] | undefined> {
   search: string
-  sets: [string]
-  tags: [string]
+  sets: string[]
+  tags: string[]
   available: string
   public: string
   has_cover: string
@@ -138,7 +137,7 @@ export const EMPTY_PRODUCT_FILTERS: ProductFilers = {
 }
 
 export default Vue.extend({
-  components: { BooleanSelect, AttributeFilterInput, RangeInput },
+  components: { BooleanSelect, AttributeFilterInput, RangeInput, AutocompleteInput },
   props: {
     filters: {
       type: Object,
@@ -152,9 +151,6 @@ export default Vue.extend({
   computed: {
     productSets() {
       return this.$accessor.productSets.getData
-    },
-    apiTags() {
-      return this.$accessor.tags.getData
     },
     AttributeType(): typeof AttributeType {
       return AttributeType
@@ -170,7 +166,6 @@ export default Vue.extend({
   },
   created() {
     this.$accessor.productSets.fetch({ tree: undefined })
-    this.$accessor.tags.fetch({ limit: 500 })
     this.fetchCustomFilters()
   },
   mounted() {

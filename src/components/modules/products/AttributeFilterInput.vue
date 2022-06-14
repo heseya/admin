@@ -19,7 +19,7 @@
     v-else
     mode="default"
     :value="value"
-    id-mode
+    prop-mode="id"
     :model-url="`attributes/id:${attribute.id}/options`"
     :label="attribute.name"
     @input="updateValue"

@@ -25,7 +25,7 @@
           :value="option.id"
           :label="option.name || option.code"
         >
-          {{ option.name || option.code }}
+          <slot name="option" v-bind="option"> {{ option.name || option.code }} </slot>
         </a-select-option>
 
         <template #notFoundContent>
@@ -80,7 +80,7 @@ export default Vue.extend({
     } as Vue.PropOptions<UUID | BaseItem | UUID[] | BaseItem[]>,
     modelUrl: { type: String, required: true },
     disabled: { type: Boolean, default: false },
-    idMode: { type: Boolean, default: false },
+    propMode: { type: String, default: undefined } as Vue.PropOptions<keyof BaseItem>,
     label: { type: String, default: '' },
     placeholderModel: { type: String, default: '' },
     rules: { type: [String, Object], default: null },
@@ -98,24 +98,26 @@ export default Vue.extend({
     singleOptionId: {
       get(): BaseItem | undefined {
         if (isEmpty(this.value)) return undefined
-        if (this.idMode)
-          return this.searchedOptions.find((option) => option.id === (this.value as string))
+        if (this.propMode)
+          return this.searchedOptions.find(
+            (option) => option[this.propMode] === (this.value as string),
+          )
         return (this.value as BaseItem[])?.[0] || this.value
       },
       set(v: BaseItem) {
-        this.$emit('input', this.idMode ? v.id : v)
+        this.$emit('input', this.propMode ? v[this.propMode] : v)
       },
     },
     multiOptionsIds: {
       get(): BaseItem[] {
-        if (this.idMode)
+        if (this.propMode)
           return this.searchedOptions.filter((option) =>
-            (this.value as string[]).includes(option.id),
+            (this.value as string[]).includes(String(option[this.propMode])),
           )
         return this.value as BaseItem[]
       },
       set(v: BaseItem[]) {
-        this.$emit('input', this.idMode ? v.map((e) => e.id) : v)
+        this.$emit('input', this.propMode ? v.map((e) => e[this.propMode]) : v)
       },
     },
     inputValue(): string | AntSelectOption[] | undefined {
@@ -160,6 +162,7 @@ export default Vue.extend({
 
     onInput(v: any) {
       if (v === undefined) this.$emit('input', undefined)
+      else if (Array.isArray(v) && v.length === 0) this.$emit('input', [])
     },
 
     onDeselect({ key }: AntSelectOption) {

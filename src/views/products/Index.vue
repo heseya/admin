@@ -129,9 +129,9 @@ export default Vue.extend({
   created() {
     this.filters.search = (this.$route.query.search as string) || ''
     const sets = this.$route.query.sets || [ALL_FILTER_VALUE]
-    this.filters.sets = Array.isArray(sets) ? (sets as [string]) : [sets]
-    const tags = this.$route.query.tags || [ALL_FILTER_VALUE]
-    this.filters.tags = Array.isArray(tags) ? (tags as [string]) : [tags]
+    this.filters.sets = Array.isArray(sets) ? (sets as string[]) : [sets]
+    const tags = this.$route.query.tags || []
+    this.filters.tags = Array.isArray(tags) ? (tags as string[]) : [tags]
 
     this.filters.public = (this.$route.query.public as string) || ALL_FILTER_VALUE
     this.filters.available = (this.$route.query.available as string) || ALL_FILTER_VALUE

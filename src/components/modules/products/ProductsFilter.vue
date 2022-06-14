@@ -165,7 +165,6 @@ export default Vue.extend({
     },
   },
   created() {
-    this.$accessor.productSets.fetch({ tree: undefined })
     this.fetchCustomFilters()
   },
   mounted() {

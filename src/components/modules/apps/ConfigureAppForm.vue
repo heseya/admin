@@ -149,12 +149,7 @@ export default Vue.extend({
         const error = e as AxiosError<{ message?: string }>
         const message = error.response?.data?.message || error.message
 
-        this.$toast.error(
-          formatApiNotification({
-            title: this.$t('savedError') as string,
-            messages: [message],
-          }),
-        )
+        this.$toast.error(formatApiNotification(this.$t('savedError') as string, ...[message]))
       }
       this.isLoading = false
     },

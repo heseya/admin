@@ -9,6 +9,7 @@ enum ErrorType {
   ServerError = 'SERVER_ERROR',
 }
 
+//TODO: Replace with implementation from @heseya/store-core
 export type ApiError = AxiosError<{
   message?: string
   error: {
@@ -45,5 +46,6 @@ export const formatApiError = (error: ApiError) => {
 }
 
 export const formatApiNotificationError = (error: ApiError) => {
-  return formatApiNotification(formatApiError(error))
+  const { title, messages } = formatApiError(error)
+  return formatApiNotification(title, ...messages)
 }

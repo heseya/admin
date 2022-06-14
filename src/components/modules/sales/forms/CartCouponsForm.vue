@@ -42,12 +42,11 @@
 
 <script lang="ts">
 import Vue from 'vue'
-
 import {
   DiscountConditionType,
   CartLengthDiscountCondition,
   CouponsCountDiscountCondition,
-} from '@/interfaces/SaleCondition'
+} from '@heseya/store-core'
 
 type CartCouponsForm = CartLengthDiscountCondition | CouponsCountDiscountCondition
 

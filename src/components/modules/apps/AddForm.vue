@@ -159,11 +159,14 @@
 import Vue from 'vue'
 import axios from 'axios'
 import { debounce } from 'lodash'
+import {
+  AppInternalPermission,
+  AppCreateDto,
+  IntegrationInfo,
+  PermissionEntry,
+} from '@heseya/store-core'
 
 import LoadingIndicator from '@/components/layout/LoadingIndicator.vue'
-
-import { AppInternalPermission, CreateAppDto, IntegrationInfo } from '@/interfaces/App'
-import { PermissionObject } from '@/interfaces/Permissions'
 
 export default Vue.extend({
   components: { LoadingIndicator },
@@ -171,7 +174,7 @@ export default Vue.extend({
     value: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<CreateAppDto>,
+    } as Vue.PropOptions<AppCreateDto>,
     isValidUrl: {
       type: Boolean,
       default: false,
@@ -184,17 +187,17 @@ export default Vue.extend({
   }),
   computed: {
     form: {
-      get(): CreateAppDto {
+      get(): AppCreateDto {
         return this.value
       },
-      set(value: CreateAppDto) {
+      set(value: AppCreateDto) {
         this.$emit('input', value)
       },
     },
-    requiredPermissions(): PermissionObject[] {
+    requiredPermissions(): PermissionEntry[] {
       return (this.appInfo?.required_permissions || [])
         .map((name) => this.$accessor.roles.permissions.find((perm) => perm.name === name))
-        .filter((perm) => !!perm) as PermissionObject[]
+        .filter((perm) => !!perm) as PermissionEntry[]
     },
   },
   watch: {

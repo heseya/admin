@@ -85,12 +85,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { WarehouseItem } from '@heseya/store-core'
 
 import Empty from '@/components/layout/Empty.vue'
 import List from '@/components/layout/List.vue'
 import Selector from '@/components/Selector.vue'
 import { ProductInnerItem } from '@/interfaces/Product'
-import { WarehouseItem } from '@/interfaces/WarehouseItem'
 import ListItem from '@/components/layout/ListItem.vue'
 import { UUID } from '@/interfaces/UUID'
 

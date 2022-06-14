@@ -54,8 +54,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationProvider } from 'vee-validate'
+import { Address } from '@heseya/store-core'
 
-import { Address } from '@/interfaces/Address'
 import { Country } from '@/interfaces/Country'
 import { api } from '@/api'
 

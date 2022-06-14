@@ -50,9 +50,11 @@
 
 <script lang="ts">
 import Vue from 'vue'
+//import { MetadataDto } from '@heseya/store-core'
 
 import MetadataForm from './Form.vue'
 import { MetadataDto } from '@/interfaces/Metadata'
+
 import { GeneratedStoreModulesKeys } from '@/store'
 
 export type SaveMetadataFunction = (id: string) => Promise<void>

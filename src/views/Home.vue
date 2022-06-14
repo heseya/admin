@@ -105,6 +105,7 @@ import sub from 'date-fns/sub'
 import startOfMonth from 'date-fns/startOfMonth'
 import startOfWeek from 'date-fns/startOfWeek'
 import startOfYear from 'date-fns/startOfYear'
+import { Order } from '@heseya/store-core'
 
 import { getPaymentsCount } from '@/services/statistics'
 import { getRelativeDate } from '@/utils/utils'
@@ -114,8 +115,6 @@ import { formatCurrency } from '@/utils/currency'
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import ListItem from '@/components/layout/ListItem.vue'
-
-import { Order } from '@/interfaces/Order'
 
 export default Vue.extend({
   metaInfo(this: any) {

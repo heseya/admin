@@ -45,6 +45,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import debounce from 'lodash/debounce'
+import { Schema, Attribute, WarehouseItem } from '@heseya/store-core'
 
 import { api } from '../api'
 import { formatApiNotificationError } from '@/utils/errors'
@@ -54,11 +55,8 @@ import List from '@/components/layout/List.vue'
 import Empty from '@/components/layout/Empty.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 
-import { Schema } from '@/interfaces/Schema'
 import { UUID } from '@/interfaces/UUID'
 import Loading from './layout/Loading.vue'
-import { Attribute } from '@/interfaces/Attribute'
-import { WarehouseItem } from '@/interfaces/WarehouseItem'
 
 interface Item {
   id: UUID

@@ -55,9 +55,10 @@
 import Vue from 'vue'
 import { cloneDeep } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
+import { User } from '@heseya/store-core'
 
 import { formatApiNotificationError } from '@/utils/errors'
-import { User, UserProfileUpdateDTO } from '@/interfaces/User'
+import { UserProfileUpdateDTO } from '@/interfaces/User'
 
 const UPDATE_USER_PREFERENCES_FORM: UserProfileUpdateDTO = {
   name: '',

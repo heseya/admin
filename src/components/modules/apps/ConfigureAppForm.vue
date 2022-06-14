@@ -75,13 +75,12 @@
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { AxiosError, AxiosInstance } from 'axios'
-
-import Loading from '@/components/layout/Loading.vue'
-
-import { App, AppConfigField } from '@/interfaces/App'
+import { App, AppConfigField } from '@heseya/store-core'
 
 import { formatApiNotification } from '@/utils/utils'
 import { createApiInstance } from '@/api'
+
+import Loading from '@/components/layout/Loading.vue'
 import AppSelect from '@/components/form/AppSelect.vue'
 
 export default Vue.extend({

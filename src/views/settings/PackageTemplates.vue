@@ -13,7 +13,7 @@
         <list-item :key="packageTemplate.id" @click="openModal(packageTemplate.id)">
           {{ packageTemplate.name }}
           <small>
-            {{ $t('item.weight') }}: <b>{{ packageTemplate.weight }}kg</b>, {{ $t('item.height') }}:
+            {{ $t('item.wieght') }}: <b>{{ packageTemplate.wieght }}kg</b>, {{ $t('item.height') }}:
             <b>{{ packageTemplate.height }}cm</b>, {{ $t('item.width') }}:
             <b>{{ packageTemplate.width }}cm</b>, {{ $t('item.depth') }}:
             <b>{{ packageTemplate.depth }}cm</b>
@@ -37,12 +37,12 @@
           />
 
           <validated-input
-            v-model="editedItem.weight"
+            v-model="editedItem.wieght"
             :disabled="!canModify"
             rules="required|positive"
             type="number"
             step="0.01"
-            :label="$t('form.weight')"
+            :label="$t('form.wieght')"
           />
 
           <validated-input
@@ -117,13 +117,13 @@
     "newTitle": "Nowy szablon",
     "deleteText": "Czy na pewno chcesz usunąć ten szablon dostawy?",
     "item": {
-      "weight": "waga",
+      "wieght": "waga",
       "height": "wysokość",
       "width": "szerokość",
       "depth": "głębokość"
     },
     "form": {
-      "weight": "Waga (kg)",
+      "wieght": "Waga (kg)",
       "height": "Wysokość (cm)",
       "width": "Szerokość (cm)",
       "depth": "Głębokość (cm)"
@@ -141,13 +141,13 @@
     "newTitle": "New template",
     "deleteText": "Are you sure you want to delete this template?",
     "item": {
-      "weight": "weight",
+      "wieght": "wieght",
       "height": "height",
       "width": "width",
       "depth": "depth"
     },
     "form": {
-      "weight": "Weight (kg)",
+      "wieght": "wieght (kg)",
       "height": "Height (cm)",
       "width": "Width (cm)",
       "depth": "Depth (cm)"
@@ -165,6 +165,7 @@
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { clone } from 'lodash'
+import { PackagesTemplate } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
@@ -173,15 +174,14 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { UUID } from '@/interfaces/UUID'
-import { PackageTemplate } from '@/interfaces/PackageTemplate'
 
-const CLEAR_PACKAGE_TEMPALTE: PackageTemplate = {
+const CLEAR_PACKAGE_TEMPALTE: PackagesTemplate = {
   id: '',
   name: '',
   width: 0,
   height: 0,
   depth: 0,
-  weight: 0,
+  wieght: 0,
   metadata: {},
 }
 

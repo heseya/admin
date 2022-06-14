@@ -47,8 +47,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { DiscountConditionGroupDto, DiscountConditionType } from '@heseya/store-core'
 
-import { DiscountConditionGroupDto, DiscountConditionType } from '@/interfaces/SaleCondition'
 import Empty from '@/components/layout/Empty.vue'
 import ConditionGroup from './ConditionGroup.vue'
 

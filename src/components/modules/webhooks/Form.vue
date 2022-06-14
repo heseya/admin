@@ -134,7 +134,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-
 import { ValidationObserver } from 'vee-validate'
 
 import { WebHookDto, WebHookEvent, WebHookEventObject } from '@/interfaces/Webhook'

@@ -86,7 +86,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Attribute, AttributeType, ProductAttribute } from '@/interfaces/Attribute'
+import {
+  AttributeType,
+  Attribute, //ProductAttribute
+} from '@heseya/store-core'
+
+import { ProductAttribute } from '@/interfaces/Attribute'
 
 import Empty from '@/components/layout/Empty.vue'
 import List from '@/components/layout/List.vue'

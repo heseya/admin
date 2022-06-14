@@ -41,8 +41,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import Draggable from 'vuedraggable'
+import { BannerMedia } from '@heseya/store-core'
 
-import { BannerMedia } from '@/interfaces/Banner'
 import Empty from '@/components/layout/Empty.vue'
 import BannerMediaComponent from './BannerMedia.vue'
 

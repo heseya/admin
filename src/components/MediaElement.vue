@@ -29,7 +29,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { CdnMedia, CdnMediaType } from '@/interfaces/Media'
+import { CdnMedia, CdnMediaType } from '@heseya/store-core'
 
 export default Vue.extend({
   props: {

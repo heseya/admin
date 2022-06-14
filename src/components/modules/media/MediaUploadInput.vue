@@ -53,8 +53,9 @@
 </i18n>
 
 <script lang="ts">
-import { CdnMedia } from '@/interfaces/Media'
 import Vue from 'vue'
+import { CdnMedia } from '@heseya/store-core'
+
 import MediaEditForm from '@/components/modules/media/MediaEditForm.vue'
 import MediaUploader from '@/components/modules/media/MediaUploader.vue'
 

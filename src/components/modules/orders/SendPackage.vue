@@ -105,9 +105,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { PackagesTemplate } from '@heseya/store-core'
 import { createPackage } from '@/services/createPackage'
 import { formatApiNotificationError } from '@/utils/errors'
-import { PackageTemplate } from '@/interfaces/PackageTemplate'
 
 export default Vue.extend({
   props: {
@@ -130,7 +130,7 @@ export default Vue.extend({
     providerKey: 'dpd',
   }),
   computed: {
-    packageTemplates(): PackageTemplate[] {
+    packageTemplates(): PackagesTemplate[] {
       return this.$accessor.packageTemplates.getData
     },
     PROVIDERS(): { key: string; label: string }[] {

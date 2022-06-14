@@ -58,8 +58,8 @@
       :key="attr.id"
       :value="
         attr.type === AttributeType.Date || attr.type === AttributeType.Number
-          ? local[`attribute.${attr.slug}`]
-          : { min: local[`attribute.${attr.slug}.min`], max: local[`attribute.${attr.slug}.max`] }
+          ? { min: local[`attribute.${attr.slug}.min`], max: local[`attribute.${attr.slug}.max`] }
+          : local[`attribute.${attr.slug}`]
       "
       :attribute="attr"
       @input="

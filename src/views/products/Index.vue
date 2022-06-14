@@ -127,17 +127,16 @@ export default Vue.extend({
     },
   },
   created() {
-    this.filters.search = (this.$route.query.search as string) || ''
-    const sets = this.$route.query.sets || [ALL_FILTER_VALUE]
-    this.filters.sets = Array.isArray(sets) ? (sets as string[]) : [sets]
-    const tags = this.$route.query.tags || []
-    this.filters.tags = Array.isArray(tags) ? (tags as string[]) : [tags]
+    Object.entries(this.$route.query).forEach(([key, value]) => {
+      this.filters[key] = value as any
+    })
 
-    this.filters.public = (this.$route.query.public as string) || ALL_FILTER_VALUE
-    this.filters.available = (this.$route.query.available as string) || ALL_FILTER_VALUE
-    this.filters.has_cover = (this.$route.query.has_cover as string) || ALL_FILTER_VALUE
-    this.filters['price.min'] = (this.$route.query['price.min'] as string) || undefined
-    this.filters['price.max'] = (this.$route.query['price.max'] as string) || undefined
+    const { sets, tags, public: isPublic, available, has_cover: hasCover } = this.$route.query
+    this.filters.sets = Array.isArray(sets) ? (sets as string[]) : [sets]
+    this.filters.tags = Array.isArray(tags) ? (tags as string[]) : [tags]
+    this.filters.public = (isPublic as string) || ALL_FILTER_VALUE
+    this.filters.available = (available as string) || ALL_FILTER_VALUE
+    this.filters.has_cover = (hasCover as string) || ALL_FILTER_VALUE
 
     this.listView = !!+(window.localStorage.getItem(LOCAL_STORAGE_KEY) || 0)
   },

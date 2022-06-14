@@ -48,7 +48,10 @@ export default Vue.extend({
     type: { type: String, default: 'number' } as Vue.PropOptions<'number' | 'date'>,
     label: { type: String, default: '' },
     addonAfter: { type: String, default: '' },
-    value: { type: Object, default: () => ({ min: 0, max: 0 }) } as Vue.PropOptions<{
+    value: {
+      type: Object,
+      default: () => ({ min: '', max: '' }),
+    } as Vue.PropOptions<{
       min: number | string
       max: number | string
     }>,

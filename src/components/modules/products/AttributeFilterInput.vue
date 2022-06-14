@@ -38,7 +38,7 @@ export default Vue.extend({
   components: { AutocompleteInput, RangeInput },
   props: {
     attribute: { type: Object, required: true } as Vue.PropOptions<Attribute>,
-    value: { type: [String, Object], default: undefined },
+    value: { type: [String, Object, Array], default: undefined },
   },
   computed: {
     AttributeType(): typeof AttributeType {

@@ -56,6 +56,21 @@ export default Vue.extend({
     isExpandable() {
       if (!this.isExpandable && this.isExpanded) this.isExpanded = false
     },
+    isExpanded() {
+      const content = this.$refs.filters as HTMLElement
+      if (this.isExpanded) {
+        // This reduces flash of the scrollbar when expanded
+        setTimeout(() => {
+          content.style.overflowY = 'auto'
+        }, 300)
+      } else {
+        content.style.overflowY = 'hidden'
+        content.scrollTo({
+          top: 0,
+          behavior: 'smooth',
+        })
+      }
+    },
   },
   mounted() {
     this.onResize()
@@ -97,7 +112,7 @@ export default Vue.extend({
     padding-top: 8px;
     max-height: 68px;
     overflow: hidden;
-    transition: 0.3s;
+    transition: 0.3s linear;
 
     @media ($max-viewport-10) {
       display: none;
@@ -106,7 +121,7 @@ export default Vue.extend({
     & > ::v-deep *:first-child {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      grid-gap: 10px;
+      grid-gap: 4px 10px;
       grid-auto-flow: dense;
     }
 
@@ -202,7 +217,7 @@ export default Vue.extend({
   }
 
   &--expanded &__content {
-    max-height: 64px * 4;
+    max-height: 60px * 6;
   }
 }
 </style>

@@ -44,11 +44,18 @@ export const formatFilters = (filters: Record<string, unknown>) => {
   )
 }
 
-export const formatApiNotification = ({ title, text }: { title: string; text?: string }) => {
-  return text
+export const formatApiNotification = ({
+  title,
+  messages,
+}: {
+  title: string
+  messages?: string[]
+}) => {
+  return messages
     ? `
   <span class="notification__title">${title}</span>
-  <span class="notification__text">${text}</span>
+
+  ${messages.map((msg) => `<span class="notification__text">${msg}</span>`).join('')}
   `
     : title
 }

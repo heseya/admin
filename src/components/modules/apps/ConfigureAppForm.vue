@@ -152,7 +152,7 @@ export default Vue.extend({
         this.$toast.error(
           formatApiNotification({
             title: this.$t('savedError') as string,
-            text: message,
+            messages: [message],
           }),
         )
       }

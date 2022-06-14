@@ -13,6 +13,8 @@ export const getApiURL = () => {
     case '***REMOVED***.heseya.com':
       return 'https://store-api.***REMOVED***.pl'
     case '***REMOVED***':
+      return '***REMOVED***'
+    case '***REMOVED***':
       return 'https://rc.***REMOVED***'
     case '***REMOVED***':
       return '***REMOVED***'

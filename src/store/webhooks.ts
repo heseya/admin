@@ -6,7 +6,7 @@ import {
 } from '@heseya/store-core'
 import { api } from '@/api'
 import { WebHookEventObject } from '@/interfaces/Webhook'
-import { stringifyQuery } from '@/utils/utils'
+import { stringifyQueryParams } from '@/utils/stringifyQuery'
 import { createVuexCRUD, StoreMutations } from './generator'
 
 const BASE_URL = 'webhooks'
@@ -46,7 +46,7 @@ export const webhooks = createVuexCRUD<
     async fetchLogs({ commit }, parameters: Record<string, any>) {
       commit(StoreMutations.SetLoading, true)
       try {
-        const params = stringifyQuery(parameters)
+        const params = stringifyQueryParams(parameters)
         const response = await api.get<{ data: WebhookEventLog[] }>(`/webhooks/logs${params}`)
         commit('SET_ACTIVE_EVENTS', response.data.data)
 

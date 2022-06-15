@@ -9,7 +9,7 @@ import {
 } from '@heseya/store-core'
 import { UUID } from '@/interfaces/UUID'
 import { api } from '@/api'
-import { stringifyQuery } from '@/utils/utils'
+import { stringifyQueryParams } from '@/utils/stringifyQuery'
 import { ResponseMeta } from '@/interfaces/Response'
 
 type CreateOptionAction = { attributeId: UUID; option: AttributeOptionDto }
@@ -50,7 +50,7 @@ export const attributes = createVuexCRUD<Attribute, AttributeCreateDto, Attribut
         { attributeId, params }: { attributeId: UUID; params: Record<string, any> },
       ) {
         try {
-          const queryString = stringifyQuery(params)
+          const queryString = stringifyQueryParams(params)
           const { data } = await api.get<{ data: AttributeOption[]; meta: ResponseMeta }>(
             `/attributes/id:${attributeId}/options${queryString}`,
           )

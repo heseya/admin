@@ -72,12 +72,14 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { cloneDeep } from 'lodash'
 import { Product } from '@heseya/store-core'
 
 import ProductTile from '@/components/modules/products/ProductTile.vue'
 import ProductListItem from '@/components/modules/products/ProductListItem.vue'
 import ProductsFilter, {
   EMPTY_PRODUCT_FILTERS,
+  ProductFilers,
 } from '@/components/modules/products/ProductsFilter.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 
@@ -98,7 +100,7 @@ export default Vue.extend({
     ProductListItem,
   },
   data: () => ({
-    filters: { ...EMPTY_PRODUCT_FILTERS },
+    filters: cloneDeep(EMPTY_PRODUCT_FILTERS),
     listView: false,
   }),
   computed: {
@@ -125,19 +127,21 @@ export default Vue.extend({
     },
   },
   created() {
-    this.filters.search = (this.$route.query.search as string) || ''
-    const sets = this.$route.query.sets || [ALL_FILTER_VALUE]
-    this.filters.sets = Array.isArray(sets) ? (sets as string[]) : [sets]
-    const tags = this.$route.query.tags || [ALL_FILTER_VALUE]
-    this.filters.tags = Array.isArray(tags) ? (tags as string[]) : [tags]
+    Object.entries(this.$route.query).forEach(([key, value]) => {
+      this.filters[key] = value as any
+    })
 
-    this.filters.public = (this.$route.query.public as string) || ALL_FILTER_VALUE
-    this.filters.sort = (this.$route.query.sort as string) || ''
+    const { sets, tags, public: isPublic, available, has_cover: hasCover } = this.$route.query
+    this.filters.sets = (Array.isArray(sets) ? (sets as string[]) : [sets]).filter(Boolean)
+    this.filters.tags = (Array.isArray(tags) ? (tags as string[]) : [tags]).filter(Boolean)
+    this.filters.public = (isPublic as string) || ALL_FILTER_VALUE
+    this.filters.available = (available as string) || ALL_FILTER_VALUE
+    this.filters.has_cover = (hasCover as string) || ALL_FILTER_VALUE
 
     this.listView = !!+(window.localStorage.getItem(LOCAL_STORAGE_KEY) || 0)
   },
   methods: {
-    makeSearch(filters: typeof EMPTY_PRODUCT_FILTERS) {
+    makeSearch(filters: ProductFilers) {
       this.filters = filters
 
       const queryFilters = formatFilters(filters)
@@ -148,7 +152,7 @@ export default Vue.extend({
       })
     },
     clearFilters() {
-      this.makeSearch({ ...EMPTY_PRODUCT_FILTERS })
+      this.makeSearch(cloneDeep(EMPTY_PRODUCT_FILTERS))
     },
   },
 })

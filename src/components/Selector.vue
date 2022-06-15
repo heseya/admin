@@ -49,7 +49,7 @@ import { Schema, Attribute, WarehouseItem } from '@heseya/store-core'
 
 import { api } from '../api'
 import { formatApiNotificationError } from '@/utils/errors'
-import { stringifyQuery } from '@/utils/utils'
+import { stringifyQueryParams } from '@/utils/stringifyQuery'
 
 import List from '@/components/layout/List.vue'
 import Empty from '@/components/layout/Empty.vue'
@@ -114,7 +114,7 @@ export default Vue.extend({
 
       this.isLoading = true
       try {
-        const query = stringifyQuery({ search })
+        const query = stringifyQueryParams({ search })
         const { data } = await api.get<{ data: Item[] }>(`/${this.type}${query}`)
         this.data = data.data
       } catch (error: any) {

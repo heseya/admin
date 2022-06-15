@@ -5,11 +5,13 @@
     </div>
 
     <div class="log__data">
+      <!-- eslint-disable-next-line vue/no-bare-strings-in-template -->
       <span class="log__data-key log__data-key--id">id:</span>
       <span class="log__data-value">
         {{ data.id }}
       </span>
 
+      <!-- eslint-disable-next-line vue/no-bare-strings-in-template -->
       <span class="log__data-key">url:</span>
 
       <div class="log__data-value">
@@ -37,7 +39,7 @@
           </template>
         </a-collapse-panel>
 
-        <pre v-if="data.response">{{ logReponse }}</pre>
+        <pre v-if="data.response">{{ logResponse }}</pre>
       </a-collapse>
 
       <span class="log__data-key">{{ $t('payload') }}:</span>

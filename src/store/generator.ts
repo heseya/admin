@@ -5,7 +5,7 @@ import { ActionTree, GetterTree, MutationTree } from 'vuex'
 import { EntityAudits, HeseyaPaginatedResponseMeta } from '@heseya/store-core'
 
 import { api } from '../api'
-import { stringifyQuery } from '@/utils/utils'
+import { stringifyQueryParams as stringifyQuery } from '@/utils/stringifyQuery'
 
 import { RootState } from '.'
 import { UUID } from '@/interfaces/UUID'

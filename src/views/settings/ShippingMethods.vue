@@ -18,11 +18,11 @@
         >
           {{ shippingMethod.name }}
           <small v-if="shippingMethod.countries.length">
-            {{ shippingMethod.black_list ? $t('list.blackList') : $t('list.whiteList') }}
+            {{ shippingMethod.block_list ? $t('list.blackList') : $t('list.whiteList') }}
             {{ shippingMethod.countries.map((c) => c.name).join(', ') }}
           </small>
           <small v-else>
-            {{ shippingMethod.black_list ? $t('list.allEnabled') : $t('list.allDisabled') }}
+            {{ shippingMethod.block_list ? $t('list.allEnabled') : $t('list.allDisabled') }}
           </small>
         </list-item>
       </template>
@@ -190,7 +190,7 @@ export default Vue.extend({
         this.selectedItem = null
         this.editedItem = {
           name: '',
-          black_list: false,
+          block_list: false,
           payment_methods: [],
           countries: [],
           shipping_time_min: 0,

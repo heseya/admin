@@ -61,6 +61,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { cloneDeep } from 'lodash'
+import { Banner, BannerCreateDto } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
@@ -68,7 +69,6 @@ import BannerForm from '@/components/modules/banners/Form.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
-import { Banner, BannerDto } from '@/interfaces/Banner'
 
 const CLEAN_FORM: Banner = {
   id: '',
@@ -147,7 +147,7 @@ export default Vue.extend({
       // Metadata can be saved only after banner is created
       if (this.selectedBanner) await this.saveMetadata(this.selectedBanner.id)
 
-      const form: BannerDto = {
+      const form: BannerCreateDto = {
         ...this.form,
         banner_media: this.form.banner_media.map((banner) => ({
           ...banner,

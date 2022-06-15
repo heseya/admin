@@ -2,14 +2,14 @@ import axios from 'axios'
 import { assign, cloneDeep, isNil } from 'lodash'
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 import { ActionTree, GetterTree, MutationTree } from 'vuex'
+import { EntityAudits, HeseyaPaginatedResponseMeta } from '@heseya/store-core'
 
 import { api } from '../api'
 import { stringifyQuery } from '@/utils/utils'
 
 import { RootState } from '.'
-import { ResponseMeta } from '@/interfaces/Response'
 import { UUID } from '@/interfaces/UUID'
-import { AuditEntry } from '@/interfaces/AuditEntry'
+
 import { Metadata, MetadataDto } from '@/interfaces/Metadata'
 
 type QueryPayload = Record<string, any>
@@ -33,7 +33,7 @@ export enum StoreMutations {
 interface DefaultStore<Item extends BaseItem> {
   error: null | Error
   isLoading: boolean
-  meta: ResponseMeta
+  meta: HeseyaPaginatedResponseMeta
   data: Item[]
   queryParams: Record<string, any>
   selected: Item | null
@@ -72,7 +72,7 @@ export const createVuexCRUD =
       ({
         error: null as null | Error,
         isLoading: false,
-        meta: {} as ResponseMeta,
+        meta: {} as HeseyaPaginatedResponseMeta,
         data: [] as Item[],
         selected: null as Item | null,
         queryParams: {},
@@ -112,7 +112,7 @@ export const createVuexCRUD =
       [StoreMutations.SetLoading](state, isLoading: boolean) {
         state.isLoading = isLoading
       },
-      [StoreMutations.SetMeta](state, newMeta: ResponseMeta) {
+      [StoreMutations.SetMeta](state, newMeta: HeseyaPaginatedResponseMeta) {
         state.meta = newMeta || {}
       },
       [StoreMutations.SetQueryParams](state, newParams: Record<string, any>) {
@@ -158,7 +158,7 @@ export const createVuexCRUD =
       { state: moduleState, getters: moduleGetters, mutations: moduleMutations },
       {
         clearData({ commit }) {
-          commit(StoreMutations.SetMeta, {} as ResponseMeta)
+          commit(StoreMutations.SetMeta, {} as HeseyaPaginatedResponseMeta)
           commit(StoreMutations.SetData, [])
         },
 
@@ -179,7 +179,7 @@ export const createVuexCRUD =
 
             const stringQuery = stringifyQuery(filteredQuery)
 
-            const { data } = await api.get<{ data: Item[]; meta: ResponseMeta }>(
+            const { data } = await api.get<{ data: Item[]; meta: HeseyaPaginatedResponseMeta }>(
               `/${endpoint}${stringQuery}`,
               { signal: privateState.fetchAbortController.signal },
             )
@@ -333,7 +333,7 @@ export const createVuexCRUD =
           commit(StoreMutations.SetLoading, true)
           try {
             const stringQuery = stringifyQuery(queryParams.get || {})
-            const { data } = await api.get<{ data: AuditEntry[] }>(
+            const { data } = await api.get<{ data: EntityAudits<Record<string, any>>[] }>(
               `/audits/${endpoint}/id:${id}${stringQuery}`,
             )
             commit(StoreMutations.SetLoading, false)

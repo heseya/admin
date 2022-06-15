@@ -72,6 +72,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { Product } from '@heseya/store-core'
 
 import ProductTile from '@/components/modules/products/ProductTile.vue'
 import ProductListItem from '@/components/modules/products/ProductListItem.vue'
@@ -83,7 +84,6 @@ import PaginatedList from '@/components/PaginatedList.vue'
 import { formatFilters } from '@/utils/utils'
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 import { TableConfig } from '@/interfaces/CmsTable'
-import { Product } from '@/interfaces/Product'
 
 const LOCAL_STORAGE_KEY = 'products-list-view'
 

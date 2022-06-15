@@ -117,6 +117,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
+import { Page, PageCreateDto } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
@@ -131,7 +132,6 @@ import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordi
 import { formatApiNotificationError } from '@/utils/errors'
 import { generateSlug } from '@/utils/generateSlug'
 
-import { Page, PageDto } from '@/interfaces/Page'
 import { UUID } from '@/interfaces/UUID'
 
 export default Vue.extend({
@@ -160,7 +160,7 @@ export default Vue.extend({
       content_html: '',
       public: true,
       seo: {},
-    } as PageDto,
+    } as PageCreateDto,
   }),
   computed: {
     id(): UUID {

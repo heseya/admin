@@ -48,8 +48,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-
-import { Attribute } from '@/interfaces/Attribute'
+import { Attribute } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'

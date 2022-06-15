@@ -165,7 +165,6 @@
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { clone } from 'lodash'
-import { PackagesTemplate } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
@@ -174,14 +173,15 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { UUID } from '@/interfaces/UUID'
+import { PackageTemplate } from '@/interfaces/PackageTemplate'
 
-const CLEAR_PACKAGE_TEMPALTE: PackagesTemplate = {
+const CLEAR_PACKAGE_TEMPALTE: PackageTemplate = {
   id: '',
   name: '',
   width: 0,
   height: 0,
   depth: 0,
-  wieght: 0,
+  weight: 0,
   metadata: {},
 }
 

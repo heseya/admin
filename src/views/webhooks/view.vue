@@ -77,8 +77,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
-
-import { WebHook, WebHookDto, WebHookEventLogEntry } from '@/interfaces/Webhook'
+import { WebhookEntry, WebhookEntryUpdateDto, WebhookEventLog } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
@@ -88,7 +87,7 @@ import Log from '@/components/modules/webhooks/Log.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 
-const CLEAR_FORM: WebHookDto = {
+const CLEAR_FORM: WebhookEntryUpdateDto = {
   url: '',
   events: [],
   name: '',
@@ -122,13 +121,13 @@ export default Vue.extend({
     isNew(): boolean {
       return this.id === 'create'
     },
-    webhook(): WebHook {
+    webhook(): WebhookEntry {
       return this.$accessor.webhooks.getSelected || ({} as any)
     },
     error(): any {
       return this.$accessor.webhooks.getError
     },
-    logs(): WebHookEventLogEntry[] {
+    logs(): WebhookEventLog[] {
       return this.$accessor.webhooks.logs
     },
   },
@@ -158,7 +157,7 @@ export default Vue.extend({
     this.$accessor.stopLoading()
   },
   methods: {
-    async saveWebhook(webhook: WebHook) {
+    async saveWebhook(webhook: WebhookEntry) {
       this.$accessor.startLoading()
       const newWebHook = this.isNew
         ? await this.$accessor.webhooks.add(webhook)

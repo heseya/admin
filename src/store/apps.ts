@@ -1,8 +1,8 @@
 import { createVuexCRUD } from './generator'
 import { api } from '@/api'
-import { App, CreateAppDto } from '@/interfaces/App'
+import { App, AppCreateDto } from '@heseya/store-core'
 
-export const apps = createVuexCRUD<App, CreateAppDto, CreateAppDto>()('apps', {
+export const apps = createVuexCRUD<App, AppCreateDto, AppCreateDto>()('apps', {
   state: {},
   getters: {},
   mutations: {},

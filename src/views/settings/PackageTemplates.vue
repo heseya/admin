@@ -13,7 +13,7 @@
         <list-item :key="packageTemplate.id" @click="openModal(packageTemplate.id)">
           {{ packageTemplate.name }}
           <small>
-            {{ $t('item.wieght') }}: <b>{{ packageTemplate.wieght }}kg</b>, {{ $t('item.height') }}:
+            {{ $t('item.weight') }}: <b>{{ packageTemplate.weight }}kg</b>, {{ $t('item.height') }}:
             <b>{{ packageTemplate.height }}cm</b>, {{ $t('item.width') }}:
             <b>{{ packageTemplate.width }}cm</b>, {{ $t('item.depth') }}:
             <b>{{ packageTemplate.depth }}cm</b>
@@ -37,12 +37,12 @@
           />
 
           <validated-input
-            v-model="editedItem.wieght"
+            v-model="editedItem.weight"
             :disabled="!canModify"
             rules="required|positive"
             type="number"
             step="0.01"
-            :label="$t('form.wieght')"
+            :label="$t('form.weight')"
           />
 
           <validated-input
@@ -117,13 +117,13 @@
     "newTitle": "Nowy szablon",
     "deleteText": "Czy na pewno chcesz usunąć ten szablon dostawy?",
     "item": {
-      "wieght": "waga",
+      "weight": "waga",
       "height": "wysokość",
       "width": "szerokość",
       "depth": "głębokość"
     },
     "form": {
-      "wieght": "Waga (kg)",
+      "weight": "Waga (kg)",
       "height": "Wysokość (cm)",
       "width": "Szerokość (cm)",
       "depth": "Głębokość (cm)"
@@ -141,13 +141,13 @@
     "newTitle": "New template",
     "deleteText": "Are you sure you want to delete this template?",
     "item": {
-      "wieght": "wieght",
+      "weight": "weight",
       "height": "height",
       "width": "width",
       "depth": "depth"
     },
     "form": {
-      "wieght": "wieght (kg)",
+      "weight": "weight (kg)",
       "height": "Height (cm)",
       "width": "Width (cm)",
       "depth": "Depth (cm)"
@@ -175,7 +175,7 @@ import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordi
 import { UUID } from '@/interfaces/UUID'
 import { PackageTemplate } from '@/interfaces/PackageTemplate'
 
-const CLEAR_PACKAGE_TEMPALTE: PackageTemplate = {
+const CLEAR_PACKAGE_TEMPLATE: PackageTemplate = {
   id: '',
   name: '',
   width: 0,
@@ -209,7 +209,7 @@ export default Vue.extend({
   },
   data: () => ({
     isModalActive: false,
-    editedItem: clone(CLEAR_PACKAGE_TEMPALTE),
+    editedItem: clone(CLEAR_PACKAGE_TEMPLATE),
   }),
   computed: {
     canModify(): boolean {
@@ -223,7 +223,7 @@ export default Vue.extend({
         const item = this.$accessor.packageTemplates.getFromListById(id)
         this.editedItem = clone(item)
       } else {
-        this.editedItem = clone(CLEAR_PACKAGE_TEMPALTE)
+        this.editedItem = clone(CLEAR_PACKAGE_TEMPLATE)
       }
     },
     async saveModal() {

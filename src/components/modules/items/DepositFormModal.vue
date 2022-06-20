@@ -115,6 +115,7 @@ import { ValidationObserver } from 'vee-validate'
 import { isNumber, isString } from 'lodash'
 
 import { WarehouseDepositDto } from '@/interfaces/WarehouseItem'
+//import { WarehouseDepositDto } from '@heseya/store-core'
 import Loading from '@/components/layout/Loading.vue'
 
 const EMPTY_DEPOSIT_FORM: WarehouseDepositDto = {

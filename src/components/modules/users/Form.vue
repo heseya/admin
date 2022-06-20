@@ -70,15 +70,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { Role, UserCreateDto, UserUpdateDto } from '@heseya/store-core'
 
 import ModalForm from '@/components/form/ModalForm.vue'
 import Disable2FA from './Disable2FA.vue'
 
-import { CreateUserDTO, EditUserDTO } from '@/interfaces/User'
-import { Role } from '@/interfaces/Role'
-
 // eslint-disable-next-line camelcase
-type UserDTO = CreateUserDTO | (EditUserDTO & { is_tfa_active: boolean })
+type UserDTO = UserCreateDto | (UserUpdateDto & { is_tfa_active: boolean })
 
 export default Vue.extend({
   components: {
@@ -114,7 +112,7 @@ export default Vue.extend({
     this.$accessor.stopLoading()
   },
   methods: {
-    isNewUser(user: UserDTO): user is CreateUserDTO {
+    isNewUser(user: UserDTO): user is UserCreateDto {
       return 'id' in user === false
     },
   },

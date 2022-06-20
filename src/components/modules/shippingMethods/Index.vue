@@ -114,13 +114,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationProvider } from 'vee-validate'
+import { PaymentMethod, ShippingCountry, ShippingMethodCreateDto } from '@heseya/store-core'
 
 import ModalForm from '@/components/form/ModalForm.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import FlexInput from '@/components/layout/FlexInput.vue'
 
-import { ShippingMethodCountry, ShippingMethodDTO } from '@/interfaces/ShippingMethod'
-import { PaymentMethod } from '@/interfaces/PaymentMethod'
 import PriceRangesForm from './PriceRangesForm.vue'
 
 export default Vue.extend({
@@ -136,11 +135,11 @@ export default Vue.extend({
     value: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<ShippingMethodDTO>,
+    } as Vue.PropOptions<ShippingMethodCreateDto>,
     countries: {
       type: Array,
       required: true,
-    } as Vue.PropOptions<ShippingMethodCountry[]>,
+    } as Vue.PropOptions<ShippingCountry[]>,
     disabled: {
       type: Boolean,
       required: true,
@@ -148,10 +147,10 @@ export default Vue.extend({
   },
   computed: {
     form: {
-      get(): ShippingMethodDTO {
+      get(): ShippingMethodCreateDto {
         return this.value
       },
-      set(value: ShippingMethodDTO) {
+      set(value: ShippingMethodCreateDto) {
         this.$emit('input', value)
       },
     },

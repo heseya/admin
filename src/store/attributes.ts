@@ -6,7 +6,7 @@ import {
   AttributeUpdateDto,
   AttributeOption,
   AttributeOptionDto,
-} from '@/interfaces/Attribute'
+} from '@heseya/store-core'
 import { UUID } from '@/interfaces/UUID'
 import { api } from '@/api'
 import { stringifyQueryParams } from '@/utils/stringifyQuery'

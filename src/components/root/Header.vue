@@ -57,6 +57,7 @@ import Vue from 'vue'
 import last from 'lodash/last'
 
 import { User } from '@/interfaces/User'
+//import { User } from '@heseya/store-core'
 
 export default Vue.extend({
   name: 'AppHeader',

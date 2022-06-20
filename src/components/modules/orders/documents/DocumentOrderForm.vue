@@ -85,10 +85,10 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
+import { OrderDocumentType } from '@heseya/store-core'
 
 import Loading from '@/components/layout/Loading.vue'
 
-import { OrderDocumentType } from '@/interfaces/OrderDocuments'
 import { CreateOrderDocumentFunc } from '@/store/orders'
 
 const EMPTY_FORM = {

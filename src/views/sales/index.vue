@@ -56,11 +56,10 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { DiscountType, Sale } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
-
-import { DiscountType, Sale } from '@/interfaces/SalesAndCoupons'
 
 import { TableConfig } from '@/interfaces/CmsTable'
 import { formatCurrency } from '@/utils/currency'

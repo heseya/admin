@@ -145,6 +145,7 @@
 import Vue from 'vue'
 import format from 'date-fns/format'
 import { capitalize } from 'lodash'
+import { EntityAudits } from '@heseya/store-core'
 
 import CmsTable from '../../cms/CmsTable.vue'
 import Empty from '../../layout/Empty.vue'
@@ -177,7 +178,7 @@ export default Vue.extend({
   data: () => ({
     isModalOpen: false,
     isLoading: false,
-    audits: [] as AuditEntry[],
+    audits: [] as EntityAudits<Record<string, any>>[],
   }),
   computed: {
     tableConfig(): TableConfig {

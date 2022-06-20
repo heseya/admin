@@ -92,6 +92,7 @@
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { clone } from 'lodash'
+import { Tag } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
@@ -100,7 +101,6 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import Avatar from '@/components/layout/Avatar.vue'
 
 import { UUID } from '@/interfaces/UUID'
-import { Tag } from '@/interfaces/Tag'
 
 const CLEAR_TAG: Tag = {
   id: '',

@@ -147,7 +147,7 @@
       "depth": "depth"
     },
     "form": {
-      "weight": "Weight (kg)",
+      "weight": "weight (kg)",
       "height": "Height (cm)",
       "width": "Width (cm)",
       "depth": "Depth (cm)"
@@ -175,7 +175,7 @@ import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordi
 import { UUID } from '@/interfaces/UUID'
 import { PackageTemplate } from '@/interfaces/PackageTemplate'
 
-const CLEAR_PACKAGE_TEMPALTE: PackageTemplate = {
+const CLEAR_PACKAGE_TEMPLATE: PackageTemplate = {
   id: '',
   name: '',
   width: 0,
@@ -209,7 +209,7 @@ export default Vue.extend({
   },
   data: () => ({
     isModalActive: false,
-    editedItem: clone(CLEAR_PACKAGE_TEMPALTE),
+    editedItem: clone(CLEAR_PACKAGE_TEMPLATE),
   }),
   computed: {
     canModify(): boolean {
@@ -223,7 +223,7 @@ export default Vue.extend({
         const item = this.$accessor.packageTemplates.getFromListById(id)
         this.editedItem = clone(item)
       } else {
-        this.editedItem = clone(CLEAR_PACKAGE_TEMPALTE)
+        this.editedItem = clone(CLEAR_PACKAGE_TEMPLATE)
       }
     },
     async saveModal() {

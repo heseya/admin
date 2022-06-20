@@ -69,10 +69,10 @@
 /* eslint-disable camelcase */
 import Vue from 'vue'
 import { debounce } from 'lodash'
+import { OrderStatus } from '@heseya/store-core'
 
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 
-import { OrderStatus } from '@/interfaces/Order'
 import { ShippingMethod } from '@/interfaces/ShippingMethod'
 
 export type OrderFilersType = {

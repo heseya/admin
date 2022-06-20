@@ -45,15 +45,15 @@
 <script lang="ts">
 import Vue from 'vue'
 import { cloneDeep } from 'lodash'
+import { Consent, ConsentCreateDto } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ConsentsForm from '@/components/modules/consents/Form.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
-import { Consent, ConsentDTO } from '@/interfaces/Consent'
 
-const CLEAN_FORM: ConsentDTO = {
+const CLEAN_FORM: ConsentCreateDto = {
   name: '',
   description_html: '',
   required: true,

@@ -263,6 +263,7 @@
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import cloneDeep from 'lodash/cloneDeep'
+import {} from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Gallery from '@/components/modules/products/Gallery.vue'

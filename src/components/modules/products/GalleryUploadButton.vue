@@ -20,10 +20,10 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import MediaUploader from '../media/MediaUploader.vue'
+import { CdnMedia } from '@heseya/store-core'
 
+import MediaUploader from '../media/MediaUploader.vue'
 import { formatApiNotificationError } from '@/utils/errors'
-import { CdnMedia } from '@/interfaces/Media'
 
 export default Vue.extend({
   components: { MediaUploader },

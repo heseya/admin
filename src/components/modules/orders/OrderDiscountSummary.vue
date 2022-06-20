@@ -41,8 +41,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import groupBy from 'lodash/groupBy'
+import { DiscountTargetType, OrderDiscount } from '@heseya/store-core'
 
-import { DiscountTargetType, OrderDiscount } from '@/interfaces/SalesAndCoupons'
 import { formatCurrency } from '@/utils/currency'
 
 export default Vue.extend({

@@ -90,7 +90,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { cloneDeep } from 'lodash'
-import { AttributeOption, AttributeOptionDto, AttributeType } from '@/interfaces/Attribute'
+import { AttributeOption, AttributeOptionDto, AttributeType } from '@heseya/store-core'
 
 import Empty from '@/components/layout/Empty.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'

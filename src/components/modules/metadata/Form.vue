@@ -124,12 +124,13 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationProvider } from 'vee-validate'
-import isEqual from 'lodash/isEqual'
+import { cloneDeep, isEqual } from 'lodash'
+//import { MetadataDto } from '@heseya/store-core'
+
 import { MetadataDto } from '@/interfaces/Metadata'
 import ModalForm from '@/components/form/ModalForm.vue'
 import Empty from '@/components/layout/Empty.vue'
 import { GeneratedStoreModulesKeys } from '@/store'
-import { cloneDeep } from 'lodash'
 
 enum MetadataType {
   String = 'string',

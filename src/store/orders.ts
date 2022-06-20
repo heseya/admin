@@ -1,12 +1,11 @@
 import { createVuexCRUD, StoreMutations } from './generator'
 import { api } from '../api'
-import { Order } from '@/interfaces/Order'
+import { Order, OrderDocument, OrderDocumentCreateDto } from '@heseya/store-core'
 import { UUID } from '@/interfaces/UUID'
-import { OrderDocument, OrderDocumentDto } from '@/interfaces/OrderDocuments'
 
 export type CreateOrderDocumentFunc = (payload: {
   orderId: UUID
-  document: OrderDocumentDto
+  document: OrderDocumentCreateDto
 }) => Promise<OrderDocument | null>
 
 export type DownloadOrderDocumentFunc = (payload: {
@@ -56,7 +55,7 @@ export const orders = createVuexCRUD<Order>()('orders', {
 
     async createOrderDocument(
       { commit },
-      { orderId, document }: { orderId: UUID; document: OrderDocumentDto },
+      { orderId, document }: { orderId: UUID; document: OrderDocumentCreateDto },
     ) {
       commit(StoreMutations.SetError, null)
       try {

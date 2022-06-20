@@ -36,8 +36,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { CdnMedia } from '@heseya/store-core'
 
-import { CdnMedia } from '@/interfaces/Media'
 import MediaUploader from '@/components/modules/media/MediaUploader.vue'
 
 const ENV_NAME = 'store_logo'

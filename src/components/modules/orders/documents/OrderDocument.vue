@@ -50,8 +50,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { OrderDocument } from '@heseya/store-core'
 
-import { OrderDocument } from '@/interfaces/OrderDocuments'
 import {
   DownloadOrderDocumentFunc,
   RemoveOrderDocumentFunc,

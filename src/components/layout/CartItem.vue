@@ -111,7 +111,7 @@ export default Vue.extend({
   },
   computed: {
     coverUrl(): string {
-      return this.item?.product?.cover?.url!
+      return this.item?.product?.cover?.url || ''
     },
     objectFit(): string {
       return +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'

@@ -88,7 +88,8 @@ export default Vue.extend({
       this.form = cloneDeep({
         ...UPDATE_USER_PREFERENCES_FORM,
         name: v.name,
-        preferences: v.preferences,
+        // Preferences are not implemented yet
+        preferences: v?.preferences || UPDATE_USER_PREFERENCES_FORM.preferences,
       })
     },
   },
@@ -96,7 +97,7 @@ export default Vue.extend({
     this.form = cloneDeep({
       ...UPDATE_USER_PREFERENCES_FORM,
       name: this.user.name,
-      preferences: this.user.preferences,
+      preferences: this.user?.preferences || UPDATE_USER_PREFERENCES_FORM.preferences,
     })
   },
   methods: {

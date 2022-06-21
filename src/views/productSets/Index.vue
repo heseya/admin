@@ -94,6 +94,7 @@ export default Vue.extend({
       } else {
         this.editedItem = {
           ...cloneDeep(set),
+          cover: set.cover || null,
           parent_id: set.parent?.id || null,
           attributes: set.attributes?.map((attr) => attr.id) || [],
         }

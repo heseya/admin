@@ -8,7 +8,7 @@ export interface ProductSet {
   slug: string
   slug_suffix: string
   description_html: string
-  cover?: CdnMedia
+  cover: CdnMedia | null
   slug_override: boolean
   public: boolean
   visible: boolean

@@ -1,3 +1,4 @@
+import { Permission as CorePermission } from '@heseya/store-core'
 import { UUID } from './UUID'
 import {
   AdminPermission,
@@ -61,6 +62,7 @@ export type Permission =
   | WebhooksPermission
   | SeoPermission
   | AttributesPermission
+  | CorePermission
 
 export interface PermissionObject {
   id: UUID

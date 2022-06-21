@@ -1,4 +1,5 @@
-import { Permission } from '@heseya/store-core'
+// TODO: Change to the store-core version when available
+import { Permission } from '@/interfaces/Permissions'
 
 /**
  * Checks if the user has the permission to perform the action

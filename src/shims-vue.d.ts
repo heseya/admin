@@ -1,5 +1,5 @@
 import VueRouter, { Route } from 'vue-router'
-import { PermissionsTree } from '@heseya/store-core'
+import { PermissionsTree } from '@/interfaces/Permissions'
 
 import { hasUserAccess, alertIfNoAccess } from './plugins/permissions'
 import { AccessorType } from './store'

@@ -182,7 +182,7 @@ export default Vue.extend({
     },
   },
   created() {
-    this.childrenQuantity = (this.set.children_ids as string[]).length
+    this.childrenQuantity = this.set.children_ids?.length || 0
   },
   methods: {
     createSuccess(set: ProductSet) {
@@ -277,7 +277,7 @@ export default Vue.extend({
     editProductSet() {
       this.editedItem = {
         ...cloneDeep(this.set),
-        parent_id: this.set.parent?.id || '',
+        parent_id: this.set.parent?.id || null,
         attributes: this.set.attributes?.map((attr) => attr.id) || [],
       }
       this.editedItemSlugPrefix = this.set.parent?.slug || ''
@@ -286,7 +286,7 @@ export default Vue.extend({
     createProductSet() {
       this.editedItem = {
         ...cloneDeep(CLEAR_PRODUCT_SET_FORM),
-        parent_id: this.set?.id || '',
+        parent_id: this.set?.id || null,
       }
       this.editedItemSlugPrefix = this.set?.slug || ''
       this.$nextTick(() => {

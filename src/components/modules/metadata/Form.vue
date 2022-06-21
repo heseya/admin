@@ -205,9 +205,7 @@ export default Vue.extend({
       }
     },
     parseMetadata(meta: MetadataUpdateDto): MetadataObject[] {
-      return Object.entries(meta).map(([key, value]) =>
-        this.parseMetadataKey(key, value as string | number | boolean | null),
-      )
+      return Object.entries(meta).map(([key, value]) => this.parseMetadataKey(key, value!))
     },
 
     isDeleted(meta: MetadataObject): boolean {

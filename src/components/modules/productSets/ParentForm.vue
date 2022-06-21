@@ -62,7 +62,7 @@ export default Vue.extend({
   computed: {
     bannedSetIds(): string[] {
       return this.set.id
-        ? [...(this.set.children_ids as string[]), this.set.id, this.set.parent_id as string]
+        ? [...(this.set.children_ids || []), this.set.id, this.set.parent_id as string]
         : []
     },
   },

@@ -16,9 +16,16 @@
       <draggable
         :value="products"
         :disabled="!$can($p.ProductSets.Edit)"
+        :options="{ filter: '.undragabble' }"
+        :move="checkMove"
         @change="reorderSetProducts"
       >
-        <div v-for="product in products" :key="product.id" class="set-product-item">
+        <div
+          v-for="product in products"
+          :key="product.id"
+          class="set-product-item"
+          :class="{ undragabble: product.unsaved }"
+        >
           <avatar color="#eee">
             <img
               v-if="product.cover"
@@ -117,7 +124,7 @@ export default Vue.extend({
   },
   data: () => ({
     isSelectorActive: false,
-    products: [] as Product[],
+    products: [] as (Product & { unsaved?: true })[],
   }),
   computed: {
     objectFit(): string {
@@ -134,10 +141,16 @@ export default Vue.extend({
       return formatCurrency(amount, this.$accessor.currency)
     },
     addProduct(product: Product) {
-      this.products.push(product)
+      this.products.push({ ...product, unsaved: true })
     },
     removeProduct(productId: UUID) {
       this.products = this.products.filter((product) => product.id !== productId)
+    },
+
+    checkMove(evt: any) {
+      const futureIndex = evt.draggedContext.futureIndex
+      const savedProductsLength = this.products.filter((product) => !product.unsaved).length
+      return futureIndex < savedProductsLength
     },
 
     async fetchProducts() {
@@ -226,6 +239,10 @@ export default Vue.extend({
   border-radius: 8px;
   transition: 0.3s;
   cursor: move;
+
+  &.undragabble {
+    cursor: not-allowed;
+  }
 
   &:hover {
     background-color: #f5f5f5;

@@ -1,3 +1,6 @@
+// TODO: Change to store-core cversion when consent permissions available
+//import { Permission, PERMISSIONS_TREE} from '@heseya/store-core'
+
 import { Permission } from '@/interfaces/Permissions'
 import { PERMISSIONS_TREE } from './permissions'
 

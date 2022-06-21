@@ -1,5 +1,6 @@
 import { accessor } from '@/store'
-import { AttributeOption, ProductAttribute } from '@/interfaces/Attribute'
+import { AttributeOption } from '@heseya/store-core'
+import { ProductAttribute } from '@/interfaces/Attribute'
 import { groupBy } from 'lodash'
 
 type SuccessfulOptionResult = { success: true; option: AttributeOption }

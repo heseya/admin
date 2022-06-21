@@ -86,6 +86,8 @@
 import Vue from 'vue'
 import Draggable from 'vuedraggable'
 import cloneDeep from 'lodash/cloneDeep'
+// TODO: Change to the correct type
+//import { SchemaOptionDto } from '@heseya/store-core'
 
 import Zone from '@/components/layout/Zone.vue'
 import Autocomplete from '@/components/Autocomplete.vue'

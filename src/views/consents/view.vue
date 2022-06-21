@@ -91,7 +91,9 @@ export default Vue.extend({
       return this.$accessor.consents.isLoading
     },
     isDisabled(): boolean {
-      return this.isNew ? !this.$can(this.$p.Consents.Add) : !this.$can(this.$p.Consents.Edit)
+      //TODO: Change back when consents permissions are available in store-core
+      //return this.isNew ? !this.$can(this.$p.Consents.Add) : !this.$can(this.$p.Consents.Edit)
+      return true
     },
   },
   watch: {

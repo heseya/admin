@@ -54,9 +54,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationProvider } from 'vee-validate'
-import { Address } from '@heseya/store-core'
+import { Address, ShippingCountry } from '@heseya/store-core'
 
-import { Country } from '@/interfaces/Country'
 import { api } from '@/api'
 
 export default Vue.extend({
@@ -71,7 +70,7 @@ export default Vue.extend({
     } as Vue.PropOptions<Address>,
   },
   data: () => ({
-    countries: [] as Country[],
+    countries: [] as ShippingCountry[],
   }),
   computed: {
     form: {
@@ -89,7 +88,7 @@ export default Vue.extend({
   async created() {
     const {
       data: { data: countries },
-    } = await api.get<{ data: Country[] }>('/countries')
+    } = await api.get<{ data: ShippingCountry[] }>('/countries')
     this.countries = countries
   },
 })

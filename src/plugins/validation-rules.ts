@@ -4,6 +4,8 @@ import v from 'validator'
 import { isNaN, isNumber } from 'lodash'
 import { isBefore, isSameDay } from 'date-fns'
 
+// TODO: Change to store-core version when available
+//import { ShippingMethodPriceRangeDto } from '@heseya/store-core
 import { ShippingMethodPriceRangeDTO } from '@/interfaces/ShippingMethod'
 
 import {

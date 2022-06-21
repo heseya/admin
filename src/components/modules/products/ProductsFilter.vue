@@ -100,6 +100,7 @@
 import Vue from 'vue'
 import debounce from 'lodash/debounce'
 import cloneDeep from 'lodash/cloneDeep'
+import { Attribute, AttributeType } from '@heseya/store-core'
 
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 import AttributeFilterInput from './AttributeFilterInput.vue'
@@ -108,7 +109,6 @@ import BooleanSelect from '@/components/form/BooleanSelect.vue'
 import { api } from '@/api'
 import { formatApiNotificationError } from '@/utils/errors'
 
-import { Attribute, AttributeType } from '@/interfaces/Attribute'
 import RangeInput from '@/components/form/RangeInput.vue'
 import AutocompleteInput from '@/components/AutocompleteInput.vue'
 

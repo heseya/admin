@@ -1,4 +1,4 @@
-import { Permission } from '@/interfaces/Permissions'
+import { Permission } from '@heseya/store-core'
 
 /**
  * Checks if the user has the permission to perform the action

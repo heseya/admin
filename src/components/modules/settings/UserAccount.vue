@@ -55,12 +55,11 @@
 import Vue from 'vue'
 import { cloneDeep } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
-import { User } from '@heseya/store-core'
+import { User, UserProfileUpdateDto } from '@heseya/store-core'
 
 import { formatApiNotificationError } from '@/utils/errors'
-import { UserProfileUpdateDTO } from '@/interfaces/User'
 
-const UPDATE_USER_PREFERENCES_FORM: UserProfileUpdateDTO = {
+const UPDATE_USER_PREFERENCES_FORM: UserProfileUpdateDto = {
   name: '',
   preferences: {
     successfull_login_attempt_alert: true,
@@ -81,22 +80,33 @@ export default Vue.extend({
     } as Vue.PropOptions<User>,
   },
   data: () => ({
-    form: {} as UserProfileUpdateDTO,
+    form: {} as UserProfileUpdateDto,
     isLoading: false,
   }),
   watch: {
     user(v: User) {
-      this.form = cloneDeep({ ...UPDATE_USER_PREFERENCES_FORM, ...v })
+      this.form = cloneDeep({
+        ...UPDATE_USER_PREFERENCES_FORM,
+        name: v.name,
+        preferences: v.preferences,
+      })
     },
   },
   created() {
-    this.form = cloneDeep({ ...UPDATE_USER_PREFERENCES_FORM, ...this.user })
+    this.form = cloneDeep({
+      ...UPDATE_USER_PREFERENCES_FORM,
+      name: this.user.name,
+      preferences: this.user.preferences,
+    })
   },
   methods: {
     async changePreferences() {
       try {
         this.isLoading = true
-        await this.$accessor.auth.updateUserProfile(this.form)
+        await this.$accessor.auth.updateUserProfile({
+          ...this.form,
+          name: this.form.name as string,
+        })
         this.$toast.success(this.$t('successMessage') as string)
       } catch (error: any) {
         this.$toast.error(formatApiNotificationError(error))

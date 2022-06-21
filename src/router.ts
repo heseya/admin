@@ -1,12 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import VueMeta from 'vue-meta'
-
-import { Permission } from './interfaces/Permissions'
+import { Permission, PERMISSIONS_TREE as Permissions } from '@heseya/store-core'
 
 import { accessor } from './store'
 import { hasAccess } from './utils/hasAccess'
-import { PERMISSIONS_TREE as Permissions } from './consts/permissions'
 
 Vue.use(VueRouter)
 Vue.use(VueMeta)
@@ -352,7 +350,8 @@ const router = new VueRouter({
       component: () => import('./views/consents/index.vue'),
       meta: {
         requiresAuth: true,
-        permissions: [Permissions.Consents.Show],
+        //TODO: Uncomment in next store-core version
+        //permissions: [Permissions.Consents.Show],
       },
     },
     {
@@ -362,7 +361,8 @@ const router = new VueRouter({
       meta: {
         returnUrl: '/settings/consents',
         requiresAuth: true,
-        permissions: [Permissions.Consents.Edit],
+        //TODO: Uncomment in next store-core version
+        //permissions: [Permissions.Consents.Edit],
       },
     },
     {

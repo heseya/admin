@@ -135,6 +135,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
+// TODO: Change to the store-core version when available
+//import { WebhookEntryUpdateDto, WebHookEventType, WebhookEventEntry } from '@heseya/store-core'
 
 import { WebHookDto, WebHookEvent, WebHookEventObject } from '@/interfaces/Webhook'
 

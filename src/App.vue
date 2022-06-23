@@ -17,9 +17,20 @@
   </div>
 </template>
 
+<i18n>
+{
+  "en": {
+    "noPermissionError": "You don't have permission to this action."
+  },
+  "pl": {
+    "noPermissionError": "Nie posiadasz uprawnień do tej akcji."
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
-import { first, isArray } from 'lodash'
+import { first } from 'lodash'
 import { init as initMicroApps, onMounted, openCommunicationChannel } from 'bout'
 
 import DesktopNavigation from './components/root/DesktopNavigation.vue'
@@ -62,7 +73,7 @@ export default Vue.extend({
   watch: {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     '$accessor.auth.permissionsError'(_permissionsError) {
-      this.$toast.error('Nie posiadasz uprawnień do tej akcji')
+      this.$toast.error(this.$t('noPermissionError') as string)
     },
 
     '$accessor.auth.getIdentityToken'(token) {
@@ -80,9 +91,6 @@ export default Vue.extend({
 
     // MicroFrontend Events Start
     onMounted(() => {
-      // ! deprecated: remove before 3.0.0
-      this.tokenChannel.emit('set', this.$accessor.auth.getIdentityToken)
-
       this.mainChannel.emit('init', {
         coreUrl: getApiURL(),
         token: this.$accessor.auth.getIdentityToken,
@@ -110,7 +118,7 @@ export default Vue.extend({
           await this.$accessor.auth.fetchProfile()
 
           const { next } = this.$route.query
-          const nextURL = (isArray(next) ? first(next) : next) || '/'
+          const nextURL = (Array.isArray(next) ? first(next) : next) || '/'
           this.$router.push(nextURL)
         }
       } else {

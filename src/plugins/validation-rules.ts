@@ -1,11 +1,17 @@
 import { extend } from 'vee-validate'
 import { required, email } from 'vee-validate/dist/rules'
 import v from 'validator'
+import { isNaN, isNumber } from 'lodash'
+import { isBefore, isSameDay } from 'date-fns'
 
 import { ShippingMethodPriceRangeDTO } from '@/interfaces/ShippingMethod'
 
-import { METADATA_NAME_REGEX, ONLY_LETTERS_REGEX, SLUG_REGEX } from '@/consts/regexes'
-import { isBefore } from 'date-fns'
+import {
+  METADATA_NAME_REGEX,
+  ONLY_LETTERS_REGEX,
+  SLUG_REGEX,
+  COUPON_CODE_REGEX,
+} from '@/consts/regexes'
 import i18n from '@/i18n'
 
 extend('required', {
@@ -38,6 +44,12 @@ extend('positive', {
     return value > 0
   },
 })
+extend('non-zero', {
+  message: () => i18n.t('validation.nonZero') as string,
+  validate: (value) => {
+    return value !== 0
+  },
+})
 extend('not-negative', {
   message: () => i18n.t('validation.notNegative') as string,
   validate: (value) => {
@@ -48,9 +60,14 @@ extend('not-negative', {
 extend('less-than', {
   params: ['target'],
   validate(value, { target }: Record<string, any>) {
-    return value <= target
+    const maxValue = isNumber(target) ? target : parseFloat(target)
+    return isNaN(maxValue) || value <= maxValue
   },
-  message: (_, v) => i18n.t('validation.lessThan', v) as string,
+  message: (_, props) => {
+    const value: string = props._target_ || props.target
+    const text = isNaN(Number(value)) ? (i18n.t('validation.lessThanFallback') as string) : value
+    return i18n.t('validation.lessThan', { target: text }) as string
+  },
 })
 
 extend('id-required', {
@@ -92,11 +109,58 @@ extend('metadata-name', {
   },
 })
 
+extend('coupon-code', {
+  message: () => i18n.t('validation.couponCode') as string,
+  validate: (value) => {
+    return COUPON_CODE_REGEX.test(value)
+  },
+})
+
+extend('responsive-media-valid', {
+  message: () => i18n.t('validation.responsiveMediaValid') as string,
+  validate: (value) => {
+    return (
+      Array.isArray(value) &&
+      value.length > 0 &&
+      value.every(({ media: list }) => Array.isArray(list) && list.length > 0)
+    )
+  },
+})
+
 extend('date-before', {
   message: () => i18n.t('validation.dateBefore') as string,
   params: ['target'],
   validate(date, { target }: Record<string, any>) {
     return target ? isBefore(new Date(date), new Date(target)) : true
+  },
+})
+
+extend('date-same-or-before', {
+  message: () => i18n.t('validation.dateBefore') as string,
+  params: ['target'],
+  validate(date, { target }: Record<string, any>) {
+    if (!target) return true
+
+    const current = new Date(date)
+    const targetDate = new Date(target)
+
+    return isBefore(current, targetDate) || isSameDay(current, targetDate)
+  },
+})
+
+extend('time-same-or-before', {
+  message: () => i18n.t('validation.timeBefore') as string,
+  params: ['target'],
+  validate(date, { target }: Record<string, any>) {
+    const [hour, minute, second] = (date as string).split(':').map((v) => parseInt(v))
+    const [targetHour, targetMinute, targetSecond] = (target as string)
+      .split(':')
+      .map((v) => parseInt(v))
+
+    if (hour < targetHour) return true
+    if (hour == targetHour && minute < targetMinute) return true
+    if (hour == targetHour && minute == targetMinute && second <= targetSecond) return true
+    return false
   },
 })
 

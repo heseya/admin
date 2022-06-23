@@ -10,7 +10,9 @@ import { getApiURL } from '@/utils/api'
 import { auth } from './auth'
 import { globalSeo } from './globalSeo'
 import { users } from './users'
+import { banners } from './banners'
 import { roles } from './roles'
+import { consents } from './consents'
 import { items } from './items'
 import { products } from './products'
 import { schemas } from './schemas'
@@ -24,10 +26,12 @@ import { settings } from './settings'
 import { authSessions } from './authSessions'
 import { apps } from './apps'
 import { webhooks } from './webhooks'
-import { discounts } from './discounts'
+import { coupons } from './coupons'
+import { sales } from './sales'
 import { tags } from './tags'
 import { productSets } from './productSets'
 import { attributes } from './attributes'
+import { menuItems } from './menuItems'
 
 Vue.use(Vuex)
 
@@ -55,7 +59,9 @@ const actions = actionTree(
   {
     async fetchEnv({ commit }) {
       // Fetch setting wtihout authorization, so it wont crash when auth is invalid
-      const { data } = await axios.get<Record<string, string>>(`${getApiURL()}/settings?array`)
+      const { data } = await axios.get<Record<string, string>>('/settings?array', {
+        baseURL: getApiURL(),
+      })
       commit('SET_ENV', data)
     },
     startLoading({ commit, state }) {
@@ -71,7 +77,9 @@ const storeModules = {
   auth,
   globalSeo,
   users,
+  banners,
   roles,
+  consents,
   items,
   schemas,
   products,
@@ -82,7 +90,8 @@ const storeModules = {
   paymentMethods,
   packageTemplates,
   settings,
-  discounts,
+  coupons,
+  sales,
   authSessions,
   apps,
   webhooks,
@@ -96,12 +105,12 @@ const storePattern = {
   getters,
   mutations,
   actions,
-  modules: storeModules,
+  modules: { ...storeModules, menuItems },
 }
 
 const store = new Vuex.Store({
   ...storePattern,
-  plugins: [new VuexPersistence({ modules: ['auth'] }).plugin],
+  plugins: [new VuexPersistence({ modules: ['auth', 'menuItems'] }).plugin],
 })
 
 export const accessor = useAccessor(store, storePattern)

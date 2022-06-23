@@ -84,7 +84,8 @@ export default Vue.extend({
 
     try {
       if (!token || !email) throw new Error('Token or email does not exist')
-      await api.get(`/users/reset-password?token=${token}&email=${email}`)
+      // This verifies token & email before showing the set password form
+      await api.get(`/users/reset-password/${token}/${email}`)
     } catch (e: any) {
       this.$toast.error(formatApiNotificationError(e))
       this.$router.replace('/login')
@@ -92,10 +93,12 @@ export default Vue.extend({
   },
   methods: {
     async changePassword() {
+      const { token, email } = this.$route.query as Record<string, string>
+
       this.$accessor.startLoading()
       const isSuccess = await this.$accessor.auth.resetPassword({
-        email: this.$route.query.email as string,
-        token: this.$route.query.token as string,
+        email,
+        token,
         password: this.password,
       })
       this.$accessor.stopLoading()

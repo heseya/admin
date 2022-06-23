@@ -34,7 +34,13 @@
         </div>
 
         <template #action>
-          <div class="attributes-configurator__delete-action">
+          <div class="attributes-configurator__actions">
+            <icon-button size="small" @click="copyAttribute(attribute)">
+              <template #icon>
+                <i class="bx bx-copy"></i>
+              </template>
+            </icon-button>
+
             <icon-button
               v-if="!disabled && !attribute.global"
               size="small"
@@ -65,13 +71,15 @@
     "title": "Attributes",
     "addAttribute": "Add attribute to product",
     "noAttributesInProduct": "This product has no attributes yet",
-    "globalTooltip": "Global attribute is automatically given to all products"
+    "globalTooltip": "Global attribute is automatically given to all products",
+    "copySuccess": "Attribute value has been copied!"
   },
   "pl": {
     "title": "Cechy",
     "addAttribute": "Dodaj cechę do produktu",
     "noAttributesInProduct": "Ten produkt nie ma jeszcze żadnej cechy",
-    "globalTooltip": "Globalna cecha jest automatycznie dodawana do wszystkich produktów"
+    "globalTooltip": "Globalna cecha jest automatycznie dodawana do wszystkich produktów",
+    "copySuccess": "Wartość cechy została skopiowana!"
   }
 }
 </i18n>
@@ -149,6 +157,15 @@ export default Vue.extend({
       this.attributes = this.attributes.filter((a) => a.id !== id)
     },
 
+    async copyAttribute(attribute: ProductAttribute) {
+      const stringToCopy = attribute.selected_options
+        .map((v) => v.value_date || v.value_number || v.name)
+        .join(', ')
+
+      await navigator.clipboard.writeText(stringToCopy)
+      this.$toast.info(this.$t('copySuccess') as string)
+    },
+
     getInputComponent(type: AttributeType): string {
       switch (type) {
         case AttributeType.Number:
@@ -176,10 +193,17 @@ export default Vue.extend({
     font-weight: 600;
   }
 
-  &__delete-action {
+  &__actions {
+    display: flex;
     width: 30px;
     margin-right: -12px;
     margin-left: 8px;
+    flex-direction: column;
+
+    @media ($viewport-10) {
+      width: 60px;
+      flex-direction: row;
+    }
   }
 
   .global-tooltip {

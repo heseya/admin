@@ -17,12 +17,18 @@ export enum AuditsPermission {
 }
 
 export enum AuthPermission {
-  Login = 'auth.login',
   Register = 'auth.register',
   PasswordReset = 'auth.password_reset',
   PasswordChange = 'auth.password_change',
   SessionsShow = 'auth.sessions.show',
   SessionsRevoke = 'auth.sessions.revoke',
+}
+
+export enum BannersPermission {
+  Show = 'banners.show',
+  Add = 'banners.add',
+  Edit = 'banners.edit',
+  Remove = 'banners.remove',
 }
 
 export enum ProductSetsPermission {
@@ -50,12 +56,19 @@ export enum DepositsPermission {
   Add = 'deposits.add',
 }
 
-export enum DiscountsPermission {
-  Show = 'discounts.show',
-  ShowDetails = 'discounts.show_details',
-  Add = 'discounts.add',
-  Edit = 'discounts.edit',
-  Remove = 'discounts.remove',
+export enum CouponsPermission {
+  Show = 'coupons.show',
+  ShowDetails = 'coupons.show_details',
+  Add = 'coupons.add',
+  Edit = 'coupons.edit',
+  Remove = 'coupons.remove',
+}
+
+export enum SalesPermission {
+  Show = 'sales.show',
+  Add = 'sales.add',
+  Edit = 'sales.edit',
+  Remove = 'sales.remove',
 }
 
 export enum ItemsPermission {
@@ -162,6 +175,13 @@ export enum RolesPermission {
   Add = 'roles.add',
   Edit = 'roles.edit',
   Remove = 'roles.remove',
+}
+
+export enum ConsentsPermission {
+  Show = 'consents.show',
+  Add = 'consents.add',
+  Edit = 'consents.edit',
+  Remove = 'consents.remove',
 }
 
 export enum SeoPermission {

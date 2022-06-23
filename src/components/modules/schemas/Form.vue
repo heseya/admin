@@ -45,7 +45,7 @@
         "
       />
     </div>
-    <div class="flex">
+    <div class="flex switches">
       <ValidatedSwitchInput
         v-model="form.hidden"
         :disabled="disabled"
@@ -420,6 +420,16 @@ export default Vue.extend({
   .used-schema {
     display: flex;
     justify-content: space-between;
+  }
+
+  .switch-input {
+    display: grid;
+    grid-auto-flow: column;
+    column-gap: 8px;
+  }
+
+  .switches {
+    margin: 8px 0;
   }
 }
 </style>

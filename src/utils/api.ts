@@ -13,7 +13,7 @@ export const getApiURL = () => {
     case '***REMOVED***.heseya.com':
       return 'https://store-api.***REMOVED***.pl'
     case '***REMOVED***':
-      return 'https://rc.***REMOVED***'
+      return 'https://release-2-2-0.***REMOVED***'
     case '***REMOVED***':
       return '***REMOVED***'
     case 'client-demo-admin.heseya.com':
@@ -22,10 +22,12 @@ export const getApiURL = () => {
       return 'https://client-2-demo.***REMOVED***'
     case 'client-3-demo-admin.heseya.com':
       return 'https://client-3-demo.***REMOVED***'
+    case 'client-demo-admin.heseya.pl':
+      return 'https://***REMOVED***.***REMOVED***'
     case '***REMOVED***':
       return '***REMOVED***'
-    case 'store-admin-git-feature-languages-***REMOVED***':
-      return 'https://sandbox.***REMOVED***'
+    case 'sandbox-admin.heseya.com':
+      return 'https://feature-sandbox.***REMOVED***'
     default:
       return import.meta.env.VITE_API_URL || '***REMOVED***'
   }

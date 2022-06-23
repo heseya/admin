@@ -2,7 +2,7 @@
   <img
     v-if="media.type === CdnMediaType.Photo"
     class="media-element media-element--media"
-    :src="`${media.url}?w=350&h=350`"
+    :src="`${media.url}?w=${size}&h=${size}`"
     :style="{ objectFit }"
   />
   <video
@@ -41,13 +41,17 @@ export default Vue.extend({
       type: Number,
       default: 350,
     },
+    fit: {
+      type: String,
+      default: undefined,
+    },
   },
   computed: {
     CdnMediaType(): typeof CdnMediaType {
       return CdnMediaType
     },
     objectFit(): string {
-      return +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'
+      return this.fit ?? +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'
     },
   },
 })

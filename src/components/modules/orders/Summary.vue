@@ -79,7 +79,7 @@ import Vue from 'vue'
 
 import Card from '@/components/layout/Card.vue'
 import SummaryPayment from './SummaryPayment.vue'
-import OrderField from './Field.vue'
+import OrderField from '../../Field.vue'
 import CmsTable from '@/components/cms/CmsTable.vue'
 
 import { Order } from '@/interfaces/Order'

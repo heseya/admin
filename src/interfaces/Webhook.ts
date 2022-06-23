@@ -3,9 +3,12 @@ import { UUID } from './UUID'
 
 export interface WebHookEventLogEntry {
   id: UUID
+  web_hook: WebHook
   triggered_at: string // ISO 8601
   url: string
   status_code: number
+  payload: string // json
+  response: string
 }
 
 export enum WebHookEvent {
@@ -50,4 +53,5 @@ export interface WebHookEventObject {
   key: WebHookEvent
   name: string
   description: string
+  encrypted: boolean
 }

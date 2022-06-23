@@ -97,7 +97,7 @@ export default Vue.extend({
         return
       }
 
-      this.$accessor.startLoading()
+      this.$emit('upload-start', files)
 
       files.forEach(async (rawFile) => {
         const { success, file, error } = await uploadMedia(rawFile)
@@ -107,8 +107,6 @@ export default Vue.extend({
           this.$emit('error', error)
         }
       })
-
-      this.$accessor.stopLoading()
     },
     isFileValid(file: File) {
       if (!file) return false
@@ -117,7 +115,7 @@ export default Vue.extend({
     },
     changeDrag(isDrag: boolean) {
       this.isDrag = isDrag
-      this.$emit('dragChange', isDrag)
+      this.$emit('drag-change', isDrag)
     },
   },
 })

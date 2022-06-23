@@ -128,12 +128,41 @@ const router = new VueRouter({
       },
     },
     {
-      path: '/discounts',
-      name: 'Discounts',
-      component: () => import('./views/discounts/index.vue'),
+      path: '/coupons',
+      name: 'Coupons',
+      component: () => import('./views/coupons/index.vue'),
       meta: {
         requiresAuth: true,
-        permissions: [Permissions.Discounts.Show],
+        permissions: [Permissions.Coupons.Show],
+      },
+    },
+    {
+      path: '/coupons/:id',
+      name: 'CouponsView',
+      component: () => import('./views/coupons/view.vue'),
+      meta: {
+        returnUrl: '/coupons',
+        requiresAuth: true,
+        permissions: [Permissions.Coupons.ShowDetails],
+      },
+    },
+    {
+      path: '/sales',
+      name: 'Sales',
+      component: () => import('./views/sales/index.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Sales.Show],
+      },
+    },
+    {
+      path: '/sales/:id',
+      name: 'SalesView',
+      component: () => import('./views/sales/view.vue'),
+      meta: {
+        returnUrl: '/sales',
+        requiresAuth: true,
+        permissions: [Permissions.Sales.Show],
       },
     },
     {
@@ -153,6 +182,25 @@ const router = new VueRouter({
         returnUrl: '/pages',
         requiresAuth: true,
         permissions: [Permissions.Pages.ShowDetails],
+      },
+    },
+    {
+      path: '/settings/banners',
+      name: 'Banners',
+      component: () => import('./views/banners/index.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Banners.Show],
+      },
+    },
+    {
+      path: '/settings/banners/:id',
+      name: 'BannersView',
+      component: () => import('./views/banners/view.vue'),
+      meta: {
+        returnUrl: '/settings/banners',
+        requiresAuth: true,
+        permissions: [Permissions.Banners.Show],
       },
     },
     {
@@ -299,6 +347,25 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/settings/consents',
+      name: 'Consents',
+      component: () => import('./views/consents/index.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Consents.Show],
+      },
+    },
+    {
+      path: '/settings/consents/:id',
+      name: 'ConsentsView',
+      component: () => import('./views/consents/view.vue'),
+      meta: {
+        returnUrl: '/settings/consents',
+        requiresAuth: true,
+        permissions: [Permissions.Consents.Edit],
+      },
+    },
+    {
       path: '/webhooks',
       name: 'WebHooks',
       component: () => import('./views/webhooks/index.vue'),
@@ -315,6 +382,14 @@ const router = new VueRouter({
         returnUrl: '/webhooks',
         requiresAuth: true,
         permissions: [Permissions.Webhooks.Show],
+      },
+    },
+    {
+      path: '/settings/menu',
+      name: 'Menu',
+      component: () => import('./views/menu/index.vue'),
+      meta: {
+        requiresAuth: true,
       },
     },
     // {

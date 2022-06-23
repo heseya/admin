@@ -2,6 +2,7 @@ image: node:16-buster
 
 stages:
   - test
+  - build
   - deploy
   - postdeploy
 
@@ -44,4 +45,22 @@ e2e:
       - cypress/screenshots/**/*.png
     expire_in: 1 day
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop" || $CI_COMMIT_BRANCH == "master"
+    - if: $CI_COMMIT_BRANCH == "develop"
+
+build-image-semiprod:
+  image: docker:latest
+  stage: build
+  script:
+    - cp .env_semi .env
+    - docker login -u $docker_login -p $docker_pass
+    - docker build -t escolasoft/***REMOVED***plstoreadmin:semiprod .
+    - docker push escolasoft/***REMOVED***plstoreadmin:semiprod
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+    DOCKER_HOST: tcp://docker:2375
+    VERSION: "1.5.6"
+  services:
+    -   name: docker:dind
+        alias: docker

@@ -83,6 +83,7 @@ export default Vue.extend({
       this.$accessor.startLoading()
       this.isSuccess = await this.$accessor.auth.requestResetPassword({
         email: this.email,
+        redirectUrl: `${window.location.origin}/new-password`,
       })
       this.$accessor.stopLoading()
     },

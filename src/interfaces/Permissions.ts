@@ -5,10 +5,11 @@ import {
   AppsPermission,
   AuthPermission,
   ProductSetsPermission,
+  ConsentsPermission,
   CountriesPermission,
   ShippingMethodsPermission,
   DepositsPermission,
-  DiscountsPermission,
+  CouponsPermission,
   ItemsPermission,
   SchemasPermission,
   CartPermission,
@@ -25,7 +26,9 @@ import {
   RolesPermission,
   SeoPermission,
   WebhooksPermission,
+  SalesPermission,
   AttributesPermission,
+  BannersPermission,
 } from '@/enums/permissions'
 
 export type Permission =
@@ -33,11 +36,14 @@ export type Permission =
   | AnalyticsPermission
   | AppsPermission
   | AuthPermission
+  | BannersPermission
+  | ConsentsPermission
   | ProductSetsPermission
   | CountriesPermission
   | ShippingMethodsPermission
   | DepositsPermission
-  | DiscountsPermission
+  | CouponsPermission
+  | SalesPermission
   | ItemsPermission
   | SchemasPermission
   | CartPermission

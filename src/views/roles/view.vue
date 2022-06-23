@@ -1,6 +1,6 @@
 <template>
   <div class="narrower-page">
-    <top-nav :title="!isNew ? role.name : 'Nowa rola'">
+    <top-nav :title="!isNew ? role.name : $t('newTitle')">
       <audits-modal :id="role.id" model="roles" />
       <pop-confirm
         v-if="!isNew"
@@ -104,7 +104,7 @@ export default Vue.extend({
       return this.id === 'create'
     },
     role(): Role {
-      return this.$accessor.roles.getSelected
+      return this.$accessor.roles.getSelected || ({} as any)
     },
     error(): any {
       return this.$accessor.roles.getError

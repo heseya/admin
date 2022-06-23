@@ -170,7 +170,7 @@ export default Vue.extend({
       return this.id === 'create'
     },
     page(): Page {
-      return this.$accessor.pages.getSelected
+      return this.$accessor.pages.getSelected || ({} as any)
     },
     error(): any {
       return this.$accessor.pages.getError
@@ -253,13 +253,16 @@ export default Vue.extend({
 .page__info {
   width: 100%;
   display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 30px 30px 20px;
+  grid-auto-flow: row;
   row-gap: 20px;
   margin-top: 15px;
 
   input {
     width: 100%;
+  }
+
+  .app-input {
+    margin-bottom: 0;
   }
 }
 

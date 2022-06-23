@@ -1,21 +1,26 @@
 <template>
   <nav class="nav" :class="{ 'nav--hidden': isHidden }">
     <nav-store-logo />
-
-    <template v-for="(item, i) in MENU_ITEMS">
-      <router-link
-        v-if="item.type === 'link'"
-        :key="i"
-        class="nav__link"
-        :to="item.to"
-        :exact="item.exact"
-      >
-        <InlineSvg class="nav-link-img" :src="`/img/${item.icon}`" />
-        <span class="nav__link-label">{{ $t(item.label) }}</span>
-      </router-link>
-
-      <div v-else-if="item.type === 'spacer'" :key="i" class="nav__spacer"></div>
-    </template>
+    <div class="nav__wrapper">
+      <template v-for="(item, i) in menu">
+        <router-link
+          v-if="item.type === MenuItemType.Link"
+          :key="i"
+          class="nav__link"
+          :to="item.to"
+          :exact="item.exact"
+        >
+          <InlineSvg
+            v-if="item.svgIconPath"
+            class="nav-link-img"
+            :src="require(`@/assets/images/${item.svgIconPath}`)"
+          />
+          <i v-else :class="item.iconClass" class="nav-link-svg" />
+          <span class="nav__link-label">{{ $t(item.label) }}</span>
+        </router-link>
+        <div v-else-if="item.type === MenuItemType.Spacer" :key="i" class="nav__spacer"></div>
+      </template>
+    </div>
 
     <powered-by class="nav__author" />
   </nav>
@@ -29,17 +34,20 @@ import InlineSvg from 'vue-inline-svg'
 import NavStoreLogo from './NavStoreLogo.vue'
 import PoweredBy from './PoweredBy.vue'
 
-import { MenuItem, MENU_ITEMS } from '@/consts/menuItems'
+import { MenuItem, MenuItemType } from '@/consts/menuItems'
 
 export default Vue.extend({
   name: 'DesktopNavigation',
   components: { NavStoreLogo, InlineSvg, PoweredBy },
   computed: {
+    MenuItemType(): typeof MenuItemType {
+      return MenuItemType
+    },
     isHidden(): boolean {
       return !!this.$route.meta?.hiddenNav || false
     },
-    MENU_ITEMS(): MenuItem[] {
-      return MENU_ITEMS
+    menu(): MenuItem[] {
+      return this.$accessor.menuItems.activeItems
     },
   },
 })
@@ -62,6 +70,11 @@ export default Vue.extend({
   align-items: flex-start;
   transition: 0.2s;
   transition-timing-function: ease-out;
+
+  &__wrapper {
+    width: 100%;
+    overflow-y: auto;
+  }
 
   &--hidden {
     transform: translateX(-100%);
@@ -90,9 +103,15 @@ export default Vue.extend({
       width: 18px;
       height: 18px;
       margin-right: 16px;
+      line-height: 21px;
       box-sizing: border-box;
       opacity: 0.5;
       transition: color 0.3s;
+    }
+
+    .nav-link-svg {
+      @extend .nav-link-img;
+      font-size: 18px;
     }
 
     &:hover {

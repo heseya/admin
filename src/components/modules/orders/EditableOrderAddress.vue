@@ -55,7 +55,7 @@ import { Address } from '@/interfaces/Address'
 
 import PopConfirm from '../../layout/PopConfirm.vue'
 import OrderAddress from './OrderAddress.vue'
-import Field from './Field.vue'
+import Field from '../../Field.vue'
 
 export default Vue.extend({
   name: 'Address',

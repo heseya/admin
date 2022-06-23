@@ -18,7 +18,7 @@
         >
           {{ shippingMethod.name }}
           <small v-if="shippingMethod.countries.length">
-            {{ shippingMethod.block_list ? $t('list.blockList') : $t('list.whiteList') }}
+            {{ shippingMethod.block_list ? $t('list.blockList') : $t('list.allowList') }}
             {{ shippingMethod.countries.map((c) => c.name).join(', ') }}
           </small>
           <small v-else>
@@ -85,7 +85,7 @@
     "list": {
       "allEnabled": "Metoda dostepna w każdym kraju",
       "allDisabled": "Metoda niedostepna w żadnym kraju",
-      "whiteList": "Tylko wybrane kraje:",
+      "allowList": "Tylko wybrane kraje:",
       "blockList": "Wszystkie kraje poza:"
     },
     "alerts": {
@@ -103,7 +103,7 @@
     "list": {
       "allEnabled": "Shipping method available in all countries",
       "allDisabled": "Shipping method unavailable in any country",
-      "whiteList": "Only selected countries:",
+      "allowList": "Only selected countries:",
       "blockList": "All countries except:"
     },
     "alerts": {

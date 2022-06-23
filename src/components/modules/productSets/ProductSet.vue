@@ -177,7 +177,7 @@ export default Vue.extend({
       return this.children.length < this.childrenQuantity
     },
     isFetchAllChildren(): boolean {
-      return this.$accessor.env.autoload_all_product_set_children === '1'
+      return this.$accessor.config.env.autoload_all_product_set_children === '1'
     },
   },
   created() {

@@ -68,6 +68,14 @@ export const MENU_ITEMS: MenuItem[] = [
     section: SettingsSection.Shop,
   },
   {
+    id: '5-2',
+    type: MenuItemType.Link,
+    to: '/settings/languages',
+    iconClass: 'bx bx-text',
+    label: 'models.languages',
+    section: SettingsSection.Shop,
+  },
+  {
     id: '6',
     type: MenuItemType.Link,
     to: '/settings/banners',

@@ -51,13 +51,6 @@ const mutations = mutationTree(state, {
 const actions = actionTree(
   { state, getters, mutations },
   {
-    async fetchEnv({ commit }) {
-      // Fetch setting wtihout authorization, so it wont crash when auth is invalid
-      const { data } = await axios.get<Record<string, string>>('/settings?array', {
-        baseURL: getApiURL(),
-      })
-      commit('SET_ENV', data)
-    },
     startLoading({ commit, state }) {
       if (!state.loading) commit('SET_LOADING', true)
     },

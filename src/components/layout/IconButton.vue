@@ -110,6 +110,7 @@ export default Vue.extend({
     transition: 0.3s;
     background-color: $background-color-700;
     margin-left: $inner-margin;
+    flex-shrink: 0;
 
     img {
       object-fit: contain;

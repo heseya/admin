@@ -1,6 +1,13 @@
 <template>
   <div :key="webhook.id" class="narrower-page">
     <top-nav :title="!isNew ? webhook.name : $t('newTitle')">
+      <icon-button v-if="!isNew" @click="toggleEventsModal">
+        <template #icon>
+          <i class="bx bx-list-ul"></i>
+        </template>
+        {{ $t('showLogs') }}
+      </icon-button>
+
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Webhooks.Remove"
@@ -26,6 +33,19 @@
         @submit="saveWebhook"
       />
     </card>
+
+    <a-modal
+      :visible="logsModalVisible"
+      width="750px"
+      :footer="null"
+      :title="$t('logs')"
+      @cancel="toggleEventsModal"
+    >
+      <template v-if="logs.length">
+        <Log v-for="log in logs" :key="log.id" :data="log" />
+      </template>
+      <span v-else>{{ $t('noLogs') }}</span>
+    </a-modal>
   </div>
 </template>
 
@@ -36,28 +56,35 @@
     "deleteText": "Czy na pewno chcesz usunąć ten webhook?",
     "deletedMessage": "Webhook został usunięty.",
     "createdMessage": "Webhook został zaktualizowany.",
-    "updatedMessage": "Webhook został utworzony."
+    "updatedMessage": "Webhook został utworzony.",
+    "showLogs": "Pokaż logi",
+    "logs": "Logi",
+    "noLogs": "Brak logów do wyświetlenia"
   },
   "en": {
     "newTitle": "New webhook",
     "deleteText": "Are you sure you want to delete this webhook?",
     "deletedMessage": "Webhook has been deleted.",
     "createdMessage": "Webhook has been created.",
-    "updatedMessage": "Webhook has been updated."
+    "updatedMessage": "Webhook has been updated.",
+    "showLogs": "Show logs",
+    "logs": "Logs",
+    "noLogs": "No logs to show"
   }
 }
 </i18n>
 
 <script lang="ts">
 import Vue from 'vue'
-import { cloneDeep } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 
-import { WebHook, WebHookDto } from '@/interfaces/Webhook'
+import { WebHook, WebHookDto, WebHookEventLogEntry } from '@/interfaces/Webhook'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import WebhookForm from '@/components/modules/webhooks/Form.vue'
+import Log from '@/components/modules/webhooks/Log.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 
@@ -82,9 +109,11 @@ export default Vue.extend({
     Card,
     WebhookForm,
     PopConfirm,
+    Log,
   },
   data: () => ({
     editedWebhook: cloneDeep(CLEAR_FORM),
+    logsModalVisible: false,
   }),
   computed: {
     id(): string {
@@ -99,6 +128,9 @@ export default Vue.extend({
     error(): any {
       return this.$accessor.webhooks.getError
     },
+    logs(): WebHookEventLogEntry[] {
+      return this.$accessor.webhooks.logs
+    },
   },
   watch: {
     error(error) {
@@ -110,11 +142,17 @@ export default Vue.extend({
       this.editedWebhook = cloneDeep(this.webhook)
     },
   },
+
   async created() {
     this.$accessor.startLoading()
 
-    // @ts-ignore // TODO: fix extended store actions typings
-    await this.$accessor.webhooks.fetchEvents()
+    await Promise.all([
+      // @ts-ignore TODO: fix extended store actions typings
+      this.$accessor.webhooks.fetchEvents(),
+      // @ts-ignore
+      this.$accessor.webhooks.fetchLogs({ web_hook_id: this.id }),
+    ])
+
     if (!this.isNew) await this.$accessor.webhooks.get(this.id)
 
     this.$accessor.stopLoading()
@@ -144,6 +182,9 @@ export default Vue.extend({
         this.$router.push('/webhooks')
       }
       this.$accessor.stopLoading()
+    },
+    toggleEventsModal() {
+      this.logsModalVisible = !this.logsModalVisible
     },
   },
 })

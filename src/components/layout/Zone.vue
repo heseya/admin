@@ -40,6 +40,7 @@ export default Vue.extend({
     align-items: center;
     margin-top: -4px;
     margin-bottom: 4px;
+    justify-content: space-between;
   }
 
   padding: 8px;

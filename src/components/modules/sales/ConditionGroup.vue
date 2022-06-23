@@ -115,8 +115,13 @@ export default Vue.extend({
 
   &__content {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     grid-gap: 8px;
+    margin-top: 8px;
+
+    @media ($viewport-5) {
+      grid-template-columns: 1fr 1fr;
+    }
   }
 }
 </style>

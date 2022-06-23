@@ -1,9 +1,9 @@
 <template>
   <div class="product-price">
     <component :is="tag" class="product-price__price">
-      {{ formatCurrency(product.min_price_discounted) }}
-      <template v-if="product.min_price_discounted !== product.max_price_discounted">
-        - {{ formatCurrency(product.max_price_discounted) }}
+      {{ formatCurrency(product.price_min) }}
+      <template v-if="product.price_min !== product.price_max">
+        - {{ formatCurrency(product.price_max) }}
       </template>
     </component>
 
@@ -12,9 +12,9 @@
       v-if="isDiscounted"
       class="product-price__price product-price__price--discounted"
     >
-      {{ formatCurrency(product.price_min) }}
-      <template v-if="product.price_min !== product.price_max">
-        - {{ formatCurrency(product.price_max) }}
+      {{ formatCurrency(product.price_min_initial) }}
+      <template v-if="product.price_min_initial !== product.price_max_initial">
+        - {{ formatCurrency(product.price_max_initial) }}
       </template>
     </component>
   </div>
@@ -40,8 +40,8 @@ export default Vue.extend({
   computed: {
     isDiscounted(): boolean {
       return (
-        this.product.max_price_discounted < this.product.price_max ||
-        this.product.min_price_discounted < this.product.price_min
+        this.product.price_max < this.product.price_max_initial ||
+        this.product.price_min < this.product.price_min_initial
       )
     },
   },

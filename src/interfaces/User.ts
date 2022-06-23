@@ -4,6 +4,7 @@ import { Permission } from './Permissions'
 import { Role } from './Role'
 import { Metadata } from './Metadata'
 import { Preferences } from './Preferences'
+import { UserConsent } from './Consent'
 
 export interface User {
   id: UUID
@@ -13,9 +14,10 @@ export interface User {
   is_tfa_active: boolean
   roles: Role[]
   permissions: Permission[]
+  preferences: Preferences
   metadata: Metadata
   metadata_private?: Metadata
-  preferences: Preferences
+  consents: UserConsent[]
 }
 
 export interface CreateUserDTO {
@@ -29,4 +31,9 @@ export interface EditUserDTO {
   name: string
   email: string
   roles: UUID[]
+}
+
+export interface UserProfileUpdateDTO {
+  name: string
+  preferences: Preferences
 }

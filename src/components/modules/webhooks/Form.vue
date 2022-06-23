@@ -100,7 +100,11 @@
       "title": "Sekretny token",
       "description": "Użyj tego tokena do sprawdzenia poprawności i autentyczności otrzymanego webhooka. Zostanie użyty do zahashowania (<code>sha256</code>) payloadu żądania, a następnie zostanie wysyłany wraz z żądaniem w nagłówku HTTP <code>Signature</code>."
     },
-    "events": "Wydarzenia wywołujące webhooka:"
+    "events": "Wydarzenia wywołujące webhooka:",
+    "error":{
+      "empty":"Musisz wybrać przynajmniej jedno wydarzenie",
+      "httpsRequired":"Protokół https jest wymagany, ponieważ conajmniej jedno z wybranych wydarzeń jest szyfrowane"
+    }
   },
   "en": {
     "httpsAlert": {
@@ -119,7 +123,11 @@
       "title": "Secret token",
       "description": "Use this token to verify the authenticity of the webhook. It will be used to hash the payload of the request (<code>sha256</code>), and then sent along with the request in the HTTP <code>Signature</code> header."
     },
-    "events": "Events triggering the webhook:"
+    "events": "Events triggering the webhook:",
+    "error":{
+      "empty":"You must select at least one event ",
+      "httpsRequired":"Https protocol is required because at least one of the selected events is encrypted"
+    }
   }
 }
 </i18n>
@@ -145,9 +153,6 @@ export default Vue.extend({
       default: false,
     },
   },
-  data: () => ({
-    error: null as string | null,
-  }),
   computed: {
     form: {
       get(): WebHookDto {
@@ -163,15 +168,19 @@ export default Vue.extend({
     hasHttps(): boolean {
       return this.form.url.startsWith('https://')
     },
-  },
-  watch: {
-    ['form.events'](events) {
-      this.error = events.length === 0 ? 'Musisz wybrać przynajmniej jedno wydarzenie' : null
+    error(): string | null {
+      if (!this.form.events.length) {
+        return `${this.$t('error.empty')}`
+      } else {
+        return this.form.events.some((event) => this.isEncrypted(event)) && !this.hasHttps
+          ? `${this.$t('error.httpsRequired')}`
+          : null
+      }
     },
   },
   methods: {
     submit() {
-      if (this.form.events.length === 0) return
+      if (this.error) return
       this.$emit('submit', this.form)
     },
     toggle(key: WebHookEvent) {
@@ -181,9 +190,11 @@ export default Vue.extend({
         this.form.events.push(key)
       }
     },
-
     has(key: WebHookEvent) {
       return this.form.events.includes(key)
+    },
+    isEncrypted(key: WebHookEvent) {
+      return this.allEvents.find((event) => event.key === key)?.encrypted
     },
   },
 })
@@ -197,8 +208,9 @@ export default Vue.extend({
   }
 
   &__switches {
-    display: flex;
-    justify-content: space-around;
+    display: grid;
+    grid-auto-flow: column;
+    gap: 8px;
   }
 
   &__events {

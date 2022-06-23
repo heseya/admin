@@ -53,7 +53,7 @@ import Vue from 'vue'
 
 import PopConfirm from '../../layout/PopConfirm.vue'
 import OrderAddress from './OrderAddress.vue'
-import Field from './Field.vue'
+import Field from '../../Field.vue'
 
 import { Address } from '@/interfaces/Address'
 import { Order } from '@/interfaces/Order'

@@ -25,7 +25,7 @@
         <card>
           <validated-input
             v-model="form.code"
-            rules="required"
+            rules="required|coupon-code"
             :label="$t('formCode')"
             :disabled="!canModify"
           />
@@ -33,6 +33,24 @@
           <hr />
 
           <SaleForm v-model="form" :disabled="!canModify" />
+          <hr />
+
+          <template v-if="!isNew">
+            <MetadataForm
+              ref="publicMeta"
+              :value="coupon.metadata"
+              :disabled="!canModify"
+              model="coupons"
+            />
+            <MetadataForm
+              v-if="coupon.metadata_private"
+              ref="privateMeta"
+              :value="coupon.metadata_private"
+              :disabled="!canModify"
+              is-private
+              model="coupons"
+            />
+          </template>
 
           <hr />
           <app-button v-if="canModify" @click="handleSubmit(save)">
@@ -78,6 +96,7 @@ import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import SaleForm from '@/components/modules/sales/Form.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
+import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import {
@@ -107,7 +126,7 @@ const EMPTY_COUPON_FORM: CouponFormDto = {
 }
 
 export default Vue.extend({
-  components: { ValidationObserver, TopNav, Card, PopConfirm, SaleForm },
+  components: { ValidationObserver, TopNav, Card, PopConfirm, SaleForm, MetadataForm },
   data: () => ({
     form: cloneDeep(EMPTY_COUPON_FORM) as CouponFormDto,
   }),
@@ -119,7 +138,7 @@ export default Vue.extend({
       return this.id === 'create'
     },
     coupon(): Coupon {
-      return this.$accessor.coupons.getSelected
+      return this.$accessor.coupons.getSelected || ({} as any)
     },
     error(): any {
       return this.$accessor.coupons.getError
@@ -163,6 +182,9 @@ export default Vue.extend({
           this.$router.push(`/coupons/${coupon.id}`)
         }
       } else {
+        // Metadata can be saved only after product is created
+        await this.saveMetadata(this.id)
+
         const success = await this.$accessor.coupons.update({
           id: this.id,
           item: dto,
@@ -182,6 +204,13 @@ export default Vue.extend({
         this.$router.push('/coupons')
       }
       this.$accessor.stopLoading()
+    },
+
+    async saveMetadata(id: string) {
+      await Promise.all([
+        (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id),
+        (this.$refs.publicMeta as MetadataRef)?.saveMetadata(id),
+      ])
     },
   },
 })

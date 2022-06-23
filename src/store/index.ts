@@ -12,6 +12,7 @@ import { globalSeo } from './globalSeo'
 import { users } from './users'
 import { banners } from './banners'
 import { roles } from './roles'
+import { consents } from './consents'
 import { items } from './items'
 import { products } from './products'
 import { schemas } from './schemas'
@@ -30,6 +31,7 @@ import { sales } from './sales'
 import { tags } from './tags'
 import { productSets } from './productSets'
 import { attributes } from './attributes'
+import { menuItems } from './menuItems'
 
 Vue.use(Vuex)
 
@@ -77,6 +79,7 @@ const storeModules = {
   users,
   banners,
   roles,
+  consents,
   items,
   schemas,
   products,
@@ -102,12 +105,12 @@ const storePattern = {
   getters,
   mutations,
   actions,
-  modules: storeModules,
+  modules: { ...storeModules, menuItems },
 }
 
 const store = new Vuex.Store({
   ...storePattern,
-  plugins: [new VuexPersistence({ modules: ['auth'] }).plugin],
+  plugins: [new VuexPersistence({ modules: ['auth', 'menuItems'] }).plugin],
 })
 
 export const accessor = useAccessor(store, storePattern)

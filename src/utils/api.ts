@@ -22,6 +22,8 @@ export const getApiURL = () => {
       return 'https://client-2-demo.***REMOVED***'
     case 'client-3-demo-admin.heseya.com':
       return 'https://client-3-demo.***REMOVED***'
+    case 'client-demo-admin.heseya.pl':
+      return 'https://***REMOVED***.***REMOVED***'
     case '***REMOVED***':
       return '***REMOVED***'
     case 'sandbox-admin.heseya.com':

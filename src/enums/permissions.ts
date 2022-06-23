@@ -17,7 +17,6 @@ export enum AuditsPermission {
 }
 
 export enum AuthPermission {
-  Login = 'auth.login',
   Register = 'auth.register',
   PasswordReset = 'auth.password_reset',
   PasswordChange = 'auth.password_change',
@@ -176,6 +175,13 @@ export enum RolesPermission {
   Add = 'roles.add',
   Edit = 'roles.edit',
   Remove = 'roles.remove',
+}
+
+export enum ConsentsPermission {
+  Show = 'consents.show',
+  Add = 'consents.add',
+  Edit = 'consents.edit',
+  Remove = 'consents.remove',
 }
 
 export enum SeoPermission {

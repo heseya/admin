@@ -6,22 +6,32 @@ import { UUID } from './UUID'
 export interface Banner {
   id: UUID
   slug: string
-  url: string
   name: string
   active: boolean
-  responsive_media: ResponsiveMedia[]
+  banner_media: BannerMedia[]
   metadata: Metadata
   metadata_private?: Metadata
 }
 
-export type ResponsiveMedia = { min_screen_width: number; media: CdnMedia }[]
+export interface BannerMedia {
+  id: UUID
+  order: number
+  url: string | null
+  title: string | null
+  subtitle: string | null
+  media: { min_screen_width: number; media: CdnMedia }[]
+}
 
 export interface BannerDto {
   slug: string
-  url: string
   name: string
   active: boolean
-  responsive_media: ResponsiveMediaDto[]
+  banner_media: BannerMediaDto[]
 }
 
-export type ResponsiveMediaDto = { min_screen_width: number; media: UUID }[]
+export interface BannerMediaDto {
+  url: string | null
+  title: string | null
+  subtitle: string | null
+  media: { min_screen_width: number; media: UUID }[]
+}

@@ -90,26 +90,20 @@
                   name="price"
                   :disabled="!canModify"
                 />
+
+                <validated-input
+                  v-model="form.vat_rate"
+                  rules="not-negative|less-than:100"
+                  type="number"
+                  :label="$t('form.vatRate')"
+                  name="vat_rate"
+                  :disabled="!canModify"
+                />
               </div>
 
               <div>
-                <validation-provider v-slot="{ errors }">
-                  <app-select
-                    v-model="form.sets"
-                    :placeholder="$t('form.setsPlaceholder')"
-                    mode="multiple"
-                    name="sets"
-                    :label="$t('form.sets')"
-                    option-filter-prop="label"
-                    :disabled="!canModify"
-                  >
-                    <a-select-option v-for="set in productSets" :key="set.id" :label="set.name">
-                      <i v-if="!set.public" class="bx bx-lock"></i>
-                      {{ set.name }}&nbsp;<small>(/{{ set.slug }})</small>
-                    </a-select-option>
-                    <template #message-danger>{{ errors[0] }}</template>
-                  </app-select>
-                </validation-provider>
+                <product-set-select v-model="form.sets" :product="product" />
+
                 <validated-input
                   v-model="form.quantity_step"
                   rules="required"
@@ -144,6 +138,12 @@
 
               <div class="wide">
                 <tags-select v-model="form.tags" :disabled="!canModify" />
+              </div>
+              <div class="wide">
+                <google-category-select
+                  v-model="form.google_product_category"
+                  :disabled="!canModify"
+                />
               </div>
 
               <div class="wide">
@@ -216,8 +216,7 @@
     "form": {
       "public": "Widoczność produktu",
       "price": "Cena",
-      "sets": "Kolekcje",
-      "setsPlaceholder": "Wybierz kolekcje",
+      "vatRate": "Stawka VAT (%)",
       "quantityStep": "Format ilości",
       "shortDescription": "Krótki opis",
       "order": "Priorytet sortowania",
@@ -240,8 +239,7 @@
     "form": {
       "public": "Product visibility",
       "price": "Price",
-      "sets": "Sets",
-      "setsPlaceholder": "Select sets",
+      "vatRate": "VAT rate (%)",
       "quantityStep": "Quantity format",
       "shortDescription": "Short description",
       "order": "Sort priority",
@@ -263,7 +261,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { ValidationProvider, ValidationObserver } from 'vee-validate'
+import { ValidationObserver } from 'vee-validate'
 import cloneDeep from 'lodash/cloneDeep'
 
 import TopNav from '@/components/layout/TopNav.vue'
@@ -279,6 +277,9 @@ import SwitchInput from '@/components/form/SwitchInput.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 import Textarea from '@/components/form/Textarea.vue'
 import AttributesConfigurator from '@/components/modules/attributes/configurator/Configurator.vue'
+import WarehouseItemsConfigurator from '@/components/modules/products/WarehouseItemsConfigurator.vue'
+import GoogleCategorySelect from '@/components/modules/products/GoogleCategorySelect.vue'
+import ProductSetSelect from '@/components/modules/products/ProductSetSelect.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { generateSlug } from '@/utils/generateSlug'
@@ -286,8 +287,6 @@ import { updateProductAttributeOptions } from '@/services/updateProductAttribute
 
 import { UUID } from '@/interfaces/UUID'
 import { Product, ProductDTO, ProductComponentForm } from '@/interfaces/Product'
-import { ProductSet } from '@/interfaces/ProductSet'
-import WarehouseItemsConfigurator from '@/components/modules/products/WarehouseItemsConfigurator.vue'
 
 const EMPTY_FORM: ProductComponentForm = {
   id: '',
@@ -296,6 +295,8 @@ const EMPTY_FORM: ProductComponentForm = {
   price: 0,
   description_html: '',
   description_short: '',
+  vat_rate: 0,
+  google_product_category: null,
   public: true,
   sets: [],
   quantity_step: 1,
@@ -320,7 +321,6 @@ export default Vue.extend({
     Gallery,
     Card,
     PopConfirm,
-    ValidationProvider,
     ValidationObserver,
     SchemaConfigurator,
     RichEditor,
@@ -332,6 +332,8 @@ export default Vue.extend({
     MetadataForm,
     AttributesConfigurator,
     WarehouseItemsConfigurator,
+    GoogleCategorySelect,
+    ProductSetSelect,
   },
   data: () => ({
     form: cloneDeep(EMPTY_FORM),
@@ -347,10 +349,7 @@ export default Vue.extend({
       return this.id === 'create'
     },
     product(): Product {
-      return this.$accessor.products.getSelected
-    },
-    productSets(): ProductSet[] {
-      return this.$accessor.productSets.getData
+      return this.$accessor.products.getSelected || ({} as any)
     },
     error(): any {
       // @ts-ignore // TODO: fix extended store getters typings
@@ -383,7 +382,6 @@ export default Vue.extend({
   },
   async created() {
     this.$accessor.startLoading()
-    this.$accessor.productSets.fetch({ tree: undefined })
     await this.fetch()
     this.$accessor.stopLoading()
   },
@@ -473,6 +471,14 @@ export default Vue.extend({
 
 <style lang="scss">
 .product {
+  & > * {
+    &:not(:first-child) {
+      @media ($max-viewport-11) {
+        margin-top: 8px;
+      }
+    }
+  }
+
   &__info {
     input {
       width: 100%;

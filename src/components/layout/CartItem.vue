@@ -97,7 +97,7 @@ import Vue from 'vue'
 
 import { OrderProduct } from '@/interfaces/OrderProduct'
 import { formatCurrency } from '@/utils/currency'
-import Field from '../modules/orders/Field.vue'
+import Field from '../Field.vue'
 import InfoTooltip from './InfoTooltip.vue'
 import OrderDiscountSummary from '../modules/orders/OrderDiscountSummary.vue'
 
@@ -156,6 +156,10 @@ export default Vue.extend({
     align-items: flex-start;
     grid-column: 1/-1;
 
+    @media ($max-viewport-8) {
+      margin-bottom: 8px;
+    }
+
     @media ($viewport-8) {
       grid-column: 1/2;
     }
@@ -209,7 +213,6 @@ export default Vue.extend({
   &__value {
     width: 100%;
     display: flex;
-    justify-content: center;
     align-items: center;
     white-space: nowrap;
     text-align: center;
@@ -227,12 +230,19 @@ export default Vue.extend({
 
   .order-field {
     padding: 3px;
+
+    @media ($viewport-8) {
+      justify-content: center;
+
+      &:last-of-type {
+        justify-content: end;
+      }
+    }
   }
 
   .order-field__label {
     display: block;
     width: 100%;
-    text-align: center;
   }
 
   @media ($viewport-8) {

@@ -83,6 +83,9 @@ export default Vue.extend({
     color: $gray-color-500;
     margin-top: 4px;
     margin-bottom: -4px;
+    height: 30px;
+    display: flex;
+    align-items: center;
   }
 
   &__error {

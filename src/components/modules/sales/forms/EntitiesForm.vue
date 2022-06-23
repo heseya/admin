@@ -4,7 +4,7 @@
       v-if="type === DiscountConditionType.UserInRole"
       v-model="form.roles"
       :label="$t('form.roles')"
-      model="roles"
+      model-url="roles"
       :disabled="disabled"
       :rules="{ required: form.is_allow_list }"
     />
@@ -12,7 +12,7 @@
       v-else-if="type === DiscountConditionType.UserIn"
       v-model="form.users"
       :label="$t('form.users')"
-      model="users"
+      model-url="users"
       :disabled="disabled"
       :rules="{ required: form.is_allow_list }"
     />
@@ -20,7 +20,7 @@
       v-else-if="type === DiscountConditionType.ProductIn"
       v-model="form.products"
       :label="$t('form.products')"
-      model="products"
+      model-url="products"
       :disabled="disabled"
       :rules="{ required: form.is_allow_list }"
     />
@@ -28,7 +28,7 @@
       v-else-if="type === DiscountConditionType.ProductInSet"
       v-model="form.product_sets"
       :label="$t('form.product_sets')"
-      model="productSets"
+      model-url="product-sets"
       :disabled="disabled"
       :rules="{ required: form.is_allow_list }"
     />

@@ -40,6 +40,24 @@
       <i class="bx bxs-check-circle"></i>
       {{ $t('sendPackage.existing', { number: shippingNumber }) }}
     </small>
+    <span class="order-title send-package__title send-package__title--shipping">{{
+      $t('setShippingNumber.title')
+    }}</span>
+    <div class="send-package__content">
+      <app-input
+        v-model="packageShippingNumber"
+        class="send-package__input"
+        :placeholder="$t('setShippingNumber.templatePlaceholder')"
+      />
+      <app-button
+        type="primary"
+        size="small"
+        class="send-package__btn send-package__btn--shipping"
+        @click="setShippingNumber"
+      >
+        {{ $t('setShippingNumber.save') }}
+      </app-button>
+    </div>
   </div>
 </template>
 
@@ -54,6 +72,14 @@
       "create": "Kontynuuj",
       "created": "Przesyłka została utworzona",
       "existing": "Przesyłka została już zamówiona (Numer śledzenia: {number})"
+    },
+    "setShippingNumber": {
+      "title": "Numer przesyłki",
+      "templatePlaceholder": "-- Wpisz numer przesyłki --",
+      "save": "Zapisz",
+      "sameAsBefore": "Podany numer przesyłki nie różni się od obecnego",
+      "changed": "Numer przesyłki został zmieniony",
+      "cantChange": "Nie można zmienić numeru przesyłki"
     }
   },
   "en": {
@@ -65,6 +91,14 @@
       "create": "Continue",
       "created": "Package was created",
       "existing": "Package was already ordered (Tracking number: {number})"
+    },
+    "setShippingNumber": {
+      "title": "Shipping number",
+      "templatePlaceholder": "-- Enter shipping number --",
+      "save": "Save",
+      "sameAsBefore": "Given shipping number doesn't differ from the present one",
+      "changed": "Shipping number was changed",
+      "cantChange": "Can't change shipping number"
     }
   }
 }
@@ -94,6 +128,7 @@ export default Vue.extend({
   },
   data: () => ({
     packageTemplateId: undefined as string | undefined,
+    packageShippingNumber: undefined as string | undefined,
     providerKey: 'dpd',
   }),
   computed: {
@@ -114,13 +149,47 @@ export default Vue.extend({
       return this.$accessor.env.show_legacy_furgonetka === '1'
     },
   },
+
+  watch: {
+    shippingNumber() {
+      this.packageShippingNumber = this.shippingNumber || ''
+    },
+  },
+
   created() {
     this.$accessor.packageTemplates.fetch()
     this.providerKey =
       this.PROVIDERS.find(({ key }) => this.shippingMethod.toLowerCase().includes(key))?.key ||
       'dpd'
   },
+
+  mounted() {
+    this.packageShippingNumber = this.shippingNumber || ''
+  },
+
   methods: {
+    async setShippingNumber() {
+      if (typeof this.packageShippingNumber === 'undefined') return
+      if (!this.packageShippingNumber.trim().length) return
+      if (this.packageShippingNumber.trim() === this.shippingNumber) {
+        this.$toast.warning(this.$t('setShippingNumber.sameAsBefore') as string)
+        return
+      }
+      this.$accessor.startLoading()
+      const res = this.$accessor.orders.update({
+        id: this.orderId,
+        item: { shipping_number: this.packageShippingNumber },
+      })
+
+      if (Boolean(res)) {
+        this.$toast.success(this.$t('setShippingNumber.changed') as string)
+      } else {
+        this.$toast.error(this.$t('setShippingNumber.cantChange') as string)
+      }
+
+      this.$accessor.stopLoading()
+    },
+
     async createPackage() {
       if (!this.packageTemplateId) return
       this.$accessor.startLoading()
@@ -130,7 +199,7 @@ export default Vue.extend({
 
       if (res.success) {
         this.$emit('created', res.shippingNumber)
-        this.$toast.success('Przesyłka utworzona poprawnie')
+        this.$toast.success(this.$t('sendPackage.created') as string)
       } else {
         this.$toast.error(formatApiNotificationError(res.error))
       }
@@ -145,6 +214,10 @@ export default Vue.extend({
 .send-package {
   &__title {
     margin-bottom: 8px;
+
+    &--shipping {
+      margin-top: 8px;
+    }
   }
 
   &__selects {
@@ -153,6 +226,14 @@ export default Vue.extend({
 
   &__btn {
     margin-bottom: 8px;
+
+    &--shipping {
+      margin: 8px 0 0;
+
+      @media ($viewport-10) {
+        margin-top: 0;
+      }
+    }
   }
 
   &__content {
@@ -167,6 +248,14 @@ export default Vue.extend({
         margin-right: 8px;
       }
     }
+
+    &--shipping {
+      margin-top: 8px;
+    }
+  }
+
+  &__input {
+    margin-bottom: 0;
   }
 }
 </style>

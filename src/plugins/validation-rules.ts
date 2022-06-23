@@ -1,12 +1,17 @@
 import { extend } from 'vee-validate'
 import { required, email } from 'vee-validate/dist/rules'
 import v from 'validator'
-import { isArray, isNaN, isNumber } from 'lodash'
+import { isNaN, isNumber } from 'lodash'
 import { isBefore, isSameDay } from 'date-fns'
 
 import { ShippingMethodPriceRangeDTO } from '@/interfaces/ShippingMethod'
 
-import { METADATA_NAME_REGEX, ONLY_LETTERS_REGEX, SLUG_REGEX } from '@/consts/regexes'
+import {
+  METADATA_NAME_REGEX,
+  ONLY_LETTERS_REGEX,
+  SLUG_REGEX,
+  COUPON_CODE_REGEX,
+} from '@/consts/regexes'
 import i18n from '@/i18n'
 import { AddressDto } from '@/interfaces/Address'
 
@@ -38,6 +43,12 @@ extend('positive', {
   message: () => i18n.t('validation.positive') as string,
   validate: (value) => {
     return value > 0
+  },
+})
+extend('non-zero', {
+  message: () => i18n.t('validation.nonZero') as string,
+  validate: (value) => {
+    return value !== 0
   },
 })
 extend('not-negative', {
@@ -99,11 +110,20 @@ extend('metadata-name', {
   },
 })
 
+extend('coupon-code', {
+  message: () => i18n.t('validation.couponCode') as string,
+  validate: (value) => {
+    return COUPON_CODE_REGEX.test(value)
+  },
+})
+
 extend('responsive-media-valid', {
   message: () => i18n.t('validation.responsiveMediaValid') as string,
   validate: (value) => {
     return (
-      isArray(value) && value.length > 0 && value.every((list) => isArray(list) && list.length > 0)
+      Array.isArray(value) &&
+      value.length > 0 &&
+      value.every(({ media: list }) => Array.isArray(list) && list.length > 0)
     )
   },
 })

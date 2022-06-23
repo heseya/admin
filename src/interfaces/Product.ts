@@ -20,13 +20,15 @@ export interface Product {
   name: string
   slug: string
   price: number
-  price_min: number
   price_max: number
-  min_price_discounted: number
-  max_price_discounted: number
+  price_min: number
+  price_max_initial: number
+  price_min_initial: number
   sales: Sale[]
   description_html: string
   description_short: string
+  vat_rate: number
+  google_product_category: null | number
   public: boolean
   visible: boolean
   quantity_step: number
@@ -52,6 +54,8 @@ export interface ProductDTO {
   price: number
   description_html: string
   description_short: string
+  vat_rate?: number
+  google_product_category: null | number
   public: boolean
   quantity_step: number
   order: number | null
@@ -78,8 +82,8 @@ export interface ProductComponentForm
     | 'visible'
     | 'price_min'
     | 'price_max'
-    | 'min_price_discounted'
-    | 'max_price_discounted'
+    | 'price_max_initial'
+    | 'price_min_initial'
     | 'sales'
     | 'metadata_private'
     | 'metadata'
@@ -87,14 +91,3 @@ export interface ProductComponentForm
   id?: UUID
   sets: UUID[]
 }
-
-export interface ProductItem {
-  id: UUID
-  name: string
-  sku: string
-  quantity: number
-  metadata: Metadata
-  metadata_private?: Metadata
-}
-
-export type ProductItemDto = Omit<ProductItem, 'id' | 'metadata' | 'metadata_private'>

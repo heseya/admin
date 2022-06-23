@@ -1,6 +1,6 @@
 <template>
   <validation-observer v-slot="{ handleSubmit }">
-    <card>
+    <card class="banners-page">
       <div class="row">
         <validated-input
           v-model="form.name"
@@ -24,16 +24,8 @@
         </switch-input>
       </div>
 
-      <validated-input v-model="form.url" :disabled="disabled" rules="required">
-        <template #label>
-          {{ $t('form.link') }}
-          <info-tooltip> {{ $t('form.linkTooltip') }}</info-tooltip>
-        </template>
-      </validated-input>
-      <br />
-
       <validation-provider v-slot="{ errors }" rules="responsive-media-valid|required">
-        <ResponsiveMediaForm ref="mediaForm" v-model="form.responsive_media" :disabled="disabled" />
+        <BannerMediaForm ref="mediaForm" v-model="form.banner_media" :disabled="disabled" />
         <a-alert v-if="errors.length" type="error" show-icon :message="errors[0]" />
       </validation-provider>
 
@@ -53,8 +45,6 @@
     "form": {
       "slug": "Identifier",
       "slugTooltip": "The identifier is used by applications to place banners appropriately on the page",
-      "link": "Redirection url",
-      "linkTooltip": "Addres to which banner will redirect after clicking, can be absolute or relative",
       "active": "Active"
     }
   },
@@ -62,8 +52,6 @@
     "form": {
       "slug": "Identyfikator",
       "slugTooltip": "Identyfikator służy aplikacjom do odpowiedniego rozmieszczenia banerów na stronie",
-      "link": "Adres przekierowania",
-      "linkTooltip": "Adres do którego banner przekieruje po kliknięciu, może być absolutny lub relatywny",
       "active": "Aktywny"
     }
   }
@@ -75,13 +63,13 @@ import Vue from 'vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 
 import Card from '@/components/layout/Card.vue'
-import ResponsiveMediaForm from './ResponsiveMediaForm.vue'
+import BannerMediaForm from './BannerMediaForm.vue'
 
 import { Banner } from '@/interfaces/Banner'
 import { generateSlug } from '@/utils/generateSlug'
 
 export default Vue.extend({
-  components: { ValidationObserver, ValidationProvider, Card, ResponsiveMediaForm },
+  components: { ValidationObserver, ValidationProvider, Card, BannerMediaForm },
   props: {
     value: {
       type: Object,
@@ -124,5 +112,13 @@ export default Vue.extend({
 .row {
   display: flex;
   gap: 16px;
+}
+
+.banners-page {
+  .row {
+    @media ($max-viewport-6) {
+      flex-wrap: wrap;
+    }
+  }
 }
 </style>

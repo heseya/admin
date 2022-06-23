@@ -74,9 +74,8 @@ const CLEAN_FORM: Banner = {
   id: '',
   name: '',
   slug: '',
-  url: '',
   active: true,
-  responsive_media: [],
+  banner_media: [],
   metadata: {},
   metadata_private: {},
 }
@@ -106,7 +105,7 @@ export default Vue.extend({
       return this.id === 'create'
     },
     banner(): Banner {
-      return this.$accessor.banners.getSelected
+      return this.$accessor.banners.getSelected || ({} as any)
     },
     error(): any {
       return this.$accessor.banners.getError
@@ -150,9 +149,13 @@ export default Vue.extend({
 
       const form: BannerDto = {
         ...this.form,
-        responsive_media: this.form.responsive_media.map((media) =>
-          media.map((item) => ({ ...item, media: item.media.id })),
-        ),
+        banner_media: this.form.banner_media.map((banner) => ({
+          ...banner,
+          media: banner.media.map((item) => ({
+            ...item,
+            media: item.media.id,
+          })),
+        })),
       }
 
       const banner = this.isNew

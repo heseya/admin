@@ -6,7 +6,7 @@
       </slot>
       <slot name="labelSuffix"></slot>
     </span>
-    <div class="order-field__value">
+    <div class="order-field__value" :data-cy="dataCy">
       <slot>{{ value }}</slot>
     </div>
   </div>
@@ -28,6 +28,10 @@ export default Vue.extend({
       type: Boolean,
       default: false,
     },
+    dataCy: {
+      type: String,
+      default: undefined,
+    },
   },
 })
 </script>
@@ -36,6 +40,9 @@ export default Vue.extend({
 .order-field {
   padding: 4px 12px;
   position: relative;
+  display: grid;
+  grid-auto-flow: row;
+  justify-content: flex-start;
 
   &__label {
     display: flex;

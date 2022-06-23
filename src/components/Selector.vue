@@ -48,7 +48,7 @@ import debounce from 'lodash/debounce'
 
 import { api } from '../api'
 import { formatApiNotificationError } from '@/utils/errors'
-import { stringifyQuery } from '@/utils/utils'
+import { stringifyQueryParams } from '@/utils/stringifyQuery'
 
 import List from '@/components/layout/List.vue'
 import Empty from '@/components/layout/Empty.vue'
@@ -57,8 +57,8 @@ import ListItem from '@/components/layout/ListItem.vue'
 import { Schema } from '@/interfaces/Schema'
 import { UUID } from '@/interfaces/UUID'
 import Loading from './layout/Loading.vue'
-import { ProductItem } from '@/interfaces/Product'
 import { Attribute } from '@/interfaces/Attribute'
+import { WarehouseItem } from '@/interfaces/WarehouseItem'
 
 interface Item {
   id: UUID
@@ -116,7 +116,7 @@ export default Vue.extend({
 
       this.isLoading = true
       try {
-        const query = stringifyQuery({ search })
+        const query = stringifyQueryParams({ search })
         const { data } = await api.get<{ data: Item[] }>(`/${this.type}${query}`)
         this.data = data.data
       } catch (error: any) {
@@ -134,7 +134,7 @@ export default Vue.extend({
         const schemaType = this.$t(`schemaTypes.${schema.type}`)
         return schema.description ? `${schemaType} | ${schema.description}` : schemaType
       }
-      if (this.type === 'items') return `SKU: ${(item as ProductItem).sku}`
+      if (this.type === 'items') return `SKU: ${(item as WarehouseItem).sku}`
       if (this.type === 'attributes')
         return `${this.$t('common.form.type')}: ${this.$t(
           'attributeTypes.' + (item as Attribute).type,

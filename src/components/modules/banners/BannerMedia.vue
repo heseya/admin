@@ -5,35 +5,59 @@
     </div>
 
     <div class="responsive-media__content">
-      <div v-for="(image, i) in media" :key="image.media.id" class="item-wrapper">
-        <div class="single-media">
-          <media-element :media="image.media" :size="120" fit="contain" />
-          <div class="single-media__remove-img">
-            <icon-button v-if="!disabled" type="danger" @click="onMediaDelete(i)">
-              <template #icon>
-                <i class="bx bx-trash"></i>
-              </template>
-            </icon-button>
-          </div>
+      <div class="responsive-media__inputs">
+        <validated-input
+          v-model="bannerMedia.title"
+          :label="$t('form.title')"
+          :disabled="disabled"
+          rules="required"
+        />
+        <validated-input
+          v-model="bannerMedia.subtitle"
+          :label="$t('form.subtitle')"
+          :disabled="disabled"
+          rules="required"
+        />
 
-          <media-edit-form
-            class="single-media__edit-img"
-            :disabled="disabled"
-            :media="image.media"
-            @update="(m) => updateMedia(m, i)"
-          />
-
-          <validated-input
-            v-model="image.min_screen_width"
-            class="single-media__input"
-            type="number"
-            :label="$t('minWidth')"
-          />
-        </div>
+        <validated-input v-model="bannerMedia.url" :disabled="disabled" rules="required">
+          <template #label>
+            {{ $t('form.url') }}
+            <info-tooltip> {{ $t('form.urlTooltip') }}</info-tooltip>
+          </template>
+        </validated-input>
       </div>
 
-      <div class="item-wrapper">
-        <gallery-upload-button @upload="onImageUpload" />
+      <div class="responsive-media__media-list">
+        <div v-for="(image, i) in bannerMedia.media" :key="image.media.id" class="item-wrapper">
+          <div class="single-media">
+            <media-element :media="image.media" :size="120" fit="contain" />
+            <div class="single-media__remove-img">
+              <icon-button v-if="!disabled" type="danger" @click="onMediaDelete(i)">
+                <template #icon>
+                  <i class="bx bx-trash"></i>
+                </template>
+              </icon-button>
+            </div>
+
+            <media-edit-form
+              class="single-media__edit-img"
+              :disabled="disabled"
+              :media="image.media"
+              @update="(m) => updateMedia(m, i)"
+            />
+
+            <validated-input
+              v-model="image.min_screen_width"
+              class="single-media__input"
+              type="number"
+              :label="$t('minWidth')"
+            />
+          </div>
+        </div>
+
+        <div class="item-wrapper">
+          <gallery-upload-button @upload="onImageUpload" />
+        </div>
       </div>
     </div>
 
@@ -51,11 +75,23 @@
 {
   "pl": {
     "dragTitle": "Przeciągnij zdjęcia",
-    "minWidth": "Minimalna szerokość ekranu"
+    "minWidth": "Minimalna szerokość ekranu",
+    "form": {
+      "title": "Tytuł grafiki",
+      "subtitle": "Podtytuł grafiki",
+      "url": "Adres przekierowania",
+      "urlTooltip": "Adres do którego banner przekieruje po kliknięciu, może być absolutny lub relatywny"
+    }
   },
   "en": {
     "dragTitle": "Drag images",
-    "minWidth": "Minimal screen width"
+    "minWidth": "Minimal screen width",
+    "form": {
+      "title": "Title",
+      "subtitle": "Subtitle",
+      "url": "Redirection url",
+      "urlTooltip": "Addres to which banner will redirect after clicking, can be absolute or relative"
+    }
   }
 }
 </i18n>
@@ -63,7 +99,7 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import { ResponsiveMedia } from '@/interfaces/Banner'
+import { BannerMedia } from '@/interfaces/Banner'
 import { CdnMedia } from '@/interfaces/Media'
 import MediaElement from '@/components/MediaElement.vue'
 
@@ -76,9 +112,9 @@ export default Vue.extend({
   components: { MediaElement, GalleryUploadButton, MediaEditForm },
   props: {
     value: {
-      type: Array,
+      type: Object,
       required: true,
-    } as Vue.PropOptions<ResponsiveMedia>,
+    } as Vue.PropOptions<BannerMedia>,
     disabled: {
       type: Boolean,
       default: false,
@@ -90,11 +126,11 @@ export default Vue.extend({
   }),
 
   computed: {
-    media: {
-      get(): ResponsiveMedia {
+    bannerMedia: {
+      get(): BannerMedia {
         return this.value
       },
-      set(v: ResponsiveMedia) {
+      set(v: BannerMedia) {
         this.$emit('input', v)
       },
     },
@@ -110,12 +146,12 @@ export default Vue.extend({
 
   methods: {
     updateMedia(media: CdnMedia, index: number) {
-      this.media[index].media = media
+      this.bannerMedia.media[index].media = media
     },
 
     onMediaDelete(i: number) {
-      const deletedId = this.media[i].media.id
-      this.media = this.media.filter((_, index) => index !== i)
+      const deletedId = this.bannerMedia.media[i].media.id
+      this.bannerMedia.media = this.bannerMedia.media.filter((_, index) => index !== i)
 
       if (this.mediaToDelete.find((id) => deletedId === id)) {
         this.mediaToDelete = this.mediaToDelete.filter((id) => deletedId !== id)
@@ -124,7 +160,7 @@ export default Vue.extend({
     },
 
     onImageUpload(media: CdnMedia) {
-      this.media.push({ min_screen_width: 0, media })
+      this.bannerMedia.media.push({ min_screen_width: 0, media })
       this.mediaToDelete = [...this.mediaToDelete, media.id]
     },
 
@@ -154,6 +190,20 @@ $item-size: 160px;
   }
 
   &__content {
+    width: 100%;
+  }
+
+  &__inputs {
+    display: grid;
+    grid-gap: 16px;
+    padding-top: 8px;
+
+    @media ($viewport-6) {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+  }
+
+  &__media-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, $item-size);
     grid-gap: 8px;

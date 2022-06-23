@@ -6,5 +6,5 @@ RewriteRule sitemap.xml sitemap.xml [L]
 RewriteRule robots.txt robots.txt [L]
 RewriteRule manifest.json manifest.json [L]
 
-RewriteCond %{REQUEST_URI} !(\.svg|\.png|\.jpg|\.gif|\.jpeg|\.bmp|\.ico|\.css|\.js|\.txt|\.mp4|\.map)$
+RewriteCond %{REQUEST_URI} !(\.svg|\.png|\.jpg|\.gif|\.jpeg|\.bmp|\.ico|\.css|\.js|\.txt|\.mp4|\.map|\.woff2|\.woff|\.ttf|\.eot)$
 RewriteRule (.*) index.html [QSA]

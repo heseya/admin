@@ -103,7 +103,7 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import Field from './Field.vue'
+import Field from '../../Field.vue'
 import EditableOrderAddress from './EditableOrderAddress.vue'
 import PartialUpdateForm from './PartialUpdateForm.vue'
 import ModalForm from '@/components/form/ModalForm.vue'

@@ -32,13 +32,13 @@ export const orders = createVuexCRUD<Order>()('orders', {
       state,
       { orderId, documents }: { orderId: UUID; documents: OrderDocument[] },
     ) {
-      if (state.selected.id === orderId) state.selected.documents = documents
+      if (state.selected?.id === orderId) state.selected.documents = documents
     },
     ADD_ORDER_DOCUMENT(state, { orderId, document }: { orderId: UUID; document: OrderDocument }) {
-      if (state.selected.id === orderId) state.selected.documents.push(document)
+      if (state.selected?.id === orderId) state.selected.documents.push(document)
     },
     REMOVE_ORDER_DOCUMENT(state, { orderId, documentId }: { orderId: UUID; documentId: UUID }) {
-      if (state.selected.id === orderId)
+      if (state.selected?.id === orderId)
         state.selected.documents = state.selected.documents.filter((d) => d.id !== documentId)
     },
   },
@@ -46,7 +46,7 @@ export const orders = createVuexCRUD<Order>()('orders', {
     async changeStatus({ commit }, { orderId, statusId }: { orderId: UUID; statusId: UUID }) {
       commit(StoreMutations.SetError, null)
       try {
-        await api.post(`/orders/id:${orderId}/status`, { status_id: statusId })
+        await api.patch(`/orders/id:${orderId}/status`, { status_id: statusId })
         return true
       } catch (error: any) {
         commit(StoreMutations.SetError, error)

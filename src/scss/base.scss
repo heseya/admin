@@ -1,12 +1,16 @@
 @import './01_abstracts/index.scss';
 @import './02_components/index';
-@import './font';
 
 body {
   font-family: $primaryFont, 'BlinkMacSystemFont', sans-serif !important;
   background: $background-color-500 !important;
   color: $font-color !important;
   margin: 0;
+}
+
+*::selection {
+  background-color: $primary-color-300 !important;
+  color: #fff !important;
 }
 
 .uppercase {

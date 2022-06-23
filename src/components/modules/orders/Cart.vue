@@ -86,7 +86,7 @@
 import Vue from 'vue'
 
 import CartItem from '@/components/layout/CartItem.vue'
-import Field from './Field.vue'
+import Field from '../../Field.vue'
 import OrderDiscountSummary from './OrderDiscountSummary.vue'
 
 import { Order } from '@/interfaces/Order'

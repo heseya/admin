@@ -102,7 +102,7 @@
       <autocomplete-input
         v-model="form.target_products"
         :label="$t('form.target_products')"
-        model="products"
+        model-url="products"
         :disabled="disabled"
         :rules="{ required: form.target_is_allow_list && form.target_sets.length === 0 }"
       />
@@ -110,7 +110,7 @@
       <autocomplete-input
         v-model="form.target_sets"
         :label="$t('form.target_sets')"
-        model="productSets"
+        model-url="product-sets"
         :disabled="disabled"
         :rules="{ required: form.target_is_allow_list && form.target_products.length === 0 }"
       />
@@ -120,7 +120,7 @@
       v-if="form.target_type === DiscountTargetType.ShippingPrice"
       v-model="form.target_shipping_methods"
       :label="$t('form.target_shipping_methods')"
-      model="shippingMethods"
+      model-url="shipping-methods"
       :disabled="disabled"
       :rules="{ required: form.target_is_allow_list }"
     />

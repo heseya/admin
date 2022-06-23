@@ -1,7 +1,8 @@
 /* eslint-disable camelcase */
 import { UUID } from './UUID'
-import { Product, ProductItem } from './Product'
+import { Product } from './Product'
 import { Metadata } from './Metadata'
+import { WarehouseItem } from './WarehouseItem'
 
 export enum SchemaType {
   String = 'string',
@@ -20,7 +21,7 @@ export interface SchemaOption {
   default: boolean
   disabled: boolean
   price: number
-  items: ProductItem[]
+  items: WarehouseItem[]
   metadata: Metadata
   metadata_private?: Metadata
 }

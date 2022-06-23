@@ -33,11 +33,10 @@ export const createApiInstance = (baseURL: string, useAccessToken = true) => {
 
     const token = useAccessToken ? accessor.auth.getAccessToken : accessor.auth.getIdentityToken
 
-    if (!isNull(token)) {
-      if (config.url !== REFRESH_URL) config.headers.Authorization = `Bearer ${token}`
-      config.headers['X-Language'] = 'pl'
-    }
+    if (!isNull(token) && config.url !== REFRESH_URL)
+      config.headers.Authorization = `Bearer ${token}`
 
+    config.headers['Cache-Control'] = 'no-cache, no-store'
     config.headers['X-Core-Url'] = CORE_API_URL
     if (accessor.config.apiLanguage) config.headers['Accept-Language'] = accessor.config.apiLanguage
 
@@ -74,7 +73,7 @@ export const createApiInstance = (baseURL: string, useAccessToken = true) => {
             accessor.auth.clearAuth()
             broadcastTokensUpdate(null)
             accessor.stopLoading()
-            router.push('/login')
+            router.push(`/login?next=${router.currentRoute.fullPath}`)
             throw error
           }
 

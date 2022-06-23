@@ -3,7 +3,7 @@ import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 
 import { api } from '../api'
 
-import { User } from '@/interfaces/User'
+import { User, UserProfileUpdateDTO } from '@/interfaces/User'
 import { UUID } from '@/interfaces/UUID'
 import { PERMISSIONS_TREE } from '@/consts/permissions'
 import { hasAccess } from '@/utils/hasAccess'
@@ -60,7 +60,12 @@ const mutations = mutationTree(state, {
   SET_USER(state, newUser) {
     state.user = newUser
   },
-
+  SET_USER_PROFILE(state, newProfile) {
+    if (state.user) {
+      state.user.name = newProfile.name
+      state.user.preferences = newProfile.preferences
+    }
+  },
   SET_ACCESS_TOKEN(state, newToken = null) {
     state.tokens.accessToken = newToken
   },
@@ -177,11 +182,24 @@ const actions = actionTree(
       }
     },
 
+    async updateUserProfile({ commit }, { name, preferences }: UserProfileUpdateDTO) {
+      commit('SET_ERROR', null)
+      try {
+        const { data } = await api.patch<{ data: User }>('/auth/profile', {
+          name,
+          preferences,
+        })
+        commit('SET_USER_PROFILE', data.data)
+      } catch (e: any) {
+        commit('SET_ERROR', e)
+      }
+    },
+
     async changePassword(
       _u,
       { oldPassword, newPassword }: { oldPassword: string; newPassword: string },
     ) {
-      return api.patch('users/password', {
+      return api.put('users/password', {
         password: oldPassword,
         password_new: newPassword,
         password_confirmation: newPassword,
@@ -216,10 +234,13 @@ const actions = actionTree(
       commit('SET_PERMISSIONS_ERROR', error)
     },
 
-    async requestResetPassword({ commit }, { email }: { email: string }) {
+    async requestResetPassword(
+      { commit },
+      { email, redirectUrl }: { email: string; redirectUrl: string },
+    ) {
       commit('SET_ERROR', null)
       try {
-        await api.post('/users/reset-password', { email })
+        await api.post('/users/reset-password', { email, redirect_url: redirectUrl })
         return true
       } catch (e: any) {
         commit('SET_ERROR', e)
@@ -229,7 +250,7 @@ const actions = actionTree(
     async resetPassword({ commit }, payload: { token: string; email: string; password: string }) {
       commit('SET_ERROR', null)
       try {
-        await api.patch('/users/save-reset-password', payload)
+        await api.put('/users/save-reset-password', payload)
         return true
       } catch (e: any) {
         commit('SET_ERROR', e)

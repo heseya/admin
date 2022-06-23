@@ -35,7 +35,8 @@ export default Vue.extend({
   }),
   watch: {
     value(value: string) {
-      if (value !== this.value) this.article.editor.setContent({ html: value })
+      if (this.article.editor.getContent() !== this.value)
+        this.article.editor.setContent({ html: value })
     },
   },
   mounted() {

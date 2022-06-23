@@ -23,17 +23,8 @@
           @update="updateMedia"
         />
       </div>
-      <app-media-uploader
-        v-if="!disabled"
-        class="gallery__img gallery__add-btn undragabble"
-        :class="{ 'gallery__add-btn--drag': isDrag, 'gallery__add-btn--big': images.length === 0 }"
-        multiple
-        @dragChange="dragChange"
-        @upload="onImageUpload"
-        @error="onUploadError"
-      >
-        <img src="@/assets/images/icons/plus-icon.svg" />
-      </app-media-uploader>
+
+      <gallery-upload-button :big="images.length === 0" @upload="onImageUpload" />
     </draggable>
   </div>
 </template>
@@ -42,20 +33,20 @@
 import Vue from 'vue'
 import Draggable from 'vuedraggable'
 
-import MediaUploader from '@/components/modules/media/MediaUploader.vue'
-import { formatApiNotificationError } from '@/utils/errors'
 import { UUID } from '@/interfaces/UUID'
 import { CdnMedia, CdnMediaType } from '@/interfaces/Media'
 import { removeMedia } from '@/services/uploadMedia'
+
 import MediaEditForm from '@/components/modules/media/MediaEditForm.vue'
 import MediaElement from '@/components/MediaElement.vue'
+import GalleryUploadButton from './GalleryUploadButton.vue'
 
 export default Vue.extend({
   components: {
-    appMediaUploader: MediaUploader,
     Draggable,
     MediaEditForm,
     MediaElement,
+    GalleryUploadButton,
   },
   props: {
     value: {
@@ -66,7 +57,6 @@ export default Vue.extend({
   },
   data: () => ({
     mediaToDelete: [] as UUID[],
-    isDrag: false,
   }),
   computed: {
     CdnMediaType(): typeof CdnMediaType {
@@ -81,17 +71,17 @@ export default Vue.extend({
       },
     },
   },
+
   mounted() {
     window.addEventListener('beforeunload', this.removeTouchedFiles)
   },
+
   destroyed() {
     window.removeEventListener('beforeunload', this.removeTouchedFiles)
     this.removeTouchedFiles()
   },
+
   methods: {
-    dragChange(isDrag: boolean) {
-      this.isDrag = isDrag
-    },
     onImageDelete(deletedId: UUID) {
       this.images = this.images.filter(({ id }) => deletedId !== id)
 
@@ -103,9 +93,6 @@ export default Vue.extend({
     onImageUpload(file: CdnMedia) {
       this.images = [...this.images, file]
       this.mediaToDelete = [...this.mediaToDelete, file.id]
-    },
-    onUploadError(error: any) {
-      this.$toast.error(formatApiNotificationError(error))
     },
     clearMediaToDelete() {
       this.mediaToDelete = []
@@ -137,12 +124,10 @@ export default Vue.extend({
     }
   }
 
-  &__add-btn,
   &__img {
     position: relative;
     width: 100%;
     padding-top: 100%;
-    margin-bottom: 4px;
     background-color: #ffffff;
     box-shadow: $shadow;
     border-radius: 7px;
@@ -156,30 +141,6 @@ export default Vue.extend({
       object-fit: cover;
       background-color: #ffffff;
       border-radius: 7px;
-    }
-  }
-
-  &__add-btn {
-    &--big {
-      width: 50%;
-      padding-top: 50%;
-      margin-top: 0;
-    }
-
-    img {
-      position: absolute;
-      top: 40%;
-      left: 40%;
-      height: 20%;
-      width: 20%;
-      transition: 0.3s;
-    }
-
-    &:hover,
-    &--drag {
-      img {
-        transform: scale(1.5);
-      }
     }
   }
 

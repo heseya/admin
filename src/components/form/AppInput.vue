@@ -29,6 +29,7 @@ export default Vue.extend({
     'value',
     'label',
     'placeholder',
+    'defaultValue',
     'name',
     'dataCy',
     'error',
@@ -42,6 +43,7 @@ export default Vue.extend({
     'rows',
     'loading',
     'addonBefore',
+    'addonAfter',
   ],
   computed: {
     innerValue: {
@@ -49,6 +51,7 @@ export default Vue.extend({
         return this.value
       },
       set(v: any) {
+        if (this.type === 'number') v = Number(v)
         this.$emit('input', v)
       },
     },

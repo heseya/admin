@@ -22,6 +22,7 @@ export interface ProductSet {
   attributes: Attribute[]
   metadata: Metadata
   metadata_private?: Metadata
+  children_ids: UUID[]
 }
 
 export interface ProductSetDTO {

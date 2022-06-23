@@ -13,3 +13,10 @@ export interface ResponseMeta {
   total: number
   seo?: SeoMetadata
 }
+
+export interface ResponseLinks {
+  first: string
+  last: string
+  prev: string
+  next: string
+}

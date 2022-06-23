@@ -28,7 +28,7 @@ export interface ShippingMethod {
   name: string
   payment_methods: PaymentMethod[]
   public: boolean
-  black_list: boolean
+  block_list: boolean
   shipping_time_min: number
   shipping_time_max: number
   countries: ShippingMethodCountry[]
@@ -42,7 +42,7 @@ export interface ShippingMethodDTO {
   name: string
   payment_methods: string[]
   public: boolean
-  black_list: boolean
+  block_list: boolean
   shipping_time_min: number
   shipping_time_max: number
   countries: string[]

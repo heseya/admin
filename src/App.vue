@@ -19,6 +19,17 @@
   </div>
 </template>
 
+<i18n>
+{
+  "en": {
+    "noPermissionError": "You don't have permission to this action."
+  },
+  "pl": {
+    "noPermissionError": "Nie posiadasz uprawnień do tej akcji."
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 import { first } from 'lodash'
@@ -66,7 +77,7 @@ export default Vue.extend({
   watch: {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     '$accessor.auth.permissionsError'(_permissionsError) {
-      this.$toast.error('Nie posiadasz uprawnień do tej akcji')
+      this.$toast.error(this.$t('noPermissionError') as string)
     },
 
     '$accessor.auth.getIdentityToken'(token) {

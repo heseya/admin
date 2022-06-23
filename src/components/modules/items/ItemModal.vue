@@ -303,6 +303,18 @@ export default Vue.extend({
   &__row {
     display: flex;
     gap: 8px;
+
+    @media ($max-viewport-4) {
+      flex-wrap: wrap;
+    }
+
+    .input-wrapper {
+      display: initial;
+    }
+
+    .app-input__input {
+      margin-top: auto;
+    }
   }
 }
 </style>

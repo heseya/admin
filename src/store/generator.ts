@@ -4,7 +4,7 @@ import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 import { ActionTree, GetterTree, MutationTree } from 'vuex'
 
 import { api } from '../api'
-import { stringifyQuery } from '@/utils/utils'
+import { stringifyQueryParams as stringifyQuery } from '@/utils/stringifyQuery'
 
 import { RootState } from '.'
 import { ResponseMeta } from '@/interfaces/Response'

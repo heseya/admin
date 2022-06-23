@@ -174,6 +174,15 @@ export const MENU_ITEMS: MenuItem[] = [
     section: SettingsSection.Orders,
   },
   {
+    id: '17-2',
+    type: MenuItemType.Link,
+    to: '/settings/payment-methods',
+    iconClass: 'bx bxs-credit-card',
+    label: 'models.payment_methods',
+    can: PERMISSIONS_TREE.PaymentMethods.Show,
+    section: SettingsSection.Orders,
+  },
+  {
     id: '18',
     type: MenuItemType.Link,
     to: '/settings/shipping-methods',

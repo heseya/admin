@@ -90,6 +90,15 @@
                   name="price"
                   :disabled="!canModify"
                 />
+
+                <validated-input
+                  v-model="form.vat_rate"
+                  rules="not-negative|less-than:100"
+                  type="number"
+                  :label="$t('form.vatRate')"
+                  name="vat_rate"
+                  :disabled="!canModify"
+                />
               </div>
 
               <div>
@@ -207,6 +216,7 @@
     "form": {
       "public": "Widoczność produktu",
       "price": "Cena",
+      "vatRate": "Stawka VAT (%)",
       "quantityStep": "Format ilości",
       "shortDescription": "Krótki opis",
       "order": "Priorytet sortowania",
@@ -229,6 +239,7 @@
     "form": {
       "public": "Product visibility",
       "price": "Price",
+      "vatRate": "VAT rate (%)",
       "quantityStep": "Quantity format",
       "shortDescription": "Short description",
       "order": "Sort priority",
@@ -284,6 +295,7 @@ const EMPTY_FORM: ProductComponentForm = {
   price: 0,
   description_html: '',
   description_short: '',
+  vat_rate: 0,
   google_product_category: null,
   public: true,
   sets: [],
@@ -337,7 +349,7 @@ export default Vue.extend({
       return this.id === 'create'
     },
     product(): Product {
-      return this.$accessor.products.getSelected
+      return this.$accessor.products.getSelected || ({} as any)
     },
     error(): any {
       // @ts-ignore // TODO: fix extended store getters typings
@@ -459,6 +471,14 @@ export default Vue.extend({
 
 <style lang="scss">
 .product {
+  & > * {
+    &:not(:first-child) {
+      @media ($max-viewport-11) {
+        margin-top: 8px;
+      }
+    }
+  }
+
   &__info {
     input {
       width: 100%;

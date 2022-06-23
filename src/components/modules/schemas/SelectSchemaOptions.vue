@@ -37,7 +37,9 @@
           <SwitchInput v-model="option.disabled" :disabled="disabled">
             <template #title>{{ $t('disabled') }}</template>
           </SwitchInput>
-          <a-radio :disabled="disabled" :value="i"> {{ $t('default') }} </a-radio>
+          <a-radio :disabled="disabled" :value="i" class="radio-option-default">
+            {{ $t('default') }}
+          </a-radio>
           <icon-button
             size="small"
             type="danger"
@@ -144,10 +146,30 @@ export default Vue.extend({
   &__option {
     display: grid;
     grid-gap: 8px;
-    grid-template-columns: 20px 1fr 100px 1fr 64px 64px 64px;
+    grid-template-columns: 20px 1fr 1fr 1fr;
+    grid-template-areas:
+      'drag name name name'
+      '. price price price'
+      '. items items items'
+      '. onoff radio radio'
+      '. delete delete delete';
     align-items: center;
     justify-items: center;
     margin-bottom: 8px;
+
+    @media ($viewport-6) {
+      grid-template-areas:
+        'drag name name name'
+        '. price price price'
+        '. items items items'
+        '. onoff radio delete';
+    }
+
+    @media ($viewport-7) {
+      grid-template-areas:
+        'drag name price items'
+        '. onoff radio delete';
+    }
 
     ::v-deep .app-input {
       margin-bottom: 0;
@@ -158,10 +180,60 @@ export default Vue.extend({
     }
 
     .ant-radio-wrapper {
+      grid-area: radio;
       display: flex;
       align-items: center;
       flex-direction: column-reverse;
       font-size: 0.8em;
+
+      &.radio-option-default {
+        flex-direction: row;
+        justify-content: center;
+        margin: 0;
+      }
+    }
+
+    .drag-icon {
+      grid-area: drag;
+    }
+
+    .input-wrapper {
+      grid-area: name;
+    }
+
+    .app-input {
+      grid-area: price;
+    }
+
+    .autocomplete {
+      grid-area: items;
+    }
+
+    .switch-input {
+      grid-area: onoff;
+    }
+
+    .icon-button {
+      grid-area: delete;
+
+      @media ($viewport-7) {
+        width: fit-content;
+        justify-self: end;
+      }
+
+      &::v-deep .icon-button__icon {
+        @media ($max-viewport-7) {
+          width: 100%;
+          border-radius: 4px;
+        }
+      }
+    }
+
+    .ant-radio-wrapper.radio-option-default,
+    .switch-input {
+      @media ($viewport-7) {
+        justify-content: flex-start;
+      }
     }
   }
 

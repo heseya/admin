@@ -39,7 +39,7 @@ export default Vue.extend({
       return this.$route.params.id
     },
     app(): App | null {
-      return this.$accessor.apps.getSelected
+      return this.$accessor.apps.getSelected || ({} as any)
     },
   },
   async created() {

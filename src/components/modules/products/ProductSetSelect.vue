@@ -86,7 +86,7 @@ export default Vue.extend({
     async fetchProductSets() {
       this.isLoading = true
       try {
-        await this.$accessor.productSets.fetch({ search: this.query, tree: 0 })
+        await this.$accessor.productSets.fetch({ search: this.query, tree: 0, root: undefined })
       } catch (e: any) {
         this.$toast.error(formatApiNotificationError(e))
       }

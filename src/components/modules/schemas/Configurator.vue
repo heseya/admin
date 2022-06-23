@@ -67,7 +67,7 @@
     <a-modal v-model="isModalActive" width="800px" :footer="null">
       <template #title>
         <h4 class="flex schema-selector-title">
-          {{ $t('chooseExisting') }}
+          <span>{{ $t('chooseExisting') }}</span>
           <icon-button
             reversed
             size="small"
@@ -225,8 +225,9 @@ export default Vue.extend({
 
 .schema-selector-title {
   display: flex;
-  // justify-content: center;
+  column-gap: 8px;
   align-items: center;
+  justify-content: space-between;
   margin-top: 0;
   margin-bottom: 0;
 }

@@ -45,7 +45,6 @@ import Draggable from 'vuedraggable'
 import { BannerMedia } from '@/interfaces/Banner'
 import Empty from '@/components/layout/Empty.vue'
 import BannerMediaComponent from './BannerMedia.vue'
-import { isArray } from 'lodash'
 
 export default Vue.extend({
   components: { Draggable, Empty, BannerMediaComponent },
@@ -86,7 +85,7 @@ export default Vue.extend({
     },
 
     clearMediaToDelete() {
-      const forms: any[] = isArray(this.$refs.mediaForm)
+      const forms: any[] = Array.isArray(this.$refs.mediaForm)
         ? this.$refs.mediaForm
         : [this.$refs.mediaForm]
 
@@ -99,6 +98,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .responsive-media-form {
   width: 100%;
+  margin-top: 16px;
 
   &__header {
     display: flex;

@@ -31,6 +31,7 @@ import { sales } from './sales'
 import { tags } from './tags'
 import { productSets } from './productSets'
 import { attributes } from './attributes'
+import { menuItems } from './menuItems'
 
 Vue.use(Vuex)
 
@@ -104,12 +105,12 @@ const storePattern = {
   getters,
   mutations,
   actions,
-  modules: storeModules,
+  modules: { ...storeModules, menuItems },
 }
 
 const store = new Vuex.Store({
   ...storePattern,
-  plugins: [new VuexPersistence({ modules: ['auth'] }).plugin],
+  plugins: [new VuexPersistence({ modules: ['auth', 'menuItems'] }).plugin],
 })
 
 export const accessor = useAccessor(store, storePattern)

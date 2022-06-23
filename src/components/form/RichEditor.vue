@@ -103,4 +103,8 @@ export default Vue.extend({
     border-right-width: 2px;
   }
 }
+
+.arx-popup {
+  z-index: 100000;
+}
 </style>

@@ -1,6 +1,3 @@
-import { isArray } from 'lodash'
-import queryString from 'query-string'
-
 import { ALL_FILTER_VALUE } from '../consts/filters'
 import { DateInput } from './dates'
 
@@ -38,22 +35,18 @@ export const getRelativeDate = (date: DateInput, lang = 'pl') => {
 export const formatFilters = (filters: Record<string, unknown>) => {
   return Object.fromEntries(
     Object.entries(filters).filter(([, v]) => {
-      if (isArray(v)) return v.filter((x) => x !== ALL_FILTER_VALUE).length > 0
-      return v !== ALL_FILTER_VALUE && v !== ''
+      if (Array.isArray(v)) return v.filter((x) => x !== ALL_FILTER_VALUE).length > 0
+      return v !== ALL_FILTER_VALUE && v !== '' && v !== 0
     }),
   )
 }
 
-export const formatApiNotification = ({ title, text }: { title: string; text?: string }) => {
-  return text
+export const formatApiNotification = (title: string, ...messages: string[]) => {
+  return messages
     ? `
   <span class="notification__title">${title}</span>
-  <span class="notification__text">${text}</span>
+
+  ${messages.map((msg) => `<span class="notification__text">${msg}</span>`).join('')}
   `
     : title
-}
-
-export const stringifyQuery = (payload: Record<string, any>) => {
-  const query = queryString.stringify(payload, { arrayFormat: 'bracket' })
-  return query ? `?${query}` : ''
 }

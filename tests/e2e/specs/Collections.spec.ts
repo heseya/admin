@@ -29,7 +29,7 @@ describe('add new collection', () => {
     cy.get('.ant-dropdown-menu-item').contains('Add subset').click() // TODO : change to data-cy
     cy.get('input[label="Name"]').type(subCollectionName) // TODO : change to data-cy
     cy.get('.app-button__text').contains('Save').click() // TODO : change to data-cy
-    //cy.get('.app__content').contains(collectionName).click()
+    cy.get('.app__content').contains(collectionName).click()
     cy.get('.app__content').should('contain', subCollectionName)
   })
 })

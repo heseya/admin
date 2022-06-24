@@ -213,6 +213,14 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/apps/debug',
+      name: 'AppsDebug',
+      component: () => import('./views/apps/Debug.vue'),
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
       path: '/apps/:id',
       name: 'AppsView',
       component: () => import('./views/apps/View.vue'),

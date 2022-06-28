@@ -115,18 +115,14 @@ export default Vue.extend({
 .log {
   display: grid;
   column-gap: 1rem;
-
   grid-auto-flow: row;
   justify-items: center;
   row-gap: 1rem;
+  padding-bottom: 1rem;
 
   @media ($viewport-4) {
     grid-template-columns: 60px 1fr;
     column-gap: 24px;
-  }
-
-  &:first-child {
-    padding-bottom: 1rem;
   }
 
   &:not(:first-child) {

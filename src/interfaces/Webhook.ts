@@ -3,6 +3,7 @@ import { UUID } from './UUID'
 
 export interface WebHookEventLogEntry {
   id: UUID
+  event: string
   web_hook: WebHook
   triggered_at: string // ISO 8601
   url: string

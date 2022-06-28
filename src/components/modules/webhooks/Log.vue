@@ -5,60 +5,53 @@
     </div>
 
     <div class="log__data">
-      <!-- eslint-disable-next-line vue/no-bare-strings-in-template -->
-      <span class="log__data-key log__data-key--id">id:</span>
-      <span class="log__data-value">
-        {{ data.id }}
-      </span>
+      <span class="log__data-key log__data-key--id">{{ $t('event') }}:</span>
+      <div class="log__data-value">
+        <code>{{ data.event }}</code>
+
+        <a-tooltip>
+          <template #title>
+            {{ triggerTime }}
+          </template>
+          <span class="log__data-value-relative">({{ relativeTime }})</span>
+        </a-tooltip>
+      </div>
 
       <!-- eslint-disable-next-line vue/no-bare-strings-in-template -->
       <span class="log__data-key">url:</span>
-
       <div class="log__data-value">
-        <a :href="data.url" class="log__data-link">{{ data.url }}</a>
+        <a :href="data.url" target="_blank" class="log__data-link">{{ data.url }}</a>
       </div>
 
-      <span class="log__data-key">{{ $t('triggered_at') }}:</span>
-      <span class="log__data-value">
-        {{ triggerTime }}
-        <span class="log__data-value-relative">({{ relativeTime }})</span>
-      </span>
+      <span class="log__data-key">{{ $t('payload') }}:</span>
+      <a-collapse v-if="data.payload" :bordered="false">
+        <template #expandIcon="{ isActive }">
+          <div><i :class="`bx ${isActive ? 'bx-chevron-up' : 'bx-chevron-down'}`"></i></div>
+        </template>
+
+        <a-collapse-panel class="log__data-value">
+          <template #header>
+            <span>{{ $t('expand') }}</span>
+          </template>
+          <pre v-if="data.payload">{{ payloadResponse }}</pre>
+        </a-collapse-panel>
+      </a-collapse>
+      <span v-else class="log__data-value"> - </span>
 
       <span class="log__data-key">{{ $t('response') }}:</span>
-      <a-collapse :bordered="false">
+      <a-collapse v-if="data.response" :bordered="false">
         <template #expandIcon="{ isActive }">
-          <div>
-            <i :class="`bx ${isActive ? 'bx-chevron-up' : 'bx-chevron-down'}`"></i>
-          </div>
+          <div><i :class="`bx ${isActive ? 'bx-chevron-up' : 'bx-chevron-down'}`"></i></div>
         </template>
 
         <a-collapse-panel class="log__data-value">
           <template #header>
-            <span v-if="data.response">{{ $t('expand') }}</span>
-            <span v-else>-</span>
+            <span>{{ $t('expand') }}</span>
           </template>
+          <pre v-if="data.response">{{ logResponse }}</pre>
         </a-collapse-panel>
-
-        <pre v-if="data.response">{{ logResponse }}</pre>
       </a-collapse>
-
-      <span class="log__data-key">{{ $t('payload') }}:</span>
-      <a-collapse :bordered="false">
-        <template #expandIcon="{ isActive }">
-          <div>
-            <i :class="`bx ${isActive ? 'bx-chevron-up' : 'bx-chevron-down'}`"></i>
-          </div>
-        </template>
-
-        <a-collapse-panel class="log__data-value">
-          <template #header>
-            <span v-if="data.payload">{{ $t('expand') }}</span>
-            <span v-else>-</span>
-          </template>
-        </a-collapse-panel>
-
-        <pre v-if="data.payload">{{ payloadResponse }}</pre>
-      </a-collapse>
+      <span v-else class="log__data-value"> - </span>
     </div>
   </div>
 </template>
@@ -66,14 +59,14 @@
 <i18n>
 {
   "pl": {
-    "triggered_at": "wywołany",
+    "event": "wydarzenie",
     "response": "odpowiedź",
-    "payload": "dane",
+    "payload": "ładunek",
     "expand": "Rozwiń aby zobaczyć",
     "noStatusInfo": "Brak informacji o statusie"
   },
   "en": {
-    "triggered_at": "triggered at",
+    "event": "event",
     "response": "response",
     "payload": "payload",
     "expand": "Expand to see more",
@@ -98,11 +91,7 @@ export default Vue.extend({
     singleLogClass(): ComputedClassName {
       return [
         `log__status`,
-        { 'log__status--100': String(this.data.status_code).startsWith('1') },
-        { 'log__status--200': String(this.data.status_code).startsWith('2') },
-        { 'log__status--300': String(this.data.status_code).startsWith('3') },
-        { 'log__status--400': String(this.data.status_code).startsWith('4') },
-        { 'log__status--500': String(this.data.status_code).startsWith('5') },
+        `log__status--${String(this.data.status_code).charAt(0)}00`,
         { 'log__status--no-info': !this.data.status_code },
       ]
     },
@@ -202,6 +191,22 @@ export default Vue.extend({
 
     @media ($viewport-4) {
       column-gap: 16px;
+    }
+
+    pre {
+      margin-bottom: 0;
+      max-width: 100%;
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    ::v-deep .ant-collapse {
+      overflow: hidden;
+      width: 100%;
+    }
+
+    ::v-deep .ant-collapse-content-box {
+      padding: 4px;
     }
   }
 

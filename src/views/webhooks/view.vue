@@ -181,7 +181,7 @@ export default Vue.extend({
     async fetchLogs(page = 1) {
       this.areLogsLoading = true
       // @ts-ignore TODO: fix extended store actions typings
-      await this.$accessor.webhooks.fetchLogs({ limit: 6, page })
+      await this.$accessor.webhooks.fetchLogs({ web_hook_id: this.id, page })
       this.areLogsLoading = false
     },
 

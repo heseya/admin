@@ -1,4 +1,5 @@
 import { api } from '@/api'
+import { ResponseMeta } from '@/interfaces/Response'
 import { WebHook, WebHookDto, WebHookEventLogEntry, WebHookEventObject } from '@/interfaces/Webhook'
 import { stringifyQueryParams } from '@/utils/stringifyQuery'
 import { createVuexCRUD, StoreMutations } from './generator'
@@ -9,14 +10,18 @@ export const webhooks = createVuexCRUD<WebHook, WebHookDto, WebHookDto>()(BASE_U
   state: {
     events: [] as WebHookEventObject[],
     logs: [] as WebHookEventLogEntry[],
+    logsMeta: {} as ResponseMeta,
   },
   getters: {},
   mutations: {
     SET_EVENTS(state, events: WebHookEventObject[]) {
       state.events = events
     },
-    SET_ACTIVE_EVENTS(state, events: WebHookEventLogEntry[]) {
+    SET_LOGS(state, events: WebHookEventLogEntry[]) {
       state.logs = events
+    },
+    SET_LOGS_META(state, meta: ResponseMeta) {
+      state.logsMeta = meta
     },
   },
   actions: {
@@ -37,8 +42,11 @@ export const webhooks = createVuexCRUD<WebHook, WebHookDto, WebHookDto>()(BASE_U
       commit(StoreMutations.SetLoading, true)
       try {
         const params = stringifyQueryParams(parameters)
-        const response = await api.get<{ data: WebHookEventLogEntry[] }>(`/webhooks/logs${params}`)
-        commit('SET_ACTIVE_EVENTS', response.data.data)
+        const response = await api.get<{ data: WebHookEventLogEntry[]; meta: ResponseMeta }>(
+          `/webhooks/logs${params}`,
+        )
+        commit('SET_LOGS', response.data.data)
+        commit('SET_LOGS_META', response.data.meta)
 
         commit(StoreMutations.SetError, null)
       } catch (e: any) {

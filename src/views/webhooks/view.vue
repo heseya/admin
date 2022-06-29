@@ -41,10 +41,22 @@
       :title="$t('logs')"
       @cancel="toggleEventsModal"
     >
-      <template v-if="logs.length">
-        <Log v-for="log in logs" :key="log.id" :data="log" />
-      </template>
-      <span v-else>{{ $t('noLogs') }}</span>
+      <div class="logs-modal">
+        <loading :active="areLogsLoading" />
+
+        <template v-if="logs.length">
+          <Log v-for="log in logs" :key="log.id" :data="log" />
+
+          <pagination
+            v-if="logsMeta.last_page > 1"
+            class="logs-modal__pagination"
+            :length="logsMeta.last_page"
+            :value="logsMeta.current_page"
+            @input="fetchLogs"
+          />
+        </template>
+        <span v-else>{{ $t('noLogs') }}</span>
+      </div>
     </a-modal>
   </div>
 </template>
@@ -84,9 +96,12 @@ import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import WebhookForm from '@/components/modules/webhooks/Form.vue'
+import Pagination from '@/components/cms/Pagination.vue'
 import Log from '@/components/modules/webhooks/Log.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
+import { ResponseMeta } from '@/interfaces/Response'
+import Loading from '@/components/layout/Loading.vue'
 
 const CLEAR_FORM: WebHookDto = {
   url: '',
@@ -110,10 +125,13 @@ export default Vue.extend({
     WebhookForm,
     PopConfirm,
     Log,
+    Pagination,
+    Loading,
   },
   data: () => ({
     editedWebhook: cloneDeep(CLEAR_FORM),
     logsModalVisible: false,
+    areLogsLoading: false,
   }),
   computed: {
     id(): string {
@@ -130,6 +148,9 @@ export default Vue.extend({
     },
     logs(): WebHookEventLogEntry[] {
       return this.$accessor.webhooks.logs
+    },
+    logsMeta(): ResponseMeta {
+      return this.$accessor.webhooks.logsMeta
     },
   },
   watch: {
@@ -149,8 +170,7 @@ export default Vue.extend({
     await Promise.all([
       // @ts-ignore TODO: fix extended store actions typings
       this.$accessor.webhooks.fetchEvents(),
-      // @ts-ignore
-      this.$accessor.webhooks.fetchLogs({ web_hook_id: this.id }),
+      this.fetchLogs(),
     ])
 
     if (!this.isNew) await this.$accessor.webhooks.get(this.id)
@@ -158,6 +178,13 @@ export default Vue.extend({
     this.$accessor.stopLoading()
   },
   methods: {
+    async fetchLogs(page = 1) {
+      this.areLogsLoading = true
+      // @ts-ignore TODO: fix extended store actions typings
+      await this.$accessor.webhooks.fetchLogs({ web_hook_id: this.id, page })
+      this.areLogsLoading = false
+    },
+
     async saveWebhook(webhook: WebHook) {
       this.$accessor.startLoading()
       const newWebHook = this.isNew
@@ -189,3 +216,11 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.logs-modal {
+  &__pagination {
+    margin-top: 18px;
+  }
+}
+</style>

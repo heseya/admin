@@ -2,15 +2,18 @@ import axios from 'axios'
 import { assign, cloneDeep, isNil } from 'lodash'
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 import { ActionTree, GetterTree, MutationTree } from 'vuex'
-import { EntityAudits, HeseyaPaginatedResponseMeta } from '@heseya/store-core'
+import {
+  EntityAudits,
+  HeseyaPaginatedResponseMeta,
+  Metadata,
+  MetadataUpdateDto,
+} from '@heseya/store-core'
 
 import { api } from '../api'
 import { stringifyQueryParams as stringifyQuery } from '@/utils/stringifyQuery'
 
 import { RootState } from '.'
 import { UUID } from '@/interfaces/UUID'
-
-import { Metadata, MetadataDto } from '@/interfaces/Metadata'
 
 type QueryPayload = Record<string, any>
 
@@ -348,7 +351,7 @@ export const createVuexCRUD =
         // Metadata
         async updateMetadata(
           { commit },
-          payload: { id: UUID; metadata: MetadataDto; public: boolean },
+          payload: { id: UUID; metadata: MetadataUpdateDto; public: boolean },
         ) {
           commit(StoreMutations.SetError, null)
           commit(StoreMutations.SetLoading, true)

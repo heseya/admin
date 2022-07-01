@@ -1,11 +1,9 @@
 /* eslint-disable camelcase */
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
-
+import { User, UserProfileUpdateDto, PERMISSIONS_TREE } from '@heseya/store-core'
 import { api } from '../api'
 
-import { User, UserProfileUpdateDTO } from '@/interfaces/User'
 import { UUID } from '@/interfaces/UUID'
-import { PERMISSIONS_TREE } from '@/consts/permissions'
 import { hasAccess } from '@/utils/hasAccess'
 import { accessor } from '.'
 import { broadcastTokensUpdate } from '@/utils/authSync'
@@ -182,7 +180,7 @@ const actions = actionTree(
       }
     },
 
-    async updateUserProfile({ commit }, { name, preferences }: UserProfileUpdateDTO) {
+    async updateUserProfile({ commit }, { name, preferences }: UserProfileUpdateDto) {
       commit('SET_ERROR', null)
       try {
         const { data } = await api.patch<{ data: User }>('/auth/profile', {

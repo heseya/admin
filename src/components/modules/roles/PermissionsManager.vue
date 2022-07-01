@@ -108,12 +108,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import { groupBy } from 'lodash'
-import { Permission, PermissionEntry } from '@heseya/store-core'
+import { Permission, PermissionObject } from '@/interfaces/Permissions'
 
 interface GroupedPermissions {
   section: string
-  permissions: PermissionEntry[]
-  assignablePermissions: PermissionEntry[]
+  permissions: PermissionObject[]
+  assignablePermissions: PermissionObject[]
   isAssignable: boolean
 }
 
@@ -137,7 +137,7 @@ export default Vue.extend({
         this.$emit('input', v)
       },
     },
-    permissions(): PermissionEntry[] {
+    permissions(): PermissionObject[] {
       return this.$accessor.roles.permissions
     },
     grouped(): GroupedPermissions[] {

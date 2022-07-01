@@ -125,9 +125,8 @@
 import Vue from 'vue'
 import { ValidationProvider } from 'vee-validate'
 import { cloneDeep, isEqual } from 'lodash'
-//import { MetadataDto } from '@heseya/store-core'
+import { MetadataUpdateDto } from '@heseya/store-core'
 
-import { MetadataDto } from '@/interfaces/Metadata'
 import ModalForm from '@/components/form/ModalForm.vue'
 import Empty from '@/components/layout/Empty.vue'
 import { GeneratedStoreModulesKeys } from '@/store'
@@ -143,7 +142,7 @@ interface MetadataObject {
   key: string
   type: MetadataType
   wasSaved: boolean
-  value: string | number | boolean | null
+  value: string | number | boolean | null | undefined
 }
 
 export default Vue.extend({
@@ -152,7 +151,7 @@ export default Vue.extend({
     originalMetadata: {
       type: Object,
       default: () => ({}),
-    } as Vue.PropOptions<MetadataDto>,
+    } as Vue.PropOptions<MetadataUpdateDto>,
     disabled: { type: Boolean, default: false },
     isPrivate: { type: Boolean, default: false },
     model: {
@@ -166,13 +165,13 @@ export default Vue.extend({
   }),
 
   computed: {
-    mergedMetadata(): MetadataDto {
+    mergedMetadata(): MetadataUpdateDto {
       return this.metadataList.reduce(
         (acc, { key, type, value }) => ({
           ...acc,
           [key]: type === MetadataType.Number ? parseFloat(value as string) : value,
         }),
-        {} as MetadataDto,
+        {} as MetadataUpdateDto,
       )
     },
     MetadataType(): typeof MetadataType {
@@ -186,7 +185,7 @@ export default Vue.extend({
   },
 
   watch: {
-    originalMetadata(meta: MetadataDto) {
+    originalMetadata(meta: MetadataUpdateDto) {
       const parsed = this.parseMetadata(meta)
       if (!isEqual(this.metadataList, parsed)) this.metadataList = cloneDeep(parsed)
     },
@@ -205,7 +204,7 @@ export default Vue.extend({
         value,
       }
     },
-    parseMetadata(meta: MetadataDto): MetadataObject[] {
+    parseMetadata(meta: MetadataUpdateDto): MetadataObject[] {
       return Object.entries(meta).map(([key, value]) => this.parseMetadataKey(key, value))
     },
 

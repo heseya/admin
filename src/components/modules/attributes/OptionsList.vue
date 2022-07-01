@@ -90,14 +90,18 @@
 <script lang="ts">
 import Vue from 'vue'
 import { cloneDeep } from 'lodash'
-import { AttributeOption, AttributeOptionDto, AttributeType } from '@heseya/store-core'
+import {
+  AttributeOption,
+  AttributeOptionDto,
+  AttributeType,
+  HeseyaResponseMeta,
+} from '@heseya/store-core'
 
 import Empty from '@/components/layout/Empty.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import OptionsEditForm from './OptionsEditForm.vue'
 import { formatApiNotificationError } from '@/utils/errors'
 import Pagination from '@/components/cms/Pagination.vue'
-import { ResponseMeta } from '@/interfaces/Response'
 
 const EMPTY_FORM: AttributeOptionDto = {
   name: '',
@@ -130,7 +134,7 @@ export default Vue.extend({
     options(): AttributeOption[] {
       return this.$accessor.attributes.options
     },
-    optionsMeta(): ResponseMeta {
+    optionsMeta(): HeseyaResponseMeta {
       return this.$accessor.attributes.optionsMeta
     },
     areOptionsEditable(): boolean {

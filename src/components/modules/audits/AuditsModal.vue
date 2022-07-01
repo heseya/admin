@@ -157,7 +157,6 @@ import { downloadJsonAsFile } from '@/utils/download'
 
 import { UUID } from '@/interfaces/UUID'
 import { GeneratedStoreModulesKeys } from '@/store'
-import { AuditEntry } from '@/interfaces/AuditEntry'
 import { TableConfig } from '@/interfaces/CmsTable'
 
 const transformKey = (key: string): string =>
@@ -204,7 +203,7 @@ export default Vue.extend({
       return format(new Date(date), 'dd-MM-yyyy HH:mm')
     },
 
-    getValues(audit: AuditEntry): { key: string; old: any; new: any }[] {
+    getValues(audit: EntityAudits<Record<string, any>>): { key: string; old: any; new: any }[] {
       // Makes sure, that there is no key that exists only in one of the objects
       const keys = [
         ...new Set([...Object.keys(audit.old_values), ...Object.keys(audit.new_values)]),

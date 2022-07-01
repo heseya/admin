@@ -137,6 +137,7 @@
 import Vue from 'vue'
 import Draggable from 'vuedraggable'
 import { cloneDeep } from 'lodash'
+import { ProductSet, HeseyaPaginatedResponseMeta } from '@heseya/store-core'
 import { api } from '@/api'
 
 import Loading from '@/components/layout/Loading.vue'
@@ -145,8 +146,8 @@ import ProductSetForm, { CLEAR_PRODUCT_SET_FORM } from '@/components/modules/pro
 import SetProductsList from '@/components/modules/productSets/SetProductsList.vue'
 import ChangeParentForm from '@/components/modules/productSets/ParentForm.vue'
 
-import { ProductSet, ProductSetDTO } from '@/interfaces/ProductSet'
-import { ResponseLinks, ResponseMeta } from '@/interfaces/Response'
+import { ProductSetDTO } from '@/interfaces/ProductSet'
+import { ResponseLinks } from '@/interfaces/Response'
 import { UUID } from '@/interfaces/UUID'
 import { formatApiNotificationError } from '@/utils/errors'
 
@@ -181,7 +182,7 @@ export default Vue.extend({
     },
   },
   created() {
-    this.childrenQuantity = this.set.children_ids.length
+    this.childrenQuantity = this.set.children_ids?.length || 0
   },
   methods: {
     createSuccess(set: ProductSet) {
@@ -257,7 +258,7 @@ export default Vue.extend({
       const { data: res } = await api.get<{
         data: ProductSet[]
         links: ResponseLinks
-        meta: ResponseMeta
+        meta: HeseyaPaginatedResponseMeta
       }>(`/product-sets?parent_id=${parentId}&page=${page}&tree=0&limit=${childrenLimit}`)
       return res
     },

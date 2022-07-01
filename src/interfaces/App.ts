@@ -1,10 +1,8 @@
 /* eslint-disable camelcase */
-
-import { Metadata } from './Metadata'
-import { Permission, PermissionObject } from './Permissions'
+import { Metadata, Permission, PermissionEntry } from '@heseya/store-core'
 import { UUID } from './UUID'
 
-export interface AppInternalPermission extends Omit<PermissionObject, 'name'> {
+export interface AppInternalPermission extends Omit<PermissionEntry, 'name'> {
   unauthenticated?: boolean
   name: string
 }

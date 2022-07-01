@@ -151,6 +151,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { groupBy, Dictionary } from 'lodash'
+import { User } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
@@ -160,7 +161,6 @@ import UserAccountForm from '@/components/modules/settings/UserAccount.vue'
 import SettingsItem from '@/components/modules/settings/SettingsItem.vue'
 import LangPreferencesForm from '@/components/modules/settings/LangPreferences.vue'
 
-import { User } from '@/interfaces/User'
 import { SettingsSection, SETTINGS_LINKS, MenuLink } from '@/consts/menuItems'
 
 export default Vue.extend({

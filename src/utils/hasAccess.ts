@@ -1,3 +1,4 @@
+// TODO: Change to the store-core version when available
 import { Permission } from '@/interfaces/Permissions'
 
 /**

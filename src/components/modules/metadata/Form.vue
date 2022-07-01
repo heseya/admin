@@ -142,7 +142,7 @@ interface MetadataObject {
   key: string
   type: MetadataType
   wasSaved: boolean
-  value: string | number | boolean | null
+  value: string | number | boolean | null | undefined
 }
 
 export default Vue.extend({
@@ -205,7 +205,7 @@ export default Vue.extend({
       }
     },
     parseMetadata(meta: MetadataUpdateDto): MetadataObject[] {
-      return Object.entries(meta).map(([key, value]) => this.parseMetadataKey(key, value!))
+      return Object.entries(meta).map(([key, value]) => this.parseMetadataKey(key, value))
     },
 
     isDeleted(meta: MetadataObject): boolean {

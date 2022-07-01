@@ -315,7 +315,7 @@ const router = new VueRouter({
       component: () => import('./views/settings/Providers.vue'),
       meta: {
         requiresAuth: true,
-        permissions: [Permissions.Settings.Show],
+        permissions: [Permissions.Auth.ProvidersManage],
       },
     },
     {

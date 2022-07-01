@@ -41,6 +41,7 @@
     "consents": "Zgody",
     "webhooks": "Webhooki",
     "seo": "Ustawienia SEO",
+    "providers": "oAuth",
     "advanced": "Zaawansowane"
   },
   "models": {

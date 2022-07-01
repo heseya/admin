@@ -244,9 +244,17 @@ export const MENU_ITEMS: MenuItem[] = [
     label: 'nav.seo',
     section: SettingsSection.Other,
   },
-
   {
     id: '26',
+    type: MenuItemType.Link,
+    to: '/settings/providers',
+    iconClass: 'bx bxs-log-in',
+    label: 'nav.providers',
+    can: PERMISSIONS_TREE.Settings.Show,
+    section: SettingsSection.Other,
+  },
+  {
+    id: '27',
     type: MenuItemType.Link,
     to: '/settings/advanced',
     iconClass: 'bx bxs-cog',

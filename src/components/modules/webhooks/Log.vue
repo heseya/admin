@@ -62,16 +62,16 @@
 <i18n>
 {
   "pl": {
-    "event": "wydarzenie",
-    "response": "odpowiedź",
-    "payload": "ładunek",
+    "event": "Wydarzenie",
+    "response": "Odpowiedź",
+    "payload": "Ładunek",
     "expand": "Rozwiń aby zobaczyć",
     "noStatusInfo": "Brak informacji o statusie"
   },
   "en": {
-    "event": "event",
-    "response": "response",
-    "payload": "payload",
+    "event": "Event",
+    "response": "Response",
+    "payload": "Payload",
     "expand": "Expand to see more",
     "noStatusInfo": "No status information"
   }

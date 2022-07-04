@@ -1,6 +1,6 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList :title="$t('title')" store-key="providers" :filters="{}">
+    <PaginatedList :title="$t('title')" store-key="providers">
       <template #nav> </template>
       <template #default="{ item: provider }">
         <list-item :key="provider.key" @click="openModal(provider.key)">

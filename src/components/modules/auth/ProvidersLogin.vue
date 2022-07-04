@@ -11,6 +11,7 @@
         :key="provider.key"
         type="primary"
         class="login-providers__provider"
+        @click="loginViaProvider(provider.key)"
       >
         <i v-if="provider.key == AuthProviderKey.Bitbucket" class="bx bxl-git"></i>
         <i v-else :class="`bx bxl-${provider.key}`"></i>
@@ -36,6 +37,7 @@ import Vue from 'vue'
 import { api } from '@/api'
 import { AuthProvider } from '@/interfaces/Providers'
 import { AuthProviderKey } from '@/interfaces/Providers'
+import { formatApiNotificationError } from '@/utils/errors'
 
 export default Vue.extend({
   data: () => ({
@@ -47,10 +49,31 @@ export default Vue.extend({
     },
   },
   async created() {
+    // Redirect after logging via provider
+    // try {
+    //   const data = await api.get<any>(`/auth/providers/google/login`)
+    // } catch (error: any) {
+    // }
+
     const { data: providersData } = await api.get<{ data: AuthProvider[] }>(
       `/auth/providers?active=1`,
     )
     this.providers = providersData.data
+  },
+  methods: {
+    async loginViaProvider(provider: string) {
+      try {
+        const { data: redirectUrl } = await api.post<string>(
+          `/auth/providers/${provider}/redirect`,
+          {
+            return_url: window.location.origin,
+          },
+        )
+        window.location.href = redirectUrl
+      } catch (error: any) {
+        this.$toast.error(formatApiNotificationError(error))
+      }
+    },
   },
 })
 </script>

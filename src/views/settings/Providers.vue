@@ -16,7 +16,7 @@
       </template>
     </PaginatedList>
 
-    <validation-observer v-slot="{ handleSubmit }">
+    <validation-observer v-slot="{ handleSubmit }" v-can="$p.Auth.ProvidersManage">
       <a-modal
         v-model="isModalActive"
         width="550px"
@@ -96,7 +96,7 @@ export default Vue.extend({
     editedItem: {} as AuthProvider,
   }),
   methods: {
-    capitalize(text: string): string {
+    capitalize(text: string) {
       return capitalize(text)
     },
     async openModal(key: UUID) {

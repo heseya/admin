@@ -244,9 +244,15 @@ export default Vue.extend({
       this.activateEditor(isOpen)
     },
   },
-  created() {
+  async created() {
     this.form = { ...cloneDeep(CLEAR_PRODUCT_SET_FORM), ...cloneDeep(this.value) }
     if (this.isOpen) this.activateEditor()
+
+    const data = await this.$accessor.productSets.get(this.form.id as string)
+    if (data) {
+      this.form.description_html = data.description_html
+      this.form.seo = data.seo
+    }
   },
   methods: {
     activateEditor(active = true) {

@@ -28,6 +28,8 @@ export const getApiURL = () => {
       return '***REMOVED***'
     case 'sandbox-admin.heseya.com':
       return 'https://feature-sandbox.***REMOVED***'
+    case 'store-admin-git-feature-oauth-providers-***REMOVED***':
+      return 'https://feature-oauth-providers.***REMOVED***'
     default:
       return (process.env.VUE_APP_API_URL as string) || '***REMOVED***'
   }

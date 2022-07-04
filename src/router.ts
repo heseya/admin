@@ -310,6 +310,15 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/settings/providers',
+      name: 'Providers',
+      component: () => import('./views/settings/Providers.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Auth.ProvidersManage],
+      },
+    },
+    {
       path: '/settings/advanced',
       name: 'PageSettings',
       component: () => import('./views/settings/Settings.vue'),

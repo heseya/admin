@@ -41,6 +41,7 @@
     "consents": "Marketing consents",
     "webhooks": "Webhooks",
     "seo": "SEO settings",
+    "providers": "oAuth",
     "advanced": "Advanced settings"
   },
   "models": {

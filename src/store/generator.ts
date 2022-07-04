@@ -280,7 +280,7 @@ export const createVuexCRUD =
               `/${endpoint}/${value}${stringQuery}`,
               item,
             )
-            commit(StoreMutations.EditData, { key, value, item: data.data })
+            commit(StoreMutations.EditData, { key, value, item: data.data || data })
             commit(StoreMutations.SetLoading, false)
             return data.data
           } catch (error: any) {

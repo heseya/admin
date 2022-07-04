@@ -22,6 +22,7 @@ export enum AuthPermission {
   PasswordChange = 'auth.password_change',
   SessionsShow = 'auth.sessions.show',
   SessionsRevoke = 'auth.sessions.revoke',
+  ProvidersManage = 'auth.providers.manage',
 }
 
 export enum BannersPermission {

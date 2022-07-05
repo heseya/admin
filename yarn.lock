@@ -12640,6 +12640,11 @@ vue-inline-svg@^2.1.0:
   resolved "https://registry.npmjs.org/vue-inline-svg/-/vue-inline-svg-2.1.0.tgz"
   integrity sha512-80u/BGtjOzXp31yFahXsfvkBrHKHEHKyrkZ42MGoAbD6jHzWpMJLijsyRj66pps7IyKxZcnYkO3ijsJhr4zXsg==
 
+vue-json-pretty@1.8.3:
+  version "1.8.3"
+  resolved "https://registry.yarnpkg.com/vue-json-pretty/-/vue-json-pretty-1.8.3.tgz#ee94fb111a8954d17442904e5ace6e45b2dc247d"
+  integrity sha512-rpsop8LMy6EybkjmlT8a2fB2mHe0EMvxoCuw6lXcNBDsVkRuD4+eDwzqjshfe5qEki8EVLqr1o6n+lSLkR/tgQ==
+
 vue-keypress@^2.1.1:
   version "2.1.1"
   resolved "https://registry.npmjs.org/vue-keypress/-/vue-keypress-2.1.1.tgz"

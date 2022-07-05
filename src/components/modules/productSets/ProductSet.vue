@@ -78,20 +78,37 @@
         class="search-results"
         :class="{
           'search-results--success': searchedChildren.length,
-          'search-results--error': noSearchMatches || searchingError,
+          'search-results--error': isSearchError,
         }"
       >
         <loading v-if="isSearching" :active="isSearching" :size="16" />
-        <p v-else-if="searchingError">{{ $t('search.error') }}</p>
-        <p v-else-if="searchedChildren.length">
-          {{
-            $t('search.found', {
-              positions: String(searchedChildren.length),
-              phrase: searchedPhrase,
-            })
-          }}
+        <p v-else-if="searchingError" class="search-results__description">
+          {{ $t('search.error') }}
         </p>
-        <p v-else-if="noSearchMatches">
+        <p v-else-if="searchedChildren.length" class="search-results__description">
+          <span class="search-results__info"
+            >{{
+              $t('search.found', {
+                positions: String(totalSearchedResults),
+                phrase: searchedPhrase,
+              })
+            }}
+          </span>
+          <span v-if="totalSearchedResults >= searchedDisplayLimit" class="search-results__info"
+            ><b>{{
+              $t('search.display', {
+                positions: String(searchedDisplayLimit),
+              })
+            }}</b>
+          </span>
+          <span
+            v-if="totalSearchedResults > searchedDisplayLimit"
+            class="search-results__info search-results__info--last"
+          >
+            {{ $t('search.specify') }}
+          </span>
+        </p>
+        <p v-else-if="isSearchError" class="search-results__description">
           {{ $t('search.didNotFound', { phrase: searchedPhrase }) }}
         </p>
       </div>
@@ -163,7 +180,9 @@
       "placeholder": "Wyszukaj (min. 3 znaki)",
       "found": "Znaleziono {positions} pozycji z frazą '{phrase}'",
       "didNotFound": "Nie znaleziono pozycji dla '{phrase}'",
-      "error": "Podczas pobierania danych wystąpił błąd"
+      "error": "Podczas pobierania danych wystąpił błąd",
+      "display": "Wyświetlonych pozycji: {positions}",
+      "specify": "Aby uzyskać dokładniejsze wyniki, sprecyzuj swoje zapytanie"
     },
      "collection": "Kolekcja",
      "deleteText": "Czy na pewno chcesz usunąć tę kolekcję? Wraz z nią usuniesz wszystkie jej subkolekcje!",
@@ -182,7 +201,9 @@
       "placeholder": "Search (min. 3 letters)",
       "found": "Found {positions} positions with phrase '{phrase}'",
       "didNotFound": "Did not found positions for '{phrase}'",
-      "error": "An error occurred while downloading a data"
+      "error": "An error occurred while downloading a data",
+      "display": "Positions displayed: {positions}",
+      "specify": "For more accurate results, please refine your query"
     },
     "collection": "Collection",
     "deleteText": "Are you sure you want to delete this collection? All subcollections will be deleted as well!",
@@ -237,20 +258,27 @@ export default Vue.extend({
     selectedSet: null as null | ProductSet,
     selectedChildren: null as null | ProductSet,
     editedItem: cloneDeep(CLEAR_PRODUCT_SET_FORM) as ProductSetDTO,
-    editedItemSlugPrefix: '',
+    editedItemSlugPrefix: '' as string,
     areChildrenVisible: false,
     isFormModalActive: false,
     isLoading: false,
     isSearching: false,
     searchingError: false,
-    searchPhrase: '',
-    noSearchMatches: false,
-    searchedPhrase: '',
+    searchPhrase: '' as string,
+    searchedDisplayLimit: 24,
+    searchedPhrase: '' as string,
+    totalSearchedResults: null as null | number,
   }),
   computed: {
+    isSearchError(): boolean {
+      if (Number.isInteger(this.totalSearchedResults))
+        return !this.totalSearchedResults || this.searchingError
+      return false
+    },
     areMoreChildren(): boolean {
       return this.children.length < this.childrenQuantity
     },
+    // TODO: That's probably should be deleted
     isFetchAllChildren(): boolean {
       return this.$accessor.env.autoload_all_product_set_children === '1'
     },
@@ -275,7 +303,7 @@ export default Vue.extend({
         this.fetchBySearch(this.set.id, this.searchPhrase)
         return
       }
-      this.noSearchMatches = false
+      this.totalSearchedResults = null
       this.searchedChildren = []
     }, 500),
     createSuccess(set: ProductSet) {
@@ -339,7 +367,6 @@ export default Vue.extend({
         )
         this.children = [...this.children, ...subcollections]
         this.page++
-        // if (links.next && this.isFetchAllChildren) await this.fetchChildren()
       } catch (e: any) {
         this.$toast.error(formatApiNotificationError(e))
       }
@@ -347,14 +374,11 @@ export default Vue.extend({
       this.isLoading = false
     },
     async fetchByParentId(parentId: UUID, limit: number, page: number) {
-      // const childrenLimit = this.isFetchAllChildren ? 500 : limit
-      const childrenLimit = 30
-
       const { data: res } = await api.get<{
         data: ProductSet[]
         links: ResponseLinks
         meta: ResponseMeta
-      }>(`/product-sets?parent_id=${parentId}&page=${page}&tree=0&limit=${childrenLimit}`)
+      }>(`/product-sets?parent_id=${parentId}&page=${page}&tree=0&limit=${this.limit}`)
       return res
     },
     async fetchBySearch(parentId: UUID, search: string) {
@@ -368,17 +392,13 @@ export default Vue.extend({
         }>(`/product-sets?parent_id=${parentId}&search=${search}`)
 
         this.searchedChildren = res.data
-
-        if (!res.meta.total) {
-          this.noSearchMatches = true
-        } else {
-          this.noSearchMatches = false
-        }
+        this.totalSearchedResults = res.meta.total
+        this.searchedDisplayLimit = res.meta.per_page
       } catch (e: any) {
         this.searchedPhrase = ''
         this.searchingError = true
         this.isSearching = false
-        this.noSearchMatches = false
+        this.totalSearchedResults = null
         this.$toast.error(formatApiNotificationError(e))
       }
       this.isSearching = false
@@ -508,6 +528,19 @@ export default Vue.extend({
   &--error {
     background-color: $red-color-400;
     color: white;
+  }
+
+  &__description {
+    font-size: 13px;
+    text-align: left;
+  }
+
+  &__info {
+    display: block;
+
+    &--last {
+      margin-top: 8px;
+    }
   }
 
   p {

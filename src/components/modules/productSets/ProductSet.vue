@@ -1,6 +1,8 @@
 <template>
   <div class="product-set" @click.stop="toggleChildrenVisibility">
     <div class="product-set__content">
+      <i class="bx bx-move-vertical handle"></i>
+
       <icon-button type="transparent" size="small" :disabled="!childrenQuantity">
         <template #icon>
           <i v-if="areChildrenVisible" class="bx bx-minus"></i>
@@ -58,7 +60,7 @@
     </div>
 
     <div v-show="areChildrenVisible" class="product-set__children">
-      <Draggable v-model="children" @change="onDrop">
+      <Draggable v-model="children" handle=".handle" @change="onDrop">
         <product-set
           v-for="child in children"
           :key="child.id"
@@ -309,7 +311,6 @@ export default Vue.extend({
   padding: 2px 8px;
   padding-right: 0;
   border-bottom: solid 1px $background-color-700;
-  cursor: grab;
   transition: 0.3s;
 
   &.sortable-chosen,
@@ -359,6 +360,10 @@ export default Vue.extend({
     display: flex;
     justify-content: center;
     padding: 0.5em 0;
+  }
+
+  .handle {
+    cursor: grab;
   }
 }
 </style>

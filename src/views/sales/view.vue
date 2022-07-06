@@ -1,6 +1,6 @@
 <template>
   <div class="sale-view narrower-page">
-    <top-nav :title="!isNew ? sale.name : $t('newTitle')">
+    <top-nav :title="isNew ? $t('newTitle') : $t('edit')">
       <!-- <audits-modal :id="sale.id" model="sales" /> -->
 
       <pop-confirm
@@ -23,6 +23,17 @@
     <div class="sale-view__form">
       <validation-observer v-slot="{ handleSubmit }">
         <card>
+          <div v-if="!isNew" class="sale-status">
+            <h2 class="section-title">{{ $t('saleStatus') }}</h2>
+
+            <switch-input horizontal colorized-label>
+              <template #title>
+                {{ $t('active') }}
+              </template>
+            </switch-input>
+          </div>
+          <hr v-if="!isNew" />
+
           <SaleForm v-model="form" :disabled="!canModify" />
           <hr />
 
@@ -57,7 +68,10 @@
 {
   "en": {
     "newTitle": "New sale",
+    "edit": "Edit sale",
     "deleteText": "Are you sure, you want to delete this sale?",
+    "saleStatus": "Sale status",
+    "active": "Active",
     "alerts": {
       "deleted": "Sale has been deleted",
       "created": "Sale has been created",
@@ -66,7 +80,10 @@
   },
   "pl": {
     "newTitle": "Nowa promocja",
+    "edit": "Edytuj promocję",
     "deleteText": "Jesteś pewien, że chcesz usunąć tą promocje?",
+    "saleStatus": "Status promocji",
+    "active": "Aktywna",
     "alerts": {
       "deleted": "Promocja została usunięta",
       "created": "Promocja została utworzona",
@@ -210,4 +227,16 @@ export default Vue.extend({
 //   &__form {
 //   }
 // }
+.sale-status {
+  display: flex;
+
+  .section-title {
+    margin: 0 20px 0 0;
+  }
+}
+.section-title {
+  font-size: 15px;
+  line-height: 19px;
+  font-weight: 600;
+}
 </style>

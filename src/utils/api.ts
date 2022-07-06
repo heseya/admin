@@ -28,6 +28,8 @@ export const getApiURL = () => {
       return '***REMOVED***'
     case 'sandbox-admin.heseya.com':
       return 'https://feature-sandbox.***REMOVED***'
+    case 'admin.***REMOVED***.pl':
+      return 'https://api.***REMOVED***.pl'
     default:
       return (process.env.VUE_APP_API_URL as string) || '***REMOVED***'
   }

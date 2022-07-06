@@ -33,7 +33,9 @@
           <template #header>
             <span>{{ $t('expand') }}</span>
           </template>
-          <pre v-if="data.payload">{{ payloadResponse }}</pre>
+
+          <vue-json-pretty v-if="data.payload" :path="'res'" :data="JSON.parse(payloadResponse)">
+          </vue-json-pretty>
         </a-collapse-panel>
       </a-collapse>
       <span v-else class="log__data-value"> - </span>
@@ -48,7 +50,8 @@
           <template #header>
             <span>{{ $t('expand') }}</span>
           </template>
-          <pre v-if="data.response">{{ logResponse }}</pre>
+          <vue-json-pretty v-if="data.response" :path="'res'" :data="JSON.parse(logResponse)">
+          </vue-json-pretty>
         </a-collapse-panel>
       </a-collapse>
       <span v-else class="log__data-value"> - </span>
@@ -59,16 +62,16 @@
 <i18n>
 {
   "pl": {
-    "event": "wydarzenie",
-    "response": "odpowiedź",
-    "payload": "ładunek",
+    "event": "Wydarzenie",
+    "response": "Odpowiedź",
+    "payload": "Ładunek",
     "expand": "Rozwiń aby zobaczyć",
     "noStatusInfo": "Brak informacji o statusie"
   },
   "en": {
-    "event": "event",
-    "response": "response",
-    "payload": "payload",
+    "event": "Event",
+    "response": "Response",
+    "payload": "Payload",
     "expand": "Expand to see more",
     "noStatusInfo": "No status information"
   }
@@ -81,8 +84,14 @@ import Vue, { PropOptions } from 'vue'
 import { ComputedClassName } from '@/interfaces/computedClassName'
 import { WebHookEventLogEntry } from '@/interfaces/Webhook'
 import { getRelativeDate } from '@/utils/utils'
+import VueJsonPretty from 'vue-json-pretty'
+import 'vue-json-pretty/lib/styles.css'
 
 export default Vue.extend({
+  components: {
+    VueJsonPretty,
+  },
+
   props: {
     data: { type: Object, required: true } as PropOptions<WebHookEventLogEntry>,
   },

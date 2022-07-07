@@ -70,6 +70,12 @@ export default Vue.extend({
     font-family: $primaryFont;
     font-size: 0.8em;
     margin-bottom: 3px;
+    display: flex;
+    align-items: center;
+
+    & > i {
+      margin-left: 4px;
+    }
 
     &--colorized {
       margin: 0;
@@ -80,6 +86,10 @@ export default Vue.extend({
 
     &--colorized#{&}--enabled {
       color: $green-color-500;
+    }
+
+    &--colorized#{&}--disabled {
+      color: $gray-color-600;
     }
   }
 

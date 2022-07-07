@@ -26,10 +26,9 @@
           <div v-if="!isNew" class="sale-status">
             <h2 class="section-title">{{ $t('saleStatus') }}</h2>
 
-            <switch-input horizontal colorized-label>
-              <template #title>
-                {{ $t('active') }}
-              </template>
+            <!-- TODO: display it when backend will be ready -->
+            <switch-input v-if="false" horizontal colorized-label>
+              <template #title> {{ true ? $t('common.active') : $t('common.inactive') }} </template>
             </switch-input>
           </div>
           <hr v-if="!isNew" />
@@ -71,7 +70,6 @@
     "edit": "Edit sale",
     "deleteText": "Are you sure, you want to delete this sale?",
     "saleStatus": "Sale status",
-    "active": "Active",
     "alerts": {
       "deleted": "Sale has been deleted",
       "created": "Sale has been created",
@@ -83,7 +81,6 @@
     "edit": "Edytuj promocję",
     "deleteText": "Jesteś pewien, że chcesz usunąć tą promocje?",
     "saleStatus": "Status promocji",
-    "active": "Aktywna",
     "alerts": {
       "deleted": "Promocja została usunięta",
       "created": "Promocja została utworzona",
@@ -229,6 +226,8 @@ export default Vue.extend({
 // }
 .sale-status {
   display: flex;
+  align-items: center;
+  margin: 3px 0;
 
   .section-title {
     margin: 0 20px 0 0;

@@ -167,7 +167,7 @@ export default Vue.extend({
           const {
             data: { data: products, meta },
           } = await api.get<{ data: Product[]; meta: ResponseMeta }>(
-            `/product-sets/id:${this.set.id}/products?limit=500&page=${page}`,
+            `/product-sets/id:${this.set.id}/products?limit=30&page=${page}`,
           )
           this.products.push(...products)
           page++

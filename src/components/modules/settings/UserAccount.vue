@@ -117,6 +117,12 @@ export default Vue.extend({
     margin-top: 12px;
     padding: 0 10px;
 
+    & > * {
+      &:not(:first-child) {
+        margin-top: 8px;
+      }
+    }
+
     .switch-input {
       justify-content: start;
     }

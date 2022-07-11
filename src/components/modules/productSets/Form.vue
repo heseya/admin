@@ -241,16 +241,25 @@ export default Vue.extend({
       this.form = { ...cloneDeep(CLEAR_PRODUCT_SET_FORM), ...cloneDeep(value) }
     },
     isOpen(isOpen: boolean) {
-      this.$nextTick(() => {
-        // ? Workaround for a bugged ArticleEditor, which doesn't render correctly in the first time
-        this.isEditorActive = isOpen
-      })
+      this.activateEditor(isOpen)
     },
   },
-  created() {
+  async created() {
     this.form = { ...cloneDeep(CLEAR_PRODUCT_SET_FORM), ...cloneDeep(this.value) }
+    if (this.isOpen) this.activateEditor()
+
+    const data = await this.$accessor.productSets.get(this.form.id as string)
+    if (data) {
+      this.form.description_html = data.description_html
+      this.form.seo = data.seo
+    }
   },
   methods: {
+    activateEditor(active = true) {
+      // ? Workaround for a bugged ArticleEditor, which doesn't render correctly in the first time
+      this.$nextTick(() => (this.isEditorActive = active))
+    },
+
     editSlug() {
       if (!this.form.id) {
         this.form.slug_suffix = generateSlug(this.form.name)
@@ -307,6 +316,7 @@ export default Vue.extend({
     justify-content: space-between;
     margin-top: 12px;
     padding: 0 10px;
+    gap: 8px;
   }
 
   .slug-input {

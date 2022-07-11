@@ -192,9 +192,16 @@ export default Vue.extend({
       },
     },
     requiredPermissions(): PermissionObject[] {
-      return (this.appInfo?.required_permissions || [])
-        .map((name) => this.$accessor.roles.permissions.find((perm) => perm.name === name))
-        .filter((perm) => !!perm) as PermissionObject[]
+      return (this.appInfo?.required_permissions || []).map(
+        (name) =>
+          this.$accessor.roles.permissions.find((perm) => perm.name === name) ||
+          ({
+            id: `${Math.random()}`,
+            name,
+            display_name: name,
+            assignable: false,
+          } as PermissionObject),
+      )
     },
   },
   watch: {

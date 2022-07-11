@@ -1,6 +1,6 @@
 <template>
   <validation-observer v-slot="{ handleSubmit }">
-    <card>
+    <card class="banners-page">
       <div class="row">
         <validated-input
           v-model="form.name"
@@ -112,5 +112,13 @@ export default Vue.extend({
 .row {
   display: flex;
   gap: 16px;
+}
+
+.banners-page {
+  .row {
+    @media ($max-viewport-6) {
+      flex-wrap: wrap;
+    }
+  }
 }
 </style>

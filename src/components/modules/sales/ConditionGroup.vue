@@ -22,6 +22,7 @@
         v-for="(condition, i) in group.conditions"
         :key="i"
         v-model="group.conditions[i]"
+        :number="i + 1"
         :disabled="disabled"
         @remove="removeCondition(i)"
       />
@@ -38,13 +39,13 @@
 {
   "en": {
     "addCondition": "Add condition",
-    "removeGroup": "Remove group",
+    "removeGroup": "Remove conditions group",
     "empty": "No conditions in the group",
     "errorTitle": "Every group needs to have at least one condition"
   },
   "pl": {
     "addCondition": "Dodaj warunek",
-    "removeGroup": "Usuń grupę",
+    "removeGroup": "Usuń grupę warunków",
     "empty": "Brak warunków rabatowych w grupie",
     "errorTitle": "Każda grupa musi zawierać co najmniej jeden warunek"
   }
@@ -97,7 +98,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .condition-group {
-  border: dashed 1px $background-color-700;
+  background-color: #f7f7f8;
   border-radius: 4px;
   padding: 8px;
   transition: 0.3s;
@@ -115,8 +116,13 @@ export default Vue.extend({
 
   &__content {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     grid-gap: 8px;
+    margin-top: 8px;
+
+    @media ($viewport-5) {
+      grid-template-columns: 1fr 1fr;
+    }
   }
 }
 </style>

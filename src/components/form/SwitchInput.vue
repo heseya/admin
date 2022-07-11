@@ -3,7 +3,14 @@
     class="switch-input"
     :class="{ 'switch-input--horizontal': horizontal, [`switch-input--${type}`]: true }"
   >
-    <label class="switch-input__label">
+    <label
+      class="switch-input__label"
+      :class="{
+        'switch-input__label--colorized': colorizedLabel,
+        'switch-input__label--disabled': disabled,
+        'switch-input__label--enabled': !disabled,
+      }"
+    >
       <slot name="title">{{ label }}</slot>
     </label>
     <a-switch
@@ -41,6 +48,7 @@ export default Vue.extend({
     name: { type: String, default: '' },
     type: { type: String, default: 'default' },
     dataCy: { type: String, default: '' },
+    colorizedLabel: { type: Boolean, default: false },
   },
   methods: {
     onInput(v: boolean) {
@@ -58,9 +66,31 @@ export default Vue.extend({
   align-items: center;
 
   &__label {
+    $label: &;
     font-family: $primaryFont;
     font-size: 0.8em;
     margin-bottom: 3px;
+    display: flex;
+    align-items: center;
+
+    & > i {
+      margin-left: 4px;
+    }
+
+    &--colorized {
+      margin: 0;
+      text-transform: uppercase;
+      font-weight: 400;
+      font-size: 11px;
+    }
+
+    &--colorized#{&}--enabled {
+      color: $green-color-500;
+    }
+
+    &--colorized#{&}--disabled {
+      color: $gray-color-600;
+    }
   }
 
   &--horizontal {
@@ -70,6 +100,12 @@ export default Vue.extend({
     font-size: 1em;
     font-weight: 600;
     margin-right: 10px;
+
+    &--colorized {
+      text-transform: uppercase;
+      font-weight: 400;
+      font-size: 11px;
+    }
   }
 
   .ant-switch {

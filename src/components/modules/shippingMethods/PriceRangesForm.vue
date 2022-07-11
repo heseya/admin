@@ -18,6 +18,7 @@
           type="number"
         />
         <icon-button
+          class="price-ranges-form__button"
           :disabled="disabled || i === 0"
           type="transparent"
           @click.stop="removeRange(i)"
@@ -122,8 +123,12 @@ export default Vue.extend({
   &__row {
     display: grid;
     grid-template-columns: 1fr 1fr 32px;
-    align-items: center;
+    align-items: end;
     grid-gap: 12px;
+  }
+
+  &__button {
+    align-self: center;
   }
 
   &__error {

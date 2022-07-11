@@ -233,7 +233,7 @@ export default Vue.extend({
 
   &__fields {
     display: grid;
-    gap: 10px;
+    gap: 6px;
 
     grid-template-areas:
       'name'
@@ -256,7 +256,7 @@ export default Vue.extend({
 
     @media ($viewport-8) {
       grid-template-columns: 35fr 15fr 25fr 25fr;
-      gap: 26px 20px;
+      gap: 12px;
       grid-template-areas:
         'name desc desc desc'
         'type type value priority'

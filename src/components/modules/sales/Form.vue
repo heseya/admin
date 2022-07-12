@@ -221,7 +221,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .sale-configurator {
   ::v-deep .bxs-info-circle {
-    font-size: 1rem;
+    font-size: 12px;
   }
 
   ::v-deep .bx-plus {

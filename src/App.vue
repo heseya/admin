@@ -13,11 +13,11 @@
 
     <Loading :relative="false" :active="isLoading" />
 
-    <sw-update-popup />
+    <SwUpdatePopup />
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "en": {
     "noPermissionError": "You don't have permission to this action."
@@ -76,11 +76,11 @@ export default Vue.extend({
       this.$toast.error(this.$t('noPermissionError') as string)
     },
 
-    '$accessor.auth.getIdentityToken'(token) {
+    '$accessor.auth.getIdentityToken'(token: string) {
       this.tokenChannel.emit('set', token)
     },
 
-    '$i18n.locale'(locale) {
+    '$i18n.locale'(locale: string) {
       this.mainChannel.emit('uiLanguage:set', locale)
     },
   },

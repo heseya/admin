@@ -5,7 +5,7 @@
       class="single-select-input__select"
       option-filter-prop="label"
       :mode="isMutipleMode ? 'multiple' : 'default'"
-      :disabled="disabled || isLoading"
+      :disabled="disabled"
       show-search
       allow-clear
       :loading="isLoading"
@@ -98,13 +98,20 @@ export default Vue.extend({
       return this.value?.[0]?.id || undefined
     },
 
+    singleOptionName(): UUID | undefined {
+      return this.value?.[0]?.name || undefined
+    },
+
     multiOptionsIds(): UUID[] {
       return (this.value || []).map((v) => v?.id).filter(Boolean) || []
     },
 
+    multiOptionsNames(): UUID[] {
+      return (this.value || []).map((v) => v?.name).filter(Boolean) || []
+    },
+
     inputValue(): UUID | UUID[] | undefined {
-      if (this.isLoading) return this.isMutipleMode ? [] : undefined
-      return this.isMutipleMode ? this.multiOptionsIds : this.singleOptionId
+      return this.isMutipleMode ? this.multiOptionsNames : this.singleOptionName
     },
   },
   watch: {

@@ -17,7 +17,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { version } from '../../../package.json'
+
+import pkg from '../../../package.json'
+
 import Card from '../layout/Card.vue'
 import NavStoreLogo from '../root/NavStoreLogo.vue'
 import PoweredBy from '../root/PoweredBy.vue'
@@ -30,7 +32,7 @@ export default Vue.extend({
   },
   computed: {
     version(): string {
-      return version
+      return pkg.version
     },
   },
 })

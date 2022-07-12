@@ -362,7 +362,7 @@ export default Vue.extend({
       this.$accessor.stopLoading()
       this.isLoading = true
       try {
-        const { data: subcollections, links } = await this.fetchByParentId(
+        const { data: subcollections } = await this.fetchByParentId(
           this.set.id,
           this.limit,
           this.page,

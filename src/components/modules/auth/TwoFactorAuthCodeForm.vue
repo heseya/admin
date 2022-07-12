@@ -31,7 +31,7 @@
   </ValidationObserver>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "returnToLogin": "Wróć do formularza logowania",

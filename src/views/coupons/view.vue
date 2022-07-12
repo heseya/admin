@@ -62,7 +62,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "en": {
     "newTitle": "New coupon",

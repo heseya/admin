@@ -30,7 +30,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Uprawnienia roli",
@@ -42,7 +42,7 @@
       "audits": "Historia zmian",
       "auth": "Autoryzacja użytkowników",
       "product_sets": "Kolekcje",
-      "consents":"Zgody",
+      "consents": "Zgody",
       "countries": "Kraje",
       "shipping_methods": "Metody dostawy",
       "deposits": "Depozyty",
@@ -77,7 +77,7 @@
       "audits": "Audits",
       "auth": "Auth",
       "product_sets": "Product sets",
-      "consents":"Consents",
+      "consents": "Consents",
       "countries": "Countries",
       "shipping_methods": "Shipping methods",
       "deposits": "Deposits",

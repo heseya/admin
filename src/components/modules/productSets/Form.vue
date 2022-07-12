@@ -119,7 +119,7 @@
   </validation-observer>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "newTitle": "Nowa kolekcja",

@@ -37,7 +37,7 @@
   </header>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "back": "Wróć do listy",

@@ -168,7 +168,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "menu": {
@@ -186,10 +186,10 @@
       "display": "Wyświetlonych pozycji: {positions}",
       "specify": "Aby uzyskać dokładniejsze wyniki, sprecyzuj swoje zapytanie"
     },
-     "collection": "Kolekcja",
-     "deleteText": "Czy na pewno chcesz usunąć tę kolekcję? Wraz z nią usuniesz wszystkie jej subkolekcje!",
-     "deleteSuccess": "Kolekcja została usunięta",
-     "fetchMore":"Wczytaj więcej"
+    "collection": "Kolekcja",
+    "deleteText": "Czy na pewno chcesz usunąć tę kolekcję? Wraz z nią usuniesz wszystkie jej subkolekcje!",
+    "deleteSuccess": "Kolekcja została usunięta",
+    "fetchMore": "Wczytaj więcej"
   },
   "en": {
     "menu": {
@@ -210,7 +210,7 @@
     "collection": "Collection",
     "deleteText": "Are you sure you want to delete this collection? All subcollections will be deleted as well!",
     "deleteSuccess": "Collection has been deleted",
-    "fetchMore":"Fetch more"
+    "fetchMore": "Fetch more"
   }
 }
 </i18n>

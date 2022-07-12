@@ -86,12 +86,12 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Edycja menu",
     "menu": "Menu",
-    "options":"Dostępne zakładki",
+    "options": "Dostępne zakładki",
     "success": "Menu zostało zmienione",
     "successReset": "Menu zostało zresetowane",
     "info": "Tutaj możesz edytować swoje menu. Zakładki: <b>Dashboard</b>, <b>Zamówienia</b> oraz <b>Ustawienia</b> jako jedyne nie mogą zostać z niego usunięte."
@@ -99,7 +99,7 @@
   "en": {
     "title": "Edit menu",
     "menu": "Menu",
-    "options":"Available tabs",
+    "options": "Available tabs",
     "success": "Menu has been changed",
     "successReset": "Menu has been reseted",
     "info": "You can customize your menu. The tabs: <b>Dashboard</b>, <b>Orders</b> and <b>Settings</b> cannot be modified."

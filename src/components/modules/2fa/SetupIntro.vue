@@ -16,7 +16,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Aktywuj weryfikację dwuetapową by zwiększyć bezpieczeństwo konta",

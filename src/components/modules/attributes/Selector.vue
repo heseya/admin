@@ -40,7 +40,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "en": {
     "createNew": "Create new attribute",

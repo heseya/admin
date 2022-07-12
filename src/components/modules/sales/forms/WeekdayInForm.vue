@@ -19,7 +19,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "en": {
     "description": "Select days of week, when discount will be applied",

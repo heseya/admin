@@ -42,7 +42,7 @@
   </a-modal>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "add": "Dodaj opcję",
@@ -62,7 +62,6 @@
       "value_text": "Text value",
       "value_number": "Number value",
       "value_date": "Date value"
-
     }
   }
 }

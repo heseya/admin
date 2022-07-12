@@ -286,6 +286,7 @@ import { generateSlug } from '@/utils/generateSlug'
 import { updateProductAttributeOptions } from '@/services/updateProductAttributeOptions'
 
 import { UUID } from '@/interfaces/UUID'
+//TODO: Swap with store-core types
 import { Product, ProductDTO, ProductComponentForm } from '@/interfaces/Product'
 
 const EMPTY_FORM: ProductComponentForm = {

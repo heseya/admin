@@ -1,15 +1,19 @@
 /* eslint-disable camelcase */
+import {
+  SeoMetadataDto,
+  ProductSet,
+  Sale,
+  SeoMetadata,
+  Metadata,
+  CdnMedia,
+  ProductAttribute,
+  Tag,
+  Schema,
+} from '@heseya/store-core'
 import { UUID } from './UUID'
-import { Schema } from './Schema'
-import { Tag } from './Tag'
-import { CdnMedia } from './Media'
-import { ProductSet } from './ProductSet'
-import { SeoMetadata, SeoMetadataDto } from './SeoMetadata'
-import { Sale } from './SalesAndCoupons'
-import { Metadata } from './Metadata'
-import { ProductAttribute } from './Attribute'
 
-export interface ProductInnerItem {
+// TODO: Delete when store-core version could be swapped
+interface ProductInnerItem {
   id: UUID
   name: string
   required_quantity: number

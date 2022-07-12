@@ -15,6 +15,7 @@
             class="nav-link-img"
             :src="require(`@/assets/images/${item.svgIconPath}`)"
           />
+          <img v-else-if="item.iconPath" :src="item.iconPath" class="nav-link-img" />
           <i v-else :class="item.iconClass" class="nav-link-svg" />
           <span class="nav__link-label">{{ $t(item.label) }}</span>
         </router-link>

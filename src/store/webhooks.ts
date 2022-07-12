@@ -1,4 +1,5 @@
 import {
+  WebHookEventObject,
   WebhookEntry,
   WebhookEntryCreateDto,
   WebhookEntryUpdateDto,
@@ -26,7 +27,7 @@ export const webhooks = createVuexCRUD<
     SET_EVENTS(state, events: WebHookEventObject[]) {
       state.events = events
     },
-    SET_LOGS(state, events: WebHookEventLog[]) {
+    SET_LOGS(state, events: WebhookEventLog[]) {
       state.logs = events
     },
     SET_LOGS_META(state, meta: ResponseMeta) {
@@ -51,7 +52,7 @@ export const webhooks = createVuexCRUD<
       commit(StoreMutations.SetLoading, true)
       try {
         const params = stringifyQueryParams(parameters)
-        const response = await api.get<{ data: WebHookEventLog[]; meta: ResponseMeta }>(
+        const response = await api.get<{ data: WebhookEventLog[]; meta: ResponseMeta }>(
           `/webhooks/logs${params}`,
         )
         commit('SET_LOGS', response.data.data)

@@ -155,7 +155,7 @@
                 />
                 <br />
                 <small class="label">{{ $t('form.shortDescription') }}</small>
-                <Textarea
+                <AppTextarea
                   v-if="!isLoading"
                   v-model="form.description_short"
                   :disabled="!canModify"
@@ -208,7 +208,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "newProductTitle": "Nowy produkt",
@@ -275,7 +275,7 @@ import SeoForm from '@/components/modules/seo/Accordion.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
-import Textarea from '@/components/form/Textarea.vue'
+import AppTextarea from '@/components/form/Textarea.vue'
 import AttributesConfigurator from '@/components/modules/attributes/configurator/Configurator.vue'
 import WarehouseItemsConfigurator from '@/components/modules/products/WarehouseItemsConfigurator.vue'
 import GoogleCategorySelect from '@/components/modules/products/GoogleCategorySelect.vue'
@@ -328,7 +328,7 @@ export default Vue.extend({
     SwitchInput,
     SeoForm,
     AuditsModal,
-    Textarea,
+    AppTextarea,
     MetadataForm,
     AttributesConfigurator,
     WarehouseItemsConfigurator,

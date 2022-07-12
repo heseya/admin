@@ -70,7 +70,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Dashboard",
@@ -82,7 +82,7 @@
       "year": "W tym roku",
       "lastYear": "W ubiegłym roku"
     },
-    "lastOrders": {"title": "Ostatnie zamówienia"}
+    "lastOrders": { "title": "Ostatnie zamówienia" }
   },
   "en": {
     "title": "Dashboard",
@@ -94,7 +94,7 @@
       "year": "This year",
       "lastYear": "Previous year"
     },
-    "lastOrders": {"title": "Last orders"}
+    "lastOrders": { "title": "Last orders" }
   }
 }
 </i18n>

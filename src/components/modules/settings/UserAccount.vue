@@ -28,23 +28,23 @@
   </validation-observer>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "username": "Nazwa użytkownika",
-    "successfull_login_attempt_alert":"Powiadomienie o sukcesie logowania",
-    "failed_login_attempt_alert":"Powiadomienie o nieudanym logowaniu",
-    "new_localization_login_alert":"Powiadomienie o logowaniu z nowej lokalizacji",
-    "recovery_code_changed_alert":"Powiadomienie o zmianie kodu przywracania",
+    "successfull_login_attempt_alert": "Powiadomienie o sukcesie logowania",
+    "failed_login_attempt_alert": "Powiadomienie o nieudanym logowaniu",
+    "new_localization_login_alert": "Powiadomienie o logowaniu z nowej lokalizacji",
+    "recovery_code_changed_alert": "Powiadomienie o zmianie kodu przywracania",
     "savePreferences": "Zapisz zmiany",
     "successMessage": "Preferencje zostały zmienione"
   },
   "en": {
     "username": "User name",
-    "successfull_login_attempt_alert":"Successfull login attempt alert",
-    "failed_login_attempt_alert":"Failed login attempt alert",
-    "new_localization_login_alert":"New localization login alert",
-    "recovery_code_changed_alert":"Recovery code changed alert",
+    "successfull_login_attempt_alert": "Successfull login attempt alert",
+    "failed_login_attempt_alert": "Failed login attempt alert",
+    "new_localization_login_alert": "New localization login alert",
+    "recovery_code_changed_alert": "Recovery code changed alert",
     "savePreferences": "Save preferences",
     "successMessage": "Preferences changed"
   }

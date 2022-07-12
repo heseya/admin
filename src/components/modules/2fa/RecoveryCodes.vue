@@ -5,7 +5,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "message": "Kliknij w kody, aby je skopiować do schowka",

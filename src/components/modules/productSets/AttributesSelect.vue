@@ -16,7 +16,7 @@
   </app-select>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "label": "Cechy, po których można filtrować produkty",

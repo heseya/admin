@@ -1,6 +1,6 @@
 <template>
   <div class="sale-view narrower-page">
-    <top-nav :title="!isNew ? sale.name : $t('newTitle')">
+    <top-nav :title="isNew ? $t('newTitle') : $t('edit')">
       <!-- <audits-modal :id="sale.id" model="sales" /> -->
 
       <pop-confirm
@@ -53,11 +53,13 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "en": {
     "newTitle": "New sale",
+    "edit": "Edit sale",
     "deleteText": "Are you sure, you want to delete this sale?",
+    "saleStatus": "Sale status",
     "alerts": {
       "deleted": "Sale has been deleted",
       "created": "Sale has been created",
@@ -66,7 +68,9 @@
   },
   "pl": {
     "newTitle": "Nowa promocja",
+    "edit": "Edytuj promocję",
     "deleteText": "Jesteś pewien, że chcesz usunąć tą promocje?",
+    "saleStatus": "Status promocji",
     "alerts": {
       "deleted": "Promocja została usunięta",
       "created": "Promocja została utworzona",
@@ -204,4 +208,18 @@ export default Vue.extend({
 //   &__form {
 //   }
 // }
+.sale-status {
+  display: flex;
+  align-items: center;
+  margin: 3px 0;
+
+  .section-title {
+    margin: 0 20px 0 0;
+  }
+}
+.section-title {
+  font-size: 15px;
+  line-height: 19px;
+  font-weight: 600;
+}
 </style>

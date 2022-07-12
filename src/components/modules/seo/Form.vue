@@ -67,7 +67,7 @@
   </modal-form>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "form": {

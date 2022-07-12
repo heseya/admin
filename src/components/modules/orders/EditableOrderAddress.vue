@@ -37,7 +37,7 @@
   </field>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "removeConfirm": "Czy na pewno chcesz usunąć adres?"
@@ -57,7 +57,7 @@ import OrderAddress from './OrderAddress.vue'
 import Field from '../../Field.vue'
 
 export default Vue.extend({
-  name: 'Address',
+  name: 'EditableOrderAddress',
   components: { PopConfirm, OrderAddress, Field },
   props: {
     title: {

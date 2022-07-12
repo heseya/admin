@@ -12,7 +12,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Ustawienia SEO",
@@ -27,7 +27,6 @@
     "savedMessage": "Global SEO has been updated",
     "errorMessage": "An error occurred while updating global SEO",
     "save": "Save changes"
-
   }
 }
 </i18n>

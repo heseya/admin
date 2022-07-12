@@ -22,7 +22,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "phone": "Telefon",
@@ -40,7 +40,7 @@ import Vue from 'vue'
 import { Address } from '@heseya/store-core'
 
 export default Vue.extend({
-  name: 'Address',
+  name: 'OrderAddress',
   props: {
     address: {
       type: Object,

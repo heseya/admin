@@ -5,7 +5,7 @@ import {
   WebhookEventLog,
 } from '@heseya/store-core'
 import { api } from '@/api'
-import { WebHookEventObject } from '@/interfaces/Webhook'
+import { ResponseMeta } from '@/interfaces/Response'
 import { stringifyQueryParams } from '@/utils/stringifyQuery'
 import { createVuexCRUD, StoreMutations } from './generator'
 
@@ -19,14 +19,18 @@ export const webhooks = createVuexCRUD<
   state: {
     events: [] as WebHookEventObject[],
     logs: [] as WebhookEventLog[],
+    logsMeta: {} as ResponseMeta,
   },
   getters: {},
   mutations: {
     SET_EVENTS(state, events: WebHookEventObject[]) {
       state.events = events
     },
-    SET_ACTIVE_EVENTS(state, events: WebhookEventLog[]) {
+    SET_LOGS(state, events: WebHookEventLog[]) {
       state.logs = events
+    },
+    SET_LOGS_META(state, meta: ResponseMeta) {
+      state.logsMeta = meta
     },
   },
   actions: {
@@ -47,8 +51,11 @@ export const webhooks = createVuexCRUD<
       commit(StoreMutations.SetLoading, true)
       try {
         const params = stringifyQueryParams(parameters)
-        const response = await api.get<{ data: WebhookEventLog[] }>(`/webhooks/logs${params}`)
-        commit('SET_ACTIVE_EVENTS', response.data.data)
+        const response = await api.get<{ data: WebHookEventLog[]; meta: ResponseMeta }>(
+          `/webhooks/logs${params}`,
+        )
+        commit('SET_LOGS', response.data.data)
+        commit('SET_LOGS_META', response.data.meta)
 
         commit(StoreMutations.SetError, null)
       } catch (e: any) {

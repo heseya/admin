@@ -1,5 +1,7 @@
 # Heseya Store Admin Dashboard
 
+Recommended IDE Plugin: [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
+
 ## Project setup
 
 ```

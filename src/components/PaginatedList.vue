@@ -20,6 +20,7 @@
         v-model="items"
         :sort-filters="filters && filters.sort"
         v-bind="!!table ? { config: table, draggable } : {}"
+        handle=".handle"
         class="paginated-list__list"
         @sort="onSort"
       >

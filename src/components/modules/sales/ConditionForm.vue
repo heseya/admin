@@ -1,6 +1,16 @@
 <template>
   <div class="condition-form">
     <div class="condition-form__header">
+      <h3 class="condition-form__heading">{{ $t('condition', { number }) }}</h3>
+      <icon-button type="danger" size="small" @click="removeSelf()">
+        {{ $t('remove') }}
+        <template #icon>
+          <i class="bx bx-trash"></i>
+        </template>
+      </icon-button>
+    </div>
+
+    <div class="condition-form__content">
       <ValidationProvider v-slot="{ errors }" rules="required">
         <app-select
           :value="condition.type"
@@ -19,15 +29,6 @@
           <template #error>{{ errors[0] }}</template>
         </app-select>
       </ValidationProvider>
-
-      <icon-button type="danger" size="small" @click="removeSelf()">
-        <template #icon>
-          <i class="bx bx-trash"></i>
-        </template>
-      </icon-button>
-    </div>
-
-    <div class="condition-form__content">
       <component
         :is="formComponent"
         :key="condition.type"
@@ -41,10 +42,12 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "en": {
     "type": "Condition type",
+    "remove": "Remove condition",
+    "condition": "Condition {number}",
     "discountConditionTypes": {
       "order-value": "Order value",
       "user-in-role": "User belongs to role",
@@ -62,6 +65,8 @@
   },
   "pl": {
     "type": "Typ warunku",
+    "remove": "Usuń warunek",
+    "condition": "Warunek {number}",
     "discountConditionTypes": {
       "order-value": "Wartość zamówienia",
       "user-in-role": "Użytkownik należący do roli",
@@ -110,6 +115,7 @@ export default Vue.extend({
   props: {
     value: { type: Object, required: true } as Vue.PropOptions<DiscountConditionDto>,
     disabled: { type: Boolean, default: false },
+    number: { type: Number, required: true },
   },
   computed: {
     DiscountConditionType(): typeof DiscountConditionType {
@@ -198,18 +204,25 @@ export default Vue.extend({
 
 <style lang="scss">
 .condition-form {
-  border: dashed 1px $background-color-700;
+  border: solid 1px #d9dbe0;
+  background-color: white;
   border-radius: 4px;
   padding: 8px;
 
   &:hover {
-    background-color: $background-color-500;
+    background-color: $background-color-700;
+  }
+
+  &__heading {
+    font-size: 14px;
+    line-height: 17px;
   }
 
   &__header {
     width: 100%;
     display: flex;
     align-items: center;
+    justify-content: space-between;
 
     > span {
       width: 100%;
@@ -217,9 +230,16 @@ export default Vue.extend({
     }
   }
 
+  .switch-input {
+    flex-direction: row;
+
+    & > * ~ * {
+      margin-left: 14px;
+    }
+  }
+
   &__row {
     display: flex;
-    justify-content: space-around;
     align-items: flex-start;
 
     > *:not(:last-child) {

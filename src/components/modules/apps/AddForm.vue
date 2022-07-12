@@ -108,7 +108,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "form": {
@@ -195,9 +195,16 @@ export default Vue.extend({
       },
     },
     requiredPermissions(): PermissionEntry[] {
-      return (this.appInfo?.required_permissions || [])
-        .map((name) => this.$accessor.roles.permissions.find((perm) => perm.name === name))
-        .filter((perm) => !!perm) as PermissionEntry[]
+      return (this.appInfo?.required_permissions || []).map(
+        (name) =>
+          this.$accessor.roles.permissions.find((perm) => perm.name === name) ||
+          ({
+            id: `${Math.random()}`,
+            name,
+            display_name: name,
+            assignable: false,
+          } as PermissionObject),
+      )
     },
   },
   watch: {

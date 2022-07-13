@@ -84,7 +84,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Aplikacje",
@@ -199,6 +199,7 @@ export default Vue.extend({
       this.$accessor.stopLoading()
 
       if (success) {
+        this.$accessor.menuItems.removeNotExistingApps()
         this.$toast.success(this.$t('deleteMessage') as string)
         this.isConfigureModalActive = false
       } else {

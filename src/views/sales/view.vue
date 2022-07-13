@@ -23,16 +23,6 @@
     <div class="sale-view__form">
       <validation-observer v-slot="{ handleSubmit }">
         <card>
-          <div v-if="!isNew" class="sale-status">
-            <h2 class="section-title">{{ $t('saleStatus') }}</h2>
-
-            <!-- TODO: display it when backend will be ready -->
-            <switch-input v-if="false" horizontal colorized-label>
-              <template #title> {{ true ? $t('common.active') : $t('common.inactive') }} </template>
-            </switch-input>
-          </div>
-          <hr v-if="!isNew" />
-
           <SaleForm v-model="form" :disabled="!canModify" />
           <hr />
 
@@ -63,7 +53,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "en": {
     "newTitle": "New sale",

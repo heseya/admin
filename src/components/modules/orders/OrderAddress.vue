@@ -22,7 +22,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "phone": "Telefon",
@@ -40,7 +40,7 @@ import { Address } from '@/interfaces/Address'
 import Vue from 'vue'
 
 export default Vue.extend({
-  name: 'Address',
+  name: 'OrderAddress',
   props: {
     address: {
       type: Object,

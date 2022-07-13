@@ -14,17 +14,22 @@
           </legend>
           <draggable
             class="dragArea list-group menu-items__inactive"
-            :list="items"
+            :list="availableItems"
             :move="checkMove"
             :group="{ name: 'menu-items' }"
           >
-            <div v-for="item in items" :key="item.id" v-can="item.can">
+            <div v-for="item in availableItems" :key="item.id" v-can="item.can">
               <list-item :key="item.id">
                 <template #avatar>
                   <InlineSvg
                     v-if="item.svgIconPath"
                     :src="require(`@/assets/images/${item.svgIconPath}`)"
-                    class="menu-items__svg-icon"
+                    class="menu-items__img-icon"
+                  />
+                  <img
+                    v-else-if="item.iconPath"
+                    :src="item.iconPath"
+                    class="menu-items__img-icon"
                   />
                   <i v-else :class="item.iconClass" class="menu-items__icon"></i>
                 </template>
@@ -55,7 +60,12 @@
                   <InlineSvg
                     v-if="item.svgIconPath"
                     :src="require(`@/assets/images/${item.svgIconPath}`)"
-                    class="menu-items__svg-icon"
+                    class="menu-items__img-icon"
+                  />
+                  <img
+                    v-else-if="item.iconPath"
+                    :src="item.iconPath"
+                    class="menu-items__img-icon"
                   />
                   <i v-else :class="item.iconClass" class="menu-items__icon"></i>
                 </template>
@@ -86,12 +96,12 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Edycja menu",
     "menu": "Menu",
-    "options":"Dostępne zakładki",
+    "options": "Dostępne zakładki",
     "success": "Menu zostało zmienione",
     "successReset": "Menu zostało zresetowane",
     "info": "Tutaj możesz edytować swoje menu. Zakładki: <b>Dashboard</b>, <b>Zamówienia</b> oraz <b>Ustawienia</b> jako jedyne nie mogą zostać z niego usunięte."
@@ -99,7 +109,7 @@
   "en": {
     "title": "Edit menu",
     "menu": "Menu",
-    "options":"Available tabs",
+    "options": "Available tabs",
     "success": "Menu has been changed",
     "successReset": "Menu has been reseted",
     "info": "You can customize your menu. The tabs: <b>Dashboard</b>, <b>Orders</b> and <b>Settings</b> cannot be modified."
@@ -117,7 +127,8 @@ import TopNav from '@/components/layout/TopNav.vue'
 
 import ListItem from '@/components/layout/ListItem.vue'
 
-import { MenuItem, MenuItemType, MenuLink } from '@/consts/menuItems'
+import { MENU_AVAILABLE_ITEMS, MenuItem, MenuItemType, MenuLink } from '@/consts/menuItems'
+import { App } from '@/interfaces/App'
 
 export default Vue.extend({
   metaInfo(this: any) {
@@ -132,7 +143,6 @@ export default Vue.extend({
   },
   data: () => ({
     menu: [] as MenuItem[],
-    items: [] as MenuLink[],
   }),
   computed: {
     MenuItemType(): typeof MenuItemType {
@@ -141,8 +151,23 @@ export default Vue.extend({
     activeItems(): MenuItem[] {
       return this.$accessor.menuItems.activeItems
     },
+    microfrontendItems(): MenuLink[] {
+      // @ts-ignore
+      return (this.$accessor.apps.getMicrofrontendsApps as App[]).map((app) => ({
+        id: app.id,
+        type: MenuItemType.Link,
+        exact: false,
+        default: false,
+        isMicrofrontend: true,
+        to: `/apps/${app.id}`,
+        iconPath: app.icon,
+        label: app.name,
+      }))
+    },
     availableItems(): MenuLink[] {
-      return this.$accessor.menuItems.availableItems
+      return [...MENU_AVAILABLE_ITEMS, ...this.microfrontendItems].filter(
+        (item) => !this.menu.find((activeItem) => activeItem.id === item.id),
+      )
     },
   },
   created() {
@@ -159,10 +184,7 @@ export default Vue.extend({
       if (index === list.length || list[index].disabled) return false
     },
     saveMenu() {
-      this.$accessor.menuItems.setMenuItems({
-        activeItems: [...this.menu],
-        availableItems: [...this.items],
-      })
+      this.$accessor.menuItems.setMenuItems(this.menu)
       this.$toast.success(this.$t('success') as string)
     },
     resetMenu() {
@@ -172,7 +194,6 @@ export default Vue.extend({
     },
     setDefaultMenu() {
       this.menu = [...this.activeItems]
-      this.items = [...this.availableItems]
     },
   },
 })
@@ -216,11 +237,12 @@ export default Vue.extend({
     font-size: 18px;
   }
 
-  &__svg-icon {
+  &__img-icon {
     display: block;
     width: 18px;
     height: 18px;
     box-sizing: border-box;
+    object-fit: cover;
   }
 
   &__spacer {

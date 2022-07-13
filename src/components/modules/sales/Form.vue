@@ -148,7 +148,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "refers": "Dotyczy",
@@ -221,7 +221,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .sale-configurator {
   ::v-deep .bxs-info-circle {
-    font-size: 1rem;
+    font-size: 12px;
   }
 
   ::v-deep .bx-plus {
@@ -233,7 +233,7 @@ export default Vue.extend({
 
   &__fields {
     display: grid;
-    gap: 10px;
+    gap: 6px;
 
     grid-template-areas:
       'name'
@@ -256,7 +256,7 @@ export default Vue.extend({
 
     @media ($viewport-8) {
       grid-template-columns: 35fr 15fr 25fr 25fr;
-      gap: 26px 20px;
+      gap: 12px;
       grid-template-areas:
         'name desc desc desc'
         'type type value priority'

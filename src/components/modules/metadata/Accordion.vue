@@ -31,7 +31,7 @@
   </a-collapse>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Metadane",

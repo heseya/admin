@@ -13,7 +13,9 @@
       <a-select-option :value="MediaType.Video" :label="MediaType.Video">
         {{ $t('mediaTypes.video') }}
       </a-select-option>
-      <a-select-option :value="MediaType.Pdf" :label="MediaType.Pdf"> PDF </a-select-option>
+      <a-select-option :value="MediaType.Pdf" :label="MediaType.Pdf">
+        {{ $t('mediaTypes.pdf') }}
+      </a-select-option>
     </app-select>
 
     <boolean-select
@@ -57,6 +59,10 @@ export const EMPTY_MEDIA_FILTERS: MediaFiltersType = {
 }
 
 export default Vue.extend({
+  components: {
+    BooleanSelect,
+  },
+
   props: {
     filters: {
       type: Object,
@@ -69,10 +75,6 @@ export default Vue.extend({
       ...EMPTY_MEDIA_FILTERS,
     },
   }),
-
-  components: {
-    BooleanSelect,
-  },
 
   computed: {
     MediaType(): typeof CdnMediaType {

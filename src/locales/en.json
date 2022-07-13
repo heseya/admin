@@ -121,7 +121,8 @@
 
   "mediaTypes": {
     "photo": "Photo",
-    "video": "Video"
+    "video": "Video",
+    "pdf": "PDF"
   },
 
   "errors": {

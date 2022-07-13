@@ -4,7 +4,9 @@ import { App, AppCreateDto } from '@heseya/store-core'
 
 export const apps = createVuexCRUD<App, AppCreateDto, AppCreateDto>()('apps', {
   state: {},
-  getters: {},
+  getters: {
+    getMicrofrontendsApps: (state) => state.data.filter((app) => !!app.microfrontend_url),
+  },
   mutations: {},
   actions: {
     async addApp(_u, url: string) {

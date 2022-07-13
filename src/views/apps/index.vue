@@ -198,6 +198,7 @@ export default Vue.extend({
       this.$accessor.stopLoading()
 
       if (success) {
+        this.$accessor.menuItems.removeNotExistingApps()
         this.$toast.success(this.$t('deleteMessage') as string)
         this.isConfigureModalActive = false
       } else {

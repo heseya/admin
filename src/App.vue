@@ -87,6 +87,8 @@ export default Vue.extend({
   created() {
     initMicroApps()
     this.$accessor.fetchEnv()
+    this.initMicrofrontendMenuItems()
+
     if (this.$accessor.auth.isLogged) this.$accessor.auth.fetchProfile()
 
     // MicroFrontend Events Start
@@ -131,6 +133,13 @@ export default Vue.extend({
       }
     })
     // MultiTabs Token Sync End
+  },
+
+  methods: {
+    async initMicrofrontendMenuItems() {
+      await this.$accessor.apps.fetch({ limit: 500 })
+      this.$accessor.menuItems.removeNotExistingApps()
+    },
   },
 })
 </script>

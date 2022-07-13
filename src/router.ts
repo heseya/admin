@@ -46,6 +46,14 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/redirect',
+      name: 'Redirect',
+      component: () => import('./views/auth/Redirect.vue'),
+      meta: {
+        hiddenNav: true,
+      },
+    },
+    {
       path: '/',
       name: 'Home',
       component: () => import('./views/Home.vue'),

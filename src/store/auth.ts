@@ -13,7 +13,7 @@ import { LoginState } from '@/enums/login'
 import { AxiosResponse } from 'axios'
 import { TwoFactorAuthMethod } from '@/enums/twoFactorAuth'
 
-interface AuthResponse {
+export interface AuthResponse {
   user: User
   token: string
   identity_token: string

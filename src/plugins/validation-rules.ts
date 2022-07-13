@@ -3,10 +3,7 @@ import { required, email } from 'vee-validate/dist/rules'
 import v from 'validator'
 import { isNaN, isNumber } from 'lodash'
 import { isBefore, isSameDay } from 'date-fns'
-
-// TODO: Change to store-core version when available
-//import { ShippingMethodPriceRangeDto } from '@heseya/store-core
-import { ShippingMethodPriceRangeDTO } from '@/interfaces/ShippingMethod'
+import { ShippingMethodPriceRangeDto } from '@heseya/store-core'
 
 import {
   METADATA_NAME_REGEX,
@@ -168,7 +165,7 @@ extend('time-same-or-before', {
 
 extend('price-ranges-duplicates', {
   message: () => i18n.t('validation.priceRangesDuplicates') as string,
-  validate: (priceRanges: ShippingMethodPriceRangeDTO[]) => {
+  validate: (priceRanges: ShippingMethodPriceRangeDto[]) => {
     const startValues: number[] = []
 
     return priceRanges.every(({ start }) => {

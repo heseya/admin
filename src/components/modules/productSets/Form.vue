@@ -162,7 +162,7 @@
 import Vue from 'vue'
 import { cloneDeep } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
-import { CdnMedia, Metadata } from '@heseya/store-core'
+import { CdnMedia, Metadata, ProductSetUpdateDto } from '@heseya/store-core'
 
 import ModalForm from '@/components/form/ModalForm.vue'
 import FlexInput from '@/components/layout/FlexInput.vue'
@@ -173,12 +173,11 @@ import RichEditor from '@/components/form/RichEditor.vue'
 import AttributesSelect from './AttributesSelect.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
-import { ProductSetDTO } from '@/interfaces/ProductSet'
 import MediaUploadInput from '@/components/modules/media/MediaUploadInput.vue'
 import { generateSlug } from '@/utils/generateSlug'
 import { UUID } from '@heseya/store-core/dist/interfaces/UUID'
 
-export const CLEAR_PRODUCT_SET_FORM: ProductSetDTO = {
+export const CLEAR_PRODUCT_SET_FORM: ProductSetUpdateDto & { cover: CdnMedia | null } = {
   name: '',
   slug_suffix: '',
   description_html: '',
@@ -193,8 +192,9 @@ export const CLEAR_PRODUCT_SET_FORM: ProductSetDTO = {
   attributes: [],
 }
 
-type CombinedSetDto = ProductSetDTO & {
+type CombinedSetDto = ProductSetUpdateDto & {
   id?: UUID
+  cover: CdnMedia | null
   metadata?: Metadata
   // eslint-disable-next-line camelcase
   metadata_private?: Metadata

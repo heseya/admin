@@ -4,9 +4,9 @@ import {
   WebhookEntryCreateDto,
   WebhookEntryUpdateDto,
   WebhookEventLog,
+  HeseyaPaginatedResponseMeta,
 } from '@heseya/store-core'
 import { api } from '@/api'
-import { ResponseMeta } from '@/interfaces/Response'
 import { stringifyQueryParams } from '@/utils/stringifyQuery'
 import { createVuexCRUD, StoreMutations } from './generator'
 
@@ -20,7 +20,7 @@ export const webhooks = createVuexCRUD<
   state: {
     events: [] as WebHookEventObject[],
     logs: [] as WebhookEventLog[],
-    logsMeta: {} as ResponseMeta,
+    logsMeta: {} as HeseyaPaginatedResponseMeta,
   },
   getters: {},
   mutations: {
@@ -30,7 +30,7 @@ export const webhooks = createVuexCRUD<
     SET_LOGS(state, events: WebhookEventLog[]) {
       state.logs = events
     },
-    SET_LOGS_META(state, meta: ResponseMeta) {
+    SET_LOGS_META(state, meta: HeseyaPaginatedResponseMeta) {
       state.logsMeta = meta
     },
   },
@@ -52,9 +52,10 @@ export const webhooks = createVuexCRUD<
       commit(StoreMutations.SetLoading, true)
       try {
         const params = stringifyQueryParams(parameters)
-        const response = await api.get<{ data: WebhookEventLog[]; meta: ResponseMeta }>(
-          `/webhooks/logs${params}`,
-        )
+        const response = await api.get<{
+          data: WebhookEventLog[]
+          meta: HeseyaPaginatedResponseMeta
+        }>(`/webhooks/logs${params}`)
         commit('SET_LOGS', response.data.data)
         commit('SET_LOGS_META', response.data.meta)
 

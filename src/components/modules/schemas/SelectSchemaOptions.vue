@@ -86,14 +86,12 @@
 import Vue from 'vue'
 import Draggable from 'vuedraggable'
 import cloneDeep from 'lodash/cloneDeep'
-// TODO: Change to the correct type
-//import { SchemaOptionDto } from '@heseya/store-core'
+import { SchemaOptionDto } from '@heseya/store-core'
 
 import Zone from '@/components/layout/Zone.vue'
 import Autocomplete from '@/components/Autocomplete.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 
-import { SchemaOptionDto } from '@/interfaces/Schema'
 import { CLEAR_OPTION } from '@/consts/schemaConsts'
 
 export default Vue.extend({

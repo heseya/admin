@@ -91,6 +91,7 @@
 import Vue from 'vue'
 import { cloneDeep } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
+import { Coupon, DiscountTargetType, DiscountType } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
@@ -99,13 +100,7 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { UUID } from '@/interfaces/UUID'
-import {
-  Coupon,
-  CouponDto,
-  CouponFormDto,
-  DiscountTargetType,
-  DiscountType,
-} from '@/interfaces/SalesAndCoupons'
+import { CouponDto, CouponFormDto } from '@/interfaces/SalesAndCoupons'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { mapCouponFormToCouponDto } from '@/utils/sales'

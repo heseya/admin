@@ -1,19 +1,8 @@
 /* eslint-disable camelcase */
+import { Product, Metadata, WarehouseItem, SchemaType } from '@heseya/store-core'
 import { UUID } from './UUID'
-import { Product } from './Product'
-import { Metadata } from './Metadata'
-import { WarehouseItem } from './WarehouseItem'
 
-export enum SchemaType {
-  String = 'string',
-  Select = 'select',
-  Numeric = 'numeric',
-  Boolean = 'boolean',
-  Multiply = 'multiply',
-  MultiplySchema = 'multiply_schema',
-  // Date= 'date',
-  // File= 'file',
-}
+// TODO: Delete when suitable store-core version available
 
 export interface SchemaOption {
   id: UUID

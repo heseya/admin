@@ -11,7 +11,7 @@
         <media-filter :filters="filters" @search="makeSearch" />
       </template>
 
-      <template #default="{ item: singleMedia }">
+      <template #default="{ item: singleMedia, updateData }">
         <div class="media-list-item">
           <media-thumbnail
             fit="cover"
@@ -40,7 +40,7 @@
             class="media-list-item__form"
             :media="singleMedia"
             allow-deletion
-            @update="(m) => updateMedia(m, i)"
+            @update="(m) => updateData(m)"
             @remove="removeMedia"
           />
         </div>
@@ -73,13 +73,11 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import { updateMedia, removeMedia } from '@/services/uploadMedia'
+import { removeMedia } from '@/services/uploadMedia'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import MediaEditForm from '@/components/modules/media/MediaEditForm.vue'
 
-import { CdnMedia } from '@/interfaces/Media'
-import { formatApiNotificationError } from '@/utils/errors'
 import { formatFilters } from '@/utils/utils'
 import { EMPTY_MEDIA_FILTERS, MediaFiltersType } from '@/components/modules/media/MediaFilter.vue'
 import MediaFilter from '@/components/modules/media/MediaFilter.vue'
@@ -104,15 +102,6 @@ export default Vue.extend({
   }),
 
   methods: {
-    async updateMedia(media: CdnMedia) {
-      const result = await updateMedia(media)
-
-      if (result.success) {
-        this.$toast.success(this.$t('successMessage') as string)
-      } else {
-        this.$toast.error(formatApiNotificationError(result.error))
-      }
-    },
     async removeMedia(id: string) {
       const result = await removeMedia(id)
 

@@ -10,10 +10,17 @@
       <form class="media-edit-modal__form" @submit.prevent="onSubmit">
         <validated-input v-model="form.alt" :label="$t('form.alt')" :disabled="isLoading" />
 
-        <validated-input v-model="form.slug" :label="$t('form.slug')" :disabled="isLoading" />
-        <small>
-          {{ $t('currentSlug') }}: <b>{{ media.url }}</b>
-        </small>
+        <validated-input
+          v-model="form.slug"
+          :label="$t('form.slug')"
+          :disabled="isLoading"
+          rules="required"
+        />
+        <a :href="media.url" target="_blank" rel="noopener noreferrer"
+          ><small>
+            {{ $t('currentSlug') }}: <b>{{ media.url }}</b>
+          </small>
+        </a>
 
         <br />
         <div class="media-edit-modal__form-buttons">
@@ -23,6 +30,7 @@
             size="small"
             :loading="isLoading"
             class="media-edit-modal__form-button"
+            :disabled="!form.slug"
           >
             {{ $t('common.save') }}
           </app-button>
@@ -78,6 +86,7 @@ import Vue from 'vue'
 import { CdnMedia } from '@/interfaces/Media'
 import { updateMedia } from '@/services/uploadMedia'
 import { formatApiNotificationError } from '@/utils/errors'
+import { generateSlug } from '@/utils/generateSlug'
 
 const EMPTY_FORM = {
   alt: '',
@@ -112,7 +121,9 @@ export default Vue.extend({
       if (this.isLoading) return
       this.isLoading = true
 
-      const result = await updateMedia({ ...this.media, ...this.form })
+      const slugifiedForm = { ...this.form, slug: generateSlug(this.form.slug) }
+
+      const result = await updateMedia({ ...this.media, ...slugifiedForm })
 
       if (result.success) {
         this.$toast.success(this.$t('successMessage') as string)
@@ -124,7 +135,7 @@ export default Vue.extend({
 
       this.isLoading = false
     },
-    async handleMediaRemove(id: Pick<CdnMedia, 'id'>) {
+    async handleMediaRemove(id: string) {
       if (this.isLoadingRemoval) return
       this.$emit('remove', id)
     },

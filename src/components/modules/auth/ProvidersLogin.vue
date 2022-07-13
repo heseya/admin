@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="providers.length">
     <div class="providers-text">
       <hr />
       <span class="providers-text__text">{{ $t('orUse') }}</span>
@@ -49,12 +49,6 @@ export default Vue.extend({
     },
   },
   async created() {
-    // Redirect after logging via provider
-    // try {
-    //   const data = await api.get<any>(`/auth/providers/google/login`)
-    // } catch (error: any) {
-    // }
-
     const { data: providersData } = await api.get<{ data: AuthProvider[] }>(
       `/auth/providers?active=1`,
     )
@@ -66,9 +60,11 @@ export default Vue.extend({
         const { data: redirectUrl } = await api.post<string>(
           `/auth/providers/${provider}/redirect`,
           {
-            return_url: window.location.origin,
+            return_url: window.location.origin + '/redirect',
           },
         )
+        window.localStorage.setItem('provider', provider)
+        window.localStorage.setItem('nextUrl', this.$route.query.next as string)
         window.location.href = redirectUrl
       } catch (error: any) {
         this.$toast.error(formatApiNotificationError(error))

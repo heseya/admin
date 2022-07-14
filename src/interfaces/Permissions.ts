@@ -1,12 +1,5 @@
-import { Permission as CorePermission } from '@heseya/store-core'
-import { UUID } from './UUID'
+import { Permission as CorePermission, PermissionEntry } from '@heseya/store-core'
 
 export type Permission = CorePermission
-export interface PermissionObject {
-  id: UUID
-  name: Permission
-  // eslint-disable-next-line camelcase
-  display_name: string
-  description: string
-  assignable: boolean
-}
+
+export type PermissionObject = Omit<PermissionEntry, 'name'> & { name: Permission }

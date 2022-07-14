@@ -7,7 +7,9 @@ import {
   SaleUpdateDto,
 } from '@heseya/store-core'
 
-// TODO: Change to store-core types when available
+/**
+ * Inner interface to update a sale.
+ */
 export interface SaleFormDto
   extends Omit<
     SaleUpdateDto,
@@ -19,10 +21,9 @@ export interface SaleFormDto
   target_shipping_methods: ShippingMethod[]
 }
 
-export interface CouponDto extends SaleUpdateDto {
-  code: string
-}
-
+/**
+ * Inner interface to update a coupon.
+ */
 export interface CouponFormDto extends SaleFormDto {
   code: string
 }

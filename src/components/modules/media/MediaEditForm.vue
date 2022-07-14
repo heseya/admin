@@ -39,7 +39,6 @@
             type="danger"
             html-type="button"
             size="small"
-            :loading="isLoadingRemoval"
             class="media-edit-modal__form-button"
             @click="() => handleMediaRemove(media.id)"
           >
@@ -103,7 +102,6 @@ export default Vue.extend({
   data: () => ({
     isOpen: false,
     isLoading: false,
-    isLoadingRemoval: false,
     form: { ...EMPTY_FORM },
   }),
   watch: {
@@ -136,7 +134,6 @@ export default Vue.extend({
       this.isLoading = false
     },
     async handleMediaRemove(id: string) {
-      if (this.isLoadingRemoval) return
       this.$emit('remove', id)
     },
   },

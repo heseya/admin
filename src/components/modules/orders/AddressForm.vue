@@ -46,7 +46,7 @@
     "city": "City",
     "country": "Country",
     "phone": "Phone",
-    "vat": "VAT"
+    "vat": "VAT ID"
   }
 }
 </i18n>

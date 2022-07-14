@@ -30,7 +30,7 @@
   },
   "en": {
     "phone": "Phone",
-    "vat": "VAT"
+    "vat": "VAT ID"
   }
 }
 </i18n>

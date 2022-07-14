@@ -42,6 +42,13 @@ const actions = actionTree(
       )
       commit('SET_ACTIVE_ITEMS', menuItemsWithoutNotExistingApps)
     },
+
+    async initMicrofrontendMenuItems({ dispatch, rootGetters }) {
+      if (rootGetters['auth/isLogged']) {
+        await dispatch('apps/fetch', { limit: 500 }, { root: true })
+        dispatch('removeNotExistingApps')
+      }
+    },
   },
 )
 

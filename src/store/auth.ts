@@ -114,6 +114,9 @@ const actions = actionTree(
         broadcastTokensUpdate(tokens)
         dispatch('setTokens', tokens)
 
+        // side effect
+        dispatch('menuItems/initMicrofrontendMenuItems', null, { root: true })
+
         return {
           state: LoginState.Success,
           user: data.user,

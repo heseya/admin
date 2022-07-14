@@ -263,6 +263,7 @@
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import cloneDeep from 'lodash/cloneDeep'
+import { Product, ProductCreateDto } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Gallery from '@/components/modules/products/Gallery.vue'
@@ -286,8 +287,7 @@ import { generateSlug } from '@/utils/generateSlug'
 import { updateProductAttributeOptions } from '@/services/updateProductAttributeOptions'
 
 import { UUID } from '@/interfaces/UUID'
-//TODO: Swap with store-core types
-import { Product, ProductDTO, ProductComponentForm } from '@/interfaces/Product'
+import { ProductComponentForm } from '@/interfaces/Product'
 
 const EMPTY_FORM: ProductComponentForm = {
   id: '',
@@ -416,7 +416,7 @@ export default Vue.extend({
         this.form.attributes.filter((v) => v.selected_options),
       )
 
-      const apiPayload: ProductDTO = {
+      const apiPayload: ProductCreateDto = {
         ...this.form,
         order: this.form.order || 0,
         media: this.form.gallery.map(({ id }) => id),

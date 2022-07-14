@@ -80,11 +80,11 @@
 
 <script lang="ts">
 import Vue, { PropOptions } from 'vue'
+import VueJsonPretty from 'vue-json-pretty'
+import { WebhookEventLog } from '@heseya/store-core'
 
 import { ComputedClassName } from '@/interfaces/computedClassName'
-import { WebhookEventLog } from '@heseya/store-core'
 import { getRelativeDate } from '@/utils/utils'
-import VueJsonPretty from 'vue-json-pretty'
 import 'vue-json-pretty/lib/styles.css'
 
 export default Vue.extend({

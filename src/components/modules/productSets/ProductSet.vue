@@ -228,7 +228,6 @@ import ProductSetForm, { CLEAR_PRODUCT_SET_FORM } from '@/components/modules/pro
 import SetProductsList from '@/components/modules/productSets/SetProductsList.vue'
 import ChangeParentForm from '@/components/modules/productSets/ParentForm.vue'
 
-import { ResponseLinks } from '@/interfaces/Response'
 import { UUID } from '@/interfaces/UUID'
 import { formatApiNotificationError } from '@/utils/errors'
 
@@ -378,9 +377,8 @@ export default Vue.extend({
     async fetchByParentId(parentId: UUID, limit: number, page: number) {
       const { data: res } = await api.get<{
         data: ProductSet[]
-        links: ResponseLinks
         meta: HeseyaPaginatedResponseMeta
-      }>(`/product-sets?parent_id=${parentId}&page=${page}&tree=0&limit=${this.limit}`)
+      }>(`/product-sets?parent_id=${parentId}&page=${page}&tree=0&limit=${limit}`)
       return res
     },
     async fetchBySearch(parentId: UUID, search: string) {
@@ -389,7 +387,6 @@ export default Vue.extend({
         this.searchedPhrase = this.searchPhrase
         const { data: res } = await api.get<{
           data: ProductSet[]
-          links: ResponseLinks
           meta: HeseyaPaginatedResponseMeta
         }>(`/product-sets?parent_id=${parentId}&search=${search}`)
 

@@ -39,7 +39,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "en": {
     "placeholder": "Select or create an option",
@@ -59,8 +59,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import debounce from 'lodash/debounce'
+import { AttributeOption, AttributeType, ProductAttribute } from '@heseya/store-core'
 
-import { AttributeOption, AttributeType, ProductAttribute } from '@/interfaces/Attribute'
 import { UUID } from '@/interfaces/UUID'
 import { formatApiNotificationError } from '@/utils/errors'
 import Empty from '@/components/layout/Empty.vue'

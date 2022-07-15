@@ -19,7 +19,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "notnamed": "Nie nazwany plik",
@@ -50,8 +50,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { OrderDocument } from '@heseya/store-core'
 
-import { OrderDocument } from '@/interfaces/OrderDocuments'
 import {
   DownloadOrderDocumentFunc,
   RemoveOrderDocumentFunc,

@@ -30,7 +30,7 @@
   </a-popover>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Edycja zdjęcia/video",
@@ -55,8 +55,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { CdnMedia } from '@heseya/store-core'
 
-import { CdnMedia } from '@/interfaces/Media'
 import { updateMedia } from '@/services/uploadMedia'
 import { formatApiNotificationError } from '@/utils/errors'
 

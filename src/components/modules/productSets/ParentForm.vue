@@ -21,7 +21,7 @@
   </a-modal>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Zmień nadrzędną kolekcję",
@@ -36,11 +36,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { ProductSet, ProductSetUpdateDto } from '@heseya/store-core'
 
 import AutocompleteInput from '../../AutocompleteInput.vue'
 
-import { ProductSet, ProductSetDTO } from '@/interfaces/ProductSet'
 import { formatApiNotificationError } from '@/utils/errors'
+import { UUID } from '@/interfaces/UUID'
 
 export default Vue.extend({
   components: { AutocompleteInput },
@@ -48,7 +49,7 @@ export default Vue.extend({
     set: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<ProductSetDTO>,
+    } as Vue.PropOptions<ProductSetUpdateDto & { id?: UUID }>,
     isOpen: {
       type: Boolean,
       default: false,
@@ -61,7 +62,7 @@ export default Vue.extend({
   computed: {
     bannedSetIds(): string[] {
       return this.set.id
-        ? [...this.set.children_ids, this.set.id, this.set.parent_id as string]
+        ? [...(this.set.children_ids || []), this.set.id, this.set.parent_id as string]
         : []
     },
   },

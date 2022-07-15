@@ -24,7 +24,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "en": {
     "form": {
@@ -45,8 +45,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-
-import { TimeBetweenDiscountCondition } from '@/interfaces/SaleCondition'
+import { TimeBetweenDiscountCondition } from '@heseya/store-core'
 
 export default Vue.extend({
   props: {

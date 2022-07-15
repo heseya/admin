@@ -11,15 +11,20 @@
       </transition>
     </main>
 
+    <!-- eslint-disable-next-line vue/no-bare-strings-in-template -->
+    <div class="app__version" :class="{ 'app__version--center': !isNavHidden }">
+      &copy; {{ currentYear }} | v{{ version }}
+    </div>
+
     <Loading :relative="false" :active="isLoading" />
 
-    <sw-update-popup />
+    <SwUpdatePopup />
 
     <floating-qr-scanner v-if="$accessor.auth.isLogged" />
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "en": {
     "noPermissionError": "You don't have permission to this action."
@@ -33,6 +38,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { first } from 'lodash'
+import pkg from '../package.json'
 import { init as initMicroApps, onMounted, openCommunicationChannel } from 'bout'
 
 import DesktopNavigation from './components/root/DesktopNavigation.vue'
@@ -73,6 +79,12 @@ export default Vue.extend({
     mainChannel() {
       return openCommunicationChannel('Main')
     },
+    currentYear(): string {
+      return new Date().getFullYear().toString()
+    },
+    version(): string {
+      return pkg.version
+    },
   },
   watch: {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -80,17 +92,19 @@ export default Vue.extend({
       this.$toast.error(this.$t('noPermissionError') as string)
     },
 
-    '$accessor.auth.getIdentityToken'(token) {
+    '$accessor.auth.getIdentityToken'(token: string) {
       this.tokenChannel.emit('set', token)
     },
 
-    '$i18n.locale'(locale) {
+    '$i18n.locale'(locale: string) {
       this.mainChannel.emit('uiLanguage:set', locale)
     },
   },
   created() {
     initMicroApps()
     this.$accessor.fetchEnv()
+    this.$accessor.menuItems.initMicrofrontendMenuItems()
+
     if (this.$accessor.auth.isLogged) this.$accessor.auth.fetchProfile()
 
     // MicroFrontend Events Start
@@ -180,6 +194,21 @@ export default Vue.extend({
 
     @media ($viewport-7) {
       padding: 32px 24px;
+    }
+  }
+
+  &__version {
+    position: fixed;
+    display: block;
+    left: 0;
+    bottom: 0;
+    padding: 10px;
+    width: $navWidth;
+    font-size: 0.7em;
+    color: #bec1c7;
+
+    &--center {
+      text-align: center;
     }
   }
 }

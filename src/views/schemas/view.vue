@@ -31,7 +31,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "newTitle": "Nowy schemat",
@@ -49,8 +49,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { cloneDeep } from 'lodash'
-
-import { Schema } from '@/interfaces/Schema'
+import { Schema } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'

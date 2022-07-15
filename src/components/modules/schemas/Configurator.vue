@@ -87,7 +87,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Schematy",
@@ -117,6 +117,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import Draggable from 'vuedraggable'
+import { Schema } from '@heseya/store-core'
 
 import List from '@/components/layout/List.vue'
 import ListItem from '@/components/layout/ListItem.vue'
@@ -125,7 +126,6 @@ import ModalForm from '@/components/form/ModalForm.vue'
 import SchemaForm from '@/components/modules/schemas/Form.vue'
 import Selector from '@/components/Selector.vue'
 
-import { Schema } from '@/interfaces/Schema'
 import { UUID } from '@/interfaces/UUID'
 
 export default Vue.extend({

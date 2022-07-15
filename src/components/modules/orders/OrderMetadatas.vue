@@ -29,7 +29,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "en": {
     "save": "Save metadata",
@@ -47,8 +47,9 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
+import { Order } from '@heseya/store-core'
+
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
-import { Order } from '@/interfaces/Order'
 import Loading from '@/components/layout/Loading.vue'
 
 export default Vue.extend({

@@ -81,7 +81,7 @@
   </validation-observer>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "httpsAlert": {
@@ -101,9 +101,9 @@
       "description": "Użyj tego tokena do sprawdzenia poprawności i autentyczności otrzymanego webhooka. Zostanie użyty do zahashowania (<code>sha256</code>) payloadu żądania, a następnie zostanie wysyłany wraz z żądaniem w nagłówku HTTP <code>Signature</code>."
     },
     "events": "Wydarzenia wywołujące webhooka:",
-    "error":{
-      "empty":"Musisz wybrać przynajmniej jedno wydarzenie",
-      "httpsRequired":"Protokół https jest wymagany, ponieważ conajmniej jedno z wybranych wydarzeń jest szyfrowane"
+    "error": {
+      "empty": "Musisz wybrać przynajmniej jedno wydarzenie",
+      "httpsRequired": "Protokół https jest wymagany, ponieważ conajmniej jedno z wybranych wydarzeń jest szyfrowane"
     }
   },
   "en": {
@@ -124,9 +124,9 @@
       "description": "Use this token to verify the authenticity of the webhook. It will be used to hash the payload of the request (<code>sha256</code>), and then sent along with the request in the HTTP <code>Signature</code> header."
     },
     "events": "Events triggering the webhook:",
-    "error":{
-      "empty":"You must select at least one event ",
-      "httpsRequired":"Https protocol is required because at least one of the selected events is encrypted"
+    "error": {
+      "empty": "You must select at least one event ",
+      "httpsRequired": "Https protocol is required because at least one of the selected events is encrypted"
     }
   }
 }
@@ -134,8 +134,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-
 import { ValidationObserver } from 'vee-validate'
+// TODO: Change to the store-core version when available
+//import { WebhookEntryUpdateDto, WebHookEventType, WebhookEventEntry } from '@heseya/store-core'
 
 import { WebHookDto, WebHookEvent, WebHookEventObject } from '@/interfaces/Webhook'
 

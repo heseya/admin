@@ -12,7 +12,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Ustawienia SEO",
@@ -27,19 +27,17 @@
     "savedMessage": "Global SEO has been updated",
     "errorMessage": "An error occurred while updating global SEO",
     "save": "Save changes"
-
   }
 }
 </i18n>
 
 <script lang="ts">
 import Vue from 'vue'
+import { SeoMetadata, SeoMetadataDto } from '@heseya/store-core'
 
 import Card from '@/components/layout/Card.vue'
 import TopNav from '@/components/layout/TopNav.vue'
 import SeoForm from '@/components/modules/seo/Form.vue'
-
-import { SeoMetadata, SeoMetadataDto } from '@/interfaces/SeoMetadata'
 
 import { formatApiNotificationError } from '@/utils/errors'
 

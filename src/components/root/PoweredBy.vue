@@ -7,7 +7,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "poweredBy": "Powered by"

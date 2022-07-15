@@ -44,7 +44,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "en": {
     "form": {
@@ -76,12 +76,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import Vue from 'vue'
-
-import { DiscountConditionType } from '@/interfaces/SaleCondition'
-import { Role } from '@/interfaces/Role'
-import { User } from '@/interfaces/User'
-import { ProductSet } from '@/interfaces/ProductSet'
-import { Product } from '@/interfaces/Product'
+import { DiscountConditionType, Role, User, ProductSet, Product } from '@heseya/store-core'
 
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import AutocompleteInput from '@/components/AutocompleteInput.vue'

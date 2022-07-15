@@ -40,7 +40,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "placeholder": "Zacznij pisać, aby wyszukać"

@@ -1,8 +1,16 @@
+import {
+  ShippingMethod,
+  ShippingMethodCreateDto,
+  ShippingMethodUpdateDto,
+} from '@heseya/store-core'
 import { createVuexCRUD } from './generator'
-import { ShippingMethod, ShippingMethodDTO as DTO } from '@/interfaces/ShippingMethod'
 import { reorderCollection } from '@/services/reorderCollection'
 
-export const shippingMethods = createVuexCRUD<ShippingMethod, DTO, DTO>()('shipping-methods', {
+export const shippingMethods = createVuexCRUD<
+  ShippingMethod,
+  ShippingMethodCreateDto,
+  ShippingMethodUpdateDto
+>()('shipping-methods', {
   state: {},
   getters: {},
   mutations: {},

@@ -72,7 +72,7 @@
   </validation-observer>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Dodawanie depozytu do magazynu",
@@ -115,6 +115,7 @@ import { ValidationObserver } from 'vee-validate'
 import { isNumber, isString } from 'lodash'
 
 import { WarehouseDepositDto } from '@/interfaces/WarehouseItem'
+//import { WarehouseDepositDto } from '@heseya/store-core'
 import Loading from '@/components/layout/Loading.vue'
 
 const EMPTY_DEPOSIT_FORM: WarehouseDepositDto = {

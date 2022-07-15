@@ -24,8 +24,10 @@ export interface MenuLink {
   exact?: boolean
   iconClass?: string
   svgIconPath?: string
+  iconPath?: string
   label: string
   disabled?: true
+  isMicrofrontend?: true
   section?: SettingsSection
 }
 export interface MenuSpacer {
@@ -55,7 +57,7 @@ export const MENU_ITEMS: MenuItem[] = [
     svgIconPath: 'icons/orders-icon.svg',
     label: 'models.orders',
     disabled: true,
-    can: PERMISSIONS_TREE.Orders.Show,
+    can: PERMISSIONS_TREE.Orders.ShowSummary,
   },
   { id: '4', type: MenuItemType.Spacer, disabled: true },
   {
@@ -269,5 +271,5 @@ export const MENU_LINKS = MENU_ITEMS.filter((item) => item.type === MenuItemType
 export const DEFAULT_MENU_ITEMS = MENU_ITEMS.filter(
   (item) => item.type === MenuItemType.Spacer || item.default,
 )
-export const DEFAULT_AVAILABLE_ITEMS = MENU_LINKS.filter((item) => !item.default)
+export const MENU_AVAILABLE_ITEMS = MENU_LINKS.filter((item) => !item.default)
 export const SETTINGS_LINKS = MENU_LINKS.filter((item) => item.section) as MenuLink[]

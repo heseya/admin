@@ -1,7 +1,7 @@
 import { createVuexCRUD } from './generator'
-import { Consent, ConsentDTO } from '@/interfaces/Consent'
+import { Consent, ConsentCreateDto, ConsentUpdateDto } from '@heseya/store-core'
 
-export const consents = createVuexCRUD<Consent, ConsentDTO, ConsentDTO>()('consents', {
+export const consents = createVuexCRUD<Consent, ConsentCreateDto, ConsentUpdateDto>()('consents', {
   state: {},
   getters: {},
   mutations: {},

@@ -46,7 +46,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "status": "Status",
@@ -69,11 +69,9 @@
 /* eslint-disable camelcase */
 import Vue from 'vue'
 import { debounce } from 'lodash'
+import { OrderStatus, ShippingMethod } from '@heseya/store-core'
 
 import { ALL_FILTER_VALUE } from '@/consts/filters'
-
-import { OrderStatus } from '@/interfaces/Order'
-import { ShippingMethod } from '@/interfaces/ShippingMethod'
 
 export type OrderFilersType = {
   search: string

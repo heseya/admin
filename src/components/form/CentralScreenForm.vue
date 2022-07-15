@@ -10,14 +10,14 @@
     </card>
 
     <powered-by class="central-screen-form__powered-by" />
-
-    <div class="central-screen-form__footer">{{ `&copy;` }} Heseya | v{{ version }}</div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { version } from '../../../package.json'
+
+import pkg from '../../../package.json'
+
 import Card from '../layout/Card.vue'
 import NavStoreLogo from '../root/NavStoreLogo.vue'
 import PoweredBy from '../root/PoweredBy.vue'
@@ -30,7 +30,7 @@ export default Vue.extend({
   },
   computed: {
     version(): string {
-      return version
+      return pkg.version
     },
   },
 })
@@ -87,15 +87,6 @@ export default Vue.extend({
 
   &__powered-by {
     margin-top: auto;
-  }
-
-  &__footer {
-    position: fixed;
-    bottom: 10px;
-    right: 10px;
-    text-align: center;
-    font-size: 0.7em;
-    color: $gray-color-600;
   }
 }
 </style>

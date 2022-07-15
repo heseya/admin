@@ -60,7 +60,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "en": {
     "title": "Warehouse items",
@@ -85,12 +85,11 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { WarehouseItem, ProductWarehouseItem } from '@heseya/store-core'
 
 import Empty from '@/components/layout/Empty.vue'
 import List from '@/components/layout/List.vue'
 import Selector from '@/components/Selector.vue'
-import { ProductInnerItem } from '@/interfaces/Product'
-import { WarehouseItem } from '@/interfaces/WarehouseItem'
 import ListItem from '@/components/layout/ListItem.vue'
 import { UUID } from '@/interfaces/UUID'
 
@@ -100,7 +99,7 @@ export default Vue.extend({
     value: {
       type: Array,
       required: true,
-    } as Vue.PropOptions<ProductInnerItem[]>,
+    } as Vue.PropOptions<ProductWarehouseItem[]>,
     disabled: { type: Boolean, default: false },
   },
   data: () => ({
@@ -108,10 +107,10 @@ export default Vue.extend({
   }),
   computed: {
     items: {
-      get(): ProductInnerItem[] {
+      get(): ProductWarehouseItem[] {
         return this.value
       },
-      set(value: ProductInnerItem[]) {
+      set(value: ProductWarehouseItem[]) {
         this.$emit('input', value)
       },
     },

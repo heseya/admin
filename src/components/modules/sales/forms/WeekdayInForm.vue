@@ -50,8 +50,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-
-import { WeekdayInDiscountCondition } from '@/interfaces/SaleCondition'
+import { WeekdayInDiscountCondition } from '@heseya/store-core'
 
 export default Vue.extend({
   props: {

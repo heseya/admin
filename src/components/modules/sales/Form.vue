@@ -186,17 +186,16 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationProvider } from 'vee-validate'
+import { DiscountTargetType, DiscountType, SaleCreateDto } from '@heseya/store-core'
 
 import FlexInput from '@/components/layout/FlexInput.vue'
 import AutocompleteInput from '../../AutocompleteInput.vue'
-
-import { DiscountTargetType, DiscountType, SaleFormDto } from '@/interfaces/SalesAndCoupons'
 import ConditionsConfigurator from './ConditionsConfigurator.vue'
 
 export default Vue.extend({
   components: { ValidationProvider, FlexInput, AutocompleteInput, ConditionsConfigurator },
   props: {
-    value: { type: Object, required: true } as Vue.PropOptions<SaleFormDto>,
+    value: { type: Object, required: true } as Vue.PropOptions<SaleCreateDto>,
     disabled: { type: Boolean, default: false },
   },
   computed: {
@@ -207,10 +206,10 @@ export default Vue.extend({
       return DiscountTargetType
     },
     form: {
-      get(): SaleFormDto {
+      get(): SaleCreateDto {
         return this.value
       },
-      set(v: SaleFormDto) {
+      set(v: SaleCreateDto) {
         this.$emit('input', v)
       },
     },

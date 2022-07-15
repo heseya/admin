@@ -1,4 +1,4 @@
-import { ProductSet, ProductSetDTO } from '@/interfaces/ProductSet'
+import { ProductSet, ProductSetCreateDto, ProductSetUpdateDto } from '@heseya/store-core'
 import { createVuexCRUD, StoreMutations } from './generator'
 import { UUID } from '@/interfaces/UUID'
 import { reorderCollection } from '@/services/reorderCollection'
@@ -7,7 +7,7 @@ const PARAM = { root: 1, tree: 0 }
 
 const reorderSets = reorderCollection('product-sets', 'product_sets')
 
-export const productSets = createVuexCRUD<ProductSet, ProductSetDTO, ProductSetDTO>()(
+export const productSets = createVuexCRUD<ProductSet, ProductSetCreateDto, ProductSetUpdateDto>()(
   'product-sets',
   {
     state: {},

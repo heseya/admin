@@ -24,8 +24,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { Product } from '@heseya/store-core'
 
-import { Product } from '@/interfaces/Product'
 import { formatCurrency } from '@/utils/currency'
 
 import Avatar from '@/components/layout/Avatar.vue'

@@ -12,9 +12,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { CdnMedia } from '@heseya/store-core'
 
 import { uploadMedia } from '@/services/uploadMedia'
-import { CdnMedia } from '@/interfaces/Media'
 import { formatApiError } from '@/utils/errors'
 
 export default Vue.extend({

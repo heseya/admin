@@ -57,7 +57,7 @@ export const MENU_ITEMS: MenuItem[] = [
     svgIconPath: 'icons/orders-icon.svg',
     label: 'models.orders',
     disabled: true,
-    can: PERMISSIONS_TREE.Orders.Show,
+    can: PERMISSIONS_TREE.Orders.ShowSummary,
   },
   { id: '4', type: MenuItemType.Spacer, disabled: true },
   {

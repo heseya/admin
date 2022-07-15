@@ -85,6 +85,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { Order } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
@@ -96,7 +97,6 @@ import OrderFilter, {
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 
 import { TableConfig } from '@/interfaces/CmsTable'
-import { Order } from '@/interfaces/Order'
 
 import { formatFilters, getRelativeDate } from '@/utils/utils'
 import { formatCurrency } from '@/utils/currency'

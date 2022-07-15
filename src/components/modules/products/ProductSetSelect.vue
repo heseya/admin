@@ -39,10 +39,9 @@
 import Vue from 'vue'
 import debounce from 'lodash/debounce'
 import uniqBy from 'lodash/uniqBy'
+import { ProductSet, Product } from '@heseya/store-core'
 
-import { ProductSet } from '@/interfaces/ProductSet'
 import { UUID } from '@/interfaces/UUID'
-import { Product } from '@/interfaces/Product'
 import { formatApiNotificationError } from '@/utils/errors'
 
 export default Vue.extend({

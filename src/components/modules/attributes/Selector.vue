@@ -61,8 +61,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-
-import { Attribute, ProductAttribute } from '@/interfaces/Attribute'
+import { Attribute, ProductAttribute } from '@heseya/store-core'
 
 import Selector from '@/components/Selector.vue'
 import ModalForm from '@/components/form/ModalForm.vue'

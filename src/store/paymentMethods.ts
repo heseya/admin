@@ -1,4 +1,4 @@
-import { PaymentMethod } from '@/interfaces/PaymentMethod'
+import { PaymentMethod } from '@heseya/store-core'
 import { createVuexCRUD } from './generator'
 
 export const paymentMethods = createVuexCRUD<PaymentMethod>()('payment-methods', {

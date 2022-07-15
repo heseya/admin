@@ -113,6 +113,7 @@
 import Vue from 'vue'
 import { cloneDeep } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
+import { App, AppCreateDto } from '@heseya/store-core'
 
 import ListItem from '@/components/layout/ListItem.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
@@ -121,9 +122,7 @@ import AddForm from '@/components/modules/apps/AddForm.vue'
 import ConfigureAppForm from '@/components/modules/apps/ConfigureAppForm.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 
-import { App, CreateAppDto } from '@/interfaces/App'
-
-const CLEAN_FORM: CreateAppDto = {
+const CLEAN_FORM: AppCreateDto = {
   url: '',
   name: '',
   licence_key: '',

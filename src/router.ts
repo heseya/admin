@@ -2,11 +2,10 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import VueMeta from 'vue-meta'
 
-import { Permission } from './interfaces/Permissions'
-
+import { Permission } from '@/interfaces/Permissions'
+import { PERMISSIONS_TREE as Permissions } from '@/consts/permissions'
 import { accessor } from './store'
 import { hasAccess } from './utils/hasAccess'
-import { PERMISSIONS_TREE as Permissions } from './consts/permissions'
 
 Vue.use(VueRouter)
 Vue.use(VueMeta)

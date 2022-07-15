@@ -1,7 +1,7 @@
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
+import { App } from '@heseya/store-core'
 
 import { DEFAULT_MENU_ITEMS, MenuItemType, MenuItem, MenuLink } from '@/consts/menuItems'
-import { App } from '@/interfaces/App'
 
 const state = () => ({
   activeItems: DEFAULT_MENU_ITEMS,

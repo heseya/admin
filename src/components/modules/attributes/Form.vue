@@ -103,7 +103,7 @@ import {
   AttributeCreateDto,
   AttributeUpdateDto,
   AttributeType,
-} from '@/interfaces/Attribute'
+} from '@heseya/store-core'
 import { UUID } from '@/interfaces/UUID'
 
 import OptionsList from './OptionsList.vue'

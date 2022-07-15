@@ -78,8 +78,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import isNumber from 'lodash/isNumber'
-
-import { WarehouseItem } from '@/interfaces/WarehouseItem'
+import { WarehouseItem } from '@heseya/store-core'
 
 import DepositFormModal from './DepositFormModal.vue'
 

@@ -1,6 +1,9 @@
+/* eslint-disable camelcase */
 import { UUID } from './UUID'
 
-/* eslint-disable camelcase */
+/**
+ * @deprecated This feature is was removed
+ */
 export interface AuthSession {
   id: UUID
   browser: string

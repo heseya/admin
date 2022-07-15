@@ -98,13 +98,10 @@
 
 <script lang="ts">
 import Vue from 'vue'
-
-import { BannerMedia } from '@/interfaces/Banner'
-import { CdnMedia } from '@/interfaces/Media'
-import MediaElement from '@/components/MediaElement.vue'
+import { BannerMedia, CdnMedia } from '@heseya/store-core'
 
 import { removeMedia } from '@/services/uploadMedia'
-
+import MediaElement from '@/components/MediaElement.vue'
 import GalleryUploadButton from '../products/GalleryUploadButton.vue'
 import MediaEditForm from '../media/MediaEditForm.vue'
 

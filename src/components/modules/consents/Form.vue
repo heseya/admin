@@ -28,11 +28,10 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
+import { Consent } from '@heseya/store-core'
 
 import Card from '@/components/layout/Card.vue'
 import RichEditor from '@/components/form/RichEditor.vue'
-
-import { ConsentDTO } from '@/interfaces/Consent'
 
 export default Vue.extend({
   components: {
@@ -44,7 +43,7 @@ export default Vue.extend({
     value: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<ConsentDTO>,
+    } as Vue.PropOptions<Consent>,
     disabled: {
       type: Boolean,
       default: false,
@@ -52,10 +51,10 @@ export default Vue.extend({
   },
   computed: {
     form: {
-      get(): ConsentDTO {
+      get(): Consent {
         return this.value
       },
-      set(v: ConsentDTO) {
+      set(v: Consent) {
         this.$emit('input', v)
       },
     },

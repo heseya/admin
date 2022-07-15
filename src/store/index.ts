@@ -100,6 +100,7 @@ const storeModules = {
   productSets,
   attributes,
   media,
+  menuItems,
 }
 
 const storePattern = {
@@ -107,7 +108,7 @@ const storePattern = {
   getters,
   mutations,
   actions,
-  modules: { ...storeModules, menuItems },
+  modules: storeModules,
 }
 
 const store = new Vuex.Store({

@@ -22,7 +22,6 @@ const router = new VueRouter({
       component: () => import('./views/auth/Login.vue'),
       meta: {
         hiddenNav: true,
-        recaptchaAlert: true,
       },
     },
     {
@@ -32,7 +31,6 @@ const router = new VueRouter({
       component: () => import('./views/auth/ResetPassword.vue'),
       meta: {
         hiddenNav: true,
-        recaptchaAlert: true,
       },
     },
     {
@@ -42,7 +40,6 @@ const router = new VueRouter({
       component: () => import('./views/auth/NewPassword.vue'),
       meta: {
         hiddenNav: true,
-        recaptchaAlert: true,
       },
     },
     {

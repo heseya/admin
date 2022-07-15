@@ -6,17 +6,55 @@
     :class="{ 'cms-table-row--no-hover': noHover }"
     @click.stop="click"
   >
-    <div v-for="{ key, label, value, rawValue } in values" :key="key" class="cms-table-row__col">
+    <div
+      v-for="{ key, label, value, rawValue, wrap } in values"
+      :key="key"
+      class="cms-table-row__col"
+      :class="{ 'cms-table-row__col--wrap': wrap }"
+    >
       <span class="cms-table-row__col-label">{{ label }}</span>
-      <span class="cms-table-row__col-value">
+      <span class="cms-table-row__col-value" :class="{ 'cms-table-row__col-value--wrap': wrap }">
         <slot :name="key" v-bind="{ key, label, value, rawValue, item }">
-          <BooleanTag v-if="typeof value === 'boolean'" :value="value" />
-          <template v-else> {{ value }} </template>
+          <ul v-if="Array.isArray(value)" class="cms-table-row__col-list">
+            <li v-for="(singleValue, i) in value" :key="singleValue + i">
+              <a-tooltip placement="right">
+                <template #title>
+                  <div class="cms-table-row__col-list-tooltip">
+                    <p>{{ singleValue }}</p>
+                    <b v-if="isClipboard">{{ copied ? $t('copied') : $t('copy') }}</b>
+                  </div>
+                </template>
+                <tag
+                  class="cms-table-row__col-list-tag"
+                  :text="singleValue"
+                  allow-copy
+                  @copied="onCopied"
+                >
+                  <span class="cms-table-row__col-list-text">{{ singleValue }}</span>
+                </tag>
+              </a-tooltip>
+            </li>
+          </ul>
+          <BooleanTag v-else-if="typeof value === 'boolean'" :value="value" />
+          <span v-else> {{ value }} </span>
         </slot>
       </span>
     </div>
   </component>
 </template>
+
+<i18n lang="json">
+{
+  "en": {
+    "copy": "Click to copy",
+    "copied": "Copied!"
+  },
+  "pl": {
+    "copy": "Kliknij aby skopiować",
+    "copied": "Skopiowano!"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
@@ -47,19 +85,26 @@ export default Vue.extend({
       required: true,
     } as Vue.PropOptions<TableHeader[]>,
   },
+  data: () => ({
+    copied: false,
+  }),
   computed: {
+    isClipboard(): boolean {
+      return Boolean(navigator.clipboard)
+    },
     component(): any {
       if (this.to) return 'router-link'
       return this.el
     },
     values(): TableValue[] {
-      return this.headers.map(({ key, label, render }) => {
+      return this.headers.map(({ key, label, render, wrap }) => {
         const rawValue = get(this.item, key)
         return {
           key,
           label,
           value: render?.(rawValue, this.item) ?? rawValue,
           rawValue,
+          wrap: wrap ?? false,
         }
       })
     },
@@ -68,18 +113,25 @@ export default Vue.extend({
     click() {
       this.$emit('click')
     },
+    onCopied() {
+      this.copied = true
+      setTimeout(() => {
+        this.copied = false
+      }, 3000)
+    },
   },
 })
 </script>
 
 <style lang="scss" scoped>
 .cms-table-row {
+  $cms: &;
   border: none;
   @extend %card;
   box-shadow: none;
   background-color: #fff;
   display: grid;
-  align-items: center;
+  align-items: start;
   width: 100%;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   cursor: pointer;
@@ -125,6 +177,10 @@ export default Vue.extend({
     @media ($viewport-11) {
       padding: 16px;
     }
+
+    &--wrap {
+      overflow: hidden;
+    }
   }
 
   &__col-label {
@@ -140,6 +196,36 @@ export default Vue.extend({
 
   &__col-value {
     color: $font-color;
+
+    &--wrap {
+      word-break: break-all;
+
+      #{$cms}__col-list-tag {
+        max-width: 100%;
+      }
+
+      #{$cms}__col-list-text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+
+  &__col-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  &__col-list-tooltip {
+    display: grid;
+    place-items: center;
+    padding: 8px;
+    gap: 4px;
+
+    & > * {
+      margin: 0;
+    }
   }
 }
 </style>

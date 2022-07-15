@@ -1,14 +1,20 @@
 <template>
   <div
     class="tag"
-    :class="{ 'tag--small': small, [`tag--${type}`]: true }"
+    :class="{
+      'tag--small': small,
+      [`tag--${type}`]: true,
+      'tag--copiable': isClipboard && allowCopy,
+    }"
     :style="{ '--bg-color': color }"
+    @click.prevent="copy"
   >
     <slot>{{ text }}</slot>
   </div>
 </template>
 
 <script lang="ts">
+import { formatApiNotificationError } from '@/utils/errors'
 import Vue from 'vue'
 export default Vue.extend({
   props: {
@@ -27,6 +33,27 @@ export default Vue.extend({
     small: {
       type: Boolean,
       default: false,
+    },
+    allowCopy: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
+  },
+  computed: {
+    isClipboard(): boolean {
+      return Boolean(navigator.clipboard)
+    },
+  },
+  methods: {
+    async copy() {
+      if (!this.isClipboard || !this.allowCopy) return
+      try {
+        await navigator.clipboard.writeText(this.text)
+        this.$emit('copied')
+      } catch (e: any) {
+        this.$toast.error(formatApiNotificationError(e))
+      }
     },
   },
 })
@@ -78,6 +105,12 @@ export default Vue.extend({
     color: $primary-color-500;
 
     > .bx {
+      background-color: $primary-color-500;
+    }
+  }
+
+  &--copiable {
+    &:hover {
       background-color: $primary-color-500;
     }
   }

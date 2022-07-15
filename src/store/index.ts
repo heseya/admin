@@ -120,7 +120,10 @@ export const accessor = useAccessor(store, storePattern)
 
 export type AccessorType = typeof accessor
 export type StoreModulesKeys = keyof typeof storeModules
-export type GeneratedStoreModulesKeys = Exclude<StoreModulesKeys, 'auth' | 'globalSeo'>
+export type GeneratedStoreModulesKeys = Exclude<
+  StoreModulesKeys,
+  'auth' | 'globalSeo' | 'menuItems'
+>
 
 Vue.prototype.$accessor = accessor
 

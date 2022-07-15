@@ -11,4 +11,7 @@ module.exports = {
     '!src/**/*.mock.{js,ts}',
     '!src/**/*.mock.{js,ts}',
   ],
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+  },
 }

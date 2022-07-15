@@ -1,4 +1,4 @@
-import { PERMISSIONS_TREE as P } from '@/consts/permissions'
+import { PERMISSIONS_TREE as P } from '../../consts/permissions'
 import { hasAccess } from '../hasAccess'
 
 // write test for hasAccess

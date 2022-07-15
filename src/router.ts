@@ -2,11 +2,10 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import VueMeta from 'vue-meta'
 
-import { Permission } from './interfaces/Permissions'
-
+import { Permission } from '@/interfaces/Permissions'
+import { PERMISSIONS_TREE as Permissions } from '@/consts/permissions'
 import { accessor } from './store'
 import { hasAccess } from './utils/hasAccess'
-import { PERMISSIONS_TREE as Permissions } from './consts/permissions'
 
 Vue.use(VueRouter)
 Vue.use(VueMeta)
@@ -22,7 +21,6 @@ const router = new VueRouter({
       component: () => import('./views/auth/Login.vue'),
       meta: {
         hiddenNav: true,
-        recaptchaAlert: true,
       },
     },
     {
@@ -32,7 +30,6 @@ const router = new VueRouter({
       component: () => import('./views/auth/ResetPassword.vue'),
       meta: {
         hiddenNav: true,
-        recaptchaAlert: true,
       },
     },
     {
@@ -42,7 +39,6 @@ const router = new VueRouter({
       component: () => import('./views/auth/NewPassword.vue'),
       meta: {
         hiddenNav: true,
-        recaptchaAlert: true,
       },
     },
     {
@@ -210,6 +206,14 @@ const router = new VueRouter({
       meta: {
         requiresAuth: true,
         permissions: [Permissions.Apps.Show],
+      },
+    },
+    {
+      path: '/apps/debug',
+      name: 'AppsDebug',
+      component: () => import('./views/apps/Debug.vue'),
+      meta: {
+        requiresAuth: true,
       },
     },
     {

@@ -1,12 +1,9 @@
 import { cloneDeep } from 'lodash'
-import { CouponDto, CouponFormDto, SaleDto, SaleFormDto } from '@/interfaces/SalesAndCoupons'
-import {
-  DiscountConditionGroup,
-  DiscountConditionGroupDto,
-  DiscountConditionType,
-} from '@/interfaces/SaleCondition'
+import { DiscountConditionGroup, DiscountConditionType } from '@heseya/store-core'
+import { CouponCreateDto, SaleCreateDto, DiscountConditionGroupDto } from '@heseya/store-core'
+import { CouponFormDto, SaleFormDto } from '@/interfaces/SalesAndCoupons'
 
-export const mapSaleFormToSaleDto = (saleForm: SaleFormDto): SaleDto => {
+export const mapSaleFormToSaleDto = (saleForm: SaleFormDto): SaleCreateDto => {
   return {
     ...cloneDeep(saleForm),
     target_products: saleForm.target_products.map(({ id }) => id),
@@ -16,8 +13,8 @@ export const mapSaleFormToSaleDto = (saleForm: SaleFormDto): SaleDto => {
   }
 }
 
-export const mapCouponFormToCouponDto = (couponForm: CouponFormDto): CouponDto => {
-  return mapSaleFormToSaleDto(couponForm) as CouponDto
+export const mapCouponFormToCouponDto = (couponForm: CouponFormDto): CouponCreateDto => {
+  return mapSaleFormToSaleDto(couponForm) as CouponCreateDto
 }
 
 export const mapConditionGroupFormToConditionGroupDto = (

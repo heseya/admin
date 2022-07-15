@@ -69,7 +69,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "en": {
     "userSection": "User",
@@ -94,14 +94,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { Order } from '@heseya/store-core'
 
 import Field from '../../Field.vue'
 import EditableOrderAddress from './EditableOrderAddress.vue'
 import PartialUpdateForm from './PartialUpdateForm.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import IconButton from '@/components/layout/IconButton.vue'
-
-import { Order } from '@/interfaces/Order'
 
 const DEFAULT_ADDRESS_FORM = {
   address: '',

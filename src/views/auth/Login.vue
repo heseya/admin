@@ -12,7 +12,7 @@
   </central-screen-form>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "loginTitle": "Logowanie",

@@ -43,7 +43,7 @@ export const createApiInstance = (baseURL: string, useAccessToken = true) => {
     return config
   })
 
-  apiInstance.interceptors.response.use(undefined, async (error: AxiosError) => {
+  apiInstance.interceptors.response.use(undefined, async (error: AxiosError<any>) => {
     const originalRequest = error.config
 
     if (error.response?.status === 403 && !!error.response?.data?.error) {

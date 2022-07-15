@@ -1,9 +1,9 @@
+import { User, UserCreateDto, UserUpdateDto } from '@heseya/store-core'
 import { createVuexCRUD, StoreMutations } from './generator'
-import { CreateUserDTO, EditUserDTO, User } from '@/interfaces/User'
 import { api } from '@/api'
 import { UUID } from '@/interfaces/UUID'
 
-export const users = createVuexCRUD<User, CreateUserDTO, EditUserDTO>()('users', {
+export const users = createVuexCRUD<User, UserCreateDto, UserUpdateDto>()('users', {
   state: {},
   getters: {},
   mutations: {},

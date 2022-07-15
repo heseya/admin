@@ -89,7 +89,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Użytkownicy",
@@ -114,6 +114,7 @@
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { clone } from 'lodash'
+import { User, UserCreateDto, UserUpdateDto } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ListItem from '@/components/layout/ListItem.vue'
@@ -126,9 +127,8 @@ import UsersFilter, { EMPTY_USER_FILTERS } from '@/components/modules/users/User
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 import { formatFilters } from '@/utils/utils'
 import { UUID } from '@/interfaces/UUID'
-import { CreateUserDTO, EditUserDTO, User } from '@/interfaces/User'
 
-const CLEAR_USER: CreateUserDTO = {
+const CLEAR_USER: UserCreateDto = {
   name: '',
   email: '',
   password: '',
@@ -159,7 +159,7 @@ export default Vue.extend({
   },
   data: () => ({
     isModalActive: false,
-    editedUser: clone(CLEAR_USER) as CreateUserDTO | EditUserDTO,
+    editedUser: clone(CLEAR_USER) as UserCreateDto | (UserUpdateDto & { id: UUID }),
     selectedUser: null as User | null,
     filters: { ...EMPTY_USER_FILTERS },
   }),
@@ -220,7 +220,7 @@ export default Vue.extend({
       this.$accessor.stopLoading()
     },
 
-    isNewUser(user: CreateUserDTO | EditUserDTO): user is CreateUserDTO {
+    isNewUser(user: UserCreateDto | (UserUpdateDto & { id: UUID })): user is UserCreateDto {
       return 'id' in user === false
     },
 

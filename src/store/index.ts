@@ -87,6 +87,7 @@ const storeModules = {
   productSets,
   languages,
   attributes,
+  menuItems,
 }
 
 const storePattern = {
@@ -94,7 +95,7 @@ const storePattern = {
   getters,
   mutations,
   actions,
-  modules: { ...storeModules, menuItems },
+  modules: storeModules,
 }
 
 const store = new Vuex.Store({
@@ -106,7 +107,10 @@ export const accessor = useAccessor(store, storePattern)
 
 export type AccessorType = typeof accessor
 export type StoreModulesKeys = keyof typeof storeModules
-export type GeneratedStoreModulesKeys = Exclude<StoreModulesKeys, 'auth' | 'globalSeo' | 'config'>
+export type GeneratedStoreModulesKeys = Exclude<
+  StoreModulesKeys,
+  'auth' | 'globalSeo' | 'menuItems' | 'config'
+>
 
 Vue.prototype.$accessor = accessor
 

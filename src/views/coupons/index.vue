@@ -34,7 +34,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Kody rabatowe",
@@ -61,11 +61,10 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { Coupon, DiscountType } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
-
-import { Coupon, DiscountType } from '@/interfaces/SalesAndCoupons'
 
 import { TableConfig } from '@/interfaces/CmsTable'
 import { formatCurrency } from '@/utils/currency'

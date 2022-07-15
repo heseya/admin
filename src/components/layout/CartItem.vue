@@ -63,7 +63,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "header": {
@@ -94,8 +94,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { OrderProduct } from '@heseya/store-core'
 
-import { OrderProduct } from '@/interfaces/OrderProduct'
 import { formatCurrency } from '@/utils/currency'
 import Field from '../Field.vue'
 import InfoTooltip from './InfoTooltip.vue'
@@ -111,7 +111,7 @@ export default Vue.extend({
   },
   computed: {
     coverUrl(): string {
-      return this.item?.product?.cover?.url
+      return this.item?.product?.cover?.url || ''
     },
     objectFit(): string {
       return +this.$accessor.config.env.dashboard_products_contain ? 'contain' : 'cover'

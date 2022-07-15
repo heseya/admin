@@ -52,7 +52,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Cechy produktów",
@@ -76,12 +76,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import { debounce } from 'lodash'
+import { Attribute } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 
 import { TableConfig } from '@/interfaces/CmsTable'
-import { Attribute } from '@/interfaces/Attribute'
 
 export default Vue.extend({
   metaInfo(this: any) {

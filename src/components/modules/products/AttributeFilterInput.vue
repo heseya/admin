@@ -28,8 +28,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-
-import { Attribute, AttributeType } from '@/interfaces/Attribute'
+import { Attribute, AttributeType } from '@heseya/store-core'
 
 import AutocompleteInput from '@/components/AutocompleteInput.vue'
 import RangeInput from '@/components/form/RangeInput.vue'

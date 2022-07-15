@@ -12,7 +12,7 @@ import {
   UserInRoleDiscountConditionDto,
   WeekdayInDiscountConditionDto,
   CouponsCountDiscountConditionDto,
-} from '@/interfaces/SaleCondition'
+} from '@heseya/store-core'
 
 export const EMPTY_ORDER_VALUE_FORM: OrderValueDiscountConditionDto = {
   type: DiscountConditionType.OrderValue,

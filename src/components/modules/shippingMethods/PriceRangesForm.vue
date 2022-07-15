@@ -44,7 +44,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Zakresy cen",
@@ -63,6 +63,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
+// TODO: CHange to store-core version when avaliable
+//import { ShippingMethodPriceRangeDto } from '@heseya/store-core'
 
 import { ShippingMethodPriceRangeDTO } from '@/interfaces/ShippingMethod'
 

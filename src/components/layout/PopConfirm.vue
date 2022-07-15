@@ -18,7 +18,7 @@
   </a-popover>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "default": {
@@ -28,7 +28,7 @@
     }
   },
   "en": {
-     "default": {
+    "default": {
       "question": "Are you sure?",
       "confirm": "Yes",
       "cancel": "No"

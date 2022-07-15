@@ -21,7 +21,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "newTitle": "Nowa zgoda",
@@ -45,15 +45,15 @@
 <script lang="ts">
 import Vue from 'vue'
 import { cloneDeep } from 'lodash'
+import { Consent, ConsentCreateDto } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ConsentsForm from '@/components/modules/consents/Form.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
-import { Consent, ConsentDTO } from '@/interfaces/Consent'
 
-const CLEAN_FORM: ConsentDTO = {
+const CLEAN_FORM: ConsentCreateDto = {
   name: '',
   description_html: '',
   required: true,
@@ -113,6 +113,7 @@ export default Vue.extend({
       if (selectedConsent) {
         // eslint-disable-next-line camelcase
         const { name, description_html, required } = selectedConsent
+        // eslint-disable-next-line camelcase
         this.form = cloneDeep({ name, description_html, required })
       }
       this.$accessor.stopLoading()

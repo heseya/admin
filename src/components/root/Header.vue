@@ -41,7 +41,7 @@
   </header>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "back": "Wróć do listy",
@@ -59,8 +59,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import last from 'lodash/last'
+import { User } from '@heseya/store-core'
 
-import { User } from '@/interfaces/User'
 import ApiLangSwitch from '../ApiLangSwitch.vue'
 
 export default Vue.extend({

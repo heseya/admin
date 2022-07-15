@@ -48,7 +48,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Dostępność produktu",
@@ -78,8 +78,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import isNumber from 'lodash/isNumber'
-
-import { WarehouseItem } from '@/interfaces/WarehouseItem'
+import { WarehouseItem } from '@heseya/store-core'
 
 import DepositFormModal from './DepositFormModal.vue'
 

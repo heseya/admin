@@ -16,7 +16,7 @@
   <div v-else class="media-element media-element--unknown">{{ $t('unknownType') }}</div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "unknownType": "Nieznany typ pliku"
@@ -29,7 +29,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { CdnMedia, CdnMediaType } from '@/interfaces/Media'
+import { CdnMedia, CdnMediaType } from '@heseya/store-core'
 
 export default Vue.extend({
   props: {

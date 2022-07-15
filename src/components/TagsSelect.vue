@@ -24,7 +24,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "tags": "Tagi"
@@ -38,7 +38,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { debounce, uniqBy } from 'lodash'
-import { Tag } from '@/interfaces/Tag'
+import { Tag } from '@heseya/store-core'
 
 type AntSelectOption = { key: string; label: string }
 

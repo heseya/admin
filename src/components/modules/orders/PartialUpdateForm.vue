@@ -27,7 +27,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "email": "Adres e-mail",
@@ -43,8 +43,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
+import { Order } from '@heseya/store-core'
 
-import { Order } from '@/interfaces/Order'
 import AddressForm from './AddressForm.vue'
 
 export default Vue.extend({

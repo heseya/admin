@@ -73,13 +73,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { PaymentMethod } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import Avatar from '@/components/layout/Avatar.vue'
 
 import { UUID } from '@/interfaces/UUID'
-import { PaymentMethod } from '@/interfaces/PaymentMethod'
 
 export default Vue.extend({
   components: {

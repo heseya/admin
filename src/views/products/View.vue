@@ -155,7 +155,7 @@
                 />
                 <br />
                 <small class="label">{{ $t('form.shortDescription') }}</small>
-                <Textarea
+                <AppTextarea
                   v-if="!isLoading"
                   v-model="form.description_short"
                   :disabled="!canModify"
@@ -208,7 +208,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "newProductTitle": "Nowy produkt",
@@ -263,6 +263,7 @@
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import cloneDeep from 'lodash/cloneDeep'
+import { Product, ProductCreateDto } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Gallery from '@/components/modules/products/Gallery.vue'
@@ -275,7 +276,7 @@ import SeoForm from '@/components/modules/seo/Accordion.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
-import Textarea from '@/components/form/Textarea.vue'
+import AppTextarea from '@/components/form/Textarea.vue'
 import AttributesConfigurator from '@/components/modules/attributes/configurator/Configurator.vue'
 import WarehouseItemsConfigurator from '@/components/modules/products/WarehouseItemsConfigurator.vue'
 import GoogleCategorySelect from '@/components/modules/products/GoogleCategorySelect.vue'
@@ -286,7 +287,7 @@ import { generateSlug } from '@/utils/generateSlug'
 import { updateProductAttributeOptions } from '@/services/updateProductAttributeOptions'
 
 import { UUID } from '@/interfaces/UUID'
-import { Product, ProductDTO, ProductComponentForm } from '@/interfaces/Product'
+import { ProductComponentForm } from '@/interfaces/Product'
 
 const EMPTY_FORM: ProductComponentForm = {
   id: '',
@@ -328,7 +329,7 @@ export default Vue.extend({
     SwitchInput,
     SeoForm,
     AuditsModal,
-    Textarea,
+    AppTextarea,
     MetadataForm,
     AttributesConfigurator,
     WarehouseItemsConfigurator,
@@ -415,7 +416,7 @@ export default Vue.extend({
         this.form.attributes.filter((v) => v.selected_options),
       )
 
-      const apiPayload: ProductDTO = {
+      const apiPayload: ProductCreateDto = {
         ...this.form,
         order: this.form.order || 0,
         media: this.form.gallery.map(({ id }) => id),

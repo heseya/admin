@@ -84,7 +84,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Aplikacje",
@@ -113,6 +113,7 @@
 import Vue from 'vue'
 import { cloneDeep } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
+import { App, AppCreateDto } from '@heseya/store-core'
 
 import ListItem from '@/components/layout/ListItem.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
@@ -121,9 +122,7 @@ import AddForm from '@/components/modules/apps/AddForm.vue'
 import ConfigureAppForm from '@/components/modules/apps/ConfigureAppForm.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 
-import { App, CreateAppDto } from '@/interfaces/App'
-
-const CLEAN_FORM: CreateAppDto = {
+const CLEAN_FORM: AppCreateDto = {
   url: '',
   name: '',
   licence_key: '',
@@ -199,6 +198,7 @@ export default Vue.extend({
       this.$accessor.stopLoading()
 
       if (success) {
+        this.$accessor.menuItems.removeNotExistingApps()
         this.$toast.success(this.$t('deleteMessage') as string)
         this.isConfigureModalActive = false
       } else {

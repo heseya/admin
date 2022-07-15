@@ -44,7 +44,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "next": "Następne zamówienie",
@@ -61,7 +61,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Order } from '@/interfaces/Order'
+import { Order } from '@heseya/store-core'
 
 export default Vue.extend({
   components: {

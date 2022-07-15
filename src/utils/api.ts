@@ -28,6 +28,10 @@ export const getApiURL = () => {
       return '***REMOVED***'
     case 'sandbox-admin.heseya.com':
       return 'https://feature-sandbox.***REMOVED***'
+    case 'admin.***REMOVED***.pl':
+      return 'https://api.***REMOVED***.pl'
+    case '***REMOVED***-admin.heseya.pl':
+      return 'https://sandbox-***REMOVED***.***REMOVED***/'
     default:
       return import.meta.env.VITE_API_URL || '***REMOVED***'
   }

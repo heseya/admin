@@ -16,7 +16,7 @@
   </app-select>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "label": "Cechy, po których można filtrować produkty",
@@ -30,9 +30,10 @@
 </i18n>
 
 <script lang="ts">
-import { Attribute } from '@/interfaces/Attribute'
-import { debounce } from 'lodash'
 import Vue from 'vue'
+import debounce from 'lodash/debounce'
+import { Attribute } from '@heseya/store-core'
+
 export default Vue.extend({
   props: {
     value: {

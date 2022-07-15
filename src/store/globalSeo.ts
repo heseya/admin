@@ -1,9 +1,8 @@
 /* eslint-disable camelcase */
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
+import { SeoMetadata } from '@heseya/store-core'
 
 import { api } from '../api'
-
-import { SeoMetadata } from '@/interfaces/SeoMetadata'
 import { UUID } from '@/interfaces/UUID'
 
 const state = () => ({

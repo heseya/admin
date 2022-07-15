@@ -29,7 +29,7 @@
   </ValidationObserver>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "email": "E-mail",

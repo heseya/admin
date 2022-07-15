@@ -31,9 +31,9 @@
 <script lang="ts">
 import Vue from 'vue'
 import Draggable from 'vuedraggable'
+import { CdnMedia, CdnMediaType } from '@heseya/store-core'
 
 import { UUID } from '@/interfaces/UUID'
-import { CdnMedia, CdnMediaType } from '@/interfaces/Media'
 import { removeMedia } from '@/services/uploadMedia'
 
 import MediaEditForm from '@/components/modules/media/MediaEditForm.vue'

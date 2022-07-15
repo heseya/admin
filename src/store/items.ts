@@ -7,7 +7,7 @@ import {
   WarehouseItem,
   WarehouseItemCreateDto,
   WarehouseItemUpdateDto,
-} from '../interfaces/WarehouseItem'
+} from '@heseya/store-core'
 
 export const items = createVuexCRUD<
   WarehouseItem,

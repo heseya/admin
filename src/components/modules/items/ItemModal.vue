@@ -133,7 +133,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "editTitle": "Edycja przedmiotu",
@@ -189,8 +189,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
-
-import { WarehouseItem, WarehouseItemCreateDto } from '@/interfaces/WarehouseItem'
+import { WarehouseItem, WarehouseItemCreateDto } from '@heseya/store-core'
 
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 import ModalForm from '@/components/form/ModalForm.vue'

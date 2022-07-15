@@ -17,11 +17,12 @@ module.exports = {
     'no-console': 'warn',
     'no-debugger': 'warn',
     '@typescript-eslint/no-unused-vars': 'warn',
+    'vue/no-reserved-component-names': 'warn',
     'vue/multi-word-component-names': 'off',
     'vue/no-deprecated-slot-attribute': 'error',
     'vue/no-v-html': 'off',
     'vue/no-bare-strings-in-template': [
-      'warn',
+      'error',
       {
         allowlist: [
           'heseya',

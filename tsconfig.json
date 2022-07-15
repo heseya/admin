@@ -3,6 +3,7 @@
     "target": "ES2016",
     "module": "esnext",
     "outDir": "./dist",
+    "jsx": "preserve",
     "strict": true,
     "importHelpers": true,
     "moduleResolution": "node",
@@ -20,5 +21,8 @@
     "lib": ["es5", "esnext", "dom", "dom.iterable", "scripthost"]
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue"],
-  "exclude": ["node_modules", "tests/e2e"]
+  "exclude": ["node_modules", "tests/e2e"],
+  "vueCompilerOptions": {
+    "target": 2.7
+  }
 }

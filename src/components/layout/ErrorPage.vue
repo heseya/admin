@@ -8,7 +8,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "returnBtn": "Wróć na stronę główną"

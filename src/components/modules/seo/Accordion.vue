@@ -20,7 +20,7 @@
   </a-collapse>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Ustawienia SEO"
@@ -33,8 +33,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { SeoMetadata } from '@heseya/store-core'
 
-import { SeoMetadata } from '@/interfaces/SeoMetadata'
 import SeoForm from './Form.vue'
 import { UUID } from '@/interfaces/UUID'
 

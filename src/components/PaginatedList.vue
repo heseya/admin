@@ -67,7 +67,6 @@ import { BaseItem } from '@/store/generator'
 
 import { formatFilters } from '@/utils/utils'
 import { formatApiNotificationError } from '@/utils/errors'
-import { CdnMedia } from '@/interfaces/Media'
 
 export default Vue.extend({
   components: {
@@ -199,7 +198,7 @@ export default Vue.extend({
 
       this.isLoading = false
     },
-    updateData(updatedItem: CdnMedia) {
+    updateData(updatedItem: BaseItem) {
       this.items = this.items.map((oldItem) =>
         oldItem.id === updatedItem.id ? updatedItem : oldItem,
       )

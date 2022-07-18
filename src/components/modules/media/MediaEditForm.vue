@@ -11,6 +11,7 @@
         <validated-input v-model="form.alt" :label="$t('form.alt')" :disabled="isLoading" />
 
         <validated-input
+          v-if="media.slug !== null"
           v-model="form.slug"
           :label="$t('form.slug')"
           :disabled="isLoading"
@@ -30,20 +31,26 @@
             size="small"
             :loading="isLoading"
             class="media-edit-modal__form-button"
-            :disabled="!form.slug"
+            :disabled="shouldBeDisabled"
           >
             {{ $t('common.save') }}
           </app-button>
-          <app-button
-            v-if="allowDeletion"
-            type="danger"
-            html-type="button"
-            size="small"
-            class="media-edit-modal__form-button"
-            @click="() => handleMediaRemove(media.id)"
+          <a-popconfirm
+            :cancel-text="$t('common.cancel')"
+            :ok-text="$t('common.delete')"
+            @confirm="() => handleMediaRemove(media.id)"
           >
-            {{ $t('common.delete') }}
-          </app-button>
+            <template #title> {{ $t('confirmDelete') }} </template>
+            <app-button
+              v-if="allowDeletion"
+              type="danger"
+              html-type="button"
+              size="small"
+              class="media-edit-modal__form-button"
+            >
+              {{ $t('common.delete') }}
+            </app-button>
+          </a-popconfirm>
         </div>
       </form>
     </template>
@@ -65,7 +72,10 @@
       "slug": "Nazwa pliku zdjęcia"
     },
     "currentSlug": "Aktualny link",
-    "successMessage": "Metadane zdjęcia zostały zaktualizowane"
+    "successMessage": "Metadane zdjęcia zostały zaktualizowane",
+    "removed": "Usunięto",
+    "removeFail": "Nie udało się usunąć",
+    "confirmDelete": "Potwierdź, aby usunąć"
   },
   "en": {
     "title": "Edit image/video",
@@ -74,7 +84,10 @@
       "slug": "Image file name"
     },
     "currentSlug": "Current link",
-    "successMessage": "Image metadata updated"
+    "successMessage": "Image metadata updated",
+    "removed": "Deleted",
+    "removeFail": "Failed to delete",
+    "confirmDelete": "Confirm to delete"
   }
 }
 </i18n>
@@ -83,7 +96,7 @@
 import Vue from 'vue'
 
 import { CdnMedia } from '@/interfaces/Media'
-import { updateMedia } from '@/services/uploadMedia'
+import { removeMedia, updateMedia } from '@/services/uploadMedia'
 import { formatApiNotificationError } from '@/utils/errors'
 import { generateSlug } from '@/utils/generateSlug'
 
@@ -104,6 +117,12 @@ export default Vue.extend({
     isLoading: false,
     form: { ...EMPTY_FORM },
   }),
+
+  computed: {
+    shouldBeDisabled(): boolean {
+      return this.media.slug !== null && this.form.slug?.trim() === ''
+    },
+  },
   watch: {
     isOpen(isOpen) {
       if (isOpen) {
@@ -134,7 +153,14 @@ export default Vue.extend({
       this.isLoading = false
     },
     async handleMediaRemove(id: string) {
-      this.$emit('remove', id)
+      const result = await removeMedia(id)
+
+      if (result) {
+        this.$toast.success(this.$t('removed') as string)
+        this.$emit('remove', id)
+      } else {
+        this.$toast.error(this.$t('removeFail') as string)
+      }
     },
   },
 })

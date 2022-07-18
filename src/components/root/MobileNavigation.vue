@@ -9,6 +9,7 @@
         :exact="item.exact"
         :label="item.label"
         :icon-class="item.iconClass"
+        :icon-path="item.iconPath"
         :svg-icon-path="item.svgIconPath"
         root-class="mobile-nav"
       />

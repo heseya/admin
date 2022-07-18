@@ -22,6 +22,7 @@
         v-for="(condition, i) in group.conditions"
         :key="i"
         v-model="group.conditions[i]"
+        :number="i + 1"
         :disabled="disabled"
         @remove="removeCondition(i)"
       />
@@ -34,17 +35,17 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "en": {
     "addCondition": "Add condition",
-    "removeGroup": "Remove group",
+    "removeGroup": "Remove conditions group",
     "empty": "No conditions in the group",
     "errorTitle": "Every group needs to have at least one condition"
   },
   "pl": {
     "addCondition": "Dodaj warunek",
-    "removeGroup": "Usuń grupę",
+    "removeGroup": "Usuń grupę warunków",
     "empty": "Brak warunków rabatowych w grupie",
     "errorTitle": "Każda grupa musi zawierać co najmniej jeden warunek"
   }
@@ -55,8 +56,8 @@
 import Vue from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import { ValidationProvider } from 'vee-validate'
+import { DiscountConditionGroupDto, DiscountConditionType } from '@heseya/store-core'
 
-import { DiscountConditionGroupDto, DiscountConditionType } from '@/interfaces/SaleCondition'
 import Empty from '@/components/layout/Empty.vue'
 import ConditionForm from './ConditionForm.vue'
 
@@ -97,7 +98,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .condition-group {
-  border: dashed 1px $background-color-700;
+  background-color: #f7f7f8;
   border-radius: 4px;
   padding: 8px;
   transition: 0.3s;

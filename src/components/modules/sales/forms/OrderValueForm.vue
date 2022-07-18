@@ -31,7 +31,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "en": {
     "form": {
@@ -60,8 +60,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-
-import { OrderValueDiscountCondition } from '@/interfaces/SaleCondition'
+import { OrderValueDiscountCondition } from '@heseya/store-core'
 
 import SwitchInput from '@/components/form/SwitchInput.vue'
 

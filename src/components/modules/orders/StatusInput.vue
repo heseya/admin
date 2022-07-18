@@ -18,7 +18,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "en": {
     "statusLabel": "Status",
@@ -33,7 +33,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Order, OrderStatus } from '@/interfaces/Order'
+import { Order, OrderStatus } from '@heseya/store-core'
+
 import { UUID } from '@/interfaces/UUID'
 
 export default Vue.extend({

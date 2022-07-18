@@ -74,7 +74,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Metody dostawy",
@@ -119,6 +119,12 @@
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import omit from 'lodash/omit'
+import {
+  ShippingMethod,
+  ShippingMethodUpdateDto,
+  ShippingCountry,
+  ShippingType,
+} from '@heseya/store-core'
 import { api } from '../../api'
 
 import PaginatedList from '@/components/PaginatedList.vue'
@@ -128,8 +134,6 @@ import ShippingMethodsForm from '@/components/modules/shippingMethods/Index.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { UUID } from '@/interfaces/UUID'
-import { ShippingMethod, ShippingMethodDTO, ShippingType } from '@/interfaces/ShippingMethod'
-import { Country } from '@/interfaces/Country'
 
 export default Vue.extend({
   metaInfo(this: any) {
@@ -153,9 +157,9 @@ export default Vue.extend({
   },
   data: () => ({
     isModalActive: false,
-    editedItem: {} as ShippingMethodDTO,
+    editedItem: {} as ShippingMethodUpdateDto & { id?: UUID },
     selectedItem: null as ShippingMethod | null,
-    countries: [] as Country[],
+    countries: [] as ShippingCountry[],
   }),
   computed: {
     canModify(): boolean {
@@ -167,7 +171,7 @@ export default Vue.extend({
   async created() {
     this.$accessor.startLoading()
     this.$accessor.paymentMethods.fetch()
-    const { data } = await api.get<{ data: Country[] }>('countries')
+    const { data } = await api.get<{ data: ShippingCountry[] }>('countries')
     this.countries = data.data
     this.$accessor.stopLoading()
   },

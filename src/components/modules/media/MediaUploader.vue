@@ -12,7 +12,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "allowedExtensions": "Obsługiwane są tylko pliki z rozszerzeniami:"

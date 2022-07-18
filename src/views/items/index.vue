@@ -32,7 +32,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Magazyn",
@@ -67,6 +67,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
+import { WarehouseItem } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ItemsFilter, {
@@ -76,7 +77,7 @@ import ItemsFilter, {
 import ItemModal from '@/components/modules/items/ItemModal.vue'
 
 import { UUID } from '@/interfaces/UUID'
-import { WarehouseItem, WarehouseItemCreateDto } from '@/interfaces/WarehouseItem'
+import { WarehouseItemCreateDto } from '@/interfaces/WarehouseItem'
 import { TableConfig } from '@/interfaces/CmsTable'
 
 import { ALL_FILTER_VALUE } from '@/consts/filters'

@@ -42,7 +42,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "en": {
     "offlinePayment": {
@@ -76,12 +76,10 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { Order, Payment } from '@heseya/store-core'
 
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import InfoTooltip from '@/components/layout/InfoTooltip.vue'
-
-import { Order } from '@/interfaces/Order'
-import { Payment } from '@/interfaces/Payment'
 
 import { api } from '@/api'
 import { formatCurrency } from '@/utils/currency'

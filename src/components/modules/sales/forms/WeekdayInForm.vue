@@ -19,7 +19,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "en": {
     "description": "Select days of week, when discount will be applied",
@@ -50,8 +50,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-
-import { WeekdayInDiscountCondition } from '@/interfaces/SaleCondition'
+import { WeekdayInDiscountCondition } from '@heseya/store-core'
 
 export default Vue.extend({
   props: {

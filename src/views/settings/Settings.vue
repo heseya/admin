@@ -73,7 +73,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Ustawienia zaawansowane",
@@ -106,14 +106,13 @@
 import Vue from 'vue'
 import clone from 'lodash/clone'
 import { ValidationObserver } from 'vee-validate'
+import { Setting } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-
-import { Setting } from '@/interfaces/Settings'
 
 const CLEAR_SETTING: Setting = {
   id: '',

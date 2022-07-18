@@ -135,11 +135,11 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "form": {
-      "shippingType":"Typ dostawy",
+      "shippingType": "Typ dostawy",
       "paymentMethods": "Dostępne metody płatności",
       "public": "Widoczność opcji dostawy",
       "deliveryTime": "Czas dostawy",
@@ -148,14 +148,14 @@
       "deliveryRegions": "Wysyłka możliwa do",
       "countries": "Kraje",
       "addShippingPoints": "Dodaj punkty dostawy",
-      "shippingPoints":"Punkty dostawy",
-      "addNewPoint":"Dodaj nowy punkt",
+      "shippingPoints": "Punkty dostawy",
+      "addNewPoint": "Dodaj nowy punkt",
       "editPoint": "Edytuj punkt"
     }
   },
   "en": {
     "form": {
-      "shippingType":"Shipping type",
+      "shippingType": "Shipping type",
       "paymentMethods": "Available payment methods",
       "public": "Shipping option visibility",
       "deliveryTime": "Delivery time",
@@ -164,8 +164,8 @@
       "deliveryRegions": "Delivery is possible to",
       "countries": "Countries",
       "addShippingPoints": "Add shipping points",
-      "shippingPoints":"Shipping points",
-      "addNewPoint":"Add shipping point",
+      "shippingPoints": "Shipping points",
+      "addNewPoint": "Add shipping point",
       "editPoint": "Edit point"
     }
   }
@@ -175,17 +175,22 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationProvider } from 'vee-validate'
+import {
+  PaymentMethod,
+  ShippingCountry,
+  ShippingMethodCreateDto,
+  ShippingType,
+  AddressDto,
+} from '@heseya/store-core'
 
 import ModalForm from '@/components/form/ModalForm.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import FlexInput from '@/components/layout/FlexInput.vue'
+
 import PriceRangesForm from './PriceRangesForm.vue'
 import ShippingPointForm from './ShippingPoint.vue'
 import ShippingPointsGrid from './ShippingPointsGrid.vue'
 
-import { ShippingType, ShippingMethodCountry, ShippingMethodDTO } from '@/interfaces/ShippingMethod'
-import { PaymentMethod } from '@/interfaces/PaymentMethod'
-import { AddressDto } from '@/interfaces/Address'
 import { DEFAULT_ADDRESS_FORM } from '@/consts/addressConsts'
 
 export default Vue.extend({
@@ -203,11 +208,11 @@ export default Vue.extend({
     value: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<ShippingMethodDTO>,
+    } as Vue.PropOptions<ShippingMethodCreateDto>,
     countries: {
       type: Array,
       required: true,
-    } as Vue.PropOptions<ShippingMethodCountry[]>,
+    } as Vue.PropOptions<ShippingCountry[]>,
     disabled: {
       type: Boolean,
       required: true,
@@ -222,10 +227,10 @@ export default Vue.extend({
   }),
   computed: {
     form: {
-      get(): ShippingMethodDTO {
+      get(): ShippingMethodCreateDto {
         return this.value
       },
-      set(value: ShippingMethodDTO) {
+      set(value: ShippingMethodCreateDto) {
         this.$emit('input', value)
       },
     },

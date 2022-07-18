@@ -1,6 +1,5 @@
+import { Tag } from '@heseya/store-core'
 import { createVuexCRUD } from './generator'
-
-import { Tag } from '@/interfaces/Tag'
 
 export const tags = createVuexCRUD<Tag>()('tags', {
   state: {},

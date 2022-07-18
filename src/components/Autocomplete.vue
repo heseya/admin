@@ -31,7 +31,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "chooseItem": "Wybierz przedmiot z magazynu",

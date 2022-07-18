@@ -1,13 +1,8 @@
 import VueRouter, { Route } from 'vue-router'
+import { PermissionsTree } from '@/interfaces/Permissions'
 
 import { hasUserAccess, alertIfNoAccess } from './plugins/permissions'
-import { PermissionsTree } from './consts/permissions'
 import { AccessorType } from './store'
-
-declare module '*.vue' {
-  import Vue from 'vue'
-  export default Vue
-}
 
 declare module 'vue/types/vue' {
   interface Vue {

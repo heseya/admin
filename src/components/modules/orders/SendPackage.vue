@@ -61,7 +61,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "sendPackage": {
@@ -108,8 +108,9 @@
 import Vue from 'vue'
 import { createStandardPackage } from '@/services/createStandardPackage'
 import { createFurgonetkaPackage } from '@/services/createFurgonetkaPackage'
+import { PackagesTemplate } from '@heseya/store-core'
+
 import { formatApiNotificationError } from '@/utils/errors'
-import { PackageTemplate } from '@/interfaces/PackageTemplate'
 
 export default Vue.extend({
   props: {
@@ -132,7 +133,7 @@ export default Vue.extend({
     providerKey: 'dpd',
   }),
   computed: {
-    packageTemplates(): PackageTemplate[] {
+    packageTemplates(): PackagesTemplate[] {
       return this.$accessor.packageTemplates.getData
     },
     PROVIDERS(): { key: string; label: string }[] {

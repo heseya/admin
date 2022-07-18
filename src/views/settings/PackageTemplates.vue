@@ -108,7 +108,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Szablony przesyłek",
@@ -147,7 +147,7 @@
       "depth": "depth"
     },
     "form": {
-      "weight": "Weight (kg)",
+      "weight": "weight (kg)",
       "height": "Height (cm)",
       "width": "Width (cm)",
       "depth": "Depth (cm)"
@@ -165,6 +165,7 @@
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { clone } from 'lodash'
+import { PackagesTemplate } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
@@ -173,9 +174,8 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { UUID } from '@/interfaces/UUID'
-import { PackageTemplate } from '@/interfaces/PackageTemplate'
 
-const CLEAR_PACKAGE_TEMPALTE: PackageTemplate = {
+const CLEAR_PACKAGE_TEMPLATE: PackagesTemplate = {
   id: '',
   name: '',
   width: 0,
@@ -209,7 +209,7 @@ export default Vue.extend({
   },
   data: () => ({
     isModalActive: false,
-    editedItem: clone(CLEAR_PACKAGE_TEMPALTE),
+    editedItem: clone(CLEAR_PACKAGE_TEMPLATE),
   }),
   computed: {
     canModify(): boolean {
@@ -223,7 +223,7 @@ export default Vue.extend({
         const item = this.$accessor.packageTemplates.getFromListById(id)
         this.editedItem = clone(item)
       } else {
-        this.editedItem = clone(CLEAR_PACKAGE_TEMPALTE)
+        this.editedItem = clone(CLEAR_PACKAGE_TEMPLATE)
       }
     },
     async saveModal() {

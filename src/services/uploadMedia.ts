@@ -1,6 +1,6 @@
 import { api } from '@/api'
 import { UUID } from '@/interfaces/UUID'
-import { CdnMedia } from '@/interfaces/Media'
+import { CdnMedia } from '@heseya/store-core'
 import { ApiError } from '@/utils/errors'
 
 export const uploadMedia = async (file: File) => {

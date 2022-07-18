@@ -11,11 +11,10 @@
         <validated-input v-model="form.alt" :label="$t('form.alt')" :disabled="isLoading" />
 
         <validated-input
-          v-if="media.slug !== null"
           v-model="form.slug"
           :label="$t('form.slug')"
           :disabled="isLoading"
-          rules="required"
+          :rules="media.slug !== null && 'required'"
         />
         <a :href="media.url" target="_blank" rel="noopener noreferrer"
           ><small>
@@ -30,8 +29,8 @@
             html-type="submit"
             size="small"
             :loading="isLoading"
+            :disabled="media.slug && !form.slug"
             class="media-edit-modal__form-button"
-            :disabled="shouldBeDisabled"
           >
             {{ $t('common.save') }}
           </app-button>
@@ -72,7 +71,8 @@
       "slug": "Nazwa pliku zdjęcia"
     },
     "currentSlug": "Aktualny link",
-    "successMessage": "Metadane zdjęcia zostały zaktualizowane",
+    "successMessage": "Metadane zostały zaktualizowane",
+    "errorMessage": "Nie udało się zaktualizować metadanych",
     "removed": "Usunięto",
     "removeFail": "Nie udało się usunąć",
     "confirmDelete": "Potwierdź, aby usunąć"
@@ -84,7 +84,8 @@
       "slug": "Image file name"
     },
     "currentSlug": "Current link",
-    "successMessage": "Image metadata updated",
+    "successMessage": "Metadata updated",
+    "errorMessage": "The metadata could not be updated",
     "removed": "Deleted",
     "removeFail": "Failed to delete",
     "confirmDelete": "Confirm to delete"
@@ -95,8 +96,6 @@
 <script lang="ts">
 import Vue from 'vue'
 import { CdnMedia } from '@heseya/store-core'
-import { removeMedia, updateMedia } from '@/services/uploadMedia'
-import { formatApiNotificationError } from '@/utils/errors'
 import { generateSlug } from '@/utils/generateSlug'
 
 const EMPTY_FORM = {
@@ -138,25 +137,23 @@ export default Vue.extend({
       this.isLoading = true
 
       const slugifiedForm = { ...this.form, slug: generateSlug(this.form.slug) }
+      const result = await this.$accessor.media.update({ id: this.media.id, item: slugifiedForm })
 
-      const result = await updateMedia({ ...this.media, ...slugifiedForm })
-
-      if (result.success) {
+      if (result) {
         this.$toast.success(this.$t('successMessage') as string)
-        this.$emit('update', result.file)
+        this.$emit('update', result)
         this.isOpen = false
       } else {
-        this.$toast.error(formatApiNotificationError(result.error))
+        this.$toast.error(this.$t('errorMessage') as string)
       }
 
       this.isLoading = false
     },
     async handleMediaRemove(id: string) {
-      const result = await removeMedia(id)
+      const result = await this.$accessor.media.remove(id)
 
       if (result) {
         this.$toast.success(this.$t('removed') as string)
-        this.$emit('remove', id)
       } else {
         this.$toast.error(this.$t('removeFail') as string)
       }

@@ -11,7 +11,7 @@
         <media-filter :filters="filters" @search="makeSearch" />
       </template>
 
-      <template #default="{ item: singleMedia, updateData, removeData }">
+      <template #default="{ item: singleMedia }">
         <div class="media-list-item">
           <media-thumbnail
             fit="cover"
@@ -36,13 +36,7 @@
             </p>
           </div>
 
-          <media-edit-form
-            class="media-list-item__form"
-            :media="singleMedia"
-            allow-deletion
-            @update="updateData"
-            @remove="removeData"
-          />
+          <media-edit-form class="media-list-item__form" :media="singleMedia" allow-deletion />
         </div>
       </template>
     </PaginatedList>

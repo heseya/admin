@@ -25,7 +25,7 @@
         @sort="onSort"
       >
         <div v-for="item in items" :key="item.id" class="paginated-list__list-item">
-          <slot :item="item" :update-data="updateData" :remove-data="removeData">
+          <slot :item="item">
             <cms-table-row
               v-if="table"
               :key="item.id"
@@ -197,14 +197,6 @@ export default Vue.extend({
       })
 
       this.isLoading = false
-    },
-    updateData(updatedItem: BaseItem) {
-      this.items = this.items.map((oldItem) =>
-        oldItem.id === updatedItem.id ? updatedItem : oldItem,
-      )
-    },
-    removeData(removedItemId: CdnMedia['id']) {
-      this.items = this.items.filter(({ id }) => removedItemId !== id)
     },
   },
 })

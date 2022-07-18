@@ -1,8 +1,8 @@
-import { Page, PageDto } from '@/interfaces/Page'
+import { Page, PageCreateDto, PageUpdateDto } from '@heseya/store-core'
 import { reorderCollection } from '@/services/reorderCollection'
 import { createVuexCRUD } from './generator'
 
-export const pages = createVuexCRUD<Page, PageDto, PageDto>()('pages', {
+export const pages = createVuexCRUD<Page, PageCreateDto, PageUpdateDto>()('pages', {
   state: {},
   getters: {},
   mutations: {},

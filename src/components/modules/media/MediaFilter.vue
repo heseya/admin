@@ -43,10 +43,10 @@
 /* eslint-disable camelcase */
 import Vue from 'vue'
 import debounce from 'lodash/debounce'
+import { CdnMediaType } from '@heseya/store-core'
 
 import BooleanSelect from '@/components/form/BooleanSelect.vue'
 import { ALL_FILTER_VALUE } from '@/consts/filters'
-import { CdnMediaType } from '@/interfaces/Media'
 
 export type MediaFiltersType = {
   type: CdnMediaType | typeof ALL_FILTER_VALUE

@@ -94,8 +94,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-
-import { CdnMedia } from '@/interfaces/Media'
+import { CdnMedia } from '@heseya/store-core'
 import { removeMedia, updateMedia } from '@/services/uploadMedia'
 import { formatApiNotificationError } from '@/utils/errors'
 import { generateSlug } from '@/utils/generateSlug'

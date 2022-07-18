@@ -49,6 +49,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import Draggable from 'vuedraggable'
+import { HeseyaPaginatedResponseMeta } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Empty from '@/components/layout/Empty.vue'
@@ -60,14 +61,12 @@ import CmsTable from './cms/CmsTable.vue'
 import CmsTableRow from './cms/CmsTableRow.vue'
 import Loading from './layout/Loading.vue'
 
-import { ResponseMeta } from '@/interfaces/Response'
 import { TableConfig } from '@/interfaces/CmsTable'
 import { GeneratedStoreModulesKeys } from '@/store'
 import { BaseItem } from '@/store/generator'
 
 import { formatFilters } from '@/utils/utils'
 import { formatApiNotificationError } from '@/utils/errors'
-import { CdnMedia } from '@/interfaces/Media'
 
 export default Vue.extend({
   components: {
@@ -136,7 +135,7 @@ export default Vue.extend({
         this.isLoading = false
       },
     },
-    meta(): ResponseMeta {
+    meta(): HeseyaPaginatedResponseMeta {
       return this.$accessor[this.storeKey].getMeta
     },
     error(): any {
@@ -199,7 +198,7 @@ export default Vue.extend({
 
       this.isLoading = false
     },
-    updateData(updatedItem: CdnMedia) {
+    updateData(updatedItem: BaseItem) {
       this.items = this.items.map((oldItem) =>
         oldItem.id === updatedItem.id ? updatedItem : oldItem,
       )

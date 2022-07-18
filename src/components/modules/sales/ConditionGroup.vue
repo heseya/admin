@@ -56,8 +56,8 @@
 import Vue from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import { ValidationProvider } from 'vee-validate'
+import { DiscountConditionGroupDto, DiscountConditionType } from '@heseya/store-core'
 
-import { DiscountConditionGroupDto, DiscountConditionType } from '@/interfaces/SaleCondition'
 import Empty from '@/components/layout/Empty.vue'
 import ConditionForm from './ConditionForm.vue'
 

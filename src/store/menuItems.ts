@@ -1,7 +1,7 @@
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
+import { App } from '@heseya/store-core'
 
 import { DEFAULT_MENU_ITEMS, MenuItemType, MenuItem, MenuLink } from '@/consts/menuItems'
-import { App } from '@/interfaces/App'
 
 const state = () => ({
   activeItems: DEFAULT_MENU_ITEMS,
@@ -41,6 +41,13 @@ const actions = actionTree(
           : true,
       )
       commit('SET_ACTIVE_ITEMS', menuItemsWithoutNotExistingApps)
+    },
+
+    async initMicrofrontendMenuItems({ dispatch, rootGetters }) {
+      if (rootGetters['auth/isLogged']) {
+        await dispatch('apps/fetch', { limit: 500 }, { root: true })
+        dispatch('removeNotExistingApps')
+      }
     },
   },
 )

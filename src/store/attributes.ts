@@ -6,11 +6,11 @@ import {
   AttributeUpdateDto,
   AttributeOption,
   AttributeOptionDto,
-} from '@/interfaces/Attribute'
+  HeseyaResponseMeta,
+} from '@heseya/store-core'
 import { UUID } from '@/interfaces/UUID'
 import { api } from '@/api'
 import { stringifyQueryParams } from '@/utils/stringifyQuery'
-import { ResponseMeta } from '@/interfaces/Response'
 
 type CreateOptionAction = { attributeId: UUID; option: AttributeOptionDto }
 type UpdateOptionAction = { attributeId: UUID; optionId: UUID; option: AttributeOptionDto }
@@ -22,12 +22,12 @@ export const attributes = createVuexCRUD<Attribute, AttributeCreateDto, Attribut
   'attributes',
   {
     state: {
-      optionsMeta: {} as ResponseMeta,
+      optionsMeta: {} as HeseyaResponseMeta,
       options: [] as AttributeOption[],
     },
     getters: {},
     mutations: {
-      SET_OPTIONS_META(state, meta: ResponseMeta) {
+      SET_OPTIONS_META(state, meta: HeseyaResponseMeta) {
         state.optionsMeta = meta
       },
       SET_OPTIONS(state, options: AttributeOption[]) {
@@ -51,7 +51,7 @@ export const attributes = createVuexCRUD<Attribute, AttributeCreateDto, Attribut
       ) {
         try {
           const queryString = stringifyQueryParams(params)
-          const { data } = await api.get<{ data: AttributeOption[]; meta: ResponseMeta }>(
+          const { data } = await api.get<{ data: AttributeOption[]; meta: HeseyaResponseMeta }>(
             `/attributes/id:${attributeId}/options${queryString}`,
           )
           commit('SET_OPTIONS_META', data.meta)

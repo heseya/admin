@@ -108,7 +108,6 @@
 <script lang="ts">
 import Vue from 'vue'
 import { groupBy } from 'lodash'
-
 import { Permission, PermissionObject } from '@/interfaces/Permissions'
 
 interface GroupedPermissions {

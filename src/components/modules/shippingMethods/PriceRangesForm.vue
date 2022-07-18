@@ -44,7 +44,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Zakresy cen",
@@ -63,15 +63,14 @@
 
 <script lang="ts">
 import Vue from 'vue'
-
-import { ShippingMethodPriceRangeDTO } from '@/interfaces/ShippingMethod'
+import { ShippingMethodPriceRangeDto } from '@heseya/store-core'
 
 export default Vue.extend({
   props: {
     value: {
       type: Array,
       default: () => [{ start: 0, value: 0 }],
-    } as Vue.PropOptions<ShippingMethodPriceRangeDTO[]>,
+    } as Vue.PropOptions<ShippingMethodPriceRangeDto[]>,
     error: {
       type: String,
       default: '',
@@ -83,10 +82,10 @@ export default Vue.extend({
   },
   computed: {
     priceRanges: {
-      get(): ShippingMethodPriceRangeDTO[] {
+      get(): ShippingMethodPriceRangeDto[] {
         return this.value
       },
-      set(v: ShippingMethodPriceRangeDTO[]) {
+      set(v: ShippingMethodPriceRangeDto[]) {
         this.$emit('input', v)
       },
     },

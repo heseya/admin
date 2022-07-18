@@ -7,7 +7,7 @@ $loader-color: $font-color;
 
 .loader {
   color: $loader-color;
-  font-size: 48px;
+  font-size: 1em;
   text-indent: -9999em;
   overflow: hidden;
   width: 1em;

@@ -35,7 +35,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { AddressDto } from '@/interfaces/Address'
+import { AddressDto } from '@heseya/store-core'
 
 export default Vue.extend({
   name: 'AddressForm',

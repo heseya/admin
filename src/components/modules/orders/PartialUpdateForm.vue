@@ -48,19 +48,19 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "email": "Adres e-mail",
     "comment": "Komentarz do zamówienia",
-    "choosePoint":"Wybierz punkt",
+    "choosePoint": "Wybierz punkt",
     "pointExternalId": "Zewnętrzny identyfikator punktu",
     "pointExternalInfo": "Zewnętrzny identyfikator punktu może być używany przez integracje do nadawania paczek"
   },
   "en": {
     "email": "Email address",
     "comment": "Order comment",
-    "choosePoint":"Choose point",
+    "choosePoint": "Choose point",
     "pointExternalId": "External point ID",
     "pointExternalInfo": "External point ID can be used by integration to send parcels"
   }
@@ -70,11 +70,9 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
+import { Order, AddressDto, ShippingMethod, ShippingType } from '@heseya/store-core'
 
-import { Order } from '@/interfaces/Order'
 import AddressForm from './AddressForm.vue'
-import { AddressDto } from '@/interfaces/Address'
-import { ShippingMethod, ShippingType } from '@/interfaces/ShippingMethod'
 
 export default Vue.extend({
   name: 'PartialUpdateForm',

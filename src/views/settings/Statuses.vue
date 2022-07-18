@@ -120,7 +120,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Statusy zamówień",
@@ -169,6 +169,7 @@
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { clone } from 'lodash'
+import { OrderStatus, OrderStatusUpdateDto } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
@@ -179,9 +180,8 @@ import Avatar from '@/components/layout/Avatar.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { UUID } from '@/interfaces/UUID'
-import { OrderStatus, OrderStatusDto } from '@/interfaces/Order'
 
-const CLEAR_STATUS: OrderStatusDto = {
+const CLEAR_STATUS: OrderStatusUpdateDto = {
   name: '',
   description: '',
   color: '000000',
@@ -214,7 +214,7 @@ export default Vue.extend({
   },
   data: () => ({
     isModalActive: false,
-    editedItem: clone(CLEAR_STATUS) as OrderStatusDto & { id?: string },
+    editedItem: clone(CLEAR_STATUS) as OrderStatusUpdateDto & { id?: string },
     selectedItem: null as OrderStatus | null,
   }),
   computed: {

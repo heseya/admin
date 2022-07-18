@@ -1,5 +1,5 @@
+import { Setting } from '@heseya/store-core'
 import { createVuexCRUD } from './generator'
-import { Setting } from '@/interfaces/Settings'
 
 export const settings = createVuexCRUD<Setting>()('settings', {
   state: {},

@@ -85,9 +85,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
-
-import { AddressDto } from '@/interfaces/Address'
-import { ShippingMethodCountry } from '@/interfaces/ShippingMethod'
+import { AddressDto, ShippingCountry } from '@heseya/store-core'
 import { DEFAULT_ADDRESS_FORM } from '@/consts/addressConsts'
 
 export default Vue.extend({
@@ -101,7 +99,7 @@ export default Vue.extend({
     countries: {
       type: Array,
       required: true,
-    } as Vue.PropOptions<ShippingMethodCountry[]>,
+    } as Vue.PropOptions<ShippingCountry[]>,
     shippingPoints: {
       type: Array,
       required: true,

@@ -3,8 +3,7 @@ import { required, email } from 'vee-validate/dist/rules'
 import v from 'validator'
 import { isNaN, isNumber } from 'lodash'
 import { isBefore, isSameDay } from 'date-fns'
-
-import { ShippingMethodPriceRangeDTO } from '@/interfaces/ShippingMethod'
+import { AddressDto, ShippingMethodPriceRangeDto } from '@heseya/store-core'
 
 import {
   METADATA_NAME_REGEX,
@@ -13,7 +12,6 @@ import {
   COUPON_CODE_REGEX,
 } from '@/consts/regexes'
 import i18n from '@/i18n'
-import { AddressDto } from '@/interfaces/Address'
 
 extend('required', {
   ...required,
@@ -167,7 +165,7 @@ extend('time-same-or-before', {
 
 extend('price-ranges-duplicates', {
   message: () => i18n.t('validation.priceRangesDuplicates') as string,
-  validate: (priceRanges: ShippingMethodPriceRangeDTO[]) => {
+  validate: (priceRanges: ShippingMethodPriceRangeDto[]) => {
     const startValues: number[] = []
 
     return priceRanges.every(({ start }) => {

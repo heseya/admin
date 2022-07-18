@@ -5,7 +5,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Aplikacja",
@@ -20,11 +20,10 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { App } from '@heseya/store-core'
 
 import MicroFrontend from '@/components/MicroFrontend.vue'
 import Loading from '@/components/layout/Loading.vue'
-
-import { App } from '@/interfaces/App'
 
 export default Vue.extend({
   metaInfo(this: any) {

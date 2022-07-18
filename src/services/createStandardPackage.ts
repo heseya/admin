@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
+import { Order } from '@heseya/store-core'
 import { api } from '@/api'
-import { Order } from '@/interfaces/Order'
 
 export const createStandardPackage = async (orderId: string, packageTemplateId: string) => {
   try {

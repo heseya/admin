@@ -1,5 +1,4 @@
-import { AddressDto } from '@/interfaces/Address'
-
+import { AddressDto } from '@heseya/store-core'
 export const DEFAULT_ADDRESS_FORM: AddressDto = {
   name: '',
   address: '',

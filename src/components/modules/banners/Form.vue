@@ -39,7 +39,7 @@
   </validation-observer>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "en": {
     "form": {
@@ -61,11 +61,11 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
+import { Banner } from '@heseya/store-core'
 
 import Card from '@/components/layout/Card.vue'
 import BannerMediaForm from './BannerMediaForm.vue'
 
-import { Banner } from '@/interfaces/Banner'
 import { generateSlug } from '@/utils/generateSlug'
 
 export default Vue.extend({

@@ -58,7 +58,7 @@
   </card>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "en": {
     "labels": {
@@ -67,7 +67,7 @@
       "shipping": "Shipping method",
       "payment": "Payment",
       "history": "Payment history",
-      "editShippingMethod":"Edit shipping method"
+      "editShippingMethod": "Edit shipping method"
     },
     "table": {
       "date": "Date of transaction",
@@ -84,7 +84,7 @@
       "shipping": "Metoda dostawy",
       "payment": "Płatność",
       "history": "Historia płatności",
-      "editShippingMethod":"Edytuj metodę dostawy"
+      "editShippingMethod": "Edytuj metodę dostawy"
     },
     "table": {
       "date": "Data transakcji",
@@ -99,6 +99,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { Order } from '@heseya/store-core'
 
 import Card from '@/components/layout/Card.vue'
 import SummaryPayment from './SummaryPayment.vue'
@@ -106,7 +107,6 @@ import OrderField from '../../Field.vue'
 import CmsTable from '@/components/cms/CmsTable.vue'
 import ShippingMethodForm from './ShippingMethodForm.vue'
 
-import { Order } from '@/interfaces/Order'
 import { formatDate } from '@/utils/dates'
 import { TableConfig } from '@/interfaces/CmsTable'
 import { PAYMENT_METHODS } from '@/consts/paymentMethods'

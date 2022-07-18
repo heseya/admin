@@ -43,7 +43,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "en": {
     "header": {
@@ -84,12 +84,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { Order } from '@heseya/store-core'
 
 import CartItem from '@/components/layout/CartItem.vue'
 import Field from '../../Field.vue'
 import OrderDiscountSummary from './OrderDiscountSummary.vue'
 
-import { Order } from '@/interfaces/Order'
 import { formatCurrency } from '@/utils/currency'
 
 export default Vue.extend({

@@ -1,9 +1,9 @@
+import { Product, ProductCreateDto, ProductUpdateDto } from '@heseya/store-core'
 import { createVuexCRUD } from './generator'
 import { api } from '../api'
 import { UUID } from '@/interfaces/UUID'
-import { Product, ProductDTO } from '@/interfaces/Product'
 
-export const products = createVuexCRUD<Product, ProductDTO, ProductDTO>()('products', {
+export const products = createVuexCRUD<Product, ProductCreateDto, ProductUpdateDto>()('products', {
   state: {
     depositError: null as null | Error,
   },

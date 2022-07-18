@@ -31,7 +31,7 @@
   </a-collapse>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Metadane",
@@ -50,9 +50,10 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { MetadataUpdateDto } from '@heseya/store-core'
 
 import MetadataForm from './Form.vue'
-import { MetadataDto } from '@/interfaces/Metadata'
+
 import { GeneratedStoreModulesKeys } from '@/store'
 
 export type SaveMetadataFunction = (id: string) => Promise<void>
@@ -66,7 +67,7 @@ export default Vue.extend({
     value: {
       type: Object,
       default: () => ({}),
-    } as Vue.PropOptions<MetadataDto>,
+    } as Vue.PropOptions<MetadataUpdateDto>,
     disabled: { type: Boolean, default: false },
     white: { type: Boolean, default: false },
     isPrivate: { type: Boolean, default: false },

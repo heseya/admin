@@ -13,7 +13,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Bannery",
@@ -38,10 +38,11 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { Banner } from '@heseya/store-core'
+
 import PaginatedList from '@/components/PaginatedList.vue'
 
 import { TableConfig } from '@/interfaces/CmsTable'
-import { Banner } from '@/interfaces/Banner'
 
 export default Vue.extend({
   metaInfo(this: any) {

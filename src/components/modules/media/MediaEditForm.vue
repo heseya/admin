@@ -115,12 +115,6 @@ export default Vue.extend({
     isLoading: false,
     form: { ...EMPTY_FORM },
   }),
-
-  computed: {
-    shouldBeDisabled(): boolean {
-      return this.media.slug !== null && this.form.slug?.trim() === ''
-    },
-  },
   watch: {
     isOpen(isOpen) {
       if (isOpen) {

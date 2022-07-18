@@ -29,7 +29,7 @@
             html-type="submit"
             size="small"
             :loading="isLoading"
-            :disabled="media.slug && !form.slug"
+            :disabled="media.slug && !form.slug.trim()"
             class="media-edit-modal__form-button"
           >
             {{ $t('common.save') }}

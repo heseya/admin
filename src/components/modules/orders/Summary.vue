@@ -67,7 +67,7 @@
       "shipping": "Shipping method",
       "payment": "Payment",
       "history": "Payment history",
-      "editShippingMethod":"Edit shipping method"
+      "editShippingMethod": "Edit shipping method"
     },
     "table": {
       "date": "Date of transaction",
@@ -84,7 +84,7 @@
       "shipping": "Metoda dostawy",
       "payment": "Płatność",
       "history": "Historia płatności",
-      "editShippingMethod":"Edytuj metodę dostawy"
+      "editShippingMethod": "Edytuj metodę dostawy"
     },
     "table": {
       "date": "Data transakcji",

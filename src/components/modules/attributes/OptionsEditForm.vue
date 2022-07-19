@@ -69,8 +69,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { AttributeOption, AttributeType, AttributeOptionDto } from '@heseya/store-core'
 
-import { AttributeOption, AttributeOptionDto, AttributeType } from '@/interfaces/Attribute'
 import { formatApiNotificationError } from '@/utils/errors'
 
 type AddOptionResult = { success: true; option: AttributeOption } | { success: false; error: any }

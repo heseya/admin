@@ -121,6 +121,7 @@
 import Vue from 'vue'
 import InlineSvg from 'vue-inline-svg'
 import Draggable from 'vuedraggable'
+import { App } from '@heseya/store-core'
 
 import Card from '@/components/layout/Card.vue'
 import TopNav from '@/components/layout/TopNav.vue'
@@ -128,7 +129,6 @@ import TopNav from '@/components/layout/TopNav.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 
 import { MENU_AVAILABLE_ITEMS, MenuItem, MenuItemType, MenuLink } from '@/consts/menuItems'
-import { App } from '@/interfaces/App'
 
 export default Vue.extend({
   metaInfo(this: any) {

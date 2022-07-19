@@ -62,6 +62,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { cloneDeep } from 'lodash'
+import { Role, RoleCreateDto } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
@@ -70,9 +71,8 @@ import RolesForm from '@/components/modules/roles/Form.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
-import { Role, RoleDTO } from '@/interfaces/Role'
 
-const CLEAN_FORM: RoleDTO = {
+const CLEAN_FORM: RoleCreateDto = {
   name: '',
   description: '',
   permissions: [],

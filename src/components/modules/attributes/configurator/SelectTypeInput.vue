@@ -59,10 +59,9 @@
 <script lang="ts">
 import Vue from 'vue'
 import debounce from 'lodash/debounce'
+import { AttributeOption, AttributeType, ProductAttribute } from '@heseya/store-core'
 
 import Empty from '@/components/layout/Empty.vue'
-
-import { AttributeOption, AttributeType, ProductAttribute } from '@/interfaces/Attribute'
 import { UUID } from '@/interfaces/UUID'
 import { formatApiNotificationError } from '@/utils/errors'
 import { uniqueArray } from '@/utils/uniqueArray'

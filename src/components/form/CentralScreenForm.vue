@@ -10,8 +10,6 @@
     </card>
 
     <powered-by class="central-screen-form__powered-by" />
-
-    <div class="central-screen-form__footer">{{ `&copy;` }} Heseya | v{{ version }}</div>
   </div>
 </template>
 
@@ -89,15 +87,6 @@ export default Vue.extend({
 
   &__powered-by {
     margin-top: auto;
-  }
-
-  &__footer {
-    position: fixed;
-    bottom: 10px;
-    right: 10px;
-    text-align: center;
-    font-size: 0.7em;
-    color: $gray-color-600;
   }
 }
 </style>

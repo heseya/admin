@@ -60,10 +60,12 @@
 import Vue from 'vue'
 import debounce from 'lodash/debounce'
 
+import Empty from '@/components/layout/Empty.vue'
+
 import { AttributeOption, AttributeType, ProductAttribute } from '@/interfaces/Attribute'
 import { UUID } from '@/interfaces/UUID'
 import { formatApiNotificationError } from '@/utils/errors'
-import Empty from '@/components/layout/Empty.vue'
+import { uniqueArray } from '@/utils/uniqueArray'
 
 type AddOptionResult = { success: true; option: AttributeOption } | { success: false; error: any }
 
@@ -98,20 +100,12 @@ export default Vue.extend({
       return this.value?.[0]?.id || undefined
     },
 
-    singleOptionName(): UUID | undefined {
-      return this.value?.[0]?.name || undefined
-    },
-
     multiOptionsIds(): UUID[] {
       return (this.value || []).map((v) => v?.id).filter(Boolean) || []
     },
 
-    multiOptionsNames(): UUID[] {
-      return (this.value || []).map((v) => v?.name).filter(Boolean) || []
-    },
-
     inputValue(): UUID | UUID[] | undefined {
-      return this.isMutipleMode ? this.multiOptionsNames : this.singleOptionName
+      return this.isMutipleMode ? this.multiOptionsIds : this.singleOptionId
     },
   },
   watch: {
@@ -147,18 +141,34 @@ export default Vue.extend({
     async fetchOptions() {
       this.isLoading = true
       // @ts-ignore // TODO: fix extended store actions typings
-      const options = await this.$accessor.attributes.getOptions({
+      const allOptions = await this.$accessor.attributes.getOptions({
         attributeId: this.attribute.id,
         params: { search: this.searchedValue },
       })
 
-      if (!options) {
+      if (!this.options) {
         this.$toast.error(this.$t('optionsFetchError') as string)
         this.isLoading = false
         return
       }
 
-      this.options = options
+      if (this.value.some(Boolean)) {
+        const choosenOptions = await Promise.all(
+          this.value.map(({ id }) =>
+            this.$accessor.attributes.getOptions({
+              attributeId: this.attribute.id,
+              params: { search: id },
+            }),
+          ),
+        )
+
+        this.options = uniqueArray([...this.options, ...allOptions, ...choosenOptions.flat()])
+        this.isLoading = false
+
+        return
+      }
+
+      this.options = allOptions
       this.isLoading = false
     },
 

@@ -140,6 +140,7 @@ export default Vue.extend({
 
   &__col-value {
     color: $font-color;
+    word-wrap: break-word;
   }
 }
 </style>

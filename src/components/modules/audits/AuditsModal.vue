@@ -41,7 +41,7 @@
           <template #header>
             <div class="audit-entry__header">
               <span class="audit-entry__header-user">
-                {{ entry.user ? entry.user.email : $t('unauthenticated') }}
+                {{ getIssuer(entry) }}
               </span>
               <span class="audit-entry__tag">
                 {{ entry.event === 'updated' ? $t('eventChanged') : entry.event }}
@@ -229,6 +229,12 @@ export default Vue.extend({
     },
     downloadAudits() {
       downloadJsonAsFile(this.audits, `${this.id}-${this.model}-history`)
+    },
+    getIssuer(entry: EntityAudits<Record<string, any>>) {
+      if (entry.issuer_type === 'user') {
+        return entry.issuer ? entry.issuer.email : this.$t('unauthenticated')
+      }
+      return entry.issuer.name
     },
   },
 })

@@ -1,5 +1,5 @@
 <template>
-  <div class="narrower-page">
+  <div>
     <PaginatedList :title="$t('title')" store-key="shippingMethods" draggable :table="tableConfig">
       <template #nav>
         <icon-button v-can="$p.ShippingMethods.Add" @click="openModal()">
@@ -178,8 +178,23 @@ export default Vue.extend({
             key: 'countries',
             label: this.$t('headers.availabilty') as string,
             width: '1.5fr',
-            render: (v: Record<string, any>[]) => v.map(({ name }) => name),
-            wrap: true,
+            render: (countries: ShippingMethod['countries'], method) => {
+              if (!countries.length) {
+                return method.block_list
+                  ? (this.$t('list.allEnabled') as string)
+                  : (this.$t('list.allDisabled') as string)
+              }
+              return method.block_list
+                ? {
+                    label: this.$t('list.blackList') as string,
+                    items: countries.map(({ name }) => name),
+                  }
+                : {
+                    label: this.$t('list.whiteList') as string,
+                    items: countries.map(({ name }) => name),
+                  }
+            },
+            wrapList: true,
           },
           { key: 'price', label: this.$t('headers.basePrice') as string, width: '1fr' },
           {

@@ -3,6 +3,7 @@
     class="tag"
     :class="{ 'tag--small': small, [`tag--${type}`]: true }"
     :style="{ '--bg-color': color }"
+    v-on="$listeners"
   >
     <slot>{{ text }}</slot>
   </div>

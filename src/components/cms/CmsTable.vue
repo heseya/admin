@@ -127,12 +127,11 @@ export default Vue.extend({
           content: '\eb5f';
           position: absolute;
           left: 0px;
-          top: 50%;
           font-size: 1.1em;
           line-height: 1em;
           padding: 6px 13px;
           cursor: move;
-          transform: translateY(-50%);
+          transform: translateY(50%);
           color: lighten($gray-color-600, 20%);
         }
       }

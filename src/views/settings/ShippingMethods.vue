@@ -86,6 +86,13 @@
       "deleted": "Metoda dostawy została usunięta.",
       "created": "Metoda dostawy została dodana.",
       "updated": "Metoda dostawy została zaktualizowana."
+    },
+    "headers": {
+      "availabilty": "Dostępność w krajach",
+      "basePrice": "Bazowa cena",
+      "minShippingTime": "Minimalny czas dostawy",
+      "maxShippingTime": "Maksymalny czas dostawy",
+      "visibility": "Widoczność"
     }
   },
   "en": {
@@ -104,6 +111,13 @@
       "deleted": "Shipping method has been deleted.",
       "created": "Shipping method has been created.",
       "updated": "Shipping method has been updated."
+    },
+    "headers": {
+      "availabilty": "Availability in countries",
+      "basePrice": "Base price",
+      "minShippingTime": "Minimal delivery time",
+      "maxShippingTime": "Maximum delivery time",
+      "visibility": "Visibility"
     }
   }
 }
@@ -162,15 +176,23 @@ export default Vue.extend({
           { key: 'name', label: this.$t('common.form.name') as string, width: '1fr', wrap: true },
           {
             key: 'countries',
-            label: 'Dostępność w krajach' as string,
+            label: this.$t('headers.availabilty') as string,
             width: '1.5fr',
             render: (v: Record<string, any>[]) => v.map(({ name }) => name),
             wrap: true,
           },
-          { key: 'price', label: 'bazowa cena' as string, width: '1fr' },
-          { key: 'shipping_time_min', label: 'minimalny czas dostawy' as string, width: '1fr' },
-          { key: 'shipping_time_max', label: 'maksymalny czas dostawy' as string, width: '1fr' },
-          { key: 'public', label: 'widocznosc' as string, width: '0.5fr' },
+          { key: 'price', label: this.$t('headers.basePrice') as string, width: '1fr' },
+          {
+            key: 'shipping_time_min',
+            label: this.$t('headers.minShippingTime') as string,
+            width: '1fr',
+          },
+          {
+            key: 'shipping_time_max',
+            label: this.$t('headers.maxShippingTime') as string,
+            width: '1fr',
+          },
+          { key: 'public', label: this.$t('headers.visibility') as string, width: '0.5fr' },
         ],
       }
     },

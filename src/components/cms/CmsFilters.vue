@@ -82,7 +82,7 @@ export default Vue.extend({
   methods: {
     onResize() {
       // @ts-ignore
-      if (this.$refs.filters.scrollHeight > this.$refs.filters.offsetHeight)
+      if (this.$refs.filters.scrollHeight > this.$refs.filters.offsetHeight + 5)
         this.isExpandable = true
       else this.isExpandable = false
     },

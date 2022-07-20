@@ -205,12 +205,12 @@ export default Vue.extend({
       overflow-x: auto;
     }
 
-    ::v-deep .ant-collapse {
+    :deep .ant-collapse {
       overflow: hidden;
       width: 100%;
     }
 
-    ::v-deep .ant-collapse-content-box {
+    :deep .ant-collapse-content-box {
       padding: 4px;
     }
   }
@@ -236,7 +236,7 @@ export default Vue.extend({
       border-radius: 8px !important;
     }
 
-    &::v-deep {
+    &:deep {
       [role='button'] {
         padding: 0 !important;
       }

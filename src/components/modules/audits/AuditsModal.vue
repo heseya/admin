@@ -290,7 +290,7 @@ export default Vue.extend({
     }
   }
 
-  &__table ::v-deep {
+  &__table :deep {
     .cms-table-row__col,
     .cms-table-header__col {
       padding: 5px 8px;

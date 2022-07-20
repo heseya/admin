@@ -278,7 +278,7 @@ export default Vue.extend({
     align-items: flex-start;
     grid-gap: 8px;
 
-    ::v-deep .icon-button {
+    :deep .icon-button {
       margin-top: 18px;
     }
   }

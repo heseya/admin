@@ -18,7 +18,7 @@
       <OrderSummary class="order-page__summary" :order="order" />
 
       <card class="order-page__status">
-        <StatusInput :order="order" @statusChanged="updateStatus" />
+        <StatusInput :order="order" @status-changed="updateStatus" />
       </card>
       <card class="order-page__cart">
         <Cart :order="order" />

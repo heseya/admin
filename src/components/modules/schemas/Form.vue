@@ -111,7 +111,7 @@
       v-model="form.options"
       :default-option="defaultOption"
       :disabled="disabled"
-      @setDefault="(v) => (defaultOption = v)"
+      @set-default="(v) => (defaultOption = v)"
     />
 
     <Zone v-if="form.type === SchemaType.MultiplySchema">

@@ -15,7 +15,7 @@
           :set="set"
           @edit="editProductSet"
           @create="createProductSet"
-          @showProducts="showSetProducts"
+          @show-products="showSetProducts"
         />
       </template>
     </PaginatedList>

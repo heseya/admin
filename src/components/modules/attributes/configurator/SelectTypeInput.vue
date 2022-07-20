@@ -11,7 +11,7 @@
       :loading="isLoading"
       :placeholder="$t('placeholder')"
       @search="onSearch"
-      @inputKeydown="onInputKeydown"
+      @input-keydown="onInputKeydown"
       @change="setValue"
     >
       <a-select-option

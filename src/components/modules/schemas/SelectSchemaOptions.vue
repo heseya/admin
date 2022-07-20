@@ -125,7 +125,7 @@ export default Vue.extend({
   },
   methods: {
     setDefault(v: number) {
-      this.$emit('setDefault', v)
+      this.$emit('set-default', v)
     },
     addOption() {
       this.options.push(cloneDeep(CLEAR_OPTION))

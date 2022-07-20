@@ -43,7 +43,7 @@
               class="single-media__edit-img"
               :disabled="disabled"
               :media="image.media"
-              @update="(m) => updateMedia(m, i)"
+              @updated="(m) => updateMedia(m, i)"
             />
 
             <validated-input

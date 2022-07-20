@@ -7,51 +7,52 @@
     :placement="placement"
   >
     <template #content>
-      <form class="media-edit-modal__form" @submit.prevent="onSubmit">
-        <validated-input v-model="form.alt" :label="$t('form.alt')" :disabled="isLoading" />
+      <validation-observer v-slot="{ handleSubmit }">
+        <form class="media-edit-modal__form" @submit.prevent="handleSubmit(onSubmit)">
+          <validated-input v-model="form.alt" :label="$t('form.alt')" :disabled="isLoading" />
 
-        <validated-input
-          v-model="form.slug"
-          :label="$t('form.slug')"
-          :disabled="isLoading"
-          :rules="media.slug !== null && 'required'"
-        />
-        <a :href="media.url" target="_blank" rel="noopener noreferrer"
-          ><small>
-            {{ $t('currentSlug') }}: <b>{{ media.url }}</b>
-          </small>
-        </a>
+          <validated-input
+            v-model="form.slug"
+            :label="$t('form.slug')"
+            :disabled="isLoading"
+            :rules="media.slug !== null && 'required'"
+          />
+          <a :href="media.url" target="_blank" rel="noopener noreferrer"
+            ><small>
+              {{ $t('currentSlug') }}: <b>{{ media.url }}</b>
+            </small>
+          </a>
 
-        <br />
-        <div class="media-edit-modal__form-buttons">
-          <app-button
-            type="primary"
-            html-type="submit"
-            size="small"
-            :loading="isLoading"
-            :disabled="media.slug && !form.slug.trim()"
-            class="media-edit-modal__form-button"
-          >
-            {{ $t('common.save') }}
-          </app-button>
-          <a-popconfirm
-            :cancel-text="$t('common.cancel')"
-            :ok-text="$t('common.delete')"
-            @confirm="() => handleMediaRemove(media.id)"
-          >
-            <template #title> {{ $t('confirmDelete') }} </template>
+          <br />
+          <div class="media-edit-modal__form-buttons">
             <app-button
-              v-if="allowDeletion"
-              type="danger"
-              html-type="button"
+              type="primary"
+              html-type="submit"
               size="small"
+              :loading="isLoading"
               class="media-edit-modal__form-button"
             >
-              {{ $t('common.delete') }}
+              {{ $t('common.save') }}
             </app-button>
-          </a-popconfirm>
-        </div>
-      </form>
+            <a-popconfirm
+              :cancel-text="$t('common.cancel')"
+              :ok-text="$t('common.delete')"
+              @confirm="() => handleMediaRemove(media.id)"
+            >
+              <template #title> {{ $t('confirmDelete') }} </template>
+              <app-button
+                v-if="allowDeletion"
+                type="danger"
+                html-type="button"
+                size="small"
+                class="media-edit-modal__form-button"
+              >
+                {{ $t('common.delete') }}
+              </app-button>
+            </a-popconfirm>
+          </div>
+        </form>
+      </validation-observer>
     </template>
 
     <icon-button v-if="!disabled" type="default">
@@ -97,6 +98,7 @@
 import Vue from 'vue'
 import { CdnMedia } from '@heseya/store-core'
 import { generateSlug } from '@/utils/generateSlug'
+import { ValidationObserver } from 'vee-validate'
 
 const EMPTY_FORM = {
   alt: '',
@@ -104,6 +106,9 @@ const EMPTY_FORM = {
 }
 
 export default Vue.extend({
+  components: {
+    ValidationObserver,
+  },
   props: {
     disabled: { type: Boolean, default: false },
     placement: { type: String, default: 'bottomRight' },
@@ -135,7 +140,7 @@ export default Vue.extend({
 
       if (result) {
         this.$toast.success(this.$t('successMessage') as string)
-        this.$emit('update', result)
+        this.$emit('updated', result)
         this.isOpen = false
       } else {
         this.$toast.error(this.$t('errorMessage') as string)
@@ -147,6 +152,7 @@ export default Vue.extend({
       const result = await this.$accessor.media.remove(id)
 
       if (result) {
+        this.$emit('remove', id)
         this.$toast.success(this.$t('removed') as string)
       } else {
         this.$toast.error(this.$t('removeFail') as string)

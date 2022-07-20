@@ -1,6 +1,6 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList :title="$t('title')" store-key="shippingMethods" draggable>
+    <PaginatedList :title="$t('title')" store-key="shippingMethods" draggable :table="tableConfig">
       <template #nav>
         <icon-button v-can="$p.ShippingMethods.Add" @click="openModal()">
           <template #icon>
@@ -10,21 +10,14 @@
         </icon-button>
       </template>
 
-      <template #default="{ item: shippingMethod }">
-        <list-item
-          :key="shippingMethod.id"
-          :hidden="!shippingMethod.public"
-          @click="openModal(shippingMethod.id)"
+      <template #default="{ item: method }">
+        <cms-table-row
+          :key="method.id"
+          :item="method"
+          :headers="tableConfig.headers"
+          @click="openModal(method.id)"
         >
-          {{ shippingMethod.name }}
-          <small v-if="shippingMethod.countries.length">
-            {{ shippingMethod.block_list ? $t('list.blackList') : $t('list.whiteList') }}
-            {{ shippingMethod.countries.map((c) => c.name).join(', ') }}
-          </small>
-          <small v-else>
-            {{ shippingMethod.block_list ? $t('list.allEnabled') : $t('list.allDisabled') }}
-          </small>
-        </list-item>
+        </cms-table-row>
       </template>
     </PaginatedList>
 
@@ -123,24 +116,25 @@ import { ShippingMethod, ShippingMethodUpdateDto, ShippingCountry } from '@hesey
 import { api } from '../../api'
 
 import PaginatedList from '@/components/PaginatedList.vue'
-import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ShippingMethodsForm from '@/components/modules/shippingMethods/Index.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { UUID } from '@/interfaces/UUID'
+import { TableConfig } from '@/interfaces/CmsTable'
+import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 
 export default Vue.extend({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },
   components: {
-    ListItem,
     PopConfirm,
     ValidationObserver,
     PaginatedList,
     ShippingMethodsForm,
     MetadataForm,
+    CmsTableRow,
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {
@@ -161,6 +155,24 @@ export default Vue.extend({
       return this.$can(
         this.editedItem.id ? this.$p.ShippingMethods.Edit : this.$p.ShippingMethods.Add,
       )
+    },
+    tableConfig(): TableConfig<ShippingMethod> {
+      return {
+        headers: [
+          { key: 'name', label: this.$t('common.form.name') as string, width: '1fr', wrap: true },
+          {
+            key: 'countries',
+            label: 'Dostępność w krajach' as string,
+            width: '1.5fr',
+            render: (v: Record<string, any>[]) => v.map(({ name }) => name),
+            wrap: true,
+          },
+          { key: 'price', label: 'bazowa cena' as string, width: '1fr' },
+          { key: 'shipping_time_min', label: 'minimalny czas dostawy' as string, width: '1fr' },
+          { key: 'shipping_time_max', label: 'maksymalny czas dostawy' as string, width: '1fr' },
+          { key: 'public', label: 'widocznosc' as string, width: '0.5fr' },
+        ],
+      }
     },
   },
   async created() {

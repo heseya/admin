@@ -218,7 +218,7 @@ export default Vue.extend({
   },
   created() {
     this.filters.search = (this.$route.query.search as string) || ''
-    this.filters.consent_id = (this.$route.query.consents as string) || ALL_FILTER_VALUE
+    this.filters.consent_id = (this.$route.query.consent_id as string) || ALL_FILTER_VALUE
   },
   methods: {
     openModal(id?: UUID) {

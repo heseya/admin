@@ -82,7 +82,8 @@
       "old": "Starta wartość",
       "new": "Nowa wartość"
     },
-    "unauthenticated": "Niezalogowany użytkownik",
+    "unauthenticatedUser": "Niezalogowany użytkownik",
+    "unknownApp": "Nieznana aplikacja",
     "eventChanged": "zmieniono",
     "keyValues": {
       "code": "Kod",
@@ -115,7 +116,8 @@
       "old": "Old value",
       "new": "New value"
     },
-    "unauthenticated": "Unauthenticated user",
+    "unauthenticatedUser": "Unauthenticated user",
+    "unknownApp": "Unknown application",
     "eventChanged": "changed",
     "keyValues": {
       "code": "Code",
@@ -186,7 +188,10 @@ export default Vue.extend({
           {
             key: 'key',
             label: this.$t('table.name') as string,
-            render: (key) => (this.$t(`keyValues.${key}`) as string) || transformKey(key),
+            render: (key) =>
+              this.$te(`keyValues.${key}`)
+                ? (this.$t(`keyValues.${key}`) as string)
+                : transformKey(key),
           },
           { key: 'old', label: this.$t('table.old') as string },
           { key: 'new', label: this.$t('table.new') as string },
@@ -232,9 +237,9 @@ export default Vue.extend({
     },
     getIssuer(entry: EntityAudits<Record<string, any>>) {
       if (entry.issuer_type === 'user') {
-        return entry.issuer ? entry.issuer.email : this.$t('unauthenticated')
+        return entry.issuer ? entry.issuer.email : this.$t('unauthenticatedUser')
       }
-      return entry.issuer.name
+      return entry.issuer?.name || this.$t('unknownApp')
     },
   },
 })

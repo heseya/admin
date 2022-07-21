@@ -147,7 +147,7 @@ export default Vue.extend({
     padding: 0;
   }
 
-  :deep .list-item__content {
+  :deep(.list-item__content) {
     width: 100%;
   }
 }

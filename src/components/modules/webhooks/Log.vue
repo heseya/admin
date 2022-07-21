@@ -205,12 +205,12 @@ export default Vue.extend({
       overflow-x: auto;
     }
 
-    :deep .ant-collapse {
+    :deep(.ant-collapse) {
       overflow: hidden;
       width: 100%;
     }
 
-    :deep .ant-collapse-content-box {
+    :deep(.ant-collapse-content-box) {
       padding: 4px;
     }
   }

@@ -118,7 +118,7 @@ export default Vue.extend({
       display: none;
     }
 
-    & > :deep *:first-child {
+    & > :deep(*:first-child) {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       grid-gap: 4px 10px;
@@ -161,7 +161,7 @@ export default Vue.extend({
       display: none !important;
     }
 
-    :deep .app-input {
+    :deep(.app-input) {
       margin-bottom: 16px;
     }
   }

@@ -152,7 +152,7 @@ export default Vue.extend({
       const result = await this.$accessor.media.remove(id)
 
       if (result) {
-        this.$emit('remove', id)
+        this.$emit('removed', id)
         this.$toast.success(this.$t('removed') as string)
       } else {
         this.$toast.error(this.$t('removeFail') as string)

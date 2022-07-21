@@ -5,20 +5,47 @@
     </span>
 
     <ul class="cms-list__list">
-      <li v-for="(singleValue, i) in items" :key="String(singleValue) + i">
+      <li
+        v-for="(singleValue, i) in items.slice(0, visibleItemsNumber)"
+        :key="String(singleValue) + i"
+      >
         <copyable-tag :text="singleValue" />
+      </li>
+      <li v-if="numberOfVisbibleItems < items.length" @click.stop="showAll = !showAll">
+        <tag class="cms-list__show-more">
+          {{
+            showAll
+              ? $t('showLess')
+              : $t('showMore', { number: items.length - numberOfVisbibleItems })
+          }}
+        </tag>
       </li>
     </ul>
   </div>
 </template>
 
+<i18n lang="json">
+{
+  "pl": {
+    "showMore": "Pokaż {number} więcej",
+    "showLess": "Pokaż mniej"
+  },
+  "en": {
+    "showMore": "Show {number} more",
+    "showLess": "Show less"
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue, { PropOptions } from 'vue'
 import CopyableTag from '../CopyableTag.vue'
+import Tag from '../Tag.vue'
 
 export default Vue.extend({
   components: {
     CopyableTag,
+    Tag,
   },
 
   props: {
@@ -31,6 +58,22 @@ export default Vue.extend({
       type: Array,
       required: true,
     } as PropOptions<string[]>,
+    numberOfVisbibleItems: {
+      type: Number,
+      required: false,
+      default: 5,
+    },
+  },
+
+  data: () => ({
+    showAll: false,
+  }),
+
+  computed: {
+    visibleItemsNumber(): number {
+      if (this.showAll) return -1
+      return this.numberOfVisbibleItems
+    },
   },
 })
 </script>
@@ -46,6 +89,19 @@ export default Vue.extend({
     list-style: none;
     padding: 0;
     margin: 0;
+  }
+
+  &__show-more {
+    font-size: 0.7rem;
+    background-color: transparent;
+    border: 1px solid var(--bg-color, #000000);
+    color: var(--bg-color, #000000);
+    padding-block: 3px;
+
+    &:hover {
+      color: $primary-color-500;
+      border-color: $primary-color-500;
+    }
   }
 }
 </style>

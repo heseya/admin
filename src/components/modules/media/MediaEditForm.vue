@@ -7,45 +7,52 @@
     :placement="placement"
   >
     <template #content>
-      <form class="media-edit-modal__form" @submit.prevent="onSubmit">
-        <validated-input v-model="form.alt" :label="$t('form.alt')" :disabled="isLoading" />
+      <validation-observer v-slot="{ handleSubmit }">
+        <form class="media-edit-modal__form" @submit.prevent="handleSubmit(onSubmit)">
+          <validated-input v-model="form.alt" :label="$t('form.alt')" :disabled="isLoading" />
 
-        <validated-input
-          v-model="form.slug"
-          :label="$t('form.slug')"
-          :disabled="isLoading"
-          rules="required"
-        />
-        <a :href="media.url" target="_blank" rel="noopener noreferrer"
-          ><small>
-            {{ $t('currentSlug') }}: <b>{{ media.url }}</b>
-          </small>
-        </a>
+          <validated-input
+            v-model="form.slug"
+            :label="$t('form.slug')"
+            :disabled="isLoading"
+            :rules="media.slug !== null && 'required'"
+          />
+          <a :href="media.url" target="_blank" rel="noopener noreferrer"
+            ><small>
+              {{ $t('currentSlug') }}: <b>{{ media.url }}</b>
+            </small>
+          </a>
 
-        <br />
-        <div class="media-edit-modal__form-buttons">
-          <app-button
-            type="primary"
-            html-type="submit"
-            size="small"
-            :loading="isLoading"
-            class="media-edit-modal__form-button"
-            :disabled="!form.slug"
-          >
-            {{ $t('common.save') }}
-          </app-button>
-          <app-button
-            v-if="allowDeletion"
-            type="danger"
-            html-type="button"
-            size="small"
-            class="media-edit-modal__form-button"
-            @click="() => handleMediaRemove(media.id)"
-          >
-            {{ $t('common.delete') }}
-          </app-button>
-        </div>
-      </form>
+          <br />
+          <div class="media-edit-modal__form-buttons">
+            <app-button
+              type="primary"
+              html-type="submit"
+              size="small"
+              :loading="isLoading"
+              class="media-edit-modal__form-button"
+            >
+              {{ $t('common.save') }}
+            </app-button>
+            <a-popconfirm
+              :cancel-text="$t('common.cancel')"
+              :ok-text="$t('common.delete')"
+              @confirm="() => handleMediaRemove(media.id)"
+            >
+              <template #title> {{ $t('confirmDelete') }} </template>
+              <app-button
+                v-if="allowDeletion"
+                type="danger"
+                html-type="button"
+                size="small"
+                class="media-edit-modal__form-button"
+              >
+                {{ $t('common.delete') }}
+              </app-button>
+            </a-popconfirm>
+          </div>
+        </form>
+      </validation-observer>
     </template>
 
     <icon-button v-if="!disabled" type="default">
@@ -65,7 +72,11 @@
       "slug": "Nazwa pliku zdjęcia"
     },
     "currentSlug": "Aktualny link",
-    "successMessage": "Metadane zdjęcia zostały zaktualizowane"
+    "successMessage": "Metadane zostały zaktualizowane",
+    "errorMessage": "Nie udało się zaktualizować metadanych",
+    "removed": "Usunięto",
+    "removeFail": "Nie udało się usunąć",
+    "confirmDelete": "Potwierdź, aby usunąć"
   },
   "en": {
     "title": "Edit image/video",
@@ -74,7 +85,11 @@
       "slug": "Image file name"
     },
     "currentSlug": "Current link",
-    "successMessage": "Image metadata updated"
+    "successMessage": "Metadata updated",
+    "errorMessage": "The metadata could not be updated",
+    "removed": "Deleted",
+    "removeFail": "Failed to delete",
+    "confirmDelete": "Confirm to delete"
   }
 }
 </i18n>
@@ -82,10 +97,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import { CdnMedia } from '@heseya/store-core'
-
-import { updateMedia } from '@/services/uploadMedia'
-import { formatApiNotificationError } from '@/utils/errors'
 import { generateSlug } from '@/utils/generateSlug'
+import { ValidationObserver } from 'vee-validate'
 
 const EMPTY_FORM = {
   alt: '',
@@ -93,6 +106,9 @@ const EMPTY_FORM = {
 }
 
 export default Vue.extend({
+  components: {
+    ValidationObserver,
+  },
   props: {
     disabled: { type: Boolean, default: false },
     placement: { type: String, default: 'bottomRight' },
@@ -120,21 +136,27 @@ export default Vue.extend({
       this.isLoading = true
 
       const slugifiedForm = { ...this.form, slug: generateSlug(this.form.slug) }
+      const result = await this.$accessor.media.update({ id: this.media.id, item: slugifiedForm })
 
-      const result = await updateMedia({ ...this.media, ...slugifiedForm })
-
-      if (result.success) {
+      if (result) {
         this.$toast.success(this.$t('successMessage') as string)
-        this.$emit('update', result.file)
+        this.$emit('updated', result)
         this.isOpen = false
       } else {
-        this.$toast.error(formatApiNotificationError(result.error))
+        this.$toast.error(this.$t('errorMessage') as string)
       }
 
       this.isLoading = false
     },
     async handleMediaRemove(id: string) {
-      this.$emit('remove', id)
+      const result = await this.$accessor.media.remove(id)
+
+      if (result) {
+        this.$emit('removed', id)
+        this.$toast.success(this.$t('removed') as string)
+      } else {
+        this.$toast.error(this.$t('removeFail') as string)
+      }
     },
   },
 })

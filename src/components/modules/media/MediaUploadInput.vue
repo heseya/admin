@@ -24,7 +24,7 @@
           :disabled="disabled"
           :media="image"
           placement="top"
-          @update="updateMedia"
+          @updated="updateMedia"
         />
       </template>
       <template v-else>

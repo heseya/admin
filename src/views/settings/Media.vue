@@ -11,7 +11,7 @@
         <media-filter :filters="filters" @search="makeSearch" />
       </template>
 
-      <template #default="{ item: singleMedia, updateData }">
+      <template #default="{ item: singleMedia }">
         <div class="media-list-item">
           <media-thumbnail
             fit="cover"
@@ -36,44 +36,32 @@
             </p>
           </div>
 
-          <media-edit-form
-            class="media-list-item__form"
-            :media="singleMedia"
-            allow-deletion
-            @update="(m) => updateData(m)"
-            @remove="removeMedia"
-          />
+          <media-edit-form class="media-list-item__form" :media="singleMedia" allow-deletion />
         </div>
       </template>
     </PaginatedList>
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Lista mediów",
     "alternativeText": "Tekst alternatywny",
     "relationsCount": "Liczba relacji",
-    "url": "URL",
-    "removed": "Usunięto",
-    "removeFail": "Nie udało się usunąć"
+    "url": "URL"
   },
   "en": {
     "title": "Media list",
     "alternativeText": "Alternative text",
     "relationsCount": "Relations count",
-    "url": "URL",
-    "removed": "Deleted",
-    "removeFail": "Failed to delete"
+    "url": "URL"
   }
 }
 </i18n>
 
 <script lang="ts">
 import Vue from 'vue'
-
-import { removeMedia } from '@/services/uploadMedia'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import MediaEditForm from '@/components/modules/media/MediaEditForm.vue'
@@ -102,15 +90,6 @@ export default Vue.extend({
   }),
 
   methods: {
-    async removeMedia(id: string) {
-      const result = await removeMedia(id)
-
-      if (result) {
-        this.$toast.success(this.$t('remove') as string)
-      } else {
-        this.$toast.error(this.$t('removeFail') as string)
-      }
-    },
     makeSearch(filters: MediaFiltersType) {
       this.filters = filters
       const queryFilters = formatFilters(filters)

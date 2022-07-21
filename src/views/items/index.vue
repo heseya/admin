@@ -67,7 +67,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
-import { WarehouseItem } from '@heseya/store-core'
+import { WarehouseItem, WarehouseItemCreateDto } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ItemsFilter, {
@@ -77,11 +77,11 @@ import ItemsFilter, {
 import ItemModal from '@/components/modules/items/ItemModal.vue'
 
 import { UUID } from '@/interfaces/UUID'
-import { WarehouseItemCreateDto } from '@/interfaces/WarehouseItem'
 import { TableConfig } from '@/interfaces/CmsTable'
 
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 import { formatFilters } from '@/utils/utils'
+import { formatDate } from '@/utils/dates'
 
 const EMPTY_FORM: WarehouseItemCreateDto = {
   name: '',
@@ -148,7 +148,9 @@ export default Vue.extend({
               if (item.shipping_time)
                 return this.$t('table.availibilityTime', { time: item.shipping_time }) as string
               if (item.shipping_date)
-                return this.$t('table.availibilityDate', { date: item.shipping_date }) as string
+                return this.$t('table.availibilityDate', {
+                  date: formatDate(item.shipping_date),
+                }) as string
               return '-'
             },
           },

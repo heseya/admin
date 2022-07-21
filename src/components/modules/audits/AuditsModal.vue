@@ -145,7 +145,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import format from 'date-fns/format'
 import { capitalize } from 'lodash'
 import { EntityAudits } from '@heseya/store-core'
 
@@ -156,6 +155,7 @@ import AuditFormatter from './AuditFormatter.vue'
 import CmsTableRow from '../../cms/CmsTableRow.vue'
 
 import { downloadJsonAsFile } from '@/utils/download'
+import { formatDate } from '@/utils/dates'
 
 import { UUID } from '@/interfaces/UUID'
 import { GeneratedStoreModulesKeys } from '@/store'
@@ -205,7 +205,7 @@ export default Vue.extend({
       this.fetchAudits()
     },
     formatDateTime(date: string) {
-      return format(new Date(date), 'dd-MM-yyyy HH:mm')
+      return formatDate(new Date(date), 'dd-MM-yyyy HH:mm')
     },
 
     getValues(audit: EntityAudits<Record<string, any>>): { key: string; old: any; new: any }[] {

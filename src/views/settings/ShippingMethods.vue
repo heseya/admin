@@ -17,6 +17,21 @@
           :headers="tableConfig.headers"
           @click="openModal(method.id)"
         >
+          <template #countries="{ value }">
+            <CmsTableCellList :items="value">
+              <template #title>
+                {{
+                  !method.countries.length
+                    ? method.block_list
+                      ? $t('list.allEnabled')
+                      : $t('list.allDisabled')
+                    : method.block_list
+                    ? $t('list.blackList')
+                    : $t('list.whiteList')
+                }}
+              </template>
+            </CmsTableCellList>
+          </template>
         </cms-table-row>
       </template>
     </PaginatedList>
@@ -137,6 +152,7 @@ import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordi
 import { UUID } from '@/interfaces/UUID'
 import { TableConfig } from '@/interfaces/CmsTable'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
+import CmsTableCellList from '@/components/cms/CmsTableCellList.vue'
 
 export default Vue.extend({
   metaInfo(this: any) {
@@ -149,6 +165,7 @@ export default Vue.extend({
     ShippingMethodsForm,
     MetadataForm,
     CmsTableRow,
+    CmsTableCellList,
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {
@@ -178,23 +195,8 @@ export default Vue.extend({
             key: 'countries',
             label: this.$t('headers.availabilty') as string,
             width: '1.5fr',
-            render: (countries: ShippingMethod['countries'], method) => {
-              if (!countries.length) {
-                return method.block_list
-                  ? (this.$t('list.allEnabled') as string)
-                  : (this.$t('list.allDisabled') as string)
-              }
-              return method.block_list
-                ? {
-                    label: this.$t('list.blackList') as string,
-                    items: countries.map(({ name }) => name),
-                  }
-                : {
-                    label: this.$t('list.whiteList') as string,
-                    items: countries.map(({ name }) => name),
-                  }
-            },
-            wrapList: true,
+            render: (countries: ShippingMethod['countries']) => countries.map(({ name }) => name),
+            wrap: true,
           },
           { key: 'price', label: this.$t('headers.basePrice') as string, width: '1fr' },
           {

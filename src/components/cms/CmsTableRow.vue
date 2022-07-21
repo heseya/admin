@@ -7,17 +7,15 @@
     @click.stop="click"
   >
     <div
-      v-for="{ key, label, value, rawValue, wrap, wrapList } in values"
+      v-for="{ key, label, value, rawValue, wrap } in values"
       :key="key"
       class="cms-table-row__col"
-      :class="{ 'cms-table-row__col--wrap': wrap || wrapList }"
+      :class="{ 'cms-table-row__col--wrap': wrap }"
     >
       <span class="cms-table-row__col-label">{{ label }}</span>
       <span class="cms-table-row__col-value" :class="{ 'cms-table-row__col-value--wrap': wrap }">
         <slot :name="key" v-bind="{ key, label, value, rawValue, item }">
-          <CmsList v-if="Array.isArray(value)" :value="value" />
-          <CmsList v-else-if="typeof value === 'object'" :value="value" />
-          <BooleanTag v-else-if="typeof value === 'boolean'" :value="value" />
+          <BooleanTag v-if="typeof value === 'boolean'" :value="value" />
           <span v-else> {{ value }} </span>
         </slot>
       </span>
@@ -30,12 +28,12 @@ import Vue from 'vue'
 import get from 'lodash/get'
 
 import { TableHeader, TableValue } from '@/interfaces/CmsTable'
-import CmsList from './CmsList.vue'
+import CmsList from './CmsTableCellList.vue'
 import Tag from '../Tag.vue'
-import CopiableTag from '../CopiableTag.vue'
+import CopyableTag from '../CopyableTag.vue'
 
 export default Vue.extend({
-  components: { CmsList, Tag, CopiableTag },
+  components: { CmsList, Tag, CopyableTag },
   props: {
     to: {
       type: String,
@@ -64,7 +62,7 @@ export default Vue.extend({
       return this.el
     },
     values(): TableValue[] {
-      return this.headers.map(({ key, label, render, wrap, wrapList }) => {
+      return this.headers.map(({ key, label, render, wrap }) => {
         const rawValue = get(this.item, key)
         return {
           key,
@@ -72,7 +70,6 @@ export default Vue.extend({
           value: render?.(rawValue, this.item) ?? rawValue,
           rawValue,
           wrap: wrap ?? false,
-          wrapList: wrapList ?? false,
         }
       })
     },

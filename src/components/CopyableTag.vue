@@ -1,13 +1,13 @@
 <template>
-  <a-tooltip :placement="tooltipPlacement" class="copiable-tag">
+  <a-tooltip :placement="tooltipPlacement" class="copyable-tag">
     <template #title>
-      <div class="copiable-tag__tooltip">
+      <div class="copyable-tag__tooltip">
         <p>{{ text }}</p>
         <b v-if="isClipboard">{{ copied ? $t('copied') : $t('copy') }}</b>
       </div>
     </template>
-    <Tag v-bind="$props" class="copiable-tag__tag" @click.stop="copy">
-      <span class="copiable-tag__tag-text">{{ text }}</span>
+    <Tag v-bind="$props" class="copyable-tag__tag" @click.stop="copy">
+      <span class="copyable-tag__tag-text">{{ text }}</span>
     </Tag>
   </a-tooltip>
 </template>
@@ -91,7 +91,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.copiable-tag {
+.copyable-tag {
   &__tooltip {
     display: grid;
     place-items: center;
@@ -105,6 +105,7 @@ export default Vue.extend({
   }
 
   &__tag {
+    font-size: 0.7rem;
     max-width: 100%;
 
     &:hover {

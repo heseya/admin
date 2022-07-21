@@ -166,7 +166,7 @@ export default Vue.extend({
     flex-wrap: wrap;
   }
 
-  :deep .order-field--horizontal .order-field__label {
+  :deep(.order-field--horizontal .order-field__label) {
     width: 140px;
   }
 }

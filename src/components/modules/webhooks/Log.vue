@@ -236,14 +236,12 @@ export default Vue.extend({
       border-radius: 8px !important;
     }
 
-    &:deep {
-      [role='button'] {
-        padding: 0 !important;
-      }
+    &:deep([role='button']) {
+      padding: 0 !important;
+    }
 
-      .ant-collapse-arrow {
-        right: 0px !important;
-      }
+    &:deep(.ant-collapse-arrow) {
+      right: 0px !important;
     }
   }
 

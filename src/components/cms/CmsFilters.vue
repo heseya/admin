@@ -125,16 +125,15 @@ export default Vue.extend({
       grid-auto-flow: dense;
     }
 
-    & :deep {
-      .span-2 {
-        grid-column: span 2;
-      }
-      .span-3 {
-        grid-column: span 3;
-      }
-      .span-4 {
-        grid-column: span 4;
-      }
+    :deep(.span-2) {
+      grid-column: span 2;
+    }
+
+    :deep(.span-3) {
+      grid-column: span 3;
+    }
+    :deep(.span-4) {
+      grid-column: span 4;
     }
   }
 

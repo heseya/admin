@@ -171,7 +171,7 @@ export default Vue.extend({
         '. onoff radio delete';
     }
 
-    ::v-deep .app-input {
+    :deep(.app-input) {
       margin-bottom: 0;
     }
 
@@ -221,7 +221,7 @@ export default Vue.extend({
         justify-self: end;
       }
 
-      &::v-deep .icon-button__icon {
+      &:deep(.icon-button__icon) {
         @media ($max-viewport-7) {
           width: 100%;
           border-radius: 4px;

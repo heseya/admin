@@ -219,11 +219,11 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .sale-configurator {
-  ::v-deep .bxs-info-circle {
+  :deep(.bxs-info-circle) {
     font-size: 12px;
   }
 
-  ::v-deep .bx-plus {
+  :deep(.bx-plus) {
     font-size: 1.25rem;
   }
   .ant-switch-checked {
@@ -279,7 +279,7 @@ export default Vue.extend({
       grid-column: 1/-1;
     }
 
-    ::v-deep .app-input {
+    :deep(.app-input) {
       margin-bottom: 0;
     }
 

@@ -290,19 +290,19 @@ export default Vue.extend({
     }
   }
 
-  &__table ::v-deep {
-    .cms-table-row__col,
-    .cms-table-header__col {
+  &__table {
+    :deep(.cms-table-row__col),
+    :deep(.cms-table-header__col) {
       padding: 5px 8px;
     }
 
-    .cms-table-header,
-    .cms-table-row {
+    :deep(.cms-table-header),
+    :deep(.cms-table-row) {
       padding: 0;
     }
   }
 
-  &__tag {
+  &__table &__tag {
     text-transform: uppercase;
     letter-spacing: 1px;
     color: $green-color-500;

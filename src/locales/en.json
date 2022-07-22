@@ -26,7 +26,8 @@
       "slug": "Link",
       "label": "Label",
       "value": "Value",
-      "required": "Required"
+      "required": "Required",
+      "visibility": "Visibility"
     }
   },
   "nav": {

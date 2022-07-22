@@ -26,7 +26,8 @@
       "slug": "Link",
       "label": "Etykieta",
       "value": "Wartość",
-      "required": "Wymagane"
+      "required": "Wymagane",
+      "visibility": "Widoczność"
     }
   },
   "nav": {

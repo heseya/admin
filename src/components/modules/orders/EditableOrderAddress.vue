@@ -50,8 +50,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-
-import { Address } from '@/interfaces/Address'
+import { Address } from '@heseya/store-core'
 
 import PopConfirm from '../../layout/PopConfirm.vue'
 import OrderAddress from './OrderAddress.vue'

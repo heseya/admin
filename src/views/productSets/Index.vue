@@ -15,7 +15,7 @@
           :set="set"
           @edit="editProductSet"
           @create="createProductSet"
-          @showProducts="showSetProducts"
+          @show-products="showSetProducts"
         />
       </template>
     </PaginatedList>
@@ -50,13 +50,14 @@
 <script lang="ts">
 import Vue from 'vue'
 import { cloneDeep, isString } from 'lodash'
+import { CdnMedia, ProductSet, ProductSetUpdateDto } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ProductSetForm, { CLEAR_PRODUCT_SET_FORM } from '@/components/modules/productSets/Form.vue'
 import ProductSetComponent from '@/components/modules/productSets/ProductSet.vue'
 import SetProductsList from '@/components/modules/productSets/SetProductsList.vue'
 
-import { ProductSet, ProductSetDTO } from '@/interfaces/ProductSet'
+import { UUID } from '@/interfaces/UUID'
 
 export default Vue.extend({
   metaInfo(this: any) {
@@ -79,7 +80,10 @@ export default Vue.extend({
   data: () => ({
     isFormModalActive: false,
     selectedSet: null as null | ProductSet,
-    editedItem: cloneDeep(CLEAR_PRODUCT_SET_FORM) as ProductSetDTO,
+    editedItem: cloneDeep(CLEAR_PRODUCT_SET_FORM) as ProductSetUpdateDto & {
+      id?: UUID
+      cover: CdnMedia | null
+    },
     editedItemSlugPrefix: '',
   }),
   mounted() {
@@ -90,10 +94,11 @@ export default Vue.extend({
   methods: {
     editProductSet(set: ProductSet | string) {
       if (isString(set)) {
-        this.editedItem = { id: set } as ProductSetDTO
+        this.editedItem = { id: set } as ProductSetUpdateDto & { id: UUID; cover: CdnMedia | null }
       } else {
         this.editedItem = {
           ...cloneDeep(set),
+          cover: set.cover || null,
           parent_id: set.parent?.id || null,
           attributes: set.attributes?.map((attr) => attr.id) || [],
         }

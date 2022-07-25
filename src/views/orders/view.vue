@@ -18,7 +18,7 @@
       <OrderSummary class="order-page__summary" :order="order" />
 
       <card class="order-page__status">
-        <StatusInput :order="order" @statusChanged="updateStatus" />
+        <StatusInput :order="order" @status-changed="updateStatus" />
       </card>
       <card class="order-page__cart">
         <Cart :order="order" />
@@ -60,6 +60,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { Order } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
@@ -68,8 +69,6 @@ import NextPrevButtons from '@/components/modules/orders/NextPrevButtons.vue'
 import SendPackage from '@/components/modules/orders/SendPackage.vue'
 import OrderSummary from '@/components/modules/orders/Summary.vue'
 import StatusInput from '@/components/modules/orders/StatusInput.vue'
-
-import { Order } from '@/interfaces/Order'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import CustomerDetails from '@/components/modules/orders/CustomerDetails.vue'

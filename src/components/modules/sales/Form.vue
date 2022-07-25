@@ -186,17 +186,16 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationProvider } from 'vee-validate'
+import { DiscountTargetType, DiscountType, SaleCreateDto } from '@heseya/store-core'
 
 import FlexInput from '@/components/layout/FlexInput.vue'
 import AutocompleteInput from '../../AutocompleteInput.vue'
-
-import { DiscountTargetType, DiscountType, SaleFormDto } from '@/interfaces/SalesAndCoupons'
 import ConditionsConfigurator from './ConditionsConfigurator.vue'
 
 export default Vue.extend({
   components: { ValidationProvider, FlexInput, AutocompleteInput, ConditionsConfigurator },
   props: {
-    value: { type: Object, required: true } as Vue.PropOptions<SaleFormDto>,
+    value: { type: Object, required: true } as Vue.PropOptions<SaleCreateDto>,
     disabled: { type: Boolean, default: false },
   },
   computed: {
@@ -207,10 +206,10 @@ export default Vue.extend({
       return DiscountTargetType
     },
     form: {
-      get(): SaleFormDto {
+      get(): SaleCreateDto {
         return this.value
       },
-      set(v: SaleFormDto) {
+      set(v: SaleCreateDto) {
         this.$emit('input', v)
       },
     },
@@ -220,11 +219,11 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .sale-configurator {
-  ::v-deep .bxs-info-circle {
+  :deep(.bxs-info-circle) {
     font-size: 12px;
   }
 
-  ::v-deep .bx-plus {
+  :deep(.bx-plus) {
     font-size: 1.25rem;
   }
   .ant-switch-checked {
@@ -280,7 +279,7 @@ export default Vue.extend({
       grid-column: 1/-1;
     }
 
-    ::v-deep .app-input {
+    :deep(.app-input) {
       margin-bottom: 0;
     }
 

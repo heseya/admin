@@ -86,12 +86,12 @@
 import Vue from 'vue'
 import Draggable from 'vuedraggable'
 import cloneDeep from 'lodash/cloneDeep'
+import { SchemaOptionDto } from '@heseya/store-core'
 
 import Zone from '@/components/layout/Zone.vue'
 import Autocomplete from '@/components/Autocomplete.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 
-import { SchemaOptionDto } from '@/interfaces/Schema'
 import { CLEAR_OPTION } from '@/consts/schemaConsts'
 
 export default Vue.extend({
@@ -125,7 +125,7 @@ export default Vue.extend({
   },
   methods: {
     setDefault(v: number) {
-      this.$emit('setDefault', v)
+      this.$emit('set-default', v)
     },
     addOption() {
       this.options.push(cloneDeep(CLEAR_OPTION))
@@ -171,7 +171,7 @@ export default Vue.extend({
         '. onoff radio delete';
     }
 
-    ::v-deep .app-input {
+    :deep(.app-input) {
       margin-bottom: 0;
     }
 
@@ -221,7 +221,7 @@ export default Vue.extend({
         justify-self: end;
       }
 
-      &::v-deep .icon-button__icon {
+      &:deep(.icon-button__icon) {
         @media ($max-viewport-7) {
           width: 100%;
           border-radius: 4px;

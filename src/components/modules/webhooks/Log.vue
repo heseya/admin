@@ -80,11 +80,12 @@
 
 <script lang="ts">
 import Vue, { PropOptions } from 'vue'
+// @ts-ignore
+import VueJsonPretty from 'vue-json-pretty'
+import { WebhookEventLog } from '@heseya/store-core'
 
 import { ComputedClassName } from '@/interfaces/computedClassName'
-import { WebHookEventLogEntry } from '@/interfaces/Webhook'
 import { getRelativeDate } from '@/utils/utils'
-import VueJsonPretty from 'vue-json-pretty'
 import 'vue-json-pretty/lib/styles.css'
 
 export default Vue.extend({
@@ -93,7 +94,7 @@ export default Vue.extend({
   },
 
   props: {
-    data: { type: Object, required: true } as PropOptions<WebHookEventLogEntry>,
+    data: { type: Object, required: true } as PropOptions<WebhookEventLog>,
   },
 
   computed: {
@@ -205,12 +206,12 @@ export default Vue.extend({
       overflow-x: auto;
     }
 
-    ::v-deep .ant-collapse {
+    :deep(.ant-collapse) {
       overflow: hidden;
       width: 100%;
     }
 
-    ::v-deep .ant-collapse-content-box {
+    :deep(.ant-collapse-content-box) {
       padding: 4px;
     }
   }
@@ -236,14 +237,12 @@ export default Vue.extend({
       border-radius: 8px !important;
     }
 
-    &::v-deep {
-      [role='button'] {
-        padding: 0 !important;
-      }
+    &:deep([role='button']) {
+      padding: 0 !important;
+    }
 
-      .ant-collapse-arrow {
-        right: 0px !important;
-      }
+    &:deep(.ant-collapse-arrow) {
+      right: 0px !important;
     }
   }
 

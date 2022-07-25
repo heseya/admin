@@ -58,7 +58,7 @@
             :url="`/orders/${order.id}`"
           >
             <div>{{ order.code }}</div>
-            <small>{{ getRelativeDate(order.created_at) }}</small>
+            <small>{{ formatDate(order.created_at) }}</small>
 
             <template #action>
               <div>{{ formatCurrency(order.summary) }}</div>
@@ -105,17 +105,15 @@ import sub from 'date-fns/sub'
 import startOfMonth from 'date-fns/startOfMonth'
 import startOfWeek from 'date-fns/startOfWeek'
 import startOfYear from 'date-fns/startOfYear'
+import { Order } from '@heseya/store-core'
 
 import { getPaymentsCount } from '@/services/statistics'
-import { getRelativeDate } from '@/utils/utils'
-import { DateInput } from '@/utils/dates'
+import { DateInput, formatDate } from '@/utils/dates'
 import { formatCurrency } from '@/utils/currency'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import ListItem from '@/components/layout/ListItem.vue'
-
-import { Order } from '@/interfaces/Order'
 
 export default Vue.extend({
   metaInfo(this: any) {
@@ -173,8 +171,8 @@ export default Vue.extend({
     this.$accessor.stopLoading()
   },
   methods: {
-    getRelativeDate(date: DateInput) {
-      return getRelativeDate(date, this.$i18n.locale)
+    formatDate(date: DateInput) {
+      return formatDate(date)
     },
     formatCurrency(amount: number) {
       return formatCurrency(amount, this.$accessor.currency)

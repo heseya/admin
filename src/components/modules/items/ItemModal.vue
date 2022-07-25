@@ -189,14 +189,14 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
-
-import { WarehouseItem, WarehouseItemCreateDto } from '@/interfaces/WarehouseItem'
+import { WarehouseItem, WarehouseItemCreateDto } from '@heseya/store-core'
 
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import Field from '@/components/Field.vue'
 import ItemsAvailibility from './ItemsAvailibility.vue'
+import { formatDateTimeInput, formatUTC } from '@/utils/dates'
 
 type Form = WarehouseItemCreateDto & Partial<WarehouseItem>
 
@@ -222,7 +222,12 @@ export default Vue.extend({
   computed: {
     form: {
       get(): Form {
-        return this.value
+        return {
+          ...this.value,
+          unlimited_stock_shipping_date: formatDateTimeInput(
+            this.value.unlimited_stock_shipping_date,
+          ),
+        }
       },
       set(v: Form) {
         this.$emit('input', v)
@@ -267,16 +272,22 @@ export default Vue.extend({
       this.$accessor.startLoading()
       const isNew = !this.form.id
       let success = false
+
+      const modifiedForm: Form = {
+        ...this.form,
+        unlimited_stock_shipping_date: formatUTC(this.form.unlimited_stock_shipping_date),
+      }
+
       if (this.form.id) {
         // Metadata can be saved only after product is created
         await this.saveMetadata(this.form.id)
 
         success = !!(await this.$accessor.items.update({
           id: this.form.id,
-          item: this.form,
+          item: modifiedForm,
         }))
       } else {
-        success = !!(await this.$accessor.items.add(this.form))
+        success = !!(await this.$accessor.items.add(modifiedForm))
       }
       this.$accessor.stopLoading()
 

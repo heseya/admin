@@ -33,7 +33,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Order, OrderStatus } from '@/interfaces/Order'
+import { Order, OrderStatus } from '@heseya/store-core'
+
 import { UUID } from '@/interfaces/UUID'
 
 export default Vue.extend({
@@ -70,7 +71,7 @@ export default Vue.extend({
       })
 
       if (success) {
-        this.$emit('statusChanged', newStatus)
+        this.$emit('status-changed', newStatus)
         this.$toast.success(this.$t('statusChangeSuccess') as string)
       }
 

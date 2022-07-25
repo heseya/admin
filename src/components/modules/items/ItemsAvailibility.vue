@@ -78,10 +78,10 @@
 <script lang="ts">
 import Vue from 'vue'
 import isNumber from 'lodash/isNumber'
-
-import { WarehouseItem } from '@/interfaces/WarehouseItem'
+import { WarehouseItem } from '@heseya/store-core'
 
 import DepositFormModal from './DepositFormModal.vue'
+import { formatDate } from '@/utils/dates'
 
 export default Vue.extend({
   components: { DepositFormModal },
@@ -103,7 +103,7 @@ export default Vue.extend({
   methods: {
     formatShippingTime(time: number | string | null) {
       if (isNumber(time)) return this.$t('availabilityTime', { time })
-      if (time) return this.$t('availabilityDate', { date: time })
+      if (time) return this.$t('availabilityDate', { date: formatDate(time) })
       return '-'
     },
 

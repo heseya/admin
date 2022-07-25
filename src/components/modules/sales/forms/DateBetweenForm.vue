@@ -43,8 +43,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-
-import { DateBetweenDiscountCondition } from '@/interfaces/SaleCondition'
+import { DateBetweenDiscountCondition } from '@heseya/store-core'
 
 export default Vue.extend({
   props: {

@@ -89,8 +89,7 @@
 import Vue from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import { ValidationProvider } from 'vee-validate'
-
-import { DiscountConditionDto, DiscountConditionType } from '@/interfaces/SaleCondition'
+import { DiscountConditionDto, DiscountConditionType } from '@heseya/store-core'
 
 import OrderValueForm from './forms/OrderValueForm.vue'
 import MaxUsesForm from './forms/MaxUsesForm.vue'

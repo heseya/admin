@@ -196,7 +196,7 @@ import ModalForm from '@/components/form/ModalForm.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import Field from '@/components/Field.vue'
 import ItemsAvailibility from './ItemsAvailibility.vue'
-import { formatDate, formatUTC } from '@/utils/dates'
+import { formatDateTimeInput, formatUTC } from '@/utils/dates'
 
 type Form = WarehouseItemCreateDto & Partial<WarehouseItem>
 
@@ -224,9 +224,8 @@ export default Vue.extend({
       get(): Form {
         return {
           ...this.value,
-          unlimited_stock_shipping_date: formatDate(
+          unlimited_stock_shipping_date: formatDateTimeInput(
             this.value.unlimited_stock_shipping_date,
-            'yyyy-MM-dd HH:mm',
           ),
         }
       },

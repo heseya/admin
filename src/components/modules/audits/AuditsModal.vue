@@ -46,7 +46,7 @@
               <span class="audit-entry__tag">
                 {{ entry.event === 'updated' ? $t('eventChanged') : entry.event }}
               </span>
-              <span class="audit-entry__header-date">{{ formatDateTime(entry.created_at) }}</span>
+              <span class="audit-entry__header-date">{{ formatDate(entry.created_at) }}</span>
             </div>
           </template>
 
@@ -204,8 +204,8 @@ export default Vue.extend({
       this.isModalOpen = true
       this.fetchAudits()
     },
-    formatDateTime(date: string) {
-      return formatDate(new Date(date), 'dd-MM-yyyy HH:mm')
+    formatDate(date: string) {
+      return formatDate(new Date(date))
     },
 
     getValues(audit: EntityAudits<Record<string, any>>): { key: string; old: any; new: any }[] {

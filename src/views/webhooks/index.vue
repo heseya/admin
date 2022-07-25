@@ -1,6 +1,13 @@
 <template>
   <div>
-    <PaginatedList :title="$t('title')" store-key="webhooks" :table="tableConfig">
+    <PaginatedList
+      :title="$t('title')"
+      store-key="webhooks"
+      :filters="filters"
+      :table="tableConfig"
+      @search="makeSearch"
+      @clear-filters="clearFilters"
+    >
       <template #nav>
         <icon-button v-can="$p.Webhooks.Add" to="/webhooks/create">
           <template #icon>
@@ -8,6 +15,10 @@
           </template>
           {{ $t('add') }}
         </icon-button>
+      </template>
+
+      <template #filters>
+        <WebhookFilter :filters="filters" @search="makeSearch" />
       </template>
 
       <template #default="{ item: webhook }">
@@ -33,109 +44,115 @@
 {
   "pl": {
     "title": "Webhooki",
-    "add": "Dodaj webhook"
+    "add": "Dodaj webhook",
+    "name": "Nazwa",
+    "link": "Link",
+    "events": "Eventy",
+    "secret": "Secret",
+    "withHidden": "Z ukrytymi",
+    "withIssuer": "Z wywołującymi"
   },
   "en": {
     "title": "Webhooks",
-    "add": "Add webhook"
+    "add": "Add webhook",
+    "name": "Name",
+    "link": "Link",
+    "events": "Events",
+    "secret": "Secret",
+    "withHidden": "With hidden",
+    "withIssuer": "With issuer"
   }
 }
 </i18n>
 
 <script lang="ts">
 import Vue from 'vue'
-// import ListItem from '@/components/layout/ListItem.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
-// import CmsTable from '@/components/cms/CmsTable.vue'
 import { TableConfig } from '@/interfaces/CmsTable'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
+import WebhookFilter from '@/components/modules/webhooks/WebhookFilter.vue'
+import {
+  EMPTY_WEBHOOK_FILTERS,
+  WebhookFilersType,
+} from '@/components/modules/webhooks/WebhookFilter.vue'
+import { formatFilters } from '@/utils/utils'
 
 export default Vue.extend({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },
   components: {
-    // ListItem,
     PaginatedList,
-    // CmsTable,
     CmsTableRow,
+    WebhookFilter,
   },
+  data: () => ({
+    filters: { ...EMPTY_WEBHOOK_FILTERS } as WebhookFilersType,
+  }),
   computed: {
     tableConfig(): TableConfig {
       return {
         headers: [
           {
             key: 'name',
-            label: 'Nazwa',
+            label: this.$t('name') as string,
             render: (v: any) => v,
             width: '0.8fr',
           },
           {
             key: 'url',
-            label: 'Link',
+            label: this.$t('link') as string,
             render: (v: any) => v,
             width: '1.2fr',
             wrap: true,
           },
           {
             key: 'events',
-            label: 'Eventy',
+            label: this.$t('events') as string,
             render: (events: string[]) => events,
             width: '1.2fr',
             wrap: true,
           },
           {
             key: 'secret',
-            label: 'Secret',
+            label: this.$t('secret') as string,
             render: (v: string) => Boolean(v),
             width: '1fr',
           },
           {
             key: 'with_hidden',
-            label: 'Z ukrytymi',
+            label: this.$t('withHidden') as string,
             render: (v: any) => v,
             width: '1fr',
           },
           {
             key: 'with_issuer',
-            label: 'Z wywołującymi',
+            label: this.$t('withIssuer') as string,
             render: (v: any) => v,
             width: '1fr',
           },
         ],
       }
     },
-    webhooksTableConfig(): TableConfig {
-      return {
-        headers: [
-          {
-            key: 'name',
-            label: 'hello',
-            render: (v: any) => v,
-          },
-          {
-            key: 'url',
-            label: 'mello',
-            render: (v: any) => v,
-          },
-          {
-            key: 'c',
-            label: 'tello',
-            render: (v: any) => v,
-          },
-          // {
-          //   key: 'method',
-          //   label: this.$t('table.method') as string,
-          //   render: (v: keyof typeof PAYMENT_METHODS) => PAYMENT_METHODS[v] || v,
-          // },
-          // {
-          //   key: 'amount',
-          //   label: this.$t('table.amount') as string,
-          //   render: (v: number) => this.formatCurrency(v),
-          // },
-          // { key: 'paid', label: this.$t('table.success') as string },
-        ],
-      }
+  },
+  created() {
+    this.filters.search = (this.$route.query.search as string) || ''
+  },
+  methods: {
+    makeSearch(filters: WebhookFilersType) {
+      this.filters = filters
+
+      const queryFilters = formatFilters(filters)
+
+      this.$router.push({
+        path: 'webhooks',
+        query: { page: undefined, ...queryFilters },
+      })
+    },
+
+    clearFilters() {
+      this.filters.search = ''
+      this.makeSearch({ ...EMPTY_WEBHOOK_FILTERS })
     },
   },
 })

@@ -80,6 +80,7 @@
 
 <script lang="ts">
 import Vue, { PropOptions } from 'vue'
+// @ts-ignore
 import VueJsonPretty from 'vue-json-pretty'
 import { WebhookEventLog } from '@heseya/store-core'
 

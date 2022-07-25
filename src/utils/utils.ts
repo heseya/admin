@@ -25,8 +25,8 @@ export const getRelativeDate = (date: DateInput, lang = 'pl', pattern = 'dd.MM.y
   const baseLocale = lang === 'pl' ? pl : enGB
   const locale = {
     ...baseLocale,
-    formatRelative: (token: any) =>
-      token === 'other' ? pattern : baseLocale.formatRelative!(token),
+    formatRelative: (token: any, ...args: any[]) =>
+      token === 'other' ? pattern : baseLocale.formatRelative!(token, ...args),
   }
 
   return formatRelative(actionDate, today, { locale })

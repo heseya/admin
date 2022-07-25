@@ -26,14 +26,9 @@
 <script lang="ts">
 import Vue from 'vue'
 import get from 'lodash/get'
-
 import { TableHeader, TableValue } from '@/interfaces/CmsTable'
-import CmsList from './CmsTableCellList.vue'
-import Tag from '../Tag.vue'
-import CopyableTag from '../CopyableTag.vue'
 
 export default Vue.extend({
-  components: { CmsList, Tag, CopyableTag },
   props: {
     to: {
       type: String,

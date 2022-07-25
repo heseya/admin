@@ -8,6 +8,7 @@
       <li
         v-for="(singleValue, i) in items.slice(0, visibleItemsNumber)"
         :key="String(singleValue) + i"
+        class="cms-list__list-item"
       >
         <copyable-tag :text="singleValue" />
       </li>
@@ -89,6 +90,12 @@ export default Vue.extend({
     list-style: none;
     padding: 0;
     margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  &__list-item {
+    max-width: 100%;
   }
 
   &__show-more {

@@ -434,7 +434,7 @@ router.beforeEach((to, from, next) => {
     accessor.auth.setPermissionsError(new Error('Not logged in'))
     return next({
       name: 'Login',
-      query: { next: to.fullPath !== '/' ? to.fullPath : undefined },
+      query: { next: to.path !== '/' ? to.path : undefined },
     })
   }
 

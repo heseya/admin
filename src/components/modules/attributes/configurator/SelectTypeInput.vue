@@ -154,6 +154,7 @@ export default Vue.extend({
       if (this.value.some(Boolean)) {
         const choosenOptions = await Promise.all(
           this.value.map(({ id }) =>
+            // @ts-ignore // TODO: fix extended store actions typings
             this.$accessor.attributes.getOptions({
               attributeId: this.attribute.id,
               params: { search: id },

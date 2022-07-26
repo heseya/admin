@@ -98,7 +98,8 @@ import { ALL_FILTER_VALUE } from '@/consts/filters'
 
 import { TableConfig } from '@/interfaces/CmsTable'
 
-import { formatFilters, getRelativeDate } from '@/utils/utils'
+import { formatFilters } from '@/utils/utils'
+import { formatDate } from '@/utils/dates'
 import { formatCurrency } from '@/utils/currency'
 
 export default Vue.extend({
@@ -133,7 +134,7 @@ export default Vue.extend({
             key: 'created_at',
             label: this.$t('form.date') as string,
             sortable: true,
-            render: (v) => getRelativeDate(v, this.$i18n.locale),
+            render: (v) => formatDate(v),
           },
         ],
       }

@@ -190,13 +190,18 @@ export default Vue.extend({
     tableConfig(): TableConfig<ShippingMethod> {
       return {
         headers: [
-          { key: 'name', label: this.$t('common.form.name') as string, width: '1fr', wrap: true },
+          {
+            key: 'name',
+            label: this.$t('common.form.name') as string,
+            width: '1fr',
+            wordBreak: 'break-word',
+          },
           {
             key: 'countries',
             label: this.$t('headers.availabilty') as string,
             width: '1.5fr',
             render: (countries: ShippingMethod['countries']) => countries.map(({ name }) => name),
-            wrap: true,
+            wordBreak: 'break-word',
           },
           { key: 'price', label: this.$t('headers.basePrice') as string, width: '1fr' },
           {

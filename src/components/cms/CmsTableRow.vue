@@ -10,7 +10,7 @@
       v-for="{ key, label, value, rawValue, wordBreak } in values"
       :key="key"
       class="cms-table-row__col"
-      :class="{ 'cms-table-row__col--break': wordBreak }"
+      :class="{ 'cms-table-row__col--break': wordBreak && wordBreak !== 'none' }"
     >
       <span class="cms-table-row__col-label">{{ label }}</span>
       <span

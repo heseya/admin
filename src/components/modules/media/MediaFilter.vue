@@ -13,8 +13,11 @@
       <a-select-option :value="MediaType.Video" :label="MediaType.Video">
         {{ $t('mediaTypes.video') }}
       </a-select-option>
-      <a-select-option :value="MediaType.Pdf" :label="MediaType.Pdf">
-        {{ $t('mediaTypes.pdf') }}
+      <a-select-option :value="MediaType.Document" :label="MediaType.Document">
+        {{ $t('mediaTypes.document') }}
+      </a-select-option>
+      <a-select-option :value="MediaType.Other" :label="MediaType.Other">
+        {{ $t('mediaTypes.other') }}
       </a-select-option>
     </app-select>
 

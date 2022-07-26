@@ -17,7 +17,7 @@
           {{
             showAll
               ? $t('showLess')
-              : $t('showMore', { number: items.length - numberOfVisbibleItems })
+              : $t('showMore', { number: items.length - 1 - numberOfVisbibleItems })
           }}
         </tag>
       </li>

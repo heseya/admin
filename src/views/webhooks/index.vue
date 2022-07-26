@@ -28,11 +28,8 @@
           :headers="tableConfig.headers"
           :to="`/webhooks/${webhook.id}`"
         >
-          <template #code>
-            <b>{{ webhook.code }}</b>
-          </template>
-          <template #description="{ rawValue }">
-            <small>{{ rawValue || '-' }}</small>
+          <template #events="{ value }">
+            <CmsTableCellList :items="value" />
           </template>
         </cms-table-row>
       </template>
@@ -76,6 +73,7 @@ import {
   WebhookFilersType,
 } from '@/components/modules/webhooks/WebhookFilter.vue'
 import { formatFilters } from '@/utils/utils'
+import CmsTableCellList from '@/components/cms/CmsTableCellList.vue'
 
 export default Vue.extend({
   metaInfo(this: any) {
@@ -85,6 +83,7 @@ export default Vue.extend({
     PaginatedList,
     CmsTableRow,
     WebhookFilter,
+    CmsTableCellList,
   },
   data: () => ({
     filters: { ...EMPTY_WEBHOOK_FILTERS } as WebhookFilersType,
@@ -98,20 +97,21 @@ export default Vue.extend({
             label: this.$t('name') as string,
             render: (v: any) => v,
             width: '0.8fr',
+            wordBreak: 'break-word',
           },
           {
             key: 'url',
             label: this.$t('link') as string,
             render: (v: any) => v,
             width: '1.2fr',
-            wrap: true,
+            wordBreak: 'break-all',
           },
           {
             key: 'events',
             label: this.$t('events') as string,
             render: (events: string[]) => events,
             width: '1.2fr',
-            wrap: true,
+            wordBreak: 'break-word',
           },
           {
             key: 'secret',

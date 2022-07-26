@@ -7,35 +7,21 @@
     @click.stop="click"
   >
     <div
-      v-for="{ key, label, value, rawValue, wrap } in values"
+      v-for="{ key, label, value, rawValue, wordBreak } in values"
       :key="key"
       class="cms-table-row__col"
-      :class="{ 'cms-table-row__col--wrap': wrap }"
+      :class="{ 'cms-table-row__col--break': wordBreak && wordBreak !== 'none' }"
     >
       <span class="cms-table-row__col-label">{{ label }}</span>
-      <span class="cms-table-row__col-value" :class="{ 'cms-table-row__col-value--wrap': wrap }">
+      <span
+        class="cms-table-row__col-value"
+        :class="{
+          'cms-table-row__col-value--break-all': wordBreak === 'break-all',
+          'cms-table-row__col-value--break-word': wordBreak === 'break-word',
+        }"
+      >
         <slot :name="key" v-bind="{ key, label, value, rawValue, item }">
-          <ul v-if="Array.isArray(value)" class="cms-table-row__col-list">
-            <li v-for="(singleValue, i) in value" :key="singleValue + i">
-              <a-tooltip placement="right">
-                <template #title>
-                  <div class="cms-table-row__col-list-tooltip">
-                    <p>{{ singleValue }}</p>
-                    <b v-if="isClipboard">{{ copied ? $t('copied') : $t('copy') }}</b>
-                  </div>
-                </template>
-                <tag
-                  class="cms-table-row__col-list-tag"
-                  :text="singleValue"
-                  allow-copy
-                  @copied="onCopied"
-                >
-                  <span class="cms-table-row__col-list-text">{{ singleValue }}</span>
-                </tag>
-              </a-tooltip>
-            </li>
-          </ul>
-          <BooleanTag v-else-if="typeof value === 'boolean'" :value="value" />
+          <BooleanTag v-if="typeof value === 'boolean'" :value="value" />
           <span v-else> {{ value }} </span>
         </slot>
       </span>
@@ -59,7 +45,6 @@
 <script lang="ts">
 import Vue from 'vue'
 import get from 'lodash/get'
-
 import { TableHeader, TableValue } from '@/interfaces/CmsTable'
 
 export default Vue.extend({
@@ -97,14 +82,14 @@ export default Vue.extend({
       return this.el
     },
     values(): TableValue[] {
-      return this.headers.map(({ key, label, render, wrap }) => {
+      return this.headers.map(({ key, label, render, wordBreak }) => {
         const rawValue = get(this.item, key)
         return {
           key,
           label,
           value: render?.(rawValue, this.item) ?? rawValue,
           rawValue,
-          wrap: wrap ?? false,
+          wordBreak: wordBreak ?? 'none',
         }
       })
     },
@@ -178,7 +163,7 @@ export default Vue.extend({
       padding: 16px;
     }
 
-    &--wrap {
+    &--break {
       overflow: hidden;
     }
   }
@@ -197,34 +182,12 @@ export default Vue.extend({
   &__col-value {
     color: $font-color;
 
-    &--wrap {
+    &--break-all {
       word-break: break-all;
-
-      #{$cms}__col-list-tag {
-        max-width: 100%;
-      }
-
-      #{$cms}__col-list-text {
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
     }
-  }
 
-  &__col-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  &__col-list-tooltip {
-    display: grid;
-    place-items: center;
-    padding: 8px;
-    gap: 4px;
-
-    & > * {
-      margin: 0;
+    &--break-word {
+      word-break: break-word;
     }
   }
 }

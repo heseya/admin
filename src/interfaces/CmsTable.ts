@@ -6,7 +6,7 @@ export interface TableHeader<Item extends BaseItem = any> {
   width?: string
   sortable?: boolean
   render?: (keyValue: any, item: Item) => string | number | boolean | string[]
-  wrap?: boolean
+  wordBreak?: 'break-all' | 'break-word' | 'none'
 }
 
 export interface TableValue {
@@ -14,7 +14,7 @@ export interface TableValue {
   label: string
   value: any
   rawValue: any
-  wrap: boolean
+  wordBreak: 'break-all' | 'break-word' | 'none'
 }
 
 export interface TableConfig<Item extends BaseItem = BaseItem> {

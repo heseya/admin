@@ -1,6 +1,6 @@
 <template>
-  <div class="narrower-page">
-    <PaginatedList :title="$t('title')" store-key="shippingMethods" draggable>
+  <div>
+    <PaginatedList :title="$t('title')" store-key="shippingMethods" draggable :table="tableConfig">
       <template #nav>
         <icon-button v-can="$p.ShippingMethods.Add" @click="openModal()">
           <template #icon>
@@ -10,21 +10,29 @@
         </icon-button>
       </template>
 
-      <template #default="{ item: shippingMethod }">
-        <list-item
-          :key="shippingMethod.id"
-          :hidden="!shippingMethod.public"
-          @click="openModal(shippingMethod.id)"
+      <template #default="{ item: method }">
+        <cms-table-row
+          :key="method.id"
+          :item="method"
+          :headers="tableConfig.headers"
+          @click="openModal(method.id)"
         >
-          {{ shippingMethod.name }}
-          <small v-if="shippingMethod.countries.length">
-            {{ shippingMethod.block_list ? $t('list.blackList') : $t('list.whiteList') }}
-            {{ shippingMethod.countries.map((c) => c.name).join(', ') }}
-          </small>
-          <small v-else>
-            {{ shippingMethod.block_list ? $t('list.allEnabled') : $t('list.allDisabled') }}
-          </small>
-        </list-item>
+          <template #countries="{ value }">
+            <CmsTableCellList :items="value">
+              <template #title>
+                {{
+                  !method.countries.length
+                    ? method.block_list
+                      ? $t('list.allEnabled')
+                      : $t('list.allDisabled')
+                    : method.block_list
+                    ? $t('list.blackList')
+                    : $t('list.whiteList')
+                }}
+              </template>
+            </CmsTableCellList>
+          </template>
+        </cms-table-row>
       </template>
     </PaginatedList>
 
@@ -93,6 +101,13 @@
       "deleted": "Metoda dostawy została usunięta.",
       "created": "Metoda dostawy została dodana.",
       "updated": "Metoda dostawy została zaktualizowana."
+    },
+    "headers": {
+      "availabilty": "Dostępność w krajach",
+      "basePrice": "Bazowa cena",
+      "minShippingTime": "Minimalny czas dostawy",
+      "maxShippingTime": "Maksymalny czas dostawy",
+      "visibility": "Widoczność"
     }
   },
   "en": {
@@ -111,6 +126,13 @@
       "deleted": "Shipping method has been deleted.",
       "created": "Shipping method has been created.",
       "updated": "Shipping method has been updated."
+    },
+    "headers": {
+      "availabilty": "Availability in countries",
+      "basePrice": "Base price",
+      "minShippingTime": "Minimal delivery time",
+      "maxShippingTime": "Maximum delivery time",
+      "visibility": "Visibility"
     }
   }
 }
@@ -123,24 +145,27 @@ import { ShippingMethod, ShippingMethodUpdateDto, ShippingCountry } from '@hesey
 import { api } from '../../api'
 
 import PaginatedList from '@/components/PaginatedList.vue'
-import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ShippingMethodsForm from '@/components/modules/shippingMethods/Index.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { UUID } from '@/interfaces/UUID'
+import { TableConfig } from '@/interfaces/CmsTable'
+import CmsTableRow from '@/components/cms/CmsTableRow.vue'
+import CmsTableCellList from '@/components/cms/CmsTableCellList.vue'
 
 export default Vue.extend({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },
   components: {
-    ListItem,
     PopConfirm,
     ValidationObserver,
     PaginatedList,
     ShippingMethodsForm,
     MetadataForm,
+    CmsTableRow,
+    CmsTableCellList,
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {
@@ -161,6 +186,37 @@ export default Vue.extend({
       return this.$can(
         this.editedItem.id ? this.$p.ShippingMethods.Edit : this.$p.ShippingMethods.Add,
       )
+    },
+    tableConfig(): TableConfig<ShippingMethod> {
+      return {
+        headers: [
+          {
+            key: 'name',
+            label: this.$t('common.form.name') as string,
+            width: '1fr',
+            wordBreak: 'break-word',
+          },
+          {
+            key: 'countries',
+            label: this.$t('headers.availabilty') as string,
+            width: '1.5fr',
+            render: (countries: ShippingMethod['countries']) => countries.map(({ name }) => name),
+            wordBreak: 'break-word',
+          },
+          { key: 'price', label: this.$t('headers.basePrice') as string, width: '1fr' },
+          {
+            key: 'shipping_time_min',
+            label: this.$t('headers.minShippingTime') as string,
+            width: '1fr',
+          },
+          {
+            key: 'shipping_time_max',
+            label: this.$t('headers.maxShippingTime') as string,
+            width: '1fr',
+          },
+          { key: 'public', label: this.$t('headers.visibility') as string, width: '0.5fr' },
+        ],
+      }
     },
   },
   async created() {

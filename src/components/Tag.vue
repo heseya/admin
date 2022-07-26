@@ -7,7 +7,7 @@
       'tag--copiable': isClipboard && allowCopy,
     }"
     :style="{ '--bg-color': color }"
-    @click.prevent="copy"
+    v-on="$listeners"
   >
     <slot>{{ text }}</slot>
   </div>

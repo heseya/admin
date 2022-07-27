@@ -20,7 +20,7 @@ lint:
   rules:
     - if: $CI_COMMIT_BRANCH != "master"
 
-test:
+test-unit:
   stage: test
   before_script:
     - yarn
@@ -30,7 +30,7 @@ test:
     - if: $CI_COMMIT_BRANCH != "master"
   coverage: /All files\s*\|\s*([\d\.]+)/
 
-e2e:
+test-e2e:
   image: cypress/browsers:node16.5.0-chrome97-ff96
   stage: test
   before_script:
@@ -46,21 +46,3 @@ e2e:
     expire_in: 1 day
   rules:
     - if: $CI_COMMIT_BRANCH == "develop"
-
-build-image-semiprod:
-  image: docker:latest
-  stage: build
-  script:
-    - cp .env_semi .env
-    - docker login -u $docker_login -p $docker_pass
-    - docker build -t escolasoft/***REMOVED***plstoreadmin:semiprod .
-    - docker push escolasoft/***REMOVED***plstoreadmin:semiprod
-  rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
-  variables:
-    DOCKER_TLS_CERTDIR: ''
-    DOCKER_HOST: tcp://docker:2375
-    VERSION: '1.5.6'
-  services:
-    - name: docker:dind
-      alias: docker

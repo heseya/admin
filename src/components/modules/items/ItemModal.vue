@@ -10,15 +10,16 @@
         <modal-form>
           <validated-input
             v-model="form.name"
-            data-cy="name"
+            name="name"
             :disabled="disabled"
+            type="input"
             rules="required"
             :label="$t('common.form.name')"
           />
 
           <validated-input
             v-model="form.sku"
-            data-cy="sku"
+            name="sku"
             :disabled="disabled"
             rules="required"
             :label="$t('form.sku')"
@@ -124,7 +125,9 @@
               :cancel-text="$t('common.cancel')"
               @confirm="deleteWarehouseItem"
             >
-              <app-button v-if="form.id" type="danger">{{ $t('common.delete') }}</app-button>
+              <app-button v-if="form.id" data-cy="delete-btn" type="danger">{{
+                $t('common.delete')
+              }}</app-button>
             </pop-confirm>
           </div>
         </template>

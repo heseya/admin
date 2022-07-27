@@ -53,7 +53,7 @@
       <template #title>
         <h4>{{ $t('chooseExisting') }}</h4>
       </template>
-      <modal-form>
+      <modal-form v-if="isModalActive">
         <Selector type="items" :type-name="$t('typeName')" :existing="value" @select="addItem" />
       </modal-form>
     </a-modal>
@@ -87,14 +87,16 @@
 import Vue from 'vue'
 import { WarehouseItem, ProductWarehouseItem } from '@heseya/store-core'
 
+import { UUID } from '@/interfaces/UUID'
+
 import Empty from '@/components/layout/Empty.vue'
 import List from '@/components/layout/List.vue'
 import Selector from '@/components/Selector.vue'
 import ListItem from '@/components/layout/ListItem.vue'
-import { UUID } from '@/interfaces/UUID'
+import ModalForm from '@/components/form/ModalForm.vue'
 
 export default Vue.extend({
-  components: { Empty, List, Selector, ListItem },
+  components: { Empty, List, Selector, ListItem, ModalForm },
   props: {
     value: {
       type: Array,

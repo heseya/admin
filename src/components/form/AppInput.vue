@@ -8,6 +8,7 @@
       :is="component"
       v-bind="$props"
       :id="name"
+      ref="input"
       v-model="innerValue"
       class="app-input__input"
       :data-cy="dataCy"
@@ -60,6 +61,13 @@ export default Vue.extend({
       if (this.type === 'password') return 'a-input-password'
       if (this.type === 'textarea') return 'a-textarea'
       return 'a-input'
+    },
+  },
+  methods: {
+    focus() {
+      this.$nextTick(() => {
+        ;((this.$refs.input as Vue).$el as HTMLInputElement).focus()
+      })
     },
   },
 })

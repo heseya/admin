@@ -24,7 +24,7 @@
       </div>
     </div>
     <a-modal v-model="isModalActive" width="800px" :title="$t('chooseItem')" :footer="null">
-      <modal-form>
+      <modal-form v-if="isModalActive">
         <selector :type-name="$t('product')" type="items" :existing="value" @select="addItem" />
       </modal-form>
     </a-modal>

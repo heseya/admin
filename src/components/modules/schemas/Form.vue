@@ -130,7 +130,7 @@
         :title="$t('modalTitle')"
         :footer="null"
       >
-        <modal-form>
+        <modal-form v-if="isUsedSchemaModalActive">
           <selector
             type="schemas"
             :add-text="$t('choose')"

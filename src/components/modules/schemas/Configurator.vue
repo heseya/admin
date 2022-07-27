@@ -80,7 +80,7 @@
           </icon-button>
         </h4>
       </template>
-      <modal-form>
+      <modal-form v-if="isModalActive">
         <Selector type="schemas" :existing="value" @select="addSchema" />
       </modal-form>
     </a-modal>

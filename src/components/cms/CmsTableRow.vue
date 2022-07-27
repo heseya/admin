@@ -29,19 +29,6 @@
   </component>
 </template>
 
-<i18n lang="json">
-{
-  "en": {
-    "copy": "Click to copy",
-    "copied": "Copied!"
-  },
-  "pl": {
-    "copy": "Kliknij aby skopiować",
-    "copied": "Skopiowano!"
-  }
-}
-</i18n>
-
 <script lang="ts">
 import Vue from 'vue'
 import get from 'lodash/get'
@@ -70,13 +57,7 @@ export default Vue.extend({
       required: true,
     } as Vue.PropOptions<TableHeader[]>,
   },
-  data: () => ({
-    copied: false,
-  }),
   computed: {
-    isClipboard(): boolean {
-      return Boolean(navigator.clipboard)
-    },
     component(): any {
       if (this.to) return 'router-link'
       return this.el

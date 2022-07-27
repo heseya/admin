@@ -98,12 +98,6 @@ export default Vue.extend({
     click() {
       this.$emit('click')
     },
-    onCopied() {
-      this.copied = true
-      setTimeout(() => {
-        this.copied = false
-      }, 3000)
-    },
   },
 })
 </script>

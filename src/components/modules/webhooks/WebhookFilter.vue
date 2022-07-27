@@ -15,20 +15,10 @@
 <i18n lang="json">
 {
   "pl": {
-    "search": "Wpisz nazwę webhooka lub link",
-    "soldout": {
-      "label": "Status w magazynie",
-      "sold": "Wyprzedane",
-      "available": "Dostępne"
-    }
+    "search": "Wpisz nazwę webhooka lub link"
   },
   "en": {
-    "search": "Type webhook name or link",
-    "soldout": {
-      "label": "Status in stock",
-      "sold": "Sold out",
-      "available": "Available"
-    }
+    "search": "Type webhook name or link"
   }
 }
 </i18n>

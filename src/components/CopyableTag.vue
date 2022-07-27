@@ -6,7 +6,7 @@
         <b v-if="isClipboard">{{ copied ? $t('copied') : $t('copy') }}</b>
       </div>
     </template>
-    <Tag v-bind="$props" class="copyable-tag__tag" @click.stop="copy">
+    <Tag v-bind="$props" class="copyable-tag__tag" @click.prevent.stop="copy">
       <span class="copyable-tag__tag-text">{{ text }}</span>
     </Tag>
   </a-tooltip>

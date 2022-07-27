@@ -12,12 +12,12 @@
       >
         <copyable-tag :text="singleValue" />
       </li>
-      <li v-if="numberOfVisbibleItems < items.length" @click.stop="showAll = !showAll">
+      <li v-if="numberOfVisbibleItems < items.length" @click.stop.prevent="showAll = !showAll">
         <tag class="cms-list__show-more">
           {{
             showAll
               ? $t('showLess')
-              : $t('showMore', { number: items.length - 1 - numberOfVisbibleItems })
+              : $t('showMore', { number: items.length - numberOfVisbibleItems })
           }}
         </tag>
       </li>
@@ -72,7 +72,7 @@ export default Vue.extend({
 
   computed: {
     visibleItemsNumber(): number {
-      if (this.showAll) return -1
+      if (this.showAll) return Infinity
       return this.numberOfVisbibleItems
     },
   },

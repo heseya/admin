@@ -70,7 +70,7 @@ export default Vue.extend({
           label,
           value: render?.(rawValue, this.item) ?? rawValue,
           rawValue,
-          wordBreak: wordBreak ?? false,
+          wordBreak: wordBreak ?? 'none',
         }
       })
     },

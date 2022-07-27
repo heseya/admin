@@ -150,9 +150,9 @@ export default Vue.extend({
     '$route.query'({ page }) {
       this.page = Number(page) || 1
       if (this.meta.current_page !== page) {
-        this.getItems()
         window.scrollTo(0, 0)
       }
+      this.getItems()
     },
     error(error) {
       if (error) {

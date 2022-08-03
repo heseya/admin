@@ -24,7 +24,7 @@
         class="paginated-list__list"
         @sort="onSort"
       >
-        <div v-for="item in items" :key="item.id" class="paginated-list__list-item">
+        <div v-for="item in items" :key="item.id" class="paginated-list__list-item handle">
           <slot :item="item">
             <cms-table-row
               v-if="table"

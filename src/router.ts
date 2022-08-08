@@ -427,6 +427,13 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   window.scrollTo(0, 0)
 
+  // Save prevoirous route for return to list button
+  if (from.name)
+    window.sessionStorage.setItem(
+      'previousRoute',
+      JSON.stringify({ path: from.path, fullPath: from.fullPath }),
+    )
+
   const authRequired = !!to.meta?.requiresAuth || false
   const requiredPermissions: Permission[] = to.meta?.permissions || []
 

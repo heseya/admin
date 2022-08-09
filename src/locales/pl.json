@@ -19,6 +19,7 @@
     "edit": "Edytuj",
     "continue": "Kontynuuj",
     "reset": "Przywróć domyślne",
+    "confirmLeave": "Czy na pewno chcesz wyjść? Masz niezapisane zmiany!",
     "form": {
       "name": "Nazwa",
       "description": "Opis",

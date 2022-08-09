@@ -20,6 +20,12 @@
       <span> {{ $t('table.shippingTime') }} </span>
       <span> {{ $t('table.quantity') }} </span>
     </div>
+
+    <div v-if="availability.length === 0" class="items-availability__row">
+      <span> - </span>
+      <span> - </span>
+    </div>
+
     <div
       v-for="{ shipping_time, shipping_date, quantity } in availability"
       :key="`${shipping_time}-${shipping_date}`"

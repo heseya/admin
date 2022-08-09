@@ -67,6 +67,15 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/items/:id/deposits',
+      name: 'ItemDepositsList',
+      component: () => import('./views/items/deposits.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Deposits.Show],
+      },
+    },
+    {
       path: '/schemas',
       name: 'Schemas',
       component: () => import('./views/schemas/index.vue'),

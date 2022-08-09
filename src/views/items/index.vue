@@ -100,12 +100,8 @@ export default Vue.extend({
     ItemModal,
   },
   beforeRouteLeave(to, from, next) {
-    if (this.isModalActive) {
-      this.isModalActive = false
-      next(false)
-    } else {
-      next()
-    }
+    if (this.isModalActive) this.isModalActive = false
+    next()
   },
   data: () => ({
     filters: { ...EMPTY_ITEMS_FILTERS } as ItemsFilersType,

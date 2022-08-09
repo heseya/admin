@@ -1,12 +1,26 @@
 <template>
   <div class="warehouse-item-modal">
     <validation-observer v-slot="{ handleSubmit }">
-      <a-modal
-        :visible="visible"
-        width="600px"
-        :title="form.id ? $t('editTitle') : $t('newTitle')"
-        @cancel="close"
-      >
+      <a-modal :visible="visible" width="600px" @cancel="close">
+        <template #title>
+          <div class="warehouse-item-modal__title">
+            <span>{{ form.id ? $t('editTitle') : $t('newTitle') }}</span>
+
+            <icon-button
+              v-if="item && item.id"
+              v-can="$p.Deposits.Show"
+              size="small"
+              data-cy="deposit-show-link"
+              :to="`/items/${item.id}/deposits`"
+            >
+              <template #icon>
+                <i class="bx bxs-package"></i>
+              </template>
+              {{ $t('showDeposits') }}
+            </icon-button>
+          </div>
+        </template>
+
         <modal-form>
           <validated-input
             v-model="form.name"
@@ -141,6 +155,7 @@
   "pl": {
     "editTitle": "Edycja przedmiotu",
     "newTitle": "Nowy przedmiot",
+    "showDeposits": "Zobacz listę depozytów",
     "deleteText": "Czy na pewno chcesz usunąć ten przedmiot?",
     "form": {
       "sku": "SKU",
@@ -165,6 +180,7 @@
   "en": {
     "editTitle": "Edit item",
     "newTitle": "New item",
+    "showDeposits": "Show deposits",
     "deleteText": "Are you sure you want to delete this item?",
     "form": {
       "sku": "SKU",
@@ -314,6 +330,12 @@ export default Vue.extend({
 
 <style lang="scss">
 .warehouse-item-modal {
+  &__title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
   &__row {
     display: flex;
     gap: 8px;

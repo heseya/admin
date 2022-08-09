@@ -24,6 +24,7 @@
       "name": "Name",
       "description": "Description",
       "type": "Type",
+      "date": "Date",
       "slug": "Link",
       "label": "Label",
       "value": "Value",

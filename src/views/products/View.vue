@@ -63,7 +63,7 @@
 
       <div class="product__details">
         <card>
-          <validation-observer v-slot="{ handleSubmit }">
+          <validation-observer ref="observer" v-slot="{ handleSubmit }">
             <form class="product__info" @submit.prevent="handleSubmit(saveProduct)">
               <div>
                 <validated-input
@@ -282,6 +282,8 @@ import WarehouseItemsConfigurator from '@/components/modules/products/WarehouseI
 import GoogleCategorySelect from '@/components/modules/products/GoogleCategorySelect.vue'
 import ProductSetSelect from '@/components/modules/products/ProductSetSelect.vue'
 
+import preventLeavingPage from '@/mixins/preventLeavingPage'
+
 import { formatApiNotificationError } from '@/utils/errors'
 import { generateSlug } from '@/utils/generateSlug'
 import { updateProductAttributeOptions } from '@/services/updateProductAttributeOptions'
@@ -336,6 +338,7 @@ export default Vue.extend({
     GoogleCategorySelect,
     ProductSetSelect,
   },
+  mixins: [preventLeavingPage],
   data: () => ({
     form: cloneDeep(EMPTY_FORM),
   }),
@@ -448,6 +451,11 @@ export default Vue.extend({
 
       if (item) {
         this.$toast.success(successMessage)
+        // Form validation needs to be reset to  update 'dirty' property
+        requestAnimationFrame(() => {
+          // @ts-ignore
+          this.$refs.observer.reset()
+        })
 
         if (item.id !== this.product.id) {
           this.$router.push(`/products/${item.id}`)

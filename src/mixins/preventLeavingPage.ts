@@ -1,23 +1,19 @@
+import Vue from 'vue'
 import i18n from '@/i18n'
 
-export default {
+/**
+ * 1. Validate Observer should have 'observer' ref setted
+ * 2. After form submitting Validate Observer should be resetted
+ *  */
+export default Vue.extend({
   beforeRouteLeave(to: any, from: any, next: any) {
-    // @ts-ignore
     if (this.confirmStayInDirtyForm()) {
       next(false)
     } else {
       next()
     }
   },
-  created() {
-    // @ts-ignore
-    window.addEventListener('beforeunload', this.beforeWindowUnload)
-  },
 
-  beforeDestroy() {
-    // @ts-ignore
-    window.removeEventListener('beforeunload', this.beforeWindowUnload)
-  },
   computed: {
     isDirty(): boolean {
       // The validation observer should have 'observer' ref
@@ -25,13 +21,21 @@ export default {
       return this.$refs.observer.fields.name.dirty
     },
   },
+
+  created() {
+    window.addEventListener('beforeunload', this.beforeWindowUnload)
+  },
+
+  beforeDestroy() {
+    window.removeEventListener('beforeunload', this.beforeWindowUnload)
+  },
+
   methods: {
     confirmLeave(): boolean {
       return window.confirm(i18n.t('common.confirmLeave') as string)
     },
 
     confirmStayInDirtyForm(): boolean {
-      // @ts-ignore
       return this.isDirty && !this.confirmLeave()
     },
 
@@ -43,4 +47,4 @@ export default {
       }
     },
   },
-}
+})

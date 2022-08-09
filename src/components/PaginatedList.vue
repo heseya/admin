@@ -1,6 +1,9 @@
 <template>
   <div class="paginated-list" :class="{ 'paginated-list--table': !!table }">
-    <AppTopNav :title="title" :subtitle="subtitle">
+    <AppTopNav :subtitle="subtitle">
+      <template #title>
+        <slot name="title">{{ title }}</slot>
+      </template>
       <slot name="nav"></slot>
     </AppTopNav>
 
@@ -163,6 +166,8 @@ export default Vue.extend({
   beforeMount() {
     this.page = Number(this.$route.query.page) || 1
     this.itemsPerPage = +(localStorage.getItem(`${this.storeKey}_per_page`) || 24)
+  },
+  mounted() {
     this.getItems()
   },
   methods: {

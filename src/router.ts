@@ -73,6 +73,7 @@ const router = new VueRouter({
       meta: {
         requiresAuth: true,
         permissions: [Permissions.Deposits.Show],
+        returnUrl: '/items',
       },
     },
     {

@@ -270,8 +270,6 @@ export default Vue.extend({
 
   methods: {
     close() {
-      console.log('close')
-
       this.$emit('close')
     },
 

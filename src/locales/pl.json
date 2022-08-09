@@ -24,6 +24,7 @@
       "description": "Opis",
       "type": "Typ",
       "slug": "Link",
+      "date": "Data",
       "label": "Etykieta",
       "value": "Wartość",
       "required": "Wymagane",

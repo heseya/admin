@@ -4,7 +4,7 @@
       :title="$t('title')"
       :filters="filters"
       :table="tableConfig"
-      :file="fileConfig"
+      :xlsx-file-config="fileConfig"
       store-key="orders"
       class="orders-list"
       @search="makeSearch"
@@ -98,7 +98,7 @@ import OrderFilter, {
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 
 import { TableConfig } from '@/interfaces/CmsTable'
-import { FileConfig } from '@/interfaces/FileConfig'
+import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 
 import { formatFilters } from '@/utils/utils'
 import { formatDate } from '@/utils/dates'
@@ -141,7 +141,7 @@ export default Vue.extend({
         ],
       }
     },
-    fileConfig(): FileConfig<Order> {
+    fileConfig(): XlsxFileConfig<Order> {
       return {
         name: this.$t('title') as string,
         headers: [

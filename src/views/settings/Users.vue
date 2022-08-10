@@ -4,7 +4,7 @@
       :title="$t('title')"
       :filters="filters"
       :table="tableConfig"
-      :file="fileConfig"
+      :xlsx-file-config="fileConfig"
       store-key="users"
       @search="makeSearch"
       @clear-filters="clearFilters"
@@ -145,7 +145,7 @@ import { ALL_FILTER_VALUE } from '@/consts/filters'
 import { formatFilters } from '@/utils/utils'
 import { UUID } from '@/interfaces/UUID'
 import { TableConfig } from '@/interfaces/CmsTable'
-import { FileConfig } from '@/interfaces/FileConfig'
+import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 
 const CLEAR_USER: UserCreateDto = {
   name: '',
@@ -217,7 +217,7 @@ export default Vue.extend({
         ],
       }
     },
-    fileConfig(): FileConfig<User> {
+    fileConfig(): XlsxFileConfig<User> {
       return {
         name: this.$t('title') as string,
         headers: [

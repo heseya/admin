@@ -5,11 +5,7 @@
         <slot name="title">{{ title }}</slot>
       </template>
 
-      <XlsxContent
-        v-if="file && fileContent.length"
-        :file-name="file.name"
-        :file-content="fileContent"
-      />
+      <XlsxDownloadButton v-if="xlsxFileConfig" :items="items" :xlsx-file-config="xlsxFileConfig" />
 
       <slot name="nav"></slot>
     </AppTopNav>
@@ -70,10 +66,10 @@ import CmsFilters from '@/components/cms/CmsFilters.vue'
 import CmsTable from './cms/CmsTable.vue'
 import CmsTableRow from './cms/CmsTableRow.vue'
 import Loading from './layout/Loading.vue'
-import XlsxContent from '@/components/XlsxContent.vue'
+import XlsxDownloadButton from '@/components/XlsxDownloadButton.vue'
 
 import { TableConfig } from '@/interfaces/CmsTable'
-import { FileConfig } from '@/interfaces/FileConfig'
+import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 import { GeneratedStoreModulesKeys } from '@/store'
 import { BaseItem } from '@/store/generator'
 
@@ -92,7 +88,7 @@ export default Vue.extend({
     Loading,
     CmsTable,
     CmsTableRow,
-    XlsxContent,
+    XlsxDownloadButton,
   },
   props: {
     title: {
@@ -127,10 +123,10 @@ export default Vue.extend({
       type: Object,
       default: () => ({}),
     } as Vue.PropOptions<Record<string, any>>,
-    file: {
+    xlsxFileConfig: {
       type: Object,
       default: null,
-    } as Vue.PropOptions<FileConfig>,
+    } as Vue.PropOptions<XlsxFileConfig>,
   },
   data: () => ({
     page: 1,
@@ -161,16 +157,6 @@ export default Vue.extend({
     contentComponent(): string {
       if (this.table) return 'CmsTable'
       return this.draggable ? 'Draggable' : 'div'
-    },
-    fileContent(): Record<string, any>[] {
-      return this.items.map((item) => {
-        return this.file.headers.reduce((acc, { key, label, format }) => {
-          return {
-            ...acc,
-            [label]: format ? format(item[key]) : item[key],
-          }
-        }, {})
-      })
     },
   },
   watch: {

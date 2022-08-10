@@ -5,7 +5,7 @@
       :filters="filters"
       store-key="products"
       :table="listView ? tableConfig : undefined"
-      :file="fileConfig"
+      :xlsx-file-config="fileConfig"
       @search="makeSearch"
       @clear-filters="clearFilters"
     >
@@ -87,7 +87,7 @@ import PaginatedList from '@/components/PaginatedList.vue'
 import { formatFilters } from '@/utils/utils'
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 import { TableConfig } from '@/interfaces/CmsTable'
-import { FileConfig } from '@/interfaces/FileConfig'
+import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 
 const LOCAL_STORAGE_KEY = 'products-list-view'
 
@@ -122,7 +122,7 @@ export default Vue.extend({
         ],
       }
     },
-    fileConfig(): FileConfig<Product> {
+    fileConfig(): XlsxFileConfig<Product> {
       return {
         name: this.$t('title') as string,
         headers: [

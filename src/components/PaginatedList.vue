@@ -4,6 +4,9 @@
       <template #title>
         <slot name="title">{{ title }}</slot>
       </template>
+
+      <XlsxDownloadButton v-if="xlsxFileConfig" :items="items" :xlsx-file-config="xlsxFileConfig" />
+
       <slot name="nav"></slot>
     </AppTopNav>
 
@@ -63,8 +66,10 @@ import CmsFilters from '@/components/cms/CmsFilters.vue'
 import CmsTable from './cms/CmsTable.vue'
 import CmsTableRow from './cms/CmsTableRow.vue'
 import Loading from './layout/Loading.vue'
+import XlsxDownloadButton from '@/components/XlsxDownloadButton.vue'
 
 import { TableConfig } from '@/interfaces/CmsTable'
+import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 import { GeneratedStoreModulesKeys } from '@/store'
 import { BaseItem } from '@/store/generator'
 
@@ -83,6 +88,7 @@ export default Vue.extend({
     Loading,
     CmsTable,
     CmsTableRow,
+    XlsxDownloadButton,
   },
   props: {
     title: {
@@ -117,6 +123,10 @@ export default Vue.extend({
       type: Object,
       default: () => ({}),
     } as Vue.PropOptions<Record<string, any>>,
+    xlsxFileConfig: {
+      type: Object,
+      default: null,
+    } as Vue.PropOptions<XlsxFileConfig>,
   },
   data: () => ({
     page: 1,

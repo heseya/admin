@@ -4,6 +4,7 @@
       :title="$t('title')"
       :filters="filters"
       :table="tableConfig"
+      :xlsx-file-config="fileConfig"
       store-key="users"
       @search="makeSearch"
       @clear-filters="clearFilters"
@@ -129,7 +130,7 @@
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { clone } from 'lodash'
-import { User, UserCreateDto, UserUpdateDto } from '@heseya/store-core'
+import { Role, User, UserCreateDto, UserUpdateDto } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
@@ -144,6 +145,7 @@ import { ALL_FILTER_VALUE } from '@/consts/filters'
 import { formatFilters } from '@/utils/utils'
 import { UUID } from '@/interfaces/UUID'
 import { TableConfig } from '@/interfaces/CmsTable'
+import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 
 const CLEAR_USER: UserCreateDto = {
   name: '',
@@ -211,6 +213,25 @@ export default Vue.extend({
             label: this.$t('table.isTfaActive') as string,
             width: '0.6fr',
             render: (_v, item) => item.is_tfa_active,
+          },
+        ],
+      }
+    },
+    fileConfig(): XlsxFileConfig<User> {
+      return {
+        name: this.$t('title') as string,
+        headers: [
+          { key: 'name', label: this.$t('common.form.name') as string },
+          { key: 'email', label: this.$t('table.email') as string },
+          {
+            key: 'roles',
+            label: this.$t('table.roles') as string,
+            format: (v: Role[]) => v.map((role) => role.name).join(', '),
+          },
+          {
+            key: 'is_tfa_active',
+            label: this.$t('table.isTfaActive') as string,
+            format: (v: boolean) => (v ? this.$t('common.yes') : this.$t('common.no')) as string,
           },
         ],
       }

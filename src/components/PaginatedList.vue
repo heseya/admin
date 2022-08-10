@@ -5,6 +5,17 @@
         <slot name="title">{{ title }}</slot>
       </template>
       <slot name="nav"></slot>
+      <xlsx-workbook v-if="file && fileContent.length">
+        <xlsx-sheet :sheet-name="file.name" :collection="fileContent" />
+        <xlsx-download>
+          <icon-button>
+            <template #icon>
+              <i class="bx bxs-download"></i>
+            </template>
+            {{ $t('downloadXlSX') }}
+          </icon-button>
+        </xlsx-download>
+      </xlsx-workbook>
     </AppTopNav>
 
     <AppCmsFilters v-if="$slots.filters" :filters="filters" @clear-filters="$emit('clear-filters')">
@@ -49,9 +60,21 @@
   </div>
 </template>
 
+<i18n lang="json">
+{
+  "en": {
+    "downloadXlSX": "Download XLSX file"
+  },
+  "pl": {
+    "downloadXlSX": "Pobierz plik XLSX"
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 import Draggable from 'vuedraggable'
+import { XlsxWorkbook, XlsxDownload, XlsxSheet } from 'vue-xlsx'
 import { HeseyaPaginatedResponseMeta } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
@@ -65,6 +88,7 @@ import CmsTableRow from './cms/CmsTableRow.vue'
 import Loading from './layout/Loading.vue'
 
 import { TableConfig } from '@/interfaces/CmsTable'
+import { FileConfig } from '@/interfaces/FileConfig'
 import { GeneratedStoreModulesKeys } from '@/store'
 import { BaseItem } from '@/store/generator'
 
@@ -83,6 +107,9 @@ export default Vue.extend({
     Loading,
     CmsTable,
     CmsTableRow,
+    XlsxWorkbook,
+    XlsxSheet,
+    XlsxDownload,
   },
   props: {
     title: {
@@ -117,6 +144,10 @@ export default Vue.extend({
       type: Object,
       default: () => ({}),
     } as Vue.PropOptions<Record<string, any>>,
+    file: {
+      type: Object,
+      default: null,
+    } as Vue.PropOptions<FileConfig>,
   },
   data: () => ({
     page: 1,
@@ -147,6 +178,16 @@ export default Vue.extend({
     contentComponent(): string {
       if (this.table) return 'CmsTable'
       return this.draggable ? 'Draggable' : 'div'
+    },
+    fileContent(): any {
+      return this.items.map((item) => {
+        return this.file.headers.reduce((acc, { key, label, format }) => {
+          return {
+            ...acc,
+            [label]: format ? format(item[key]) : item[key],
+          }
+        }, {})
+      })
     },
   },
   watch: {

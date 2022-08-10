@@ -4,18 +4,10 @@
       <template #title>
         <slot name="title">{{ title }}</slot>
       </template>
+
+      <XlsxContent v-if="file && fileContent.length" :file="file" :file-content="fileContent" />
+
       <slot name="nav"></slot>
-      <xlsx-workbook v-if="file && fileContent.length">
-        <xlsx-sheet :sheet-name="file.name" :collection="fileContent" />
-        <xlsx-download>
-          <icon-button>
-            <template #icon>
-              <i class="bx bxs-download"></i>
-            </template>
-            {{ $t('downloadXlSX') }}
-          </icon-button>
-        </xlsx-download>
-      </xlsx-workbook>
     </AppTopNav>
 
     <AppCmsFilters v-if="$slots.filters" :filters="filters" @clear-filters="$emit('clear-filters')">
@@ -60,21 +52,9 @@
   </div>
 </template>
 
-<i18n lang="json">
-{
-  "en": {
-    "downloadXlSX": "Download XLSX file"
-  },
-  "pl": {
-    "downloadXlSX": "Pobierz plik XLSX"
-  }
-}
-</i18n>
-
 <script lang="ts">
 import Vue from 'vue'
 import Draggable from 'vuedraggable'
-import { XlsxWorkbook, XlsxDownload, XlsxSheet } from 'vue-xlsx'
 import { HeseyaPaginatedResponseMeta } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
@@ -86,6 +66,7 @@ import CmsFilters from '@/components/cms/CmsFilters.vue'
 import CmsTable from './cms/CmsTable.vue'
 import CmsTableRow from './cms/CmsTableRow.vue'
 import Loading from './layout/Loading.vue'
+import XlsxContent from '@/components/XlsxContent.vue'
 
 import { TableConfig } from '@/interfaces/CmsTable'
 import { FileConfig } from '@/interfaces/FileConfig'
@@ -107,9 +88,7 @@ export default Vue.extend({
     Loading,
     CmsTable,
     CmsTableRow,
-    XlsxWorkbook,
-    XlsxSheet,
-    XlsxDownload,
+    XlsxContent,
   },
   props: {
     title: {

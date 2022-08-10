@@ -179,7 +179,7 @@ export default Vue.extend({
       if (this.table) return 'CmsTable'
       return this.draggable ? 'Draggable' : 'div'
     },
-    fileContent(): any {
+    fileContent(): Record<string, any>[] {
       return this.items.map((item) => {
         return this.file.headers.reduce((acc, { key, label, format }) => {
           return {

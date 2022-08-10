@@ -5,6 +5,7 @@
       :filters="filters"
       store-key="products"
       :table="listView ? tableConfig : undefined"
+      :file="fileConfig"
       @search="makeSearch"
       @clear-filters="clearFilters"
     >
@@ -73,7 +74,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { cloneDeep } from 'lodash'
-import { Product } from '@heseya/store-core'
+import { Product, Tag } from '@heseya/store-core'
 
 import ProductTile from '@/components/modules/products/ProductTile.vue'
 import ProductListItem from '@/components/modules/products/ProductListItem.vue'
@@ -86,6 +87,7 @@ import PaginatedList from '@/components/PaginatedList.vue'
 import { formatFilters } from '@/utils/utils'
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 import { TableConfig } from '@/interfaces/CmsTable'
+import { FileConfig } from '@/interfaces/FileConfig'
 
 const LOCAL_STORAGE_KEY = 'products-list-view'
 
@@ -116,6 +118,25 @@ export default Vue.extend({
             label: this.$t('form.public') as string,
             width: '0.5fr',
             sortable: true,
+          },
+        ],
+      }
+    },
+    fileConfig(): FileConfig<Product> {
+      return {
+        name: this.$t('title') as string,
+        headers: [
+          { key: 'name', label: this.$t('common.form.name') as string },
+          { key: 'price', label: this.$t('form.price') as string },
+          {
+            key: 'tags',
+            label: this.$t('form.tags') as string,
+            format: (v: Tag[]) => v.map((tag) => tag.name).join(', '),
+          },
+          {
+            key: 'public',
+            label: this.$t('form.public') as string,
+            format: (v: boolean) => (v ? this.$t('common.yes') : this.$t('common.no')) as string,
           },
         ],
       }

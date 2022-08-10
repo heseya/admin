@@ -5,7 +5,11 @@
         <slot name="title">{{ title }}</slot>
       </template>
 
-      <XlsxContent v-if="file && fileContent.length" :file="file" :file-content="fileContent" />
+      <XlsxContent
+        v-if="file && fileContent.length"
+        :file-name="file.name"
+        :file-content="fileContent"
+      />
 
       <slot name="nav"></slot>
     </AppTopNav>

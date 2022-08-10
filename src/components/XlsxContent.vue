@@ -1,7 +1,7 @@
 <template>
   <xlsx-workbook>
-    <xlsx-sheet :sheet-name="file.name" :collection="fileContent" />
-    <xlsx-download :filename="`${file.name}.xlsx`">
+    <xlsx-sheet :sheet-name="fileName" :collection="fileContent" />
+    <xlsx-download :filename="`${fileName}.xlsx`">
       <icon-button>
         <template #icon>
           <i class="bx bxs-download"></i>
@@ -26,7 +26,6 @@
 <script lang="ts">
 import Vue from 'vue'
 import { XlsxWorkbook, XlsxDownload, XlsxSheet } from 'vue-xlsx'
-import { FileConfig } from '@/interfaces/FileConfig'
 
 export default Vue.extend({
   components: {
@@ -35,10 +34,10 @@ export default Vue.extend({
     XlsxDownload,
   },
   props: {
-    file: {
-      type: Object,
-      default: null,
-    } as Vue.PropOptions<FileConfig>,
+    fileName: {
+      type: String,
+      default: '',
+    },
     fileContent: {
       type: Array,
       default: null,

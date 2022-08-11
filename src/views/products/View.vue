@@ -22,7 +22,6 @@
 
     <div class="product">
       <gallery ref="gallery" v-model="form.gallery" :disabled="!canModify" />
-      {{ $t('sss') }}
       <div>
         <card>
           <switch-input

@@ -106,7 +106,10 @@ export default Vue.extend({
   data: () => ({
     filters: { ...EMPTY_ITEMS_FILTERS } as ItemsFilersType,
     isModalActive: false,
-    editedItem: { ...EMPTY_FORM } as WarehouseItemCreateDto & Partial<WarehouseItem>,
+    editedItem: { ...EMPTY_FORM } as Omit<
+      WarehouseItemCreateDto & Partial<WarehouseItem>,
+      'metadata' | 'metadata_private'
+    >,
     selectedItemId: null as null | UUID,
   }),
   computed: {

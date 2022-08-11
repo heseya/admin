@@ -100,17 +100,16 @@ export default Vue.extend({
     ItemModal,
   },
   beforeRouteLeave(to, from, next) {
-    if (this.isModalActive) {
-      this.isModalActive = false
-      next(false)
-    } else {
-      next()
-    }
+    if (this.isModalActive) this.isModalActive = false
+    next()
   },
   data: () => ({
     filters: { ...EMPTY_ITEMS_FILTERS } as ItemsFilersType,
     isModalActive: false,
-    editedItem: { ...EMPTY_FORM } as WarehouseItemCreateDto & Partial<WarehouseItem>,
+    editedItem: { ...EMPTY_FORM } as Omit<
+      WarehouseItemCreateDto & Partial<WarehouseItem>,
+      'metadata' | 'metadata_private'
+    >,
     selectedItemId: null as null | UUID,
   }),
   computed: {
@@ -122,10 +121,7 @@ export default Vue.extend({
       return this.$can(this.editedItem.id ? this.$p.Items.Edit : this.$p.Items.Add)
     },
     selectedItem(): null | WarehouseItem {
-      return this.selectedItemId
-        ? this.$accessor.items.getSelected ||
-            this.$accessor.items.getFromListById(this.selectedItemId)
-        : null
+      return this.selectedItemId ? this.$accessor.items.getFromListById(this.selectedItemId) : null
     },
     tableConfig(): TableConfig<WarehouseItem> {
       return {

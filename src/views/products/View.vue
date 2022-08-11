@@ -22,7 +22,6 @@
 
     <div class="product">
       <gallery ref="gallery" v-model="form.gallery" :disabled="!canModify" />
-
       <div>
         <card>
           <switch-input

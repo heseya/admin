@@ -62,7 +62,7 @@
 
       <div class="product__details">
         <card>
-          <validation-observer ref="observer" v-slot="{ handleSubmit }">
+          <validation-observer v-slot="{ handleSubmit }">
             <form class="product__info" @submit.prevent="handleSubmit(saveProduct)">
               <div>
                 <validated-input
@@ -259,7 +259,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import mixins from 'vue-typed-mixins'
 import { ValidationObserver } from 'vee-validate'
 import cloneDeep from 'lodash/cloneDeep'
 import { Product, ProductCreateDto } from '@heseya/store-core'
@@ -311,7 +311,7 @@ const EMPTY_FORM: ProductComponentForm = {
   items: [],
 }
 
-export default Vue.extend({
+export default mixins(preventLeavingPage).extend({
   metaInfo(this: any): any {
     const fallback = this.$t('newProductTitle') as string
     return {
@@ -337,7 +337,6 @@ export default Vue.extend({
     GoogleCategorySelect,
     ProductSetSelect,
   },
-  mixins: [preventLeavingPage],
   data: () => ({
     form: cloneDeep(EMPTY_FORM),
   }),
@@ -394,6 +393,10 @@ export default Vue.extend({
       if (this.isNew) return
       this.$accessor.startLoading()
       await this.$accessor.products.get(this.$route.params.id)
+
+      // isFormPrefilled should be set to true after form was prefilled
+      this.isFormPrefilled = true
+
       this.$accessor.stopLoading()
     },
     editSlug() {
@@ -450,11 +453,9 @@ export default Vue.extend({
 
       if (item) {
         this.$toast.success(successMessage)
-        // Form validation needs to be reset to  update 'dirty' property
-        requestAnimationFrame(() => {
-          // @ts-ignore
-          this.$refs.observer.reset()
-        })
+
+        // After form submitting isDirty should be reset
+        this.isDirty = false
 
         if (item.id !== this.product.id) {
           this.$router.push(`/products/${item.id}`)

@@ -2,12 +2,13 @@ import Vue from 'vue'
 import i18n from '@/i18n'
 
 /**
- * 1. isFormPrefilled should be set to true after form was prefilled
- * 2. The 'form' is deeply watched
- * 3. After form submitting isDirty should be reset
+ * 1. Component must have 'form' in data object
+ * 2. isFormPrefilled should be set to true after form was prefilled
+ * 3. The 'form' is deeply watched
+ * 4. After form submitting isDirty should be reset
  *  */
 export default Vue.extend({
-  beforeRouteLeave(to: any, from: any, next: any) {
+  beforeRouteLeave(to, from, next) {
     if (this.confirmStayInDirtyForm()) {
       next(false)
     } else {

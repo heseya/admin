@@ -72,9 +72,9 @@
     "requiredQuantity": "Required quantity"
   },
   "pl": {
-    "title": "Przedmioty magazynowe",
+    "title": "Pozycje na magazynie",
     "titleTooltip": "Lista przedmiotów magazynowych dostępnych w danym produkcie, jeśli produkt zostanie zakupiony, to z magazynu zostanie zdjęte tyle przedmiotów, ile podane jest poniżej. Produkt nie będzie dostępny, gdy nie będzie już wystarczająco przedmiotów w magazynie.",
-    "addItem": "Dodaj przedmiot magazynowy",
+    "addItem": "Dodaj pozycję z magazynu",
     "noItemsInProduct": "Ten produkt nie posiada jeszcze przedmiotów magazynowych",
     "chooseExisting": "Wybierz istniejący przedmiot magazynowy",
     "typeName": "przedmiot magazynowy",
@@ -141,7 +141,7 @@ export default Vue.extend({
   }
 
   &__title {
-    font-size: 1.3em;
+    font-size: 1.1em;
     font-weight: 600;
   }
 

@@ -90,8 +90,8 @@
 <i18n lang="json">
 {
   "pl": {
-    "title": "Schematy",
-    "addSchema": "Dodaj schemat do produktu",
+    "title": "Schematy produktu",
+    "addSchema": "Dodaj schemat",
     "noSchemaInProduct": "Ten produkt nie ma jeszcze żadnego schematu",
     "autoDependecy": "Schemat jest automatyczny - nie możesz go usunąć",
     "optional": "opcjonalny",
@@ -101,8 +101,8 @@
     "createNew": "utwórz nowy"
   },
   "en": {
-    "title": "Schemas",
-    "addSchema": "Add schema to product",
+    "title": "Product schemas",
+    "addSchema": "Add schema",
     "noSchemaInProduct": "This product has no schemas yet",
     "autoDependecy": "Schema is automatic - you can't delete it",
     "optional": "optional",
@@ -206,7 +206,7 @@ export default Vue.extend({
   }
 
   &__title {
-    font-size: 1.3em;
+    font-size: 1.1em;
     font-weight: 600;
   }
 

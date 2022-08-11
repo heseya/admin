@@ -5,30 +5,39 @@
     @click.stop="toggleChildrenVisibility"
   >
     <div class="product-set__content">
-      <i class="bx bx-move-vertical handle"></i>
-
-      <icon-button type="transparent" size="small" :disabled="!childrenQuantity">
+      <icon-button
+        :type="areChildrenVisible ? 'burgund' : 'primary'"
+        size="small"
+        :disabled="!childrenQuantity"
+      >
         <template #icon>
-          <i v-if="areChildrenVisible" class="bx bx-minus"></i>
-          <i v-else class="bx bx-plus"></i>
+          <i v-if="areChildrenVisible" class="bx bx-chevron-down product-set__down"></i>
+          <i v-else class="bx bx-chevron-right"></i>
         </template>
       </icon-button>
 
       <loading :active="isLoading" />
 
       <span class="product-set__name">
-        <i v-if="!set.public" class="product-set__hidden-icon bx bx-low-vision"></i>
-        {{ set.name }} <small>(/{{ set.slug }})</small>
+        {{ set.name }} <small>/{{ set.slug }}</small>
       </span>
 
       <div class="product-set__actions">
+        <span v-if="set.public" class="product-set__public product-set__public--visible">
+          <i class="bx bx-show-alt"></i>
+          <span class="product-set__public_text">{{ $t('visible') }}</span></span
+        >
+        <span v-else class="product-set__public"
+          ><i class="bx bx-low-vision"></i
+          ><span class="product-set__public_text">{{ $t('hidden') }}</span></span
+        >
         <a-dropdown
           v-can.any="[$p.ProductSets.ShowDetails, $p.ProductSets.Add]"
           :trigger="['click']"
         >
           <icon-button type="transparent" size="small" @click.stop>
             <template #icon>
-              <i class="bx bx-menu"></i>
+              <i class="bx bx-dots-vertical-rounded"></i>
             </template>
           </icon-button>
 
@@ -64,17 +73,6 @@
     </div>
 
     <div v-show="areChildrenVisible" class="product-set__children">
-      <div class="product-set__search" @click.stop>
-        <app-input
-          v-if="searchable"
-          v-model="searchPhrase"
-          type="search"
-          :placeholder="$t('search.placeholder')"
-          allow-clear
-          @input="searchForChildren"
-        ></app-input>
-      </div>
-
       <div
         v-show="searchPhrase.length > 2"
         class="search-results"
@@ -189,7 +187,9 @@
     "collection": "Kolekcja",
     "deleteText": "Czy na pewno chcesz usunąć tę kolekcję? Wraz z nią usuniesz wszystkie jej subkolekcje!",
     "deleteSuccess": "Kolekcja została usunięta",
-    "fetchMore": "Wczytaj więcej"
+    "fetchMore": "Wczytaj więcej",
+    "visible": "Widoczna",
+    "hidden": "Ukryta"
   },
   "en": {
     "menu": {
@@ -482,9 +482,33 @@ export default Vue.extend({
 
   &__name {
     font-weight: 600;
+    padding-left: 0.8em;
 
     small {
       font-weight: 400;
+    }
+  }
+
+  &__public {
+    border-radius: 25px;
+    padding: 0.2em 1em;
+    color: #979ea0;
+    display: flex;
+    font-size: 11px;
+    align-items: center;
+    gap: 5px;
+    margin: auto 0;
+
+    &--visible {
+      background: #e6fbe6 0% 0% no-repeat padding-box;
+      color: #10d310;
+    }
+  }
+
+  &__public_text {
+    display: none;
+    @media (min-width: 768px) {
+      display: inline;
     }
   }
 
@@ -503,7 +527,7 @@ export default Vue.extend({
   }
 
   &__children {
-    padding-left: 12px;
+    padding-left: 24px;
   }
   &__fetch {
     display: flex;

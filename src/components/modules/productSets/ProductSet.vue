@@ -43,14 +43,18 @@
 
           <template #overlay>
             <a-menu>
-              <a-menu-item v-can="$p.ProductSets.Add" @click="createProductSet">
-                <i class="bx bx-plus"></i> &nbsp; {{ $t('menu.addSubset') }}
+              <a-menu-item v-can="$p.ProductSets.Add">
+                <router-link to="/collections/create">
+                  <i class="bx bx-plus"></i> &nbsp; {{ $t('menu.addSubset') }}
+                </router-link>
               </a-menu-item>
               <a-menu-item v-can="$p.ProductSets.ShowDetails" @click="showSetProducts">
                 <i class="bx bx-customize"></i> &nbsp; {{ $t('menu.showProducts') }}
               </a-menu-item>
-              <a-menu-item v-can="$p.ProductSets.ShowDetails" @click="editProductSet">
-                <i class="bx bx-edit"></i> &nbsp; {{ $t('menu.edit') }}
+              <a-menu-item v-can="$p.ProductSets.ShowDetails">
+                <router-link :to="`/collections/${set.id}`">
+                  <i class="bx bx-edit"></i> &nbsp; {{ $t('menu.edit') }}
+                </router-link>
               </a-menu-item>
               <a-menu-item v-can="$p.ProductSets.Edit" @click="changeParent">
                 <i class="bx bx-move-vertical"></i> &nbsp; {{ $t('menu.editParent') }}
@@ -143,18 +147,6 @@
       </div>
     </div>
 
-    <ProductSetForm
-      v-if="isFormModalActive"
-      :value="editedItem"
-      :slug-prefix="editedItemSlugPrefix"
-      :is-open="isFormModalActive"
-      :disabled="!$can(editedItem.id ? $p.ProductSets.Edit : $p.ProductSets.Add)"
-      :deletable="$can($p.ProductSets.Remove)"
-      @create-success="createSuccess"
-      @edit-success="editSuccess"
-      @delete-success="deleteSuccess"
-      @close="isFormModalActive = false"
-    />
     <SetProductsList :set="selectedSet" :is-open="!!selectedSet" @close="selectedSet = null" />
     <ChangeParentForm
       v-if="!!selectedChildren"
@@ -224,7 +216,7 @@ import { api } from '@/api'
 
 import Loading from '@/components/layout/Loading.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import ProductSetForm, { CLEAR_PRODUCT_SET_FORM } from '@/components/modules/productSets/Form.vue'
+import { CLEAR_PRODUCT_SET_FORM } from '@/components/modules/productSets/Form.vue'
 import SetProductsList from '@/components/modules/productSets/SetProductsList.vue'
 import ChangeParentForm from '@/components/modules/productSets/ParentForm.vue'
 
@@ -233,7 +225,7 @@ import { formatApiNotificationError } from '@/utils/errors'
 
 export default Vue.extend({
   name: 'ProductSet',
-  components: { Draggable, PopConfirm, ProductSetForm, SetProductsList, ChangeParentForm, Loading },
+  components: { Draggable, PopConfirm, SetProductsList, ChangeParentForm, Loading },
   props: {
     set: {
       type: Object,

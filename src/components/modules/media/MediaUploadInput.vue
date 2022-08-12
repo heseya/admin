@@ -28,10 +28,16 @@
         />
       </template>
       <template v-else>
-        <span class="media-upload-input__title">{{ $t('dropOrChooseImage') }}</span>
-        <AppButton type="primary" @click.prevent>
-          <i class="bx bx-upload"></i> {{ $t('chooseImage') }}
-        </AppButton>
+        <button class="media-upload-input__btn" @click.prevent>
+          <img
+            src="@/assets/images/icons/file-add.svg"
+            :alt="$t('fileAdd')"
+            class="media-upload-input__file-add"
+          />
+        </button>
+        <span class="media-upload-input__title"
+          >{{ $t('dropOrChooseImage') }} <b>{{ fileName }}</b></span
+        >
       </template>
     </media-uploader>
   </div>
@@ -41,13 +47,17 @@
 {
   "pl": {
     "removeOrChangeImage": "Usuń lub zmień zdjęcie",
-    "dropOrChooseImage": "Upuść lub wybierz zdjęcie",
-    "chooseImage": "Wybierz zdjęcie"
+    "dropOrChooseImage": "Przeciągnij lub kliknij aby dodać",
+    "chooseImage": "Wybierz zdjęcie",
+    "image": "zdjęcie",
+    "fileAdd": "Dodaj zdjęcie"
   },
   "en": {
     "removeOrChangeImage": "Remove or change image",
-    "dropOrChooseImage": "Drop or choose image",
-    "chooseImage": "Choose image"
+    "dropOrChooseImage": "Drop or choose image to add",
+    "chooseImage": "Choose image",
+    "image": "image",
+    "fileAdd": "Add file"
   }
 }
 </i18n>
@@ -74,6 +84,12 @@ export default Vue.extend({
       type: String,
       default: '',
     },
+    fileName: {
+      type: String,
+      default: function () {
+        return this.$t('image')
+      },
+    },
   },
   methods: {
     updateMedia(media: CdnMedia) {
@@ -86,6 +102,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .media-upload-input-wrapper {
   position: relative;
+  height: 100%;
 
   &__label {
     margin-bottom: 3px;
@@ -101,6 +118,9 @@ export default Vue.extend({
   padding: 16px;
   border: 1px dashed #ddd;
   position: relative;
+  background-color: #f7f7f8;
+  border-radius: 4px;
+  height: 100%;
 
   img {
     display: block;
@@ -115,8 +135,10 @@ export default Vue.extend({
 
   &__title {
     display: block;
-    font-weight: 600;
-    margin-bottom: 12px;
+    margin: 12px 0;
+    color: #979ea0;
+    font-size: 11px;
+    text-align: center;
   }
 
   &__delete,
@@ -137,6 +159,22 @@ export default Vue.extend({
     left: 50%;
     bottom: 32px;
     transform: translateX(-50%);
+  }
+
+  &__btn {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    border: none;
+    background-color: #fff;
+    cursor: pointer;
+  }
+
+  &__file-add {
+    min-height: auto !important;
+    height: 17px;
+    width: 22px;
+    margin: auto;
   }
 
   &:hover &__delete,

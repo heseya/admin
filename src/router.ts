@@ -264,6 +264,7 @@ const router = new VueRouter({
       name: 'ProductSets View',
       component: () => import('./views/productSets/View.vue'),
       meta: {
+        returnUrl: '/collections',
         requiresAuth: true,
         permissions: [Permissions.ProductSets.Add, Permissions.ProductSets.Edit],
       },

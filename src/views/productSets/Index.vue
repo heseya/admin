@@ -1,13 +1,24 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList :title="$t('title')" store-key="productSets" draggable>
+    <PaginatedList
+      :title="$t('title')"
+      store-key="productSets"
+      :filters="filters"
+      draggable
+      @search="makeSearch"
+      @clear-filters="clearFilters"
+    >
       <template #nav>
-        <icon-button v-can="$p.ProductSets.Add" @click="createProductSet()">
+        <icon-button v-can="$p.ProductSets.Add" to="/collections/create">
           <template #icon>
             <i class="bx bx-plus"></i>
           </template>
           {{ $t('add') }}
         </icon-button>
+      </template>
+
+      <template #filters>
+        <sets-filter :filters="filters" @search="makeSearch" />
       </template>
 
       <template #default="{ item: set }">
@@ -56,8 +67,13 @@ import PaginatedList from '@/components/PaginatedList.vue'
 import ProductSetForm, { CLEAR_PRODUCT_SET_FORM } from '@/components/modules/productSets/Form.vue'
 import ProductSetComponent from '@/components/modules/productSets/ProductSet.vue'
 import SetProductsList from '@/components/modules/productSets/SetProductsList.vue'
+import ProductSetsFilter, {
+  EMPTY_PRODUCT_SET_FILTERS,
+  ProductSetFilters,
+} from '@/components/modules/productSets/ProductSetsFilter.vue'
 
 import { UUID } from '@/interfaces/UUID'
+import { formatFilters } from '@/utils/utils'
 
 export default Vue.extend({
   metaInfo(this: any) {
@@ -68,6 +84,7 @@ export default Vue.extend({
     ProductSetForm,
     ProductSet: ProductSetComponent,
     SetProductsList,
+    SetsFilter: ProductSetsFilter,
   },
   beforeRouteLeave(to, from, next) {
     if (this.isFormModalActive) {
@@ -85,6 +102,7 @@ export default Vue.extend({
       cover: CdnMedia | null
     },
     editedItemSlugPrefix: '',
+    filters: { ...EMPTY_PRODUCT_SET_FILTERS },
   }),
   mounted() {
     if (this.$route.query.open) {
@@ -114,6 +132,19 @@ export default Vue.extend({
       this.editedItemSlugPrefix = parent?.slug || ''
       this.$nextTick(() => {
         this.isFormModalActive = true
+      })
+    },
+    clearFilters() {
+      this.makeSearch(cloneDeep(EMPTY_PRODUCT_SET_FILTERS))
+    },
+    makeSearch(filters: ProductSetFilters) {
+      this.filters = filters
+
+      const queryFilters = formatFilters(filters)
+
+      this.$router.push({
+        path: 'collections',
+        query: { page: undefined, ...queryFilters },
       })
     },
     showSetProducts(set: ProductSet) {

@@ -10,30 +10,17 @@
       @input="debouncedSearch"
     />
 
-    <app-select
-      v-model="local.visibility"
-      :label="$t('visibility')"
-      add-all
-      option-filter-prop="label"
-      @change="debouncedSearch"
-    >
-      <a-select-option :key="0" :label="$t('common.no')">
-        {{ $t('common.no') }}
-      </a-select-option>
-      <a-select-option :key="1" :label="$t('common.yes')">
-        {{ $t('common.yes') }}
-      </a-select-option>
-    </app-select>
+    <boolean-select v-model="local.public" :label="$t('public')" @change="debouncedSearch" />
   </div>
 </template>
 
 <i18n lang="json">
 {
   "pl": {
-    "visibility": "Widoczność"
+    "public": "Widoczność"
   },
   "en": {
-    "visibility": "Visibility"
+    "public": "Visibility"
   }
 }
 </i18n>
@@ -43,24 +30,34 @@ import Vue from 'vue'
 import { debounce } from 'lodash'
 import cloneDeep from 'lodash/cloneDeep'
 
+import BooleanSelect from '@/components/form/BooleanSelect.vue'
+
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 
-export const EMPTY_PRODUCT_SET_FILTERS = {
-  search: '',
-  visibility: ALL_FILTER_VALUE,
+export interface ProductSetFilters extends Record<string, string | string[] | undefined> {
+  search: string
+  public: string
+  root?: string
 }
 
-type ProductSetFilters = typeof EMPTY_PRODUCT_SET_FILTERS
+export const EMPTY_PRODUCT_SET_FILTERS: ProductSetFilters = {
+  search: '',
+  public: ALL_FILTER_VALUE,
+  root: '',
+}
 
 export default Vue.extend({
+  components: { BooleanSelect },
   props: {
     filters: {
       type: Object,
       default: () => ({ ...EMPTY_PRODUCT_SET_FILTERS }),
     } as Vue.PropOptions<ProductSetFilters>,
   },
+
   data: () => ({
     local: { ...cloneDeep(EMPTY_PRODUCT_SET_FILTERS) },
+    searchingError: false,
   }),
   watch: {
     filters(filters: ProductSetFilters) {
@@ -72,9 +69,11 @@ export default Vue.extend({
   },
   methods: {
     makeSearch() {
+      const root = this.local.search ? false : ''
       this.$emit('search', {
         ...this.filters,
         ...this.local,
+        root,
       })
     },
 

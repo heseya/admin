@@ -259,6 +259,15 @@ const router = new VueRouter({
         permissions: [Permissions.ProductSets.Show],
       },
     },
+    {
+      path: '/collections/:id',
+      name: 'ProductSets View',
+      component: () => import('./views/productSets/View.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.ProductSets.Add, Permissions.ProductSets.Edit],
+      },
+    },
 
     {
       path: '/settings/attributes',

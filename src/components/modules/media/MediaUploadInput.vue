@@ -121,6 +121,7 @@ export default Vue.extend({
   background-color: #f7f7f8;
   border-radius: 4px;
   height: 100%;
+  transition: 0.3s;
 
   img {
     display: block;
@@ -168,6 +169,7 @@ export default Vue.extend({
     border: none;
     background-color: #fff;
     cursor: pointer;
+    transition: 0.3s;
   }
 
   &__file-add {
@@ -175,12 +177,25 @@ export default Vue.extend({
     height: 17px;
     width: 22px;
     margin: auto;
+    transition: 0.3s;
+  }
+
+  &:hover {
+    background-color: #fff;
   }
 
   &:hover &__delete,
   &:hover &__edit-img {
     opacity: 1;
     visibility: visible;
+  }
+
+  &:hover &__file-add {
+    transform: scale(1.1);
+  }
+
+  &:hover &__btn {
+    background-color: #f7f7f8;
   }
 }
 

@@ -23,14 +23,16 @@
       </span>
 
       <div class="product-set__actions">
-        <span v-if="set.public" class="product-set__public product-set__public--visible">
-          <i class="bx bx-show-alt"></i>
-          <span class="product-set__public_text">{{ $t('visible') }}</span></span
-        >
-        <span v-else class="product-set__public"
-          ><i class="bx bx-low-vision"></i
-          ><span class="product-set__public_text">{{ $t('hidden') }}</span></span
-        >
+        <div class="product-set__visibility">
+          <span v-if="set.public" class="product-set__public product-set__public--visible">
+            <i class="bx bx-show-alt"></i>
+            <span class="product-set__public_text">{{ $t('visible') }}</span></span
+          >
+          <span v-else class="product-set__public"
+            ><i class="bx bx-low-vision"></i
+            ><span class="product-set__public_text">{{ $t('hidden') }}</span></span
+          >
+        </div>
         <a-dropdown
           v-can.any="[$p.ProductSets.ShowDetails, $p.ProductSets.Add]"
           :trigger="['click']"
@@ -44,7 +46,7 @@
           <template #overlay>
             <a-menu>
               <a-menu-item v-can="$p.ProductSets.Add">
-                <router-link to="/collections/create">
+                <router-link :to="`/collections/create?parentName=${set.name}`">
                   <i class="bx bx-plus"></i> &nbsp; {{ $t('menu.addSubset') }}
                 </router-link>
               </a-menu-item>
@@ -202,7 +204,9 @@
     "collection": "Collection",
     "deleteText": "Are you sure you want to delete this collection? All subcollections will be deleted as well!",
     "deleteSuccess": "Collection has been deleted",
-    "fetchMore": "Fetch more"
+    "fetchMore": "Fetch more",
+    "visible": "Visible",
+    "hidden": "Hidden"
   }
 }
 </i18n>
@@ -481,6 +485,16 @@ export default Vue.extend({
     }
   }
 
+  &__visibility {
+    display: flex;
+    align-items: center;
+    margin: auto 0;
+
+    @media ($viewport-7) {
+      width: 90px;
+    }
+  }
+
   &__public {
     border-radius: 25px;
     padding: 0.2em 1em;
@@ -499,7 +513,7 @@ export default Vue.extend({
 
   &__public_text {
     display: none;
-    @media (min-width: 768px) {
+    @media ($viewport-7) {
       display: inline;
     }
   }

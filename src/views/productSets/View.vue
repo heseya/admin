@@ -21,7 +21,7 @@
     <div class="coupon-view__form">
       <validation-observer v-slot="{ handleSubmit }">
         <card>
-          <div class="collection-view__header">
+          <div class="collection-view__section">
             <div class="collection-view__drag-area">
               <media-upload-input
                 :disabled="disabled"
@@ -31,7 +31,7 @@
               />
             </div>
 
-            <div class="collection-view__section">
+            <div class="collection-view__inputs">
               <validated-input
                 v-model="form.name"
                 rules="required"
@@ -216,7 +216,6 @@ export default Vue.extend({
     form: cloneDeep(CLEAR_PRODUCT_SET_FORM) as CombinedSetDto,
     isEditorActive: true,
     disabled: false,
-    slugPrefix: '',
   }),
   computed: {
     id(): UUID {
@@ -236,6 +235,12 @@ export default Vue.extend({
     },
     canModify(): boolean {
       return this.$can(this.isNew ? this.$p.ProductSets.Add : this.$p.ProductSets.Edit)
+    },
+    slugPrefix(): string {
+      if (this.$route.query.parentName) {
+        return (this.$route.query.parentName as string).toLowerCase()
+      }
+      return ''
     },
   },
   watch: {
@@ -316,12 +321,12 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .collection-view {
-  &__header {
+  &__section {
     display: flex;
     flex-direction: column;
     width: 100%;
 
-    @media (min-width: 568px) {
+    @media ($viewport-7) {
       flex-direction: row;
     }
   }
@@ -331,28 +336,35 @@ export default Vue.extend({
     height: 200px;
     margin: 0.5em 0;
 
-    @media (min-width: 768px) {
+    @media ($viewport-7) {
       width: 200px;
     }
   }
 
-  &__section {
-    padding: 0 1.5em;
+  &__inputs {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    padding: 0.5em 0;
 
-    @media (min-width: 768px) {
+    @media ($viewport-7) {
       width: calc(100% - 200px);
+      padding: 0.5em 1.5em;
     }
   }
 
   &__switches {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
+    align-items: center;
     margin-top: 12px;
     padding: 0 10px;
     gap: 8px;
+
+    @media ($viewport-7) {
+      flex-direction: row;
+    }
   }
 }
 

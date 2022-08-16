@@ -1,7 +1,7 @@
 <template>
   <media-uploader
     v-if="!disabled"
-    class="gallery-upload-btn undragabble"
+    class="gallery-upload-btn"
     :class="{
       'gallery-upload-btn--drag': isDrag,
       'gallery-upload-btn--big': big,
@@ -14,7 +14,7 @@
     @upload="onImageUpload"
     @error="onUploadError"
   >
-    <img src="@/assets/images/icons/plus-icon.svg" />
+    <img class="gallery-upload-btn__img" src="@/assets/images/icons/plus-icon.svg" />
   </media-uploader>
 </template>
 
@@ -61,10 +61,10 @@ export default Vue.extend({
 .gallery-upload-btn {
   position: relative;
   width: 100%;
-  padding-top: 100%;
-  background-color: #ffffff;
-  box-shadow: $shadow;
-  border-radius: 7px;
+  padding-top: 50%;
+  background-color: #f7f7f8;
+  border: 1px dashed #d9dbe0;
+  border-radius: 4px;
 
   &::before {
     $size: 48px;
@@ -90,19 +90,24 @@ export default Vue.extend({
     margin-top: 0;
   }
 
-  img {
+  &__img {
+    display: block;
+    padding: 24px;
+    background-color: #fff;
+    border-radius: 50%;
     position: absolute;
-    top: 40%;
-    left: 40%;
-    height: 20%;
-    width: 20%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 68px;
+    width: 68px;
     transition: 0.3s;
   }
 
   &:hover,
   &--drag {
     img {
-      transform: scale(1.5);
+      transform: translate(-50%, -50%) scale(1.2);
     }
   }
 

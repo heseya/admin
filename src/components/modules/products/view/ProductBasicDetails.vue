@@ -68,19 +68,19 @@
 {
   "pl": {
     "form": {
-      "price": "Cena",
+      "price": "Cena brutto",
       "vatRate": "Stawka VAT (%)",
       "quantityStep": "Format ilości",
-      "quantityStepTooltip": "TODO",
+      "quantityStepTooltip": "Oznacza jaki jest najmniejszy możliwy krok zmiany ilości produktu. Domyślnie jest to 1, ale dla niektórych produktów konieczna może okazać się możliwość zamawiania w krokach mniejszych lub większych krokach (Np. sprzedając sznurek na metry, możemy chcieć sprzedawać co 10 cm))",
       "shortDescription": "Krótki opis"
     }
   },
   "en": {
     "form": {
-      "price": "Price",
+      "price": "Price (gross)",
       "vatRate": "VAT rate (%)",
       "quantityStep": "Quantity format",
-      "quantityStepTooltip": "TODO",
+      "quantityStepTooltip": "Indicates the smallest possible step of quantity change. Default is 1, but for some products it may be necessary to change the step in smaller or larger steps (e.g. selling a screw on meters, you can change the step to 10 cm)",
       "shortDescription": "Short description"
     }
   }

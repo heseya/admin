@@ -1,6 +1,9 @@
 <template>
   <div class="product-visibility-switch">
-    <switch-input v-model="form.public" horizontal :disabled="disabled" :label="$t('isPublic')" />
+    <switch-input v-model="form.public" horizontal :disabled="disabled" :label="$t('isPublic')">
+      <template #unCheckedChildren> <i class="bx bxs-low-vision"></i> </template>
+      <template #checkedChildren> <i class="bx bx-show"></i> </template>
+    </switch-input>
     <template v-if="!product.visible && product.public">
       <br />
       <a-alert

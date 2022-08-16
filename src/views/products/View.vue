@@ -30,7 +30,7 @@
     </top-nav>
 
     <validation-observer v-slot="{ handleSubmit }">
-      <form class="product-page" @submit.prevent="handleSubmit(saveProduct)">
+      <form class="product-page" @submit.stop.prevent="handleSubmit(saveProduct)">
         <card class="product-page__main">
           <h2 class="product-page__subtitle">{{ $t('baseFormTitle') }}</h2>
           <product-basic-details
@@ -105,6 +105,8 @@
 
         <card class="product-page__aside">
           <product-visibility-switch v-model="form" :product="product" :disabled="!canModify" />
+
+          <hr />
 
           <h2 class="product-page__subtitle">{{ $t('galleryTitle') }}</h2>
           <gallery ref="gallery" v-model="form.gallery" :disabled="!canModify" />
@@ -288,6 +290,8 @@ export default mixins(preventLeavingPage).extend({
     },
 
     async saveProduct() {
+      console.log('🚀 ~ file: View.vue ~ line 293 ~ saveProduct ~ saveProduct')
+
       this.$accessor.startLoading()
 
       const attributes = await updateProductAttributeOptions(

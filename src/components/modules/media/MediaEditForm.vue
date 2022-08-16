@@ -22,7 +22,7 @@
       </form>
     </template>
 
-    <icon-button v-if="!disabled" type="default">
+    <icon-button v-if="!disabled" type="default" size="small">
       <template #icon>
         <i class="bx bxs-pencil"></i>
       </template>

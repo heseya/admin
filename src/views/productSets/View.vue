@@ -37,6 +37,7 @@
                 rules="required"
                 :label="$t('common.form.name')"
                 :disabled="!canModify"
+                @input="editSlug"
               />
               <div class="collection-slug">
                 <validated-input
@@ -158,7 +159,7 @@
 import Vue from 'vue'
 import { cloneDeep } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
-import { Coupon, ProductSetUpdateDto, CdnMedia, MetadataFields } from '@heseya/store-core'
+import { Coupon, ProductSetUpdateDto, CdnMedia, Metadata } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
@@ -175,8 +176,7 @@ import { UUID } from '@/interfaces/UUID'
 import { formatApiNotificationError } from '@/utils/errors'
 import { generateSlug } from '@/utils/generateSlug'
 
-export const CLEAR_PRODUCT_SET_FORM: ProductSetUpdateDto &
-  MetadataFields & { id?: string; cover: CdnMedia | null } = {
+export const CLEAR_PRODUCT_SET_FORM: ProductSetUpdateDto & { cover: CdnMedia | null } = {
   name: '',
   slug_suffix: '',
   description_html: '',
@@ -189,7 +189,14 @@ export const CLEAR_PRODUCT_SET_FORM: ProductSetUpdateDto &
   children_ids: [],
   seo: {},
   attributes: [],
-  metadata: {},
+}
+
+type CombinedSetDto = ProductSetUpdateDto & {
+  id?: UUID
+  cover: CdnMedia | null
+  metadata?: Metadata
+  // eslint-disable-next-line camelcase
+  metadata_private?: Metadata
 }
 
 export default Vue.extend({
@@ -206,7 +213,7 @@ export default Vue.extend({
     MediaUploadInput,
   },
   data: () => ({
-    form: cloneDeep(CLEAR_PRODUCT_SET_FORM),
+    form: cloneDeep(CLEAR_PRODUCT_SET_FORM) as CombinedSetDto,
     isEditorActive: true,
     disabled: false,
     slugPrefix: '',
@@ -281,9 +288,10 @@ export default Vue.extend({
         this.$emit('edit-success', success)
         this.$toast.success(this.$t('alerts.updated') as string)
       } else {
-        const success = await this.$accessor.productSets.add(this.form)
-        this.$emit('create-success', success)
+        const productSet = await this.$accessor.productSets.add(this.form)
+        this.$emit('create-success', productSet)
         this.$toast.success(this.$t('alerts.created') as string)
+        this.$router.push(`/collections/${productSet.id}`)
       }
       this.$accessor.stopLoading()
       this.$emit('close')
@@ -295,7 +303,7 @@ export default Vue.extend({
       this.$emit('delete-success', this.form.id)
       this.$accessor.stopLoading()
       this.$toast.success(this.$t('alerts.deleted') as string)
-      this.$emit('close')
+      this.$router.push('/collections')
     },
 
     changeMedia(media: CdnMedia | null) {

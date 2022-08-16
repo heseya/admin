@@ -31,16 +31,6 @@
       </template>
     </PaginatedList>
 
-    <ProductSetForm
-      v-if="isFormModalActive"
-      :value="editedItem"
-      :slug-prefix="editedItemSlugPrefix"
-      :is-open="isFormModalActive"
-      :disabled="!$can(editedItem.id ? $p.ProductSets.Edit : $p.ProductSets.Add)"
-      :deletable="$can($p.ProductSets.Remove)"
-      @close="isFormModalActive = false"
-    />
-
     <SetProductsList :set="selectedSet" :is-open="!!selectedSet" @close="selectedSet = null" />
   </div>
 </template>
@@ -64,13 +54,13 @@ import { cloneDeep, isString } from 'lodash'
 import { CdnMedia, ProductSet, ProductSetUpdateDto } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
-import ProductSetForm, { CLEAR_PRODUCT_SET_FORM } from '@/components/modules/productSets/Form.vue'
 import ProductSetComponent from '@/components/modules/productSets/ProductSet.vue'
 import SetProductsList from '@/components/modules/productSets/SetProductsList.vue'
 import ProductSetsFilter, {
   EMPTY_PRODUCT_SET_FILTERS,
   ProductSetFilters,
 } from '@/components/modules/productSets/ProductSetsFilter.vue'
+import { CLEAR_PRODUCT_SET_FORM } from './View.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import { formatFilters } from '@/utils/utils'
@@ -81,7 +71,6 @@ export default Vue.extend({
   },
   components: {
     PaginatedList,
-    ProductSetForm,
     ProductSet: ProductSetComponent,
     SetProductsList,
     SetsFilter: ProductSetsFilter,

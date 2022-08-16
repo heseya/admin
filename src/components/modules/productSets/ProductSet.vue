@@ -6,12 +6,15 @@
   >
     <div class="product-set__content">
       <icon-button
-        :type="areChildrenVisible ? 'burgund' : 'primary'"
+        :type="areChildrenVisible && childrenQuantity ? 'burgund' : 'primary'"
         size="small"
         :disabled="!childrenQuantity"
       >
         <template #icon>
-          <i v-if="areChildrenVisible" class="bx bx-chevron-down product-set__down"></i>
+          <i
+            v-if="areChildrenVisible && childrenQuantity"
+            class="bx bx-chevron-down product-set__down"
+          ></i>
           <i v-else class="bx bx-chevron-right"></i>
         </template>
       </icon-button>
@@ -46,7 +49,7 @@
           <template #overlay>
             <a-menu>
               <a-menu-item v-can="$p.ProductSets.Add">
-                <router-link :to="`/collections/create?parentName=${set.name}`">
+                <router-link :to="`/collections/create?parentName=${set.name}&parentId=${set.id}`">
                   <i class="bx bx-plus"></i> &nbsp; {{ $t('menu.addSubset') }}
                 </router-link>
               </a-menu-item>
@@ -79,57 +82,6 @@
     </div>
 
     <div v-show="areChildrenVisible" class="product-set__children">
-      <div
-        v-show="searchPhrase.length > 2"
-        class="search-results"
-        :class="{
-          'search-results--success': searchedChildren.length,
-          'search-results--error': isSearchError,
-        }"
-      >
-        <loading v-if="isSearching" :active="isSearching" :size="16" />
-        <p v-else-if="searchingError" class="search-results__description">
-          {{ $t('search.error') }}
-        </p>
-        <p v-else-if="searchedChildren.length" class="search-results__description">
-          <span class="search-results__info"
-            >{{
-              $t('search.found', {
-                positions: String(totalSearchedResults),
-                phrase: searchedPhrase,
-              })
-            }}
-          </span>
-          <span v-if="totalSearchedResults >= searchedDisplayLimit" class="search-results__info"
-            ><b>{{
-              $t('search.display', {
-                positions: String(searchedDisplayLimit),
-              })
-            }}</b>
-          </span>
-          <span
-            v-if="totalSearchedResults > searchedDisplayLimit"
-            class="search-results__info search-results__info--last"
-          >
-            {{ $t('search.specify') }}
-          </span>
-        </p>
-        <p v-else-if="isSearchError" class="search-results__description">
-          {{ $t('search.didNotFound', { phrase: searchedPhrase }) }}
-        </p>
-      </div>
-
-      <div v-if="searchedChildren.length">
-        <product-set
-          v-for="child in searchedChildren"
-          :key="child.id"
-          :set="{ ...child, parent: set }"
-          as-searched
-          @update-parent="updateChild"
-          @delete-child="deleteChild"
-        />
-      </div>
-
       <Draggable v-model="children" handle=".handle" @change="onDrop">
         <product-set
           v-for="child in uniqueChildren"
@@ -170,14 +122,6 @@
       "delete": "Usuń kolekcję",
       "showProducts": "Zobacz produkty w kolekcji"
     },
-    "search": {
-      "placeholder": "Wyszukaj (min. 3 znaki)",
-      "found": "Znaleziono {positions} pozycji z frazą '{phrase}'",
-      "didNotFound": "Nie znaleziono pozycji dla '{phrase}'",
-      "error": "Podczas pobierania danych wystąpił błąd",
-      "display": "Wyświetlonych pozycji: {positions}",
-      "specify": "Aby uzyskać dokładniejsze wyniki, sprecyzuj swoje zapytanie"
-    },
     "collection": "Kolekcja",
     "deleteText": "Czy na pewno chcesz usunąć tę kolekcję? Wraz z nią usuniesz wszystkie jej subkolekcje!",
     "deleteSuccess": "Kolekcja została usunięta",
@@ -193,14 +137,6 @@
       "delete": "Delete collection",
       "showProducts": "Show products in collection"
     },
-    "search": {
-      "placeholder": "Search (min. 3 letters)",
-      "found": "Found {positions} positions with phrase '{phrase}'",
-      "didNotFound": "Did not found positions for '{phrase}'",
-      "error": "An error occurred while downloading a data",
-      "display": "Positions displayed: {positions}",
-      "specify": "For more accurate results, please refine your query"
-    },
     "collection": "Collection",
     "deleteText": "Are you sure you want to delete this collection? All subcollections will be deleted as well!",
     "deleteSuccess": "Collection has been deleted",
@@ -214,15 +150,15 @@
 <script lang="ts">
 import Vue from 'vue'
 import Draggable from 'vuedraggable'
-import { cloneDeep, debounce } from 'lodash'
+import { cloneDeep } from 'lodash'
 import { ProductSet, ProductSetUpdateDto, HeseyaPaginatedResponseMeta } from '@heseya/store-core'
 import { api } from '@/api'
 
 import Loading from '@/components/layout/Loading.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import { CLEAR_PRODUCT_SET_FORM } from '@/components/modules/productSets/Form.vue'
 import SetProductsList from '@/components/modules/productSets/SetProductsList.vue'
 import ChangeParentForm from '@/components/modules/productSets/ParentForm.vue'
+import { CLEAR_PRODUCT_SET_FORM } from '@/views/productSets/View.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import { formatApiNotificationError } from '@/utils/errors'
@@ -267,17 +203,8 @@ export default Vue.extend({
     totalSearchedResults: null as null | number,
   }),
   computed: {
-    isSearchError(): boolean {
-      if (Number.isInteger(this.totalSearchedResults))
-        return !this.totalSearchedResults || this.searchingError
-      return false
-    },
     areMoreChildren(): boolean {
       return this.children.length < this.childrenQuantity
-    },
-    // TODO: That's probably should be deleted
-    isFetchAllChildren(): boolean {
-      return this.$accessor.env.autoload_all_product_set_children === '1'
     },
     uniqueChildren: {
       get(): ProductSet[] {
@@ -294,24 +221,6 @@ export default Vue.extend({
     this.childrenQuantity = this.set.children_ids?.length || 0
   },
   methods: {
-    searchForChildren: debounce(function (this: any) {
-      this.searchingError = false
-      if (this.searchPhrase.length > 2) {
-        this.fetchBySearch(this.set.id, this.searchPhrase)
-        return
-      }
-      this.totalSearchedResults = null
-      this.searchedChildren = []
-    }, 500),
-    createSuccess(set: ProductSet) {
-      if (this.children.length) {
-        this.children.push({ ...set, children_ids: [] })
-      }
-      this.childrenQuantity++
-    },
-    editSuccess(set: ProductSet) {
-      this.$emit('update-parent', set)
-    },
     deleteSuccess(setId: UUID) {
       this.$emit('delete-child', setId)
     },
@@ -377,27 +286,6 @@ export default Vue.extend({
       }>(`/product-sets?parent_id=${parentId}&page=${page}&tree=0&limit=${limit}`)
       return res
     },
-    async fetchBySearch(parentId: UUID, search: string) {
-      this.isSearching = true
-      try {
-        this.searchedPhrase = this.searchPhrase
-        const { data: res } = await api.get<{
-          data: ProductSet[]
-          meta: HeseyaPaginatedResponseMeta
-        }>(`/product-sets?parent_id=${parentId}&search=${search}`)
-
-        this.searchedChildren = res.data
-        this.totalSearchedResults = res.meta.total
-        this.searchedDisplayLimit = res.meta.per_page
-      } catch (e: any) {
-        this.searchedPhrase = ''
-        this.searchingError = true
-        this.isSearching = false
-        this.totalSearchedResults = null
-        this.$toast.error(formatApiNotificationError(e))
-      }
-      this.isSearching = false
-    },
     async deleteCollection() {
       this.$accessor.startLoading()
       try {
@@ -409,25 +297,6 @@ export default Vue.extend({
       }
 
       this.$accessor.stopLoading()
-    },
-    editProductSet() {
-      this.editedItem = {
-        ...cloneDeep(this.set),
-        parent_id: this.set.parent?.id || null,
-        attributes: this.set.attributes?.map((attr) => attr.id) || [],
-      }
-      this.editedItemSlugPrefix = this.set.parent?.slug || ''
-      this.isFormModalActive = true
-    },
-    createProductSet() {
-      this.editedItem = {
-        ...cloneDeep(CLEAR_PRODUCT_SET_FORM),
-        parent_id: this.set?.id || null,
-      }
-      this.editedItemSlugPrefix = this.set?.slug || ''
-      this.$nextTick(() => {
-        this.isFormModalActive = true
-      })
     },
     showSetProducts() {
       this.selectedSet = this.set
@@ -482,6 +351,8 @@ export default Vue.extend({
 
     small {
       font-weight: 400;
+      color: #979ea0;
+      margin-left: 5px;
     }
   }
 
@@ -543,40 +414,6 @@ export default Vue.extend({
 
   .handle {
     cursor: grab;
-  }
-}
-
-.search-results {
-  min-height: 53px;
-  position: relative;
-  padding: 16px;
-  text-align: center;
-  margin-bottom: 8px;
-
-  &--success {
-    background-color: $green-color-200;
-  }
-
-  &--error {
-    background-color: $red-color-400;
-    color: white;
-  }
-
-  &__description {
-    font-size: 13px;
-    text-align: left;
-  }
-
-  &__info {
-    display: block;
-
-    &--last {
-      margin-top: 8px;
-    }
-  }
-
-  p {
-    margin: 0;
   }
 }
 </style>

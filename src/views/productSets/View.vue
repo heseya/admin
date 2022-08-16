@@ -36,7 +36,7 @@
                 v-model="form.name"
                 rules="required"
                 :label="$t('common.form.name')"
-                :disabled="!canModify"
+                :disabled="disabled"
                 @input="editSlug"
               />
               <div class="collection-slug">
@@ -65,11 +65,17 @@
               </div>
               <div class="collection-view__switches">
                 <flex-input>
-                  <switch-input v-model="form.public" horizontal :label="$t('form.public')" />
+                  <switch-input
+                    v-model="form.public"
+                    :disabled="disabled"
+                    horizontal
+                    :label="$t('form.public')"
+                  />
                 </flex-input>
                 <flex-input>
                   <switch-input
                     v-model="form.hide_on_index"
+                    :disabled="disabled"
                     horizontal
                     :label="$t('form.hideOnIndex')"
                   />
@@ -77,17 +83,21 @@
               </div>
             </div>
           </div>
+
           <br />
-          <attributes-select v-model="form.attributes" />
+          <attributes-select v-model="form.attributes" :disabled="disabled" />
           <br />
+
           <small class="label">{{ $t('common.form.description') }}</small>
           <rich-editor v-if="isEditorActive" v-model="form.description_html" :disabled="disabled" />
           <br />
+
           <SeoForm
             v-model="form.seo"
             :disabled="disabled"
             :current="form.id ? { id: form.id, model: 'ProductSet' } : null"
           />
+
           <MetadataForm
             v-if="form.metadata"
             ref="publicMeta"
@@ -159,7 +169,7 @@
 import Vue from 'vue'
 import { cloneDeep } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
-import { Coupon, ProductSetUpdateDto, CdnMedia, Metadata } from '@heseya/store-core'
+import { ProductSetUpdateDto, CdnMedia, Metadata, ProductSet } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
@@ -224,7 +234,7 @@ export default Vue.extend({
     isNew(): boolean {
       return this.id === 'create'
     },
-    productSet(): Coupon {
+    productSet(): ProductSet {
       return this.$accessor.productSets.getSelected || ({} as any)
     },
     error(): any {
@@ -233,22 +243,20 @@ export default Vue.extend({
     isLoading(): boolean {
       return this.$accessor.productSets.isLoading
     },
-    canModify(): boolean {
-      return this.$can(this.isNew ? this.$p.ProductSets.Add : this.$p.ProductSets.Edit)
-    },
     slugPrefix(): string {
       if (this.$route.query.parentName) {
         return (this.$route.query.parentName as string).toLowerCase()
       }
       return ''
     },
+    parentId(): string {
+      if (this.$route.query.parentId) {
+        return this.$route.query.parentId as string
+      }
+      return ''
+    },
   },
   watch: {
-    productSet(productSet: ProductSetUpdateDto) {
-      if (!this.isNew) {
-        this.form = cloneDeep({ ...CLEAR_PRODUCT_SET_FORM, ...productSet })
-      }
-    },
     error(error) {
       if (error) {
         this.$toast.error(formatApiNotificationError(error))
@@ -260,6 +268,8 @@ export default Vue.extend({
       this.$accessor.startLoading()
       await this.$accessor.productSets.get(this.id)
       this.$accessor.stopLoading()
+    } else {
+      this.form = { ...this.form, parent_id: this.parentId }
     }
   },
 
@@ -284,6 +294,7 @@ export default Vue.extend({
 
     async save() {
       this.$accessor.startLoading()
+
       if (this.form.id) {
         await this.saveMetadata(this.form.id)
         const success = await this.$accessor.productSets.update({
@@ -296,17 +307,23 @@ export default Vue.extend({
         const productSet = await this.$accessor.productSets.add(this.form)
         this.$emit('create-success', productSet)
         this.$toast.success(this.$t('alerts.created') as string)
-        this.$router.push(`/collections/${productSet.id}`)
+        if (productSet) {
+          this.$router.push(`/collections/${productSet.id}`)
+        }
       }
+
       this.$accessor.stopLoading()
       this.$emit('close')
     },
+
     async deleteItem() {
       if (!this.form.id) return
+
       this.$accessor.startLoading()
       await this.$accessor.productSets.remove(this.form.id)
       this.$emit('delete-success', this.form.id)
       this.$accessor.stopLoading()
+
       this.$toast.success(this.$t('alerts.deleted') as string)
       this.$router.push('/collections')
     },

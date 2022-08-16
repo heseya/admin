@@ -15,7 +15,7 @@
       },
     ]"
     :disabled="disabled"
-    @click="(e) => $emit('click', e)"
+    @click="onClick"
   >
     <div class="icon-button__text">
       <slot></slot>
@@ -65,6 +65,12 @@ export default Vue.extend({
   computed: {
     component(): string {
       return this.to ? 'router-link' : this.el || 'button'
+    },
+  },
+  methods: {
+    onClick(e: Event) {
+      if (this.htmlType !== 'submit' && !this.to) e.preventDefault()
+      this.$emit('click', e)
     },
   },
 })

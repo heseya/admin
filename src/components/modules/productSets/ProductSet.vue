@@ -351,7 +351,7 @@ export default Vue.extend({
 
     small {
       font-weight: 400;
-      color: #979ea0;
+      color: $gray-color-500;
       margin-left: 5px;
     }
   }
@@ -369,7 +369,7 @@ export default Vue.extend({
   &__public {
     border-radius: 25px;
     padding: 0.2em 1em;
-    color: #979ea0;
+    color: $gray-color-500;
     display: flex;
     font-size: 11px;
     align-items: center;

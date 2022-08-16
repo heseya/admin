@@ -257,6 +257,11 @@ export default Vue.extend({
     },
   },
   watch: {
+    productSet(productSet: ProductSetUpdateDto) {
+      if (!this.isNew) {
+        this.form = cloneDeep({ ...CLEAR_PRODUCT_SET_FORM, ...productSet })
+      }
+    },
     error(error) {
       if (error) {
         this.$toast.error(formatApiNotificationError(error))

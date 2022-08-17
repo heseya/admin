@@ -191,6 +191,7 @@ import { UUID } from '@/interfaces/UUID'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { generateSlug } from '@/utils/generateSlug'
+import { api } from '@/api'
 
 export const CLEAR_PRODUCT_SET_FORM: ProductSetUpdateDto & { cover: CdnMedia | null } = {
   name: '',
@@ -231,6 +232,7 @@ export default Vue.extend({
   data: () => ({
     form: cloneDeep(CLEAR_PRODUCT_SET_FORM) as CombinedSetDto,
     isEditorActive: true,
+    slugPrefix: '',
   }),
   computed: {
     id(): UUID {
@@ -251,15 +253,11 @@ export default Vue.extend({
     canModify(): boolean {
       return this.isNew ? this.$can(this.$p.ProductSets.Add) : this.$can(this.$p.ProductSets.Edit)
     },
-    slugPrefix(): string {
-      if (this.$route.query.parentName) {
-        return (this.$route.query.parentName as string).toLowerCase()
-      }
-      return ''
-    },
     parentId(): string {
       if (this.$route.query.parentId) {
         return this.$route.query.parentId as string
+      } else if (this.productSet.parent && !this.isNew) {
+        return this.productSet.parent.id
       }
       return ''
     },
@@ -277,13 +275,22 @@ export default Vue.extend({
     },
   },
   async created() {
+    this.$accessor.startLoading()
+    if (this.parentId) {
+      const parent = await this.$accessor.productSets.get(this.parentId)
+      if (parent) {
+        this.slugPrefix = parent.name.toLowerCase()
+      }
+    } else if (this.productSet.parent && !this.isNew) {
+      this.slugPrefix = this.productSet.parent.name.toLowerCase()
+    }
+
     if (!this.isNew) {
-      this.$accessor.startLoading()
       await this.$accessor.productSets.get(this.id)
-      this.$accessor.stopLoading()
     } else {
       this.form = { ...this.form, parent_id: this.parentId }
     }
+    this.$accessor.stopLoading()
   },
 
   methods: {

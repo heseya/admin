@@ -52,9 +52,7 @@
             <template #overlay>
               <a-menu>
                 <a-menu-item v-can="$p.ProductSets.Add">
-                  <router-link
-                    :to="`/collections/create?parentName=${set.name}&parentId=${set.id}`"
-                  >
+                  <router-link :to="`/collections/create?parentId=${set.id}`">
                     <i class="bx bx-plus"></i> &nbsp; {{ $t('menu.addSubset') }}
                   </router-link>
                 </a-menu-item>
@@ -62,7 +60,7 @@
                   <i class="bx bx-customize"></i> &nbsp; {{ $t('menu.showProducts') }}
                 </a-menu-item>
                 <a-menu-item v-can="$p.ProductSets.ShowDetails">
-                  <router-link :to="editProductSetLink">
+                  <router-link :to="`/collections/${set.id}`">
                     <i class="bx bx-edit"></i> &nbsp; {{ $t('menu.edit') }}
                   </router-link>
                 </a-menu-item>
@@ -221,12 +219,6 @@ export default Vue.extend({
           ({ id: childId }) => !this.searchedChildren.find(({ id }) => id === childId),
         )
       },
-    },
-    editProductSetLink(): string {
-      const link = `/collections/${this.set.id}`
-      if (this.set.parent)
-        return link + `?parentName=${this.set.parent?.name}&parentId=${this.set.parent?.id}`
-      return link
     },
   },
   created() {

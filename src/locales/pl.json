@@ -174,10 +174,12 @@
       "VALIDATION_AFTER_OR_EQUAL": "Data musi być późniejsza lub równa wartości {when}.",
       "VALIDATION_ENUM_VALUE": "Wartość pola musi być jedną z wartości podanego Enuma.",
       "VALIDATION_REQUIRED_WITH_ALL": "Wartość pola musi być obecna i nie może być pusta, jeśli inne podane pola są obecne i nie są puste.",
-      "VALIDATION_GTE": "Wartość pola musi być większa bądź równa wartości pola {field}."
+      "VALIDATION_GTE": "Wartość pola musi być większa bądź równa wartości pola {field}.",
+      "INTERNAL_SERVER_ERROR": "Wewnętrzny błąd serwera"
     },
     "CLIENT_ERROR": {
       "CLIENT_INVALID_INSTALLATION_RESPONSE": "Aplikacja ma nieprawidłową odpowiedź dotyczącą instalacji.",
+      "CDN_NOT_ALLOWED_TO_CHANGE_ALT": "Nie możesz zmienić tekstu alternatywnego tego zdjęcia.",
       "CLIENT_FAILED_TO_CONNECT_WITH_APP": "Nie udało połączyć się z aplikacją.",
       "CLIENT_FAILED_TO_UNINSTALL_APP": "Nie udało się odinstalować aplikacji. Brak odpowiedzi aplikacji.",
       "CLIENT_ASSIGN_INVALID_PERMISSIONS": "Przypisano nieprawidłe uprawnienia, nie ma różnicy między wszystkimi możliwymi uprawnieniami a uprawnieniami przyznanymi.",
@@ -238,7 +240,8 @@
       "UNAUTHORIZED": "401: Brak autoryzacji",
       "FORBIDDEN": "403: Odmowa dostępu",
       "NOT_FOUND": "404: Strona nie została znaleziona",
-      "UNPROCESSABLE_ENTITY": "422: Nieprocesowalna zawartość"
+      "UNPROCESSABLE_ENTITY": "422: Nieprocesowalna zawartość",
+      "INTERNAL_SERVER_ERROR": "Wewnętrzny błąd serwera"
     },
     "SERVER_ERROR": {
       "INTERNAL_SERVER_ERROR": "500: Wewnętrzny błąd serwera",

@@ -290,8 +290,6 @@ export default mixins(preventLeavingPage).extend({
     },
 
     async saveProduct() {
-      console.log('🚀 ~ file: View.vue ~ line 293 ~ saveProduct ~ saveProduct')
-
       this.$accessor.startLoading()
 
       const attributes = await updateProductAttributeOptions(

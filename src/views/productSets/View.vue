@@ -249,7 +249,7 @@ export default Vue.extend({
       return this.$accessor.productSets.isLoading
     },
     canModify(): boolean {
-      return this.$can(this.$p.ProductSets.Edit)
+      return this.isNew ? this.$can(this.$p.ProductSets.Add) : this.$can(this.$p.ProductSets.Edit)
     },
     slugPrefix(): string {
       if (this.$route.query.parentName) {

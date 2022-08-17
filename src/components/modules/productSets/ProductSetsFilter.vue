@@ -34,16 +34,15 @@ import BooleanSelect from '@/components/form/BooleanSelect.vue'
 
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 
-export interface ProductSetFilters extends Record<string, string | string[] | undefined> {
+export interface ProductSetFilters extends Record<string, string | boolean | undefined> {
   search: string
   public: string
-  root?: string
+  root?: boolean
 }
 
 export const EMPTY_PRODUCT_SET_FILTERS: ProductSetFilters = {
   search: '',
   public: ALL_FILTER_VALUE,
-  root: '',
 }
 
 export default Vue.extend({

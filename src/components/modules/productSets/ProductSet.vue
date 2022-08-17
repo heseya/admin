@@ -62,7 +62,7 @@
                   <i class="bx bx-customize"></i> &nbsp; {{ $t('menu.showProducts') }}
                 </a-menu-item>
                 <a-menu-item v-can="$p.ProductSets.ShowDetails">
-                  <router-link :to="`/collections/${set.id}`">
+                  <router-link :to="editProductSetLink">
                     <i class="bx bx-edit"></i> &nbsp; {{ $t('menu.edit') }}
                   </router-link>
                 </a-menu-item>
@@ -221,6 +221,12 @@ export default Vue.extend({
           ({ id: childId }) => !this.searchedChildren.find(({ id }) => id === childId),
         )
       },
+    },
+    editProductSetLink(): string {
+      const link = `/collections/${this.set.id}`
+      if (this.set.parent)
+        return link + `?parentName=${this.set.parent?.name}&parentId=${this.set.parent?.id}`
+      return link
     },
   },
   created() {

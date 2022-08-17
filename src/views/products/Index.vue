@@ -49,7 +49,7 @@
       "list": "listy"
     },
     "form": {
-      "price": "Cena",
+      "price": "Cena brutto",
       "tags": "Tagi",
       "public": "Widoczność"
     }
@@ -63,7 +63,7 @@
       "list": "list"
     },
     "form": {
-      "price": "Price",
+      "price": "Price (gross)",
       "tags": "Tags",
       "public": "Visibility"
     }

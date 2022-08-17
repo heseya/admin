@@ -1,6 +1,15 @@
 <template>
-  <div :key="$route.params.id" class="narrower-page">
-    <top-nav :title="!isNew ? product.name : $t('newProductTitle')">
+  <div :key="$route.params.id">
+    <top-nav>
+      <template #title>
+        <template v-if="!isNew">
+          <span class="gray-text">{{ $t('title') }}</span> {{ product.name }}
+        </template>
+        <template v-else>
+          {{ $t('titleNew') }}
+        </template>
+      </template>
+
       <audits-modal :id="product.id" model="products" />
 
       <pop-confirm
@@ -20,211 +29,101 @@
       </pop-confirm>
     </top-nav>
 
-    <div class="product">
-      <gallery ref="gallery" v-model="form.gallery" :disabled="!canModify" />
-      <div>
-        <card>
-          <switch-input
-            v-model="form.public"
-            horizontal
+    <validation-observer v-slot="{ handleSubmit }">
+      <form class="product-page" @submit.stop.prevent="handleSubmit(saveProduct)">
+        <card class="product-page__main">
+          <h2 class="product-page__subtitle">{{ $t('baseFormTitle') }}</h2>
+          <product-basic-details
+            v-model="form"
+            :product="product"
             :disabled="!canModify"
-            :label="$t('form.public')"
+            :is-new="isNew"
+            :loading="isLoading"
           />
-          <template v-if="!product.visible && product.public">
-            <br />
-            <a-alert
-              :message="$t('stillVisible.title')"
-              :description="$t('stillVisible.description')"
-              show-icon
-              type="warning"
+
+          <hr />
+
+          <product-description
+            v-model="form"
+            :product="product"
+            :disabled="!canModify"
+            :loading="isLoading"
+          />
+          <product-advanced-details v-model="form" :product="product" :disabled="!canModify" />
+
+          <hr />
+
+          <AttributesConfigurator v-model="form.attributes" :disabled="!canModify" />
+          <hr />
+          <SchemaConfigurator v-model="form.schemas" :disabled="!canModify" />
+          <hr />
+          <WarehouseItemsConfigurator v-model="form.items" :disabled="!canModify" />
+
+          <hr />
+
+          <SeoForm
+            v-model="form.seo"
+            :disabled="!canModify"
+            :current="!isNew ? { id, model: 'Product' } : null"
+          />
+          <template v-if="!isNew">
+            <MetadataForm
+              ref="publicMeta"
+              :value="product.metadata"
+              :disabled="!canModify"
+              model="products"
+            />
+            <MetadataForm
+              v-if="product.metadata_private"
+              ref="privateMeta"
+              :value="product.metadata_private"
+              :disabled="!canModify"
+              is-private
+              model="products"
             />
           </template>
+          <hr />
+          <div class="flex">
+            <app-button
+              v-if="canModify"
+              data-cy="submit-btn"
+              html-type="submit"
+              style="margin-right: 12px"
+            >
+              {{ $t('common.save') }}
+            </app-button>
+
+            <app-button
+              v-if="canModify && isNew"
+              data-cy="submit-and-next-btn"
+              @click.prevent="handleSubmit(submitAndGoNext)"
+            >
+              {{ $t('saveAndNext') }}
+            </app-button>
+          </div>
         </card>
-      </div>
 
-      <div class="product__inner-items">
-        <card>
-          <WarehouseItemsConfigurator v-model="form.items" :disabled="!canModify" />
+        <card class="product-page__aside">
+          <product-visibility-switch v-model="form" :product="product" :disabled="!canModify" />
+
+          <hr />
+
+          <h2 class="product-page__subtitle">{{ $t('galleryTitle') }}</h2>
+          <gallery ref="gallery" v-model="form.gallery" :disabled="!canModify" />
         </card>
-      </div>
-
-      <div class="product__schemas">
-        <card>
-          <SchemaConfigurator v-model="form.schemas" :disabled="!canModify" />
-        </card>
-      </div>
-
-      <div class="product__attributes">
-        <card>
-          <AttributesConfigurator v-model="form.attributes" :disabled="!canModify" />
-        </card>
-      </div>
-
-      <div class="product__details">
-        <card>
-          <validation-observer v-slot="{ handleSubmit }">
-            <form class="product__info" @submit.prevent="handleSubmit(saveProduct)">
-              <div>
-                <validated-input
-                  v-model="form.name"
-                  rules="required"
-                  :label="$t('common.form.name')"
-                  name="name"
-                  :disabled="!canModify"
-                  @input="editSlug"
-                />
-                <validated-input
-                  v-model="form.slug"
-                  rules="required|slug"
-                  :label="$t('common.form.slug')"
-                  name="slug"
-                  :disabled="!canModify"
-                />
-                <validated-input
-                  v-model="form.price"
-                  rules="required|not-negative"
-                  type="number"
-                  step="0.01"
-                  :label="$t('form.price')"
-                  name="price"
-                  :disabled="!canModify"
-                />
-
-                <validated-input
-                  v-model="form.vat_rate"
-                  rules="not-negative|less-than:100"
-                  type="number"
-                  :label="$t('form.vatRate')"
-                  name="vat_rate"
-                  :disabled="!canModify"
-                />
-              </div>
-
-              <div>
-                <product-set-select v-model="form.sets" :product="product" />
-
-                <validated-input
-                  v-model="form.quantity_step"
-                  rules="required"
-                  type="number"
-                  max="999999"
-                  step="0.01"
-                  name="quantity_step"
-                  :label="$t('form.quantityStep')"
-                  :disabled="!canModify"
-                />
-
-                <validated-input
-                  v-model="form.order"
-                  type="number"
-                  name="order"
-                  :disabled="!canModify"
-                >
-                  <template #label>
-                    {{ $t('form.order') }}
-                    <info-tooltip>{{ $t('form.orderTooltip') }}</info-tooltip>
-                  </template>
-                </validated-input>
-              </div>
-
-              <div class="wide">
-                <SeoForm
-                  v-model="form.seo"
-                  :disabled="!canModify"
-                  :current="!isNew ? { id, model: 'Product' } : null"
-                />
-              </div>
-
-              <div class="wide">
-                <tags-select v-model="form.tags" :disabled="!canModify" />
-              </div>
-              <div class="wide">
-                <google-category-select
-                  v-model="form.google_product_category"
-                  :disabled="!canModify"
-                />
-              </div>
-
-              <div class="wide">
-                <small class="label">{{ $t('common.form.description') }}</small>
-                <rich-editor
-                  v-if="!isLoading"
-                  v-model="form.description_html"
-                  :disabled="!canModify"
-                />
-                <br />
-                <small class="label">{{ $t('form.shortDescription') }}</small>
-                <AppTextarea
-                  v-if="!isLoading"
-                  v-model="form.description_short"
-                  :disabled="!canModify"
-                />
-                <br />
-                <br />
-                <template v-if="!isNew">
-                  <div class="wide">
-                    <MetadataForm
-                      ref="publicMeta"
-                      :value="product.metadata"
-                      :disabled="!canModify"
-                      model="products"
-                    />
-                  </div>
-                  <div v-if="product.metadata_private" class="wide">
-                    <MetadataForm
-                      ref="privateMeta"
-                      :value="product.metadata_private"
-                      :disabled="!canModify"
-                      is-private
-                      model="products"
-                    />
-                  </div>
-                </template>
-                <br />
-                <div class="flex">
-                  <app-button
-                    v-if="canModify"
-                    data-cy="submit-btn"
-                    html-type="submit"
-                    style="margin-right: 12px"
-                  >
-                    {{ $t('common.save') }}
-                  </app-button>
-                  <app-button
-                    v-if="canModify && isNew"
-                    data-cy="submit-and-next-btn"
-                    @click.prevent="handleSubmit(submitAndGoNext)"
-                  >
-                    {{ $t('saveAndNext') }}
-                  </app-button>
-                </div>
-              </div>
-            </form>
-          </validation-observer>
-        </card>
-      </div>
-    </div>
+      </form>
+    </validation-observer>
   </div>
 </template>
 
 <i18n lang="json">
 {
   "pl": {
-    "newProductTitle": "Nowy produkt",
+    "title": "Konfiguracja produktu:",
+    "titleNew": "Nowy produkt",
+    "baseFormTitle": "Informacje podstawowe",
+    "galleryTitle": "Zdjęcia i wideo produktu",
     "deleteConfirm": "Czy na pewno chcesz usunąć ten produkt?",
-    "form": {
-      "public": "Widoczność produktu",
-      "price": "Cena",
-      "vatRate": "Stawka VAT (%)",
-      "quantityStep": "Format ilości",
-      "shortDescription": "Krótki opis",
-      "order": "Priorytet sortowania",
-      "orderTooltip": "Pozwala na zmianę kolejności produktów na liście. Produkty z mniejszą liczbą wyświetlane są wyżej."
-    },
-    "stillVisible": {
-      "title": "Produkt wciąż jest ukryty",
-      "description": "Produkt jest niewidoczny ponieważ jego marka lub kategoria jest ukryta."
-    },
     "messages": {
       "removed": "Produkt został usunięty.",
       "created": "Produkt został utworzony.",
@@ -233,21 +132,11 @@
     "saveAndNext": "Zapisz i dodaj następny"
   },
   "en": {
-    "newProductTitle": "New product",
+    "title": "Product configuration:",
+    "titleNew": "New product",
+    "baseFormTitle": "Basic information",
+    "galleryTitle": "Product gallery",
     "deleteConfirm": "Are you sure you want to delete this product?",
-    "form": {
-      "public": "Product visibility",
-      "price": "Price",
-      "vatRate": "VAT rate (%)",
-      "quantityStep": "Quantity format",
-      "shortDescription": "Short description",
-      "order": "Sort priority",
-      "orderTooltip": "Allows you to change the order of the products in the list. Products with a lower number are displayed higher."
-    },
-    "stillVisible": {
-      "title": "Product is still hidden",
-      "description": "Product is hidden because its brand or category is hidden."
-    },
     "messages": {
       "removed": "Product has been removed.",
       "created": "Product has been created.",
@@ -268,23 +157,21 @@ import TopNav from '@/components/layout/TopNav.vue'
 import Gallery from '@/components/modules/products/Gallery.vue'
 import Card from '@/components/layout/Card.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import RichEditor from '@/components/form/RichEditor.vue'
 import SchemaConfigurator from '@/components/modules/schemas/Configurator.vue'
-import TagsSelect from '@/components/TagsSelect.vue'
 import SeoForm from '@/components/modules/seo/Accordion.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
-import SwitchInput from '@/components/form/SwitchInput.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
-import AppTextarea from '@/components/form/Textarea.vue'
 import AttributesConfigurator from '@/components/modules/attributes/configurator/Configurator.vue'
 import WarehouseItemsConfigurator from '@/components/modules/products/WarehouseItemsConfigurator.vue'
-import GoogleCategorySelect from '@/components/modules/products/GoogleCategorySelect.vue'
-import ProductSetSelect from '@/components/modules/products/ProductSetSelect.vue'
+
+import ProductBasicDetails from '@/components/modules/products/view/ProductBasicDetails.vue'
+import ProductAdvancedDetails from '@/components/modules/products/view/ProductAdvancedDetails.vue'
+import ProductDescription from '@/components/modules/products/view/ProductDescription.vue'
+import ProductVisibilitySwitch from '@/components/modules/products/view/ProductVisibilitySwitch.vue'
 
 import preventLeavingPage from '@/mixins/preventLeavingPage'
 
 import { formatApiNotificationError } from '@/utils/errors'
-import { generateSlug } from '@/utils/generateSlug'
 import { updateProductAttributeOptions } from '@/services/updateProductAttributeOptions'
 
 import { UUID } from '@/interfaces/UUID'
@@ -313,9 +200,8 @@ const EMPTY_FORM: ProductComponentForm = {
 
 export default mixins(preventLeavingPage).extend({
   metaInfo(this: any): any {
-    const fallback = this.$t('newProductTitle') as string
     return {
-      title: this.isNew ? fallback : this.product?.name || fallback,
+      title: (!this.isNew && this.product?.name) || (this.$t('titleNew') as string),
     }
   },
   components: {
@@ -325,17 +211,15 @@ export default mixins(preventLeavingPage).extend({
     PopConfirm,
     ValidationObserver,
     SchemaConfigurator,
-    RichEditor,
-    TagsSelect,
-    SwitchInput,
     SeoForm,
     AuditsModal,
-    AppTextarea,
     MetadataForm,
     AttributesConfigurator,
     WarehouseItemsConfigurator,
-    GoogleCategorySelect,
-    ProductSetSelect,
+    ProductBasicDetails,
+    ProductAdvancedDetails,
+    ProductDescription,
+    ProductVisibilitySwitch,
   },
   data: () => ({
     form: cloneDeep(EMPTY_FORM),
@@ -377,15 +261,11 @@ export default mixins(preventLeavingPage).extend({
       }
     },
     async '$route.params.id'() {
-      this.$accessor.startLoading()
       await this.fetch()
-      this.$accessor.stopLoading()
     },
   },
   async created() {
-    this.$accessor.startLoading()
     await this.fetch()
-    this.$accessor.stopLoading()
   },
   methods: {
     async fetch() {
@@ -399,11 +279,6 @@ export default mixins(preventLeavingPage).extend({
 
       this.$accessor.stopLoading()
     },
-    editSlug() {
-      if (this.isNew) {
-        this.form.slug = generateSlug(this.form.name)
-      }
-    },
     async deleteProduct() {
       this.$accessor.startLoading()
       const success = await this.$accessor.products.remove(this.id)
@@ -415,6 +290,8 @@ export default mixins(preventLeavingPage).extend({
     },
 
     async saveProduct() {
+      console.log('🚀 ~ file: View.vue ~ line 293 ~ saveProduct ~ saveProduct')
+
       this.$accessor.startLoading()
 
       const attributes = await updateProductAttributeOptions(
@@ -479,65 +356,16 @@ export default mixins(preventLeavingPage).extend({
 </script>
 
 <style lang="scss">
-.product {
-  & > * {
-    &:not(:first-child) {
-      @media ($max-viewport-11) {
-        margin-top: 8px;
-      }
-    }
-  }
+.product-page {
+  display: grid;
+  grid-template-columns: 2.6fr 1fr;
+  grid-gap: 14px;
+  align-items: start;
 
-  &__info {
-    input {
-      width: 100%;
-    }
-  }
-
-  &__details,
-  &__schemas,
-  &__attributes,
-  &__inner-items {
-    grid-column: 1/-1;
-  }
-
-  .card {
+  &__subtitle {
+    font-size: 1.1em;
     margin: 0;
+    font-weight: 600;
   }
-}
-
-.content-tooltip {
-  footer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-}
-
-@media ($viewport-11) {
-  .product {
-    display: grid;
-    grid-template-columns: 4fr 2fr;
-    gap: 35px;
-
-    small {
-      color: #aaaaaa;
-    }
-
-    &__info {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-
-      .wide {
-        grid-column: 1/-1;
-      }
-    }
-  }
-}
-
-.quantity-input {
-  margin-top: 24px;
-  width: 100%;
 }
 </style>

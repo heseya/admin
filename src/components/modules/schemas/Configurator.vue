@@ -16,12 +16,9 @@
           v-for="schema in value"
           :key="schema.id"
           class="configurator__schema"
-          :class="{ [`configurator__schema--dep`]: schema.auto_dependecy }"
-          :title="schema.auto_dependecy ? $t('autoDependecy') : ''"
           no-hover
           :hidden="schema.hidden"
         >
-          <i v-if="schema.auto_dependecy" class="bx bx-network-chart"></i>
           {{ schema.name }}
           <small class="optional">{{ !schema.required ? `(${$t('optional')})` : '' }}</small>
           <small>{{ schema.description }}</small>
@@ -90,10 +87,9 @@
 <i18n lang="json">
 {
   "pl": {
-    "title": "Schematy",
-    "addSchema": "Dodaj schemat do produktu",
+    "title": "Schematy produktu",
+    "addSchema": "Dodaj schemat",
     "noSchemaInProduct": "Ten produkt nie ma jeszcze żadnego schematu",
-    "autoDependecy": "Schemat jest automatyczny - nie możesz go usunąć",
     "optional": "opcjonalny",
     "editTitle": "Edycja schematu",
     "newTitle": "Nowy schemat",
@@ -101,10 +97,9 @@
     "createNew": "utwórz nowy"
   },
   "en": {
-    "title": "Schemas",
-    "addSchema": "Add schema to product",
+    "title": "Product schemas",
+    "addSchema": "Add schema",
     "noSchemaInProduct": "This product has no schemas yet",
-    "autoDependecy": "Schema is automatic - you can't delete it",
     "optional": "optional",
     "editTitle": "Edit schema",
     "newTitle": "New schema",
@@ -206,7 +201,7 @@ export default Vue.extend({
   }
 
   &__title {
-    font-size: 1.3em;
+    font-size: 1.1em;
     font-weight: 600;
   }
 
@@ -215,11 +210,6 @@ export default Vue.extend({
   }
 
   &__schema {
-    &--dep {
-      .schema-delete {
-        display: none;
-      }
-    }
   }
 }
 

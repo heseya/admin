@@ -4,7 +4,7 @@
     :class="{ 'product-set--searched': asSearched }"
     @click.stop="toggleChildrenVisibility"
   >
-    <div class="product-set__content">
+    <div class="product-set__expandable">
       <icon-button
         :type="areChildrenVisible && childrenQuantity ? 'burgund' : 'primary'"
         size="small"
@@ -18,86 +18,92 @@
           <i v-else class="bx bx-chevron-right"></i>
         </template>
       </icon-button>
-
-      <loading :active="isLoading" />
-
-      <span class="product-set__name">
-        {{ set.name }} <small>/{{ set.slug }}</small>
-      </span>
-
-      <div class="product-set__actions">
-        <div class="product-set__visibility">
-          <span v-if="set.public" class="product-set__public product-set__public--visible">
-            <i class="bx bx-show-alt"></i>
-            <span class="product-set__public_text">{{ $t('visible') }}</span></span
-          >
-          <span v-else class="product-set__public"
-            ><i class="bx bx-low-vision"></i
-            ><span class="product-set__public_text">{{ $t('hidden') }}</span></span
-          >
-        </div>
-        <a-dropdown
-          v-can.any="[$p.ProductSets.ShowDetails, $p.ProductSets.Add]"
-          :trigger="['click']"
-        >
-          <icon-button type="transparent" size="small" @click.stop>
-            <template #icon>
-              <i class="bx bx-dots-vertical-rounded"></i>
-            </template>
-          </icon-button>
-
-          <template #overlay>
-            <a-menu>
-              <a-menu-item v-can="$p.ProductSets.Add">
-                <router-link :to="`/collections/create?parentName=${set.name}&parentId=${set.id}`">
-                  <i class="bx bx-plus"></i> &nbsp; {{ $t('menu.addSubset') }}
-                </router-link>
-              </a-menu-item>
-              <a-menu-item v-can="$p.ProductSets.ShowDetails" @click="showSetProducts">
-                <i class="bx bx-customize"></i> &nbsp; {{ $t('menu.showProducts') }}
-              </a-menu-item>
-              <a-menu-item v-can="$p.ProductSets.ShowDetails">
-                <router-link :to="`/collections/${set.id}`">
-                  <i class="bx bx-edit"></i> &nbsp; {{ $t('menu.edit') }}
-                </router-link>
-              </a-menu-item>
-              <a-menu-item v-can="$p.ProductSets.Edit" @click="changeParent">
-                <i class="bx bx-move-vertical"></i> &nbsp; {{ $t('menu.editParent') }}
-              </a-menu-item>
-              <a-menu-item v-can="$p.ProductSets.Remove">
-                <pop-confirm
-                  :title="`${$t('collection')}: ${set.name}. ${$t('deleteText')}`"
-                  :ok-text="$t('common.delete')"
-                  :cancel-text="$t('common.cancel')"
-                  placement="bottom"
-                  @confirm="deleteCollection"
-                >
-                  <i class="bx bx-trash"></i> &nbsp; {{ $t('menu.delete') }}
-                </pop-confirm>
-              </a-menu-item>
-            </a-menu>
-          </template>
-        </a-dropdown>
-      </div>
+      <div v-if="areChildrenVisible && childrenQuantity" class="product-set__line"></div>
     </div>
+    <div class="product-set__container">
+      <div class="product-set__content">
+        <loading :active="isLoading" />
 
-    <div v-show="areChildrenVisible" class="product-set__children">
-      <Draggable v-model="children" handle=".handle" @change="onDrop">
-        <product-set
-          v-for="child in uniqueChildren"
-          :key="child.id"
-          :set="{ ...child, parent: set }"
-          @update-parent="updateChild"
-          @delete-child="deleteChild"
-        />
-      </Draggable>
-      <div v-if="areMoreChildren" class="product-set__fetch">
-        <icon-button @click.stop="fetchChildren">
-          <template #icon>
-            <i class="bx bx-chevron-down"></i>
-          </template>
-          {{ $t('fetchMore') }}
-        </icon-button>
+        <span class="product-set__name">
+          {{ set.name }} <small>/{{ set.slug }}</small>
+        </span>
+
+        <div class="product-set__actions">
+          <div class="product-set__visibility">
+            <span v-if="set.public" class="product-set__public product-set__public--visible">
+              <i class="bx bx-show-alt"></i>
+              <span class="product-set__public_text">{{ $t('visible') }}</span></span
+            >
+            <span v-else class="product-set__public"
+              ><i class="bx bx-low-vision"></i
+              ><span class="product-set__public_text">{{ $t('hidden') }}</span></span
+            >
+          </div>
+          <a-dropdown
+            v-can.any="[$p.ProductSets.ShowDetails, $p.ProductSets.Add]"
+            :trigger="['click']"
+          >
+            <icon-button type="transparent" size="small" @click.stop>
+              <template #icon>
+                <i class="bx bx-dots-vertical-rounded"></i>
+              </template>
+            </icon-button>
+
+            <template #overlay>
+              <a-menu>
+                <a-menu-item v-can="$p.ProductSets.Add">
+                  <router-link
+                    :to="`/collections/create?parentName=${set.name}&parentId=${set.id}`"
+                  >
+                    <i class="bx bx-plus"></i> &nbsp; {{ $t('menu.addSubset') }}
+                  </router-link>
+                </a-menu-item>
+                <a-menu-item v-can="$p.ProductSets.ShowDetails" @click="showSetProducts">
+                  <i class="bx bx-customize"></i> &nbsp; {{ $t('menu.showProducts') }}
+                </a-menu-item>
+                <a-menu-item v-can="$p.ProductSets.ShowDetails">
+                  <router-link :to="`/collections/${set.id}`">
+                    <i class="bx bx-edit"></i> &nbsp; {{ $t('menu.edit') }}
+                  </router-link>
+                </a-menu-item>
+                <a-menu-item v-can="$p.ProductSets.Edit" @click="changeParent">
+                  <i class="bx bx-move-vertical"></i> &nbsp; {{ $t('menu.editParent') }}
+                </a-menu-item>
+                <a-menu-item v-can="$p.ProductSets.Remove">
+                  <pop-confirm
+                    :title="`${$t('collection')}: ${set.name}. ${$t('deleteText')}`"
+                    :ok-text="$t('common.delete')"
+                    :cancel-text="$t('common.cancel')"
+                    placement="bottom"
+                    @confirm="deleteCollection"
+                  >
+                    <i class="bx bx-trash"></i> &nbsp; {{ $t('menu.delete') }}
+                  </pop-confirm>
+                </a-menu-item>
+              </a-menu>
+            </template>
+          </a-dropdown>
+        </div>
+      </div>
+
+      <div v-show="areChildrenVisible">
+        <Draggable v-model="children" handle=".handle" @change="onDrop">
+          <product-set
+            v-for="child in uniqueChildren"
+            :key="child.id"
+            :set="{ ...child, parent: set }"
+            @update-parent="updateChild"
+            @delete-child="deleteChild"
+          />
+        </Draggable>
+        <div v-if="areMoreChildren" class="product-set__fetch">
+          <icon-button @click.stop="fetchChildren">
+            <template #icon>
+              <i class="bx bx-chevron-down"></i>
+            </template>
+            {{ $t('fetchMore') }}
+          </icon-button>
+        </div>
       </div>
     </div>
 
@@ -312,7 +318,8 @@ export default Vue.extend({
 .product-set {
   cursor: default;
   border-radius: 0;
-  padding: 2px 8px;
+  display: flex;
+  padding: 6px 8px;
   padding-right: 0;
   border-bottom: solid 1px $background-color-700;
   transition: 0.3s;
@@ -338,6 +345,23 @@ export default Vue.extend({
 
   &:last-of-type {
     border-bottom: none;
+  }
+
+  &__expandable {
+    width: 30px;
+  }
+
+  &__line {
+    background-color: #f7eff0;
+    border-radius: 20px;
+    width: 4px;
+    height: calc(100% - 30px);
+    margin: 0 auto;
+    transform: translateY(-3px);
+  }
+
+  &__container {
+    width: calc(100% - 30px);
   }
 
   &__content {
@@ -399,13 +423,11 @@ export default Vue.extend({
   .list-item__action {
     align-self: flex-start;
   }
+
   .list-item__content {
     width: 100% !important;
   }
 
-  &__children {
-    padding-left: 24px;
-  }
   &__fetch {
     display: flex;
     justify-content: center;

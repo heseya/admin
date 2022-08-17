@@ -23,6 +23,7 @@
 
       <template #default="{ item: set }">
         <ProductSet
+          class="product-parent"
           :set="set"
           @edit="editProductSet"
           @create="createProductSet"
@@ -148,5 +149,9 @@ export default Vue.extend({
   &__actions {
     display: flex;
   }
+}
+
+.product-parent {
+  border-bottom: solid 1px #eceef5 !important;
 }
 </style>

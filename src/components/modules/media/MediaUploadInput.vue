@@ -28,13 +28,13 @@
         />
       </template>
       <template v-else>
-        <button class="media-upload-input__btn" @click.prevent>
+        <div class="media-upload-input__circle">
           <img
             src="@/assets/images/icons/file-add.svg"
             :alt="$t('fileAdd')"
             class="media-upload-input__file-add"
           />
-        </button>
+        </div>
         <span class="media-upload-input__title"
           >{{ $t('dropOrChooseImage') }} <b>{{ fileName }}</b></span
         >
@@ -162,7 +162,8 @@ export default Vue.extend({
     transform: translateX(-50%);
   }
 
-  &__btn {
+  &__circle {
+    display: flex;
     width: 68px;
     height: 68px;
     border-radius: 50%;
@@ -194,7 +195,7 @@ export default Vue.extend({
     transform: scale(1.1);
   }
 
-  &:hover &__btn {
+  &:hover &__circle {
     background-color: #f7f7f8;
   }
 }

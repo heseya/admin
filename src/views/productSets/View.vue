@@ -20,105 +20,111 @@
 
     <div class="coupon-view__form">
       <validation-observer v-slot="{ handleSubmit }">
-        <card>
-          <div class="collection-view__section">
-            <div class="collection-view__drag-area">
-              <media-upload-input
-                :disabled="disabled"
-                :image="form.cover"
-                :file-name="$t('collectionCover')"
-                @upload="changeMedia"
-              />
-            </div>
-
-            <div class="collection-view__inputs">
-              <validated-input
-                v-model="form.name"
-                rules="required"
-                :label="$t('common.form.name')"
-                :disabled="disabled"
-                @input="editSlug"
-              />
-              <div class="collection-slug">
-                <validated-input
-                  v-model="form.slug_suffix"
-                  :disabled="disabled"
-                  :addon-before="slugPrefix && !form.slug_override ? `${slugPrefix}-` : ''"
-                  class="collection-slug__input"
-                  rules="required|slug"
-                  :label="$t('common.form.slug')"
+        <form @submit.prevent="handleSubmit(save)">
+          <card>
+            <div class="collection-view__section">
+              <div class="collection-view__drag-area">
+                <media-upload-input
+                  :disabled="!canModify"
+                  :image="form.cover"
+                  :file-name="$t('collectionCover')"
+                  @upload="changeMedia"
                 />
-
-                <a-tooltip placement="bottom">
-                  <switch-input
-                    v-if="slugPrefix"
-                    v-model="form.slug_override"
-                    :disabled="disabled"
-                    class="collection-slug__switch"
-                    :label="$t('form.slugOverride')"
-                  />
-
-                  <template #title>
-                    {{ $t('form.slugOverrideHelp') }}
-                  </template>
-                </a-tooltip>
               </div>
-              <div class="collection-view__switches">
-                <flex-input>
-                  <switch-input
-                    v-model="form.public"
-                    :disabled="disabled"
-                    horizontal
-                    :label="$t('form.public')"
+
+              <div class="collection-view__inputs">
+                <validated-input
+                  v-model="form.name"
+                  rules="required"
+                  :label="$t('common.form.name')"
+                  :disabled="!canModify"
+                  @input="editSlug"
+                />
+                <div class="collection-slug">
+                  <validated-input
+                    v-model="form.slug_suffix"
+                    :disabled="!canModify"
+                    :addon-before="slugPrefix && !form.slug_override ? `${slugPrefix}-` : ''"
+                    class="collection-slug__input"
+                    rules="required|slug"
+                    :label="$t('common.form.slug')"
                   />
-                </flex-input>
-                <flex-input>
-                  <switch-input
-                    v-model="form.hide_on_index"
-                    :disabled="disabled"
-                    horizontal
-                    :label="$t('form.hideOnIndex')"
-                  />
-                </flex-input>
+
+                  <a-tooltip placement="bottom">
+                    <switch-input
+                      v-if="slugPrefix"
+                      v-model="form.slug_override"
+                      :disabled="!canModify"
+                      class="collection-slug__switch"
+                      :label="$t('form.slugOverride')"
+                    />
+
+                    <template #title>
+                      {{ $t('form.slugOverrideHelp') }}
+                    </template>
+                  </a-tooltip>
+                </div>
+                <div class="collection-view__switches">
+                  <flex-input>
+                    <switch-input
+                      v-model="form.public"
+                      :disabled="!canModify"
+                      horizontal
+                      :label="$t('form.public')"
+                    />
+                  </flex-input>
+                  <flex-input>
+                    <switch-input
+                      v-model="form.hide_on_index"
+                      :disabled="!canModify"
+                      horizontal
+                      :label="$t('form.hideOnIndex')"
+                    />
+                  </flex-input>
+                </div>
               </div>
             </div>
-          </div>
 
-          <br />
-          <attributes-select v-model="form.attributes" :disabled="disabled" />
-          <br />
+            <br />
+            <attributes-select v-model="form.attributes" :disabled="!canModify" />
+            <br />
 
-          <small class="label">{{ $t('common.form.description') }}</small>
-          <rich-editor v-if="isEditorActive" v-model="form.description_html" :disabled="disabled" />
-          <br />
+            <small class="label">{{ $t('common.form.description') }}</small>
+            <rich-editor
+              v-if="isEditorActive"
+              v-model="form.description_html"
+              :disabled="!canModify"
+            />
+            <br />
 
-          <SeoForm
-            v-model="form.seo"
-            :disabled="disabled"
-            :current="form.id ? { id: form.id, model: 'ProductSet' } : null"
-          />
+            <SeoForm
+              v-model="form.seo"
+              :disabled="!canModify"
+              :current="form.id ? { id: form.id, model: 'ProductSet' } : null"
+            />
 
-          <MetadataForm
-            v-if="form.metadata"
-            ref="publicMeta"
-            :value="form.metadata"
-            :disabled="disabled"
-            model="productSets"
-          />
-          <MetadataForm
-            v-if="form.metadata_private"
-            ref="privateMeta"
-            :value="form.metadata_private"
-            :disabled="disabled"
-            is-private
-            model="productSets"
-          />
+            <MetadataForm
+              v-if="form.metadata"
+              ref="publicMeta"
+              :value="form.metadata"
+              :disabled="!canModify"
+              model="productSets"
+            />
+            <MetadataForm
+              v-if="form.metadata_private"
+              ref="privateMeta"
+              :value="form.metadata_private"
+              :disabled="!canModify"
+              is-private
+              model="productSets"
+            />
 
-          <hr />
-          <app-button v-if="!disabled" @click="handleSubmit(save)">
-            {{ $t('common.save') }}
-          </app-button>
-        </card>
+            <hr />
+            <app-button v-if="canModify" @click="handleSubmit(save)">
+              {{ $t('common.save') }}
+            </app-button>
+          </card>
+        </form>
       </validation-observer>
     </div>
   </div>
@@ -225,7 +231,6 @@ export default Vue.extend({
   data: () => ({
     form: cloneDeep(CLEAR_PRODUCT_SET_FORM) as CombinedSetDto,
     isEditorActive: true,
-    disabled: false,
   }),
   computed: {
     id(): UUID {
@@ -242,6 +247,9 @@ export default Vue.extend({
     },
     isLoading(): boolean {
       return this.$accessor.productSets.isLoading
+    },
+    canModify(): boolean {
+      return this.$can(this.$p.ProductSets.Edit)
     },
     slugPrefix(): string {
       if (this.$route.query.parentName) {
@@ -302,15 +310,13 @@ export default Vue.extend({
 
       if (this.form.id) {
         await this.saveMetadata(this.form.id)
-        const success = await this.$accessor.productSets.update({
+        await this.$accessor.productSets.update({
           id: this.form.id,
           item: this.form,
         })
-        this.$emit('edit-success', success)
         this.$toast.success(this.$t('alerts.updated') as string)
       } else {
         const productSet = await this.$accessor.productSets.add(this.form)
-        this.$emit('create-success', productSet)
         this.$toast.success(this.$t('alerts.created') as string)
         if (productSet) {
           this.$router.push(`/collections/${productSet.id}`)
@@ -318,7 +324,6 @@ export default Vue.extend({
       }
 
       this.$accessor.stopLoading()
-      this.$emit('close')
     },
 
     async deleteItem() {
@@ -326,7 +331,6 @@ export default Vue.extend({
 
       this.$accessor.startLoading()
       await this.$accessor.productSets.remove(this.form.id)
-      this.$emit('delete-success', this.form.id)
       this.$accessor.stopLoading()
 
       this.$toast.success(this.$t('alerts.deleted') as string)

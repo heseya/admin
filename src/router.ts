@@ -266,7 +266,7 @@ const router = new VueRouter({
       meta: {
         returnUrl: '/collections',
         requiresAuth: true,
-        permissions: [Permissions.ProductSets.Add, Permissions.ProductSets.Edit],
+        permissions: [Permissions.ProductSets.ShowDetails],
       },
     },
 

@@ -39,7 +39,7 @@ export default Vue.extend({
     value: {
       type: Array,
       required: true,
-    } as Vue.PropOptions<Attribute[]>,
+    } as Vue.PropOptions<Attribute[] | string[]>,
     disabled: { type: Boolean, default: false },
   },
   data: () => ({

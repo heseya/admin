@@ -121,7 +121,9 @@ export default Vue.extend({
       return this.$can(this.editedItem.id ? this.$p.Items.Edit : this.$p.Items.Add)
     },
     selectedItem(): null | WarehouseItem {
-      return this.selectedItemId ? this.$accessor.items.getFromListById(this.selectedItemId) : null
+      return this.$accessor.items.getSelected?.id === this.selectedItemId
+        ? this.$accessor.items.getSelected
+        : null
     },
     tableConfig(): TableConfig<WarehouseItem> {
       return {
@@ -194,11 +196,14 @@ export default Vue.extend({
       this.makeSearch({ ...EMPTY_ITEMS_FILTERS })
     },
 
-    openModal(id?: UUID) {
+    async openModal(id?: UUID) {
       if (!this.$verboseCan(this.$p.Items.ShowDetails)) return
       this.isModalActive = true
       if (id) {
-        this.editedItem = cloneDeep(this.$accessor.items.getFromListById(id))
+        const item = await this.$accessor.items.get(id)
+        if (!item) return
+
+        this.editedItem = cloneDeep(item)
         this.selectedItemId = id
       } else {
         this.editedItem = { ...EMPTY_FORM }

@@ -48,7 +48,7 @@
       :visible="isDepositModalOpen"
       :default-time="defaultDepositDeliveryTime"
       :disabled="!$can($p.Deposits.Add)"
-      :item-id="item.id"
+      :item-id="item && item.id"
       @close="closeDepositModal"
     />
   </div>
@@ -92,7 +92,7 @@ import { formatDate } from '@/utils/dates'
 export default Vue.extend({
   components: { DepositFormModal },
   props: {
-    item: { type: Object, default: null } as Vue.PropOptions<WarehouseItem>,
+    item: { type: Object, default: null } as Vue.PropOptions<WarehouseItem | null>,
   },
 
   data: () => ({
@@ -102,7 +102,7 @@ export default Vue.extend({
 
   computed: {
     availability(): WarehouseItem['availability'] {
-      return this.item.availability
+      return this.item?.availability || []
     },
   },
 

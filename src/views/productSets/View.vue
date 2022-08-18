@@ -191,7 +191,6 @@ import { UUID } from '@/interfaces/UUID'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { generateSlug } from '@/utils/generateSlug'
-import { api } from '@/api'
 
 export const CLEAR_PRODUCT_SET_FORM: ProductSetUpdateDto & { cover: CdnMedia | null } = {
   name: '',
@@ -232,7 +231,7 @@ export default Vue.extend({
   data: () => ({
     form: cloneDeep(CLEAR_PRODUCT_SET_FORM) as CombinedSetDto,
     isEditorActive: true,
-    slugPrefix: '',
+    parent: null as ProductSet | null,
   }),
   computed: {
     id(): UUID {
@@ -261,6 +260,9 @@ export default Vue.extend({
       }
       return ''
     },
+    slugPrefix(): string {
+      return (this.isNew ? this.parent?.slug : this.productSet.parent?.slug) || ''
+    },
   },
   watch: {
     productSet(productSet: ProductSetUpdateDto) {
@@ -276,13 +278,11 @@ export default Vue.extend({
   },
   async created() {
     this.$accessor.startLoading()
-    if (this.parentId) {
+
+    // fetch parent product set
+    if (this.parentId && this.isNew) {
       const parent = await this.$accessor.productSets.get(this.parentId)
-      if (parent) {
-        this.slugPrefix = parent.name.toLowerCase()
-      }
-    } else if (this.productSet.parent && !this.isNew) {
-      this.slugPrefix = this.productSet.parent.name.toLowerCase()
+      if (parent) this.parent = parent
     }
 
     if (!this.isNew) {

@@ -3,9 +3,10 @@
     <span class="media-upload-input-wrapper__label">{{ label }}</span>
     <media-uploader
       class="media-upload-input"
-      :class="{ 'media-upload-input--image': !!image }"
+      :class="{ 'media-upload-input--image': !!image, 'media-upload-input--drag': isDrag }"
       :disabled="disabled || !!image"
       @upload="(f) => $emit('upload', f)"
+      @drag-change="(v) => (isDrag = v)"
     >
       <template v-if="image">
         <img :src="image.url" role="presentation" />
@@ -29,11 +30,7 @@
       </template>
       <template v-else>
         <div class="media-upload-input__circle">
-          <img
-            src="@/assets/images/icons/file-add.svg"
-            :alt="$t('fileAdd')"
-            class="media-upload-input__file-add"
-          />
+          <img :src="iconPath" :alt="$t('fileAdd')" class="media-upload-input__file-add" />
         </div>
         <span class="media-upload-input__title"
           >{{ $t('dropOrChooseImage') }} <b>{{ fileName }}</b></span
@@ -48,15 +45,15 @@
   "pl": {
     "removeOrChangeImage": "Usuń lub zmień zdjęcie",
     "dropOrChooseImage": "Przeciągnij lub kliknij aby dodać",
+    "defaultFileName": "multimedia",
     "chooseImage": "Wybierz zdjęcie",
-    "image": "zdjęcie",
     "fileAdd": "Dodaj zdjęcie"
   },
   "en": {
     "removeOrChangeImage": "Remove or change image",
     "dropOrChooseImage": "Drop or choose image to add",
+    "defaultFileName": "media",
     "chooseImage": "Choose image",
-    "image": "image",
     "fileAdd": "Add file"
   }
 }
@@ -84,13 +81,20 @@ export default Vue.extend({
       type: String,
       default: '',
     },
+    iconPath: {
+      type: String,
+      default: () => require('@/assets/images/icons/file-add.svg'),
+    },
     fileName: {
       type: String,
       default: function () {
-        return this.$t('image')
+        return this.$t('defaultFileName')
       },
     },
   },
+  data: () => ({
+    isDrag: false,
+  }),
   methods: {
     updateMedia(media: CdnMedia) {
       this.$emit('upload', media)
@@ -175,28 +179,23 @@ export default Vue.extend({
 
   &__file-add {
     min-height: auto !important;
-    height: 17px;
-    width: 22px;
+    height: 24px;
+    width: 24px;
     margin: auto;
     transition: 0.3s;
   }
 
-  &:hover {
-    background-color: #fff;
-  }
-
+  &--drag &__delete,
   &:hover &__delete,
+  &--drag &__edit-img,
   &:hover &__edit-img {
     opacity: 1;
     visibility: visible;
   }
 
-  &:hover &__file-add {
-    transform: scale(1.1);
-  }
-
+  &--drag &__circle,
   &:hover &__circle {
-    background-color: #f7f7f8;
+    transform: scale(1.1);
   }
 }
 

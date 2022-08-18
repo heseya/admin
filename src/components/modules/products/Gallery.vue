@@ -1,6 +1,11 @@
 <template>
   <div class="gallery">
-    <gallery-upload-button class="gallery__upload-btn" @upload="onImageUpload" />
+    <media-upload-input
+      :disabled="disabled"
+      class="gallery__upload-btn"
+      :icon-path="require('@/assets/images/icons/plus-icon.svg')"
+      @upload="onImageUpload"
+    />
 
     <span class="gallery__info-text"> {{ $t('infoText') }} </span>
 
@@ -47,14 +52,14 @@ import { removeMedia } from '@/services/uploadMedia'
 
 import MediaEditForm from '@/components/modules/media/MediaEditForm.vue'
 import MediaElement from '@/components/MediaElement.vue'
-import GalleryUploadButton from './GalleryUploadButton.vue'
+import MediaUploadInput from '../media/MediaUploadInput.vue'
 
 export default Vue.extend({
   components: {
     Draggable,
     MediaEditForm,
     MediaElement,
-    GalleryUploadButton,
+    MediaUploadInput,
   },
   props: {
     value: {

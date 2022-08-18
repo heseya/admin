@@ -1,6 +1,20 @@
 <template>
   <div class="narrower-page">
-    <top-nav :title="!isNew ? productSet.name : $t('newTitle')">
+    <top-nav>
+      <template #title>
+        <template v-if="!isNew">
+          <span class="gray-text">{{ $t('editTitle') }}</span> {{ productSet.name }}
+        </template>
+        <template v-else>
+          {{ $t('newTitle') }}
+          <small class="gray-text" v-if="parent">
+            ({{ $t('titleSubcollection') }}
+            <router-link :to="`/collections/${parent.id}`">{{ parent.name }}</router-link
+            >)
+          </small>
+        </template>
+      </template>
+
       <pop-confirm
         v-if="!isNew"
         v-can="$p.ProductSets.Remove"
@@ -134,7 +148,8 @@
 {
   "pl": {
     "newTitle": "Nowa kolekcja",
-    "editTitle": "Edycja kolekcji",
+    "editTitle": "Konfiguracja kolekcji",
+    "titleSubcollection": "podkolekcja",
     "deleteText": "Czy na pewno chcesz usunąć tę kolekcję? Wraz z nią usuniesz wszystkie jej subkolekcje!",
     "alerts": {
       "updated": "Kolekcja została zaktualizowana",
@@ -153,6 +168,7 @@
   "en": {
     "newTitle": "New collection",
     "editTitle": "Edit collection",
+    "titleSubcollection": "subcollection of",
     "deleteText": "Are you sure you want to delete this collection? All subcollections will be deleted as well!",
     "alerts": {
       "updated": "Collection has been updated",

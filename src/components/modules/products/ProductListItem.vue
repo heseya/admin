@@ -22,7 +22,7 @@
 
     <template #tags>
       <div class="product-list-item__tags">
-        <tag v-for="tag in product.tags" :key="tag.id" :color="`#${tag.color}`">
+        <tag v-for="tag in product.tags" :key="tag.id" small :color="`#${tag.color}`">
           {{ tag.name }}
         </tag>
         <span v-if="product.tags.length === 0">-</span>

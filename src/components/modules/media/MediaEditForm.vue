@@ -8,7 +8,7 @@
   >
     <template #content>
       <validation-observer v-slot="{ handleSubmit }" slim>
-        <form class="media-edit-modal__form" @submit.prevent="handleSubmit(onSubmit)">
+        <form v-if="isOpen" class="media-edit-modal__form" @submit.prevent="handleSubmit(onSubmit)">
           <validated-input v-model="form.alt" :label="$t('form.alt')" :disabled="isLoading" />
 
           <validated-input

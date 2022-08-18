@@ -9,7 +9,7 @@
       @drag-change="(v) => (isDrag = v)"
     >
       <template v-if="image">
-        <img :src="image.url" role="presentation" />
+        <img class="media-upload-input__img" :src="image.url" role="presentation" />
 
         <AppButton
           type="danger"
@@ -127,10 +127,9 @@ export default Vue.extend({
   height: 100%;
   transition: 0.3s;
 
-  img {
+  &__img {
     display: block;
-    max-height: 240px;
-    min-height: 150px;
+    max-width: 100%;
   }
 
   &--image {
@@ -158,6 +157,7 @@ export default Vue.extend({
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    text-align: center;
   }
 
   &__edit-img {

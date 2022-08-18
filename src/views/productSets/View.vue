@@ -281,9 +281,13 @@ export default Vue.extend({
     },
   },
   watch: {
-    productSet(productSet: ProductSetUpdateDto) {
+    productSet(productSet: ProductSet) {
       if (!this.isNew) {
-        this.form = cloneDeep({ ...CLEAR_PRODUCT_SET_FORM, ...productSet })
+        this.form = cloneDeep({
+          ...CLEAR_PRODUCT_SET_FORM,
+          ...productSet,
+          attributes: productSet.attributes.map((a) => a.id),
+        })
       }
     },
     error(error) {

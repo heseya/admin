@@ -233,16 +233,6 @@ export default Vue.extend({
         )
       },
     },
-    uniqueChildren: {
-      get(): ProductSet[] {
-        if (!this.searchedChildren.length) {
-          return this.children
-        }
-        return this.children.filter(
-          ({ id: childId }) => !this.searchedChildren.find(({ id }) => id === childId),
-        )
-      },
-    },
   },
   created() {
     this.childrenQuantity = this.set.children_ids?.length || 0

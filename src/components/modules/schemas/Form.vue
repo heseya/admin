@@ -257,8 +257,6 @@ import SelectSchemaOptions from '@/components/modules/schemas/SelectSchemaOption
 import ModalForm from '@/components/form/ModalForm.vue'
 import Selector from '@/components/Selector.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
-// TODO: Change to store-core version when type will be compatible
-import { Schema, SchemaDto } from '@/interfaces/Schema'
 
 import { CLEAR_FORM, CLEAR_OPTION } from '@/consts/schemaConsts'
 

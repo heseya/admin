@@ -106,9 +106,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { PackagesTemplate } from '@heseya/store-core'
 import { createStandardPackage } from '@/services/createStandardPackage'
 import { createFurgonetkaPackage } from '@/services/createFurgonetkaPackage'
-import { PackagesTemplate } from '@heseya/store-core'
 
 import { formatApiNotificationError } from '@/utils/errors'
 

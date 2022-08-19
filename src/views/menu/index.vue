@@ -184,7 +184,7 @@ export default Vue.extend({
       if (index === list.length || list[index].disabled) return false
     },
     saveMenu() {
-      this.$accessor.menuItems.setMenuItems(this.menu)
+      this.$accessor.menuItems.setMenuItems([...this.menu])
       this.$toast.success(this.$t('success') as string)
     },
     resetMenu() {

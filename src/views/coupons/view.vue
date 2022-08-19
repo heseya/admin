@@ -31,7 +31,6 @@
           />
 
           <hr />
-
           <SaleForm v-model="form" :disabled="!canModify" />
           <hr />
 

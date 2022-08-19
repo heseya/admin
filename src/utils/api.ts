@@ -32,6 +32,8 @@ export const getApiURL = () => {
       return 'https://api.***REMOVED***.pl'
     case '***REMOVED***-admin.heseya.pl':
       return 'https://sandbox-***REMOVED***.***REMOVED***/'
+    case 'flowy.demo.heseya.pl':
+      return 'https://demo-flowy.***REMOVED***/'
     case 'store-admin-git-feature-shipping-***REMOVED***':
       return 'https://feature-shipping.***REMOVED***'
     default:

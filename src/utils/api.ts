@@ -34,6 +34,8 @@ export const getApiURL = () => {
       return 'https://api.***REMOVED***.pl'
     case '***REMOVED***-admin.heseya.pl':
       return 'https://sandbox-***REMOVED***.***REMOVED***/'
+    case 'flowy.demo.heseya.pl':
+      return 'https://demo-flowy.***REMOVED***/'
     default:
       return (process.env.VUE_APP_API_URL as string) || '***REMOVED***'
   }

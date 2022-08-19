@@ -4,6 +4,7 @@
       :title="$t('title')"
       :filters="filters"
       :table="tableConfig"
+      :xlsx-file-config="fileConfig"
       store-key="orders"
       class="orders-list"
       @search="makeSearch"
@@ -85,7 +86,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Order } from '@heseya/store-core'
+import { Address, Order, OrderStatus, ShippingMethod } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
@@ -97,8 +98,10 @@ import OrderFilter, {
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 
 import { TableConfig } from '@/interfaces/CmsTable'
+import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 
-import { formatFilters, getRelativeDate } from '@/utils/utils'
+import { formatFilters } from '@/utils/utils'
+import { formatDate } from '@/utils/dates'
 import { formatCurrency } from '@/utils/currency'
 
 export default Vue.extend({
@@ -133,7 +136,40 @@ export default Vue.extend({
             key: 'created_at',
             label: this.$t('form.date') as string,
             sortable: true,
-            render: (v) => getRelativeDate(v, this.$i18n.locale),
+            render: (v) => formatDate(v),
+          },
+        ],
+      }
+    },
+    fileConfig(): XlsxFileConfig<Order> {
+      return {
+        name: this.$t('title') as string,
+        headers: [
+          { key: 'code', label: this.$t('form.code') as string },
+          {
+            key: 'delivery_address',
+            label: this.$t('form.clientName') as string,
+            format: (v: Address) => v.name,
+          },
+          { key: 'summary', label: this.$t('form.summary') as string },
+          {
+            key: 'paid',
+            label: this.$t('form.paid') as string,
+            format: (v: boolean) => (v ? this.$t('paid') : this.$t('notpaid')) as string,
+          },
+          {
+            key: 'status',
+            label: this.$t('form.status') as string,
+            format: (v: OrderStatus) => v.name,
+          },
+          {
+            key: 'shipping_method',
+            label: this.$t('form.shipping') as string,
+            format: (v: ShippingMethod) => v.name,
+          },
+          {
+            key: 'created_at',
+            label: this.$t('form.date') as string,
           },
         ],
       }

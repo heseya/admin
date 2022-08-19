@@ -67,7 +67,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
-import { WarehouseItem } from '@heseya/store-core'
+import { WarehouseItem, WarehouseItemCreateDto } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ItemsFilter, {
@@ -77,11 +77,11 @@ import ItemsFilter, {
 import ItemModal from '@/components/modules/items/ItemModal.vue'
 
 import { UUID } from '@/interfaces/UUID'
-import { WarehouseItemCreateDto } from '@/interfaces/WarehouseItem'
 import { TableConfig } from '@/interfaces/CmsTable'
 
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 import { formatFilters } from '@/utils/utils'
+import { formatDate } from '@/utils/dates'
 
 const EMPTY_FORM: WarehouseItemCreateDto = {
   name: '',
@@ -100,17 +100,16 @@ export default Vue.extend({
     ItemModal,
   },
   beforeRouteLeave(to, from, next) {
-    if (this.isModalActive) {
-      this.isModalActive = false
-      next(false)
-    } else {
-      next()
-    }
+    if (this.isModalActive) this.isModalActive = false
+    next()
   },
   data: () => ({
     filters: { ...EMPTY_ITEMS_FILTERS } as ItemsFilersType,
     isModalActive: false,
-    editedItem: { ...EMPTY_FORM } as WarehouseItemCreateDto & Partial<WarehouseItem>,
+    editedItem: { ...EMPTY_FORM } as Omit<
+      WarehouseItemCreateDto & Partial<WarehouseItem>,
+      'metadata' | 'metadata_private'
+    >,
     selectedItemId: null as null | UUID,
   }),
   computed: {
@@ -122,9 +121,8 @@ export default Vue.extend({
       return this.$can(this.editedItem.id ? this.$p.Items.Edit : this.$p.Items.Add)
     },
     selectedItem(): null | WarehouseItem {
-      return this.selectedItemId
-        ? this.$accessor.items.getSelected ||
-            this.$accessor.items.getFromListById(this.selectedItemId)
+      return this.$accessor.items.getSelected?.id === this.selectedItemId
+        ? this.$accessor.items.getSelected
         : null
     },
     tableConfig(): TableConfig<WarehouseItem> {
@@ -148,7 +146,9 @@ export default Vue.extend({
               if (item.shipping_time)
                 return this.$t('table.availibilityTime', { time: item.shipping_time }) as string
               if (item.shipping_date)
-                return this.$t('table.availibilityDate', { date: item.shipping_date }) as string
+                return this.$t('table.availibilityDate', {
+                  date: formatDate(item.shipping_date),
+                }) as string
               return '-'
             },
           },
@@ -196,11 +196,14 @@ export default Vue.extend({
       this.makeSearch({ ...EMPTY_ITEMS_FILTERS })
     },
 
-    openModal(id?: UUID) {
+    async openModal(id?: UUID) {
       if (!this.$verboseCan(this.$p.Items.ShowDetails)) return
       this.isModalActive = true
       if (id) {
-        this.editedItem = cloneDeep(this.$accessor.items.getFromListById(id))
+        const item = await this.$accessor.items.get(id)
+        if (!item) return
+
+        this.editedItem = cloneDeep(item)
         this.selectedItemId = id
       } else {
         this.editedItem = { ...EMPTY_FORM }

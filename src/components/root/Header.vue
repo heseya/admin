@@ -74,7 +74,13 @@ export default Vue.extend({
       return this.$accessor.config.env.store_name
     },
     returnUrl(): string | null {
-      return this.$route.meta?.returnUrl || null
+      const previousRoute: { path: string; fullPath: string } | null = JSON.parse(
+        window.sessionStorage.getItem('previousRoute') ?? 'null',
+      )
+      const returnUrl = this.$route.meta?.returnUrl || null
+      // If the previous route match the return url, then return previous full route path cause it's also includes the query params
+      // Otherwise simply return the return url
+      return previousRoute?.path === returnUrl ? previousRoute?.fullPath : returnUrl
     },
     user(): User | null {
       return this.$accessor.auth.user
@@ -83,6 +89,7 @@ export default Vue.extend({
       return last(this.user?.roles)?.name || ''
     },
   },
+
   methods: {
     async logout() {
       await this.$accessor.auth.logout()

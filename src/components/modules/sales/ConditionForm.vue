@@ -209,10 +209,6 @@ export default Vue.extend({
   border-radius: 4px;
   padding: 8px;
 
-  &:hover {
-    background-color: $background-color-700;
-  }
-
   &__heading {
     font-size: 14px;
     line-height: 17px;

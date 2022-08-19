@@ -68,15 +68,15 @@
 <i18n lang="json">
 {
   "en": {
-    "title": "Attributes",
-    "addAttribute": "Add attribute to product",
+    "title": "Product attributes",
+    "addAttribute": "Add attribute",
     "noAttributesInProduct": "This product has no attributes yet",
     "globalTooltip": "Global attribute is automatically given to all products",
     "copySuccess": "Attribute value has been copied!"
   },
   "pl": {
-    "title": "Cechy",
-    "addAttribute": "Dodaj cechę do produktu",
+    "title": "Cechy produktu",
+    "addAttribute": "Dodaj cechę",
     "noAttributesInProduct": "Ten produkt nie ma jeszcze żadnej cechy",
     "globalTooltip": "Globalna cecha jest automatycznie dodawana do wszystkich produktów",
     "copySuccess": "Wartość cechy została skopiowana!"
@@ -192,7 +192,7 @@ export default Vue.extend({
   }
 
   &__title {
-    font-size: 1.3em;
+    font-size: 1.1em;
     font-weight: 600;
   }
 

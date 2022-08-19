@@ -62,6 +62,7 @@
 
     <a-modal v-model="isSelectorActive" width="800px" :title="$t('chooseProduct')" :footer="null">
       <selector
+        v-if="isSelectorActive"
         :type-name="$t('product')"
         type="products"
         :existing="products"

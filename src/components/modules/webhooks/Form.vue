@@ -135,10 +135,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
-// TODO: Change to the store-core version when available
-//import { WebhookEntryUpdateDto, WebHookEventType, WebhookEventEntry } from '@heseya/store-core'
-
-import { WebHookDto, WebHookEvent, WebHookEventObject } from '@/interfaces/Webhook'
+import { WebhookEntryUpdateDto, WebhookEventType, WebHookEventObject } from '@heseya/store-core'
 
 export default Vue.extend({
   components: {
@@ -148,7 +145,7 @@ export default Vue.extend({
     value: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<WebHookDto>,
+    } as Vue.PropOptions<WebhookEntryUpdateDto>,
     disabled: {
       type: Boolean,
       default: false,
@@ -156,10 +153,10 @@ export default Vue.extend({
   },
   computed: {
     form: {
-      get(): WebHookDto {
+      get(): WebhookEntryUpdateDto {
         return this.value
       },
-      set(discount: WebHookDto) {
+      set(discount: WebhookEntryUpdateDto) {
         this.$emit('input', discount)
       },
     },
@@ -184,17 +181,17 @@ export default Vue.extend({
       if (this.error) return
       this.$emit('submit', this.form)
     },
-    toggle(key: WebHookEvent) {
+    toggle(key: WebhookEventType) {
       if (this.has(key)) {
         this.form.events = this.form.events.filter((ev) => ev !== key)
       } else {
         this.form.events.push(key)
       }
     },
-    has(key: WebHookEvent) {
+    has(key: WebhookEventType) {
       return this.form.events.includes(key)
     },
-    isEncrypted(key: WebHookEvent) {
+    isEncrypted(key: WebhookEventType) {
       return this.allEvents.find((event) => event.key === key)?.encrypted
     },
   },

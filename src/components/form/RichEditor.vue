@@ -43,7 +43,7 @@ export default Vue.extend({
         css: '/article-editor/css/',
         plugins: [
           'imageposition',
-          // TODO: plugin below throw errors when unmounted
+          //  plugin below throw errors when unmounted
           // 'imageresize',
           'underline',
           'removeformat',

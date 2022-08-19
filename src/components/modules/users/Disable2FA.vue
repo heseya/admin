@@ -3,7 +3,7 @@
     <h3 class="disable-2fa__title">
       {{ $t('title') }}
       <!-- <a-tooltip>
-        <template #title> TODO </template>
+        <template #title> 2FA Tooltip text </template>
         <i class="bx bxs-info-circle"></i>
       </a-tooltip> -->
     </h3>

@@ -122,7 +122,7 @@ export default Vue.extend({
     flex-direction: column;
     align-items: flex-end;
 
-    ::v-deep .order-field {
+    :deep(.order-field) {
       font-size: 1em;
     }
   }
@@ -131,7 +131,7 @@ export default Vue.extend({
     margin-top: 16px;
   }
 
-  &__summary-total ::v-deep .order-field__value {
+  &__summary-total :deep(.order-field__value) {
     font-size: 1.4em;
     font-weight: 600;
   }

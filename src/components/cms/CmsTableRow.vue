@@ -6,12 +6,23 @@
     :class="{ 'cms-table-row--no-hover': noHover }"
     @click.stop="click"
   >
-    <div v-for="{ key, label, value, rawValue } in values" :key="key" class="cms-table-row__col">
+    <div
+      v-for="{ key, label, value, rawValue, wordBreak } in values"
+      :key="key"
+      class="cms-table-row__col"
+      :class="{ 'cms-table-row__col--break': wordBreak && wordBreak !== 'none' }"
+    >
       <span class="cms-table-row__col-label">{{ label }}</span>
-      <span class="cms-table-row__col-value">
+      <span
+        class="cms-table-row__col-value"
+        :class="{
+          'cms-table-row__col-value--break-all': wordBreak === 'break-all',
+          'cms-table-row__col-value--break-word': wordBreak === 'break-word',
+        }"
+      >
         <slot :name="key" v-bind="{ key, label, value, rawValue, item }">
           <BooleanTag v-if="typeof value === 'boolean'" :value="value" />
-          <template v-else> {{ value }} </template>
+          <span v-else> {{ value }} </span>
         </slot>
       </span>
     </div>
@@ -21,7 +32,6 @@
 <script lang="ts">
 import Vue from 'vue'
 import get from 'lodash/get'
-
 import { TableHeader, TableValue } from '@/interfaces/CmsTable'
 
 export default Vue.extend({
@@ -53,13 +63,14 @@ export default Vue.extend({
       return this.el
     },
     values(): TableValue[] {
-      return this.headers.map(({ key, label, render }) => {
+      return this.headers.map(({ key, label, render, wordBreak }) => {
         const rawValue = get(this.item, key)
         return {
           key,
           label,
           value: render?.(rawValue, this.item) ?? rawValue,
           rawValue,
+          wordBreak: wordBreak ?? 'none',
         }
       })
     },
@@ -74,12 +85,13 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .cms-table-row {
+  $cms: &;
   border: none;
   @extend %card;
   box-shadow: none;
   background-color: #fff;
   display: grid;
-  align-items: center;
+  align-items: start;
   width: 100%;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   cursor: pointer;
@@ -125,6 +137,10 @@ export default Vue.extend({
     @media ($viewport-11) {
       padding: 16px;
     }
+
+    &--break {
+      overflow: hidden;
+    }
   }
 
   &__col-label {
@@ -140,6 +156,14 @@ export default Vue.extend({
 
   &__col-value {
     color: $font-color;
+
+    &--break-all {
+      word-break: break-all;
+    }
+
+    &--break-word {
+      word-break: break-word;
+    }
   }
 }
 </style>

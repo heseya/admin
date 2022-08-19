@@ -111,7 +111,7 @@
       v-model="form.options"
       :default-option="defaultOption"
       :disabled="disabled"
-      @setDefault="(v) => (defaultOption = v)"
+      @set-default="(v) => (defaultOption = v)"
     />
 
     <Zone v-if="form.type === SchemaType.MultiplySchema">
@@ -130,7 +130,7 @@
         :title="$t('modalTitle')"
         :footer="null"
       >
-        <modal-form>
+        <modal-form v-if="isUsedSchemaModalActive">
           <selector
             type="schemas"
             :add-text="$t('choose')"
@@ -249,7 +249,7 @@
 import Vue from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
-import { SchemaType } from '@heseya/store-core'
+import { SchemaType, Schema } from '@heseya/store-core'
 
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import Zone from '@/components/layout/Zone.vue'
@@ -257,8 +257,6 @@ import SelectSchemaOptions from '@/components/modules/schemas/SelectSchemaOption
 import ModalForm from '@/components/form/ModalForm.vue'
 import Selector from '@/components/Selector.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
-// TODO: Change to store-core version when type will be compatible
-import { Schema, SchemaDto } from '@/interfaces/Schema'
 
 import { CLEAR_FORM, CLEAR_OPTION } from '@/consts/schemaConsts'
 
@@ -285,7 +283,8 @@ export default Vue.extend({
     disabled: { type: Boolean, default: false },
   },
   data: () => ({
-    form: cloneDeep(CLEAR_FORM) as SchemaDto & { id?: string },
+    // TODO: correct SchemaComponentDto
+    form: cloneDeep(CLEAR_FORM) as any & { id?: string },
     defaultOption: 0,
     isUsedSchemaModalActive: false,
     usedSchemaName: '',
@@ -305,7 +304,7 @@ export default Vue.extend({
   watch: {
     defaultOption(defaultOption: number) {
       if (this.form.type === SchemaType.Select) {
-        this.form.options = this.form.options.map((v) => ({ ...v, default: false }))
+        this.form.options = this.form.options.map((v: any) => ({ ...v, default: false }))
         this.form.options[defaultOption].default = true
       }
     },
@@ -358,13 +357,12 @@ export default Vue.extend({
         this.form.default =
           this.form.type === SchemaType.Select ? this.defaultOption : this.form.default
 
-        const options = this.form.options.map((opt) => ({
+        const options = this.form.options.map((opt: any) => ({
           ...opt,
-          items: opt.items.map((item) => item.id),
+          items: opt.items.map((item: any) => item.id),
         }))
 
         if (!this.form?.id) {
-          // @ts-ignore // TODO: Schema DTO
           const schema = await this.$accessor.schemas.add({ ...this.form, options })
           if (!schema) throw new Error('Schema not created')
 
@@ -378,7 +376,6 @@ export default Vue.extend({
 
           const success = await this.$accessor.schemas.update({
             id: this.form.id,
-            // @ts-ignore // TODO: Schema DTO
             item: { ...this.form, options },
           })
           if (!success) throw new Error('Schema not updated')

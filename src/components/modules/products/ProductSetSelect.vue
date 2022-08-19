@@ -23,13 +23,13 @@
   "pl": {
     "form": {
       "sets": "Kolekcje",
-      "setsPlaceholder": "Wybierz kolekcje"
+      "setsPlaceholder": "Wybierz kolekcje produktu"
     }
   },
   "en": {
     "form": {
       "sets": "Sets",
-      "setsPlaceholder": "Select sets"
+      "setsPlaceholder": "Select product sets"
     }
   }
 }

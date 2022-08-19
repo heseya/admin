@@ -1,3 +1,5 @@
+import { formatRelative } from 'date-fns'
+import { pl, enGB } from 'date-fns/locale'
 import { ALL_FILTER_VALUE } from '../consts/filters'
 import { DateInput } from './dates'
 
@@ -16,20 +18,18 @@ export const getMinutesDiff = (d1: DateInput, d2: DateInput) => {
   return Math.round(diff / 1000 / 60) || 0
 }
 
-export const getRelativeDate = (date: DateInput, lang = 'pl') => {
+export const getRelativeDate = (date: DateInput, lang = 'pl', pattern = 'dd.MM.yyyy, HH:mm') => {
   const today = new Date()
   const actionDate = new Date(date)
 
-  const diff = getDaysDiff(today, actionDate)
-  const minutesDiff = getMinutesDiff(today, actionDate)
+  const baseLocale = lang === 'pl' ? pl : enGB
+  const locale = {
+    ...baseLocale,
+    formatRelative: (token: any, ...args: any[]) =>
+      token === 'other' ? pattern : baseLocale.formatRelative!(token, ...args),
+  }
 
-  const rtf = new Intl.RelativeTimeFormat(lang, { numeric: 'auto' })
-
-  if (diff > -1 && minutesDiff < -59) return rtf.format(Math.round(minutesDiff / 60), 'hours')
-  if (diff > -1) return rtf.format(minutesDiff, 'minute')
-  if (diff > -30) return rtf.format(diff, 'day')
-  else if (diff > -356) return rtf.format(Math.floor(diff / 30), 'month')
-  else return rtf.format(Math.floor(diff / 365), 'year')
+  return formatRelative(actionDate, today, { locale })
 }
 
 export const formatFilters = (filters: Record<string, unknown>) => {

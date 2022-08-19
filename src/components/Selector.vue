@@ -1,7 +1,9 @@
 <template>
   <div class="schema-selector">
     <app-input
+      ref="input"
       v-model="query"
+      name="selector-search-input"
       :label="`${$t('search')} ${typeName || $t('defaultTypeName')}`"
     ></app-input>
 
@@ -88,6 +90,10 @@ export default Vue.extend({
       type: Array,
       default: () => [],
     } as Vue.PropOptions<Item[]>,
+    autofocus: {
+      type: Boolean,
+      default: true,
+    },
   },
   data: () => ({
     query: '',
@@ -103,6 +109,9 @@ export default Vue.extend({
     query(search: string) {
       this.getItems(search)
     },
+  },
+  mounted() {
+    if (this.autofocus) (this.$refs.input as any)?.focus()
   },
   methods: {
     // TODO: "this" typing is wrong

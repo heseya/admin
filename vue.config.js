@@ -19,6 +19,15 @@ module.exports = {
     },
   },
 
+  configureWebpack: {
+    optimization: {
+      splitChunks: {
+        minSize: 10000,
+        maxSize: 250000,
+      },
+    },
+  },
+
   pwa: {
     name: 'Heseya',
     themeColor: '#8f022c',
@@ -46,6 +55,11 @@ module.exports = {
         },
       ],
     },
+
+    // workboxOptions: {
+    // Probably file size should be reduced instead of increasing the limit
+    // maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
+    // },
 
     iconPaths: {
       appleTouchIcon: 'img/apple-touch-icon.png',

@@ -13,8 +13,7 @@ describe('add new collection', () => {
 
     cy.get('.icon-button__text').contains('Add collection').click() // TODO : change to data-cy
 
-    const uuid = () => Cypress._.random(0, 1e6)
-    const id = uuid()
+    const id = cy.util.uuid()
     const collectionName = `col${id}`
     const subCollectionName = `sub${id}`
 

@@ -37,7 +37,7 @@
   </card>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "en": {
     "labels": {
@@ -76,13 +76,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { Order } from '@heseya/store-core'
 
 import Card from '@/components/layout/Card.vue'
 import SummaryPayment from './SummaryPayment.vue'
 import OrderField from '../../Field.vue'
 import CmsTable from '@/components/cms/CmsTable.vue'
 
-import { Order } from '@/interfaces/Order'
 import { formatDate } from '@/utils/dates'
 import { TableConfig } from '@/interfaces/CmsTable'
 import { PAYMENT_METHODS } from '@/consts/paymentMethods'
@@ -166,7 +166,7 @@ export default Vue.extend({
     flex-wrap: wrap;
   }
 
-  ::v-deep .order-field--horizontal .order-field__label {
+  :deep(.order-field--horizontal .order-field__label) {
     width: 140px;
   }
 }

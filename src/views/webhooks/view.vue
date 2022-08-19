@@ -61,7 +61,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "newTitle": "Nowy webhook",
@@ -89,8 +89,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
-
-import { WebHook, WebHookDto, WebHookEventLogEntry } from '@/interfaces/Webhook'
+import { WebhookEntry, WebhookEntryUpdateDto, WebhookEventLog } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
@@ -103,7 +102,7 @@ import { formatApiNotificationError } from '@/utils/errors'
 import { ResponseMeta } from '@/interfaces/Response'
 import Loading from '@/components/layout/Loading.vue'
 
-const CLEAR_FORM: WebHookDto = {
+const CLEAR_FORM: WebhookEntryUpdateDto = {
   url: '',
   events: [],
   name: '',
@@ -140,13 +139,13 @@ export default Vue.extend({
     isNew(): boolean {
       return this.id === 'create'
     },
-    webhook(): WebHook {
+    webhook(): WebhookEntry {
       return this.$accessor.webhooks.getSelected || ({} as any)
     },
     error(): any {
       return this.$accessor.webhooks.getError
     },
-    logs(): WebHookEventLogEntry[] {
+    logs(): WebhookEventLog[] {
       return this.$accessor.webhooks.logs
     },
     logsMeta(): ResponseMeta {
@@ -185,7 +184,7 @@ export default Vue.extend({
       this.areLogsLoading = false
     },
 
-    async saveWebhook(webhook: WebHook) {
+    async saveWebhook(webhook: WebhookEntry) {
       this.$accessor.startLoading()
       const newWebHook = this.isNew
         ? await this.$accessor.webhooks.add(webhook)

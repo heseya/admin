@@ -53,14 +53,14 @@
       <template #title>
         <h4>{{ $t('chooseExisting') }}</h4>
       </template>
-      <modal-form>
+      <modal-form v-if="isModalActive">
         <Selector type="items" :type-name="$t('typeName')" :existing="value" @select="addItem" />
       </modal-form>
     </a-modal>
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "en": {
     "title": "Warehouse items",
@@ -72,9 +72,9 @@
     "requiredQuantity": "Required quantity"
   },
   "pl": {
-    "title": "Przedmioty magazynowe",
+    "title": "Pozycje na magazynie",
     "titleTooltip": "Lista przedmiotów magazynowych dostępnych w danym produkcie, jeśli produkt zostanie zakupiony, to z magazynu zostanie zdjęte tyle przedmiotów, ile podane jest poniżej. Produkt nie będzie dostępny, gdy nie będzie już wystarczająco przedmiotów w magazynie.",
-    "addItem": "Dodaj przedmiot magazynowy",
+    "addItem": "Dodaj pozycję z magazynu",
     "noItemsInProduct": "Ten produkt nie posiada jeszcze przedmiotów magazynowych",
     "chooseExisting": "Wybierz istniejący przedmiot magazynowy",
     "typeName": "przedmiot magazynowy",
@@ -85,22 +85,23 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { WarehouseItem, ProductWarehouseItem } from '@heseya/store-core'
+
+import { UUID } from '@/interfaces/UUID'
 
 import Empty from '@/components/layout/Empty.vue'
 import List from '@/components/layout/List.vue'
 import Selector from '@/components/Selector.vue'
-import { ProductInnerItem } from '@/interfaces/Product'
-import { WarehouseItem } from '@/interfaces/WarehouseItem'
 import ListItem from '@/components/layout/ListItem.vue'
-import { UUID } from '@/interfaces/UUID'
+import ModalForm from '@/components/form/ModalForm.vue'
 
 export default Vue.extend({
-  components: { Empty, List, Selector, ListItem },
+  components: { Empty, List, Selector, ListItem, ModalForm },
   props: {
     value: {
       type: Array,
       required: true,
-    } as Vue.PropOptions<ProductInnerItem[]>,
+    } as Vue.PropOptions<ProductWarehouseItem[]>,
     disabled: { type: Boolean, default: false },
   },
   data: () => ({
@@ -108,10 +109,10 @@ export default Vue.extend({
   }),
   computed: {
     items: {
-      get(): ProductInnerItem[] {
+      get(): ProductWarehouseItem[] {
         return this.value
       },
-      set(value: ProductInnerItem[]) {
+      set(value: ProductWarehouseItem[]) {
         this.$emit('input', value)
       },
     },
@@ -140,7 +141,7 @@ export default Vue.extend({
   }
 
   &__title {
-    font-size: 1.3em;
+    font-size: 1.1em;
     font-weight: 600;
   }
 
@@ -148,7 +149,7 @@ export default Vue.extend({
     padding: 0;
   }
 
-  ::v-deep .list-item__content {
+  :deep(.list-item__content) {
     width: 100%;
   }
 }

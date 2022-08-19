@@ -65,18 +65,18 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "en": {
-    "title": "Attributes",
-    "addAttribute": "Add attribute to product",
+    "title": "Product attributes",
+    "addAttribute": "Add attribute",
     "noAttributesInProduct": "This product has no attributes yet",
     "globalTooltip": "Global attribute is automatically given to all products",
     "copySuccess": "Attribute value has been copied!"
   },
   "pl": {
-    "title": "Cechy",
-    "addAttribute": "Dodaj cechę do produktu",
+    "title": "Cechy produktu",
+    "addAttribute": "Dodaj cechę",
     "noAttributesInProduct": "Ten produkt nie ma jeszcze żadnej cechy",
     "globalTooltip": "Globalna cecha jest automatycznie dodawana do wszystkich produktów",
     "copySuccess": "Wartość cechy została skopiowana!"
@@ -86,7 +86,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Attribute, AttributeType, ProductAttribute } from '@/interfaces/Attribute'
+import { AttributeType, Attribute, ProductAttribute } from '@heseya/store-core'
 
 import Empty from '@/components/layout/Empty.vue'
 import List from '@/components/layout/List.vue'
@@ -144,12 +144,15 @@ export default Vue.extend({
     loadGlobalAttributes() {
       const attributesToAdd = this.globalAttributes
         .filter((attr) => this.attributes.findIndex((a) => a.id === attr.id) === -1)
-        .map((attr) => ({ ...attr, selected_options: [undefined as any] }))
+        .map((attr) => ({ ...attr, selected_options: [undefined as any] })) as ProductAttribute[]
       if (attributesToAdd.length > 0) this.attributes = [...this.attributes, ...attributesToAdd]
     },
 
     addAttribute(attribute: Attribute) {
-      this.attributes = [...this.attributes, { ...attribute, selected_options: [undefined as any] }]
+      this.attributes = [
+        ...this.attributes,
+        { ...attribute, selected_options: [undefined as any] } as ProductAttribute,
+      ]
       this.isSelectorModalActive = false
     },
 
@@ -189,7 +192,7 @@ export default Vue.extend({
   }
 
   &__title {
-    font-size: 1.3em;
+    font-size: 1.1em;
     font-weight: 600;
   }
 

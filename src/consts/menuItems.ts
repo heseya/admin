@@ -24,8 +24,10 @@ export interface MenuLink {
   exact?: boolean
   iconClass?: string
   svgIconPath?: string
+  iconPath?: string
   label: string
   disabled?: true
+  isMicrofrontend?: true
   section?: SettingsSection
 }
 export interface MenuSpacer {
@@ -55,7 +57,7 @@ export const MENU_ITEMS: MenuItem[] = [
     svgIconPath: 'icons/orders-icon.svg',
     label: 'models.orders',
     disabled: true,
-    can: PERMISSIONS_TREE.Orders.Show,
+    can: PERMISSIONS_TREE.Orders.ShowSummary,
   },
   { id: '4', type: MenuItemType.Spacer, disabled: true },
   {
@@ -212,19 +214,19 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     id: '22',
     type: MenuItemType.Link,
-    to: '/apps',
-    iconClass: 'bx bxs-store-alt',
-    label: 'nav.apps',
-    can: PERMISSIONS_TREE.Apps.Show,
-    section: SettingsSection.Other,
+    to: '/settings/consents',
+    iconClass: 'bx bx-paragraph',
+    label: 'nav.consents',
+    can: PERMISSIONS_TREE.Consents.Show,
+    section: SettingsSection.Users,
   },
   {
     id: '23',
     type: MenuItemType.Link,
-    to: '/settings/consents',
-    iconClass: 'bx bx-file-blank',
-    label: 'nav.consents',
-    can: PERMISSIONS_TREE.Consents.Show,
+    to: '/apps',
+    iconClass: 'bx bxs-store-alt',
+    label: 'nav.apps',
+    can: PERMISSIONS_TREE.Apps.Show,
     section: SettingsSection.Other,
   },
   {
@@ -268,5 +270,5 @@ export const MENU_LINKS = MENU_ITEMS.filter((item) => item.type === MenuItemType
 export const DEFAULT_MENU_ITEMS = MENU_ITEMS.filter(
   (item) => item.type === MenuItemType.Spacer || item.default,
 )
-export const DEFAULT_AVAILABLE_ITEMS = MENU_LINKS.filter((item) => !item.default)
+export const MENU_AVAILABLE_ITEMS = MENU_LINKS.filter((item) => !item.default)
 export const SETTINGS_LINKS = MENU_LINKS.filter((item) => item.section) as MenuLink[]

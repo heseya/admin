@@ -5,6 +5,7 @@
       :filters="filters"
       store-key="products"
       :table="listView ? tableConfig : undefined"
+      :xlsx-file-config="fileConfig"
       @search="makeSearch"
       @clear-filters="clearFilters"
     >
@@ -37,7 +38,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Asortyment",
@@ -48,7 +49,7 @@
       "list": "listy"
     },
     "form": {
-      "price": "Cena",
+      "price": "Cena brutto",
       "tags": "Tagi",
       "public": "Widoczność"
     }
@@ -62,7 +63,7 @@
       "list": "list"
     },
     "form": {
-      "price": "Price",
+      "price": "Price (gross)",
       "tags": "Tags",
       "public": "Visibility"
     }
@@ -72,6 +73,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { cloneDeep } from 'lodash'
+import { Product, Tag } from '@heseya/store-core'
 
 import ProductTile from '@/components/modules/products/ProductTile.vue'
 import ProductListItem from '@/components/modules/products/ProductListItem.vue'
@@ -84,8 +87,7 @@ import PaginatedList from '@/components/PaginatedList.vue'
 import { formatFilters } from '@/utils/utils'
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 import { TableConfig } from '@/interfaces/CmsTable'
-import { Product } from '@/interfaces/Product'
-import { cloneDeep } from 'lodash'
+import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 
 const LOCAL_STORAGE_KEY = 'products-list-view'
 
@@ -116,6 +118,25 @@ export default Vue.extend({
             label: this.$t('form.public') as string,
             width: '0.5fr',
             sortable: true,
+          },
+        ],
+      }
+    },
+    fileConfig(): XlsxFileConfig<Product> {
+      return {
+        name: this.$t('title') as string,
+        headers: [
+          { key: 'name', label: this.$t('common.form.name') as string },
+          { key: 'price', label: this.$t('form.price') as string },
+          {
+            key: 'tags',
+            label: this.$t('form.tags') as string,
+            format: (v: Tag[]) => v.map((tag) => tag.name).join(', '),
+          },
+          {
+            key: 'public',
+            label: this.$t('form.public') as string,
+            format: (v: boolean) => (v ? this.$t('common.yes') : this.$t('common.no')) as string,
           },
         ],
       }

@@ -15,7 +15,7 @@
       },
     ]"
     :disabled="disabled"
-    @click="(e) => $emit('click', e)"
+    @click="onClick"
   >
     <div class="icon-button__text">
       <slot></slot>
@@ -54,7 +54,14 @@ export default Vue.extend({
       type: String,
       default: 'primary',
     } as Vue.PropOptions<
-      'default' | 'primary' | 'danger' | 'transparent' | 'transparent-white' | 'success' | 'black'
+      | 'default'
+      | 'primary'
+      | 'danger'
+      | 'transparent'
+      | 'transparent-white'
+      | 'success'
+      | 'black'
+      | 'burgund'
     >,
     size: {
       type: String,
@@ -65,6 +72,12 @@ export default Vue.extend({
   computed: {
     component(): string {
       return this.to ? 'router-link' : this.el || 'button'
+    },
+  },
+  methods: {
+    onClick(e: Event) {
+      if (this.htmlType !== 'submit' && !this.to) e.preventDefault()
+      this.$emit('click', e)
     },
   },
 })
@@ -230,6 +243,19 @@ export default Vue.extend({
 
     &:hover {
       background-color: $font-color;
+      color: #ffffff;
+    }
+  }
+
+  &--burgund {
+    color: #ffffff;
+
+    #{$root}__icon {
+      background-color: $primary-color-500;
+    }
+
+    &:hover {
+      background-color: $primary-color-500;
       color: #ffffff;
     }
   }

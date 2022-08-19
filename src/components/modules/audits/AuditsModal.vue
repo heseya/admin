@@ -41,12 +41,12 @@
           <template #header>
             <div class="audit-entry__header">
               <span class="audit-entry__header-user">
-                {{ entry.user ? entry.user.email : $t('unauthenticated') }}
+                {{ getIssuer(entry) }}
               </span>
               <span class="audit-entry__tag">
                 {{ entry.event === 'updated' ? $t('eventChanged') : entry.event }}
               </span>
-              <span class="audit-entry__header-date">{{ formatDateTime(entry.created_at) }}</span>
+              <span class="audit-entry__header-date">{{ formatDate(entry.created_at) }}</span>
             </div>
           </template>
 
@@ -70,7 +70,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Rejestr zmian",
@@ -82,7 +82,8 @@
       "old": "Starta wartość",
       "new": "Nowa wartość"
     },
-    "unauthenticated": "Niezalogowany użytkownik",
+    "unauthenticatedUser": "Niezalogowany użytkownik",
+    "unknownApp": "Nieznana aplikacja",
     "eventChanged": "zmieniono",
     "keyValues": {
       "code": "Kod",
@@ -115,7 +116,8 @@
       "old": "Old value",
       "new": "New value"
     },
-    "unauthenticated": "Unauthenticated user",
+    "unauthenticatedUser": "Unauthenticated user",
+    "unknownApp": "Unknown application",
     "eventChanged": "changed",
     "keyValues": {
       "code": "Code",
@@ -143,8 +145,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import format from 'date-fns/format'
 import { capitalize } from 'lodash'
+import { EntityAudits } from '@heseya/store-core'
 
 import CmsTable from '../../cms/CmsTable.vue'
 import Empty from '../../layout/Empty.vue'
@@ -153,10 +155,10 @@ import AuditFormatter from './AuditFormatter.vue'
 import CmsTableRow from '../../cms/CmsTableRow.vue'
 
 import { downloadJsonAsFile } from '@/utils/download'
+import { formatDate } from '@/utils/dates'
 
 import { UUID } from '@/interfaces/UUID'
 import { GeneratedStoreModulesKeys } from '@/store'
-import { AuditEntry } from '@/interfaces/AuditEntry'
 import { TableConfig } from '@/interfaces/CmsTable'
 
 const transformKey = (key: string): string =>
@@ -177,7 +179,7 @@ export default Vue.extend({
   data: () => ({
     isModalOpen: false,
     isLoading: false,
-    audits: [] as AuditEntry[],
+    audits: [] as EntityAudits<Record<string, any>>[],
   }),
   computed: {
     tableConfig(): TableConfig {
@@ -186,7 +188,10 @@ export default Vue.extend({
           {
             key: 'key',
             label: this.$t('table.name') as string,
-            render: (key) => (this.$t(`keyValues.${key}`) as string) || transformKey(key),
+            render: (key) =>
+              this.$te(`keyValues.${key}`)
+                ? (this.$t(`keyValues.${key}`) as string)
+                : transformKey(key),
           },
           { key: 'old', label: this.$t('table.old') as string },
           { key: 'new', label: this.$t('table.new') as string },
@@ -199,11 +204,11 @@ export default Vue.extend({
       this.isModalOpen = true
       this.fetchAudits()
     },
-    formatDateTime(date: string) {
-      return format(new Date(date), 'dd-MM-yyyy HH:mm')
+    formatDate(date: string) {
+      return formatDate(new Date(date))
     },
 
-    getValues(audit: AuditEntry): { key: string; old: any; new: any }[] {
+    getValues(audit: EntityAudits<Record<string, any>>): { key: string; old: any; new: any }[] {
       // Makes sure, that there is no key that exists only in one of the objects
       const keys = [
         ...new Set([...Object.keys(audit.old_values), ...Object.keys(audit.new_values)]),
@@ -229,6 +234,12 @@ export default Vue.extend({
     },
     downloadAudits() {
       downloadJsonAsFile(this.audits, `${this.id}-${this.model}-history`)
+    },
+    getIssuer(entry: EntityAudits<Record<string, any>>) {
+      if (entry.issuer_type === 'user') {
+        return entry.issuer ? entry.issuer.email : this.$t('unauthenticatedUser')
+      }
+      return entry.issuer?.name || this.$t('unknownApp')
     },
   },
 })
@@ -279,19 +290,19 @@ export default Vue.extend({
     }
   }
 
-  &__table ::v-deep {
-    .cms-table-row__col,
-    .cms-table-header__col {
+  &__table {
+    :deep(.cms-table-row__col),
+    :deep(.cms-table-header__col) {
       padding: 5px 8px;
     }
 
-    .cms-table-header,
-    .cms-table-row {
+    :deep(.cms-table-header),
+    :deep(.cms-table-row) {
       padding: 0;
     }
   }
 
-  &__tag {
+  &__table &__tag {
     text-transform: uppercase;
     letter-spacing: 1px;
     color: $green-color-500;

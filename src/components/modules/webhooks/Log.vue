@@ -33,7 +33,9 @@
           <template #header>
             <span>{{ $t('expand') }}</span>
           </template>
-          <pre v-if="data.payload">{{ payloadResponse }}</pre>
+
+          <vue-json-pretty v-if="data.payload" :path="'res'" :data="JSON.parse(payloadResponse)">
+          </vue-json-pretty>
         </a-collapse-panel>
       </a-collapse>
       <span v-else class="log__data-value"> - </span>
@@ -48,7 +50,8 @@
           <template #header>
             <span>{{ $t('expand') }}</span>
           </template>
-          <pre v-if="data.response">{{ logResponse }}</pre>
+          <vue-json-pretty v-if="data.response" :path="'res'" :data="JSON.parse(logResponse)">
+          </vue-json-pretty>
         </a-collapse-panel>
       </a-collapse>
       <span v-else class="log__data-value"> - </span>
@@ -56,19 +59,19 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
-    "event": "wydarzenie",
-    "response": "odpowiedź",
-    "payload": "ładunek",
+    "event": "Wydarzenie",
+    "response": "Odpowiedź",
+    "payload": "Ładunek",
     "expand": "Rozwiń aby zobaczyć",
     "noStatusInfo": "Brak informacji o statusie"
   },
   "en": {
-    "event": "event",
-    "response": "response",
-    "payload": "payload",
+    "event": "Event",
+    "response": "Response",
+    "payload": "Payload",
     "expand": "Expand to see more",
     "noStatusInfo": "No status information"
   }
@@ -77,14 +80,21 @@
 
 <script lang="ts">
 import Vue, { PropOptions } from 'vue'
+// @ts-ignore
+import VueJsonPretty from 'vue-json-pretty'
+import { WebhookEventLog } from '@heseya/store-core'
 
 import { ComputedClassName } from '@/interfaces/computedClassName'
-import { WebHookEventLogEntry } from '@/interfaces/Webhook'
 import { getRelativeDate } from '@/utils/utils'
+import 'vue-json-pretty/lib/styles.css'
 
 export default Vue.extend({
+  components: {
+    VueJsonPretty,
+  },
+
   props: {
-    data: { type: Object, required: true } as PropOptions<WebHookEventLogEntry>,
+    data: { type: Object, required: true } as PropOptions<WebhookEventLog>,
   },
 
   computed: {
@@ -196,12 +206,12 @@ export default Vue.extend({
       overflow-x: auto;
     }
 
-    ::v-deep .ant-collapse {
+    :deep(.ant-collapse) {
       overflow: hidden;
       width: 100%;
     }
 
-    ::v-deep .ant-collapse-content-box {
+    :deep(.ant-collapse-content-box) {
       padding: 4px;
     }
   }
@@ -227,14 +237,12 @@ export default Vue.extend({
       border-radius: 8px !important;
     }
 
-    &::v-deep {
-      [role='button'] {
-        padding: 0 !important;
-      }
+    &:deep([role='button']) {
+      padding: 0 !important;
+    }
 
-      .ant-collapse-arrow {
-        right: 0px !important;
-      }
+    &:deep(.ant-collapse-arrow) {
+      right: 0px !important;
     }
   }
 

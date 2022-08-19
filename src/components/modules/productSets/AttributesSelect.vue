@@ -16,7 +16,7 @@
   </app-select>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "label": "Cechy, po których można filtrować produkty",
@@ -30,15 +30,16 @@
 </i18n>
 
 <script lang="ts">
-import { Attribute } from '@/interfaces/Attribute'
-import { debounce } from 'lodash'
 import Vue from 'vue'
+import debounce from 'lodash/debounce'
+import { Attribute } from '@heseya/store-core'
+
 export default Vue.extend({
   props: {
     value: {
       type: Array,
       required: true,
-    } as Vue.PropOptions<Attribute[]>,
+    } as Vue.PropOptions<Attribute[] | string[]>,
     disabled: { type: Boolean, default: false },
   },
   data: () => ({
@@ -46,10 +47,12 @@ export default Vue.extend({
   }),
   computed: {
     selectedAttributes: {
-      get(): Attribute[] {
-        return this.value
+      get(): string[] {
+        return this.value.map(
+          (attribute: Attribute | string) => (attribute as Attribute)?.id || (attribute as string),
+        )
       },
-      set(value: Attribute[]) {
+      set(value: string[]) {
         this.$emit('input', value)
       },
     },

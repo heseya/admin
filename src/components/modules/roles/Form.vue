@@ -27,11 +27,10 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
+import { RoleCreateDto } from '@heseya/store-core'
 
 import Card from '@/components/layout/Card.vue'
 import PermissionsManager from './PermissionsManager.vue'
-
-import { RoleDTO } from '@/interfaces/Role'
 
 export default Vue.extend({
   components: { ValidationObserver, Card, PermissionsManager },
@@ -39,7 +38,7 @@ export default Vue.extend({
     value: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<RoleDTO>,
+    } as Vue.PropOptions<RoleCreateDto>,
     disabled: {
       type: Boolean,
       default: false,
@@ -47,10 +46,10 @@ export default Vue.extend({
   },
   computed: {
     form: {
-      get(): RoleDTO {
+      get(): RoleCreateDto {
         return this.value
       },
-      set(v: RoleDTO) {
+      set(v: RoleCreateDto) {
         this.$emit('input', v)
       },
     },

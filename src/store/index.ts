@@ -14,6 +14,7 @@ import { banners } from './banners'
 import { roles } from './roles'
 import { consents } from './consents'
 import { items } from './items'
+import { deposits } from './deposits'
 import { products } from './products'
 import { schemas } from './schemas'
 import { pages } from './pages'
@@ -82,6 +83,7 @@ const storeModules = {
   roles,
   consents,
   items,
+  deposits,
   schemas,
   products,
   pages,
@@ -100,6 +102,7 @@ const storeModules = {
   productSets,
   attributes,
   providers,
+  menuItems,
 }
 
 const storePattern = {
@@ -107,7 +110,7 @@ const storePattern = {
   getters,
   mutations,
   actions,
-  modules: { ...storeModules, menuItems },
+  modules: storeModules,
 }
 
 const store = new Vuex.Store({
@@ -119,7 +122,10 @@ export const accessor = useAccessor(store, storePattern)
 
 export type AccessorType = typeof accessor
 export type StoreModulesKeys = keyof typeof storeModules
-export type GeneratedStoreModulesKeys = Exclude<StoreModulesKeys, 'auth' | 'globalSeo'>
+export type GeneratedStoreModulesKeys = Exclude<
+  StoreModulesKeys,
+  'auth' | 'globalSeo' | 'menuItems'
+>
 
 Vue.prototype.$accessor = accessor
 

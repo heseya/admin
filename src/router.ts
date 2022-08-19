@@ -2,11 +2,10 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import VueMeta from 'vue-meta'
 
-import { Permission } from './interfaces/Permissions'
-
+import { Permission } from '@/interfaces/Permissions'
+import { PERMISSIONS_TREE as Permissions } from '@/consts/permissions'
 import { accessor } from './store'
 import { hasAccess } from './utils/hasAccess'
-import { PERMISSIONS_TREE as Permissions } from './consts/permissions'
 
 Vue.use(VueRouter)
 Vue.use(VueMeta)
@@ -22,7 +21,6 @@ const router = new VueRouter({
       component: () => import('./views/auth/Login.vue'),
       meta: {
         hiddenNav: true,
-        recaptchaAlert: true,
       },
     },
     {
@@ -32,7 +30,6 @@ const router = new VueRouter({
       component: () => import('./views/auth/ResetPassword.vue'),
       meta: {
         hiddenNav: true,
-        recaptchaAlert: true,
       },
     },
     {
@@ -42,7 +39,6 @@ const router = new VueRouter({
       component: () => import('./views/auth/NewPassword.vue'),
       meta: {
         hiddenNav: true,
-        recaptchaAlert: true,
       },
     },
     {
@@ -76,6 +72,16 @@ const router = new VueRouter({
       meta: {
         requiresAuth: true,
         permissions: [Permissions.Items.Show],
+      },
+    },
+    {
+      path: '/items/:id/deposits',
+      name: 'ItemDepositsList',
+      component: () => import('./views/items/deposits.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Deposits.Show],
+        returnUrl: '/items',
       },
     },
     {
@@ -259,6 +265,16 @@ const router = new VueRouter({
       meta: {
         requiresAuth: true,
         permissions: [Permissions.ProductSets.Show],
+      },
+    },
+    {
+      path: '/collections/:id',
+      name: 'ProductSets View',
+      component: () => import('./views/productSets/View.vue'),
+      meta: {
+        returnUrl: '/collections',
+        requiresAuth: true,
+        permissions: [Permissions.ProductSets.ShowDetails],
       },
     },
 
@@ -448,6 +464,13 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   window.scrollTo(0, 0)
 
+  // Save prevoirous route for return to list button
+  if (from.name)
+    window.sessionStorage.setItem(
+      'previousRoute',
+      JSON.stringify({ path: from.path, fullPath: from.fullPath }),
+    )
+
   const authRequired = !!to.meta?.requiresAuth || false
   const requiredPermissions: Permission[] = to.meta?.permissions || []
 
@@ -455,7 +478,7 @@ router.beforeEach((to, from, next) => {
     accessor.auth.setPermissionsError(new Error('Not logged in'))
     return next({
       name: 'Login',
-      query: { next: to.fullPath !== '/' ? to.fullPath : undefined },
+      query: { next: to.path !== '/' ? to.path : undefined },
     })
   }
 

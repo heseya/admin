@@ -5,13 +5,13 @@
       class="single-select-input__select"
       option-filter-prop="label"
       :mode="isMutipleMode ? 'multiple' : 'default'"
-      :disabled="disabled || isLoading"
+      :disabled="disabled"
       show-search
       allow-clear
       :loading="isLoading"
       :placeholder="$t('placeholder')"
       @search="onSearch"
-      @inputKeydown="onInputKeydown"
+      @input-keydown="onInputKeydown"
       @change="setValue"
     >
       <a-select-option
@@ -39,7 +39,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "en": {
     "placeholder": "Select or create an option",
@@ -59,11 +59,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import debounce from 'lodash/debounce'
+import { AttributeOption, AttributeType, ProductAttribute } from '@heseya/store-core'
 
-import { AttributeOption, AttributeType, ProductAttribute } from '@/interfaces/Attribute'
+import Empty from '@/components/layout/Empty.vue'
 import { UUID } from '@/interfaces/UUID'
 import { formatApiNotificationError } from '@/utils/errors'
-import Empty from '@/components/layout/Empty.vue'
+import { uniqueArray } from '@/utils/uniqueArray'
 
 type AddOptionResult = { success: true; option: AttributeOption } | { success: false; error: any }
 
@@ -103,7 +104,6 @@ export default Vue.extend({
     },
 
     inputValue(): UUID | UUID[] | undefined {
-      if (this.isLoading) return this.isMutipleMode ? [] : undefined
       return this.isMutipleMode ? this.multiOptionsIds : this.singleOptionId
     },
   },
@@ -140,18 +140,35 @@ export default Vue.extend({
     async fetchOptions() {
       this.isLoading = true
       // @ts-ignore // TODO: fix extended store actions typings
-      const options = await this.$accessor.attributes.getOptions({
+      const allOptions = await this.$accessor.attributes.getOptions({
         attributeId: this.attribute.id,
         params: { search: this.searchedValue },
       })
 
-      if (!options) {
+      if (!this.options) {
         this.$toast.error(this.$t('optionsFetchError') as string)
         this.isLoading = false
         return
       }
 
-      this.options = options
+      if (this.value.some(Boolean)) {
+        const choosenOptions = await Promise.all(
+          this.value.map(({ id }) =>
+            // @ts-ignore // TODO: fix extended store actions typings
+            this.$accessor.attributes.getOptions({
+              attributeId: this.attribute.id,
+              params: { search: id },
+            }),
+          ),
+        )
+
+        this.options = uniqueArray([...this.options, ...allOptions, ...choosenOptions.flat()])
+        this.isLoading = false
+
+        return
+      }
+
+      this.options = allOptions
       this.isLoading = false
     },
 

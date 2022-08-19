@@ -19,7 +19,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Weryfikacja dwuetapowa"
@@ -32,14 +32,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { User } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import Setup2FA from '@/components/modules/2fa/Setup.vue'
 import Remove2FA from '@/components/modules/2fa/Remove.vue'
 import GenerateRecoveryCodes from '@/components/modules/2fa/GenerateRecoveryCodes.vue'
-
-import { User } from '@/interfaces/User'
 
 export default Vue.extend({
   metaInfo(this: any) {

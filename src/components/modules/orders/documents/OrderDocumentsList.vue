@@ -23,7 +23,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Dokumenty zamówienia",
@@ -42,6 +42,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { OrderDocument } from '@heseya/store-core'
 
 import OrderDocumentComponent from './OrderDocument.vue'
 import DocumentOrderForm from './DocumentOrderForm.vue'
@@ -49,7 +50,6 @@ import Empty from '@/components/layout/Empty.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 
 import { UUID } from '@/interfaces/UUID'
-import { OrderDocument } from '@/interfaces/OrderDocuments'
 
 export default Vue.extend({
   components: {

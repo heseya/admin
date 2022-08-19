@@ -72,7 +72,7 @@
   </validation-observer>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Dodawanie depozytu do magazynu",
@@ -115,7 +115,9 @@ import { ValidationObserver } from 'vee-validate'
 import { isNumber, isString } from 'lodash'
 
 import { WarehouseDepositDto } from '@/interfaces/WarehouseItem'
+//import { WarehouseDepositDto } from '@heseya/store-core'
 import Loading from '@/components/layout/Loading.vue'
+import { formatDateTimeInput } from '@/utils/dates'
 
 const EMPTY_DEPOSIT_FORM: WarehouseDepositDto = {
   quantity: 0,
@@ -156,7 +158,7 @@ export default Vue.extend({
         this.stockTimeType = StockTimeType.Time
         if (isString(this.defaultTime)) {
           this.stockTimeType = StockTimeType.Date
-          this.form.shipping_date = this.defaultTime
+          this.form.shipping_date = formatDateTimeInput(this.defaultTime)
         } else if (isNumber(this.defaultTime)) this.form.shipping_time = this.defaultTime
       }
     },

@@ -22,7 +22,7 @@
 
     <template #tags>
       <div class="product-list-item__tags">
-        <tag v-for="tag in product.tags" :key="tag.id" :color="`#${tag.color}`">
+        <tag v-for="tag in product.tags" :key="tag.id" small :color="`#${tag.color}`">
           {{ tag.name }}
         </tag>
         <span v-if="product.tags.length === 0">-</span>
@@ -33,15 +33,15 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { Product } from '@heseya/store-core'
 
 import Avatar from '@/components/layout/Avatar.vue'
-
-import { Product } from '@/interfaces/Product'
-import { formatCurrency } from '@/utils/currency'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
-import { TableConfig } from '@/interfaces/CmsTable'
 import MediaElement from '@/components/MediaElement.vue'
 import ProductPrice from './ProductPrice.vue'
+
+import { formatCurrency } from '@/utils/currency'
+import { TableConfig } from '@/interfaces/CmsTable'
 
 export default Vue.extend({
   components: { Avatar, CmsTableRow, MediaElement, ProductPrice },

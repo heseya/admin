@@ -19,7 +19,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "filtersTitle": "Filtry",
@@ -84,7 +84,7 @@ export default Vue.extend({
       padding: 3px 8px;
       margin: 0;
 
-      ::v-deep .icon-button__icon {
+      :deep(.icon-button__icon) {
         display: none;
       }
     }

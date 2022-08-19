@@ -28,7 +28,7 @@
           </icon-button>
         </h4>
       </template>
-      <modal-form>
+      <modal-form v-if="isSelectorModalActive">
         <Selector
           type="attributes"
           :type-name="$t('typeName')"
@@ -40,7 +40,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "en": {
     "createNew": "Create new attribute",
@@ -61,8 +61,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-
-import { Attribute, ProductAttribute } from '@/interfaces/Attribute'
+import { Attribute, ProductAttribute } from '@heseya/store-core'
 
 import Selector from '@/components/Selector.vue'
 import ModalForm from '@/components/form/ModalForm.vue'

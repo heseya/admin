@@ -7,22 +7,29 @@
     :placement="placement"
   >
     <template #content>
-      <form class="media-edit-modal__form" @submit.prevent="onSubmit">
-        <validated-input v-model="form.alt" :label="$t('form.alt')" :disabled="isLoading" />
+      <validation-observer v-slot="{ handleSubmit }" slim>
+        <form v-if="isOpen" class="media-edit-modal__form" @submit.prevent="handleSubmit(onSubmit)">
+          <validated-input v-model="form.alt" :label="$t('form.alt')" :disabled="isLoading" />
 
-        <validated-input v-model="form.slug" :label="$t('form.slug')" :disabled="isLoading" />
-        <small>
-          {{ $t('currentSlug') }}: <b>{{ media.url }}</b>
-        </small>
+          <validated-input
+            v-model="form.slug"
+            :label="$t('form.slug')"
+            :rules="{ required: !!media.slug }"
+            :disabled="isLoading"
+          />
+          <small>
+            {{ $t('currentSlug') }}: <b>{{ media.url }}</b>
+          </small>
 
-        <br />
-        <app-button type="primary" html-type="submit" size="small" :loading="isLoading">
-          {{ $t('common.save') }}
-        </app-button>
-      </form>
+          <br />
+          <app-button type="primary" html-type="submit" size="small" :loading="isLoading">
+            {{ $t('common.save') }}
+          </app-button>
+        </form>
+      </validation-observer>
     </template>
 
-    <icon-button v-if="!disabled" type="default">
+    <icon-button v-if="!disabled" type="default" size="small">
       <template #icon>
         <i class="bx bxs-pencil"></i>
       </template>
@@ -30,7 +37,7 @@
   </a-popover>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Edycja zdjęcia/video",
@@ -55,8 +62,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { CdnMedia } from '@heseya/store-core'
+import { ValidationObserver } from 'vee-validate'
 
-import { CdnMedia } from '@/interfaces/Media'
 import { updateMedia } from '@/services/uploadMedia'
 import { formatApiNotificationError } from '@/utils/errors'
 
@@ -66,6 +74,7 @@ const EMPTY_FORM = {
 }
 
 export default Vue.extend({
+  components: { ValidationObserver },
   props: {
     disabled: { type: Boolean, default: false },
     placement: { type: String, default: 'bottomRight' },

@@ -28,7 +28,7 @@
   </fieldset>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "en": {
     "title": "Discount conditions",
@@ -47,10 +47,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import cloneDeep from 'lodash/cloneDeep'
+import { DiscountConditionGroupDto, DiscountConditionType } from '@heseya/store-core'
 
-import { DiscountConditionGroupDto, DiscountConditionType } from '@/interfaces/SaleCondition'
 import Empty from '@/components/layout/Empty.vue'
 import ConditionGroup from './ConditionGroup.vue'
+
+import { EMPTY_ORDER_VALUE_FORM } from '@/consts/salesConditionsForms'
 
 export default Vue.extend({
   components: { Empty, ConditionGroup },
@@ -74,7 +77,7 @@ export default Vue.extend({
   methods: {
     addConditionGroup() {
       this.groups.push({
-        conditions: [],
+        conditions: [cloneDeep(EMPTY_ORDER_VALUE_FORM)],
       })
     },
     removeConditionGroup(i: number) {

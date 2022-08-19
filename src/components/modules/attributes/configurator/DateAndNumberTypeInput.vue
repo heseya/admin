@@ -28,7 +28,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "en": {
     "displayName": "Display name",
@@ -48,8 +48,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { cloneDeep } from 'lodash'
-
-import { AttributeOptionDto, AttributeType, ProductAttribute } from '@/interfaces/Attribute'
+import { AttributeOptionDto, AttributeType, ProductAttribute } from '@heseya/store-core'
 
 const EMPTY_OPTION: AttributeOptionDto = {
   name: '',

@@ -24,7 +24,10 @@ const getDefaultLanguage = () => {
 }
 
 export default new VueI18n({
-  locale: window.localStorage.getItem(LOCALE_STORAGE_KEY) || getDefaultLanguage(),
+  locale:
+    process.env.VUE_APP_I18N_LOCALE ||
+    window.localStorage.getItem(LOCALE_STORAGE_KEY) ||
+    getDefaultLanguage(),
   fallbackLocale: process.env.VUE_APP_I18N_FALLBACK_LOCALE || 'pl', // TODO: change to 'en' when all translations are done
   messages: loadLocaleMessages(),
   fallbackRoot: true,

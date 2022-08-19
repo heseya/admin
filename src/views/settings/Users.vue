@@ -3,7 +3,10 @@
     <PaginatedList
       :title="$t('title')"
       :filters="filters"
+      :table="tableConfig"
+      :xlsx-file-config="fileConfig"
       store-key="users"
+      @search="makeSearch"
       @clear-filters="clearFilters"
     >
       <template #filters>
@@ -18,20 +21,25 @@
         </icon-button>
       </template>
       <template #default="{ item: user }">
-        <list-item :key="user.id" @click="openModal(user.id)">
-          <template #avatar>
-            <avatar>
-              <img :src="user.avatar" alt="" />
-            </avatar>
+        <cms-table-row
+          :key="user.id"
+          :item="user"
+          :headers="tableConfig.headers"
+          @click="openModal(user.id)"
+        >
+          <template #name>
+            <div class="list-item">
+              <div class="list-item__avatar">
+                <avatar>
+                  <img :src="user.avatar" alt="" />
+                </avatar>
+              </div>
+              <div class="list-item__content">
+                {{ user.name }}
+              </div>
+            </div>
           </template>
-          {{ user.name }}
-          <small>{{ user.roles.map((r) => r.name).join(', ') }}</small>
-          <template #action>
-            <tag v-if="user.is_tfa_active" type="success" small>
-              <i class="bx bx-check"></i> {{ $t('tfaActive') }}
-            </tag>
-          </template>
-        </list-item>
+        </cms-table-row>
       </template>
     </PaginatedList>
 
@@ -39,7 +47,7 @@
       <a-modal
         v-model="isModalActive"
         width="550px"
-        :title="isNewUser(editedUser) ? $t('editTitle') : $t('newTitle')"
+        :title="isNewUser(editedUser) ? $t('newTitle') : $t('editTitle')"
       >
         <UserForm v-model="editedUser" :disabled="!canModify" @close="isModalActive = false" />
 
@@ -89,7 +97,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Użytkownicy",
@@ -97,7 +105,11 @@
     "editTitle": "Edycja użytkownika",
     "newTitle": "Nowy użytkownik",
     "deleteText": "Czy na pewno chcesz usunąć tego użytkownika?",
-    "tfaActive": "2FA aktywne"
+    "table": {
+      "email": "E-mail",
+      "roles": "Role",
+      "isTfaActive": "Aktywne 2FA"
+    }
   },
   "en": {
     "title": "Users",
@@ -105,7 +117,11 @@
     "editTitle": "Edit user",
     "newTitle": "New user",
     "deleteText": "Are you sure you want to delete this user?",
-    "tfaActive": "2FA active"
+    "table": {
+      "email": "E-mail",
+      "roles": "Roles",
+      "isTfaActive": "Active 2FA"
+    }
   }
 }
 </i18n>
@@ -114,21 +130,24 @@
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { clone } from 'lodash'
+import { Role, User, UserCreateDto, UserUpdateDto } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
-import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import UserForm from '@/components/modules/users/Form.vue'
 import Avatar from '@/components/layout/Avatar.vue'
+import CmsTableRow from '@/components/cms/CmsTableRow.vue'
+
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 import UsersFilter, { EMPTY_USER_FILTERS } from '@/components/modules/users/UsersFilter.vue'
 
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 import { formatFilters } from '@/utils/utils'
 import { UUID } from '@/interfaces/UUID'
-import { CreateUserDTO, EditUserDTO, User } from '@/interfaces/User'
+import { TableConfig } from '@/interfaces/CmsTable'
+import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 
-const CLEAR_USER: CreateUserDTO = {
+const CLEAR_USER: UserCreateDto = {
   name: '',
   email: '',
   password: '',
@@ -141,11 +160,11 @@ export default Vue.extend({
   },
   components: {
     PaginatedList,
-    ListItem,
     UserForm,
     PopConfirm,
     ValidationObserver,
     Avatar,
+    CmsTableRow,
     MetadataForm,
     UsersFilter,
   },
@@ -159,7 +178,7 @@ export default Vue.extend({
   },
   data: () => ({
     isModalActive: false,
-    editedUser: clone(CLEAR_USER) as CreateUserDTO | EditUserDTO,
+    editedUser: clone(CLEAR_USER) as UserCreateDto | (UserUpdateDto & { id: UUID }),
     selectedUser: null as User | null,
     filters: { ...EMPTY_USER_FILTERS },
   }),
@@ -170,10 +189,57 @@ export default Vue.extend({
     canModify(): boolean {
       return this.$can(this.isNewUser(this.editedUser) ? this.$p.Users.Edit : this.$p.Users.Add)
     },
+    tableConfig(): TableConfig<User> {
+      return {
+        rowOnClick: (item) => this.openModal(item.id),
+        headers: [
+          {
+            key: 'name',
+            label: this.$t('common.form.name') as string,
+            width: '1.6fr',
+            sortable: true,
+          },
+          { key: 'email', label: this.$t('table.email') as string, width: '1.8fr' },
+          {
+            key: 'roles',
+            label: this.$t('table.roles') as string,
+            width: '1fr',
+            render: (_v, item) => {
+              return item.roles.length ? item.roles.map((r) => r.name).join(', ') : '-'
+            },
+          },
+          {
+            key: 'is_tfa_active',
+            label: this.$t('table.isTfaActive') as string,
+            width: '0.6fr',
+            render: (_v, item) => item.is_tfa_active,
+          },
+        ],
+      }
+    },
+    fileConfig(): XlsxFileConfig<User> {
+      return {
+        name: this.$t('title') as string,
+        headers: [
+          { key: 'name', label: this.$t('common.form.name') as string },
+          { key: 'email', label: this.$t('table.email') as string },
+          {
+            key: 'roles',
+            label: this.$t('table.roles') as string,
+            format: (v: Role[]) => v.map((role) => role.name).join(', '),
+          },
+          {
+            key: 'is_tfa_active',
+            label: this.$t('table.isTfaActive') as string,
+            format: (v: boolean) => (v ? this.$t('common.yes') : this.$t('common.no')) as string,
+          },
+        ],
+      }
+    },
   },
   created() {
     this.filters.search = (this.$route.query.search as string) || ''
-    this.filters.consent_id = (this.$route.query.consents as string) || ALL_FILTER_VALUE
+    this.filters.consent_id = (this.$route.query.consent_id as string) || ALL_FILTER_VALUE
   },
   methods: {
     openModal(id?: UUID) {
@@ -220,7 +286,7 @@ export default Vue.extend({
       this.$accessor.stopLoading()
     },
 
-    isNewUser(user: CreateUserDTO | EditUserDTO): user is CreateUserDTO {
+    isNewUser(user: UserCreateDto | (UserUpdateDto & { id: UUID })): user is UserCreateDto {
       return 'id' in user === false
     },
 
@@ -246,3 +312,19 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.list-item {
+  display: flex !important;
+  align-items: center;
+
+  &__content {
+    width: 100%;
+    font-weight: 600;
+  }
+
+  &__avatar {
+    margin-right: 13px;
+  }
+}
+</style>

@@ -1,24 +1,39 @@
 <template>
   <div class="warehouse-item-modal">
     <validation-observer v-slot="{ handleSubmit }">
-      <a-modal
-        :visible="visible"
-        width="600px"
-        :title="form.id ? $t('editTitle') : $t('newTitle')"
-        @cancel="close"
-      >
+      <a-modal :visible="visible" width="600px" @cancel="close">
+        <template #title>
+          <div class="warehouse-item-modal__title">
+            <span>{{ form.id ? $t('editTitle') : $t('newTitle') }}</span>
+
+            <icon-button
+              v-if="item && item.id"
+              v-can="$p.Deposits.Show"
+              size="small"
+              data-cy="deposit-show-link"
+              :to="`/items/${item.id}/deposits`"
+            >
+              <template #icon>
+                <i class="bx bxs-package"></i>
+              </template>
+              {{ $t('showDeposits') }}
+            </icon-button>
+          </div>
+        </template>
+
         <modal-form>
           <validated-input
             v-model="form.name"
-            data-cy="name"
+            name="name"
             :disabled="disabled"
+            type="input"
             rules="required"
             :label="$t('common.form.name')"
           />
 
           <validated-input
             v-model="form.sku"
-            data-cy="sku"
+            name="sku"
             :disabled="disabled"
             rules="required"
             :label="$t('form.sku')"
@@ -124,7 +139,9 @@
               :cancel-text="$t('common.cancel')"
               @confirm="deleteWarehouseItem"
             >
-              <app-button v-if="form.id" type="danger">{{ $t('common.delete') }}</app-button>
+              <app-button v-if="form.id" data-cy="delete-btn" type="danger">{{
+                $t('common.delete')
+              }}</app-button>
             </pop-confirm>
           </div>
         </template>
@@ -133,11 +150,12 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "editTitle": "Edycja przedmiotu",
     "newTitle": "Nowy przedmiot",
+    "showDeposits": "Zobacz listę depozytów",
     "deleteText": "Czy na pewno chcesz usunąć ten przedmiot?",
     "form": {
       "sku": "SKU",
@@ -162,6 +180,7 @@
   "en": {
     "editTitle": "Edit item",
     "newTitle": "New item",
+    "showDeposits": "Show deposits",
     "deleteText": "Are you sure you want to delete this item?",
     "form": {
       "sku": "SKU",
@@ -189,14 +208,14 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
-
-import { WarehouseItem, WarehouseItemCreateDto } from '@/interfaces/WarehouseItem'
+import { WarehouseItem, WarehouseItemCreateDto } from '@heseya/store-core'
 
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import Field from '@/components/Field.vue'
 import ItemsAvailibility from './ItemsAvailibility.vue'
+import { formatDateTimeInput, formatUTC } from '@/utils/dates'
 
 type Form = WarehouseItemCreateDto & Partial<WarehouseItem>
 
@@ -222,7 +241,12 @@ export default Vue.extend({
   computed: {
     form: {
       get(): Form {
-        return this.value
+        return {
+          ...this.value,
+          unlimited_stock_shipping_date: formatDateTimeInput(
+            this.value.unlimited_stock_shipping_date,
+          ),
+        }
       },
       set(v: Form) {
         this.$emit('input', v)
@@ -267,16 +291,22 @@ export default Vue.extend({
       this.$accessor.startLoading()
       const isNew = !this.form.id
       let success = false
+
+      const modifiedForm: Form = {
+        ...this.form,
+        unlimited_stock_shipping_date: formatUTC(this.form.unlimited_stock_shipping_date),
+      }
+
       if (this.form.id) {
         // Metadata can be saved only after product is created
         await this.saveMetadata(this.form.id)
 
         success = !!(await this.$accessor.items.update({
           id: this.form.id,
-          item: this.form,
+          item: modifiedForm,
         }))
       } else {
-        success = !!(await this.$accessor.items.add(this.form))
+        success = !!(await this.$accessor.items.add(modifiedForm))
       }
       this.$accessor.stopLoading()
 
@@ -300,6 +330,12 @@ export default Vue.extend({
 
 <style lang="scss">
 .warehouse-item-modal {
+  &__title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
   &__row {
     display: flex;
     gap: 8px;

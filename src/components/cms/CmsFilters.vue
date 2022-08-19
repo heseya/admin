@@ -82,7 +82,7 @@ export default Vue.extend({
   methods: {
     onResize() {
       // @ts-ignore
-      if (this.$refs.filters.scrollHeight > this.$refs.filters.offsetHeight)
+      if (this.$refs.filters.scrollHeight > this.$refs.filters.offsetHeight + 5)
         this.isExpandable = true
       else this.isExpandable = false
     },
@@ -118,23 +118,22 @@ export default Vue.extend({
       display: none;
     }
 
-    & > ::v-deep *:first-child {
+    & > :deep(*:first-child) {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       grid-gap: 4px 10px;
       grid-auto-flow: dense;
     }
 
-    & ::v-deep {
-      .span-2 {
-        grid-column: span 2;
-      }
-      .span-3 {
-        grid-column: span 3;
-      }
-      .span-4 {
-        grid-column: span 4;
-      }
+    :deep(.span-2) {
+      grid-column: span 2;
+    }
+
+    :deep(.span-3) {
+      grid-column: span 3;
+    }
+    :deep(.span-4) {
+      grid-column: span 4;
     }
   }
 
@@ -161,7 +160,7 @@ export default Vue.extend({
       display: none !important;
     }
 
-    ::v-deep .app-input {
+    :deep(.app-input) {
       margin-bottom: 16px;
     }
   }

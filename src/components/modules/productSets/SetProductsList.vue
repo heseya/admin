@@ -62,6 +62,7 @@
 
     <a-modal v-model="isSelectorActive" width="800px" :title="$t('chooseProduct')" :footer="null">
       <selector
+        v-if="isSelectorActive"
         :type-name="$t('product')"
         type="products"
         :existing="products"
@@ -71,7 +72,7 @@
   </a-modal>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Produkty w kolekcji",
@@ -95,16 +96,14 @@
 <script lang="ts">
 import Vue from 'vue'
 import Draggable from 'vuedraggable'
+import { Product, ProductSet, HeseyaPaginatedResponseMeta } from '@heseya/store-core'
 
 import Selector from '@/components/Selector.vue'
 import Empty from '@/components/layout/Empty.vue'
 import Avatar from '@/components/layout/Avatar.vue'
 import ProductPrice from '@/components/modules/products/ProductPrice.vue'
 
-import { ProductSet } from '@/interfaces/ProductSet'
-import { Product } from '@/interfaces/Product'
 import { UUID } from '@/interfaces/UUID'
-import { ResponseMeta } from '@/interfaces/Response'
 
 import { api } from '@/api'
 import { formatCurrency } from '@/utils/currency'
@@ -166,8 +165,8 @@ export default Vue.extend({
         do {
           const {
             data: { data: products, meta },
-          } = await api.get<{ data: Product[]; meta: ResponseMeta }>(
-            `/product-sets/id:${this.set.id}/products?limit=500&page=${page}`,
+          } = await api.get<{ data: Product[]; meta: HeseyaPaginatedResponseMeta }>(
+            `/product-sets/id:${this.set.id}/products?limit=30&page=${page}`,
           )
           this.products.push(...products)
           page++

@@ -56,7 +56,7 @@
         </div>
 
         <div class="item-wrapper">
-          <gallery-upload-button @upload="onImageUpload" />
+          <media-upload-input :disabled="disabled" @upload="onImageUpload" />
         </div>
       </div>
     </div>
@@ -71,7 +71,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "dragTitle": "Przeciągnij zdjęcia",
@@ -98,18 +98,16 @@
 
 <script lang="ts">
 import Vue from 'vue'
-
-import { BannerMedia } from '@/interfaces/Banner'
-import { CdnMedia } from '@/interfaces/Media'
-import MediaElement from '@/components/MediaElement.vue'
+import { BannerMedia, CdnMedia } from '@heseya/store-core'
 
 import { removeMedia } from '@/services/uploadMedia'
 
-import GalleryUploadButton from '../products/GalleryUploadButton.vue'
+import MediaElement from '@/components/MediaElement.vue'
 import MediaEditForm from '../media/MediaEditForm.vue'
+import MediaUploadInput from '../media/MediaUploadInput.vue'
 
 export default Vue.extend({
-  components: { MediaElement, GalleryUploadButton, MediaEditForm },
+  components: { MediaElement, MediaEditForm, MediaUploadInput },
   props: {
     value: {
       type: Object,
@@ -280,7 +278,7 @@ $item-size: 160px;
     color: #fff;
     text-shadow: 0px 0px 8px $font-color;
 
-    ::v-deep .app-input {
+    :deep(.app-input) {
       margin-bottom: 0;
     }
   }

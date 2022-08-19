@@ -7,21 +7,19 @@
     :placement="placement"
   >
     <template #content>
-      <validation-observer v-slot="{ handleSubmit }">
-        <form class="media-edit-modal__form" @submit.prevent="handleSubmit(onSubmit)">
+      <validation-observer v-slot="{ handleSubmit }" slim>
+        <form v-if="isOpen" class="media-edit-modal__form" @submit.prevent="handleSubmit(onSubmit)">
           <validated-input v-model="form.alt" :label="$t('form.alt')" :disabled="isLoading" />
 
           <validated-input
             v-model="form.slug"
             :label="$t('form.slug')"
+            :rules="{ required: !!media.slug }"
             :disabled="isLoading"
-            :rules="media.slug !== null && 'required'"
           />
-          <a :href="media.url" target="_blank" rel="noopener noreferrer"
-            ><small>
-              {{ $t('currentSlug') }}: <b>{{ media.url }}</b>
-            </small>
-          </a>
+          <small>
+            {{ $t('currentSlug') }}: <b>{{ media.url }}</b>
+          </small>
 
           <br />
           <div class="media-edit-modal__form-buttons">
@@ -55,7 +53,7 @@
       </validation-observer>
     </template>
 
-    <icon-button v-if="!disabled" type="default">
+    <icon-button v-if="!disabled" type="default" size="small">
       <template #icon>
         <i class="bx bxs-pencil"></i>
       </template>
@@ -97,8 +95,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import { CdnMedia } from '@heseya/store-core'
-import { generateSlug } from '@/utils/generateSlug'
 import { ValidationObserver } from 'vee-validate'
+import { generateSlug } from '@/utils/generateSlug'
 
 const EMPTY_FORM = {
   alt: '',
@@ -106,9 +104,7 @@ const EMPTY_FORM = {
 }
 
 export default Vue.extend({
-  components: {
-    ValidationObserver,
-  },
+  components: { ValidationObserver },
   props: {
     disabled: { type: Boolean, default: false },
     placement: { type: String, default: 'bottomRight' },

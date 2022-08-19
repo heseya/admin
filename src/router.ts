@@ -67,6 +67,16 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/items/:id/deposits',
+      name: 'ItemDepositsList',
+      component: () => import('./views/items/deposits.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Deposits.Show],
+        returnUrl: '/items',
+      },
+    },
+    {
       path: '/schemas',
       name: 'Schemas',
       component: () => import('./views/schemas/index.vue'),
@@ -258,6 +268,16 @@ const router = new VueRouter({
         permissions: [Permissions.ProductSets.Show],
       },
     },
+    {
+      path: '/collections/:id',
+      name: 'ProductSets View',
+      component: () => import('./views/productSets/View.vue'),
+      meta: {
+        returnUrl: '/collections',
+        requiresAuth: true,
+        permissions: [Permissions.ProductSets.ShowDetails],
+      },
+    },
 
     {
       path: '/settings/attributes',
@@ -436,6 +456,13 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   window.scrollTo(0, 0)
 
+  // Save prevoirous route for return to list button
+  if (from.name)
+    window.sessionStorage.setItem(
+      'previousRoute',
+      JSON.stringify({ path: from.path, fullPath: from.fullPath }),
+    )
+
   const authRequired = !!to.meta?.requiresAuth || false
   const requiredPermissions: Permission[] = to.meta?.permissions || []
 
@@ -443,7 +470,7 @@ router.beforeEach((to, from, next) => {
     accessor.auth.setPermissionsError(new Error('Not logged in'))
     return next({
       name: 'Login',
-      query: { next: to.fullPath !== '/' ? to.fullPath : undefined },
+      query: { next: to.path !== '/' ? to.path : undefined },
     })
   }
 

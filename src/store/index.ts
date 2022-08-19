@@ -14,6 +14,7 @@ import { banners } from './banners'
 import { roles } from './roles'
 import { consents } from './consents'
 import { items } from './items'
+import { deposits } from './deposits'
 import { products } from './products'
 import { schemas } from './schemas'
 import { pages } from './pages'
@@ -82,6 +83,7 @@ const storeModules = {
   roles,
   consents,
   items,
+  deposits,
   schemas,
   products,
   pages,

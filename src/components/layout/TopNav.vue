@@ -1,7 +1,9 @@
 <template>
   <nav class="top-nav">
     <div class="top-nav__header">
-      <h1 class="top-nav__title" data-cy="nav-title">{{ title }}</h1>
+      <h1 class="top-nav__title" data-cy="nav-title">
+        <slot name="title">{{ title }}</slot>
+      </h1>
       <small class="top-nav__subtitle">{{ subtitle }}</small>
     </div>
 

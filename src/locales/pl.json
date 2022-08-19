@@ -19,14 +19,17 @@
     "edit": "Edytuj",
     "continue": "Kontynuuj",
     "reset": "Przywróć domyślne",
+    "confirmLeave": "Czy na pewno chcesz wyjść? Masz niezapisane zmiany!",
     "form": {
       "name": "Nazwa",
       "description": "Opis",
       "type": "Typ",
       "slug": "Link",
+      "date": "Data",
       "label": "Etykieta",
       "value": "Wartość",
-      "required": "Wymagane"
+      "required": "Wymagane",
+      "visibility": "Widoczność"
     }
   },
   "nav": {
@@ -38,7 +41,7 @@
     "users": "Lista użytkowników",
     "roles": "Role użytkowników",
     "apps": "Aplikacje",
-    "consents": "Zgody",
+    "consents": "Zgody marketingowe",
     "webhooks": "Webhooki",
     "seo": "Ustawienia SEO",
     "advanced": "Zaawansowane"
@@ -142,15 +145,15 @@
       "VALIDATION_DIGITS": "Wartość pola musi mieć dokładną ilość znaków.",
       "VALIDATION_ALPHA": "Wartość pola musi być alfanumeryczna.",
       "VALIDATION_DATE": "Wartość pola musi być datą.",
-      "VALIDATION_EMAIL": "Wartość pola musi być mailem.",
-      "VALIDATION_EXISTS": "Wartość pola musi istnieć w bazie danych.",
+      "VALIDATION_EMAIL": "Wartość pola musi być poprawnym adresem email.",
+      "VALIDATION_EXISTS": "Wartość pola musi istnieć.",
       "VALIDATION_FILE": "Wartość pola musi być plikiem.",
       "VALIDATION_REGEX": "Wartość pola musi pasować do podanego wzoru.",
       "VALIDATION_SIZE": "Wartość pola musi mieć określony rozmiar: {size}.",
-      "VALIDATION_UNIQUE": "Wartość pola nie może występować w bazie danych.",
+      "VALIDATION_UNIQUE": "Wartość pola musi być unikatowa.",
       "VALIDATION_BOOLEAN": "Wartość pola musi być typu boolean.",
-      "VALIDATION_URL": "Wartość pola musi być poprawnym url.",
-      "VALIDATION_UUID": "Wartość pola musi mieć format uuid.",
+      "VALIDATION_URL": "Wartość pola musi być poprawnym linkiem.",
+      "VALIDATION_UUID": "Wartość pola musi mieć format UUID.",
       "VALIDATION_PASSWORD_LENGTH": "Długość hasła musi mieć minimalną długość wartości {min}.",
       "VALIDATION_PASSWORD_COMPROMISED": "Hasło jest zagrożone.",
       "VALIDATION_DISTINCT": "Podczas walidacji tablicy, wskazana wartość nie może się powtarzać.",
@@ -163,9 +166,9 @@
       "VALIDATION_BEFORE_OR_EQUAL": "Data musi być wcześniejsza lub równa wartości {when}",
       "VALIDATION_REQUIRED_WITH": "Wartość pola jest wymagane i nie może być puste, jeżeli inne wskazane pola są wypełnione i nie są puste.",
       "VALIDATION_UNIQUE_ID_IN_REQUEST": "Wartości pól ID nie mogą się powtórzyć.",
-      "VALIDATION_APP_UNIQUE_URL": "Podczas instalacji aplikacji jej url nie może już istnieć w bazie.",
+      "VALIDATION_APP_UNIQUE_URL": "Link aplikacji jest identyczny z linkiem jednej z aplikacji, która jest już zainstalowana.",
       "VALIDATION_ATTRIBUTE_OPTION_EXISTS": "Nie istnieje taka opcja dla podanej cechy.",
-      "VALIDATION_CAN_SHOW_PRIVATE_METADATA": "Użytkownik nie ma uprawnień do podglądu metadata_private.",
+      "VALIDATION_CAN_SHOW_PRIVATE_METADATA": "Użytkownik nie ma uprawnień do podglądu prywatnych metadanych.",
       "VALIDATION_CONSENT_EXISTS": "Nie istnieje zgoda o takim ID.",
       "VALIDATION_DECIMAL": "Wartość pola musi być numerem.",
       "VALIDATION_ENUM_KEY": "Wartość pola musi być istniejącym kluczem w danej klasie Enum.",
@@ -179,10 +182,12 @@
       "VALIDATION_AFTER_OR_EQUAL": "Data musi być późniejsza lub równa wartości {when}.",
       "VALIDATION_ENUM_VALUE": "Wartość pola musi być jedną z wartości podanego Enuma.",
       "VALIDATION_REQUIRED_WITH_ALL": "Wartość pola musi być obecna i nie może być pusta, jeśli inne podane pola są obecne i nie są puste.",
-      "VALIDATION_GTE": "Wartość pola musi być większa bądź równa wartości pola {field}."
+      "VALIDATION_GTE": "Wartość pola musi być większa bądź równa wartości pola {field}.",
+      "INTERNAL_SERVER_ERROR": "Wewnętrzny błąd serwera"
     },
     "CLIENT_ERROR": {
       "CLIENT_INVALID_INSTALLATION_RESPONSE": "Aplikacja ma nieprawidłową odpowiedź dotyczącą instalacji.",
+      "CDN_NOT_ALLOWED_TO_CHANGE_ALT": "Nie możesz zmienić tekstu alternatywnego tego zdjęcia.",
       "CLIENT_FAILED_TO_CONNECT_WITH_APP": "Nie udało połączyć się z aplikacją.",
       "CLIENT_FAILED_TO_UNINSTALL_APP": "Nie udało się odinstalować aplikacji. Brak odpowiedzi aplikacji.",
       "CLIENT_ASSIGN_INVALID_PERMISSIONS": "Przypisano nieprawidłe uprawnienia, nie ma różnicy między wszystkimi możliwymi uprawnieniami a uprawnieniami przyznanymi.",
@@ -243,7 +248,8 @@
       "UNAUTHORIZED": "401: Brak autoryzacji",
       "FORBIDDEN": "403: Odmowa dostępu",
       "NOT_FOUND": "404: Strona nie została znaleziona",
-      "UNPROCESSABLE_ENTITY": "422: Nieprocesowalna zawartość"
+      "UNPROCESSABLE_ENTITY": "422: Nieprocesowalna zawartość",
+      "INTERNAL_SERVER_ERROR": "Wewnętrzny błąd serwera"
     },
     "SERVER_ERROR": {
       "INTERNAL_SERVER_ERROR": "500: Wewnętrzny błąd serwera",

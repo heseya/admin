@@ -203,7 +203,7 @@ export default Vue.extend({
             name,
             display_name: name,
             assignable: false,
-          } as PermissionObject),
+          } as PermissionEntry),
       )
     },
   },

@@ -71,7 +71,7 @@ export default Vue.extend({
       })
 
       if (success) {
-        this.$emit('statusChanged', newStatus)
+        this.$emit('status-changed', newStatus)
         this.$toast.success(this.$t('statusChangeSuccess') as string)
       }
 

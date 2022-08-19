@@ -20,6 +20,12 @@ module.exports = {
     'vue/no-reserved-component-names': 'warn',
     'vue/multi-word-component-names': 'off',
     'vue/no-deprecated-slot-attribute': 'error',
+    // 'vue/no-deprecated-v-on-native-modifier': 'error',
+    'vue/no-deprecated-vue-config-keycodes': 'error',
+    'vue/no-deprecated-v-on-number-modifiers': 'error',
+    'vue/no-deprecated-v-bind-sync': 'error',
+    'vue/v-on-event-hyphenation': 'warn',
+    // 'vue/require-explicit-emits': 'warn',
     'vue/no-v-html': 'off',
     'vue/no-bare-strings-in-template': [
       'error',
@@ -66,13 +72,7 @@ module.exports = {
     camelcase: ['error', { properties: 'never' }],
   },
 
-  extends: [
-    // 'plugin:vue/essential',
-    'plugin:vue/recommended',
-    '@vue/typescript',
-    'prettier',
-    'plugin:prettier/recommended',
-  ],
+  extends: ['plugin:vue/recommended', '@vue/typescript', 'prettier', 'plugin:prettier/recommended'],
 
   plugins: ['prettier'],
 }

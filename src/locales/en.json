@@ -19,14 +19,17 @@
     "edit": "Edit",
     "continue": "Continue",
     "reset": "Reset",
+    "confirmLeave": "Do you really want to leave? You have unsaved changes!",
     "form": {
       "name": "Name",
       "description": "Description",
       "type": "Type",
+      "date": "Date",
       "slug": "Link",
       "label": "Label",
       "value": "Value",
-      "required": "Required"
+      "required": "Required",
+      "visibility": "Visibility"
     }
   },
   "nav": {
@@ -37,7 +40,7 @@
     "moreLink": "More",
     "users": "Users list",
     "roles": "User roles",
-    "apps": "Aplikacje",
+    "apps": "Apps",
     "consents": "Marketing consents",
     "webhooks": "Webhooks",
     "seo": "SEO settings",
@@ -143,11 +146,11 @@
       "VALIDATION_ALPHA": "The field value must be alphanumeric.",
       "VALIDATION_DATE": "The field value must be a date.",
       "VALIDATION_EMAIL": "The field value must be an e-mail.",
-      "VALIDATION_EXISTS": "The field value must exist in the database.",
+      "VALIDATION_EXISTS": "The field value must exist.",
       "VALIDATION_FILE": "The field value must be a file.",
       "VALIDATION_REGEX": "The field value must match the pattern.",
       "VALIDATION_SIZE": "The field value must be a certain size {size}.",
-      "VALIDATION_UNIQUE": "The field value cannot exist in the database.",
+      "VALIDATION_UNIQUE": "The field value must be unique.",
       "VALIDATION_BOOLEAN": "The field value must be a boolean.",
       "VALIDATION_URL": "The field value must be a valid url.",
       "VALIDATION_UUID": "The field value must be in the uuid format.",
@@ -163,7 +166,7 @@
       "VALIDATION_BEFORE_OR_EQUAL": "Date must be earlier than or equal to value {when}",
       "VALIDATION_REQUIRED_WITH": "The field value is required and cannot be empty, if other indicated fields are filled and not empty",
       "VALIDATION_UNIQUE_ID_IN_REQUEST": "ID field values ​​cannot be repeated.",
-      "VALIDATION_APP_UNIQUE_URL": "When installing the application, its url cannot exist in the database anymore.",
+      "VALIDATION_APP_UNIQUE_URL": "The application link is identical to the link of one of the applications that is already installed.",
       "VALIDATION_ATTRIBUTE_OPTION_EXISTS": "There is no option for the specified attribute.",
       "VALIDATION_CAN_SHOW_PRIVATE_METADATA": "The user does not have permission to view metadata_private.",
       "VALIDATION_CONSENT_EXISTS": "There is no consent for such an ID.",
@@ -179,10 +182,12 @@
       "VALIDATION_AFTER_OR_EQUAL": "Date must be later than or equal to value {when}.",
       "VALIDATION_ENUM_VALUE": "The field value must be one of the value provided by Enum.",
       "VALIDATION_REQUIRED_WITH_ALL": "The field value must be present and cannot be empty if the other specified fields are present and not empty.",
-      "VALIDATION_GTE": "The field value must be greater than or equal to the value of field {field}."
+      "VALIDATION_GTE": "The field value must be greater than or equal to the value of field {field}.",
+      "INTERNAL_SERVER_ERROR": "Internal server error"
     },
     "CLIENT_ERROR": {
       "UNPROCESSABLE_ENTITY": "Unprocessable entity",
+      "CDN_NOT_ALLOWED_TO_CHANGE_ALT": "You cannot change alt attribute of this image.",
       "CLIENT_INVALID_INSTALLATION_RESPONSE": "App has invalid installation response.",
       "CLIENT_FAILED_TO_CONNECT_WITH_APP": "Failed to connect with application.",
       "CLIENT_FAILED_TO_UNINSTALL_APP": "Failed to uninstall the application. Failed response from app.",
@@ -243,7 +248,8 @@
       "BAD_REQUEST": "400: Bad request",
       "UNAUTHORIZED": "401: Unauthorized",
       "FORBIDDEN": "403: Forbidden",
-      "NOT_FOUND": "404: Page not found"
+      "NOT_FOUND": "404: Page not found",
+      "INTERNAL_SERVER_ERROR": "Internal server error"
     },
     "SERVER_ERROR": {
       "INTERNAL_SERVER_ERROR": "Internal server error",

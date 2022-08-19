@@ -28,8 +28,13 @@ const getErrorType = (errorKey: string, statusCode: number) => {
 
 export const formatApiError = (error: ApiError) => {
   const responseData = error.response?.data.error
+  const responseStatus = error.response?.status
   const errorCode = responseData?.code
   const errorType = getErrorType(responseData?.key as string, errorCode as number)
+
+  if (responseStatus === 500) {
+    return { title: i18n.t('errors.SERVER_ERROR.INTERNAL_SERVER_ERROR') as string, messages: [] }
+  }
 
   const messages = !isEmpty(responseData?.errors)
     ? Object.entries(responseData?.errors!).map(([key, value]) => {

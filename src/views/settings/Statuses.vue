@@ -1,6 +1,6 @@
 <template>
-  <div class="narrower-page">
-    <PaginatedList :title="$t('title')" store-key="statuses" draggable>
+  <div>
+    <PaginatedList :title="$t('title')" store-key="statuses" draggable :table="tableConfig">
       <template #nav>
         <icon-button v-can="$p.Statuses.Add" @click="openModal()">
           <template #icon>
@@ -10,13 +10,22 @@
         </icon-button>
       </template>
       <template #default="{ item: status }">
-        <list-item :key="status.id" @click="openModal(status.id)">
-          <template #avatar>
-            <avatar :color="`#${status.color}`" />
+        <cms-table-row
+          :key="status.id"
+          :item="status"
+          :headers="tableConfig.headers"
+          @click="openModal(status.id)"
+        >
+          <template #name>
+            <div class="status-name">
+              <avatar small :color="`#${status.color}`" />
+              <b class="status-name__name">{{ status.name }}</b>
+            </div>
           </template>
-          {{ status.name }}
-          <small>{{ status.description }}</small>
-        </list-item>
+          <template #description>
+            <small>{{ status.description }}</small>
+          </template>
+        </cms-table-row>
       </template>
     </PaginatedList>
 
@@ -171,15 +180,16 @@ import { ValidationObserver } from 'vee-validate'
 import { clone } from 'lodash'
 import { OrderStatus, OrderStatusUpdateDto } from '@heseya/store-core'
 
+import { UUID } from '@/interfaces/UUID'
+import { TableConfig } from '@/interfaces/CmsTable'
+
 import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
-import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
-import Avatar from '@/components/layout/Avatar.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
-
-import { UUID } from '@/interfaces/UUID'
+import CmsTableRow from '@/components/cms/CmsTableRow.vue'
+import Avatar from '@/components/layout/Avatar.vue'
 
 const CLEAR_STATUS: OrderStatusUpdateDto = {
   name: '',
@@ -196,13 +206,13 @@ export default Vue.extend({
   },
   components: {
     PaginatedList,
-    ListItem,
     ModalForm,
     PopConfirm,
     ValidationObserver,
     SwitchInput,
-    Avatar,
     MetadataForm,
+    CmsTableRow,
+    Avatar,
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {
@@ -220,6 +230,25 @@ export default Vue.extend({
   computed: {
     canModify(): boolean {
       return this.$can(this.editedItem.id ? this.$p.Statuses.Edit : this.$p.Statuses.Add)
+    },
+    tableConfig(): TableConfig<OrderStatus> {
+      return {
+        headers: [
+          { key: 'name', label: this.$t('common.form.name') as string },
+          { key: 'description', label: this.$t('common.form.description') as string },
+          {
+            key: 'cancel',
+            label: this.$t('form.cancel') as string,
+            width: '0.5fr',
+          },
+          { key: 'hidden', label: this.$t('form.hidden') as string, width: '0.5fr' },
+          {
+            key: 'no_notifications',
+            label: this.$t('form.noNotification') as string,
+            width: '0.5fr',
+          },
+        ],
+      }
     },
   },
   methods: {
@@ -278,5 +307,15 @@ export default Vue.extend({
 <style lang="scss">
 input[type='color'] {
   height: 30px !important;
+}
+
+.status-name {
+  display: flex;
+  align-items: center;
+
+  &__name {
+    display: block;
+    margin-left: 8px;
+  }
 }
 </style>

@@ -102,7 +102,7 @@ const storePattern = {
 
 const store = new Vuex.Store({
   ...storePattern,
-  plugins: [new VuexPersistence({ modules: ['auth', 'config', 'menuItems'] }).plugin],
+  plugins: [new VuexPersistence({ modules: ['config', 'auth', 'menuItems'] }).plugin],
 })
 
 export const accessor = useAccessor(store, storePattern)
@@ -111,7 +111,7 @@ export type AccessorType = typeof accessor
 export type StoreModulesKeys = keyof typeof storeModules
 export type GeneratedStoreModulesKeys = Exclude<
   StoreModulesKeys,
-  'auth' | 'globalSeo' | 'menuItems' | 'config'
+  'config' | 'auth' | 'globalSeo' | 'menuItems'
 >
 
 Vue.prototype.$accessor = accessor

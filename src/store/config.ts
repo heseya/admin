@@ -9,14 +9,15 @@ const state = () => ({
   currency: 'PLN',
   apiLanguage: null as null | string,
   uiLanguage: getDefaultUiLanguage(),
+  // TODO: should be renamed to 'settings'
   env: {} as Record<string, string>,
 })
 
 const getters = getterTree(state, {})
 
 const mutations = mutationTree(state, {
-  SET_ENV(state, newEnv: Record<string, string>) {
-    state.env = newEnv
+  SET_SETTINGS(state, newSettings: Record<string, string>) {
+    state.env = newSettings
   },
   SET_API_LANGUAGE(state, language: string) {
     state.apiLanguage = language
@@ -29,11 +30,10 @@ const mutations = mutationTree(state, {
 const actions = actionTree(
   { state, getters, mutations },
   {
-    async fetchEnv({ commit }) {
+    async fetchSettings({ commit }) {
       // Fetch setting wtihout authorization, so it wont crash when auth is invalid
       const { data } = await axios.get<Record<string, string>>(`${getApiURL()}/settings?array`)
-      commit('SET_ENV', data)
-    },
+      commit('SET_SETTINGS', data)
 
     async initLanguages({ state, commit }) {
       const languages = await accessor.languages.fetch()

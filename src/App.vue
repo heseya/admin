@@ -101,7 +101,7 @@ export default Vue.extend({
   },
   created() {
     initMicroApps()
-    this.$accessor.config.fetchEnv()
+    this.$accessor.config.fetchSettings()
     this.$accessor.config.initLanguages()
     this.$accessor.menuItems.initMicrofrontendMenuItems()
     if (this.$accessor.auth.isLogged) this.$accessor.auth.fetchProfile()

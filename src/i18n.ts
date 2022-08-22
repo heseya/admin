@@ -17,9 +17,8 @@ function loadLocaleMessages(): LocaleMessages {
   })
   return messages
 }
-
 export default new VueI18n({
-  locale: accessor.config.uiLanguage || getDefaultUiLanguage(),
+  locale: process.env.VUE_APP_I18N_LOCALE || accessor.config.uiLanguage || getDefaultUiLanguage(),
   fallbackLocale: process.env.VUE_APP_I18N_FALLBACK_LOCALE || 'en',
   messages: loadLocaleMessages(),
   fallbackRoot: true,

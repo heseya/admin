@@ -34,6 +34,7 @@ const actions = actionTree(
       // Fetch setting wtihout authorization, so it wont crash when auth is invalid
       const { data } = await axios.get<Record<string, string>>(`${getApiURL()}/settings?array`)
       commit('SET_SETTINGS', data)
+    },
 
     async initLanguages({ state, commit }) {
       const languages = await accessor.languages.fetch()

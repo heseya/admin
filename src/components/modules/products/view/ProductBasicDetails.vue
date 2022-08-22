@@ -134,9 +134,10 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .product-basic-details {
   &__price-row {
+    width: 80%;
     display: grid;
     grid-template-columns: 1fr 0.5fr 1fr;
-    grid-gap: 16px;
+    grid-gap: 24px;
   }
 }
 </style>

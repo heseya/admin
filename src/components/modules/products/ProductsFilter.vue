@@ -43,7 +43,7 @@
     <range-input
       :value="{ min: local['price.min'], max: local['price.max'] }"
       :label="$t('price')"
-      :addon-after="$accessor.currency"
+      :addon-after="$accessor.config.currency"
       min="0"
       @input="
         (v) => {

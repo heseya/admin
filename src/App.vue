@@ -98,7 +98,7 @@ export default Vue.extend({
   },
   created() {
     initMicroApps()
-    this.$accessor.fetchEnv()
+    this.$accessor.config.fetchSettings()
     this.$accessor.menuItems.initMicrofrontendMenuItems()
 
     if (this.$accessor.auth.isLogged) this.$accessor.auth.fetchProfile()

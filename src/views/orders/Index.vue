@@ -199,7 +199,7 @@ export default Vue.extend({
       this.makeSearch({ ...EMPTY_ORDER_FILTERS })
     },
     formatCurrency(value: number) {
-      return formatCurrency(value, this.$accessor.currency)
+      return formatCurrency(value, this.$accessor.config.currency)
     },
   },
 })

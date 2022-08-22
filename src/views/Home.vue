@@ -136,7 +136,7 @@ export default Vue.extend({
   }),
   computed: {
     storeName(): string {
-      return this.$accessor.env.store_name ?? 'Heseya Store'
+      return this.$accessor.config.env.store_name ?? 'Heseya Store'
     },
     orders(): Order[] {
       return this.$accessor.orders.getData
@@ -175,7 +175,7 @@ export default Vue.extend({
       return formatDate(date)
     },
     formatCurrency(amount: number) {
-      return formatCurrency(amount, this.$accessor.currency)
+      return formatCurrency(amount, this.$accessor.config.currency)
     },
     async getOrders() {
       await this.$accessor.orders.fetch({

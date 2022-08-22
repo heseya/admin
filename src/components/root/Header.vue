@@ -65,7 +65,7 @@ export default Vue.extend({
       return !!this.$route.meta?.hiddenNav || false
     },
     storeName(): string {
-      return this.$accessor.env.store_name
+      return this.$accessor.config.env.store_name
     },
     returnUrl(): string | null {
       const previousRoute: { path: string; fullPath: string } | null = JSON.parse(

@@ -17,7 +17,7 @@ function loadLocaleMessages(): LocaleMessages {
   return messages
 }
 
-const getDefaultLanguage = () => {
+const getDefaultUiLanguage = () => {
   const browserLang = window.navigator.language
   if (browserLang.includes('pl')) return 'pl'
   return 'en'
@@ -27,7 +27,7 @@ export default new VueI18n({
   locale:
     process.env.VUE_APP_I18N_LOCALE ||
     window.localStorage.getItem(LOCALE_STORAGE_KEY) ||
-    getDefaultLanguage(),
+    getDefaultUiLanguage(),
   fallbackLocale: process.env.VUE_APP_I18N_FALLBACK_LOCALE || 'pl', // TODO: change to 'en' when all translations are done
   messages: loadLocaleMessages(),
   fallbackRoot: true,

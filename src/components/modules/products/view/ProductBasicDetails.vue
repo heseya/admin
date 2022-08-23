@@ -133,11 +133,21 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .product-basic-details {
+  width: 100%;
+
+  @media ($viewport-14) {
+    width: 70%;
+  }
+
   &__price-row {
-    width: 80%;
+    width: 100%;
     display: grid;
     grid-template-columns: 1fr 0.5fr 1fr;
     grid-gap: 24px;
+
+    @media ($viewport-12) {
+      width: 80%;
+    }
   }
 }
 </style>

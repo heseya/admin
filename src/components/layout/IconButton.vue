@@ -66,7 +66,7 @@ export default Vue.extend({
     size: {
       type: String,
       default: 'default',
-    } as Vue.PropOptions<'small' | 'default'>,
+    } as Vue.PropOptions<'small' | 'default' | 'big'>,
     dataCy: { type: String, default: '' },
   },
   computed: {
@@ -92,6 +92,7 @@ export default Vue.extend({
 
   $small-icon-size: 24px;
   $default-icon-size: 29px;
+  $big-icon-size: 34px;
 
   all: unset;
   cursor: pointer;
@@ -166,6 +167,15 @@ export default Vue.extend({
     #{$root}__icon {
       width: $small-icon-size;
       height: $small-icon-size;
+    }
+  }
+
+  &--big {
+    font-size: 1.2rem;
+
+    #{$root}__icon {
+      width: $big-icon-size;
+      height: $big-icon-size;
     }
   }
 

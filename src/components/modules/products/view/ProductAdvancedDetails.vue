@@ -10,15 +10,18 @@
       <template #header>
         <span class="seo-form-accordion__title">{{ $t('title') }}</span>
       </template>
-      <tags-select v-model="form.tags" :disabled="disabled" />
-      <google-category-select v-model="form.google_product_category" :disabled="disabled" />
 
-      <validated-input v-model="form.order" type="number" name="order" :disabled="disabled">
-        <template #label>
-          {{ $t('form.order') }}
-          <info-tooltip>{{ $t('form.orderTooltip') }}</info-tooltip>
-        </template>
-      </validated-input>
+      <div class="product-advanced-details__form">
+        <tags-select v-model="form.tags" :disabled="disabled" />
+        <google-category-select v-model="form.google_product_category" :disabled="disabled" />
+
+        <validated-input v-model="form.order" type="number" name="order" :disabled="disabled">
+          <template #label>
+            {{ $t('form.order') }}
+            <info-tooltip>{{ $t('form.orderTooltip') }}</info-tooltip>
+          </template>
+        </validated-input>
+      </div>
     </a-collapse-panel>
   </a-collapse>
 </template>
@@ -78,3 +81,13 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.product-advanced-details__form {
+  width: 100%;
+
+  @media ($viewport-14) {
+    width: 70%;
+  }
+}
+</style>

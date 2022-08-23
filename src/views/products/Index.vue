@@ -111,14 +111,15 @@ export default Vue.extend({
         headers: [
           { key: 'cover', label: '', width: '60px' },
           { key: 'name', label: this.$t('common.form.name') as string, sortable: true },
+          { key: 'tags', label: this.$t('form.tags') as string, width: '0.6fr' },
           { key: 'price', label: this.$t('form.price') as string, width: '0.6fr', sortable: true },
-          { key: 'tags', label: this.$t('form.tags') as string },
           {
             key: 'public',
             label: this.$t('form.public') as string,
             width: '0.4fr',
             sortable: true,
           },
+          { key: 'action', label: '', width: '64px' },
         ],
       }
     },

@@ -227,6 +227,12 @@ export default Vue.extend({
   &__list-item {
     width: 100%;
 
+    @media ($viewport-11) {
+      &:not(:last-of-type) .cms-table-row {
+        border-bottom: solid 1px $background-color-700 !important;
+      }
+    }
+
     > * {
       display: block;
       width: 100% !important;

@@ -28,6 +28,16 @@
         <span v-if="product.tags.length === 0">-</span>
       </div>
     </template>
+
+    <template #public>
+      <switch-input
+        :value="product.public"
+        class="product-list-item__visibility"
+        :loading="publicIsLoading"
+        @input="changeVisibility"
+        @click.native.stop
+      />
+    </template>
   </cms-table-row>
 </template>
 
@@ -55,6 +65,7 @@ export default Vue.extend({
       required: true,
     } as Vue.PropOptions<TableConfig<Product>>,
   },
+  data: () => ({ publicIsLoading: false }),
   computed: {
     objectFit(): string {
       return +this.$accessor.config.env.dashboard_products_contain ? 'contain' : 'cover'
@@ -79,6 +90,11 @@ export default Vue.extend({
     async copyId() {
       await navigator.clipboard.writeText(this.product.id)
       this.$toast.success('Skopiowano ID')
+    },
+    async changeVisibility(isPublic: boolean) {
+      this.publicIsLoading = true
+      await this.$accessor.products.update({ id: this.product.id, item: { public: isPublic } })
+      this.publicIsLoading = false
     },
   },
 })
@@ -128,6 +144,10 @@ export default Vue.extend({
     display: flex;
     justify-content: flex-start;
     flex-wrap: wrap;
+  }
+
+  &__visibility {
+    align-items: start;
   }
 }
 </style>

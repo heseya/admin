@@ -16,6 +16,7 @@
     <a-switch
       :checked="value"
       :disabled="disabled"
+      :loading="loading"
       :name="name"
       :data-cy="dataCy"
       @change="onInput"
@@ -44,6 +45,7 @@ export default Vue.extend({
     value: { type: Boolean, required: true },
     disabled: { type: Boolean, default: false },
     horizontal: { type: Boolean, default: false },
+    loading: { type: Boolean, default: false },
     label: { type: String, default: '' },
     name: { type: String, default: '' },
     type: { type: String, default: 'default' },

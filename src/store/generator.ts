@@ -351,25 +351,29 @@ export const createVuexCRUD =
         // Metadata
         async updateMetadata(
           { commit },
-          payload: { id: UUID; metadata: MetadataUpdateDto; public: boolean },
+          {
+            id,
+            metadata,
+            public: isPublic,
+          }: { id: UUID; metadata: MetadataUpdateDto; public: boolean },
         ) {
           commit(StoreMutations.SetError, null)
           commit(StoreMutations.SetLoading, true)
           try {
-            const path = payload.public ? 'metadata' : 'metadata-private'
+            const path = isPublic ? 'metadata' : 'metadata-private'
             const { data } = await api.patch<{ data: Metadata }>(
-              `/${endpoint}/id:${payload.id}/${path}`,
-              payload.metadata,
+              `/${endpoint}/id:${id}/${path}`,
+              metadata,
             )
 
             // ? Typescript is complaining, that Item does not need to have metadata, but if this method is called, it does
+            // ? When removing all metadata, empty response is an array instead of object
             // @ts-ignore
-            commit(StoreMutations.EditData, {
-              key: 'id',
-              value: payload.id,
-              // When removing all metadata, empty response is an array instead of object
-              item: { [path]: Array.isArray(data.data) ? {} : data.data },
-            })
+            // commit(StoreMutations.EditData, {
+            //   key: 'id',
+            //   value: id,
+            //   item: { [isPublic ? 'metadata' : 'metadata_private']: Array.isArray(data.data) ? {} : data.data },
+            // })
             commit(StoreMutations.SetLoading, false)
             return data.data
           } catch (error: any) {

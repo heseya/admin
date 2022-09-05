@@ -155,8 +155,8 @@
 import Vue from 'vue'
 import Draggable from 'vuedraggable'
 import { cloneDeep } from 'lodash'
-import { ProductSet, ProductSetUpdateDto, HeseyaPaginatedResponseMeta } from '@heseya/store-core'
-import { api } from '@/api'
+import { ProductSet, ProductSetUpdateDto, ProductSetList } from '@heseya/store-core'
+import { sdk } from '@/api'
 
 import Loading from '@/components/layout/Loading.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
@@ -190,8 +190,8 @@ export default Vue.extend({
     childrenQuantity: 0,
     page: 1,
     limit: 50,
-    children: [] as ProductSet[],
-    searchedChildren: [] as ProductSet[],
+    children: [] as ProductSetList[],
+    searchedChildren: [] as ProductSetList[],
     selectedSet: null as null | ProductSet,
     selectedChildren: null as null | ProductSet,
     editedItem: cloneDeep(CLEAR_PRODUCT_SET_FORM) as ProductSetUpdateDto,
@@ -211,7 +211,7 @@ export default Vue.extend({
       return this.children.length < this.childrenQuantity
     },
     uniqueChildren: {
-      get(): ProductSet[] {
+      get(): ProductSetList[] {
         if (!this.searchedChildren.length) {
           return this.children
         }
@@ -229,7 +229,7 @@ export default Vue.extend({
       this.$emit('delete-child', setId)
     },
 
-    updateChild(set: ProductSet) {
+    updateChild(set: ProductSetList) {
       const updatedIndex = this.children.findIndex((child) => child.id === set.id)
       this.children.splice(updatedIndex, 1, { ...set, children_ids: [] })
     },
@@ -246,7 +246,7 @@ export default Vue.extend({
             this.limit,
             this.page - 1,
           )
-          this.children.push(subcollections.pop() as ProductSet)
+          this.children.push(subcollections.pop() as ProductSetList)
         } catch (error: any) {}
         this.$accessor.stopLoading()
       }
@@ -284,11 +284,13 @@ export default Vue.extend({
       this.isLoading = false
     },
     async fetchByParentId(parentId: UUID, limit: number, page: number) {
-      const { data: res } = await api.get<{
-        data: ProductSet[]
-        meta: HeseyaPaginatedResponseMeta
-      }>(`/product-sets?parent_id=${parentId}&page=${page}&tree=0&limit=${limit}`)
-      return res
+      const list = await sdk.ProductSets.get({
+        parent_id: parentId,
+        page,
+        limit,
+        tree: false,
+      })
+      return list
     },
     async deleteCollection() {
       this.$accessor.startLoading()

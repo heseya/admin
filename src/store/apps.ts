@@ -9,6 +9,7 @@ export const apps = createVuexCRUD<App, AppCreateDto, AppCreateDto>()('apps', {
   },
   mutations: {},
   actions: {
+    // TODO: is this used?
     async addApp(_u, url: string) {
       try {
         const { data } = await api.post('/apps', { url })

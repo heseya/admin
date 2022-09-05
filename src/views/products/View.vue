@@ -241,8 +241,7 @@ export default mixins(preventLeavingPage).extend({
       return this.$accessor.products.getSelected || ({} as any)
     },
     error(): any {
-      // @ts-ignore // TODO: fix extended store getters typings
-      return this.$accessor.products.getError || this.$accessor.products.getDepositError
+      return this.$accessor.products.getError
     },
     canModify(): boolean {
       return this.$can(this.isNew ? this.$p.Products.Add : this.$p.Products.Edit)

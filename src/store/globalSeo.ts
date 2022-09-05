@@ -2,7 +2,7 @@
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 import { SeoMetadata } from '@heseya/store-core'
 
-import { api } from '../api'
+import { api, sdk } from '../api'
 import { UUID } from '@/interfaces/UUID'
 
 const state = () => ({
@@ -31,13 +31,11 @@ const actions = actionTree(
     async get({ commit }) {
       commit('SET_ERROR', null)
       try {
-        const {
-          data: { data },
-        } = await api.get<{ data: SeoMetadata }>('/seo')
+        const seo = await sdk.GlobalSeo.get()
 
-        commit('SET_SEO', data)
+        commit('SET_SEO', seo)
 
-        return data
+        return seo
       } catch (e: any) {
         commit('SET_ERROR', e)
         return false

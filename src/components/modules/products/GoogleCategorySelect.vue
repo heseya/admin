@@ -98,6 +98,7 @@ export default Vue.extend({
       this.isLoading = true
       try {
         const lang = this.$i18n.locale === 'pl' ? 'pl-PL' : 'en-US'
+        // TODO[SDK]: change when request added to sdk
         const response = await api.get<{ data: GoogleCategoryOption[] }>(
           `/google-categories/${lang}`,
         )

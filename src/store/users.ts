@@ -10,7 +10,7 @@ export const users = createVuexCRUD<User, UserCreateDto, UserUpdateDto>()('users
   actions: {
     async removeUser2FA({ commit, state }, userId: UUID) {
       try {
-        // TODO: replace when sdk updated (sdk.Users.removeTwoFactorAuth)
+        // TODO[SDK]: replace when sdk updated (sdk.Users.removeTwoFactorAuth)
         await api.post(`/users/id:${userId}/2fa/remove`)
         const user = state.data.find((u) => u.id === userId)
 

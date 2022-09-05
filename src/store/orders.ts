@@ -1,5 +1,5 @@
 import { createVuexCRUD, StoreMutations } from './generator'
-import { api, sdk } from '../api'
+import { sdk } from '../api'
 import { Order, OrderDocument, OrderDocumentCreateDto } from '@heseya/store-core'
 import { UUID } from '@/interfaces/UUID'
 
@@ -59,13 +59,7 @@ export const orders = createVuexCRUD<Order>()('orders', {
     ) {
       commit(StoreMutations.SetError, null)
       try {
-        const form = new FormData()
-        form.append('type', document.type)
-        if (document.name) form.append('name', document.name)
-        form.append('file', document.file)
-
-        const response = await api.post<{ data: OrderDocument }>(`/orders/id:${orderId}/docs`, form)
-        const orderDocument = response.data.data
+        const orderDocument = await sdk.Orders.Documents.create(orderId, document)
 
         commit('ADD_ORDER_DOCUMENT', { orderId, document: orderDocument })
 
@@ -82,11 +76,7 @@ export const orders = createVuexCRUD<Order>()('orders', {
     ) {
       commit(StoreMutations.SetError, null)
       try {
-        const response = await api.get<Blob>(
-          `/orders/id:${orderId}/docs/id:${documentId}/download`,
-          { responseType: 'blob' },
-        )
-        return response.data
+        return await sdk.Orders.Documents.download(orderId, documentId)
       } catch (e) {
         commit(StoreMutations.SetError, e)
         return null

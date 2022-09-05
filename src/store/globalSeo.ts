@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
-import { SeoMetadata } from '@heseya/store-core'
+import { SeoCheckModelType, SeoMetadata } from '@heseya/store-core'
 
 import { api, sdk } from '../api'
 import { UUID } from '@/interfaces/UUID'
@@ -44,7 +44,7 @@ const actions = actionTree(
     async update({ commit }, payload: SeoMetadata) {
       commit('SET_ERROR', null)
       try {
-        // TODO: replace when sdk updated (GlobalSeo.update)
+        // TODO[SDK]: replace when sdk updated (GlobalSeo.update)
         const {
           data: { data },
         } = await api.patch<{ data: SeoMetadata }>('/seo', payload)
@@ -60,17 +60,13 @@ const actions = actionTree(
 
     async checkDuplicates(
       _c,
-      { keywords, excluded }: { keywords: string[]; excluded?: { id: UUID; model: string } },
+      {
+        keywords,
+        excluded,
+      }: { keywords: string[]; excluded?: { id: UUID; model: SeoCheckModelType } },
     ) {
-      type CheckResponse = { data: { duplicated: boolean; duplicates: [] } }
-
       try {
-        const response = await api.post<CheckResponse>('/seo/check', {
-          keywords,
-          excluded,
-        })
-
-        return response.data.data
+        return await sdk.GlobalSeo.check(keywords, excluded)
       } catch {
         return {
           duplicated: false,

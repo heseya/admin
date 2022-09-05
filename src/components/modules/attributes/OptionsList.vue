@@ -52,10 +52,10 @@
     <empty v-else>{{ $t('empty') }}</empty>
 
     <pagination
-      v-if="optionsMeta.last_page > 1"
+      v-if="optionsMeta.lastPage > 1"
       class="attributes-options-form__pagination"
-      :length="optionsMeta.last_page"
-      :value="optionsMeta.current_page"
+      :length="optionsMeta.lastPage"
+      :value="optionsMeta.currentPage"
       @input="fetchOptions"
     />
 
@@ -94,7 +94,7 @@ import {
   AttributeOption,
   AttributeOptionDto,
   AttributeType,
-  HeseyaResponseMeta,
+  HeseyaPaginationMeta,
 } from '@heseya/store-core'
 
 import Empty from '@/components/layout/Empty.vue'
@@ -134,7 +134,7 @@ export default Vue.extend({
     options(): AttributeOption[] {
       return this.$accessor.attributes.options
     },
-    optionsMeta(): HeseyaResponseMeta {
+    optionsMeta(): HeseyaPaginationMeta {
       return this.$accessor.attributes.optionsMeta
     },
     areOptionsEditable(): boolean {

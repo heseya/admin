@@ -4,10 +4,9 @@ import {
   WebhookEntryCreateDto,
   WebhookEntryUpdateDto,
   WebhookEventLog,
-  HeseyaPaginatedResponseMeta,
+  HeseyaPaginationMeta,
 } from '@heseya/store-core'
-import { api, sdk } from '@/api'
-import { stringifyQueryParams } from '@/utils/stringifyQuery'
+import { sdk } from '@/api'
 import { createVuexCRUD, StoreMutations } from './generator'
 
 export const webhooks = createVuexCRUD<
@@ -18,7 +17,7 @@ export const webhooks = createVuexCRUD<
   state: {
     events: [] as WebHookEventObject[],
     logs: [] as WebhookEventLog[],
-    logsMeta: {} as HeseyaPaginatedResponseMeta,
+    logsMeta: {} as HeseyaPaginationMeta,
   },
   getters: {},
   mutations: {
@@ -28,7 +27,7 @@ export const webhooks = createVuexCRUD<
     SET_LOGS(state, events: WebhookEventLog[]) {
       state.logs = events
     },
-    SET_LOGS_META(state, meta: HeseyaPaginatedResponseMeta) {
+    SET_LOGS_META(state, meta: HeseyaPaginationMeta) {
       state.logsMeta = meta
     },
   },
@@ -49,15 +48,9 @@ export const webhooks = createVuexCRUD<
     async fetchLogs({ commit }, parameters: Record<string, any>) {
       commit(StoreMutations.SetLoading, true)
       try {
-        const params = stringifyQueryParams(parameters)
-
-        // TODO: migrate meta to standard pagination interface
-        const response = await api.get<{
-          data: WebhookEventLog[]
-          meta: HeseyaPaginatedResponseMeta
-        }>(`/webhooks/logs${params}`)
-        commit('SET_LOGS', response.data.data)
-        commit('SET_LOGS_META', response.data.meta)
+        const { data, pagination } = await sdk.Webhooks.getLogs(parameters)
+        commit('SET_LOGS', data)
+        commit('SET_LOGS_META', pagination)
 
         commit(StoreMutations.SetError, null)
       } catch (e: any) {

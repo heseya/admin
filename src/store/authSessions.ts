@@ -4,6 +4,10 @@ import { createVuexCRUD, StoreMutations } from './generator'
 import { UUID } from '@/interfaces/UUID'
 import { AuthSession } from '@/interfaces/AuthSession'
 
+/**
+ * @deprecated
+ * Whole authSessions module is deprecated and it's not working at all.
+ */
 export const authSessions = createVuexCRUD<AuthSession>()('auth/login-history', {
   state: {},
   getters: {},

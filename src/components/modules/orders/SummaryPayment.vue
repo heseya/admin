@@ -81,7 +81,7 @@ import { Order, Payment } from '@heseya/store-core'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import InfoTooltip from '@/components/layout/InfoTooltip.vue'
 
-import { api, sdk } from '@/api'
+import { sdk } from '@/api'
 import { formatCurrency } from '@/utils/currency'
 import { PAYMENT_METHODS } from '@/consts/paymentMethods'
 

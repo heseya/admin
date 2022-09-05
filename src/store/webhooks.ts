@@ -6,17 +6,15 @@ import {
   WebhookEventLog,
   HeseyaPaginatedResponseMeta,
 } from '@heseya/store-core'
-import { api } from '@/api'
+import { api, sdk } from '@/api'
 import { stringifyQueryParams } from '@/utils/stringifyQuery'
 import { createVuexCRUD, StoreMutations } from './generator'
-
-const BASE_URL = 'webhooks'
 
 export const webhooks = createVuexCRUD<
   WebhookEntry,
   WebhookEntryCreateDto,
   WebhookEntryUpdateDto
->()(BASE_URL, {
+>()('webhooks', {
   state: {
     events: [] as WebHookEventObject[],
     logs: [] as WebhookEventLog[],
@@ -38,8 +36,8 @@ export const webhooks = createVuexCRUD<
     async fetchEvents({ commit }) {
       commit(StoreMutations.SetLoading, true)
       try {
-        const response = await api.get<{ data: WebHookEventObject[] }>(`/${BASE_URL}/events`)
-        commit('SET_EVENTS', response.data.data)
+        const events = await sdk.Webhooks.getEvents()
+        commit('SET_EVENTS', events.data)
 
         commit(StoreMutations.SetError, null)
       } catch (e: any) {
@@ -52,6 +50,8 @@ export const webhooks = createVuexCRUD<
       commit(StoreMutations.SetLoading, true)
       try {
         const params = stringifyQueryParams(parameters)
+
+        // TODO: migrate meta to standard pagination interface
         const response = await api.get<{
           data: WebhookEventLog[]
           meta: HeseyaPaginatedResponseMeta

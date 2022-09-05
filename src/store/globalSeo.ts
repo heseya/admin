@@ -44,6 +44,7 @@ const actions = actionTree(
     async update({ commit }, payload: SeoMetadata) {
       commit('SET_ERROR', null)
       try {
+        // TODO: replace when sdk updated (GlobalSeo.update)
         const {
           data: { data },
         } = await api.patch<{ data: SeoMetadata }>('/seo', payload)

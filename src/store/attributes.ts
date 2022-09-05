@@ -9,7 +9,7 @@ import {
   HeseyaResponseMeta,
 } from '@heseya/store-core'
 import { UUID } from '@/interfaces/UUID'
-import { api } from '@/api'
+import { api, sdk } from '@/api'
 import { stringifyQueryParams } from '@/utils/stringifyQuery'
 
 type CreateOptionAction = { attributeId: UUID; option: AttributeOptionDto }
@@ -51,6 +51,7 @@ export const attributes = createVuexCRUD<Attribute, AttributeCreateDto, Attribut
       ) {
         try {
           const queryString = stringifyQueryParams(params)
+          // TODO: migrate meta to standard pagination interface
           const { data } = await api.get<{ data: AttributeOption[]; meta: HeseyaResponseMeta }>(
             `/attributes/id:${attributeId}/options${queryString}`,
           )
@@ -64,12 +65,9 @@ export const attributes = createVuexCRUD<Attribute, AttributeCreateDto, Attribut
 
       async addOption({ commit }, { attributeId, option }: CreateOptionAction) {
         try {
-          const { data } = await api.post<{ data: AttributeOption }>(
-            `/attributes/id:${attributeId}/options`,
-            option,
-          )
-          commit('ADD_OPTION', data.data)
-          return { success: true, option: data.data }
+          const attr = await sdk.Attributes.addOption(attributeId, option)
+          commit('ADD_OPTION', attr)
+          return { success: true, option: attr }
         } catch (error) {
           return { success: false, error } as const
         }
@@ -77,19 +75,17 @@ export const attributes = createVuexCRUD<Attribute, AttributeCreateDto, Attribut
 
       async updateOption({ commit }, { attributeId, optionId, option }: UpdateOptionAction) {
         try {
-          const { data } = await api.patch<{ data: AttributeOption }>(
-            `/attributes/id:${attributeId}/options/id:${optionId}`,
-            option,
-          )
-          commit('UPDATE_OPTION', { optionId, option: data.data })
-          return { success: true, option: data.data }
+          const attr = await sdk.Attributes.updateOption(attributeId, optionId, option)
+
+          commit('UPDATE_OPTION', { optionId, option: attr })
+          return { success: true, option: attr }
         } catch (error) {
           return { success: false, error } as const
         }
       },
 
       async deleteOption({ commit }, { attributeId, optionId }: DeleteOptionAction) {
-        await api.delete(`/attributes/id:${attributeId}/options/id:${optionId}`)
+        await sdk.Attributes.deleteOption(attributeId, optionId)
         commit('DELETE_OPTION', optionId)
         return true
       },

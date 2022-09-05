@@ -1,5 +1,5 @@
 import { createVuexCRUD, StoreMutations } from './generator'
-import { api } from '../api'
+import { api, sdk } from '../api'
 import { Order, OrderDocument, OrderDocumentCreateDto } from '@heseya/store-core'
 import { UUID } from '@/interfaces/UUID'
 
@@ -45,7 +45,7 @@ export const orders = createVuexCRUD<Order>()('orders', {
     async changeStatus({ commit }, { orderId, statusId }: { orderId: UUID; statusId: UUID }) {
       commit(StoreMutations.SetError, null)
       try {
-        await api.patch(`/orders/id:${orderId}/status`, { status_id: statusId })
+        await sdk.Orders.updateStatus(orderId, { status_id: statusId })
         return true
       } catch (error: any) {
         commit(StoreMutations.SetError, error)
@@ -99,7 +99,7 @@ export const orders = createVuexCRUD<Order>()('orders', {
     ) {
       commit(StoreMutations.SetError, null)
       try {
-        await api.delete(`/orders/id:${orderId}/docs/id:${documentId}`)
+        await sdk.Orders.Documents.delete(orderId, documentId)
         commit('REMOVE_ORDER_DOCUMENT', { orderId, documentId })
         return true
       } catch (error: any) {
@@ -114,7 +114,7 @@ export const orders = createVuexCRUD<Order>()('orders', {
     ) {
       commit(StoreMutations.SetError, null)
       try {
-        await api.post(`/orders/id:${orderId}/docs/send`, { uuid: documentIds })
+        await sdk.Orders.Documents.send(orderId, documentIds)
         return true
       } catch (error: any) {
         commit(StoreMutations.SetError, error)

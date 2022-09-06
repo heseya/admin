@@ -40,7 +40,7 @@ import Vue from 'vue'
 
 import InfoTooltip from '@/components/layout/InfoTooltip.vue'
 
-import { api } from '@/api'
+import { sdk } from '@/api'
 
 interface GoogleCategoryOption {
   id: number
@@ -98,11 +98,7 @@ export default Vue.extend({
       this.isLoading = true
       try {
         const lang = this.$i18n.locale === 'pl' ? 'pl-PL' : 'en-US'
-        // TODO[SDK]: change when request added to sdk
-        const response = await api.get<{ data: GoogleCategoryOption[] }>(
-          `/google-categories/${lang}`,
-        )
-        this.allOptions = response.data.data
+        this.allOptions = await sdk.Products.getGoogleCategories(lang)
       } catch (e: any) {
         this.$toast.error(`Google Categories: ${e.message}`)
       }

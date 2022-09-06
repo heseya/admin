@@ -1,8 +1,7 @@
-/* eslint-disable camelcase */
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 import { SeoCheckModelType, SeoMetadata } from '@heseya/store-core'
 
-import { api, sdk } from '../api'
+import { sdk } from '../api'
 import { UUID } from '@/interfaces/UUID'
 
 const state = () => ({
@@ -44,14 +43,9 @@ const actions = actionTree(
     async update({ commit }, payload: SeoMetadata) {
       commit('SET_ERROR', null)
       try {
-        // TODO[SDK]: replace when sdk updated (GlobalSeo.update)
-        const {
-          data: { data },
-        } = await api.patch<{ data: SeoMetadata }>('/seo', payload)
-
-        commit('SET_SEO', data)
-
-        return data
+        const updatedSeo = await sdk.GlobalSeo.update(payload)
+        commit('SET_SEO', updatedSeo)
+        return updatedSeo
       } catch (e: any) {
         commit('SET_ERROR', e)
         return false

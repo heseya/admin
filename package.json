@@ -1,6 +1,6 @@
 {
   "name": "store-admin",
-  "version": "3.0.0-alpha",
+  "version": "3.0.0-release-candidate",
   "private": true,
   "description": "Admin panel for Heseya Store API",
   "author": "Heseya",

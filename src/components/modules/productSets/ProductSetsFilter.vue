@@ -6,7 +6,6 @@
       type="search"
       :label="$t('common.search')"
       allow-clear
-      :placeholder="$t('common.yes')"
       @input="debouncedSearch"
     />
 

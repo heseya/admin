@@ -256,6 +256,15 @@ export const MENU_ITEMS: MenuItem[] = [
     can: PERMISSIONS_TREE.Settings.Show,
     section: SettingsSection.Other,
   },
+  {
+    id: '27',
+    type: MenuItemType.Link,
+    to: '/settings/media',
+    iconClass: 'bx bxs-image',
+    label: 'models.media',
+    can: PERMISSIONS_TREE.Media.Show,
+    section: SettingsSection.Shop,
+  },
 ]
 
 export const MENU_LINKS = MENU_ITEMS.filter((item) => item.type === MenuItemType.Link) as MenuLink[]

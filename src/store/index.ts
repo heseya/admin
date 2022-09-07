@@ -30,6 +30,7 @@ import { sales } from './sales'
 import { tags } from './tags'
 import { productSets } from './productSets'
 import { attributes } from './attributes'
+import { media } from './media'
 import { menuItems } from './menuItems'
 
 Vue.use(Vuex)
@@ -87,6 +88,7 @@ const storeModules = {
   tags,
   productSets,
   attributes,
+  media,
   menuItems,
 }
 

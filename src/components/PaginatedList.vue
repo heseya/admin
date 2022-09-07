@@ -180,6 +180,7 @@ export default Vue.extend({
   mounted() {
     this.getItems()
   },
+
   methods: {
     changePage(page: number) {
       if (this.page !== page) {

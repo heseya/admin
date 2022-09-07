@@ -24,7 +24,7 @@
           class="gallery__edit-img"
           :disabled="disabled"
           :media="image"
-          @update="updateMedia"
+          @updated="updateMedia"
         />
       </div>
     </draggable>

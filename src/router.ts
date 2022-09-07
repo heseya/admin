@@ -210,6 +210,15 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/settings/media',
+      name: 'Media',
+      component: () => import('./views/settings/Media.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Media.Show],
+      },
+    },
+    {
       path: '/apps',
       name: 'Apps',
       component: () => import('./views/apps/index.vue'),

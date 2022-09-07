@@ -63,7 +63,8 @@
     "apps": "Aplikacje",
     "webhooks": "Webhooki",
     "banners": "Bannery",
-    "attributes": "Cechy"
+    "attributes": "Cechy",
+    "media": "Media"
   },
   "attributeTypes": {
     "single-option": "Tekstowy jednokrotnego wyboru",
@@ -120,6 +121,13 @@
     "schemaCheckbox": "Schemat nie może być jednocześnie ukryty i wymagany",
     "timeBefore": "Godzina zakończenia musi być przed godziną startu",
     "couponCode": "Kod kuponu może składać się tylko z małych liter, cyfr, myślników i podkreślników (_)"
+  },
+
+  "mediaTypes": {
+    "photo": "Zdjęcie",
+    "video": "Wideo",
+    "document": "Dokument",
+    "other": "Inne"
   },
   "errors": {
     "ERROR_TYPES": {

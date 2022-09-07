@@ -1,29 +1,15 @@
-import { api } from '@/api'
+import { sdk } from '@/api'
 import { TwoFactorAuthMethod } from '@/enums/twoFactorAuth'
 import { accessor } from '@/store'
 import { AxiosError } from 'axios'
 
-interface ApiResponse<T> {
-  data: T
-}
-
 export const initAppTwoFactorAuth = async () => {
-  type AppSetupResponse = ApiResponse<{
-    type: TwoFactorAuthMethod.App
-    secret: string
-    // eslint-disable-next-line camelcase
-    qr_code_url: string
-  }>
-
   try {
-    const { data } = await api.post<AppSetupResponse>('/auth/2fa/setup', {
-      type: TwoFactorAuthMethod.App,
-    })
-
+    const data = await sdk.UserProfile.TwoFactorAuthentication.setup(TwoFactorAuthMethod.App)
     return {
       success: true,
-      qrCodeUrl: data.data.qr_code_url,
-      secret: data.data.secret,
+      qrCodeUrl: data.qrCodeUrl,
+      secret: data.secret,
     } as const
   } catch (e) {
     return {
@@ -34,14 +20,8 @@ export const initAppTwoFactorAuth = async () => {
 }
 
 export const initEmailTwoFactorAuth = async () => {
-  type EmailSetupResponse = ApiResponse<{
-    type: TwoFactorAuthMethod.Email
-  }>
-
   try {
-    await api.post<EmailSetupResponse>('/auth/2fa/setup', {
-      type: TwoFactorAuthMethod.Email,
-    })
+    await sdk.UserProfile.TwoFactorAuthentication.setup(TwoFactorAuthMethod.Email)
 
     return { success: true } as const
   } catch (e) {
@@ -53,19 +33,12 @@ export const initEmailTwoFactorAuth = async () => {
 }
 
 export const confirmTwoFactorAuth = async (confirmCode: string) => {
-  type ConfirmResponse = ApiResponse<{
-    // eslint-disable-next-line camelcase
-    recovery_codes: string[]
-  }>
-
   try {
-    const { data } = await api.post<ConfirmResponse>('/auth/2fa/confirm', {
-      code: confirmCode,
-    })
+    const { recoveryCodes } = await sdk.UserProfile.TwoFactorAuthentication.confirm(confirmCode)
 
     accessor.auth.SET_USER_TFA(true)
 
-    return { success: true, recoveryCodes: data.data.recovery_codes } as const
+    return { success: true, recoveryCodes } as const
   } catch (e) {
     return {
       success: false,
@@ -76,9 +49,7 @@ export const confirmTwoFactorAuth = async (confirmCode: string) => {
 
 export const removeTwoFactorAuth = async (password: string) => {
   try {
-    await api.post('/auth/2fa/remove', {
-      password,
-    })
+    await sdk.UserProfile.TwoFactorAuthentication.remove(password)
 
     accessor.auth.SET_USER_TFA(false)
 
@@ -92,17 +63,12 @@ export const removeTwoFactorAuth = async (password: string) => {
 }
 
 export const generateRecoveryCodes = async (password: string) => {
-  type CreateCodesResponse = ApiResponse<{
-    // eslint-disable-next-line camelcase
-    recovery_codes: string[]
-  }>
-
   try {
-    const { data } = await api.post<CreateCodesResponse>('/auth/2fa/recovery/create', {
+    const { recoveryCodes } = await sdk.UserProfile.TwoFactorAuthentication.generateRecoveryCodes(
       password,
-    })
+    )
 
-    return { success: true, recoveryCodes: data.data.recovery_codes } as const
+    return { success: true, recoveryCodes } as const
   } catch (e) {
     return {
       success: false,

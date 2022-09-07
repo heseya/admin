@@ -6,11 +6,10 @@ import {
   AttributeUpdateDto,
   AttributeOption,
   AttributeOptionDto,
-  HeseyaResponseMeta,
+  HeseyaPaginationMeta,
 } from '@heseya/store-core'
 import { UUID } from '@/interfaces/UUID'
-import { api } from '@/api'
-import { stringifyQueryParams } from '@/utils/stringifyQuery'
+import { sdk } from '@/api'
 
 type CreateOptionAction = { attributeId: UUID; option: AttributeOptionDto }
 type UpdateOptionAction = { attributeId: UUID; optionId: UUID; option: AttributeOptionDto }
@@ -22,12 +21,12 @@ export const attributes = createVuexCRUD<Attribute, AttributeCreateDto, Attribut
   'attributes',
   {
     state: {
-      optionsMeta: {} as HeseyaResponseMeta,
+      optionsMeta: {} as HeseyaPaginationMeta,
       options: [] as AttributeOption[],
     },
     getters: {},
     mutations: {
-      SET_OPTIONS_META(state, meta: HeseyaResponseMeta) {
+      SET_OPTIONS_META(state, meta: HeseyaPaginationMeta) {
         state.optionsMeta = meta
       },
       SET_OPTIONS(state, options: AttributeOption[]) {
@@ -50,13 +49,10 @@ export const attributes = createVuexCRUD<Attribute, AttributeCreateDto, Attribut
         { attributeId, params }: { attributeId: UUID; params: Record<string, any> },
       ) {
         try {
-          const queryString = stringifyQueryParams(params)
-          const { data } = await api.get<{ data: AttributeOption[]; meta: HeseyaResponseMeta }>(
-            `/attributes/id:${attributeId}/options${queryString}`,
-          )
-          commit('SET_OPTIONS_META', data.meta)
-          commit('SET_OPTIONS', data.data)
-          return data.data
+          const { data, pagination } = await sdk.Attributes.getOptions(attributeId, params)
+          commit('SET_OPTIONS_META', pagination)
+          commit('SET_OPTIONS', data)
+          return data
         } catch {
           return false
         }
@@ -64,12 +60,9 @@ export const attributes = createVuexCRUD<Attribute, AttributeCreateDto, Attribut
 
       async addOption({ commit }, { attributeId, option }: CreateOptionAction) {
         try {
-          const { data } = await api.post<{ data: AttributeOption }>(
-            `/attributes/id:${attributeId}/options`,
-            option,
-          )
-          commit('ADD_OPTION', data.data)
-          return { success: true, option: data.data }
+          const attr = await sdk.Attributes.addOption(attributeId, option)
+          commit('ADD_OPTION', attr)
+          return { success: true, option: attr }
         } catch (error) {
           return { success: false, error } as const
         }
@@ -77,19 +70,17 @@ export const attributes = createVuexCRUD<Attribute, AttributeCreateDto, Attribut
 
       async updateOption({ commit }, { attributeId, optionId, option }: UpdateOptionAction) {
         try {
-          const { data } = await api.patch<{ data: AttributeOption }>(
-            `/attributes/id:${attributeId}/options/id:${optionId}`,
-            option,
-          )
-          commit('UPDATE_OPTION', { optionId, option: data.data })
-          return { success: true, option: data.data }
+          const attr = await sdk.Attributes.updateOption(attributeId, optionId, option)
+
+          commit('UPDATE_OPTION', { optionId, option: attr })
+          return { success: true, option: attr }
         } catch (error) {
           return { success: false, error } as const
         }
       },
 
       async deleteOption({ commit }, { attributeId, optionId }: DeleteOptionAction) {
-        await api.delete(`/attributes/id:${attributeId}/options/id:${optionId}`)
+        await sdk.Attributes.deleteOption(attributeId, optionId)
         commit('DELETE_OPTION', optionId)
         return true
       },

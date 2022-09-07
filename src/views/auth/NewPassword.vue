@@ -52,7 +52,7 @@ import { ValidationObserver } from 'vee-validate'
 import CentralScreenForm from '@/components/form/CentralScreenForm.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
-import { api } from '@/api'
+import { sdk } from '@/api'
 
 export default Vue.extend({
   metaInfo(this: any) {
@@ -85,7 +85,7 @@ export default Vue.extend({
     try {
       if (!token || !email) throw new Error('Token or email does not exist')
       // This verifies token & email before showing the set password form
-      await api.get(`/users/reset-password/${token}/${email}`)
+      await sdk.Auth.verifyResetPasswordToken(token as string, email as string)
     } catch (e: any) {
       this.$toast.error(formatApiNotificationError(e))
       this.$router.replace('/login')

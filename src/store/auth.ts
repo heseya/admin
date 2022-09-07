@@ -84,18 +84,12 @@ const actions = actionTree(
     async login({ commit, dispatch }, { email, password, code }: ILoginRequest) {
       commit('SET_ERROR', null)
       try {
-        const data = await sdk.Auth.login(email, password, code)
+        const { user, ...tokens } = await sdk.Auth.login(email, password, code)
 
-        if (!hasAccess(PERMISSIONS_TREE.Admin.Login)(data.user.permissions))
+        if (!hasAccess(PERMISSIONS_TREE.Admin.Login)(user.permissions))
           throw new Error('Nie masz uprawnień, by zalogować się do panelu administracyjnego')
 
-        commit('SET_USER', data.user)
-
-        const tokens = {
-          accessToken: data.accessToken,
-          identityToken: data.identityToken,
-          refreshToken: data.refreshToken,
-        }
+        commit('SET_USER', user)
         broadcastTokensUpdate(tokens)
         dispatch('setTokens', tokens)
 
@@ -104,7 +98,7 @@ const actions = actionTree(
 
         return {
           state: LoginState.Success,
-          user: data.user,
+          user,
         } as const
       } catch (e: any) {
         const response: AxiosResponse = e.response
@@ -128,20 +122,17 @@ const actions = actionTree(
       try {
         if (!get.getRefreshToken) throw new Error('Refresh Token does not exist')
 
-        const data = await sdk.Auth.refreshToken(get.getRefreshToken)
+        const { user, ...tokens } = await sdk.Auth.refreshToken(get.getRefreshToken)
+        const { accessToken, identityToken } = tokens
 
-        const tokens = {
-          accessToken: data.accessToken,
-          identityToken: data.identityToken,
-          refreshToken: data.refreshToken,
-        }
+        commit('SET_USER', user)
         broadcastTokensUpdate(tokens)
         dispatch('setTokens', tokens)
 
         return {
           success: true as const,
-          accessToken: data.accessToken,
-          identityToken: data.identityToken,
+          accessToken,
+          identityToken,
         }
       } catch (e: any) {
         commit('SET_ERROR', e)
@@ -149,7 +140,14 @@ const actions = actionTree(
       }
     },
 
-    setTokens({ commit }, { accessToken, identityToken, refreshToken }) {
+    setTokens(
+      { commit },
+      {
+        accessToken,
+        identityToken,
+        refreshToken,
+      }: { accessToken: string | null; identityToken: string | null; refreshToken: string | null },
+    ) {
       commit('SET_ACCESS_TOKEN', accessToken)
       commit('SET_IDENTITY_TOKEN', identityToken)
       commit('SET_REFRESH_TOKEN', refreshToken)

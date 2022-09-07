@@ -3,7 +3,7 @@ import { MediaPermission } from '@/enums/permissions'
 
 export const PERMISSIONS_TREE = {
   ...Permissions,
-  Media: MediaPermission, // TODO: remove when merged into develop
+  Media: MediaPermission, // TODO: remove when this permissions will be in SDK
 }
 
 export const ALL_PERMISSIONS: Permission[] = Object.values(PERMISSIONS_TREE)

@@ -164,6 +164,7 @@ export default Vue.extend({
       object-fit: cover;
       background-color: #ffffff;
       border-radius: 4px;
+      overflow: hidden;
     }
   }
 

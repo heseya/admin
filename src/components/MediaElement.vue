@@ -1,9 +1,12 @@
 <template>
-  <img
+  <picture-element
     v-if="media.type === CdnMediaType.Photo"
-    class="media-element media-element--media"
-    :src="`${media.url}?w=${size}&h=${size}`"
-    :style="{ objectFit }"
+    class="media-element media-element--picture"
+    :src="media.url"
+    :width="size"
+    :height="size"
+    :object-fit="objectFit"
+    :alt="media.alt"
   />
   <video
     v-else-if="media.type === CdnMediaType.Video"
@@ -31,7 +34,10 @@
 import Vue from 'vue'
 import { CdnMedia, CdnMediaType } from '@heseya/store-core'
 
+import PictureElement from './PictureElement.vue'
+
 export default Vue.extend({
+  components: { PictureElement },
   props: {
     media: {
       type: Object,

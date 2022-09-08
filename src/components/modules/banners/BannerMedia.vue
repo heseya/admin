@@ -247,6 +247,7 @@ $item-size: 160px;
     object-fit: cover;
     background-color: #ffffff;
     border-radius: 7px;
+    overflow: hidden;
   }
 
   &__remove-img,

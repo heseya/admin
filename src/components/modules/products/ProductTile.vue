@@ -115,7 +115,7 @@ export default Vue.extend({
     flex-wrap: wrap;
   }
 
-  &:hover &__img img {
+  &:hover &__img .media-element {
     transform: scale(1.05);
   }
 

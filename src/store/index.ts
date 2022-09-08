@@ -22,7 +22,6 @@ import { shippingMethods } from './shippingMethods'
 import { paymentMethods } from './paymentMethods'
 import { packageTemplates } from './packageTemplates'
 import { settings } from './settings'
-import { authSessions } from './authSessions'
 import { apps } from './apps'
 import { webhooks } from './webhooks'
 import { coupons } from './coupons'
@@ -81,7 +80,6 @@ const storeModules = {
   settings,
   coupons,
   sales,
-  authSessions,
   apps,
   webhooks,
   tags,

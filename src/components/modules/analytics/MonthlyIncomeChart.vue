@@ -1,5 +1,5 @@
 <template>
-  <Bar :chart-options="options" :chart-data="chartData" dataset-id-key="label" :height="140" />
+  <Bar :chart-options="options" :chart-data="chartData" dataset-id-key="label" :height="400" />
 </template>
 
 <i18n lang="json">
@@ -38,6 +38,7 @@ export default Vue.extend({
     options(): ChartJS.ChartOptions {
       return {
         responsive: true,
+        maintainAspectRatio: false,
         scales: {
           y: {
             type: 'linear',

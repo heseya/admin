@@ -204,6 +204,7 @@ export default Vue.extend({
 
 <style lang="scss">
 .home {
+  width: 100%;
   display: grid;
   grid-template-columns: 1fr;
   grid-gap: 24px;
@@ -226,10 +227,12 @@ export default Vue.extend({
     grid-area: summary;
   }
   &__orders {
+    width: 100%;
     grid-area: orders;
   }
   &__chart {
     grid-area: chart;
+    overflow-x: auto;
   }
 }
 
@@ -259,7 +262,11 @@ export default Vue.extend({
   text-align: center;
   align-items: center;
   margin-bottom: 0;
-  padding: 32px 16px;
+  padding: 12px;
+
+  @media ($viewport-6) {
+    padding: 32px 16px;
+  }
 
   &__title {
     font-weight: 600;
@@ -267,9 +274,13 @@ export default Vue.extend({
 
   &__value {
     font-weight: 600;
-    font-size: 2.6rem;
+    font-size: 2rem;
     line-height: 1em;
     margin: 8px 0;
+
+    @media ($viewport-13) {
+      font-size: 2.6rem;
+    }
   }
 
   &__orders {

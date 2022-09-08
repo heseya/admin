@@ -65,7 +65,7 @@ interface CrudParams {
  * @param params - fixed Query params for requests in scope
  */
 export const createVuexCRUD =
-  <Item extends BaseItem, CreateItemDTO = Partial<Item>, UpdateItemDTO = Partial<Item>>() =>
+  <Item extends BaseItem, CreateItemDTO, UpdateItemDTO>() =>
   <State>(endpoint: string, extend: ExtendStore<State, Item>, queryParams: CrudParams = {}) => {
     const privateState = {
       fetchAbortController: null as null | AbortController,

@@ -16,6 +16,14 @@
     loop
     muted
   />
+  <i
+    v-else-if="media.type === CdnMediaType.Document"
+    class="bx bxs-file-pdf media-element--document"
+  ></i>
+  <i
+    v-else-if="media.type === CdnMediaType.Other"
+    class="bx bx-question-mark media-element--other"
+  ></i>
   <div v-else class="media-element media-element--unknown">{{ $t('unknownType') }}</div>
 </template>
 
@@ -57,8 +65,21 @@ export default Vue.extend({
       return CdnMediaType
     },
     objectFit(): string {
-      return this.fit ?? +this.$accessor.config.env.dashboard_products_contain ? 'contain' : 'cover'
+      return (
+        this.fit ?? (+this.$accessor.config.env.dashboard_products_contain ? 'contain' : 'cover')
+      )
     },
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.media-element {
+  &--document,
+  &--other {
+    font-size: 2rem;
+    display: grid;
+    place-items: center;
+  }
+}
+</style>

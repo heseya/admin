@@ -9,7 +9,7 @@
       @drag-change="(v) => (isDrag = v)"
     >
       <template v-if="image">
-        <img class="media-upload-input__img" :src="image.url" role="presentation" />
+        <media-element :media="image" class="media-upload-input__media" />
 
         <AppButton
           type="danger"
@@ -65,9 +65,10 @@ import { CdnMedia } from '@heseya/store-core'
 
 import MediaEditForm from '@/components/modules/media/MediaEditForm.vue'
 import MediaUploader from '@/components/modules/media/MediaUploader.vue'
+import MediaElement from '@/components/MediaElement.vue'
 
 export default Vue.extend({
-  components: { MediaUploader, MediaEditForm },
+  components: { MediaUploader, MediaEditForm, MediaElement },
   props: {
     image: {
       type: Object,
@@ -127,10 +128,12 @@ export default Vue.extend({
   height: 100%;
   transition: 0.3s;
 
-  &__img {
+  &__media {
     display: block;
+    width: 100%;
     max-width: 100%;
     max-height: 100%;
+    z-index: 1;
   }
 
   &--image {
@@ -149,6 +152,7 @@ export default Vue.extend({
   &__delete,
   &__edit-img {
     position: absolute;
+    z-index: 10;
     opacity: 0;
     visibility: hidden;
     transition: 0.3s;

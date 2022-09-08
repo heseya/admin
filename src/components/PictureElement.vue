@@ -10,7 +10,7 @@
       @error="handleError"
     />
   </picture>
-  <img v-else class="media-picture-placeholder" />
+  <i v-else class="bx bx-error-alt media-picture-placeholder"></i>
 </template>
 
 <script lang="ts">
@@ -49,34 +49,51 @@ export default Vue.extend({
   }),
   computed: {
     baseUrl(): string {
-      if (!this.src) return ''
-      if (!this.width || !this.height) return this.src
+      try {
+        if (!this.src) return ''
+        if (!this.width || !this.height) return this.src
 
-      const url = new URL(this.src)
+        const url = new URL(this.src)
 
-      url.searchParams.append('w', this.width.toString())
-      url.searchParams.append('h', this.height.toString())
+        url.searchParams.append('w', this.width.toString())
+        url.searchParams.append('h', this.height.toString())
 
-      return url.toString()
+        return url.toString()
+      } catch (e: any) {
+        this.handleError(e)
+        return ''
+      }
     },
 
     jpegUrl(): string {
-      if (!this.baseUrl) return ''
-      const url = new URL(this.baseUrl)
-      url.searchParams.append('format', 'jpeg')
-      return url.toString()
+      try {
+        if (!this.baseUrl) return ''
+        const url = new URL(this.baseUrl)
+        url.searchParams.append('format', 'jpeg')
+        return url.toString()
+      } catch (e: any) {
+        this.handleError(e)
+        return ''
+      }
     },
 
     webpUrl(): string {
-      if (!this.baseUrl) return ''
-      const url = new URL(this.baseUrl)
-      url.searchParams.append('format', 'webp')
-      return url.toString()
+      try {
+        if (!this.baseUrl) return ''
+        const url = new URL(this.baseUrl)
+        url.searchParams.append('format', 'webp')
+        return url.toString()
+      } catch (e: any) {
+        this.handleError(e)
+        return ''
+      }
     },
   },
   methods: {
-    handleError() {
-      this.$emit('error')
+    handleError(e: Error) {
+      // eslint-disable-next-line no-console
+      console.error('[MediaElement Error]', e)
+      this.$emit('error', e)
       this.isError = true
     },
   },
@@ -129,5 +146,12 @@ export default Vue.extend({
       object-position: left;
     }
   }
+}
+
+.media-picture-placeholder {
+  font-size: 2rem;
+  display: grid;
+  place-items: center;
+  color: $red-color-500;
 }
 </style>

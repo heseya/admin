@@ -13,26 +13,25 @@
 
       <template #default="{ item: singleMedia }">
         <div class="media-list-item">
-          <media-thumbnail
+          <media-element
             fit="cover"
             :media="singleMedia"
-            :size="60"
+            :size="100"
             class="media-list-item__thumbnail"
           />
 
           <div class="media-list-item__data">
             <p class="media-list-item__text">
               <span>{{ $t('url') }}: </span>
-
-              <a :href="singleMedia.url">{{ singleMedia.url }}</a>
+              <a :href="singleMedia.url" target="_blank">{{ singleMedia.url }}</a>
             </p>
             <p class="media-list-item__text">
-              <span>{{ $t('alternativeText') }}: </span
-              ><span class="media-list-item__text--value">{{ singleMedia.alt || '-' }}</span>
+              <span>{{ $t('alternativeText') }}: </span>
+              <span class="media-list-item__text--value">{{ singleMedia.alt || '-' }}</span>
             </p>
             <p class="media-list-item__text">
-              <span>{{ $t('relationsCount') }}: </span
-              ><span class="media-list-item__text--value">{{ singleMedia.relations_count }}</span>
+              <span>{{ $t('relationsCount') }}: </span>
+              <span class="media-list-item__text--value">{{ singleMedia.relations_count }}</span>
             </p>
           </div>
 
@@ -65,11 +64,11 @@ import Vue from 'vue'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import MediaEditForm from '@/components/modules/media/MediaEditForm.vue'
+import MediaFilter from '@/components/modules/media/MediaFilter.vue'
+import MediaElement from '@/components/MediaElement.vue'
 
 import { formatFilters } from '@/utils/utils'
 import { EMPTY_MEDIA_FILTERS, MediaFiltersType } from '@/components/modules/media/MediaFilter.vue'
-import MediaFilter from '@/components/modules/media/MediaFilter.vue'
-import MediaThumbnail from '@/components/modules/media/MediaThumbnail.vue'
 
 export default Vue.extend({
   metaInfo(this: any) {
@@ -79,7 +78,7 @@ export default Vue.extend({
     PaginatedList,
     MediaEditForm,
     MediaFilter,
-    MediaThumbnail,
+    MediaElement,
   },
 
   data: () => ({

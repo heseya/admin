@@ -89,8 +89,6 @@ import { OrderDocumentType } from '@heseya/store-core'
 
 import Loading from '@/components/layout/Loading.vue'
 
-import { CreateOrderDocumentFunc } from '@/store/orders'
-
 const EMPTY_FORM = {
   name: '',
   type: OrderDocumentType.Invoice,
@@ -129,17 +127,14 @@ export default Vue.extend({
 
       this.isLoading = true
 
-      // @ts-ignore // TODO: fix extended store actions typings
-      const document = await (this.$accessor.orders.createOrderDocument as CreateOrderDocumentFunc)(
-        {
-          orderId: this.orderId,
-          document: {
-            name: this.form.name,
-            type: this.form.type,
-            file: this.form.file,
-          },
+      const document = await this.$accessor.orders.createOrderDocument({
+        orderId: this.orderId,
+        document: {
+          name: this.form.name,
+          type: this.form.type,
+          file: this.form.file,
         },
-      )
+      })
 
       this.isLoading = false
 

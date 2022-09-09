@@ -4,26 +4,6 @@ import { sdk } from '../api'
 import { Order, OrderCreateDto, OrderDocument, OrderDocumentCreateDto } from '@heseya/store-core'
 import { UUID } from '@/interfaces/UUID'
 
-export type CreateOrderDocumentFunc = (payload: {
-  orderId: UUID
-  document: OrderDocumentCreateDto
-}) => Promise<OrderDocument | null>
-
-export type DownloadOrderDocumentFunc = (payload: {
-  orderId: UUID
-  documentId: UUID
-}) => Promise<Blob | null>
-
-export type SendOrderDocumentsFunc = (payload: {
-  orderId: UUID
-  documentIds: UUID[]
-}) => Promise<boolean>
-
-export type RemoveOrderDocumentFunc = (payload: {
-  orderId: UUID
-  documentId: UUID
-}) => Promise<boolean>
-
 export const orders = createVuexCRUD<Order, OrderCreateDto, never>()('orders', {
   state: {},
   getters: {},

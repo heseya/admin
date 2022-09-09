@@ -64,7 +64,6 @@ export default Vue.extend({
     async updateOrderStatus(newStatus: UUID) {
       this.isLoading = true
 
-      // @ts-ignore // TODO: fix extended store actions typings
       const success = await this.$accessor.orders.changeStatus({
         orderId: this.order.id,
         statusId: newStatus,

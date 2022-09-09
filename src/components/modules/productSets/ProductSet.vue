@@ -253,7 +253,7 @@ export default Vue.extend({
     },
     async onDrop() {
       this.$accessor.startLoading()
-      // @ts-ignore // TODO: fix extended store actions typings
+
       await this.$accessor.productSets.reorderChildren({
         parentId: this.set.id,
         ids: this.children.map((i) => i.id),

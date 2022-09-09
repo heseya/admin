@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { assign, cloneDeep, isNil } from 'lodash'
-import { actionTree, getterTree, mutationTree, NuxtStoreInput } from 'typed-vuex'
+import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 import { GetterTree, MutationTree } from 'vuex'
 import {
   EntityAudits,

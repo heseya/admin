@@ -25,10 +25,10 @@ import {
 
 type QueryPayload = Record<string, any>
 
-interface ExtendStore<State, Item extends BaseItem> {
+interface ExtendStore<State, Getters, Mutations, Item extends BaseItem> {
   state: State
-  getters: GetterTree<State & DefaultVuexState<Item>, RootState>
-  mutations: MutationTree<State & DefaultVuexState<Item>>
+  getters: Getters
+  mutations: Mutations
   actions: ActionTree<State & DefaultVuexState<Item>, RootState>
 }
 
@@ -41,9 +41,13 @@ interface ExtendStore<State, Item extends BaseItem> {
  */
 export const createVuexCRUD =
   <Item extends BaseItem, CreateItemDTO, UpdateItemDTO>() =>
-  <State>(
+  <
+    State extends Record<string, any>,
+    Getters extends GetterTree<State & DefaultVuexState<Item>, RootState>,
+    Mutations extends MutationTree<State & DefaultVuexState<Item>>,
+  >(
     endpoint: string,
-    extend: ExtendStore<State, Item>,
+    extend: ExtendStore<State, Getters, Mutations, Item>,
     queryParams: VuexDefaultCrudParams = {},
   ) => {
     const privateState = {
@@ -86,7 +90,7 @@ export const createVuexCRUD =
           ({ ...state.data.find(({ id }) => id === searchedId) } as Item)
       },
       ...(extend?.getters || {}),
-    }) as DefaultVuexGetters<ComputedState, Item>
+    }) as DefaultVuexGetters<ComputedState, Item> & Getters
 
     const moduleMutations = mutationTree(moduleState, {
       [StoreMutations.SetError](state, newError) {
@@ -132,11 +136,14 @@ export const createVuexCRUD =
         state.selected = newSelected
       },
       ...(extend?.mutations || {}),
-    } as DefaultVuexMutations<ComputedState, Item>)
-    type ComputedMutations = typeof moduleMutations
+    }) as DefaultVuexMutations<ComputedState, Item> & Mutations
 
     const moduleActions = actionTree(
-      { state: moduleState, getters: moduleGetters, mutations: moduleMutations },
+      {
+        state: moduleState,
+        getters: moduleGetters,
+        mutations: moduleMutations as DefaultVuexMutations<ComputedState, Item>,
+      },
       {
         clearData({ commit }) {
           commit(StoreMutations.SetMeta, {} as HeseyaPaginatedResponseMeta)

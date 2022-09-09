@@ -25,10 +25,20 @@ import {
 
 /**
  * Creates state, actions and mutation for CRUD methods of given entity
+ *
+ * ----------------------------------------
+ * TODO: There are still some issues with the typing of generator.
+ * All types are correctly interfered to outside of the module. You can safely use `$accessor[module].customMethod()` and it will be correctly typed.
+ * However, when generating a module, state, getters and mutations are not properly typed inside `actions` (For example in `users.ts` - state.data is any but should be User).
+ * To fix this, we need to change a type that extends `Actions`:
+ * `InnerModifiedActionTree<any>` -> `InnerModifiedActionTree<Required<NuxtStoreInput<State, Getters, Mutations, {}, {}>>>`
+ * but this results in a type errors in actions.
+ * ----------------------------------------
+ *
  * @param name - uppercased string to be used in mutation names
  * @param endpoint - CRUD API endoint for given entity type
  * @param extend - custom state, actions, mutations and getters. Are merged with genereted ones
- * @param queryParams - fixed Query params for requests in scope
+ * @param queryParams - fixed query params for requests in scope
  */
 export const createVuexCRUD =
   <Item extends VuexBaseItem, CreateItemDTO, UpdateItemDTO>() =>
@@ -36,7 +46,6 @@ export const createVuexCRUD =
     State extends Record<string, any>,
     Getters extends GetterTree<State & DefaultVuexState<Item>, any>,
     Mutations extends MutationTree<State & DefaultVuexState<Item>>,
-    // TODO: replace `any` with usage of State, Getters and Mutations
     Actions extends InnerModifiedActionTree<any>,
   >(
     endpoint: string,

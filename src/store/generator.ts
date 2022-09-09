@@ -14,47 +14,22 @@ import { stringifyQueryParams as stringifyQuery } from '@/utils/stringifyQuery'
 
 import { RootState } from '.'
 import { UUID } from '@/interfaces/UUID'
+import {
+  BaseItem,
+  DefaultVuexGetters,
+  DefaultVuexMutations,
+  DefaultVuexState,
+  StoreMutations,
+  VuexDefaultCrudParams,
+} from '@/interfaces/VuexGenerator'
 
 type QueryPayload = Record<string, any>
 
-export interface BaseItem {
-  id: UUID
-}
-
-export enum StoreMutations {
-  SetError = 'SET_ERROR',
-  SetMeta = 'SET_META',
-  SetQueryParams = 'SET_QUERY_PARAMS',
-  SetData = 'SET_DATA',
-  AddData = 'ADD_DATA',
-  EditData = 'EDIT_DATA',
-  RemoveData = 'REMOVE_DATA',
-  SetSelected = 'SET_SELECTED',
-  SetLoading = 'SET_LOADING',
-}
-
-interface DefaultStore<Item extends BaseItem> {
-  error: null | Error
-  isLoading: boolean
-  meta: HeseyaPaginatedResponseMeta
-  data: Item[]
-  queryParams: Record<string, any>
-  selected: Item | null
-}
-
 interface ExtendStore<State, Item extends BaseItem> {
   state: State
-  getters: GetterTree<State & DefaultStore<Item>, RootState>
-  mutations: MutationTree<State & DefaultStore<Item>>
-  actions: ActionTree<State & DefaultStore<Item>, RootState>
-}
-
-interface CrudParams {
-  get?: QueryPayload
-  add?: QueryPayload
-  edit?: QueryPayload
-  update?: QueryPayload
-  remove?: QueryPayload
+  getters: GetterTree<State & DefaultVuexState<Item>, RootState>
+  mutations: MutationTree<State & DefaultVuexState<Item>>
+  actions: ActionTree<State & DefaultVuexState<Item>, RootState>
 }
 
 /**
@@ -66,21 +41,26 @@ interface CrudParams {
  */
 export const createVuexCRUD =
   <Item extends BaseItem, CreateItemDTO, UpdateItemDTO>() =>
-  <State>(endpoint: string, extend: ExtendStore<State, Item>, queryParams: CrudParams = {}) => {
+  <State>(
+    endpoint: string,
+    extend: ExtendStore<State, Item>,
+    queryParams: VuexDefaultCrudParams = {},
+  ) => {
     const privateState = {
       fetchAbortController: null as null | AbortController,
     }
 
     const moduleState = () =>
       ({
-        error: null as null | Error,
+        error: null,
         isLoading: false,
         meta: {} as HeseyaPaginatedResponseMeta,
         data: [] as Item[],
-        selected: null as Item | null,
+        selected: null,
         queryParams: {},
         ...(extend?.state || {}),
-      } as DefaultStore<Item> & State)
+      } as DefaultVuexState<Item> & State)
+    type ComputedState = ReturnType<typeof moduleState>
 
     const moduleGetters = getterTree(moduleState, {
       getError(state) {
@@ -106,31 +86,28 @@ export const createVuexCRUD =
           ({ ...state.data.find(({ id }) => id === searchedId) } as Item)
       },
       ...(extend?.getters || {}),
-    })
+    }) as DefaultVuexGetters<ComputedState, Item>
 
     const moduleMutations = mutationTree(moduleState, {
-      [StoreMutations.SetError](state, newError: Error | null) {
+      [StoreMutations.SetError](state, newError) {
         state.error = newError
       },
-      [StoreMutations.SetLoading](state, isLoading: boolean) {
+      [StoreMutations.SetLoading](state, isLoading) {
         state.isLoading = isLoading
       },
-      [StoreMutations.SetMeta](state, newMeta: HeseyaPaginatedResponseMeta) {
+      [StoreMutations.SetMeta](state, newMeta) {
         state.meta = newMeta || {}
       },
-      [StoreMutations.SetQueryParams](state, newParams: Record<string, any>) {
+      [StoreMutations.SetQueryParams](state, newParams) {
         state.queryParams = newParams || {}
       },
-      [StoreMutations.SetData](state, newData: Item[] = []) {
+      [StoreMutations.SetData](state, newData) {
         state.data = newData
       },
-      [StoreMutations.AddData](state, newItem: Item) {
+      [StoreMutations.AddData](state, newItem) {
         state.data = [...state.data, newItem]
       },
-      [StoreMutations.EditData](
-        state,
-        { key, value, item: editedItem }: { key: keyof Item; value: unknown; item: Partial<Item> },
-      ) {
+      [StoreMutations.EditData](state, { key, value, item: editedItem }) {
         if (state.selected?.[key] === value) {
           // Edits selected item
           // @ts-ignore
@@ -148,14 +125,15 @@ export const createVuexCRUD =
           state.data = [...state.data, editedItem as Item]
         }
       },
-      [StoreMutations.RemoveData](state, { key, value }: { key: keyof Item; value: unknown }) {
+      [StoreMutations.RemoveData](state, { key, value }) {
         state.data = state.data.filter((item) => item[key] !== value)
       },
       [StoreMutations.SetSelected](state, newSelected: Item) {
         state.selected = newSelected
       },
       ...(extend?.mutations || {}),
-    })
+    } as DefaultVuexMutations<ComputedState, Item>)
+    type ComputedMutations = typeof moduleMutations
 
     const moduleActions = actionTree(
       { state: moduleState, getters: moduleGetters, mutations: moduleMutations },

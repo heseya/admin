@@ -1,5 +1,6 @@
 import { User, UserCreateDto, UserUpdateDto } from '@heseya/store-core'
-import { createVuexCRUD, StoreMutations } from './generator'
+import { createVuexCRUD } from './generator'
+import { StoreMutations } from '@/interfaces/VuexGenerator'
 import { sdk } from '@/api'
 import { UUID } from '@/interfaces/UUID'
 

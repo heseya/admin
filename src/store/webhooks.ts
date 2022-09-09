@@ -7,7 +7,8 @@ import {
   HeseyaPaginationMeta,
 } from '@heseya/store-core'
 import { sdk } from '@/api'
-import { createVuexCRUD, StoreMutations } from './generator'
+import { createVuexCRUD } from './generator'
+import { StoreMutations } from '@/interfaces/VuexGenerator'
 
 export const webhooks = createVuexCRUD<
   WebhookEntry,

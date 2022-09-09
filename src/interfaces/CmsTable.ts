@@ -1,4 +1,4 @@
-import { BaseItem } from '@/store/generator'
+import { BaseItem } from './VuexGenerator'
 
 export interface TableHeader<Item extends BaseItem = any> {
   key: string

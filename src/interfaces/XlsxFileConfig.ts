@@ -1,4 +1,4 @@
-import { BaseItem } from '@/store/generator'
+import { BaseItem } from './VuexGenerator'
 
 export interface XlsxFileHeader<Item extends BaseItem = any> {
   key: keyof Item

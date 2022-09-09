@@ -1,6 +1,6 @@
 import { User, UserCreateDto, UserUpdateDto } from '@heseya/store-core'
 import { createVuexCRUD } from './generator'
-import { StoreMutations } from '@/interfaces/VuexGenerator'
+import { DefaultVuexMutation } from '@/interfaces/VuexGenerator'
 import { sdk } from '@/api'
 import { UUID } from '@/interfaces/UUID'
 
@@ -16,7 +16,7 @@ export const users = createVuexCRUD<User, UserCreateDto, UserUpdateDto>()('users
 
         if (!user) throw new Error('User not found')
 
-        commit(StoreMutations.EditData, {
+        commit(DefaultVuexMutation.EditData, {
           key: 'id',
           value: user.id,
           item: { ...user, is_tfa_active: false },

@@ -1,43 +1,44 @@
+import { DefaultParams } from '@/utils/stringifyQuery'
 import { HeseyaPaginatedResponseMeta } from '@heseya/store-core'
 import { ActionContext, NuxtStore } from 'typed-vuex'
 import { GetterTree, MutationTree, Store } from 'vuex'
 import { UUID } from './UUID'
 
-type QueryParams = Record<string, any>
-
-export interface BaseItem {
+export interface VuexBaseItem {
   id: UUID
 }
 
 export interface VuexDefaultCrudParams {
-  get?: QueryParams
-  add?: QueryParams
-  edit?: QueryParams
-  update?: QueryParams
-  remove?: QueryParams
+  get?: DefaultParams
+  add?: DefaultParams
+  edit?: DefaultParams
+  update?: DefaultParams
+  remove?: DefaultParams
 }
 
-export interface DefaultVuexState<Item extends BaseItem> {
+export interface DefaultVuexState<Item extends VuexBaseItem> {
   error: null | Error
   isLoading: boolean
   meta: HeseyaPaginatedResponseMeta
   data: Item[]
-  queryParams: QueryParams
+  queryParams: DefaultParams
   selected: Item | null
 }
 
-export interface DefaultVuexGetters<State extends DefaultVuexState<BaseItem>, Item extends BaseItem>
-  extends GetterTree<State, any> {
+export interface DefaultVuexGetters<
+  State extends DefaultVuexState<VuexBaseItem>,
+  Item extends VuexBaseItem,
+> extends GetterTree<State, any> {
   getError(state: State): Error | null
   getIsLoading(state: State): boolean
   getMeta(state: State): HeseyaPaginatedResponseMeta
-  getQueryParams(state: State): QueryParams
+  getQueryParams(state: State): DefaultParams
   getSelected(state: State): Item
   getData(state: State): Item[]
   getFromListById(state: State): (id: UUID) => Item
 }
 
-export enum StoreMutations {
+export enum DefaultVuexMutation {
   SetError = 'SET_ERROR',
   SetMeta = 'SET_META',
   SetQueryParams = 'SET_QUERY_PARAMS',
@@ -50,21 +51,21 @@ export enum StoreMutations {
 }
 
 export interface DefaultVuexMutations<
-  State extends DefaultVuexState<BaseItem>,
-  Item extends BaseItem,
+  State extends DefaultVuexState<VuexBaseItem>,
+  Item extends VuexBaseItem,
 > extends MutationTree<State> {
-  [StoreMutations.SetError](state: State, error: Error | null): void
-  [StoreMutations.SetMeta](state: State, meta: HeseyaPaginatedResponseMeta): void
-  [StoreMutations.SetQueryParams](state: State, queryParams: QueryParams): void
-  [StoreMutations.SetData](state: State, data: Item[]): void
-  [StoreMutations.AddData](state: State, newItem: Item): void
-  [StoreMutations.EditData](
+  [DefaultVuexMutation.SetError](state: State, error: Error | null): void
+  [DefaultVuexMutation.SetMeta](state: State, meta: HeseyaPaginatedResponseMeta): void
+  [DefaultVuexMutation.SetQueryParams](state: State, queryParams: DefaultParams): void
+  [DefaultVuexMutation.SetData](state: State, data: Item[]): void
+  [DefaultVuexMutation.AddData](state: State, newItem: Item): void
+  [DefaultVuexMutation.EditData](
     state: State,
     p: { key: keyof Item; value: unknown; item: Partial<Item> },
   ): void
-  [StoreMutations.RemoveData](state: State, p: { key: keyof Item; value: unknown }): void
-  [StoreMutations.SetSelected](state: State, selected: Item): void
-  [StoreMutations.SetLoading](state: State, isLoading: boolean): void
+  [DefaultVuexMutation.RemoveData](state: State, p: { key: keyof Item; value: unknown }): void
+  [DefaultVuexMutation.SetSelected](state: State, selected: Item): void
+  [DefaultVuexMutation.SetLoading](state: State, isLoading: boolean): void
 }
 
 // --------------------------------------------

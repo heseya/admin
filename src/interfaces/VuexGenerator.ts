@@ -68,7 +68,7 @@ export interface DefaultVuexMutations<
   [DefaultVuexMutation.SetLoading](state: State, isLoading: boolean): void
 }
 
-// --------------------------------------------
+// ----------------------------------------------------------------------------
 // * This types are a copy of the ones in `typed-vuex`
 // They are needed in vuex generator, but are not exported from `typed-vuex`
 
@@ -81,6 +81,8 @@ declare type StateType<T extends State> = T extends () => any ? ReturnType<T> : 
 interface ActionHandler<T extends NuxtStore> {
   (this: Store<StateType<T['state']>>, injectee: ActionContext<T>, payload?: any): any
 }
-export interface ModifiedActionTree<T extends NuxtStore> {
+
+// Renamed from ModifiedActionTree to avoid eventual name conflict
+export interface InnerModifiedActionTree<T extends NuxtStore> {
   [key: string]: ActionHandler<T>
 }

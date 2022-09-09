@@ -20,7 +20,7 @@ import {
   DefaultVuexState,
   DefaultVuexMutation,
   VuexDefaultCrudParams,
-  ModifiedActionTree,
+  InnerModifiedActionTree,
 } from '@/interfaces/VuexGenerator'
 
 /**
@@ -28,7 +28,7 @@ import {
  * @param name - uppercased string to be used in mutation names
  * @param endpoint - CRUD API endoint for given entity type
  * @param extend - custom state, actions, mutations and getters. Are merged with genereted ones
- * @param params - fixed Query params for requests in scope
+ * @param queryParams - fixed Query params for requests in scope
  */
 export const createVuexCRUD =
   <Item extends VuexBaseItem, CreateItemDTO, UpdateItemDTO>() =>
@@ -37,7 +37,7 @@ export const createVuexCRUD =
     Getters extends GetterTree<State & DefaultVuexState<Item>, any>,
     Mutations extends MutationTree<State & DefaultVuexState<Item>>,
     // TODO: replace `any` with usage of State, Getters and Mutations
-    Actions extends ModifiedActionTree<any>,
+    Actions extends InnerModifiedActionTree<any>,
   >(
     endpoint: string,
     extend: {

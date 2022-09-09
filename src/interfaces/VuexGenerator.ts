@@ -1,5 +1,6 @@
 import { HeseyaPaginatedResponseMeta } from '@heseya/store-core'
-import { GetterTree, MutationTree } from 'vuex'
+import { ActionContext, NuxtStore } from 'typed-vuex'
+import { GetterTree, MutationTree, Store } from 'vuex'
 import { UUID } from './UUID'
 
 type QueryParams = Record<string, any>
@@ -66,11 +67,19 @@ export interface DefaultVuexMutations<
   [StoreMutations.SetLoading](state: State, isLoading: boolean): void
 }
 
-// interface DefaultVuexActions<Item extends BaseItem, CreateItemDTO, UpdateItemDTO> {}
-// interface DefaultVuexActions<State extends DefaultVuexState<BaseItem>> {
-//   get({ commit, state }: { commit: any; state: State }, params?: QueryParams): Promise<void>
-//   add({ commit, state }: { commit: any; state: State }, params?: QueryParams): Promise<void>
-//   edit({ commit, state }: { commit: any; state: State }, params?: QueryParams): Promise<void>
-//   update({ commit, state }: { commit: any; state: State }, params?: QueryParams): Promise<void>
-//   remove({ commit, state }: { commit: any; state: State }, params?: QueryParams): Promise<void>
-// }
+// --------------------------------------------
+// * This types are a copy of the ones in `typed-vuex`
+// They are needed in vuex generator, but are not exported from `typed-vuex`
+
+declare type Not<T, M> = T extends M ? never : T
+declare type StateObject = Not<Record<string, any>, Function>
+type StateFunction = Not<() => unknown | any, Record<string, any>>
+declare type State = StateObject | StateFunction
+declare type StateType<T extends State> = T extends () => any ? ReturnType<T> : T
+
+interface ActionHandler<T extends NuxtStore> {
+  (this: Store<StateType<T['state']>>, injectee: ActionContext<T>, payload?: any): any
+}
+export interface ModifiedActionTree<T extends NuxtStore> {
+  [key: string]: ActionHandler<T>
+}

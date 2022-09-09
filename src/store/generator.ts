@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { assign, cloneDeep, isNil } from 'lodash'
-import { actionTree, getterTree, mutationTree } from 'typed-vuex'
-import { ActionTree, GetterTree, MutationTree } from 'vuex'
+import { actionTree, getterTree, mutationTree, NuxtStoreInput } from 'typed-vuex'
+import { GetterTree, MutationTree } from 'vuex'
 import {
   EntityAudits,
   HeseyaPaginatedResponseMeta,
@@ -12,7 +12,6 @@ import {
 import { api } from '../api'
 import { stringifyQueryParams as stringifyQuery } from '@/utils/stringifyQuery'
 
-import { RootState } from '.'
 import { UUID } from '@/interfaces/UUID'
 import {
   BaseItem,
@@ -21,15 +20,16 @@ import {
   DefaultVuexState,
   StoreMutations,
   VuexDefaultCrudParams,
+  ModifiedActionTree,
 } from '@/interfaces/VuexGenerator'
 
 type QueryPayload = Record<string, any>
 
-interface ExtendStore<State, Getters, Mutations, Item extends BaseItem> {
+interface ExtendStore<State, Getters, Mutations, Actions> {
   state: State
   getters: Getters
   mutations: Mutations
-  actions: ActionTree<State & DefaultVuexState<Item>, RootState>
+  actions: Actions
 }
 
 /**
@@ -43,11 +43,12 @@ export const createVuexCRUD =
   <Item extends BaseItem, CreateItemDTO, UpdateItemDTO>() =>
   <
     State extends Record<string, any>,
-    Getters extends GetterTree<State & DefaultVuexState<Item>, RootState>,
+    Getters extends GetterTree<State & DefaultVuexState<Item>, any>,
     Mutations extends MutationTree<State & DefaultVuexState<Item>>,
+    Actions extends ModifiedActionTree<any>, // TODO: replace any with usage of S, G, M
   >(
     endpoint: string,
-    extend: ExtendStore<State, Getters, Mutations, Item>,
+    extend: ExtendStore<State, Getters, Mutations, Actions>,
     queryParams: VuexDefaultCrudParams = {},
   ) => {
     const privateState = {

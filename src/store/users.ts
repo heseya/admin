@@ -12,7 +12,7 @@ export const users = createVuexCRUD<User, UserCreateDto, UserUpdateDto>()('users
     async removeUser2FA({ commit, state }, userId: UUID) {
       try {
         await sdk.Users.removeTwoFactorAuth(userId)
-        const user = state.data.find((u) => u.id === userId)
+        const user = (state.data as User[]).find((u) => u.id === userId)
 
         if (!user) throw new Error('User not found')
 

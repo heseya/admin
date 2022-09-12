@@ -1,5 +1,6 @@
 import { Role, RoleCreateDto, PermissionEntry } from '@heseya/store-core'
-import { createVuexCRUD, StoreMutations } from './generator'
+import { createVuexCRUD } from './generator'
+import { DefaultVuexMutation } from '@/interfaces/VuexGenerator'
 import { sdk } from '@/api'
 
 export const roles = createVuexCRUD<Role, RoleCreateDto, RoleCreateDto>()('roles', {
@@ -14,15 +15,15 @@ export const roles = createVuexCRUD<Role, RoleCreateDto, RoleCreateDto>()('roles
   },
   actions: {
     async fetchPermissions({ commit }) {
-      commit(StoreMutations.SetLoading, true)
+      commit(DefaultVuexMutation.SetLoading, true)
       try {
         const permissions = await sdk.Roles.getPermissions()
         commit('SET_PERMISSIONS', permissions)
-        commit(StoreMutations.SetError, null)
+        commit(DefaultVuexMutation.SetError, null)
       } catch (e: any) {
-        commit(StoreMutations.SetError, e)
+        commit(DefaultVuexMutation.SetError, e)
       }
-      commit(StoreMutations.SetLoading, false)
+      commit(DefaultVuexMutation.SetLoading, false)
     },
   },
 })

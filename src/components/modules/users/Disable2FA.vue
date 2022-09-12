@@ -47,9 +47,10 @@
 </i18n>
 
 <script lang="ts">
-import PopConfirm from '@/components/layout/PopConfirm.vue'
-import { formatApiNotificationError } from '@/utils/errors'
 import Vue from 'vue'
+import PopConfirm from '@/components/layout/PopConfirm.vue'
+import { ApiError, formatApiNotificationError } from '@/utils/errors'
+
 export default Vue.extend({
   components: { PopConfirm },
   props: {
@@ -75,12 +76,10 @@ export default Vue.extend({
     async disable2FA() {
       this.$accessor.startLoading()
 
-      const result: { success: true } | { success: false; error: any } =
-        // @ts-ignore // TODO: fix extended store actions typings
-        await this.$accessor.users.removeUser2FA(this.userId)
+      const result = await this.$accessor.users.removeUser2FA(this.userId)
 
       if (result.success) this.$toast.success('Weryfikacja dwuetapowa została usunięta')
-      else this.$toast.error(formatApiNotificationError(result.error))
+      else this.$toast.error(formatApiNotificationError(result.error as ApiError))
 
       this.$accessor.stopLoading()
       this.$emit('close-modal')

@@ -62,7 +62,7 @@ export const attributes = createVuexCRUD<Attribute, AttributeCreateDto, Attribut
         try {
           const attr = await sdk.Attributes.addOption(attributeId, option)
           commit('ADD_OPTION', attr)
-          return { success: true, option: attr }
+          return { success: true, option: attr } as const
         } catch (error) {
           return { success: false, error } as const
         }
@@ -73,7 +73,7 @@ export const attributes = createVuexCRUD<Attribute, AttributeCreateDto, Attribut
           const attr = await sdk.Attributes.updateOption(attributeId, optionId, option)
 
           commit('UPDATE_OPTION', { optionId, option: attr })
-          return { success: true, option: attr }
+          return { success: true, option: attr } as const
         } catch (error) {
           return { success: false, error } as const
         }

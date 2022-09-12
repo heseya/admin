@@ -101,6 +101,18 @@ export default Vue.extend({
     PaginatedList,
     ProductListItem,
   },
+
+  beforeRouteLeave(to, _from, next) {
+    // @ts-ignore
+    if (window.copyIdMode && to.name === 'ProductsView') {
+      navigator.clipboard.writeText(to.params.id).then(() => {
+        this.$toast.success('Skopiowano ID')
+      })
+      return next(false)
+    }
+    return next()
+  },
+
   data: () => ({
     filters: cloneDeep(EMPTY_PRODUCT_FILTERS),
     listView: false,
@@ -148,6 +160,11 @@ export default Vue.extend({
       window.localStorage.setItem(LOCAL_STORAGE_KEY, String(Number(listView)))
     },
   },
+
+  mounted() {
+    navigator.permissions.query({ name: 'clipboard-write' as PermissionName })
+  },
+
   created() {
     Object.entries(this.$route.query).forEach(([key, value]) => {
       this.filters[key] = value as any

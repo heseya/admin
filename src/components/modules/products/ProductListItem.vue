@@ -3,7 +3,7 @@
     class="product-list-item"
     :item="product"
     :headers="table.headers"
-    @click="onClick"
+    :to="`products/${product.id}`"
   >
     <template #cover>
       <avatar color="#eee">
@@ -49,7 +49,7 @@
 
         <template #overlay>
           <a-menu v-can.any="[$p.Products.Edit, $p.Products.Remove]">
-            <a-menu-item v-can="$p.Products.Edit" @click="editProduct">
+            <a-menu-item v-can="$p.Products.Edit" @click="$router.push(`products/${product.id}`)">
               <i class="bx bx-edit"></i> &nbsp; {{ $t('common.edit') }}
             </a-menu-item>
             <a-menu-item v-can="$p.Products.Remove">
@@ -122,27 +122,10 @@ export default Vue.extend({
     formatCurrency(amount: number) {
       return formatCurrency(amount, this.$accessor.config.currency)
     },
-    onClick() {
-      // @ts-ignore
-      if (window.copyIdMode === true) {
-        this.copyId()
-        return
-      }
-
-      this.editProduct()
-    },
-    async copyId() {
-      await navigator.clipboard.writeText(this.product.id)
-      this.$toast.success('Skopiowano ID')
-    },
     async changeVisibility(isPublic: boolean) {
       this.publicIsLoading = true
       await this.$accessor.products.update({ id: this.product.id, item: { public: isPublic } })
       this.publicIsLoading = false
-    },
-
-    async editProduct() {
-      this.$router.push(`products/${this.product.id}`)
     },
     async deleteProduct() {
       this.$accessor.startLoading()

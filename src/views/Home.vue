@@ -54,9 +54,12 @@
           class="order"
           :url="`/orders/${order.id}`"
         >
-          <div>{{ order.code }}</div>
-          <small>{{ formatDate(order.created_at) }}</small>
+          <div class="home-list-item__row">
+            <tag small :color="`#${order.status.color}`">{{ order.status.name }}</tag>
+            {{ order.code }}
+          </div>
 
+          <small> {{ formatDate(order.created_at) }} </small>
           <template #action>
             <div>{{ formatCurrency(order.summary) }}</div>
           </template>
@@ -287,5 +290,11 @@ export default Vue.extend({
     font-size: 0.9rem;
     color: #aaaaaa;
   }
+}
+
+.home-list-item__row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 </style>

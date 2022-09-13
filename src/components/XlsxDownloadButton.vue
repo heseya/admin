@@ -53,7 +53,7 @@ export default Vue.extend({
         return this.xlsxFileConfig.headers.reduce((acc, { key, label, format }) => {
           return {
             ...acc,
-            [label]: format ? format(item[key]) : item[key],
+            [label]: format ? format(item[key], item) : item[key],
           }
         }, {})
       })

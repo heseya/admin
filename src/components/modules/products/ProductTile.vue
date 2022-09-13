@@ -1,5 +1,5 @@
 <template>
-  <button class="product-box" @click="onClick">
+  <router-link class="product-box" :to="`/products/${product.id}`">
     <avatar v-if="!product.visible" small class="product-box__icon">
       <i class="bx bx-lock-alt"></i>
     </avatar>
@@ -14,12 +14,12 @@
       </div>
     </div>
     <div class="flex">
-      <div class="name">
+      <div class="product-box__name">
         {{ product.name }}<br />
         <ProductPrice :product="product" tag="small" />
       </div>
     </div>
-  </button>
+  </router-link>
 </template>
 
 <script lang="ts">
@@ -51,19 +51,6 @@ export default Vue.extend({
   methods: {
     formatCurrency(amount: number) {
       return formatCurrency(amount, this.$accessor.config.currency)
-    },
-    onClick() {
-      // @ts-ignore
-      if (window.copyIdMode === true) {
-        this.copyId()
-        return
-      }
-
-      this.$router.push(`products/${this.product.id}`)
-    },
-    async copyId() {
-      await navigator.clipboard.writeText(this.product.id)
-      this.$toast.success('Skopiowano ID')
     },
   },
 })
@@ -140,18 +127,15 @@ export default Vue.extend({
     }
   }
 
-  .name {
+  &__name {
     font-weight: 500;
     padding: 5px;
     padding-bottom: 2px;
+    color: $font-color;
   }
 
   small {
     color: #777777;
-  }
-
-  .price {
-    padding: 5px 5px 0 0;
   }
 }
 </style>

@@ -239,6 +239,10 @@ export default Vue.extend({
   },
   created() {
     this.filters.search = (this.$route.query.search as string) || ''
+    this.filters.roles =
+      (Array.isArray(this.$route.query.roles)
+        ? (this.$route.query.roles as string[])
+        : [this.$route.query.roles as string]) || []
     this.filters.consent_id = (this.$route.query.consent_id as string) || ALL_FILTER_VALUE
   },
   methods: {

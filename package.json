@@ -15,7 +15,7 @@
     "test": "yarn test:unit && yarn test:e2e --headless"
   },
   "dependencies": {
-    "@heseya/store-core": "3.0.0-alpha.64",
+    "@heseya/store-core": "dev",
     "@sentry/tracing": "^7.6.0",
     "@sentry/vue": "^7.6.0",
     "ant-design-vue": "^1.7.8",

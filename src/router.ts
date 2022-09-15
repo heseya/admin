@@ -380,6 +380,25 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/b2b/companies',
+      name: 'CompaniesList',
+      component: () => import('./views/b2b/index.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Roles.Show],
+      },
+    },
+    {
+      path: '/b2b/companies/:id',
+      name: 'CompanyView',
+      component: () => import('./views/b2b/view.vue'),
+      meta: {
+        returnUrl: '/b2b/companies',
+        requiresAuth: true,
+        permissions: [Permissions.Roles.ShowDetails],
+      },
+    },
+    {
       path: '/settings/consents',
       name: 'Consents',
       component: () => import('./views/consents/index.vue'),

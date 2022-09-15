@@ -1,12 +1,12 @@
 <template>
-  <div class="order-field" :class="{ 'order-field--horizontal': horizontal }">
-    <span class="order-field__label">
+  <div class="field" :class="{ 'field--horizontal': horizontal }">
+    <span class="field__label">
       <slot name="label">
         {{ label }}
       </slot>
       <slot name="labelSuffix"></slot>
     </span>
-    <div class="order-field__value" :data-cy="dataCy">
+    <div class="field__value" :data-cy="dataCy">
       <slot>{{ value }}</slot>
     </div>
   </div>
@@ -37,7 +37,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.order-field {
+.field {
   padding: 4px 12px;
   position: relative;
   display: grid;

@@ -92,9 +92,14 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .b2b-company-grid {
   display: grid;
-  grid-template-columns: 3fr 1fr;
+  grid-template-columns: 1fr;
+  grid-template-areas: 'description' 'promotions' 'users';
   grid-gap: 9px 14px;
-  grid-template-areas: 'description users' 'promotions users';
+
+  @media ($viewport-11) {
+    grid-template-columns: 3fr 1fr;
+    grid-template-areas: 'description users' 'promotions users';
+  }
 
   .card {
     margin-bottom: 0;

@@ -19,7 +19,7 @@
       </template>
 
       <template #nav>
-        <icon-button v-can="$p.Roles.Add" @click="openCreateNewCompanyModal">
+        <icon-button v-can="$p.Roles.Add" @click="isCreateModalActive = true">
           <template #icon>
             <i class="bx bx-plus"></i>
           </template>
@@ -27,6 +27,8 @@
         </icon-button>
       </template>
     </PaginatedList>
+
+    <add-company-form :visible="isCreateModalActive" @close="isCreateModalActive = false" />
   </div>
 </template>
 
@@ -58,6 +60,7 @@ import { debounce } from 'lodash'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import { TableConfig } from '@/interfaces/CmsTable'
+import AddCompanyForm from '@/components/modules/b2b/AddCompanyForm.vue'
 
 export default Vue.extend({
   metaInfo(this: any) {
@@ -65,8 +68,10 @@ export default Vue.extend({
   },
   components: {
     PaginatedList,
+    AddCompanyForm,
   },
   data: () => ({
+    isCreateModalActive: false,
     filters: {
       search: '',
     },
@@ -110,10 +115,6 @@ export default Vue.extend({
     clearFilters() {
       this.filters.search = ''
       this.makeSearch()
-    },
-
-    openCreateNewCompanyModal() {
-      alert('TODO')
     },
   },
 })

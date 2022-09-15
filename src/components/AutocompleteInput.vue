@@ -80,7 +80,7 @@ export default Vue.extend({
     } as Vue.PropOptions<UUID | BaseItem | UUID[] | BaseItem[]>,
     modelUrl: { type: String, required: true },
     disabled: { type: Boolean, default: false },
-    propMode: { type: String, default: undefined } as Vue.PropOptions<keyof BaseItem>,
+    propMode: { type: String, default: 'id' } as Vue.PropOptions<keyof BaseItem>,
     label: { type: String, default: '' },
     placeholderModel: { type: String, default: '' },
     rules: { type: [String, Object], default: null },

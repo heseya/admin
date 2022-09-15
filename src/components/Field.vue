@@ -49,6 +49,10 @@ export default Vue.extend({
     align-items: center;
     color: $gray-color-500;
     font-size: 0.9em;
+
+    .icon-button {
+      color: $gray-color-500;
+    }
   }
 
   &__value {

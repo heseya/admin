@@ -11,28 +11,36 @@
 
     <empty v-if="!sales.length"> {{ $t('empty') }} </empty>
 
-    <div v-else class="company-promos__list">
-      <div v-for="sale in sales" :key="sale.id" class="sale-item">
-        <icon-button
-          type="transparent"
-          class="sale-item__edit-btn"
-          :to="`/sales/${sale.id}?company=${company.id}`"
-        >
-          <template #icon> <i class="bx bx-edit-alt"></i> </template>
-        </icon-button>
+    <template v-else>
+      <div class="company-promos__list">
+        <div v-for="sale in sales" :key="sale.id" class="sale-item">
+          <icon-button
+            type="transparent"
+            class="sale-item__edit-btn"
+            :to="`/sales/${sale.id}?company=${company.id}`"
+          >
+            <template #icon> <i class="bx bx-edit-alt"></i> </template>
+          </icon-button>
 
-        <field class="sale-item__name" :label="$t('field.name')">{{ sale.name }}</field>
-        <field :label="$t('field.target_type')">
-          {{ $t(`discountTargetTypes.${sale.target_type}`) }}
-        </field>
-        <field :label="$t('field.value')">
-          -{{
-            sale.type === DiscountType.Percentage ? `${sale.value}%` : formatCurrency(sale.value)
-          }}
-        </field>
-        <field :label="$t('field.uses')">{{ sale.uses }} </field>
+          <field class="sale-item__name" :label="$t('field.name')">{{ sale.name }}</field>
+          <field :label="$t('field.target_type')">
+            {{ $t(`discountTargetTypes.${sale.target_type}`) }}
+          </field>
+          <field :label="$t('field.value')">
+            -{{
+              sale.type === DiscountType.Percentage ? `${sale.value}%` : formatCurrency(sale.value)
+            }}
+          </field>
+          <field :label="$t('field.uses')">{{ sale.uses }} </field>
+        </div>
       </div>
-    </div>
+      <pagination
+        class="company-promos__pagination"
+        :value="$accessor.sales.meta.current_page"
+        :length="$accessor.sales.meta.last_page"
+        @input="goToPage"
+      />
+    </template>
   </card>
 </template>
 
@@ -52,7 +60,13 @@
   "en": {
     "title": "Promotions added for this company",
     "add": "Add promotion",
-    "empty": "No promotions for this company"
+    "empty": "No promotions for this company",
+    "field": {
+      "name": "Promotion name",
+      "target_type": "Promotion target type",
+      "value": "Discount value",
+      "uses": "Uses"
+    }
   }
 }
 </i18n>
@@ -69,9 +83,10 @@ import Field from '@/components/Field.vue'
 
 import { formatCurrency } from '@/utils/currency'
 import Empty from '@/components/layout/Empty.vue'
+import Pagination from '@/components/cms/Pagination.vue'
 
 export default Vue.extend({
-  components: { TopNav, Card, IconButton, Loading, Field, Empty },
+  components: { TopNav, Card, IconButton, Loading, Field, Empty, Pagination },
   props: {
     company: {
       type: Object,
@@ -81,6 +96,7 @@ export default Vue.extend({
 
   data: () => ({
     isLoading: false,
+    page: 1,
   }),
 
   computed: {
@@ -92,13 +108,23 @@ export default Vue.extend({
     },
   },
 
-  async created() {
-    this.isLoading = true
-    await this.$accessor.sales.fetch({ for_role: this.company.id })
-    this.isLoading = false
+  created() {
+    this.fetchSales()
   },
 
   methods: {
+    goToPage(page: number) {
+      this.$router.push({ query: { page: page.toString() } })
+      this.fetchSales()
+    },
+
+    async fetchSales() {
+      this.isLoading = true
+      const page = this.$route.query.page || 1
+      await this.$accessor.sales.fetch({ for_role: this.company.id, page, limit: 32 })
+      this.isLoading = false
+    },
+
     formatCurrency(amount: number) {
       return formatCurrency(amount, this.$accessor.config.currency)
     },
@@ -118,6 +144,7 @@ export default Vue.extend({
     display: grid;
     grid-gap: 16px;
     grid-template-columns: 1fr;
+    margin-bottom: 12px;
 
     @media ($viewport-4) {
       grid-template-columns: 1fr 1fr;
@@ -134,6 +161,10 @@ export default Vue.extend({
     @media ($viewport-20) {
       grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     }
+  }
+
+  &__pagination {
+    justify-content: flex-start;
   }
 }
 

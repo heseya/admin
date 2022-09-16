@@ -51,10 +51,12 @@
 <i18n lang="json">
 {
   "pl": {
-    "deleteText": "Czy na pewno chcesz usunąć firmę?"
+    "deleteText": "Czy na pewno chcesz usunąć firmę?",
+    "deleteSuccess": "Firma została usunięta"
   },
   "en": {
-    "deleteText": "Are you sure you want to delete the company?"
+    "deleteText": "Are you sure you want to delete the company?",
+    "deleteSuccess": "Company has been deleted"
   }
 }
 </i18n>
@@ -84,7 +86,16 @@ export default Vue.extend({
   },
 
   methods: {
-    deleteCompany() {},
+    async deleteCompany() {
+      this.$accessor.startLoading()
+      const success = await this.$accessor.b2bCompanies.remove(this.company.id)
+      this.$accessor.stopLoading()
+
+      if (success) {
+        this.$toast.success(this.$t('deleteSuccess') as string)
+        this.$router.push('/b2b/companies')
+      }
+    },
   },
 })
 </script>

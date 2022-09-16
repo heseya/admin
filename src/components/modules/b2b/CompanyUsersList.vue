@@ -1,7 +1,7 @@
 <template>
   <card class="company-users">
     <top-nav tag="h2" :title="$t('title')" class="company-users__nav">
-      <icon-button size="small" type="primary">
+      <icon-button size="small" type="primary" @click="isAddUserModalActive = true">
         <template #icon> <i class="bx bx-plus"></i> </template>
         {{ $t('add') }}
       </icon-button>
@@ -19,11 +19,45 @@
           {{ user.name }}
         </span>
 
-        <icon-button class="user-item__btn" type="transparent">
-          <template #icon> <i class="bx bx-dots-vertical-rounded"></i> </template>
-        </icon-button>
+        <a-dropdown v-can.any="$p.Users.Edit" :trigger="['click']">
+          <icon-button class="user-item__btn" type="transparent">
+            <template #icon> <i class="bx bx-dots-vertical-rounded"></i> </template>
+          </icon-button>
+
+          <template #overlay>
+            <a-menu>
+              <a-menu-item>
+                <router-link :to="`/settings/users/${user.id}`">
+                  <i class="bx bx-edit"></i> &nbsp; {{ $t('common.edit') }}
+                </router-link>
+              </a-menu-item>
+              <a-menu-item>
+                <pop-confirm
+                  :ok-text="$t('common.delete')"
+                  :cancel-text="$t('common.cancel')"
+                  placement="bottom"
+                  @confirm="removeUserFromCompany(user)"
+                >
+                  <template #title> {{ $t('confirmRemoveUserFromCompany') }} </template>
+                  <i class="bx bx-trash"></i> &nbsp; {{ $t('common.delete') }}
+                </pop-confirm>
+              </a-menu-item>
+            </a-menu>
+          </template>
+        </a-dropdown>
       </div>
     </div>
+
+    <a-modal v-model="isAddUserModalActive" width="800px" :title="$t('addTitle')" :footer="null">
+      <modal-form v-if="isAddUserModalActive">
+        <selector
+          :type-name="$t('searchName')"
+          type="users"
+          :existing="users"
+          @select="addUserToCompany"
+        />
+      </modal-form>
+    </a-modal>
   </card>
 </template>
 
@@ -31,13 +65,19 @@
 {
   "pl": {
     "title": "Użytkownicy",
+    "searchName": "użytkownika",
     "empty": "Brak użytkowników przypisanych do tej firmy",
-    "add": "Dodaj użytkownika"
+    "add": "Dodaj użytkownika",
+    "addTitle": "Dodaj użytkownika do firmy",
+    "confirmRemoveUserFromCompany": "Czy na pewno chcesz usunąć użytkownika z firmy?"
   },
   "en": {
     "title": "Users",
+    "searchName": "user",
     "empty": "No users assigned to this company",
-    "add": "Add user"
+    "add": "Add user",
+    "addTitle": "Add user to company",
+    "confirmRemoveUserFromCompany": "Are you sure you want to remove the user from the company?"
   }
 }
 </i18n>
@@ -51,9 +91,12 @@ import IconButton from '@/components/layout/IconButton.vue'
 import TopNav from '@/components/layout/TopNav.vue'
 import Loading from '@/components/layout/Loading.vue'
 import Empty from '@/components/layout/Empty.vue'
+import PopConfirm from '@/components/layout/PopConfirm.vue'
+import ModalForm from '@/components/form/ModalForm.vue'
+import Selector from '@/components/Selector.vue'
 
 export default Vue.extend({
-  components: { TopNav, Card, IconButton, Loading, Empty },
+  components: { TopNav, Card, IconButton, Loading, Empty, PopConfirm, ModalForm, Selector },
   props: {
     company: {
       type: Object,
@@ -63,6 +106,7 @@ export default Vue.extend({
 
   data: () => ({
     isLoading: false,
+    isAddUserModalActive: false,
   }),
 
   computed: {
@@ -75,6 +119,26 @@ export default Vue.extend({
     this.isLoading = true
     await this.$accessor.users.fetch({ roles: [this.company.id] })
     this.isLoading = false
+  },
+
+  methods: {
+    async removeUserFromCompany(user: UserList) {
+      this.isLoading = true
+      await this.$accessor.users.update({
+        id: user.id,
+        item: { roles: user.roles.map((r) => r.id).filter((r) => r !== this.company.id) },
+      })
+      this.$accessor.users.REMOVE_DATA({ key: 'id', value: user.id })
+      this.isLoading = false
+    },
+    async addUserToCompany(user: UserList) {
+      this.isLoading = true
+      await this.$accessor.users.update({
+        id: user.id,
+        item: { roles: [this.company.id, ...user.roles.map((r) => r.id)] },
+      })
+      this.isLoading = false
+    },
   },
 })
 </script>

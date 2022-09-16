@@ -2,7 +2,7 @@
   <div class="narrower-page">
     <PaginatedList store-key="b2bCompanies" :table="tableConfig" :filters="filters">
       <template #title>
-        <span class="gray-text">{{ $t('titlePrefix') }}</span> <span>{{ $t('title') }}</span>
+        <span class="gray-text">{{ $t('titlePrefix') }}</span> &nbsp; <span>{{ $t('title') }}</span>
       </template>
 
       <template #filters>

@@ -3,7 +3,7 @@
     <top-nav>
       <template #title>
         {{ company.name }}
-        <icon-button type="transparent">
+        <icon-button type="transparent" @click="isEditModalActive = true">
           <template #icon> <i class="bx bx-edit-alt"></i> </template>
         </icon-button>
       </template>
@@ -29,11 +29,11 @@
         <field>
           <template #label>
             {{ $t('common.form.description') }}
-            <icon-button type="transparent" size="small">
+            <icon-button type="transparent" size="small" @click="isEditModalActive = true">
               <template #icon> <i class="bx bx-edit-alt"></i> </template>
             </icon-button>
           </template>
-          {{ company.description }}
+          {{ company.description || '-' }}
         </field>
       </card>
 
@@ -45,6 +45,12 @@
         :company="company"
       />
     </div>
+
+    <company-form
+      :initial-value="company"
+      :visible="isEditModalActive"
+      @close="isEditModalActive = false"
+    />
   </div>
 </template>
 
@@ -64,17 +70,24 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import Field from '@/components/Field.vue'
+import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import TopNav from '@/components/layout/TopNav.vue'
+import Field from '@/components/Field.vue'
+
 import CompanyPromoList from '@/components/modules/b2b/CompanyPromoList.vue'
 import CompanyUsersList from '@/components/modules/b2b/CompanyUsersList.vue'
+import CompanyForm from '@/components/modules/b2b/CompanyForm.vue'
 
 import { Role } from '@heseya/store-core'
 
 export default Vue.extend({
-  components: { TopNav, PopConfirm, Card, Field, CompanyUsersList, CompanyPromoList },
+  components: { TopNav, PopConfirm, Card, Field, CompanyUsersList, CompanyPromoList, CompanyForm },
+
+  data: () => ({
+    isEditModalActive: false,
+  }),
+
   computed: {
     company(): Role {
       return this.$accessor.b2bCompanies.getSelected || ({} as Role)

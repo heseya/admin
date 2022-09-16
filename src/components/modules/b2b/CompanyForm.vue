@@ -1,7 +1,7 @@
 <template>
   <validation-observer v-slot="{ handleSubmit }">
     <a-modal :visible="visible" width="600px" @cancel="close">
-      <template #title> {{ $t('newTitle') }} </template>
+      <template #title> {{ isNew ? $t('newTitle') : $t('editTitle') }} </template>
 
       <modal-form>
         <validated-input
@@ -24,8 +24,8 @@
           <app-button html-type="button" type="white" data-cy="cancel-btn" @click="close">
             {{ $t('common.cancel') }}
           </app-button>
-          <app-button data-cy="save-btn" type="primary" @click="handleSubmit(createB2BCompany)">
-            {{ $t('common.add') }}
+          <app-button data-cy="save-btn" type="primary" @click="handleSubmit(saveB2BCompany)">
+            {{ isNew ? $t('common.add') : $t('common.save') }}
           </app-button>
         </div>
       </template>
@@ -37,22 +37,26 @@
 {
   "pl": {
     "newTitle": "Dodaj firmę",
+    "editTitle": "Edytuj firmę",
     "form": {
       "name": "Nazwa firmy",
       "description": "Opis (opcjonalnie)"
     },
     "alerts": {
-      "created": "Firma została dodana"
+      "created": "Firma została dodana",
+      "updated": "Firma została zaktualizowana"
     }
   },
   "en": {
     "newTitle": "Add company",
+    "editTitle": "Edit company",
     "form": {
       "name": "Company name",
       "description": "Description (optional)"
     },
     "alerts": {
-      "created": "Company has been added"
+      "created": "Company has been added",
+      "updated": "Company has been updated"
     }
   }
 }
@@ -61,7 +65,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
-import { RoleCreateDto } from '@heseya/store-core'
+import { Role, RoleCreateDto } from '@heseya/store-core'
 import { cloneDeep } from 'lodash'
 
 import ModalForm from '@/components/form/ModalForm.vue'
@@ -79,6 +83,10 @@ const CLEAR_FORM: RoleCreateDto = {
 export default Vue.extend({
   components: { ValidationObserver, ModalForm, AppTextarea },
   props: {
+    initialValue: {
+      type: Object,
+      default: () => null,
+    } as Vue.PropOptions<Partial<Role> | null>,
     visible: { type: Boolean, default: false },
   },
 
@@ -86,12 +94,18 @@ export default Vue.extend({
     form: cloneDeep(CLEAR_FORM) as RoleCreateDto,
   }),
 
+  computed: {
+    isNew(): boolean {
+      return !this.initialValue?.id
+    },
+  },
+
   watch: {
     visible: {
       immediate: true,
       handler(visible) {
-        if (!visible) {
-          this.form = cloneDeep(CLEAR_FORM)
+        if (visible) {
+          this.form = { ...cloneDeep(CLEAR_FORM), ...cloneDeep(this.initialValue) }
         }
       },
     },
@@ -102,13 +116,16 @@ export default Vue.extend({
       this.$emit('close')
     },
 
-    async createB2BCompany() {
+    async saveB2BCompany() {
       this.$accessor.startLoading()
-      const success = await this.$accessor.b2bCompanies.add(this.form)
+      const success = this.initialValue?.id
+        ? await this.$accessor.b2bCompanies.update({ id: this.initialValue.id, item: this.form })
+        : await this.$accessor.b2bCompanies.add(this.form)
       this.$accessor.stopLoading()
 
       if (success) {
-        this.$toast.success(this.$t('alerts.created') as string)
+        if (this.isNew) this.$toast.success(this.$t('alerts.created') as string)
+        else this.$toast.success(this.$t('alerts.updated') as string)
         this.close()
       }
     },

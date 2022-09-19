@@ -165,9 +165,9 @@ export default Vue.extend({
       }))
     },
     availableItems(): MenuLink[] {
-      return [...MENU_AVAILABLE_ITEMS, ...this.microfrontendItems].filter(
-        (item) => !this.menu.find((activeItem) => activeItem.id === item.id),
-      )
+      return [...MENU_AVAILABLE_ITEMS, ...this.microfrontendItems]
+        .filter((item) => !this.menu.find((activeItem) => activeItem.id === item.id))
+        .filter((link) => (typeof link.hidden === 'function' ? !link.hidden() : !link.hidden))
     },
   },
   created() {

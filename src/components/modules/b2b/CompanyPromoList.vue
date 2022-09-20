@@ -14,11 +14,7 @@
     <template v-else>
       <div class="company-promos__list">
         <div v-for="sale in sales" :key="sale.id" class="sale-item">
-          <icon-button
-            type="transparent"
-            class="sale-item__edit-btn"
-            :to="`/sales/${sale.id}?company=${company.id}`"
-          >
+          <icon-button type="transparent" class="sale-item__edit-btn" :to="`/sales/${sale.id}`">
             <template #icon> <i class="bx bx-edit-alt"></i> </template>
           </icon-button>
 
@@ -121,7 +117,13 @@ export default Vue.extend({
     async fetchSales() {
       this.isLoading = true
       const page = this.$route.query.page || 1
-      await this.$accessor.sales.fetch({ for_role: this.company.id, page, limit: 32 })
+      await this.$accessor.sales.fetch({
+        for_role: this.company.id,
+        // TODO: should only user `for_role` param
+        metadata: { b2b_company: this.company.id },
+        page,
+        limit: 32,
+      })
       this.isLoading = false
     },
 

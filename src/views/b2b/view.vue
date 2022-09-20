@@ -1,7 +1,7 @@
 <template>
   <div class="b2b-company-view">
     <top-nav>
-      <template #title>
+      <template v-if="company" #title>
         {{ company.name }}
         <icon-button type="transparent" @click="isEditModalActive = true">
           <template #icon> <i class="bx bx-edit-alt"></i> </template>
@@ -33,17 +33,13 @@
               <template #icon> <i class="bx bx-edit-alt"></i> </template>
             </icon-button>
           </template>
-          {{ company.description || '-' }}
+          {{ (company ? company.description : '') || '-' }}
         </field>
       </card>
 
-      <company-users-list v-if="company.id" class="b2b-company-grid__users" :company="company" />
+      <company-users-list v-if="company" class="b2b-company-grid__users" :company="company" />
 
-      <company-promo-list
-        v-if="company.id"
-        class="b2b-company-grid__promotions"
-        :company="company"
-      />
+      <company-promo-list v-if="company" class="b2b-company-grid__promotions" :company="company" />
     </div>
 
     <company-form
@@ -86,20 +82,19 @@ export default Vue.extend({
 
   data: () => ({
     isEditModalActive: false,
+    company: null as Role | null,
   }),
 
-  computed: {
-    company(): Role {
-      return this.$accessor.b2bCompanies.getSelected || ({} as Role)
-    },
-  },
-
-  created() {
-    this.$accessor.b2bCompanies.get(this.$route.params.id)
+  async created() {
+    await this.$accessor.b2bCompanies.get(this.$route.params.id)
+    this.company = this.$accessor.b2bCompanies.getSelected || ({} as Role)
   },
 
   methods: {
     async deleteCompany() {
+      // eslint-disable-next-line no-console
+      if (!this.company) return console.error('Company does not exist')
+
       this.$accessor.startLoading()
       const success = await this.$accessor.b2bCompanies.remove(this.company.id)
       this.$accessor.stopLoading()
@@ -118,6 +113,7 @@ export default Vue.extend({
   display: grid;
   grid-template-columns: 1fr;
   grid-template-areas: 'description' 'promotions' 'users';
+  grid-template-rows: auto 1fr;
   grid-gap: 9px 14px;
 
   @media ($viewport-11) {

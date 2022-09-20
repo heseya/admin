@@ -149,8 +149,10 @@ export default Vue.extend({
   },
 
   created() {
-    this.filters.search = (this.$route.query.search as string) || ''
-    this.filters.consent_id = (this.$route.query.consent_id as string) || ALL_FILTER_VALUE
+    const { roles, search, consent_id: consentId } = this.$route.query
+    this.filters.search = (search as string) || ''
+    this.filters.roles = (Array.isArray(roles) ? (roles as string[]) : [roles]).filter(Boolean)
+    this.filters.consent_id = (consentId as string) || ALL_FILTER_VALUE
   },
   methods: {
     makeSearch(filters: typeof EMPTY_USER_FILTERS) {

@@ -2,7 +2,7 @@
   <div class="narrower-page">
     <PaginatedList store-key="b2bCompanies" :table="tableConfig" :filters="filters">
       <template #title>
-        <span class="gray-text">{{ $t('titlePrefix') }}</span> <span>{{ $t('title') }}</span>
+        <span class="gray-text">{{ $t('titlePrefix') }}</span> &nbsp; <span>{{ $t('title') }}</span>
       </template>
 
       <template #filters>
@@ -28,7 +28,7 @@
       </template>
     </PaginatedList>
 
-    <add-company-form :visible="isCreateModalActive" @close="isCreateModalActive = false" />
+    <company-form :visible="isCreateModalActive" @close="isCreateModalActive = false" />
   </div>
 </template>
 
@@ -60,7 +60,7 @@ import { debounce } from 'lodash'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import { TableConfig } from '@/interfaces/CmsTable'
-import AddCompanyForm from '@/components/modules/b2b/AddCompanyForm.vue'
+import CompanyForm from '@/components/modules/b2b/CompanyForm.vue'
 
 export default Vue.extend({
   metaInfo(this: any) {
@@ -68,7 +68,7 @@ export default Vue.extend({
   },
   components: {
     PaginatedList,
-    AddCompanyForm,
+    CompanyForm,
   },
   data: () => ({
     isCreateModalActive: false,

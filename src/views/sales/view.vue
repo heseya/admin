@@ -84,7 +84,15 @@
 import Vue from 'vue'
 import { cloneDeep } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
-import { DiscountTargetType, DiscountType } from '@heseya/store-core'
+import {
+  DiscountConditionGroup,
+  DiscountConditionType,
+  DiscountTargetType,
+  DiscountType,
+  Role,
+  Sale,
+  SaleCreateDto,
+} from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
@@ -93,9 +101,22 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { UUID } from '@/interfaces/UUID'
-import { Sale, SaleFormDto, SaleDto } from '@/interfaces/SalesAndCoupons'
+import { SaleFormDto } from '@/interfaces/SalesAndCoupons'
 import { formatApiNotificationError } from '@/utils/errors'
 import { mapSaleFormToSaleDto } from '@/utils/sales'
+
+const createB2BConditionGroup = (company: Role): DiscountConditionGroup & { forced: true } => ({
+  id: '',
+  conditions: [
+    {
+      id: '',
+      type: DiscountConditionType.UserInRole,
+      roles: [company],
+      is_allow_list: true,
+    },
+  ],
+  forced: true,
+})
 
 const EMPTY_SALE_FORM: SaleFormDto = {
   name: '',
@@ -140,6 +161,34 @@ export default Vue.extend({
     sale(sale: Sale) {
       if (!this.isNew) {
         this.form = cloneDeep({ ...EMPTY_SALE_FORM, ...sale })
+
+        // Lock B2B condition group
+        if (sale.metadata.b2b_company) {
+          const b2bConditionIndex = sale.condition_groups.findIndex(
+            ({ conditions }) =>
+              conditions.length === 1 &&
+              conditions[0].type === DiscountConditionType.UserInRole &&
+              conditions[0].roles.length === 1 &&
+              conditions[0].roles[0].id === sale.metadata.b2b_company,
+          )
+          if (b2bConditionIndex < 0) {
+            this.appendB2BConditionGroup(sale.metadata.b2b_company as string)
+            return
+          }
+          const b2bCondition = cloneDeep({
+            ...sale.condition_groups[b2bConditionIndex],
+            forced: true,
+          })
+          const b2bSale = {
+            ...sale,
+            condition_groups: [
+              ...sale.condition_groups.slice(0, b2bConditionIndex),
+              b2bCondition,
+              ...sale.condition_groups.slice(b2bConditionIndex + 1),
+            ],
+          }
+          this.form = cloneDeep({ ...EMPTY_SALE_FORM, ...b2bSale })
+        }
       }
     },
     error(error) {
@@ -154,13 +203,27 @@ export default Vue.extend({
       await this.$accessor.sales.get(this.id)
       this.$accessor.stopLoading()
     }
+
+    // Append B2B condition group
+    if (this.isNew && this.$route.query.company) {
+      await this.appendB2BConditionGroup(this.$route.query.company as string)
+    }
   },
 
   methods: {
+    async appendB2BConditionGroup(companyId: UUID) {
+      const company = await this.$accessor.b2bCompanies.get(companyId)
+      if (company && company.metadata.b2b_company)
+        this.form.condition_groups.push(createB2BConditionGroup(company))
+    },
+
     async save() {
       this.$accessor.startLoading()
 
-      const dto: SaleDto = mapSaleFormToSaleDto(this.form)
+      const dto: SaleCreateDto = mapSaleFormToSaleDto(this.form)
+      if (this.isNew && this.$route.query.company) {
+        dto.metadata = { b2b_company: this.$route.query.company as UUID }
+      }
 
       if (this.isNew) {
         const sale = await this.$accessor.sales.add(dto)

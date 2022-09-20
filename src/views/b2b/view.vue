@@ -42,11 +42,7 @@
       <company-promo-list v-if="company" class="b2b-company-grid__promotions" :company="company" />
     </div>
 
-    <company-form
-      :initial-value="company"
-      :visible="isEditModalActive"
-      @close="isEditModalActive = false"
-    />
+    <company-form :initial-value="company" :visible="isEditModalActive" @saved="updateCompany" />
   </div>
 </template>
 
@@ -103,6 +99,10 @@ export default Vue.extend({
         this.$toast.success(this.$t('deleteSuccess') as string)
         this.$router.push('/b2b/companies')
       }
+    },
+    updateCompany(company: Role) {
+      this.company = company
+      this.isEditModalActive = false
     },
   },
 })

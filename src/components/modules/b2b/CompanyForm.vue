@@ -126,6 +126,7 @@ export default Vue.extend({
       if (success) {
         if (this.isNew) this.$toast.success(this.$t('alerts.created') as string)
         else this.$toast.success(this.$t('alerts.updated') as string)
+        this.$emit('saved', success)
         this.close()
       }
     },

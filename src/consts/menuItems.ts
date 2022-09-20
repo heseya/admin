@@ -1,4 +1,5 @@
 import { Permission } from '@/interfaces/Permissions'
+import { accessor } from '@/store'
 import { PERMISSIONS_TREE } from './permissions'
 
 let id = 0
@@ -30,6 +31,7 @@ export interface MenuLink {
   iconPath?: string
   label: string
   disabled?: true
+  hidden?: boolean | (() => boolean)
   isMicrofrontend?: true
   section?: SettingsSection
 }
@@ -218,6 +220,7 @@ export const MENU_ITEMS: MenuItem[] = [
     iconClass: 'bx bx-buildings',
     label: 'nav.b2b',
     can: PERMISSIONS_TREE.Roles.Show,
+    hidden: () => accessor.config.env.b2b_enabled !== '1',
     section: SettingsSection.Users,
   },
   {

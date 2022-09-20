@@ -4,7 +4,7 @@
 
     <card>
       <validation-observer v-slot="{ handleSubmit }">
-        <form @submit="handleSubmit(saveUser)">
+        <form @submit.prevent="handleSubmit(saveUser)">
           <UserForm v-model="editedUser" :disabled="!canModify" />
 
           <template v-if="selectedUser">
@@ -91,7 +91,7 @@ const CLEAR_USER: UserCreateDto = {
 
 export default Vue.extend({
   metaInfo(this: any) {
-    return { title: this.$t('title') as string }
+    return { title: this.isNewUser(this.editedUser) ? this.$t('newTitle') : this.$t('editTitle') }
   },
   components: {
     UserForm,

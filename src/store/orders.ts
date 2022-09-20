@@ -1,6 +1,12 @@
 import { createVuexCRUD, StoreMutations } from './generator'
 import { sdk } from '../api'
-import { Order, OrderCreateDto, OrderDocument, OrderDocumentCreateDto } from '@heseya/store-core'
+import {
+  Order,
+  OrderCreateDto,
+  OrderDocument,
+  OrderDocumentCreateDto,
+  OrderUpdateDto,
+} from '@heseya/store-core'
 import { UUID } from '@/interfaces/UUID'
 
 export type CreateOrderDocumentFunc = (payload: {
@@ -23,7 +29,7 @@ export type RemoveOrderDocumentFunc = (payload: {
   documentId: UUID
 }) => Promise<boolean>
 
-export const orders = createVuexCRUD<Order, OrderCreateDto, never>()('orders', {
+export const orders = createVuexCRUD<Order, OrderCreateDto, OrderUpdateDto>()('orders', {
   state: {},
   getters: {},
   mutations: {

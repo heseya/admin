@@ -345,11 +345,21 @@ const router = new VueRouter({
     },
     {
       path: '/settings/users',
-      name: 'Users',
-      component: () => import('./views/settings/Users.vue'),
+      name: 'UsersList',
+      component: () => import('./views/users/index.vue'),
       meta: {
         requiresAuth: true,
         permissions: [Permissions.Users.Show],
+      },
+    },
+    {
+      path: '/settings/users/:id',
+      name: 'UserDetails',
+      component: () => import('./views/users/view.vue'),
+      meta: {
+        returnUrl: '/settings/users',
+        requiresAuth: true,
+        permissions: [Permissions.Users.ShowDetails],
       },
     },
     {

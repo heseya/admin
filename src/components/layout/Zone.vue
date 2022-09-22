@@ -29,8 +29,8 @@ export default Vue.extend({
   --zone-text-color: #333333;
 
   &--danger {
-    --zone-text-color: #{$red-color-500};
-    --zone-border-color: #{$red-color-500};
+    --zone-text-color: var(--red-color-500);
+    --zone-border-color: var(--red-color-500);
   }
 
   &__title {

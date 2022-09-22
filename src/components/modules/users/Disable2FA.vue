@@ -99,7 +99,7 @@ export default Vue.extend({
     margin-bottom: 0;
 
     i {
-      color: $blue-color-500;
+      color: var(--blue-color-500);
       margin-left: 8px;
     }
   }
@@ -108,11 +108,11 @@ export default Vue.extend({
     font-weight: 600;
 
     &--enabled {
-      color: $green-color-500;
+      color: var(--green-color-500);
     }
 
     &--disabled {
-      color: $red-color-500;
+      color: var(--red-color-500);
     }
   }
 

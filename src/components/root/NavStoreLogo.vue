@@ -105,7 +105,7 @@ export default Vue.extend({
   padding: 12px 8px 10px;
   border-radius: 8px;
   background-color: var(--background-color-500);
-  border: dashed 2px $primary-color-100;
+  border: dashed 2px var(--primary-color-100);
   margin-bottom: 12px;
   display: flex;
   flex-direction: column;
@@ -120,7 +120,7 @@ export default Vue.extend({
   &__title {
     font-size: 0.8em;
     letter-spacing: -0.24px;
-    color: $primary-color-300;
+    color: var(--primary-color-300);
     transition: 0.3s;
   }
 

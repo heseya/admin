@@ -217,7 +217,7 @@ $item-size: 160px;
     display: flex;
     justify-content: center;
     align-items: center;
-    color: $gray-color-500;
+    color: var(--gray-color-500);
   }
 
   &__buttons {

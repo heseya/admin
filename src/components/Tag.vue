@@ -73,29 +73,29 @@ export default Vue.extend({
   }
 
   &--success {
-    background-color: $green-color-200;
-    color: $green-color-500;
+    background-color: var(--green-color-200);
+    color: var(--green-color-500);
 
     > .bx {
-      background-color: $green-color-500;
+      background-color: var(--green-color-500);
     }
   }
 
   &--error {
-    background-color: $red-color-200;
-    color: $red-color-500;
+    background-color: var(--red-color-200);
+    color: var(--red-color-500);
 
     > .bx {
-      background-color: $red-color-500;
+      background-color: var(--red-color-500);
     }
   }
 
   &--primary {
-    background-color: $primary-color-100;
-    color: $primary-color-500;
+    background-color: var(--primary-color-100);
+    color: var(--primary-color-500);
 
     > .bx {
-      background-color: $primary-color-500;
+      background-color: var(--primary-color-500);
     }
   }
 

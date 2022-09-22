@@ -96,7 +96,7 @@ export default Vue.extend({
 
   all: unset;
   cursor: pointer;
-  color: $gray-color-500;
+  color: var(--gray-color-500);
   text-decoration: none;
   display: flex;
   justify-content: center;
@@ -111,7 +111,7 @@ export default Vue.extend({
 
   &:hover {
     background-color: var(--background-color-700);
-    color: $gray-color-500;
+    color: var(--gray-color-500);
   }
 
   &__icon {
@@ -180,15 +180,15 @@ export default Vue.extend({
   }
 
   &--primary {
-    color: $primary-color-500;
+    color: var(--primary-color-500);
 
     #{$root}__icon {
-      background-color: $primary-color-100;
+      background-color: var(--primary-color-100);
     }
 
     &:hover {
-      background-color: $primary-color-100;
-      color: $primary-color-500;
+      background-color: var(--primary-color-100);
+      color: var(--primary-color-500);
     }
   }
 
@@ -219,28 +219,28 @@ export default Vue.extend({
   }
 
   &--danger {
-    color: $red-color-500;
+    color: var(--red-color-500);
 
     #{$root}__icon {
-      background-color: $red-color-200;
+      background-color: var(--red-color-200);
     }
 
     &:hover {
-      background-color: $red-color-200;
-      color: $red-color-500;
+      background-color: var(--red-color-200);
+      color: var(--red-color-500);
     }
   }
 
   &--success {
-    color: $green-color-500;
+    color: var(--green-color-500);
 
     #{$root}__icon {
-      background-color: $green-color-200;
+      background-color: var(--green-color-200);
     }
 
     &:hover {
-      background-color: $green-color-200;
-      color: $green-color-500;
+      background-color: var(--green-color-200);
+      color: var(--green-color-500);
     }
   }
 
@@ -261,11 +261,11 @@ export default Vue.extend({
     color: #ffffff;
 
     #{$root}__icon {
-      background-color: $primary-color-500;
+      background-color: var(--primary-color-500);
     }
 
     &:hover {
-      background-color: $primary-color-500;
+      background-color: var(--primary-color-500);
       color: #ffffff;
     }
   }

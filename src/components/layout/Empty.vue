@@ -25,7 +25,7 @@ export default Vue.extend({
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border: solid 1px $gray-color-300;
+  border: solid 1px var(--gray-color-300);
   border-radius: 4px;
   padding: 16px 12px;
   margin: 8px 0;

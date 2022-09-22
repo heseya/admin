@@ -145,7 +145,7 @@ export default Vue.extend({
     padding-right: 24px;
     appearance: none;
     border-radius: 4px;
-    border: 1px solid $primary-color-100;
+    border: 1px solid var(--primary-color-100);
   }
 }
 </style>

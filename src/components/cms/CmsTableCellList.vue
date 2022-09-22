@@ -106,8 +106,8 @@ export default Vue.extend({
     padding-block: 3px;
 
     &:hover {
-      color: $primary-color-500;
-      border-color: $primary-color-500;
+      color: var(--primary-color-500);
+      border-color: var(--primary-color-500);
     }
   }
 }

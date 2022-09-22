@@ -252,14 +252,14 @@ export default Vue.extend({
     color: #999;
 
     i {
-      color: $blue-color-400;
+      color: var(--blue-color-400);
       font-size: 1.1em;
       transform: translateY(1px);
     }
   }
 
   &__switch-tooltip-icon {
-    color: $blue-color-400;
+    color: var(--blue-color-400);
   }
 }
 </style>

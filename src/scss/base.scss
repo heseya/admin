@@ -10,7 +10,7 @@ body {
 }
 
 *::selection {
-  background-color: $primary-color-300 !important;
+  background-color: var(--primary-color-300) !important;
   color: #fff !important;
 }
 
@@ -20,15 +20,15 @@ body {
 }
 
 .danger-text {
-  color: $red-color-500;
+  color: var(--red-color-500);
 }
 
 .success-text {
-  color: $green-color-500;
+  color: var(--green-color-500);
 }
 
 .gray-text {
-  color: $gray-color-500;
+  color: var(--gray-color-500);
 }
 
 hr {

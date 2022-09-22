@@ -180,30 +180,30 @@ export default Vue.extend({
 
     &:hover {
       background-color: #fff;
-      color: $primary-color-500;
+      color: var(--primary-color-500);
     }
   }
 
   &--primary {
-    background-color: $primary-color-500;
+    background-color: var(--primary-color-500);
 
     &:hover {
-      background-color: $primary-color-700;
+      background-color: var(--primary-color-700);
     }
   }
   &--success {
-    background-color: $green-color-500;
+    background-color: var(--green-color-500);
 
     &:hover {
-      background-color: $green-color-400;
+      background-color: var(--green-color-400);
     }
   }
 
   &--danger {
-    background-color: $red-color-500;
+    background-color: var(--red-color-500);
 
     &:hover {
-      background-color: $red-color-400;
+      background-color: var(--red-color-400);
     }
   }
 }

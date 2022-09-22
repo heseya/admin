@@ -124,11 +124,11 @@ export default Vue.extend({
     }
 
     &.router-link-active {
-      color: $primary-color-500;
-      background-color: $primary-color-100;
+      color: var(--primary-color-500);
+      background-color: var(--primary-color-100);
 
       .nav-link-img {
-        color: $primary-color-500;
+        color: var(--primary-color-500);
       }
     }
   }

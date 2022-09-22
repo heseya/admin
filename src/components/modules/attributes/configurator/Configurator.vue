@@ -212,7 +212,7 @@ export default Vue.extend({
   }
 
   .global-tooltip {
-    color: $gray-color-300;
+    color: var(--gray-color-300);
     font-size: 1.3em;
   }
 }

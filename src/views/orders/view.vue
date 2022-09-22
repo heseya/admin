@@ -183,6 +183,6 @@ export default Vue.extend({
 .order-title {
   display: block;
   font-size: 1em;
-  color: $gray-color-500;
+  color: var(--gray-color-500);
 }
 </style>

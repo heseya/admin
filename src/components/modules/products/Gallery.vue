@@ -133,7 +133,7 @@ export default Vue.extend({
 
   &__info-text {
     display: block;
-    color: $gray-color-600;
+    color: var(--gray-color-600);
     text-align: center;
     font-size: 0.8em;
     letter-spacing: 0.55px;

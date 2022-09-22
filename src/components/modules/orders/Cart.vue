@@ -184,7 +184,7 @@ export default Vue.extend({
   }
 
   .bx {
-    color: $primary-color-500;
+    color: var(--primary-color-500);
     font-size: 0.8em;
   }
 }

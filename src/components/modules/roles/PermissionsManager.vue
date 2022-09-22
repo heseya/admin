@@ -241,7 +241,7 @@ export default Vue.extend({
     }
 
     i {
-      color: $primary-color-500;
+      color: var(--primary-color-500);
     }
   }
 }

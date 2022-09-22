@@ -152,6 +152,6 @@ export default Vue.extend({
   font-size: 2rem;
   display: grid;
   place-items: center;
-  color: $red-color-500;
+  color: var(--red-color-500);
 }
 </style>

@@ -117,7 +117,7 @@ export default Vue.extend({
   }
 
   &:hover {
-    background-color: $primary-color-100;
+    background-color: var(--primary-color-100);
   }
 
   &--no-hover {
@@ -145,7 +145,7 @@ export default Vue.extend({
 
   &__col-label {
     text-transform: uppercase;
-    color: $gray-color-600;
+    color: var(--gray-color-600);
     font-size: 0.8em;
     margin-bottom: 4px;
 

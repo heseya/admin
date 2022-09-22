@@ -325,7 +325,7 @@ export default Vue.extend({
   transition: 0.3s;
 
   &--searched {
-    background-color: $green-color-200;
+    background-color: var(--green-color-200);
   }
 
   &__search {
@@ -375,7 +375,7 @@ export default Vue.extend({
 
     small {
       font-weight: 400;
-      color: $gray-color-500;
+      color: var(--gray-color-500);
       margin-left: 5px;
     }
   }
@@ -393,7 +393,7 @@ export default Vue.extend({
   &__public {
     border-radius: 25px;
     padding: 0.2em 1em;
-    color: $gray-color-500;
+    color: var(--gray-color-500);
     display: flex;
     font-size: 11px;
     align-items: center;

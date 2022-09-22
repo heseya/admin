@@ -167,7 +167,7 @@ export default Vue.extend({
 
     &--300 {
       background-color: #9575cd;
-      color: $primary-color-100;
+      color: var(--primary-color-100);
     }
 
     &--400 {
@@ -176,7 +176,7 @@ export default Vue.extend({
 
     &--500 {
       background-color: #e57373;
-      color: $primary-color-100;
+      color: var(--primary-color-100);
     }
 
     &--no-info {
@@ -247,7 +247,7 @@ export default Vue.extend({
   }
 
   &__data-value-relative {
-    color: $gray-color-600;
+    color: var(--gray-color-600);
   }
 
   &__data-link {

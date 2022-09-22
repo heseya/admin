@@ -183,7 +183,7 @@ export default Vue.extend({
     // margin-bottom: 8px;
 
     .info-tooltip__icon {
-      color: $blue-color-400;
+      color: var(--blue-color-400);
     }
   }
 
@@ -203,7 +203,7 @@ export default Vue.extend({
   }
 
   &__schema-name {
-    color: $gray-color-500;
+    color: var(--gray-color-500);
   }
 
   &__value {
@@ -220,7 +220,7 @@ export default Vue.extend({
     .info-tooltip__icon {
       margin-left: 4px;
       font-size: 0.8em;
-      color: $primary-color-500;
+      color: var(--primary-color-500);
     }
   }
 

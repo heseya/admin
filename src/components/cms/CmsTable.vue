@@ -132,7 +132,7 @@ export default Vue.extend({
           padding: 6px 13px;
           cursor: move;
           transform: translateY(50%);
-          color: lighten($gray-color-600, 20%);
+          color: var(--gray-color-500);
         }
       }
     }

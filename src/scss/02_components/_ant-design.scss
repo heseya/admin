@@ -37,7 +37,7 @@
     .ant-modal-close {
       width: 26px !important;
       height: 26px !important;
-      background-color: $primary-color-500;
+      background-color: var(--primary-color-500);
       font-size: 0.9em !important;
       border-radius: 50%;
       top: -12px !important;

@@ -133,7 +133,7 @@ export default Vue.extend({
   }
 
   &__type {
-    color: $gray-color-600;
+    color: var(--gray-color-600);
     font-weight: 300;
   }
 

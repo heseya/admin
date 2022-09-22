@@ -106,7 +106,7 @@ export default Vue.extend({
   &__items {
     display: flex;
     flex-wrap: wrap;
-    background-color: var(--background-color-900);
+    background-color: var(--white-color);
     border: 1px solid #d9d9d9;
     border-radius: 4px;
     padding: 4px;

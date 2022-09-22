@@ -150,7 +150,7 @@ export default Vue.extend({
     position: relative;
     width: 100%;
     padding-top: 100%;
-    background-color: var(--background-color-900);
+    background-color: var(--white-color);
     box-shadow: $shadow;
     border-radius: 4px;
     cursor: move;
@@ -162,7 +162,7 @@ export default Vue.extend({
       height: 100%;
       width: 100%;
       object-fit: cover;
-      background-color: var(--background-color-900);
+      background-color: var(--white-color);
       border-radius: 4px;
       overflow: hidden;
     }

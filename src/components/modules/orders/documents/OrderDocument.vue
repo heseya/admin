@@ -151,7 +151,7 @@ export default Vue.extend({
     transition: 0.3s;
 
     &:hover {
-      background-color: #fff;
+      background-color: var(--white-color);
     }
   }
 }

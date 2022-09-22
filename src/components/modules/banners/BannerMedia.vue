@@ -235,7 +235,7 @@ $item-size: 160px;
   width: 100%;
   padding-top: 100%;
   margin-bottom: 4px;
-  background-color: var(--background-color-900);
+  background-color: var(--white-color);
   box-shadow: $shadow;
   border-radius: 7px;
 
@@ -246,7 +246,7 @@ $item-size: 160px;
     height: 100%;
     width: 100%;
     object-fit: cover;
-    background-color: var(--background-color-900);
+    background-color: var(--white-color);
     border-radius: 7px;
     overflow: hidden;
   }
@@ -277,7 +277,7 @@ $item-size: 160px;
     left: 4px;
     bottom: 4px;
     width: calc(100% - 8px);
-    color: #fff;
+    color: var(--white-color);
     text-shadow: 0px 0px 8px var(--font-color);
 
     :deep(.app-input) {

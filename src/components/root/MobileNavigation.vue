@@ -61,7 +61,7 @@ export default Vue.extend({
   height: 60px;
   box-sizing: border-box;
   width: 100vw;
-  background: var(--background-color-900);
+  background: var(--white-color);
   border-top: solid 1px var(--primary-color-100);
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));

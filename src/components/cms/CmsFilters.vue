@@ -143,7 +143,7 @@ export default Vue.extend({
     top: 102vh;
     width: 100%;
     height: 100%;
-    background-color: var(--background-color-900);
+    background-color: var(--white-color);
     padding: 80px 32px 16px;
     z-index: $mobile-filters-z-index;
     transition: 0.3s;

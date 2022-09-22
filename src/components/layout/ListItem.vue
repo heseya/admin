@@ -113,7 +113,7 @@ export default Vue.extend({
 
 @media (hover: hover) and (pointer: fine) {
   .list__item:hover {
-    background-color: var(--background-color-900);
+    background-color: var(--white-color);
   }
 }
 </style>

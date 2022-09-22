@@ -11,7 +11,7 @@ body {
 
 *::selection {
   background-color: var(--primary-color-300) !important;
-  color: #fff !important;
+  color: var(--white-color) !important;
 }
 
 .uppercase {
@@ -83,7 +83,7 @@ hr {
 }
 
 .multiselect__tag {
-  background: #000000;
+  background: var(--black-color);
 }
 
 .multiselect__tag-icon::after {
@@ -149,7 +149,7 @@ legend {
   margin-left: 0 !important;
 
   .ant-checkbox__title {
-    color: #000;
+    color: var(--black-color);
   }
   .ant-checkbox__description {
     margin-left: 26px;
@@ -158,15 +158,15 @@ legend {
   .ant-checkbox::after,
   &:hover .ant-checkbox-inner,
   &:focus-within .ant-checkbox-inner {
-    border-color: #000000 !important;
+    border-color: var(--black-color) !important;
   }
 
   .ant-checkbox-checked .ant-checkbox-inner {
-    border-color: #000000 !important;
-    background-color: #000000 !important;
+    border-color: var(--black-color) !important;
+    background-color: var(--black-color) !important;
   }
 
   .ant-checkbox-indeterminate .ant-checkbox-inner::after {
-    background-color: #000000 !important;
+    background-color: var(--black-color) !important;
   }
 }

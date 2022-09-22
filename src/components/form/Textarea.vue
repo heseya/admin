@@ -43,7 +43,7 @@ export default Vue.extend({
 
   &__input {
     width: 100%;
-    background-color: #fff;
+    background-color: var(--white-color);
     border: solid 1px var(--gray-color-300);
     border-radius: 4px;
     box-sizing: border-box;

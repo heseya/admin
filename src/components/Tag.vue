@@ -49,9 +49,9 @@ export default Vue.extend({
 .tag {
   margin-right: 3px;
   margin-top: 3px;
-  background-color: var(--bg-color, #000000);
+  background-color: var(--bg-color, var(--black-color));
   padding: 4px 12px;
-  color: #fff;
+  color: var(--white-color);
   font-size: 0.9em;
   border-radius: 16px;
   display: inline-flex;
@@ -60,8 +60,8 @@ export default Vue.extend({
 
   > .bx {
     border-radius: 50%;
-    background-color: var(--bg-color, #000000);
-    color: #fff !important;
+    background-color: var(--bg-color, var(--black-color));
+    color: var(--white-color) !important;
   }
 
   &--text-dark {

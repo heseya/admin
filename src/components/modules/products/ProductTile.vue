@@ -59,7 +59,7 @@ export default Vue.extend({
 <style lang="scss">
 .product-box {
   all: unset;
-  color: #000000;
+  color: var(--font-color);
   text-decoration: none;
   position: relative;
   cursor: pointer;
@@ -76,7 +76,7 @@ export default Vue.extend({
     width: 100%;
     padding-top: 100%;
     border-radius: 8px;
-    background-color: var(--background-color-900);
+    background-color: var(--white-color);
     overflow: hidden;
     margin-bottom: 4px;
     box-shadow: $shadow;

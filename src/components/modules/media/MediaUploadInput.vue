@@ -177,7 +177,7 @@ export default Vue.extend({
     height: 68px;
     border-radius: 50%;
     border: none;
-    background-color: #fff;
+    background-color: var(--white-color);
     cursor: pointer;
     transition: 0.3s;
   }

@@ -122,7 +122,7 @@ export default Vue.extend({
     background-color: var(--green-color-500);
 
     i {
-      color: #ffffff !important;
+      color: var(--white-color) !important;
     }
   }
 

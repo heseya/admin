@@ -1,5 +1,5 @@
 .ant-collapse {
-  background-color: #fff !important;
+  background-color: var(--white-color) !important;
 
   .ant-collapse-header {
     position: relative;
@@ -20,7 +20,7 @@
     border-radius: 50%;
     background-color: var(--gray-color-500);
     font-size: 1.4em !important;
-    color: #fff !important;
+    color: var(--white-color) !important;
     display: flex !important;
     justify-content: center;
     align-items: center;
@@ -53,7 +53,7 @@
       height: 100% !important;
       font-size: 0.9rem !important;
       line-height: 26px !important;
-      color: #fff !important;
+      color: var(--white-color) !important;
     }
   }
 }

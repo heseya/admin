@@ -89,7 +89,7 @@ export default Vue.extend({
   border: none;
   @extend %card;
   box-shadow: none;
-  background-color: #fff;
+  background-color: var(--white-color);
   display: grid;
   align-items: start;
   width: 100%;

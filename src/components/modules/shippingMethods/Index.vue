@@ -184,7 +184,7 @@ export default Vue.extend({
     background-color: var(--background-color-600);
   }
   .ant-switch-checked {
-    background-color: #000000;
+    background-color: var(--black-color);
   }
 }
 </style>

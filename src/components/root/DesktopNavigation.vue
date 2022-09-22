@@ -63,7 +63,7 @@ export default Vue.extend({
   width: $navWidth;
   padding: 9px;
   box-sizing: border-box;
-  background-color: var(--background-color-900);
+  background-color: var(--white-color);
   border-right: solid 1px var(--background-color-600);
   display: flex;
   flex-direction: column;
@@ -95,7 +95,7 @@ export default Vue.extend({
     width: 100%;
     display: flex;
     align-items: center;
-    color: #000000;
+    color: var(--black-color);
     transition: background-color 0.3s;
 
     .nav-link-img {
@@ -119,7 +119,7 @@ export default Vue.extend({
       background-color: var(--background-color-500);
 
       .nav-link-img {
-        color: #000000;
+        color: var(--black-color);
       }
     }
 

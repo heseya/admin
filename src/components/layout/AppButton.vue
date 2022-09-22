@@ -85,7 +85,7 @@ export default Vue.extend({
   all: unset;
   appearance: none !important;
   background-color: var(--font-color);
-  color: #ffffff;
+  color: var(--white-color);
   cursor: pointer;
   padding: 8px 16px;
   line-height: 1em;
@@ -98,7 +98,7 @@ export default Vue.extend({
 
   &:hover {
     background-color: var(--gray-color-900);
-    color: #ffffff;
+    color: var(--white-color);
   }
 
   &::before,
@@ -126,7 +126,7 @@ export default Vue.extend({
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    border: solid 2px #fff;
+    border: solid 2px var(--white-color);
     border-top-color: $transparent;
     animation: spin infinite 0.6s;
   }
@@ -174,12 +174,12 @@ export default Vue.extend({
   }
 
   &--white {
-    background-color: #fff;
+    background-color: var(--white-color);
     color: var(--font-color);
     box-shadow: $shadow;
 
     &:hover {
-      background-color: #fff;
+      background-color: var(--white-color);
       color: var(--primary-color-500);
     }
   }

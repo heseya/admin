@@ -321,7 +321,7 @@ export default Vue.extend({
   display: flex;
   padding: 6px 8px;
   padding-right: 0;
-  border-bottom: solid 1px $background-color-700;
+  border-bottom: solid 1px var(--background-color-700);
   transition: 0.3s;
 
   &--searched {
@@ -336,7 +336,7 @@ export default Vue.extend({
 
   &.sortable-chosen,
   &:hover {
-    background-color: $background-color-500;
+    background-color: var(--background-color-500);
   }
 
   &__hidden-icon {

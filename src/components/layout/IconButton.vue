@@ -110,7 +110,7 @@ export default Vue.extend({
   margin: 3px;
 
   &:hover {
-    background-color: $background-color-700;
+    background-color: var(--background-color-700);
     color: $gray-color-500;
   }
 
@@ -122,7 +122,7 @@ export default Vue.extend({
     justify-content: center;
     align-items: center;
     transition: 0.3s;
-    background-color: $background-color-700;
+    background-color: var(--background-color-700);
     margin-left: $inner-margin;
     flex-shrink: 0;
 
@@ -200,7 +200,7 @@ export default Vue.extend({
     }
 
     &:hover {
-      background-color: $background-color-600;
+      background-color: var(--background-color-600);
       color: $font-color;
     }
   }
@@ -213,7 +213,7 @@ export default Vue.extend({
     }
 
     &:hover {
-      background-color: $background-color-600;
+      background-color: var(--background-color-600);
       color: $font-color !important;
     }
   }

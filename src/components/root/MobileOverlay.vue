@@ -59,7 +59,7 @@ export default Vue.extend({
   height: 100vh;
   box-sizing: border-box;
   padding: 20vh 10%;
-  background-color: #ffffff;
+  background-color: var(--background-color-900);
   z-index: $mobile-nav-overlay-z-index;
   display: flex;
   flex-direction: column;
@@ -88,7 +88,7 @@ export default Vue.extend({
     justify-content: center;
     align-items: center;
     color: #979ea0;
-    background-color: $background-color-700;
+    background-color: var(--background-color-700);
   }
 
   &__link {

@@ -63,8 +63,8 @@ export default Vue.extend({
   width: $navWidth;
   padding: 9px;
   box-sizing: border-box;
-  background-color: #ffffff;
-  border-right: solid 1px $background-color-600;
+  background-color: var(--background-color-900);
+  border-right: solid 1px var(--background-color-600);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -116,7 +116,7 @@ export default Vue.extend({
     }
 
     &:hover {
-      background-color: $background-color-500;
+      background-color: var(--background-color-500);
 
       .nav-link-img {
         color: #000000;

@@ -88,7 +88,7 @@ export default Vue.extend({
   }
 
   &--no-hover:hover {
-    background-color: #ffffff00;
+    background-color: $transparent;
     cursor: default;
   }
 
@@ -113,7 +113,7 @@ export default Vue.extend({
 
 @media (hover: hover) and (pointer: fine) {
   .list__item:hover {
-    background-color: #ffffff00;
+    background-color: var(--background-color-900);
   }
 }
 </style>

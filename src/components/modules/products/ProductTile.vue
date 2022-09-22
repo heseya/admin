@@ -76,7 +76,7 @@ export default Vue.extend({
     width: 100%;
     padding-top: 100%;
     border-radius: 8px;
-    background-color: #ffffff;
+    background-color: var(--background-color-900);
     overflow: hidden;
     margin-bottom: 4px;
     box-shadow: $shadow;

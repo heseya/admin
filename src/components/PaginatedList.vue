@@ -230,7 +230,7 @@ export default Vue.extend({
 
     @media ($viewport-11) {
       &:not(:last-of-type) .cms-table-row {
-        border-bottom: solid 1px $background-color-700 !important;
+        border-bottom: solid 1px var(--background-color-700) !important;
       }
     }
 

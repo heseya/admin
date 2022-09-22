@@ -137,11 +137,11 @@ export default Vue.extend({
   align-items: center;
 
   &__role {
-    background-color: #ffffff;
+    background-color: var(--background-color-900);
     padding: 4px 8px;
     border-radius: 20px;
     color: $primary-color-500;
-    border: solid 1px $background-color-600;
+    border: solid 1px var(--background-color-600);
     font-size: 0.8em;
     margin-right: 4px;
   }

@@ -67,7 +67,7 @@ export default Vue.extend({
   display: grid;
   padding: 0 16px;
   grid-template-columns: var(--table-cols);
-  border-bottom: 2px solid $background-color-700;
+  border-bottom: 2px solid var(--background-color-700);
 
   &__col {
     all: unset;

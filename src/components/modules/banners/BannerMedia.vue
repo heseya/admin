@@ -184,7 +184,8 @@ $item-size: 160px;
   border-radius: 16px;
 
   &:hover {
-    background-color: rgba($background-color-700, 0.4);
+    // background-color: rgba(var(--background-color-700), 0.4);
+    background-color: var(--background-color-500);
   }
 
   &__content {
@@ -234,7 +235,7 @@ $item-size: 160px;
   width: 100%;
   padding-top: 100%;
   margin-bottom: 4px;
-  background-color: #ffffff;
+  background-color: var(--background-color-900);
   box-shadow: $shadow;
   border-radius: 7px;
 
@@ -245,7 +246,7 @@ $item-size: 160px;
     height: 100%;
     width: 100%;
     object-fit: cover;
-    background-color: #ffffff;
+    background-color: var(--background-color-900);
     border-radius: 7px;
     overflow: hidden;
   }

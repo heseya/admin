@@ -112,7 +112,7 @@ export default Vue.extend({
     margin-bottom: 0;
 
     &:not(:last-of-type) {
-      border-bottom: solid 1px $background-color-700;
+      border-bottom: solid 1px var(--background-color-700);
     }
   }
 
@@ -124,7 +124,7 @@ export default Vue.extend({
     cursor: default;
 
     &:hover {
-      background-color: #ffffff00;
+      background-color: $transparent;
     }
   }
 

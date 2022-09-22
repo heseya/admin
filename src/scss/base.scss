@@ -1,10 +1,11 @@
 @import './01_abstracts/index.scss';
 @import './02_components/index';
+@import './03_themes/index';
 
 body {
   font-family: $primaryFont, 'BlinkMacSystemFont', sans-serif !important;
-  background: $background-color-500 !important;
-  color: $font-color !important;
+  background: var(--background-color-500) !important;
+  color: var(--font-color) !important;
   margin: 0;
 }
 
@@ -34,7 +35,7 @@ hr {
   all: unset;
   display: block;
   height: 1px !important;
-  background-color: $background-color-700;
+  background-color: var(--background-color-700);
   width: 100%;
   margin: 12px 0;
 }
@@ -86,7 +87,7 @@ hr {
 }
 
 .multiselect__tag-icon::after {
-  color: #ffffff;
+  color: var(--font-color);
 }
 
 .title {
@@ -124,8 +125,8 @@ hr {
 }
 
 code {
-  background-color: $background-color-700;
-  color: $font-color;
+  background-color: var(--background-color-700);
+  color: var(--font-color);
   padding: 2px 4px;
   border-radius: 3px;
 }

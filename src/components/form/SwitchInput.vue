@@ -111,7 +111,7 @@ export default Vue.extend({
   }
 
   .ant-switch {
-    background-color: $background-color-600;
+    background-color: var(--background-color-600);
 
     i {
       margin-top: 4px;

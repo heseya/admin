@@ -38,3 +38,6 @@ $max-viewport-24: 'max-width: 2420px';
 
 // example:
 // @media ($viewport-3) {}
+
+$dark-mode: '(prefers-color-scheme: dark)';
+$light-mode: '(prefers-color-scheme: light)';

@@ -65,7 +65,7 @@ export default Vue.extend({
   }
 
   &--text-dark {
-    color: $font-color;
+    color: var(--font-color);
   }
 
   &--small {

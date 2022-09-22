@@ -301,7 +301,7 @@ export default Vue.extend({
           width: 5px;
           height: 5px;
           margin-right: 8px;
-          background-color: $font-color;
+          background-color: var(--font-color);
         }
       }
     }

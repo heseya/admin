@@ -126,7 +126,7 @@ export default Vue.extend({
       content: '\ea4a';
       font-family: $boxiconsFont;
       font-weight: 400;
-      color: #d9dbe0;
+      color: var(--gray-color-300);
       position: absolute;
       right: 10px;
       top: 50%;
@@ -139,7 +139,7 @@ export default Vue.extend({
   }
 
   &__select {
-    color: $font-color;
+    color: var(--font-color);
     box-shadow: $shadow;
     padding: 8px 6px;
     padding-right: 24px;

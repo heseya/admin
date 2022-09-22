@@ -211,7 +211,7 @@ export default Vue.extend({
     height: 37px;
     padding: 0;
     border-radius: 50%;
-    color: #979ea0;
+    color: var(--gray-color-500);
     background-color: var(--background-color-700);
   }
 

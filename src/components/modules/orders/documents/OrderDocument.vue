@@ -121,7 +121,7 @@ export default Vue.extend({
   grid-template-columns: 1fr auto 25px;
   grid-gap: 4px;
   padding: 10px;
-  background-color: #f7f7f8;
+  background-color: var(--background-color-300);
   border-radius: 8px;
 
   &:not(:last-of-type) {

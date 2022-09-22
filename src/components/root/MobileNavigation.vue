@@ -85,7 +85,7 @@ export default Vue.extend({
     border-radius: 8px;
 
     .nav-link-img {
-      color: #9ea5b4;
+      color: var(--gray-color-500);
       width: 20px;
       height: 20px;
       line-height: 25px;

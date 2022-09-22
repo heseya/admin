@@ -108,7 +108,7 @@ export default Vue.extend({
     font-size: 0.6em;
 
     &::placeholder {
-      color: $font-color !important;
+      color: var(--font-color) !important;
     }
   }
 }

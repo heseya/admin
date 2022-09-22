@@ -115,7 +115,7 @@ export default Vue.extend({
 
     i {
       margin-top: 4px;
-      color: $font-color !important;
+      color: var(--font-color) !important;
     }
   }
   .ant-switch-checked {

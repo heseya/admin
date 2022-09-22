@@ -104,7 +104,7 @@ export default Vue.extend({
   }
 
   @media ($viewport-11) {
-    background-color: #fff0;
+    background-color: $transparent;
     grid-template-columns: var(--table-cols);
     padding: 0 16px;
     border: none;
@@ -155,7 +155,7 @@ export default Vue.extend({
   }
 
   &__col-value {
-    color: $font-color;
+    color: var(--font-color);
 
     &--break-all {
       word-break: break-all;

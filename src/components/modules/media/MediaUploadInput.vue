@@ -121,9 +121,9 @@ export default Vue.extend({
   align-items: center;
   flex-direction: column;
   padding: 16px;
-  border: 1px dashed #ddd;
+  border: 1px dashed var(--gray-color-300);
   position: relative;
-  background-color: #f7f7f8;
+  background-color: var(--background-color-500);
   border-radius: 4px;
   height: 100%;
   transition: 0.3s;
@@ -137,14 +137,14 @@ export default Vue.extend({
   }
 
   &--image {
-    background-color: #eee;
+    background-color: var(--gray-color-300);
     cursor: default;
   }
 
   &__title {
     display: block;
     margin: 12px 0;
-    color: #979ea0;
+    color: var(--gray-color-400);
     font-size: 11px;
     text-align: center;
   }

@@ -112,14 +112,14 @@ export default Vue.extend({
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 2em;
-    color: #cccccc;
+    color: var(--gray-color-300);
 
     &::after {
       content: '';
       display: block;
       width: 120%;
       height: 2px;
-      background-color: firebrick;
+      background-color: var(--red-color-500);
       position: absolute;
       top: 50%;
       left: -10%;
@@ -131,11 +131,11 @@ export default Vue.extend({
     font-weight: 500;
     padding: 5px;
     padding-bottom: 2px;
-    color: $font-color;
+    color: var(--font-color);
   }
 
   small {
-    color: #777777;
+    color: var(--gray-color-600);
   }
 }
 </style>

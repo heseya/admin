@@ -33,13 +33,15 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
+$bg-color: rgba(lighten($primary-color-100, 5), 0.6);
+
 .loading {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: var(--primary-color-100);
+  background-color: $bg-color;
   display: flex;
   justify-content: center;
   align-items: center;

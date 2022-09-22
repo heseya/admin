@@ -278,7 +278,7 @@ $item-size: 160px;
     bottom: 4px;
     width: calc(100% - 8px);
     color: #fff;
-    text-shadow: 0px 0px 8px $font-color;
+    text-shadow: 0px 0px 8px var(--font-color);
 
     :deep(.app-input) {
       margin-bottom: 0;

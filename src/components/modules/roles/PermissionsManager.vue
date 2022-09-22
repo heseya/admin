@@ -227,7 +227,7 @@ export default Vue.extend({
     font-weight: 600;
 
     > * {
-      color: $font-color;
+      color: var(--font-color);
     }
   }
 

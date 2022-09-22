@@ -99,7 +99,7 @@ export default Vue.extend({
     transition: background-color 0.3s;
 
     .nav-link-img {
-      color: #9ea5b4;
+      color: var(--gray-color-500);
       display: block;
       width: 18px;
       height: 18px;

@@ -32,7 +32,7 @@ export default Vue.extend({
   border-radius: 4px;
   padding: 8px;
   background-color: var(--background-color-700);
-  color: $font-color;
+  color: var(--font-color);
   transition: 0.3s;
   margin-right: 4px;
 
@@ -42,7 +42,7 @@ export default Vue.extend({
   }
 
   &--active {
-    background-color: $font-color !important;
+    background-color: var(--font-color) !important;
     color: var(--background-color-700) !important;
     cursor: default;
   }

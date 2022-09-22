@@ -4,6 +4,7 @@ html {
   --primary-color-500: #{$primary-color-500};
   --primary-color-700: #{$primary-color-700};
 
+  --green-color-100: #{$green-color-100};
   --green-color-200: #{$green-color-200};
   --green-color-400: #{$green-color-400};
   --green-color-500: #{$green-color-500};
@@ -16,11 +17,15 @@ html {
   --blue-color-400: #{$blue-color-400};
   --blue-color-500: #{$blue-color-500};
 
+  --purple-color-400: #{$purple-color-400};
+  --yellow-color-400: #{$yellow-color-400};
   --orange-color-500: #{$orange-color-500};
 
   --gray-color-300: #{$gray-color-300};
+  --gray-color-400: #{$gray-color-400};
   --gray-color-500: #{$gray-color-500};
   --gray-color-600: #{$gray-color-600};
+  --gray-color-900: #{$gray-color-900};
 
   --background-color-500: #{$background-color-500};
   --background-color-600: #{$background-color-600};

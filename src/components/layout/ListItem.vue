@@ -58,7 +58,7 @@ export default Vue.extend({
 <style lang="scss">
 .list-item {
   border: none;
-  background-color: #fff0;
+  background-color: $transparent;
   width: 100%;
   box-sizing: border-box;
   cursor: pointer;
@@ -94,10 +94,10 @@ export default Vue.extend({
 
   small {
     display: block;
-    color: #aaaaaa;
+    color: var(--gray-color-400);
 
     b {
-      color: #666666;
+      color: var(--gray-color-600);
     }
   }
 

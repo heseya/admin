@@ -198,7 +198,7 @@ export default Vue.extend({
   }
 
   &__email {
-    color: $font-color;
+    color: var(--font-color);
 
     &:hover {
       color: var(--primary-color-500);

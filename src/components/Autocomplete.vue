@@ -139,7 +139,7 @@ export default Vue.extend({
     }
 
     &:hover {
-      background-color: #eeeeee;
+      background-color: var(--gray-color-300);
     }
   }
 }

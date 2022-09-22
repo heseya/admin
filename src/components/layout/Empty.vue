@@ -29,7 +29,7 @@ export default Vue.extend({
   border-radius: 4px;
   padding: 16px 12px;
   margin: 8px 0;
-  color: #7b8589;
+  color: var(--gray-color-600);
 
   &__icon {
     font-size: 3em;

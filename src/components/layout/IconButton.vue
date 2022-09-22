@@ -193,15 +193,15 @@ export default Vue.extend({
   }
 
   &--transparent {
-    color: $font-color;
+    color: var(--font-color);
 
     #{$root}__icon {
-      background-color: #ffffff00;
+      background-color: $transparent;
     }
 
     &:hover {
       background-color: var(--background-color-600);
-      color: $font-color;
+      color: var(--font-color);
     }
   }
 
@@ -209,12 +209,12 @@ export default Vue.extend({
     color: #fff !important;
 
     #{$root}__icon {
-      background-color: #ffffff00;
+      background-color: $transparent;
     }
 
     &:hover {
       background-color: var(--background-color-600);
-      color: $font-color !important;
+      color: var(--font-color) !important;
     }
   }
 
@@ -248,11 +248,11 @@ export default Vue.extend({
     color: #ffffff;
 
     #{$root}__icon {
-      background-color: $font-color;
+      background-color: var(--font-color);
     }
 
     &:hover {
-      background-color: $font-color;
+      background-color: var(--font-color);
       color: #ffffff;
     }
   }

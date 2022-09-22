@@ -87,7 +87,7 @@ export default Vue.extend({
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #979ea0;
+    color: var(--gray-color-500);
     background-color: var(--background-color-700);
   }
 
@@ -107,7 +107,7 @@ export default Vue.extend({
     .nav-link-img {
       width: 16px;
       height: 16px;
-      color: #9ea5b4;
+      color: var(--gray-color-500);
       margin-right: 20px;
       box-sizing: border-box;
       transition: opacity 0.3s;

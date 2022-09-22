@@ -352,7 +352,7 @@ export default Vue.extend({
   }
 
   &__line {
-    background-color: #f7eff0;
+    background-color: var(--primary-color-100);
     border-radius: 20px;
     width: 4px;
     height: calc(100% - 30px);
@@ -401,8 +401,8 @@ export default Vue.extend({
     margin: auto 0;
 
     &--visible {
-      background: #e6fbe6 0% 0% no-repeat padding-box;
-      color: #10d310;
+      background: var(--green-color-100) 0% 0% no-repeat padding-box;
+      color: var(--green-color-500);
     }
   }
 

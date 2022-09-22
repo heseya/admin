@@ -249,7 +249,7 @@ export default Vue.extend({
     margin-top: -6px;
     margin-bottom: 4px;
     font-size: 0.6rem;
-    color: #999;
+    color: var(--gray-color-500);
 
     i {
       color: var(--blue-color-400);

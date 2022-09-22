@@ -9,7 +9,7 @@
 
   .ant-collapse-item {
     margin-bottom: 8px;
-    background-color: #f6f6f7;
+    background-color: var(--gray-color-200);
     border-radius: 5px !important;
     border-bottom: none !important;
   }
@@ -18,7 +18,7 @@
     width: 22px;
     height: 22px;
     border-radius: 50%;
-    background-color: #979ea0;
+    background-color: var(--gray-color-500);
     font-size: 1.4em !important;
     color: #fff !important;
     display: flex !important;

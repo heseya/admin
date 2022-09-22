@@ -166,7 +166,7 @@ export default Vue.extend({
     height: 58px;
     object-fit: cover;
     border-radius: 4px;
-    background-color: #eeeeee;
+    background-color: var(--gray-color-300);
     text-indent: -10000px;
   }
 

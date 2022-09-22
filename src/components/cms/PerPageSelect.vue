@@ -63,6 +63,7 @@ export default Vue.extend({
 
     select {
       color: var(--font-color);
+      background-color: var(--white-color);
       box-shadow: $shadow;
       padding: 8px 6px;
       border: none;

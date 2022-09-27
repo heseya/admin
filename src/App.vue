@@ -19,6 +19,7 @@
     <Loading :relative="false" :active="isLoading" />
 
     <SwUpdatePopup />
+    <OfflineBanner />
   </div>
 </template>
 
@@ -44,6 +45,7 @@ import MobileNavigation from './components/root/MobileNavigation.vue'
 import AppHeader from './components/root/Header.vue'
 import Loading from './components/layout/Loading.vue'
 import SwUpdatePopup from './components/root/SwUpdatePopup.vue'
+import OfflineBanner from './components/root/OfflineBanner.vue'
 
 import { onTokensSync } from './utils/authSync'
 import { getApiURL } from './utils/api'
@@ -61,6 +63,7 @@ export default Vue.extend({
     AppHeader,
     Loading,
     SwUpdatePopup,
+    OfflineBanner,
   },
   computed: {
     isLoading(): boolean {

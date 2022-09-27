@@ -33,7 +33,7 @@
 import Vue from 'vue'
 export default Vue.extend({
   data: () => ({
-    isOffline: false,
+    isOffline: !window.navigator.onLine,
   }),
   created() {
     window.addEventListener('online', () => (this.isOffline = false))

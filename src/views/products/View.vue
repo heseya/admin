@@ -63,6 +63,7 @@
 
           <SeoForm
             v-model="form.seo"
+            class="product-page__seo-form"
             :disabled="!canModify"
             :current="!isNew ? { id, model: 'Product' } : null"
           />
@@ -383,6 +384,12 @@ export default mixins(preventLeavingPage).extend({
     font-size: 1.1em;
     margin: 0;
     font-weight: 600;
+  }
+
+  &__seo-form .seo-form {
+    @media ($viewport-14) {
+      width: 75%;
+    }
   }
 
   .card {

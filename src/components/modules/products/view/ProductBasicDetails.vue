@@ -136,7 +136,7 @@ export default Vue.extend({
   width: 100%;
 
   @media ($viewport-14) {
-    width: 70%;
+    width: 75%;
   }
 
   &__price-row {

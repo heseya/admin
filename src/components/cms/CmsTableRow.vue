@@ -25,7 +25,7 @@
         }"
       >
         <slot :name="key" v-bind="{ key, label, value, rawValue, item }">
-          <BooleanTag v-if="typeof value === 'boolean'" :value="value" />
+          <BooleanTag v-if="typeof value === 'boolean'" small :value="value" />
           <span v-else> {{ value }} </span>
         </slot>
       </span>

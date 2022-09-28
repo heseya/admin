@@ -1,8 +1,8 @@
 <template>
   <router-link class="product-box" :to="`/products/${product.id}`">
-    <avatar v-if="!product.visible" small class="product-box__icon">
-      <i class="bx bx-lock-alt"></i>
-    </avatar>
+    <tag v-if="!product.visible" small class="product-box__icon" type="error">
+      <i class="bx bx-low-vision"></i> {{ $t('common.hidden') }}
+    </tag>
     <div class="product-box__img">
       <media-element v-if="product.cover" :media="product.cover" :size="350" />
       <i v-else class="product-box__img-icon bx bx-image"></i>
@@ -28,12 +28,11 @@ import { Product } from '@heseya/store-core'
 
 import { formatCurrency } from '@/utils/currency'
 
-import Avatar from '@/components/layout/Avatar.vue'
 import MediaElement from '@/components/MediaElement.vue'
 import ProductPrice from './ProductPrice.vue'
 
 export default Vue.extend({
-  components: { Avatar, MediaElement, ProductPrice },
+  components: { MediaElement, ProductPrice },
   props: {
     product: {
       type: Object,

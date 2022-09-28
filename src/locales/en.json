@@ -19,6 +19,7 @@
     "edit": "Edit",
     "continue": "Continue",
     "reset": "Reset",
+    "hidden": "Hidden",
     "confirmLeave": "Do you really want to leave? You have unsaved changes!",
     "form": {
       "name": "Name",

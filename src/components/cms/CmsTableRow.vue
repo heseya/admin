@@ -3,9 +3,13 @@
     :is="component"
     :to="to"
     class="cms-table-row"
-    :class="{ 'cms-table-row--no-hover': noHover }"
+    :class="{ 'cms-table-row--no-hover': noHover, 'cms-table-row--draggable': draggable }"
     @click.stop="click"
   >
+    <icon-button class="cms-table-row__reorder reorder-handle" size="small" type="transparent">
+      <template #icon> <i class="bx bx-menu"></i> </template>
+    </icon-button>
+
     <div
       v-for="{ key, label, value, rawValue, wordBreak } in values"
       :key="key"
@@ -45,6 +49,10 @@ export default Vue.extend({
       default: 'button',
     },
     noHover: {
+      type: Boolean,
+      default: false,
+    },
+    draggable: {
       type: Boolean,
       default: false,
     },
@@ -91,7 +99,7 @@ export default Vue.extend({
   box-shadow: none;
   background-color: #fff;
   display: grid;
-  align-items: start;
+  align-items: center;
   width: 100%;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   cursor: pointer;
@@ -118,6 +126,25 @@ export default Vue.extend({
 
   &:hover {
     background-color: $primary-color-100;
+  }
+
+  &--draggable {
+    padding-left: 30px !important;
+    position: relative;
+  }
+
+  &--draggable &__reorder {
+    display: block;
+  }
+
+  &__reorder {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 8px;
+    cursor: move;
+    transform: translateY(-55%);
+    color: $gray-color-500;
   }
 
   &--no-hover {

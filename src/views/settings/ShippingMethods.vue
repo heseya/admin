@@ -15,6 +15,7 @@
           :key="method.id"
           :item="method"
           :headers="tableConfig.headers"
+          draggable
           @click="openModal(method.id)"
         >
           <template #countries="{ value }">

@@ -51,7 +51,8 @@ export const orders = createVuexCRUD<Order, OrderCreateDto, OrderUpdateDto>()('o
     async changeStatus({ commit }, { orderId, statusId }: { orderId: UUID; statusId: UUID }) {
       commit(StoreMutations.SetError, null)
       try {
-        await sdk.Orders.updateStatus(orderId, { status_id: statusId })
+        const order = await sdk.Orders.updateStatus(orderId, { status_id: statusId })
+        commit(StoreMutations.SetSelected, order)
         return true
       } catch (error: any) {
         commit(StoreMutations.SetError, error)

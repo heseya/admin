@@ -80,7 +80,7 @@ export default Vue.extend({
   }
 
   &--white .ant-collapse-item {
-    background-color: #fff;
+    background-color: var(--white-color);
   }
 }
 </style>

@@ -96,7 +96,7 @@ export default Vue.extend({
 
   all: unset;
   cursor: pointer;
-  color: $gray-color-500;
+  color: var(--gray-color-500);
   text-decoration: none;
   display: flex;
   justify-content: center;
@@ -110,8 +110,8 @@ export default Vue.extend({
   margin: 3px;
 
   &:hover {
-    background-color: $background-color-700;
-    color: $gray-color-500;
+    background-color: var(--background-color-700);
+    color: var(--gray-color-500);
   }
 
   &__icon {
@@ -122,7 +122,7 @@ export default Vue.extend({
     justify-content: center;
     align-items: center;
     transition: 0.3s;
-    background-color: $background-color-700;
+    background-color: var(--background-color-700);
     margin-left: $inner-margin;
     flex-shrink: 0;
 
@@ -180,93 +180,93 @@ export default Vue.extend({
   }
 
   &--primary {
-    color: $primary-color-500;
+    color: var(--primary-color-500);
 
     #{$root}__icon {
-      background-color: $primary-color-100;
+      background-color: var(--primary-color-100);
     }
 
     &:hover {
-      background-color: $primary-color-100;
-      color: $primary-color-500;
+      background-color: var(--primary-color-100);
+      color: var(--primary-color-500);
     }
   }
 
   &--transparent {
-    color: $font-color;
+    color: var(--font-color);
 
     #{$root}__icon {
-      background-color: #ffffff00;
+      background-color: $transparent;
     }
 
     &:hover {
-      background-color: $background-color-600;
-      color: $font-color;
+      background-color: var(--background-color-600);
+      color: var(--font-color);
     }
   }
 
   &--transparent-white {
-    color: #fff !important;
+    color: var(--white-color) !important;
 
     #{$root}__icon {
-      background-color: #ffffff00;
+      background-color: $transparent;
     }
 
     &:hover {
-      background-color: $background-color-600;
-      color: $font-color !important;
+      background-color: var(--background-color-600);
+      color: var(--font-color) !important;
     }
   }
 
   &--danger {
-    color: $red-color-500;
+    color: var(--red-color-500);
 
     #{$root}__icon {
-      background-color: $red-color-200;
+      background-color: var(--red-color-200);
     }
 
     &:hover {
-      background-color: $red-color-200;
-      color: $red-color-500;
+      background-color: var(--red-color-200);
+      color: var(--red-color-500);
     }
   }
 
   &--success {
-    color: $green-color-500;
+    color: var(--green-color-500);
 
     #{$root}__icon {
-      background-color: $green-color-200;
+      background-color: var(--green-color-200);
     }
 
     &:hover {
-      background-color: $green-color-200;
-      color: $green-color-500;
+      background-color: var(--green-color-200);
+      color: var(--green-color-500);
     }
   }
 
   &--black {
-    color: #ffffff;
+    color: var(--white-color);
 
     #{$root}__icon {
-      background-color: $font-color;
+      background-color: var(--font-color);
     }
 
     &:hover {
-      background-color: $font-color;
-      color: #ffffff;
+      background-color: var(--font-color);
+      color: var(--white-color);
     }
   }
 
   &--burgund {
-    color: #ffffff;
+    color: var(--white-color);
 
     #{$root}__icon {
-      background-color: $primary-color-500;
+      background-color: var(--primary-color-500);
     }
 
     &:hover {
-      background-color: $primary-color-500;
-      color: #ffffff;
+      background-color: var(--primary-color-500);
+      color: var(--white-color);
     }
   }
 }

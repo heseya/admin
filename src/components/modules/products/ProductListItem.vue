@@ -161,7 +161,7 @@ export default Vue.extend({
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 2em;
-    color: #999999;
+    color: var(--gray-color-500);
 
     &::after {
       content: '';

@@ -63,7 +63,7 @@ export default Vue.extend({
 
   &__subtitle {
     font-size: 0.8em;
-    color: $gray-color-500;
+    color: var(--gray-color-500);
     margin-top: 4px;
     margin-bottom: -4px;
     height: 30px;

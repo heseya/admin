@@ -109,7 +109,7 @@ export default Vue.extend({
     max-width: 100%;
 
     &:hover {
-      background-color: $primary-color-500;
+      background-color: var(--primary-color-500);
     }
   }
 

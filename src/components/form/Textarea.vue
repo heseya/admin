@@ -37,14 +37,14 @@ export default Vue.extend({
   &__label {
     display: block;
     font-size: 0.8em;
-    color: #7b8589;
+    color: var(--gray-color-600);
     margin-bottom: 2px;
   }
 
   &__input {
     width: 100%;
-    background-color: #fff;
-    border: solid 1px #d9d9d9;
+    background-color: var(--white-color);
+    border: solid 1px var(--gray-color-300);
     border-radius: 4px;
     box-sizing: border-box;
     padding: 7px 13px;

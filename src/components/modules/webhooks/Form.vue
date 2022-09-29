@@ -225,7 +225,7 @@ export default Vue.extend({
   }
 
   .bx {
-    color: $primary-color-300;
+    color: var(--primary-color-300);
   }
 }
 </style>

@@ -201,7 +201,7 @@ export default Vue.extend({
     padding: 10px;
     width: $navWidth;
     font-size: 0.7em;
-    color: #bec1c7;
+    color: var(--gray-color-400);
 
     &--center {
       text-align: center;

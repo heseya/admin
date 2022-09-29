@@ -206,7 +206,7 @@ export default Vue.extend({
     border-radius: 4px;
 
     &:hover {
-      background: $background-color-500;
+      background: var(--background-color-500);
     }
 
     > *:not(:last-child) {

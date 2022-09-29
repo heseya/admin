@@ -99,7 +99,7 @@ export default Vue.extend({
     padding: 2px;
     pointer-events: none;
     border-left-width: 0;
-    background-color: #fff;
+    background-color: var(--white-color);
   }
 
   &__addon {
@@ -108,7 +108,7 @@ export default Vue.extend({
     font-size: 0.6em;
 
     &::placeholder {
-      color: $font-color !important;
+      color: var(--font-color) !important;
     }
   }
 }

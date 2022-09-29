@@ -288,7 +288,7 @@ export default Vue.extend({
 
   &__orders {
     font-size: 0.9rem;
-    color: #aaaaaa;
+    color: var(--gray-color-400);
   }
 }
 

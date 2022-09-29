@@ -3,7 +3,6 @@ import VueMeta from 'vue-meta'
 import AntDesign from 'ant-design-vue'
 import VueToast from 'vue-toast-notification'
 
-// @ts-ignore
 import App from './App.vue'
 import router from './router'
 import store from './store'

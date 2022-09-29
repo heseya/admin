@@ -68,8 +68,8 @@ export default Vue.extend({
   }
 
   &__badge {
-    background-color: $green-color-500;
-    color: #ffffff;
+    background-color: var(--green-color-500);
+    color: var(--white-color);
     font-size: 0.8rem;
     line-height: 0.7rem;
     font-weight: 300;

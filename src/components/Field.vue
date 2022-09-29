@@ -47,7 +47,7 @@ export default Vue.extend({
   &__label {
     display: flex;
     align-items: center;
-    color: $gray-color-500;
+    color: var(--gray-color-500);
     font-size: 0.9em;
 
     .icon-button {

@@ -184,7 +184,8 @@ $item-size: 160px;
   border-radius: 16px;
 
   &:hover {
-    background-color: rgba($background-color-700, 0.4);
+    // background-color: rgba(var(--background-color-700), 0.4);
+    background-color: var(--background-color-500);
   }
 
   &__content {
@@ -216,7 +217,7 @@ $item-size: 160px;
     display: flex;
     justify-content: center;
     align-items: center;
-    color: $gray-color-500;
+    color: var(--gray-color-500);
   }
 
   &__buttons {
@@ -234,7 +235,7 @@ $item-size: 160px;
   width: 100%;
   padding-top: 100%;
   margin-bottom: 4px;
-  background-color: #ffffff;
+  background-color: var(--white-color);
   box-shadow: $shadow;
   border-radius: 7px;
 
@@ -245,7 +246,7 @@ $item-size: 160px;
     height: 100%;
     width: 100%;
     object-fit: cover;
-    background-color: #ffffff;
+    background-color: var(--white-color);
     border-radius: 7px;
     overflow: hidden;
   }
@@ -276,8 +277,8 @@ $item-size: 160px;
     left: 4px;
     bottom: 4px;
     width: calc(100% - 8px);
-    color: #fff;
-    text-shadow: 0px 0px 8px $font-color;
+    color: var(--white-color);
+    text-shadow: 0px 0px 8px var(--font-color);
 
     :deep(.app-input) {
       margin-bottom: 0;

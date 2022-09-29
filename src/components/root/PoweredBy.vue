@@ -34,7 +34,7 @@ export default Vue.extend({})
     font-size: 0.8em;
     font-weight: 300;
     letter-spacing: -0.24px;
-    color: #bec1c7;
+    color: var(--gray-color-400);
     margin-right: 10px;
   }
 

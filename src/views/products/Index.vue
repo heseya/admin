@@ -202,7 +202,7 @@ export default Vue.extend({
   &--grid-view {
     .paginated-list__content {
       padding: 0;
-      background-color: #ffffff00;
+      background-color: $transparent;
       box-shadow: none;
       border: none;
     }

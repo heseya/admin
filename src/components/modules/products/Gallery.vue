@@ -133,7 +133,7 @@ export default Vue.extend({
 
   &__info-text {
     display: block;
-    color: $gray-color-600;
+    color: var(--gray-color-600);
     text-align: center;
     font-size: 0.8em;
     letter-spacing: 0.55px;
@@ -150,7 +150,7 @@ export default Vue.extend({
     position: relative;
     width: 100%;
     padding-top: 100%;
-    background-color: #ffffff;
+    background-color: var(--white-color);
     box-shadow: $shadow;
     border-radius: 4px;
     cursor: move;
@@ -162,7 +162,7 @@ export default Vue.extend({
       height: 100%;
       width: 100%;
       object-fit: cover;
-      background-color: #ffffff;
+      background-color: var(--white-color);
       border-radius: 4px;
       overflow: hidden;
     }

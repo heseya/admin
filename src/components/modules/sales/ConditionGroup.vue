@@ -98,7 +98,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .condition-group {
-  background-color: #f7f7f8;
+  background-color: var(--background-color-500);
   border-radius: 4px;
   padding: 8px;
   transition: 0.3s;

@@ -67,7 +67,7 @@ export default Vue.extend({
 
   &__subtitle {
     display: block;
-    color: $gray-color-500;
+    color: var(--gray-color-600);
   }
 
   &__buttons {

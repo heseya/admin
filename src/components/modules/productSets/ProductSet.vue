@@ -321,11 +321,11 @@ export default Vue.extend({
   display: flex;
   padding: 6px 8px;
   padding-right: 0;
-  border-bottom: solid 1px $background-color-700;
+  border-bottom: solid 1px var(--background-color-700);
   transition: 0.3s;
 
   &--searched {
-    background-color: $green-color-200;
+    background-color: var(--green-color-200);
   }
 
   &__search {
@@ -336,7 +336,7 @@ export default Vue.extend({
 
   &.sortable-chosen,
   &:hover {
-    background-color: $background-color-500;
+    background-color: var(--background-color-500);
   }
 
   &__hidden-icon {
@@ -352,7 +352,7 @@ export default Vue.extend({
   }
 
   &__line {
-    background-color: #f7eff0;
+    background-color: var(--primary-color-100);
     border-radius: 20px;
     width: 4px;
     height: calc(100% - 30px);
@@ -375,7 +375,7 @@ export default Vue.extend({
 
     small {
       font-weight: 400;
-      color: $gray-color-500;
+      color: var(--gray-color-500);
       margin-left: 5px;
     }
   }
@@ -393,7 +393,7 @@ export default Vue.extend({
   &__public {
     border-radius: 25px;
     padding: 0.2em 1em;
-    color: $gray-color-500;
+    color: var(--gray-color-500);
     display: flex;
     font-size: 11px;
     align-items: center;
@@ -401,8 +401,8 @@ export default Vue.extend({
     margin: auto 0;
 
     &--visible {
-      background: #e6fbe6 0% 0% no-repeat padding-box;
-      color: #10d310;
+      background: var(--green-color-100) 0% 0% no-repeat padding-box;
+      color: var(--green-color-500);
     }
   }
 

@@ -143,7 +143,7 @@ export default Vue.extend({
     top: 102vh;
     width: 100%;
     height: 100%;
-    background-color: #ffffff;
+    background-color: var(--white-color);
     padding: 80px 32px 16px;
     z-index: $mobile-filters-z-index;
     transition: 0.3s;
@@ -180,13 +180,13 @@ export default Vue.extend({
     display: flex;
     justify-content: center;
     align-items: center;
-    border-left: 1px solid $background-color-600;
+    border-left: 1px solid var(--background-color-600);
     padding: 4px;
     transition: 0.3s;
     font-size: 1.4em;
 
     &:hover {
-      background-color: $background-color-600;
+      background-color: var(--background-color-600);
     }
   }
 
@@ -211,8 +211,8 @@ export default Vue.extend({
     height: 37px;
     padding: 0;
     border-radius: 50%;
-    color: #979ea0;
-    background-color: $background-color-700;
+    color: var(--gray-color-500);
+    background-color: var(--background-color-700);
   }
 
   &--expanded &__content {

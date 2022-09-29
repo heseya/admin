@@ -101,13 +101,13 @@ export default Vue.extend({
   &__show-more {
     font-size: 0.7rem;
     background-color: transparent;
-    border: 1px solid var(--bg-color, #000000);
-    color: var(--bg-color, #000000);
+    border: 1px solid var(--bg-color, var(--black-color));
+    color: var(--bg-color, var(--black-color));
     padding-block: 3px;
 
     &:hover {
-      color: $primary-color-500;
-      border-color: $primary-color-500;
+      color: var(--primary-color-500);
+      border-color: var(--primary-color-500);
     }
   }
 }

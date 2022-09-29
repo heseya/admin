@@ -49,7 +49,7 @@ export default Vue.extend({
   align-items: center;
 
   .bxs-check-circle {
-    color: $green-color-500;
+    color: var(--green-color-500);
   }
 }
 </style>

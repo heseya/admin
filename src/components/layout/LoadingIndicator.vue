@@ -3,7 +3,7 @@
 </template>
 
 <style lang="scss" scoped>
-$loader-color: $font-color;
+$loader-color: var(--font-color);
 
 .loader {
   color: $loader-color;

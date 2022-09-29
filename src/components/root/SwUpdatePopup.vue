@@ -69,7 +69,7 @@ export default Vue.extend({
   width: 100%;
   max-width: calc(100vw - 40px);
   padding: 8px;
-  background-color: $primary-color-500;
+  background-color: var(--primary-color-500);
   color: white;
   display: flex;
   flex-direction: column;

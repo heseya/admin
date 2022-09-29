@@ -123,7 +123,7 @@ input[type='color'] {
   &__thumbnail {
     position: relative;
     border-radius: 8px;
-    background-color: #ffffff;
+    background-color: var(--white-color);
     overflow: hidden;
     margin-bottom: 4px;
     box-shadow: $shadow;
@@ -141,7 +141,7 @@ input[type='color'] {
     }
 
     &--value {
-      color: $primary-color-300;
+      color: var(--primary-color-300);
     }
   }
 

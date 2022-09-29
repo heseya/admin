@@ -152,7 +152,7 @@ export default Vue.extend({
   }
 
   &__list {
-    border: 1px solid $background-color-700;
+    border: 1px solid var(--background-color-700);
     border-radius: 8px;
     max-height: 100%;
   }
@@ -161,12 +161,12 @@ export default Vue.extend({
 .user-item {
   display: flex;
   align-items: center;
-  border-bottom: 1px solid $background-color-700;
+  border-bottom: 1px solid var(--background-color-700);
   padding: 8px;
   transition: background-color 0.3s;
 
   &:hover {
-    background-color: $primary-color-100;
+    background-color: var(--primary-color-100);
   }
 
   &:last-child {

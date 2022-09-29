@@ -173,12 +173,12 @@ export default Vue.extend({
 .sale-item {
   padding: 6px;
   border-radius: 8px;
-  border: 1px solid $background-color-700;
+  border: 1px solid var(--background-color-700);
   transition: 0.3s;
   position: relative;
 
   &__name :deep(.field__label) {
-    color: $font-color;
+    color: var(--font-color);
     font-size: 1rem;
     font-weight: 500;
   }
@@ -187,7 +187,7 @@ export default Vue.extend({
     position: absolute;
     top: 6px;
     right: 6px;
-    color: $gray-color-500;
+    color: var(--gray-color-500);
     z-index: 10;
   }
 

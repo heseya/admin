@@ -30,6 +30,10 @@
   }
 }
 
+.ant-collapse-borderless {
+  background-color: var(--background-color-600) !important;
+}
+
 .ant-modal {
   .ant-modal-content {
     border-radius: 7px !important;

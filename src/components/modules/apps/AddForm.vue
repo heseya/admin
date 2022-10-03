@@ -250,13 +250,13 @@ export default Vue.extend({
     },
 
     isPermUnauthenticated(perm: AppInternalPermission) {
-      return !!this.form.public_app_permissions.find((p) => p === perm.name) ?? false
+      return !!this.form.public_app_permissions?.find((p) => p === perm.name) ?? false
     },
     changeIsPermUnauthenticated(perm: AppInternalPermission, value: boolean) {
       if (value) {
-        this.form.public_app_permissions.push(perm.name)
+        this.form.public_app_permissions?.push(perm.name)
       } else {
-        this.form.public_app_permissions = this.form.public_app_permissions.filter(
+        this.form.public_app_permissions = this.form.public_app_permissions?.filter(
           (p) => p !== perm.name,
         )
       }

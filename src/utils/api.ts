@@ -31,11 +31,11 @@ export const getApiURL = () => {
     case 'admin.***REMOVED***.pl':
       return 'https://api.***REMOVED***.pl'
     case '***REMOVED***-admin.heseya.pl':
-      return 'https://sandbox-***REMOVED***.***REMOVED***/'
+      return 'https://sandbox-***REMOVED***.***REMOVED***'
     case 'flowy.demo.heseya.pl':
-      return 'https://demo-flowy.***REMOVED***/'
+      return 'https://demo-flowy.***REMOVED***'
     case '***REMOVED***.demo.heseya.pl':
-      return 'https://demo-***REMOVED***.***REMOVED***/'
+      return 'https://demo-***REMOVED***.***REMOVED***'
     default:
       return (process.env.VUE_APP_API_URL as string) || '***REMOVED***'
   }

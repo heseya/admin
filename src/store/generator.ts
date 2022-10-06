@@ -333,7 +333,6 @@ export const createVuexCRUD =
         // Audits
         async fetchAudits({ commit }, id: UUID) {
           commit(StoreMutations.SetError, null)
-          commit(StoreMutations.SetLoading, true)
           try {
             const stringQuery = stringifyQuery(queryParams.get || {})
             const { data } = await api.get<{ data: EntityAudits<Item>[] }>(
@@ -343,7 +342,6 @@ export const createVuexCRUD =
             return data.data
           } catch (error: any) {
             commit(StoreMutations.SetError, error)
-            commit(StoreMutations.SetLoading, false)
             return []
           }
         },

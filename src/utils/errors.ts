@@ -40,19 +40,25 @@ export const formatApiError = (error: ApiError) => {
     return { title: i18n.t('errors.SERVER_ERROR.INTERNAL_SERVER_ERROR') as string, messages: [] }
   }
 
+  const fallbackMessage = i18n.t(`errors.${errorType}.${responseData?.key}`) as string
+
   const messages = !isEmpty(responseData?.errors)
-    ? Object.entries(responseData?.errors!).map(([key, value]) => {
-        const fieldName = i18n.te(`common.form.${key}`) ? i18n.t(`common.form.${key}`) : key
-        const errorKey = value[0].key
-        return fieldName + ': ' + i18n.t(`errors.${errorType}.${errorKey}`, value[0])
-      })
-    : [i18n.t(`errors.${errorType}.${responseData?.key}`) as string]
+    ? Object.entries(responseData?.errors!)
+        .map(([key, value]) => {
+          const fieldName = i18n.te(`common.form.${key}`) ? i18n.t(`common.form.${key}`) : key
+          const errorKey = value[0].key
+          return errorKey
+            ? fieldName + ': ' + i18n.t(`errors.${errorType}.${errorKey}`, value[0])
+            : ''
+        })
+        .filter(Boolean)
+    : [fallbackMessage]
 
   return {
     title: i18n.te(`errors.ERROR_TYPES.${errorType}`)
       ? (i18n.t(`errors.ERROR_TYPES.${errorType}`) as string)
       : (i18n.t(`errors.SERVER_ERROR.INTERNAL_SERVER_ERROR`) as string),
-    messages: messages,
+    messages: messages.length ? messages : [fallbackMessage],
   }
 }
 

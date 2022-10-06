@@ -175,6 +175,7 @@
       "VALIDATION_ENUM_VALUE": "The field value must be one of the value provided by Enum.",
       "VALIDATION_REQUIRED_WITH_ALL": "The field value must be present and cannot be empty if the other specified fields are present and not empty.",
       "VALIDATION_GTE": "The field value must be greater than or equal to the value of field {field}.",
+      "VALIDATION_APP_UNIQUE_ID": "App with given url is already installed.",
       "INTERNAL_SERVER_ERROR": "Internal server error"
     },
     "CLIENT_ERROR": {
@@ -186,8 +187,8 @@
       "CLIENT_FAILED_TO_UNINSTALL_APP": "Failed to uninstall the application. Failed response from app.",
       "CLIENT_ASSIGN_INVALID_PERMISSIONS": "Assigning invalid permissions, there is no difference between all possible permissions and assigned ones.",
       "CLIENT_ADD_APP_WITH_PERMISSIONS_USER_DONT_HAVE": "Can't add an app with permissions you don't have.",
-      "CLIENT_APP_RESPONDED_WITH_INVALID_CODE": "Application info responded with invalid status code.",
-      "CLIENT_APP_RESPONDED_WITH_INVALID_INFO": "App responded with invalid info.",
+      "CLIENT_APP_INSTALLATION_RESPONDED_WITH_INVALID_CODE": "Application info responded with invalid status code.",
+      "CLIENT_APP_INSTALLATION_RESPONDED_WITH_INVALID_INFO": "App responded with invalid info.",
       "CLIENT_APP_WANTS_INVALID_PERMISSIONS": "App wants invalid permissions.",
       "CLIENT_ADD_APP_WITHOUT_REQUIRED_PERMISSIONS": "Can't add app without all required permissions.",
       "CLIENT_ADD_PERMISSION_APP_DOESNT_WANT": "Can't add any permissions application doesn't want.",

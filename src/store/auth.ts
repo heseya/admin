@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 import { User, UserProfileUpdateDto, PERMISSIONS_TREE } from '@heseya/store-core'
-import { api } from '../api'
+import { sdk } from '../api'
 
 import { UUID } from '@/interfaces/UUID'
 import { hasAccess } from '@/utils/hasAccess'
@@ -10,13 +10,6 @@ import { broadcastTokensUpdate } from '@/utils/authSync'
 import { LoginState } from '@/enums/login'
 import { AxiosResponse } from 'axios'
 import { TwoFactorAuthMethod } from '@/enums/twoFactorAuth'
-
-export interface AuthResponse {
-  user: User
-  token: string
-  identity_token: string
-  refresh_token: string
-}
 
 interface ILoginRequest {
   email: string
@@ -91,24 +84,12 @@ const actions = actionTree(
     async login({ commit, dispatch }, { email, password, code }: ILoginRequest) {
       commit('SET_ERROR', null)
       try {
-        const {
-          data: { data },
-        } = await api.post<{ data: AuthResponse }>('/login', {
-          email,
-          password,
-          code,
-        })
+        const { user, ...tokens } = await sdk.Auth.login(email, password, code)
 
-        if (!hasAccess(PERMISSIONS_TREE.Admin.Login)(data.user.permissions))
+        if (!hasAccess(PERMISSIONS_TREE.Admin.Login)(user.permissions))
           throw new Error('Nie masz uprawnień, by zalogować się do panelu administracyjnego')
 
-        commit('SET_USER', data.user)
-
-        const tokens = {
-          accessToken: data.token,
-          identityToken: data.identity_token,
-          refreshToken: data.refresh_token,
-        }
+        commit('SET_USER', user)
         broadcastTokensUpdate(tokens)
         dispatch('setTokens', tokens)
 
@@ -117,7 +98,7 @@ const actions = actionTree(
 
         return {
           state: LoginState.Success,
-          user: data.user,
+          user,
         } as const
       } catch (e: any) {
         const response: AxiosResponse = e.response
@@ -141,24 +122,17 @@ const actions = actionTree(
       try {
         if (!get.getRefreshToken) throw new Error('Refresh Token does not exist')
 
-        const {
-          data: { data },
-        } = await api.post<{ data: AuthResponse }>('/auth/refresh', {
-          refresh_token: get.getRefreshToken,
-        })
+        const { user, ...tokens } = await sdk.Auth.refreshToken(get.getRefreshToken)
+        const { accessToken, identityToken } = tokens
 
-        const tokens = {
-          accessToken: data.token,
-          identityToken: data.identity_token,
-          refreshToken: data.refresh_token,
-        }
+        commit('SET_USER', user)
         broadcastTokensUpdate(tokens)
         dispatch('setTokens', tokens)
 
         return {
           success: true as const,
-          accessToken: data.token,
-          identityToken: data.identity_token,
+          accessToken,
+          identityToken,
         }
       } catch (e: any) {
         commit('SET_ERROR', e)
@@ -166,7 +140,14 @@ const actions = actionTree(
       }
     },
 
-    setTokens({ commit }, { accessToken, identityToken, refreshToken }) {
+    setTokens(
+      { commit },
+      {
+        accessToken,
+        identityToken,
+        refreshToken,
+      }: { accessToken: string | null; identityToken: string | null; refreshToken: string | null },
+    ) {
       commit('SET_ACCESS_TOKEN', accessToken)
       commit('SET_IDENTITY_TOKEN', identityToken)
       commit('SET_REFRESH_TOKEN', refreshToken)
@@ -175,9 +156,8 @@ const actions = actionTree(
     async fetchProfile({ commit }) {
       commit('SET_ERROR', null)
       try {
-        const { data } = await api.get<{ data: User }>(`/auth/profile`)
-
-        commit('SET_USER', data.data)
+        const profile = await sdk.UserProfile.get()
+        commit('SET_USER', profile as User)
       } catch (e: any) {
         commit('SET_ERROR', e)
       }
@@ -186,11 +166,8 @@ const actions = actionTree(
     async updateUserProfile({ commit }, { name, preferences }: UserProfileUpdateDto) {
       commit('SET_ERROR', null)
       try {
-        const { data } = await api.patch<{ data: User }>('/auth/profile', {
-          name,
-          preferences,
-        })
-        commit('SET_USER_PROFILE', data.data)
+        const profile = await sdk.UserProfile.update({ name, preferences })
+        commit('SET_USER_PROFILE', profile)
       } catch (e: any) {
         commit('SET_ERROR', e)
       }
@@ -200,17 +177,13 @@ const actions = actionTree(
       _u,
       { oldPassword, newPassword }: { oldPassword: string; newPassword: string },
     ) {
-      return api.put('users/password', {
-        password: oldPassword,
-        password_new: newPassword,
-        password_confirmation: newPassword,
-      })
+      return sdk.UserProfile.changePassword({ currentPassword: oldPassword, newPassword })
     },
 
     async logout({ commit, dispatch }) {
       accessor.startLoading()
       try {
-        await api.post('/auth/logout')
+        await sdk.Auth.logout()
       } catch (e: any) {
         commit('SET_ERROR', e)
       } finally {
@@ -241,7 +214,7 @@ const actions = actionTree(
     ) {
       commit('SET_ERROR', null)
       try {
-        await api.post('/users/reset-password', { email, redirect_url: redirectUrl })
+        await sdk.Auth.requestResetPassword(email, redirectUrl)
         return true
       } catch (e: any) {
         commit('SET_ERROR', e)
@@ -251,7 +224,7 @@ const actions = actionTree(
     async resetPassword({ commit }, payload: { token: string; email: string; password: string }) {
       commit('SET_ERROR', null)
       try {
-        await api.put('/users/save-reset-password', payload)
+        await sdk.Auth.resetPassword(payload)
         return true
       } catch (e: any) {
         commit('SET_ERROR', e)

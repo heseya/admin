@@ -1,6 +1,6 @@
-import { BaseItem } from '@/store/generator'
+import { VuexBaseItem } from './VuexGenerator'
 
-export interface TableHeader<Item extends BaseItem = any> {
+export interface TableHeader<Item extends VuexBaseItem = any> {
   key: string
   label: string
   width?: string
@@ -17,7 +17,7 @@ export interface TableValue {
   wordBreak: 'break-all' | 'break-word' | 'none'
 }
 
-export interface TableConfig<Item extends BaseItem = BaseItem> {
+export interface TableConfig<Item extends VuexBaseItem = VuexBaseItem> {
   headers: TableHeader<Item>[]
   rowOnClick?: (item: Item) => void
   rowUrlBuilder?: (item: Item) => string

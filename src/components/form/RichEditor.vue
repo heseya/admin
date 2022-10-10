@@ -38,13 +38,16 @@ export default Vue.extend({
   },
 
   computed: {
+    canUpload(): boolean {
+      return this.$can(this.$p.Media.Add)
+    },
+
     editorConfig(): any {
       return {
         css: '/article-editor/css/',
         plugins: [
           'imageposition',
-          // TODO: plugin below throw errors when unmounted
-          // 'imageresize',
+          'imageresize',
           'underline',
           'removeformat',
           'reorder',
@@ -54,10 +57,10 @@ export default Vue.extend({
           nofollow: true,
         },
         image: {
-          upload: this.uploadFileToArticle,
+          upload: this.canUpload ? this.uploadFileToArticle : false,
         },
         filelink: {
-          upload: this.uploadFileToArticle,
+          upload: this.canUpload ? this.uploadFileToArticle : false,
         },
       }
     },

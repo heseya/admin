@@ -64,7 +64,8 @@
     "apps": "Apps",
     "webhooks": "Webhooks",
     "banners": "Banners",
-    "attributes": "Attributes"
+    "attributes": "Attributes",
+    "media": "Media"
   },
   "attributeTypes": {
     "single-option": "Text single choice",
@@ -121,6 +122,14 @@
     "timeBefore": "The end time must be before the start time",
     "couponCode": "The coupon code can only consist of letters, numbers, dashes and underscores (_)"
   },
+
+  "mediaTypes": {
+    "photo": "Photo",
+    "video": "Video",
+    "document": "Document",
+    "other": "Other"
+  },
+
   "errors": {
     "ERROR_TYPES": {
       "VALIDATION_ERROR": "Validation error",

@@ -138,7 +138,7 @@ export default Vue.extend({
   },
   methods: {
     formatCurrency(amount: number) {
-      return formatCurrency(amount, this.$accessor.currency)
+      return formatCurrency(amount, this.$accessor.config.currency)
     },
     updateWidth(): void {
       this.viewportWidth = window.innerWidth

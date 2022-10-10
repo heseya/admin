@@ -204,7 +204,7 @@ export default Vue.extend({
 
 <style lang="scss">
 .condition-form {
-  border: solid 1px #d9dbe0;
+  border: solid 1px var(--gray-color-300);
   background-color: white;
   border-radius: 4px;
   padding: 8px;

@@ -69,11 +69,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { AttributeOption, AttributeType, AttributeOptionDto } from '@heseya/store-core'
+import { AttributeType, AttributeOptionDto } from '@heseya/store-core'
 
 import { formatApiNotificationError } from '@/utils/errors'
-
-type AddOptionResult = { success: true; option: AttributeOption } | { success: false; error: any }
 
 export default Vue.extend({
   props: {
@@ -121,16 +119,14 @@ export default Vue.extend({
 
       try {
         if (this.editedOption.id) {
-          // @ts-ignore // TODO: fix extended store actions typings
-          const result: AddOptionResult = await this.$accessor.attributes.updateOption({
+          const result = await this.$accessor.attributes.updateOption({
             attributeId: this.attributeId,
             optionId: this.editedOption.id,
             option: this.editedOption,
           })
           if (!result.success) throw result.error
         } else {
-          // @ts-ignore // TODO: fix extended store actions typings
-          const result: AddOptionResult = await this.$accessor.attributes.addOption({
+          const result = await this.$accessor.attributes.addOption({
             attributeId: this.attributeId,
             option: this.editedOption,
           })

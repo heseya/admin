@@ -239,10 +239,10 @@ export default Vue.extend({
 
   .drag-icon {
     cursor: move;
-    color: #bbbbbb;
+    color: var(--gray-color-400);
 
     &--disabled {
-      color: #dddddd;
+      color: var(--gray-color-300);
       cursor: not-allowed;
     }
   }

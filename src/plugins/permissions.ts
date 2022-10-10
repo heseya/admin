@@ -1,8 +1,9 @@
 import Vue from 'vue'
 
 import { accessor } from '@/store'
-import { Permission, PERMISSIONS_TREE } from '@heseya/store-core'
 import { hasAccess } from '@/utils/hasAccess'
+import { PERMISSIONS_TREE } from '@/consts/permissions'
+import { Permission } from '@/interfaces/Permissions'
 
 export const hasUserAccess = (required: Permission | Permission[], anyOfRequired = false) => {
   const userPermissions = accessor.auth.user?.permissions || []

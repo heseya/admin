@@ -43,7 +43,7 @@
     <range-input
       :value="{ min: local['price.min'], max: local['price.max'] }"
       :label="$t('price')"
-      :addon-after="$accessor.currency"
+      :addon-after="$accessor.config.currency"
       min="0"
       @input="
         (v) => {
@@ -106,7 +106,7 @@ import { ALL_FILTER_VALUE } from '@/consts/filters'
 import AttributeFilterInput from './AttributeFilterInput.vue'
 import BooleanSelect from '@/components/form/BooleanSelect.vue'
 
-import { api } from '@/api'
+import { sdk } from '@/api'
 import { formatApiNotificationError } from '@/utils/errors'
 
 import RangeInput from '@/components/form/RangeInput.vue'
@@ -178,8 +178,7 @@ export default Vue.extend({
 
     async fetchCustomFilters() {
       try {
-        const { data } = await api.get<{ data: Attribute[] }>('/filters')
-        this.customFilters = data.data
+        this.customFilters = await sdk.Products.getFilters()
       } catch (error: any) {
         this.$toast.error(formatApiNotificationError(error))
       }

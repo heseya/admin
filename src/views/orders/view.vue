@@ -78,7 +78,7 @@ import OrderDocuments from '@/components/modules/orders/documents/OrderDocuments
 
 export default Vue.extend({
   metaInfo(this: any): any {
-    return { title: `${this.$t('title')} ${this.order?.code}` }
+    return { title: `${this.$t('title')} ${this.order?.code || ''}` }
   },
   components: {
     TopNav,
@@ -107,7 +107,7 @@ export default Vue.extend({
       return this.$accessor.orders.getSelected || ({} as any)
     },
     storefrontPaymentUrl(): string | undefined {
-      return this.$accessor.env.storefront_payment_url || undefined
+      return this.$accessor.config.env.storefront_payment_url || undefined
     },
   },
   watch: {
@@ -140,10 +140,11 @@ export default Vue.extend({
   grid-template-columns: 1fr;
   grid-template-areas: 'summary' 'status' 'cart' 'address' 'documents' 'shipping' 'metadata';
   grid-gap: 16px;
+  align-items: start;
 
   @media ($viewport-10) {
     grid-template-columns: 2fr 1fr;
-    grid-template-areas: 'summary status' 'cart address' 'cart shipping' 'cart documents' 'cart metadata';
+    grid-template-areas: 'summary status' 'cart address' 'cart shipping' 'cart documents' 'cart metadata' 'cart .';
   }
 
   .card {
@@ -182,6 +183,6 @@ export default Vue.extend({
 .order-title {
   display: block;
   font-size: 1em;
-  color: $gray-color-500;
+  color: var(--gray-color-500);
 }
 </style>

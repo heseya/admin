@@ -9,7 +9,7 @@
       @drag-change="(v) => (isDrag = v)"
     >
       <template v-if="image">
-        <img class="media-upload-input__img" :src="image.url" role="presentation" />
+        <media-element :media="image" class="media-upload-input__media" />
 
         <AppButton
           type="danger"
@@ -25,7 +25,7 @@
           :disabled="disabled"
           :media="image"
           placement="top"
-          @update="updateMedia"
+          @updated="updateMedia"
         />
       </template>
       <template v-else>
@@ -65,9 +65,10 @@ import { CdnMedia } from '@heseya/store-core'
 
 import MediaEditForm from '@/components/modules/media/MediaEditForm.vue'
 import MediaUploader from '@/components/modules/media/MediaUploader.vue'
+import MediaElement from '@/components/MediaElement.vue'
 
 export default Vue.extend({
-  components: { MediaUploader, MediaEditForm },
+  components: { MediaUploader, MediaEditForm, MediaElement },
   props: {
     image: {
       type: Object,
@@ -120,28 +121,30 @@ export default Vue.extend({
   align-items: center;
   flex-direction: column;
   padding: 16px;
-  border: 1px dashed #ddd;
+  border: 1px dashed var(--gray-color-300);
   position: relative;
-  background-color: #f7f7f8;
+  background-color: var(--background-color-500);
   border-radius: 4px;
   height: 100%;
   transition: 0.3s;
 
-  &__img {
+  &__media {
     display: block;
+    width: 100%;
     max-width: 100%;
     max-height: 100%;
+    z-index: 1;
   }
 
   &--image {
-    background-color: #eee;
+    background-color: var(--gray-color-300);
     cursor: default;
   }
 
   &__title {
     display: block;
     margin: 12px 0;
-    color: #979ea0;
+    color: var(--gray-color-400);
     font-size: 11px;
     text-align: center;
   }
@@ -149,6 +152,7 @@ export default Vue.extend({
   &__delete,
   &__edit-img {
     position: absolute;
+    z-index: 10;
     opacity: 0;
     visibility: hidden;
     transition: 0.3s;
@@ -173,7 +177,7 @@ export default Vue.extend({
     height: 68px;
     border-radius: 50%;
     border: none;
-    background-color: #fff;
+    background-color: var(--white-color);
     cursor: pointer;
     transition: 0.3s;
   }

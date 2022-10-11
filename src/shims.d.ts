@@ -21,3 +21,11 @@ declare module 'axios' {
     _retried?: boolean
   }
 }
+
+declare module '*.vue' {
+  import Vue from 'vue'
+  export default Vue
+}
+
+declare module 'vue-xlsx'
+declare module 'vue-json-pretty'

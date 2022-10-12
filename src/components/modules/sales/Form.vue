@@ -227,7 +227,7 @@ export default Vue.extend({
     font-size: 1.25rem;
   }
   .ant-switch-checked {
-    background-color: #10ce85;
+    background-color: var(--green-color-500);
   }
 
   &__fields {

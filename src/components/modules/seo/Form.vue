@@ -120,7 +120,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { SeoMetadata, SeoMetadataDto, TwitterCardType, CdnMedia } from '@heseya/store-core'
+import {
+  SeoMetadata,
+  SeoMetadataDto,
+  TwitterCardType,
+  CdnMedia,
+  SeoCheckModelType,
+} from '@heseya/store-core'
 
 import ModalForm from '@/components/form/ModalForm.vue'
 import MediaUploadInput from '@/components/modules/media/MediaUploadInput.vue'
@@ -137,8 +143,6 @@ export const CLEAR_SEO_FORM: SeoMeta = {
   og_image_id: undefined,
   no_index: false,
 }
-
-type ModelType = 'Product' | 'ProductSet' | 'Page'
 
 export default Vue.extend({
   components: {
@@ -161,13 +165,13 @@ export default Vue.extend({
     current: {
       type: Object,
       default: null,
-    } as Vue.PropOptions<{ id: UUID; model: ModelType }>,
+    } as Vue.PropOptions<{ id: UUID; model: SeoCheckModelType }>,
   },
 
   data: () => ({
     duplicatedKeywordsItem: null as null | {
       // eslint-disable-next-line camelcase
-      model_type: ModelType
+      model_type: SeoCheckModelType
       id: UUID
     },
   }),
@@ -245,17 +249,17 @@ export default Vue.extend({
     margin-top: -6px;
     margin-bottom: 4px;
     font-size: 0.6rem;
-    color: #999;
+    color: var(--gray-color-500);
 
     i {
-      color: $blue-color-400;
+      color: var(--blue-color-400);
       font-size: 1.1em;
       transform: translateY(1px);
     }
   }
 
   &__switch-tooltip-icon {
-    color: $blue-color-400;
+    color: var(--blue-color-400);
   }
 }
 </style>

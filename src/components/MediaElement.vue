@@ -1,9 +1,12 @@
 <template>
-  <img
+  <picture-element
     v-if="media.type === CdnMediaType.Photo"
-    class="media-element media-element--media"
-    :src="`${media.url}?w=${size}&h=${size}`"
-    :style="{ objectFit }"
+    class="media-element media-element--picture"
+    :src="media.url"
+    :width="size"
+    :height="size"
+    :object-fit="objectFit"
+    :alt="media.alt"
   />
   <video
     v-else-if="media.type === CdnMediaType.Video"
@@ -13,6 +16,14 @@
     loop
     muted
   />
+  <i
+    v-else-if="media.type === CdnMediaType.Document"
+    class="bx bxs-file-pdf media-element--document"
+  ></i>
+  <i
+    v-else-if="media.type === CdnMediaType.Other"
+    class="bx bx-question-mark media-element--other"
+  ></i>
   <div v-else class="media-element media-element--unknown">{{ $t('unknownType') }}</div>
 </template>
 
@@ -31,7 +42,10 @@
 import Vue from 'vue'
 import { CdnMedia, CdnMediaType } from '@heseya/store-core'
 
+import PictureElement from './PictureElement.vue'
+
 export default Vue.extend({
+  components: { PictureElement },
   props: {
     media: {
       type: Object,
@@ -51,8 +65,21 @@ export default Vue.extend({
       return CdnMediaType
     },
     objectFit(): string {
-      return this.fit ?? +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'
+      return (
+        this.fit ?? (+this.$accessor.config.env.dashboard_products_contain ? 'contain' : 'cover')
+      )
     },
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.media-element {
+  &--document,
+  &--other {
+    font-size: 2rem;
+    display: grid;
+    place-items: center;
+  }
+}
+</style>

@@ -114,7 +114,6 @@ export default Vue.extend({
     if (this.autofocus) (this.$refs.input as any)?.focus()
   },
   methods: {
-    // TODO: "this" typing is wrong
     getItems: debounce(async function (this: any, search: string) {
       if (search === '') {
         this.data = []

@@ -142,7 +142,7 @@
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { ShippingMethod, ShippingMethodUpdateDto, ShippingCountry } from '@heseya/store-core'
-import { api } from '../../api'
+import { sdk } from '../../api'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
@@ -222,8 +222,8 @@ export default Vue.extend({
   async created() {
     this.$accessor.startLoading()
     this.$accessor.paymentMethods.fetch()
-    const { data } = await api.get<{ data: ShippingCountry[] }>('countries')
-    this.countries = data.data
+    const countries = await sdk.ShippingMethods.getCountries()
+    this.countries = countries
     this.$accessor.stopLoading()
   },
   methods: {

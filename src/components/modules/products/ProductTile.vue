@@ -1,5 +1,5 @@
 <template>
-  <button class="product-box" @click="onClick">
+  <router-link class="product-box" :to="`/products/${product.id}`">
     <avatar v-if="!product.visible" small class="product-box__icon">
       <i class="bx bx-lock-alt"></i>
     </avatar>
@@ -14,12 +14,12 @@
       </div>
     </div>
     <div class="flex">
-      <div class="name">
+      <div class="product-box__name">
         {{ product.name }}<br />
         <ProductPrice :product="product" tag="small" />
       </div>
     </div>
-  </button>
+  </router-link>
 </template>
 
 <script lang="ts">
@@ -42,7 +42,7 @@ export default Vue.extend({
   },
   computed: {
     objectFit(): string {
-      return +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'
+      return +this.$accessor.config.env.dashboard_products_contain ? 'contain' : 'cover'
     },
   },
   mounted() {
@@ -50,20 +50,7 @@ export default Vue.extend({
   },
   methods: {
     formatCurrency(amount: number) {
-      return formatCurrency(amount, this.$accessor.currency)
-    },
-    onClick() {
-      // @ts-ignore
-      if (window.copyIdMode === true) {
-        this.copyId()
-        return
-      }
-
-      this.$router.push(`products/${this.product.id}`)
-    },
-    async copyId() {
-      await navigator.clipboard.writeText(this.product.id)
-      this.$toast.success('Skopiowano ID')
+      return formatCurrency(amount, this.$accessor.config.currency)
     },
   },
 })
@@ -72,7 +59,7 @@ export default Vue.extend({
 <style lang="scss">
 .product-box {
   all: unset;
-  color: #000000;
+  color: var(--font-color);
   text-decoration: none;
   position: relative;
   cursor: pointer;
@@ -89,7 +76,7 @@ export default Vue.extend({
     width: 100%;
     padding-top: 100%;
     border-radius: 8px;
-    background-color: #ffffff;
+    background-color: var(--white-color);
     overflow: hidden;
     margin-bottom: 4px;
     box-shadow: $shadow;
@@ -115,7 +102,7 @@ export default Vue.extend({
     flex-wrap: wrap;
   }
 
-  &:hover &__img img {
+  &:hover &__img .media-element {
     transform: scale(1.05);
   }
 
@@ -125,14 +112,14 @@ export default Vue.extend({
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 2em;
-    color: #cccccc;
+    color: var(--gray-color-300);
 
     &::after {
       content: '';
       display: block;
       width: 120%;
       height: 2px;
-      background-color: firebrick;
+      background-color: var(--red-color-500);
       position: absolute;
       top: 50%;
       left: -10%;
@@ -140,18 +127,15 @@ export default Vue.extend({
     }
   }
 
-  .name {
+  &__name {
     font-weight: 500;
     padding: 5px;
     padding-bottom: 2px;
+    color: var(--font-color);
   }
 
   small {
-    color: #777777;
-  }
-
-  .price {
-    padding: 5px 5px 0 0;
+    color: var(--gray-color-600);
   }
 }
 </style>

@@ -138,7 +138,7 @@ export default Vue.extend({
   },
   methods: {
     formatCurrency(amount: number) {
-      return formatCurrency(amount, this.$accessor.currency)
+      return formatCurrency(amount, this.$accessor.config.currency)
     },
     updateWidth(): void {
       this.viewportWidth = window.innerWidth
@@ -166,7 +166,7 @@ export default Vue.extend({
     flex-wrap: wrap;
   }
 
-  :deep(.order-field--horizontal .order-field__label) {
+  :deep(.field--horizontal .field__label) {
     width: 140px;
   }
 }

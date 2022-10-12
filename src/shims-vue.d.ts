@@ -1,6 +1,6 @@
 import VueRouter, { Route } from 'vue-router'
-import { PermissionsTree } from '@/interfaces/Permissions'
 
+import { PermissionsTree } from '@/consts/permissions'
 import { hasUserAccess, alertIfNoAccess } from './plugins/permissions'
 import { AccessorType } from './store'
 

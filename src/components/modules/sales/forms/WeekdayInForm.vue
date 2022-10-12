@@ -91,13 +91,13 @@ export default Vue.extend({
     justify-content: flex-start;
     align-items: center;
     padding: 4px;
-    border: dashed 1px $red-color-400;
-    background-color: $red-color-200;
+    border: dashed 1px var(--red-color-400);
+    background-color: var(--red-color-200);
     border-radius: 4px;
     cursor: pointer;
 
     .bx {
-      color: $red-color-500;
+      color: var(--red-color-500);
       margin-right: 8px;
     }
 
@@ -107,11 +107,11 @@ export default Vue.extend({
   }
 
   &__item input:checked + &__input {
-    background-color: $green-color-200;
-    border-color: $green-color-400;
+    background-color: var(--green-color-200);
+    border-color: var(--green-color-400);
 
     .bx {
-      color: $green-color-500;
+      color: var(--green-color-500);
     }
 
     .icon-true {

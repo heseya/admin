@@ -4,7 +4,9 @@
 
     <template #content>
       <div class="pop-confirm">
-        <p>{{ title || $t('default.question') }}</p>
+        <p>
+          <slot name="title">{{ title || $t('default.question') }}</slot>
+        </p>
         <footer>
           <app-button :type="okColor" size="small" data-cy="pop-confirm-btn" @click="confirm">
             {{ okText || $t('default.confirm') }}

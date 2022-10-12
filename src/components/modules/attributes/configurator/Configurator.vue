@@ -15,13 +15,15 @@
     <list v-else class="attributes-configurator__list">
       <list-item v-for="attribute in attributes" :key="attribute.id" no-hover>
         <div class="product-attribute">
-          <div class="product-attribute__title">
-            <info-tooltip v-if="attribute.global" class="global-tooltip" icon="bx bx-globe-alt">
-              {{ $t('globalTooltip') }}
-            </info-tooltip>
-            <span>{{ attribute.name }}</span>
-            <info-tooltip v-if="attribute.description"> {{ attribute.description }}</info-tooltip>
-          </div>
+          <a-tooltip>
+            <div class="product-attribute__title">
+              <span>{{ attribute.name }}</span>
+              <info-tooltip v-if="attribute.global" class="global-tooltip" icon="bx bx-globe">
+                {{ $t('globalTooltip') }}
+              </info-tooltip>
+            </div>
+            <template v-if="attribute.description" #title> {{ attribute.description }}</template>
+          </a-tooltip>
 
           <div class="product-attribute__content">
             <component
@@ -210,7 +212,7 @@ export default Vue.extend({
   }
 
   .global-tooltip {
-    color: $green-color-500;
+    color: var(--gray-color-300);
     font-size: 1.3em;
   }
 }

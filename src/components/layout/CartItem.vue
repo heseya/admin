@@ -114,7 +114,7 @@ export default Vue.extend({
       return this.item?.product?.cover?.url || ''
     },
     objectFit(): string {
-      return +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'
+      return +this.$accessor.config.env.dashboard_products_contain ? 'contain' : 'cover'
     },
     totalPrice(): number {
       return this.item.price * this.item.quantity
@@ -122,7 +122,7 @@ export default Vue.extend({
   },
   methods: {
     formatCurrency(amount: number) {
-      return formatCurrency(amount, this.$accessor.currency)
+      return formatCurrency(amount, this.$accessor.config.currency)
     },
   },
 })
@@ -166,7 +166,7 @@ export default Vue.extend({
     height: 58px;
     object-fit: cover;
     border-radius: 4px;
-    background-color: #eeeeee;
+    background-color: var(--gray-color-300);
     text-indent: -10000px;
   }
 
@@ -183,7 +183,7 @@ export default Vue.extend({
     // margin-bottom: 8px;
 
     .info-tooltip__icon {
-      color: $blue-color-400;
+      color: var(--blue-color-400);
     }
   }
 
@@ -203,7 +203,7 @@ export default Vue.extend({
   }
 
   &__schema-name {
-    color: $gray-color-500;
+    color: var(--gray-color-500);
   }
 
   &__value {
@@ -220,11 +220,11 @@ export default Vue.extend({
     .info-tooltip__icon {
       margin-left: 4px;
       font-size: 0.8em;
-      color: $primary-color-500;
+      color: var(--primary-color-500);
     }
   }
 
-  .order-field {
+  .field {
     padding: 3px;
 
     @media ($viewport-8) {
@@ -236,17 +236,17 @@ export default Vue.extend({
     }
   }
 
-  .order-field__label {
+  .field__label {
     display: block;
     width: 100%;
   }
 
   @media ($viewport-8) {
-    .order-field__label {
+    .field__label {
       display: none;
     }
 
-    .order-field:last-of-type &__value {
+    .field:last-of-type &__value {
       justify-content: flex-end;
       align-items: flex-end;
       text-align: right;

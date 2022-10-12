@@ -114,12 +114,16 @@ import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { isNumber, isString } from 'lodash'
 
-import { WarehouseDepositDto } from '@/interfaces/WarehouseItem'
-//import { WarehouseDepositDto } from '@heseya/store-core'
 import Loading from '@/components/layout/Loading.vue'
 import { formatDateTimeInput } from '@/utils/dates'
 
-const EMPTY_DEPOSIT_FORM: WarehouseDepositDto = {
+type InnerWarehouseDepositDto = {
+  quantity: number
+  shipping_time?: number | undefined
+  shipping_date?: string | undefined
+}
+
+const EMPTY_DEPOSIT_FORM: InnerWarehouseDepositDto = {
   quantity: 0,
   shipping_time: undefined,
   shipping_date: undefined,
@@ -158,7 +162,7 @@ export default Vue.extend({
         this.stockTimeType = StockTimeType.Time
         if (isString(this.defaultTime)) {
           this.stockTimeType = StockTimeType.Date
-          this.form.shipping_date = formatDateTimeInput(this.defaultTime)
+          this.form.shipping_date = formatDateTimeInput(this.defaultTime) || ''
         } else if (isNumber(this.defaultTime)) this.form.shipping_time = this.defaultTime
       }
     },
@@ -172,7 +176,6 @@ export default Vue.extend({
     async saveDeposit() {
       this.isLoading = true
 
-      // @ts-ignore // TODO: fix extended store actions typings
       const deposit = await this.$accessor.items.createDeposit({
         id: this.itemId,
         deposit: this.form,

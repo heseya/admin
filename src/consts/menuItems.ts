@@ -1,5 +1,10 @@
 import { Permission } from '@/interfaces/Permissions'
+import { accessor } from '@/store'
+import { FEATURE_FLAGS } from './featureFlags'
 import { PERMISSIONS_TREE } from './permissions'
+
+let id = 0
+const nextId = () => (++id).toString()
 
 export enum MenuItemType {
   Link = 'link',
@@ -27,6 +32,7 @@ export interface MenuLink {
   iconPath?: string
   label: string
   disabled?: true
+  hidden?: boolean | (() => boolean)
   isMicrofrontend?: true
   section?: SettingsSection
 }
@@ -39,7 +45,7 @@ export type MenuItem = MenuLink | MenuSpacer
 
 export const MENU_ITEMS: MenuItem[] = [
   {
-    id: '1',
+    id: nextId(),
     type: MenuItemType.Link,
     exact: true,
     default: true,
@@ -48,9 +54,8 @@ export const MENU_ITEMS: MenuItem[] = [
     label: 'nav.dashboard',
     disabled: true,
   },
-  { id: '2', type: MenuItemType.Spacer, disabled: true },
   {
-    id: '3',
+    id: nextId(),
     type: MenuItemType.Link,
     default: true,
     to: '/orders',
@@ -59,9 +64,8 @@ export const MENU_ITEMS: MenuItem[] = [
     disabled: true,
     can: PERMISSIONS_TREE.Orders.ShowSummary,
   },
-  { id: '4', type: MenuItemType.Spacer, disabled: true },
   {
-    id: '5',
+    id: nextId(),
     type: MenuItemType.Link,
     to: '/pages',
     iconClass: 'bx bxs-copy-alt',
@@ -70,7 +74,7 @@ export const MENU_ITEMS: MenuItem[] = [
     section: SettingsSection.Shop,
   },
   {
-    id: '6',
+    id: nextId(),
     type: MenuItemType.Link,
     to: '/settings/banners',
     iconClass: 'bx bxs-image',
@@ -79,7 +83,7 @@ export const MENU_ITEMS: MenuItem[] = [
     section: SettingsSection.Shop,
   },
   {
-    id: '7',
+    id: nextId(),
     type: MenuItemType.Link,
     default: true,
     to: '/products',
@@ -89,7 +93,7 @@ export const MENU_ITEMS: MenuItem[] = [
     section: SettingsSection.Products,
   },
   {
-    id: '8',
+    id: nextId(),
     type: MenuItemType.Link,
     default: true,
     to: '/collections',
@@ -99,7 +103,7 @@ export const MENU_ITEMS: MenuItem[] = [
     section: SettingsSection.Products,
   },
   {
-    id: '9',
+    id: nextId(),
     type: MenuItemType.Link,
     default: true,
     to: '/items',
@@ -109,7 +113,7 @@ export const MENU_ITEMS: MenuItem[] = [
     section: SettingsSection.Orders,
   },
   {
-    id: '10',
+    id: nextId(),
     type: MenuItemType.Link,
     default: true,
     to: '/coupons',
@@ -119,7 +123,7 @@ export const MENU_ITEMS: MenuItem[] = [
     section: SettingsSection.Products,
   },
   {
-    id: '11',
+    id: nextId(),
     type: MenuItemType.Link,
     default: true,
     to: '/sales',
@@ -128,9 +132,8 @@ export const MENU_ITEMS: MenuItem[] = [
     can: PERMISSIONS_TREE.Sales.Show,
     section: SettingsSection.Products,
   },
-  { id: '12', type: MenuItemType.Spacer, disabled: true },
   {
-    id: '13',
+    id: nextId(),
     type: MenuItemType.Link,
     default: true,
     exact: true,
@@ -140,7 +143,7 @@ export const MENU_ITEMS: MenuItem[] = [
     disabled: true,
   },
   {
-    id: '14',
+    id: nextId(),
     type: MenuItemType.Link,
     to: '/settings/attributes',
     iconClass: 'bx bx-spreadsheet',
@@ -149,7 +152,7 @@ export const MENU_ITEMS: MenuItem[] = [
     section: SettingsSection.Products,
   },
   {
-    id: '15',
+    id: nextId(),
     type: MenuItemType.Link,
     to: '/settings/tags',
     iconClass: 'bx bxs-purchase-tag',
@@ -158,7 +161,7 @@ export const MENU_ITEMS: MenuItem[] = [
     section: SettingsSection.Products,
   },
   {
-    id: '16',
+    id: nextId(),
     type: MenuItemType.Link,
     to: '/schemas',
     iconClass: 'bx bxs-customize',
@@ -167,7 +170,7 @@ export const MENU_ITEMS: MenuItem[] = [
     section: SettingsSection.Products,
   },
   {
-    id: '17',
+    id: nextId(),
     type: MenuItemType.Link,
     to: '/settings/statuses',
     iconClass: 'bx bxs-check-circle',
@@ -176,7 +179,7 @@ export const MENU_ITEMS: MenuItem[] = [
     section: SettingsSection.Orders,
   },
   {
-    id: '17-2',
+    id: nextId(),
     type: MenuItemType.Link,
     to: '/settings/payment-methods',
     iconClass: 'bx bxs-credit-card',
@@ -185,7 +188,7 @@ export const MENU_ITEMS: MenuItem[] = [
     section: SettingsSection.Orders,
   },
   {
-    id: '18',
+    id: nextId(),
     type: MenuItemType.Link,
     to: '/settings/shipping-methods',
     iconClass: 'bx bxs-truck',
@@ -194,7 +197,7 @@ export const MENU_ITEMS: MenuItem[] = [
     section: SettingsSection.Shipping,
   },
   {
-    id: '19',
+    id: nextId(),
     type: MenuItemType.Link,
     to: '/settings/package-templates',
     iconClass: 'bx bxs-box',
@@ -203,7 +206,7 @@ export const MENU_ITEMS: MenuItem[] = [
     section: SettingsSection.Shipping,
   },
   {
-    id: '20',
+    id: nextId(),
     type: MenuItemType.Link,
     to: '/settings/users',
     iconClass: 'bx bxs-group',
@@ -212,7 +215,7 @@ export const MENU_ITEMS: MenuItem[] = [
     section: SettingsSection.Users,
   },
   {
-    id: '21',
+    id: nextId(),
     type: MenuItemType.Link,
     to: '/settings/roles',
     iconClass: 'bx bx-task',
@@ -221,7 +224,17 @@ export const MENU_ITEMS: MenuItem[] = [
     section: SettingsSection.Users,
   },
   {
-    id: '22',
+    id: nextId(),
+    type: MenuItemType.Link,
+    to: '/b2b/companies',
+    iconClass: 'bx bx-buildings',
+    label: 'nav.b2b',
+    can: PERMISSIONS_TREE.Roles.Show,
+    hidden: () => accessor.config.env[FEATURE_FLAGS.B2B] !== '1',
+    section: SettingsSection.Users,
+  },
+  {
+    id: nextId(),
     type: MenuItemType.Link,
     to: '/settings/consents',
     iconClass: 'bx bx-paragraph',
@@ -230,7 +243,7 @@ export const MENU_ITEMS: MenuItem[] = [
     section: SettingsSection.Users,
   },
   {
-    id: '23',
+    id: nextId(),
     type: MenuItemType.Link,
     to: '/apps',
     iconClass: 'bx bxs-store-alt',
@@ -239,7 +252,7 @@ export const MENU_ITEMS: MenuItem[] = [
     section: SettingsSection.Other,
   },
   {
-    id: '24',
+    id: nextId(),
     type: MenuItemType.Link,
     to: '/webhooks',
     iconClass: 'bx bxs-bot',
@@ -248,7 +261,7 @@ export const MENU_ITEMS: MenuItem[] = [
     section: SettingsSection.Other,
   },
   {
-    id: '25',
+    id: nextId(),
     type: MenuItemType.Link,
     to: '/settings/seo',
     iconClass: 'bx bxl-google',
@@ -257,13 +270,22 @@ export const MENU_ITEMS: MenuItem[] = [
   },
 
   {
-    id: '26',
+    id: nextId(),
     type: MenuItemType.Link,
     to: '/settings/advanced',
     iconClass: 'bx bxs-cog',
     label: 'nav.advanced',
     can: PERMISSIONS_TREE.Settings.Show,
     section: SettingsSection.Other,
+  },
+  {
+    id: nextId(),
+    type: MenuItemType.Link,
+    to: '/settings/media',
+    iconClass: 'bx bxs-image',
+    label: 'models.media',
+    can: PERMISSIONS_TREE.Media.Show,
+    section: SettingsSection.Shop,
   },
 ]
 

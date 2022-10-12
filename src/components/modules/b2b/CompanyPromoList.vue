@@ -119,8 +119,6 @@ export default Vue.extend({
       const page = this.$route.query.page || 1
       await this.$accessor.sales.fetch({
         for_role: this.company.id,
-        // TODO: should only user `for_role` param
-        metadata: { b2b_company: this.company.id },
         page,
         limit: 32,
       })

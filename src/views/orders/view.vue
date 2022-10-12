@@ -1,6 +1,8 @@
 <template>
   <div>
     <top-nav :title="$t('title')">
+      <QrCodeModalButton type="Order" :body="{ id: order.id }" />
+
       <audits-modal :id="order.id" model="orders" />
       <a v-if="storefrontPaymentUrl" :href="`${storefrontPaymentUrl}${order.code}`" target="_blank">
         <icon-button>
@@ -75,6 +77,7 @@ import CustomerDetails from '@/components/modules/orders/CustomerDetails.vue'
 import Cart from '@/components/modules/orders/Cart.vue'
 import OrderMetadatas from '@/components/modules/orders/OrderMetadatas.vue'
 import OrderDocuments from '@/components/modules/orders/documents/OrderDocumentsList.vue'
+import QrCodeModalButton from '@/components/modules/qrCode/CodeModalButton.vue'
 
 export default Vue.extend({
   metaInfo(this: any): any {
@@ -92,7 +95,9 @@ export default Vue.extend({
     Cart,
     OrderMetadatas,
     OrderDocuments,
+    QrCodeModalButton,
   },
+
   data: () => ({
     packageTemplateId: '',
     modalFormTitle: '',

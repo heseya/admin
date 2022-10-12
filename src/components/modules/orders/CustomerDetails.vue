@@ -218,7 +218,7 @@ export default Vue.extend({
   &--filled {
     background: var(--primary-color-500);
 
-    :deep(.order-field__value, .order-field__label) {
+    :deep(.field__value, .field__label) {
       color: var(--white-color);
     }
   }

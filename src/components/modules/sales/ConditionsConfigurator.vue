@@ -21,7 +21,7 @@
         v-for="(group, i) in groups"
         :key="i"
         v-model="groups[i]"
-        :disabled="disabled"
+        :disabled="disabled || group.forced"
         @remove="removeConditionGroup(i)"
       />
     </div>
@@ -55,10 +55,12 @@ import ConditionGroup from './ConditionGroup.vue'
 
 import { EMPTY_ORDER_VALUE_FORM } from '@/consts/salesConditionsForms'
 
+type ConditionGroup = DiscountConditionGroupDto & { forced?: true }
+
 export default Vue.extend({
   components: { Empty, ConditionGroup },
   props: {
-    value: { type: Array, required: true } as Vue.PropOptions<DiscountConditionGroupDto[]>,
+    value: { type: Array, required: true } as Vue.PropOptions<ConditionGroup[]>,
     disabled: { type: Boolean, default: false },
   },
   computed: {
@@ -66,10 +68,10 @@ export default Vue.extend({
       return DiscountConditionType
     },
     groups: {
-      get(): DiscountConditionGroupDto[] {
+      get(): ConditionGroup[] {
         return this.value
       },
-      set(v: DiscountConditionGroupDto[]) {
+      set(v: ConditionGroup[]) {
         this.$emit('input', v)
       },
     },

@@ -10,6 +10,7 @@
           </h2>
           <SettingsItem
             v-for="item in group"
+            v-show="!isLinkHidden(item)"
             :key="item.id"
             :v-can="item.can"
             :name="$t(item.label)"
@@ -209,6 +210,9 @@ export default Vue.extend({
     async logout() {
       await this.$accessor.auth.logout()
       this.$router.push('/login')
+    },
+    isLinkHidden(link: MenuLink): boolean {
+      return typeof link.hidden === 'function' ? link.hidden() : !!link.hidden
     },
     groupPermissions(items: MenuLink[]) {
       return items.map((item) => item.can)

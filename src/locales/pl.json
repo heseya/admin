@@ -45,7 +45,8 @@
     "webhooks": "Webhooki",
     "seo": "Ustawienia SEO",
     "providers": "oAuth",
-    "advanced": "Zaawansowane"
+    "advanced": "Zaawansowane",
+    "b2b": "Lista firm B2B"
   },
   "models": {
     "orders": "Zamówienia",

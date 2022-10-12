@@ -8,6 +8,7 @@ import { config } from './config'
 import { auth } from './auth'
 import { globalSeo } from './globalSeo'
 import { users } from './users'
+import { b2bCompanies } from './b2bCompanies'
 import { banners } from './banners'
 import { roles } from './roles'
 import { consents } from './consents'
@@ -66,6 +67,7 @@ const storeModules = {
   auth,
   globalSeo,
   users,
+  b2bCompanies,
   banners,
   roles,
   consents,

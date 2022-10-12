@@ -1,9 +1,9 @@
-import { Role, RoleCreateDto, PermissionEntry } from '@heseya/store-core'
+import { Role, RoleCreateDto, PermissionEntry, RoleUpdateDto } from '@heseya/store-core'
 import { createVuexCRUD } from './generator'
 import { DefaultVuexMutation } from '@/interfaces/VuexGenerator'
 import { sdk } from '@/api'
 
-export const roles = createVuexCRUD<Role, RoleCreateDto, RoleCreateDto>()('roles', {
+export const roles = createVuexCRUD<Role, RoleCreateDto, RoleUpdateDto>()('roles', {
   state: {
     permissions: [] as PermissionEntry[],
   },

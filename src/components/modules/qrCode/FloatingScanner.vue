@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="areExperimentalQrCodesEnabled">
     <button class="open-scanner-btn" @click="isOpen = true">
       <i class="bx bx-qr-scan"></i>
     </button>
@@ -11,6 +11,7 @@
 </template>
 
 <script lang="ts">
+import { EXPERIMENTAL_FLAGS } from '@/consts/featureFlags'
 import { QrCodeObject, QrCodePayload } from '@/interfaces/QrCode'
 import Vue from 'vue'
 import Scanner from './Scanner.vue'
@@ -20,6 +21,12 @@ export default Vue.extend({
   data: () => ({
     isOpen: false,
   }),
+
+  computed: {
+    areExperimentalQrCodesEnabled(): boolean {
+      return this.$accessor.config.env[EXPERIMENTAL_FLAGS.QrCodes] === '1'
+    },
+  },
 
   methods: {
     handleScan(data: QrCodePayload) {

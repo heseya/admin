@@ -1,12 +1,7 @@
 <template>
   <div>
     <top-nav :title="$t('title')">
-      <icon-button @click="isQrCodeVisible = true">
-        <template #icon>
-          <i class="bx bx-qr"></i>
-        </template>
-        {{ $t('openQrCode') }}
-      </icon-button>
+      <QrCodeModalButton type="Order" :body="{ id: order.id }" />
 
       <audits-modal :id="order.id" model="orders" />
       <a v-if="storefrontPaymentUrl" :href="`${storefrontPaymentUrl}${order.code}`" target="_blank">
@@ -49,13 +44,6 @@
         <order-documents v-if="order.id" :order-id="order.id" :documents="order.documents" />
       </card>
     </main>
-
-    <QrCodeModal
-      :visible="isQrCodeVisible"
-      type="Order"
-      :body="{ id: order.id }"
-      @close="isQrCodeVisible = false"
-    />
   </div>
 </template>
 
@@ -63,13 +51,11 @@
 {
   "pl": {
     "title": "Szczegóły zamówienia",
-    "goToPayment": "Przejdź do płatności",
-    "openQrCode": "Otwórz kod QR"
+    "goToPayment": "Przejdź do płatności"
   },
   "en": {
     "title": "Order details",
-    "goToPayment": "Go to payment",
-    "openQrCode": "Open QR code"
+    "goToPayment": "Go to payment"
   }
 }
 </i18n>
@@ -91,7 +77,7 @@ import CustomerDetails from '@/components/modules/orders/CustomerDetails.vue'
 import Cart from '@/components/modules/orders/Cart.vue'
 import OrderMetadatas from '@/components/modules/orders/OrderMetadatas.vue'
 import OrderDocuments from '@/components/modules/orders/documents/OrderDocumentsList.vue'
-import QrCodeModal from '@/components/modules/qrCode/CodeModal.vue'
+import QrCodeModalButton from '@/components/modules/qrCode/CodeModalButton.vue'
 
 export default Vue.extend({
   metaInfo(this: any): any {
@@ -109,7 +95,7 @@ export default Vue.extend({
     Cart,
     OrderMetadatas,
     OrderDocuments,
-    QrCodeModal,
+    QrCodeModalButton,
   },
 
   data: () => ({
@@ -117,7 +103,6 @@ export default Vue.extend({
     modalFormTitle: '',
     form: {},
     isModalActive: false,
-    isQrCodeVisible: false,
   }),
   computed: {
     error(): any {

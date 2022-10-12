@@ -6,6 +6,7 @@ import { Permission } from '@/interfaces/Permissions'
 import { PERMISSIONS_TREE as Permissions } from '@/consts/permissions'
 import { accessor } from './store'
 import { hasAccess } from './utils/hasAccess'
+import { FEATURE_FLAGS } from './consts/featureFlags'
 
 Vue.use(VueRouter)
 Vue.use(VueMeta)
@@ -396,7 +397,7 @@ const router = new VueRouter({
       meta: {
         requiresAuth: true,
         permissions: [Permissions.Roles.Show],
-        disabled: () => accessor.config.env.b2b_enabled !== '1',
+        disabled: () => accessor.config.env[FEATURE_FLAGS.B2B] !== '1',
       },
     },
     {
@@ -407,7 +408,7 @@ const router = new VueRouter({
         returnUrl: '/b2b/companies',
         requiresAuth: true,
         permissions: [Permissions.Roles.ShowDetails],
-        disabled: () => accessor.config.env.b2b_enabled !== '1',
+        disabled: () => accessor.config.env[FEATURE_FLAGS.B2B] !== '1',
       },
     },
     {

@@ -1,5 +1,6 @@
 import { Permission } from '@/interfaces/Permissions'
 import { accessor } from '@/store'
+import { FEATURE_FLAGS } from './featureFlags'
 import { PERMISSIONS_TREE } from './permissions'
 
 let id = 0
@@ -220,7 +221,7 @@ export const MENU_ITEMS: MenuItem[] = [
     iconClass: 'bx bx-buildings',
     label: 'nav.b2b',
     can: PERMISSIONS_TREE.Roles.Show,
-    hidden: () => accessor.config.env.b2b_enabled !== '1',
+    hidden: () => accessor.config.env[FEATURE_FLAGS.B2B] !== '1',
     section: SettingsSection.Users,
   },
   {

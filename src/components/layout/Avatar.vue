@@ -37,8 +37,8 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .avatar {
-  background: var(--bg-color, #000);
-  color: var(--text-color, #fff);
+  background: var(--bg-color, var(--black-color));
+  color: var(--text-color, var(--white-color));
   overflow: hidden;
   font-size: 1.7em;
   width: 100%;

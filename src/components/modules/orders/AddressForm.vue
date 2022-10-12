@@ -56,7 +56,7 @@ import Vue from 'vue'
 import { ValidationProvider } from 'vee-validate'
 import { Address, ShippingCountry } from '@heseya/store-core'
 
-import { api } from '@/api'
+import { sdk } from '@/api'
 
 export default Vue.extend({
   name: 'AddressForm',
@@ -86,10 +86,7 @@ export default Vue.extend({
     },
   },
   async created() {
-    const {
-      data: { data: countries },
-    } = await api.get<{ data: ShippingCountry[] }>('/countries')
-    this.countries = countries
+    this.countries = await sdk.ShippingMethods.getCountries()
   },
 })
 </script>

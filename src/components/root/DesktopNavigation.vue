@@ -63,8 +63,8 @@ export default Vue.extend({
   width: $navWidth;
   padding: 9px;
   box-sizing: border-box;
-  background-color: #ffffff;
-  border-right: solid 1px $background-color-600;
+  background-color: var(--white-color);
+  border-right: solid 1px var(--background-color-600);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -95,11 +95,11 @@ export default Vue.extend({
     width: 100%;
     display: flex;
     align-items: center;
-    color: #000000;
+    color: var(--black-color);
     transition: background-color 0.3s;
 
     .nav-link-img {
-      color: #9ea5b4;
+      color: var(--gray-color-500);
       display: block;
       width: 18px;
       height: 18px;
@@ -116,19 +116,19 @@ export default Vue.extend({
     }
 
     &:hover {
-      background-color: $background-color-500;
+      background-color: var(--background-color-500);
 
       .nav-link-img {
-        color: #000000;
+        color: var(--black-color);
       }
     }
 
     &.router-link-active {
-      color: $primary-color-500;
-      background-color: $primary-color-100;
+      color: var(--primary-color-500);
+      background-color: var(--primary-color-100);
 
       .nav-link-img {
-        color: $primary-color-500;
+        color: var(--primary-color-500);
       }
     }
   }

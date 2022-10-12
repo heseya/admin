@@ -63,10 +63,8 @@ import { AttributeOption, AttributeType, ProductAttribute } from '@heseya/store-
 
 import Empty from '@/components/layout/Empty.vue'
 import { UUID } from '@/interfaces/UUID'
-import { formatApiNotificationError } from '@/utils/errors'
+import { ApiError, formatApiNotificationError } from '@/utils/errors'
 import { uniqueArray } from '@/utils/uniqueArray'
-
-type AddOptionResult = { success: true; option: AttributeOption } | { success: false; error: any }
 
 export default Vue.extend({
   components: { Empty },
@@ -139,11 +137,11 @@ export default Vue.extend({
 
     async fetchOptions() {
       this.isLoading = true
-      // @ts-ignore // TODO: fix extended store actions typings
-      const allOptions = await this.$accessor.attributes.getOptions({
-        attributeId: this.attribute.id,
-        params: { search: this.searchedValue },
-      })
+      const allOptions =
+        (await this.$accessor.attributes.getOptions({
+          attributeId: this.attribute.id,
+          params: { search: this.searchedValue },
+        })) || []
 
       if (!this.options) {
         this.$toast.error(this.$t('optionsFetchError') as string)
@@ -152,15 +150,16 @@ export default Vue.extend({
       }
 
       if (this.value.some(Boolean)) {
-        const choosenOptions = await Promise.all(
-          this.value.map(({ id }) =>
-            // @ts-ignore // TODO: fix extended store actions typings
-            this.$accessor.attributes.getOptions({
-              attributeId: this.attribute.id,
-              params: { search: id },
-            }),
-          ),
-        )
+        const choosenOptions = (
+          await Promise.all(
+            this.value.map(({ id }) =>
+              this.$accessor.attributes.getOptions({
+                attributeId: this.attribute.id,
+                params: { search: id },
+              }),
+            ),
+          )
+        ).filter(Boolean) as AttributeOption[][]
 
         this.options = uniqueArray([...this.options, ...allOptions, ...choosenOptions.flat()])
         this.isLoading = false
@@ -174,8 +173,8 @@ export default Vue.extend({
 
     async createOption() {
       this.isLoading = true
-      // @ts-ignore // TODO: fix extended store actions typings
-      const result: AddOptionResult = await this.$accessor.attributes.addOption({
+
+      const result = await this.$accessor.attributes.addOption({
         attributeId: this.attribute.id,
         option: {
           name: this.searchedValue,
@@ -192,7 +191,7 @@ export default Vue.extend({
 
         this.searchedValue = ''
       } else {
-        this.$toast.error(formatApiNotificationError(result.error))
+        this.$toast.error(formatApiNotificationError(result.error as ApiError))
       }
 
       this.isLoading = false

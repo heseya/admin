@@ -52,12 +52,6 @@
 import Vue from 'vue'
 import { OrderDocument } from '@heseya/store-core'
 
-import {
-  DownloadOrderDocumentFunc,
-  RemoveOrderDocumentFunc,
-  SendOrderDocumentsFunc,
-} from '@/store/orders'
-
 export default Vue.extend({
   props: {
     orderId: {
@@ -71,8 +65,7 @@ export default Vue.extend({
   },
   methods: {
     async download() {
-      // @ts-ignore // TODO: fix extended store actions typings
-      const file = await (this.$accessor.orders.getOrderDocument as DownloadOrderDocumentFunc)({
+      const file = await this.$accessor.orders.getOrderDocument({
         orderId: this.orderId,
         documentId: this.document.id,
       })
@@ -95,8 +88,7 @@ export default Vue.extend({
         okText: this.$t('sendBtn') as string,
         cancelText: this.$t('common.cancel') as string,
         onOk: async () => {
-          const success = await // @ts-ignore // TODO: fix extended store actions typings
-          (this.$accessor.orders.sendOrderDocuments as SendOrderDocumentsFunc)({
+          const success = await this.$accessor.orders.sendOrderDocuments({
             orderId: this.orderId,
             documentIds: [this.document.id],
           })
@@ -111,8 +103,7 @@ export default Vue.extend({
         okText: this.$t('deleteBtn') as string,
         cancelText: this.$t('common.cancel') as string,
         onOk: async () => {
-          const success = await // @ts-ignore // TODO: fix extended store actions typings
-          (this.$accessor.orders.removeOrderDocument as RemoveOrderDocumentFunc)({
+          const success = await this.$accessor.orders.removeOrderDocument({
             orderId: this.orderId,
             documentId: this.document.id,
           })
@@ -130,7 +121,7 @@ export default Vue.extend({
   grid-template-columns: 1fr auto 25px;
   grid-gap: 4px;
   padding: 10px;
-  background-color: #f7f7f8;
+  background-color: var(--background-color-300);
   border-radius: 8px;
 
   &:not(:last-of-type) {
@@ -142,7 +133,7 @@ export default Vue.extend({
   }
 
   &__type {
-    color: $gray-color-600;
+    color: var(--gray-color-600);
     font-weight: 300;
   }
 
@@ -160,7 +151,7 @@ export default Vue.extend({
     transition: 0.3s;
 
     &:hover {
-      background-color: #fff;
+      background-color: var(--white-color);
     }
   }
 }

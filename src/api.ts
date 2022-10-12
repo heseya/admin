@@ -5,6 +5,7 @@ import { accessor } from './store/index'
 import router from './router'
 import { getApiURL } from './utils/api'
 import { broadcastTokensUpdate } from './utils/authSync'
+import { createHeseyaApiService } from '@heseya/store-core'
 
 const CORE_API_URL = getApiURL()
 
@@ -93,3 +94,4 @@ export const createApiInstance = (baseURL: string, useAccessToken = true) => {
 }
 
 export const api = createApiInstance(CORE_API_URL)
+export const sdk = createHeseyaApiService(api as any)

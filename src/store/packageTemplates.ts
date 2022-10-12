@@ -1,7 +1,15 @@
-import { PackagesTemplate } from '@heseya/store-core'
+import {
+  PackagesTemplate,
+  PackagesTemplateCreateDto,
+  PackagesTemplateUpdateDto,
+} from '@heseya/store-core'
 import { createVuexCRUD } from './generator'
 
-export const packageTemplates = createVuexCRUD<PackagesTemplate>()('package-templates', {
+export const packageTemplates = createVuexCRUD<
+  PackagesTemplate,
+  PackagesTemplateCreateDto,
+  PackagesTemplateUpdateDto
+>()('package-templates', {
   state: {},
   getters: {},
   mutations: {},

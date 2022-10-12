@@ -61,7 +61,7 @@ export default Vue.extend({
       position: relative;
       top: -0.5em;
       margin-left: 4px;
-      color: $red-color-400;
+      color: var(--red-color-400);
       text-decoration: line-through;
     }
   }

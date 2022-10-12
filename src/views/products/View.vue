@@ -103,11 +103,12 @@
           </div>
         </card>
 
-        <card class="product-page__aside">
+        <card class="product-page__visibility">
+          <h2 class="product-page__subtitle">{{ $t('visibilityTitle') }}</h2>
           <product-visibility-switch v-model="form" :product="product" :disabled="!canModify" />
+        </card>
 
-          <hr />
-
+        <card class="product-page__gallery">
           <h2 class="product-page__subtitle">{{ $t('galleryTitle') }}</h2>
           <gallery ref="gallery" v-model="form.gallery" :disabled="!canModify" />
         </card>
@@ -122,6 +123,7 @@
     "title": "Konfiguracja produktu:",
     "titleNew": "Nowy produkt",
     "baseFormTitle": "Informacje podstawowe",
+    "visibilityTitle": "Widoczność produktu",
     "galleryTitle": "Zdjęcia i wideo produktu",
     "deleteConfirm": "Czy na pewno chcesz usunąć ten produkt?",
     "messages": {
@@ -136,6 +138,7 @@
     "titleNew": "New product",
     "baseFormTitle": "Basic information",
     "galleryTitle": "Product gallery",
+    "visibilityTitle": "Product visibility",
     "deleteConfirm": "Are you sure you want to delete this product?",
     "messages": {
       "removed": "Product has been removed.",
@@ -238,8 +241,7 @@ export default mixins(preventLeavingPage).extend({
       return this.$accessor.products.getSelected || ({} as any)
     },
     error(): any {
-      // @ts-ignore // TODO: fix extended store getters typings
-      return this.$accessor.products.getError || this.$accessor.products.getDepositError
+      return this.$accessor.products.getError
     },
     canModify(): boolean {
       return this.$can(this.isNew ? this.$p.Products.Add : this.$p.Products.Edit)
@@ -356,14 +358,35 @@ export default mixins(preventLeavingPage).extend({
 <style lang="scss">
 .product-page {
   display: grid;
-  grid-template-columns: 2.6fr 1fr;
+  grid-template-rows: auto;
   grid-gap: 14px;
   align-items: start;
+  grid-template-columns: 1fr;
+  grid-template-areas: 'visibility' 'gallery' 'main';
+
+  @media ($viewport-7) {
+    grid-template-columns: 2.6fr 1fr;
+    grid-template-areas: 'main visibility' 'main gallery' 'main .';
+  }
+
+  &__main {
+    grid-area: main;
+  }
+  &__visibility {
+    grid-area: visibility;
+  }
+  &__gallery {
+    grid-area: gallery;
+  }
 
   &__subtitle {
     font-size: 1.1em;
     margin: 0;
     font-weight: 600;
+  }
+
+  .card {
+    margin-bottom: 0;
   }
 }
 </style>

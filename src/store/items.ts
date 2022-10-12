@@ -1,5 +1,5 @@
 import { createVuexCRUD } from './generator'
-import { api } from '../api'
+import { sdk } from '../api'
 
 import {
   WarehouseDeposit,
@@ -23,7 +23,7 @@ export const items = createVuexCRUD<
     },
   },
   mutations: {
-    PRODUCTS_SET_DEPOSITS_ERROR(state, error) {
+    PRODUCTS_SET_DEPOSITS_ERROR(state, error: Error | null) {
       state.depositError = error
     },
   },
@@ -34,14 +34,11 @@ export const items = createVuexCRUD<
     ): Promise<WarehouseDeposit | false> {
       commit('PRODUCTS_SET_DEPOSITS_ERROR', null)
       try {
-        const { data } = await api.post<{ data: WarehouseDeposit }>(
-          `/items/id:${id}/deposits`,
-          deposit,
-        )
+        const newDeposit = await sdk.Warehouse.createDeposit(id, deposit)
 
         await Promise.all([dispatch('fetch', state.queryParams), dispatch('get', id)])
 
-        return data.data
+        return newDeposit
       } catch (error: any) {
         commit('PRODUCTS_SET_DEPOSITS_ERROR', error)
         return false
@@ -51,8 +48,7 @@ export const items = createVuexCRUD<
     async getDeposits({ commit }, id: string): Promise<WarehouseDeposit[]> {
       commit('PRODUCTS_SET_DEPOSITS_ERROR', null)
       try {
-        const { data } = await api.get<{ data: WarehouseDeposit[] }>(`/items/id:${id}/deposits`)
-        return data.data
+        return await sdk.Warehouse.getItemDeposits(id)
       } catch (error: any) {
         commit('PRODUCTS_SET_DEPOSITS_ERROR', error)
         return []

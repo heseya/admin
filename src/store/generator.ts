@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { assign, cloneDeep, isNil } from 'lodash'
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
-import { ActionTree, GetterTree, MutationTree } from 'vuex'
+import { GetterTree, MutationTree } from 'vuex'
 import {
   EntityAudits,
   HeseyaPaginatedResponseMeta,
@@ -10,63 +10,53 @@ import {
 } from '@heseya/store-core'
 
 import { api } from '../api'
-import { stringifyQueryParams as stringifyQuery } from '@/utils/stringifyQuery'
+import { DefaultParams, stringifyQueryParams as stringifyQuery } from '@/utils/stringifyQuery'
 
-import { RootState } from '.'
 import { UUID } from '@/interfaces/UUID'
-
-type QueryPayload = Record<string, any>
-
-export interface BaseItem {
-  id: UUID
-}
-
-export enum StoreMutations {
-  SetError = 'SET_ERROR',
-  SetMeta = 'SET_META',
-  SetQueryParams = 'SET_QUERY_PARAMS',
-  SetData = 'SET_DATA',
-  AddData = 'ADD_DATA',
-  EditData = 'EDIT_DATA',
-  RemoveData = 'REMOVE_DATA',
-  SetSelected = 'SET_SELECTED',
-  SetLoading = 'SET_LOADING',
-}
-
-interface DefaultStore<Item extends BaseItem> {
-  error: null | Error
-  isLoading: boolean
-  meta: HeseyaPaginatedResponseMeta
-  data: Item[]
-  queryParams: Record<string, any>
-  selected: Item | null
-}
-
-interface ExtendStore<State, Item extends BaseItem> {
-  state: State
-  getters: GetterTree<State & DefaultStore<Item>, RootState>
-  mutations: MutationTree<State & DefaultStore<Item>>
-  actions: ActionTree<State & DefaultStore<Item>, RootState>
-}
-
-interface CrudParams {
-  get?: QueryPayload
-  add?: QueryPayload
-  edit?: QueryPayload
-  update?: QueryPayload
-  remove?: QueryPayload
-}
+import {
+  VuexBaseItem,
+  DefaultVuexGetters,
+  DefaultVuexMutations,
+  DefaultVuexState,
+  DefaultVuexMutation,
+  VuexDefaultCrudParams,
+  InnerModifiedActionTree,
+} from '@/interfaces/VuexGenerator'
 
 /**
  * Creates state, actions and mutation for CRUD methods of given entity
+ *
+ * ----------------------------------------
+ * TODO: There are still some issues with the typing of generator.
+ * All types are correctly interfered to outside of the module. You can safely use `$accessor[module].customMethod()` and it will be correctly typed.
+ * However, when generating a module, state, getters and mutations are not properly typed inside `actions` (For example in `users.ts` - state.data is any but should be User).
+ * To fix this, we need to change a type that extends `Actions`:
+ * `InnerModifiedActionTree<any>` -> `InnerModifiedActionTree<Required<NuxtStoreInput<State, Getters, Mutations, {}, {}>>>`
+ * but this results in a type errors in actions.
+ * ----------------------------------------
+ *
  * @param name - uppercased string to be used in mutation names
  * @param endpoint - CRUD API endoint for given entity type
  * @param extend - custom state, actions, mutations and getters. Are merged with genereted ones
- * @param params - fixed Query params for requests in scope
+ * @param queryParams - fixed query params for requests in scope
  */
 export const createVuexCRUD =
-  <Item extends BaseItem, CreateItemDTO = Partial<Item>, UpdateItemDTO = Partial<Item>>() =>
-  <State>(endpoint: string, extend: ExtendStore<State, Item>, queryParams: CrudParams = {}) => {
+  <Item extends VuexBaseItem, CreateItemDTO, UpdateItemDTO>() =>
+  <
+    State extends Record<string, any>,
+    Getters extends GetterTree<State & DefaultVuexState<Item>, any>,
+    Mutations extends MutationTree<State & DefaultVuexState<Item>>,
+    Actions extends InnerModifiedActionTree<any>,
+  >(
+    endpoint: string,
+    extend: {
+      state: State
+      getters: Getters
+      mutations: Mutations
+      actions: Actions
+    },
+    queryParams: VuexDefaultCrudParams = {},
+  ) => {
     const GLOBAL_QUERY_PARAMS: QueryPayload = {
       lang_fallback: 'any',
       translations: 1,
@@ -78,14 +68,15 @@ export const createVuexCRUD =
 
     const moduleState = () =>
       ({
-        error: null as null | Error,
+        error: null,
         isLoading: false,
         meta: {} as HeseyaPaginatedResponseMeta,
         data: [] as Item[],
-        selected: null as Item | null,
+        selected: null,
         queryParams: {},
         ...(extend?.state || {}),
-      } as DefaultStore<Item> & State)
+      } as DefaultVuexState<Item> & State)
+    type ComputedState = ReturnType<typeof moduleState>
 
     const moduleGetters = getterTree(moduleState, {
       getError(state) {
@@ -111,31 +102,28 @@ export const createVuexCRUD =
           ({ ...state.data.find(({ id }) => id === searchedId) } as Item)
       },
       ...(extend?.getters || {}),
-    })
+    }) as DefaultVuexGetters<ComputedState, Item> & Getters
 
     const moduleMutations = mutationTree(moduleState, {
-      [StoreMutations.SetError](state, newError: Error | null) {
+      [DefaultVuexMutation.SetError](state, newError) {
         state.error = newError
       },
-      [StoreMutations.SetLoading](state, isLoading: boolean) {
+      [DefaultVuexMutation.SetLoading](state, isLoading) {
         state.isLoading = isLoading
       },
-      [StoreMutations.SetMeta](state, newMeta: HeseyaPaginatedResponseMeta) {
+      [DefaultVuexMutation.SetMeta](state, newMeta) {
         state.meta = newMeta || {}
       },
-      [StoreMutations.SetQueryParams](state, newParams: Record<string, any>) {
+      [DefaultVuexMutation.SetQueryParams](state, newParams) {
         state.queryParams = newParams || {}
       },
-      [StoreMutations.SetData](state, newData: Item[] = []) {
+      [DefaultVuexMutation.SetData](state, newData) {
         state.data = newData
       },
-      [StoreMutations.AddData](state, newItem: Item) {
+      [DefaultVuexMutation.AddData](state, newItem) {
         state.data = [...state.data, newItem]
       },
-      [StoreMutations.EditData](
-        state,
-        { key, value, item: editedItem }: { key: keyof Item; value: unknown; item: Partial<Item> },
-      ) {
+      [DefaultVuexMutation.EditData](state, { key, value, item: editedItem }) {
         if (state.selected?.[key] === value) {
           // Edits selected item
           // @ts-ignore
@@ -153,26 +141,30 @@ export const createVuexCRUD =
           state.data = [...state.data, editedItem as Item]
         }
       },
-      [StoreMutations.RemoveData](state, { key, value }: { key: keyof Item; value: unknown }) {
+      [DefaultVuexMutation.RemoveData](state, { key, value }) {
         state.data = state.data.filter((item) => item[key] !== value)
       },
-      [StoreMutations.SetSelected](state, newSelected: Item) {
+      [DefaultVuexMutation.SetSelected](state, newSelected: Item) {
         state.selected = newSelected
       },
       ...(extend?.mutations || {}),
-    })
+    }) as DefaultVuexMutations<ComputedState, Item> & Mutations
 
     const moduleActions = actionTree(
-      { state: moduleState, getters: moduleGetters, mutations: moduleMutations },
+      {
+        state: moduleState,
+        getters: moduleGetters,
+        mutations: moduleMutations as DefaultVuexMutations<ComputedState, Item>,
+      },
       {
         clearData({ commit }) {
-          commit(StoreMutations.SetMeta, {} as HeseyaPaginatedResponseMeta)
-          commit(StoreMutations.SetData, [])
+          commit(DefaultVuexMutation.SetMeta, {} as HeseyaPaginatedResponseMeta)
+          commit(DefaultVuexMutation.SetData, [])
         },
 
-        async fetch({ commit }, query?: QueryPayload) {
-          commit(StoreMutations.SetError, null)
-          commit(StoreMutations.SetLoading, true)
+        async fetch({ commit }, query?: DefaultParams) {
+          commit(DefaultVuexMutation.SetError, null)
+          commit(DefaultVuexMutation.SetLoading, true)
           try {
             privateState.fetchAbortController?.abort()
             privateState.fetchAbortController = new AbortController()
@@ -183,7 +175,7 @@ export const createVuexCRUD =
               ).filter(([, value]) => !isNil(value)),
             )
 
-            commit(StoreMutations.SetQueryParams, filteredQuery)
+            commit(DefaultVuexMutation.SetQueryParams, filteredQuery)
 
             const stringQuery = stringifyQuery(filteredQuery)
 
@@ -194,58 +186,58 @@ export const createVuexCRUD =
 
             privateState.fetchAbortController = null
 
-            commit(StoreMutations.SetMeta, data.meta)
-            commit(StoreMutations.SetData, data.data)
-            commit(StoreMutations.SetLoading, false)
+            commit(DefaultVuexMutation.SetMeta, data.meta)
+            commit(DefaultVuexMutation.SetData, data.data)
+            commit(DefaultVuexMutation.SetLoading, false)
             return data.data
           } catch (error: any) {
-            commit(StoreMutations.SetLoading, false)
+            commit(DefaultVuexMutation.SetLoading, false)
             // If request was canceled, do not report error
-            if (!axios.isCancel(error)) commit(StoreMutations.SetError, error)
+            if (!axios.isCancel(error)) commit(DefaultVuexMutation.SetError, error)
             return false
           }
         },
         async get({ commit }, id: string) {
-          commit(StoreMutations.SetError, null)
-          commit(StoreMutations.SetLoading, true)
+          commit(DefaultVuexMutation.SetError, null)
+          commit(DefaultVuexMutation.SetLoading, true)
           try {
             const stringQuery = stringifyQuery(
               assign({}, GLOBAL_QUERY_PARAMS, queryParams.get || {}),
             )
             const { data } = await api.get<{ data: Item }>(`/${endpoint}/id:${id}${stringQuery}`)
             // @ts-ignore type is correct, but TS is screaming
-            commit(StoreMutations.SetSelected, data.data)
-            commit(StoreMutations.SetLoading, false)
+            commit(DefaultVuexMutation.SetSelected, data.data)
+            commit(DefaultVuexMutation.SetLoading, false)
             return data.data
           } catch (error: any) {
-            commit(StoreMutations.SetError, error)
-            commit(StoreMutations.SetLoading, false)
+            commit(DefaultVuexMutation.SetError, error)
+            commit(DefaultVuexMutation.SetLoading, false)
             return false
           }
         },
 
         async add({ commit }, item: CreateItemDTO) {
-          commit(StoreMutations.SetError, null)
-          commit(StoreMutations.SetLoading, true)
+          commit(DefaultVuexMutation.SetError, null)
+          commit(DefaultVuexMutation.SetLoading, true)
           try {
             const stringQuery = stringifyQuery(
               assign({}, GLOBAL_QUERY_PARAMS, queryParams.add || {}),
             )
             const { data } = await api.post<{ data: Item }>(`/${endpoint}${stringQuery}`, item)
             // @ts-ignore type is correct, but TS is screaming
-            commit(StoreMutations.AddData, data.data)
-            commit(StoreMutations.SetLoading, false)
+            commit(DefaultVuexMutation.AddData, data.data)
+            commit(DefaultVuexMutation.SetLoading, false)
             return data.data
           } catch (error: any) {
-            commit(StoreMutations.SetError, error)
-            commit(StoreMutations.SetLoading, false)
+            commit(DefaultVuexMutation.SetError, error)
+            commit(DefaultVuexMutation.SetLoading, false)
             return false
           }
         },
 
         async edit({ commit }, { id, item }: { id: string; item: UpdateItemDTO }) {
-          commit(StoreMutations.SetLoading, true)
-          commit(StoreMutations.SetError, null)
+          commit(DefaultVuexMutation.SetLoading, true)
+          commit(DefaultVuexMutation.SetError, null)
           try {
             const stringQuery = stringifyQuery(
               assign({}, GLOBAL_QUERY_PARAMS, queryParams.edit || {}),
@@ -254,19 +246,19 @@ export const createVuexCRUD =
               `/${endpoint}/id:${id}${stringQuery}`,
               item,
             )
-            commit(StoreMutations.EditData, { key: 'id', value: id, item: data.data })
-            commit(StoreMutations.SetLoading, false)
+            commit(DefaultVuexMutation.EditData, { key: 'id', value: id, item: data.data })
+            commit(DefaultVuexMutation.SetLoading, false)
             return data.data
           } catch (error: any) {
-            commit(StoreMutations.SetError, error)
-            commit(StoreMutations.SetLoading, false)
+            commit(DefaultVuexMutation.SetError, error)
+            commit(DefaultVuexMutation.SetLoading, false)
             return false
           }
         },
 
         async update({ commit }, { id, item }: { id: string; item: Partial<UpdateItemDTO> }) {
-          commit(StoreMutations.SetLoading, true)
-          commit(StoreMutations.SetError, null)
+          commit(DefaultVuexMutation.SetLoading, true)
+          commit(DefaultVuexMutation.SetError, null)
           try {
             const stringQuery = stringifyQuery(
               assign({}, GLOBAL_QUERY_PARAMS, queryParams.update || {}),
@@ -275,12 +267,12 @@ export const createVuexCRUD =
               `/${endpoint}/id:${id}${stringQuery}`,
               item,
             )
-            commit(StoreMutations.EditData, { key: 'id', value: id, item: data.data })
-            commit(StoreMutations.SetLoading, false)
+            commit(DefaultVuexMutation.EditData, { key: 'id', value: id, item: data.data })
+            commit(DefaultVuexMutation.SetLoading, false)
             return data.data
           } catch (error: any) {
-            commit(StoreMutations.SetError, error)
-            commit(StoreMutations.SetLoading, false)
+            commit(DefaultVuexMutation.SetError, error)
+            commit(DefaultVuexMutation.SetLoading, false)
             return false
           }
         },
@@ -288,8 +280,8 @@ export const createVuexCRUD =
           { commit },
           { key, value, item }: { key: keyof Item; value: unknown; item: Partial<UpdateItemDTO> },
         ) {
-          commit(StoreMutations.SetLoading, true)
-          commit(StoreMutations.SetError, null)
+          commit(DefaultVuexMutation.SetLoading, true)
+          commit(DefaultVuexMutation.SetError, null)
           try {
             const stringQuery = stringifyQuery(
               assign({}, GLOBAL_QUERY_PARAMS, queryParams.update || {}),
@@ -298,19 +290,19 @@ export const createVuexCRUD =
               `/${endpoint}/${value}${stringQuery}`,
               item,
             )
-            commit(StoreMutations.EditData, { key, value, item: data.data })
-            commit(StoreMutations.SetLoading, false)
+            commit(DefaultVuexMutation.EditData, { key, value, item: data.data })
+            commit(DefaultVuexMutation.SetLoading, false)
             return data.data
           } catch (error: any) {
-            commit(StoreMutations.SetError, error)
-            commit(StoreMutations.SetLoading, false)
+            commit(DefaultVuexMutation.SetError, error)
+            commit(DefaultVuexMutation.SetLoading, false)
             return false
           }
         },
 
-        async remove({ commit }, payload: string | { value: string; params: QueryPayload }) {
-          commit(StoreMutations.SetLoading, true)
-          commit(StoreMutations.SetError, null)
+        async remove({ commit }, payload: string | { value: string; params: DefaultParams }) {
+          commit(DefaultVuexMutation.SetLoading, true)
+          commit(DefaultVuexMutation.SetError, null)
 
           try {
             const id = typeof payload === 'string' ? payload : payload.value
@@ -320,37 +312,37 @@ export const createVuexCRUD =
             const stringQuery = stringifyQuery(params)
 
             await api.delete(`/${endpoint}/id:${id}${stringQuery}`)
-            commit(StoreMutations.RemoveData, { key: 'id', value: id })
-            commit(StoreMutations.SetLoading, false)
+            commit(DefaultVuexMutation.RemoveData, { key: 'id', value: id })
+            commit(DefaultVuexMutation.SetLoading, false)
             return true
           } catch (error: any) {
-            commit(StoreMutations.SetError, error)
-            commit(StoreMutations.SetLoading, false)
+            commit(DefaultVuexMutation.SetError, error)
+            commit(DefaultVuexMutation.SetLoading, false)
             return false
           }
         },
         async removeByKey({ commit }, { key, value }: { key: keyof Item; value: unknown }) {
-          commit(StoreMutations.SetLoading, true)
-          commit(StoreMutations.SetError, null)
+          commit(DefaultVuexMutation.SetLoading, true)
+          commit(DefaultVuexMutation.SetError, null)
           try {
             const stringQuery = stringifyQuery(
               assign({}, GLOBAL_QUERY_PARAMS, queryParams.remove || {}),
             )
             await api.delete(`/${endpoint}/${value}${stringQuery}`)
-            commit(StoreMutations.RemoveData, { key, value })
-            commit(StoreMutations.SetLoading, false)
+            commit(DefaultVuexMutation.RemoveData, { key, value })
+            commit(DefaultVuexMutation.SetLoading, false)
             return true
           } catch (error: any) {
-            commit(StoreMutations.SetError, error)
-            commit(StoreMutations.SetLoading, false)
+            commit(DefaultVuexMutation.SetError, error)
+            commit(DefaultVuexMutation.SetLoading, false)
             return false
           }
         },
 
         // Audits
         async fetchAudits({ commit }, id: UUID) {
-          commit(StoreMutations.SetError, null)
-          commit(StoreMutations.SetLoading, true)
+          commit(DefaultVuexMutation.SetError, null)
+          commit(DefaultVuexMutation.SetLoading, true)
           try {
             const stringQuery = stringifyQuery(
               assign({}, GLOBAL_QUERY_PARAMS, queryParams.get || {}),
@@ -358,11 +350,11 @@ export const createVuexCRUD =
             const { data } = await api.get<{ data: EntityAudits<Item>[] }>(
               `/audits/${endpoint}/id:${id}${stringQuery}`,
             )
-            commit(StoreMutations.SetLoading, false)
+            commit(DefaultVuexMutation.SetLoading, false)
             return data.data
           } catch (error: any) {
-            commit(StoreMutations.SetError, error)
-            commit(StoreMutations.SetLoading, false)
+            commit(DefaultVuexMutation.SetError, error)
+            commit(DefaultVuexMutation.SetLoading, false)
             return []
           }
         },
@@ -370,30 +362,34 @@ export const createVuexCRUD =
         // Metadata
         async updateMetadata(
           { commit },
-          payload: { id: UUID; metadata: MetadataUpdateDto; public: boolean },
+          {
+            id,
+            metadata,
+            public: isPublic,
+          }: { id: UUID; metadata: MetadataUpdateDto; public: boolean },
         ) {
-          commit(StoreMutations.SetError, null)
-          commit(StoreMutations.SetLoading, true)
+          commit(DefaultVuexMutation.SetError, null)
+          commit(DefaultVuexMutation.SetLoading, true)
           try {
-            const path = payload.public ? 'metadata' : 'metadata-private'
+            const path = isPublic ? 'metadata' : 'metadata-private'
             const { data } = await api.patch<{ data: Metadata }>(
-              `/${endpoint}/id:${payload.id}/${path}`,
-              payload.metadata,
+              `/${endpoint}/id:${id}/${path}`,
+              metadata,
             )
 
             // ? Typescript is complaining, that Item does not need to have metadata, but if this method is called, it does
+            // ? When removing all metadata, empty response is an array instead of object
             // @ts-ignore
-            commit(StoreMutations.EditData, {
-              key: 'id',
-              value: payload.id,
-              // When removing all metadata, empty response is an array instead of object
-              item: { [path]: Array.isArray(data.data) ? {} : data.data },
-            })
-            commit(StoreMutations.SetLoading, false)
+            // commit(StoreMutations.EditData, {
+            //   key: 'id',
+            //   value: id,
+            //   item: { [isPublic ? 'metadata' : 'metadata_private']: Array.isArray(data.data) ? {} : data.data },
+            // })
+            commit(DefaultVuexMutation.SetLoading, false)
             return data.data
           } catch (error: any) {
-            commit(StoreMutations.SetError, error)
-            commit(StoreMutations.SetLoading, false)
+            commit(DefaultVuexMutation.SetError, error)
+            commit(DefaultVuexMutation.SetLoading, false)
             return {}
           }
         },

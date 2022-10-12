@@ -215,10 +215,10 @@ export default Vue.extend({
 
   .order-icon {
     display: inline-block;
-    background-color: #000000;
+    background-color: var(--black-color);
     padding: 3px 4px 2px;
     border-radius: 50%;
-    color: #ffffff;
+    color: var(--white-color);
     font-size: 0.6em;
     margin-left: 4px;
     position: relative;

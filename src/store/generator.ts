@@ -57,7 +57,7 @@ export const createVuexCRUD =
     },
     queryParams: VuexDefaultCrudParams = {},
   ) => {
-    const GLOBAL_QUERY_PARAMS: QueryPayload = {
+    const GLOBAL_QUERY_PARAMS = {
       lang_fallback: 'any',
       translations: 1,
     }

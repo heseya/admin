@@ -5,6 +5,7 @@
       store-key="items"
       :filters="filters"
       :table="tableConfig"
+      :xlsx-file-config="fileConfig"
       @search="makeSearch"
       @clear-filters="clearFilters"
     >
@@ -41,9 +42,9 @@
       "sku": "SKU",
       "quantity": "Ilość w magazynie",
       "unlimited": "Nieograniczona możliwość zakupu",
-      "availibility": "Dostępność",
-      "availibilityTime": "w {time} dni",
-      "availibilityDate": "od {date}"
+      "availability": "Dostępność",
+      "availabilityTime": "w {time} dni",
+      "availabilityDate": "od {date}"
     }
   },
   "en": {
@@ -56,9 +57,9 @@
       "sku": "SKU",
       "quantity": "Quantity in stock",
       "unlimited": "Unlimited purchase",
-      "availibility": "Availibility",
-      "availibilityTime": "in {time} days",
-      "availibilityDate": "from {date}"
+      "availability": "Availibility",
+      "availabilityTime": "in {time} days",
+      "availabilityDate": "from {date}"
     }
   }
 }
@@ -82,6 +83,7 @@ import { TableConfig } from '@/interfaces/CmsTable'
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 import { formatFilters } from '@/utils/utils'
 import { formatDate } from '@/utils/dates'
+import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 
 const EMPTY_FORM: WarehouseItemCreateDto = {
   name: '',
@@ -114,7 +116,6 @@ export default Vue.extend({
   }),
   computed: {
     depositsError(): Error | null {
-      // @ts-ignore // TODO: fix extended store getters typings
       return this.$accessor.items.getDepositError
     },
     canModify(): boolean {
@@ -138,19 +139,11 @@ export default Vue.extend({
             sortable: true,
           },
           {
-            key: 'availibility',
-            label: this.$t('table.availibility') as string,
+            key: 'availability',
+            label: this.$t('table.availability') as string,
             width: '0.6fr',
             sortable: true,
-            render: (_v, item) => {
-              if (item.shipping_time)
-                return this.$t('table.availibilityTime', { time: item.shipping_time }) as string
-              if (item.shipping_date)
-                return this.$t('table.availibilityDate', {
-                  date: formatDate(item.shipping_date),
-                }) as string
-              return '-'
-            },
+            render: (_v, item) => this.formatAvailability(item),
           },
           {
             key: 'unlimited',
@@ -159,6 +152,24 @@ export default Vue.extend({
             sortable: true,
             render: (_v, item) =>
               !!item.unlimited_stock_shipping_time || !!item.unlimited_stock_shipping_date,
+          },
+        ],
+      }
+    },
+    fileConfig(): XlsxFileConfig<WarehouseItem> {
+      return {
+        name: this.$t('title') as string,
+        headers: [
+          { key: 'sku', label: this.$t('table.sku') as string },
+          { key: 'name', label: this.$t('common.form.name') as string },
+          {
+            key: 'quantity',
+            label: this.$t('table.quantity') as string,
+          },
+          {
+            key: 'availability',
+            label: this.$t('table.availability') as string,
+            format: (_v, item) => this.formatAvailability(item),
           },
         ],
       }
@@ -179,6 +190,16 @@ export default Vue.extend({
     this.filters.sort = (this.$route.query.sort as string) || ''
   },
   methods: {
+    formatAvailability(item: WarehouseItem) {
+      if (item.shipping_time)
+        return this.$t('table.availabilityTime', { time: item.shipping_time }) as string
+      if (item.shipping_date)
+        return this.$t('table.availabilityDate', {
+          date: formatDate(item.shipping_date),
+        }) as string
+      return '-'
+    },
+
     makeSearch(filters: ItemsFilersType) {
       this.filters = filters
 

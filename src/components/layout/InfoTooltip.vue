@@ -31,7 +31,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .info-tooltip {
   &__icon {
-    color: $blue-color-500;
+    color: var(--blue-color-500);
     font-size: 0.9em;
   }
 }

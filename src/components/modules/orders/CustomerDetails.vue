@@ -198,10 +198,10 @@ export default Vue.extend({
   }
 
   &__email {
-    color: $font-color;
+    color: var(--font-color);
 
     &:hover {
-      color: $primary-color-500;
+      color: var(--primary-color-500);
     }
   }
 }
@@ -212,14 +212,14 @@ export default Vue.extend({
 
   &__empty {
     font-style: italic;
-    color: $gray-color-600;
+    color: var(--gray-color-600);
   }
 
   &--filled {
-    background: $primary-color-500;
+    background: var(--primary-color-500);
 
-    :deep(.order-field__value, .order-field__label) {
-      color: #fff;
+    :deep(.field__value, .field__label) {
+      color: var(--white-color);
     }
   }
 }
@@ -227,7 +227,7 @@ export default Vue.extend({
 .section-edit-btn {
   // position: absolute;
   top: 3px;
-  color: $gray-color-500;
+  color: var(--gray-color-500);
   right: 0;
 }
 </style>

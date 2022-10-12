@@ -210,6 +210,15 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/settings/media',
+      name: 'Media',
+      component: () => import('./views/settings/Media.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Media.Show],
+      },
+    },
+    {
       path: '/apps',
       name: 'Apps',
       component: () => import('./views/apps/index.vue'),
@@ -336,11 +345,21 @@ const router = new VueRouter({
     },
     {
       path: '/settings/users',
-      name: 'Users',
-      component: () => import('./views/settings/Users.vue'),
+      name: 'UsersList',
+      component: () => import('./views/users/index.vue'),
       meta: {
         requiresAuth: true,
         permissions: [Permissions.Users.Show],
+      },
+    },
+    {
+      path: '/settings/users/:id',
+      name: 'UserDetails',
+      component: () => import('./views/users/view.vue'),
+      meta: {
+        returnUrl: '/settings/users',
+        requiresAuth: true,
+        permissions: [Permissions.Users.ShowDetails],
       },
     },
     {
@@ -368,6 +387,27 @@ const router = new VueRouter({
         returnUrl: '/settings/roles',
         requiresAuth: true,
         permissions: [Permissions.Roles.ShowDetails],
+      },
+    },
+    {
+      path: '/b2b/companies',
+      name: 'CompaniesList',
+      component: () => import('./views/b2b/index.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Roles.Show],
+        disabled: () => accessor.config.env.b2b_enabled !== '1',
+      },
+    },
+    {
+      path: '/b2b/companies/:id',
+      name: 'CompanyView',
+      component: () => import('./views/b2b/view.vue'),
+      meta: {
+        returnUrl: '/b2b/companies',
+        requiresAuth: true,
+        permissions: [Permissions.Roles.ShowDetails],
+        disabled: () => accessor.config.env.b2b_enabled !== '1',
       },
     },
     {
@@ -416,15 +456,6 @@ const router = new VueRouter({
         requiresAuth: true,
       },
     },
-    // {
-    //   path: '/settings/login-history',
-    //   name: 'LoginHistory',
-    //   component: () => import('./views/settings/LoginHistory.vue'),
-    //   meta: {
-    //     requiresAuth: true,
-    //     permissions: [Permissions.Auth.SessionsShow],
-    //   },
-    // },
     {
       path: '/403',
       name: 'Error403',
@@ -472,6 +503,10 @@ router.beforeEach((to, from, next) => {
     accessor.auth.setPermissionsError(new Error('Not authorized'))
     if (!from.name) next('/403')
     return
+  }
+
+  if (typeof to.meta?.disabled === 'function' ? to.meta?.disabled?.() : to.meta?.disabled) {
+    return next('/404')
   }
 
   next()

@@ -52,8 +52,7 @@ export default Vue.extend({
   },
   computed: {
     formId(): string {
-      // ? Unofficial Vue api
-      // @ts-ignore
+      // @ts-ignore // ? Unofficial Vue api
       return this._uid
     },
     form: {

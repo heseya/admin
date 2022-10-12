@@ -60,11 +60,11 @@ export default Vue.extend({
   }
 
   &__true {
-    color: $green-color-500;
+    color: var(--green-color-500);
   }
 
   &__false {
-    color: $red-color-500;
+    color: var(--red-color-500);
   }
 }
 </style>

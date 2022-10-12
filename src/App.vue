@@ -102,7 +102,7 @@ export default Vue.extend({
   },
   created() {
     initMicroApps()
-    this.$accessor.fetchEnv()
+    this.$accessor.config.fetchSettings()
     this.$accessor.menuItems.initMicrofrontendMenuItems()
 
     if (this.$accessor.auth.isLogged) this.$accessor.auth.fetchProfile()
@@ -205,7 +205,7 @@ export default Vue.extend({
     padding: 10px;
     width: $navWidth;
     font-size: 0.7em;
-    color: #bec1c7;
+    color: var(--gray-color-400);
 
     &--center {
       text-align: center;

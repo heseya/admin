@@ -84,8 +84,8 @@ export default Vue.extend({
 
   all: unset;
   appearance: none !important;
-  background-color: #2d2e31;
-  color: #ffffff;
+  background-color: var(--font-color);
+  color: var(--white-color);
   cursor: pointer;
   padding: 8px 16px;
   line-height: 1em;
@@ -97,8 +97,8 @@ export default Vue.extend({
   min-height: $default-icon-size;
 
   &:hover {
-    background-color: #45464a;
-    color: #ffffff;
+    background-color: var(--gray-color-900);
+    color: var(--white-color);
   }
 
   &::before,
@@ -126,8 +126,8 @@ export default Vue.extend({
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    border: solid 2px #fff;
-    border-top-color: #fff0;
+    border: solid 2px var(--white-color);
+    border-top-color: $transparent;
     animation: spin infinite 0.6s;
   }
 
@@ -174,36 +174,36 @@ export default Vue.extend({
   }
 
   &--white {
-    background-color: #fff;
-    color: $font-color;
+    background-color: var(--white-color);
+    color: var(--font-color);
     box-shadow: $shadow;
 
     &:hover {
-      background-color: #fff;
-      color: $primary-color-500;
+      background-color: var(--white-color);
+      color: var(--primary-color-500);
     }
   }
 
   &--primary {
-    background-color: $primary-color-500;
+    background-color: var(--primary-color-500);
 
     &:hover {
-      background-color: $primary-color-700;
+      background-color: var(--primary-color-700);
     }
   }
   &--success {
-    background-color: $green-color-500;
+    background-color: var(--green-color-500);
 
     &:hover {
-      background-color: $green-color-400;
+      background-color: var(--green-color-400);
     }
   }
 
   &--danger {
-    background-color: $red-color-500;
+    background-color: var(--red-color-500);
 
     &:hover {
-      background-color: $red-color-400;
+      background-color: var(--red-color-400);
     }
   }
 }

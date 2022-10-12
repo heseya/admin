@@ -1,9 +1,9 @@
 <template>
   <div class="product-visibility-switch">
-    <switch-input v-model="form.public" horizontal :disabled="disabled" :label="$t('isPublic')">
-      <template #unCheckedChildren> <i class="bx bxs-low-vision"></i> </template>
-      <template #checkedChildren> <i class="bx bx-show"></i> </template>
-    </switch-input>
+    <div class="product-visibility-switch__input">
+      <switch-input v-model="form.public" name="public" :disabled="disabled" />
+      <label for="public">{{ form.public ? $t('visible') : $t('notVisible') }}</label>
+    </div>
     <template v-if="!product.visible && product.public">
       <br />
       <a-alert
@@ -19,14 +19,16 @@
 <i18n>
 {
   "pl": {
-    "isPublic": "Widoczność produktu",
+    "visible": "Widoczny",
+    "notVisible": "Ukryty",
     "stillVisible": {
       "title": "Produkt wciąż jest ukryty",
       "description": "Produkt jest niewidoczny ponieważ jego marka lub kategoria jest ukryta."
     }
   },
   "en": {
-    "isPublic": "Product visibility",
+    "visible": "Visible",
+    "notVisible": "Hidden",
     "stillVisible": {
       "title": "Product is still hidden",
       "description": "Product is hidden because its brand or category is hidden."
@@ -65,3 +67,18 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.product-visibility-switch {
+  &__input {
+    display: flex;
+    align-items: center;
+    margin: 12px 0;
+
+    label {
+      display: block;
+      margin-left: 1em;
+    }
+  }
+}
+</style>

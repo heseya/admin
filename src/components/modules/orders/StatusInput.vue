@@ -64,7 +64,6 @@ export default Vue.extend({
     async updateOrderStatus(newStatus: UUID) {
       this.isLoading = true
 
-      // @ts-ignore // TODO: fix extended store actions typings
       const success = await this.$accessor.orders.changeStatus({
         orderId: this.order.id,
         statusId: newStatus,
@@ -92,7 +91,7 @@ export default Vue.extend({
     display: block;
     width: 12px;
     height: 12px;
-    background-color: $primary-color-500;
+    background-color: var(--primary-color-500);
     border-radius: 50%;
     margin-right: 8px;
   }

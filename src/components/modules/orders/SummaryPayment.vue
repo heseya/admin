@@ -81,7 +81,7 @@ import { Order, Payment } from '@heseya/store-core'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import InfoTooltip from '@/components/layout/InfoTooltip.vue'
 
-import { api } from '@/api'
+import { sdk } from '@/api'
 import { formatCurrency } from '@/utils/currency'
 import { PAYMENT_METHODS } from '@/consts/paymentMethods'
 
@@ -103,12 +103,12 @@ export default Vue.extend({
   },
   methods: {
     formatCurrency(amount: number) {
-      return formatCurrency(amount, this.$accessor.currency)
+      return formatCurrency(amount, this.$accessor.config.currency)
     },
     async payOffline() {
       this.$accessor.startLoading()
       try {
-        await api.post(`/orders/${this.order.code}/pay/offline`)
+        await sdk.Orders.pay(this.order.code, 'offline', '/')
         await this.$accessor.orders.get(this.$route.params.id)
         this.$toast.success(this.$t('offlinePayment.resultSuccess') as string)
       } catch {

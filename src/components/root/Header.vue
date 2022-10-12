@@ -65,7 +65,7 @@ export default Vue.extend({
       return !!this.$route.meta?.hiddenNav || false
     },
     storeName(): string {
-      return this.$accessor.env.store_name
+      return this.$accessor.config.env.store_name
     },
     returnUrl(): string | null {
       const previousRoute: { path: string; fullPath: string } | null = JSON.parse(
@@ -115,7 +115,7 @@ export default Vue.extend({
   }
 
   &__text {
-    color: $gray-color-500;
+    color: var(--gray-color-500);
     font-weight: 300;
     font-size: 0.9em;
   }
@@ -137,11 +137,11 @@ export default Vue.extend({
   align-items: center;
 
   &__role {
-    background-color: #ffffff;
+    background-color: var(--white-color);
     padding: 4px 8px;
     border-radius: 20px;
-    color: $primary-color-500;
-    border: solid 1px $background-color-600;
+    color: var(--primary-color-500);
+    border: solid 1px var(--background-color-600);
     font-size: 0.8em;
     margin-right: 4px;
   }
@@ -155,7 +155,7 @@ export default Vue.extend({
     transition: 0.3s;
 
     &:hover {
-      background-color: $primary-color-100;
+      background-color: var(--primary-color-100);
     }
   }
 }

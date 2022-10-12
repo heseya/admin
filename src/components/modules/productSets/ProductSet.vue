@@ -155,8 +155,8 @@
 import Vue from 'vue'
 import Draggable from 'vuedraggable'
 import { cloneDeep } from 'lodash'
-import { ProductSet, ProductSetUpdateDto, HeseyaPaginatedResponseMeta } from '@heseya/store-core'
-import { api } from '@/api'
+import { ProductSet, ProductSetUpdateDto, ProductSetList } from '@heseya/store-core'
+import { sdk } from '@/api'
 
 import Loading from '@/components/layout/Loading.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
@@ -190,8 +190,8 @@ export default Vue.extend({
     childrenQuantity: 0,
     page: 1,
     limit: 50,
-    children: [] as ProductSet[],
-    searchedChildren: [] as ProductSet[],
+    children: [] as ProductSetList[],
+    searchedChildren: [] as ProductSetList[],
     selectedSet: null as null | ProductSet,
     selectedChildren: null as null | ProductSet,
     editedItem: cloneDeep(CLEAR_PRODUCT_SET_FORM) as ProductSetUpdateDto,
@@ -211,7 +211,7 @@ export default Vue.extend({
       return this.children.length < this.childrenQuantity
     },
     uniqueChildren: {
-      get(): ProductSet[] {
+      get(): ProductSetList[] {
         if (!this.searchedChildren.length) {
           return this.children
         }
@@ -229,7 +229,7 @@ export default Vue.extend({
       this.$emit('delete-child', setId)
     },
 
-    updateChild(set: ProductSet) {
+    updateChild(set: ProductSetList) {
       const updatedIndex = this.children.findIndex((child) => child.id === set.id)
       this.children.splice(updatedIndex, 1, { ...set, children_ids: [] })
     },
@@ -246,14 +246,14 @@ export default Vue.extend({
             this.limit,
             this.page - 1,
           )
-          this.children.push(subcollections.pop() as ProductSet)
+          this.children.push(subcollections.pop() as ProductSetList)
         } catch (error: any) {}
         this.$accessor.stopLoading()
       }
     },
     async onDrop() {
       this.$accessor.startLoading()
-      // @ts-ignore // TODO: fix extended store actions typings
+
       await this.$accessor.productSets.reorderChildren({
         parentId: this.set.id,
         ids: this.children.map((i) => i.id),
@@ -284,11 +284,13 @@ export default Vue.extend({
       this.isLoading = false
     },
     async fetchByParentId(parentId: UUID, limit: number, page: number) {
-      const { data: res } = await api.get<{
-        data: ProductSet[]
-        meta: HeseyaPaginatedResponseMeta
-      }>(`/product-sets?parent_id=${parentId}&page=${page}&tree=0&limit=${limit}`)
-      return res
+      const list = await sdk.ProductSets.get({
+        parent_id: parentId,
+        page,
+        limit,
+        tree: false,
+      })
+      return list
     },
     async deleteCollection() {
       this.$accessor.startLoading()
@@ -319,11 +321,11 @@ export default Vue.extend({
   display: flex;
   padding: 6px 8px;
   padding-right: 0;
-  border-bottom: solid 1px $background-color-700;
+  border-bottom: solid 1px var(--background-color-700);
   transition: 0.3s;
 
   &--searched {
-    background-color: $green-color-200;
+    background-color: var(--green-color-200);
   }
 
   &__search {
@@ -334,7 +336,7 @@ export default Vue.extend({
 
   &.sortable-chosen,
   &:hover {
-    background-color: $background-color-500;
+    background-color: var(--background-color-500);
   }
 
   &__hidden-icon {
@@ -350,7 +352,7 @@ export default Vue.extend({
   }
 
   &__line {
-    background-color: #f7eff0;
+    background-color: var(--primary-color-100);
     border-radius: 20px;
     width: 4px;
     height: calc(100% - 30px);
@@ -373,7 +375,7 @@ export default Vue.extend({
 
     small {
       font-weight: 400;
-      color: $gray-color-500;
+      color: var(--gray-color-500);
       margin-left: 5px;
     }
   }
@@ -391,7 +393,7 @@ export default Vue.extend({
   &__public {
     border-radius: 25px;
     padding: 0.2em 1em;
-    color: $gray-color-500;
+    color: var(--gray-color-500);
     display: flex;
     font-size: 11px;
     align-items: center;
@@ -399,8 +401,8 @@ export default Vue.extend({
     margin: auto 0;
 
     &--visible {
-      background: #e6fbe6 0% 0% no-repeat padding-box;
-      color: #10d310;
+      background: var(--green-color-100) 0% 0% no-repeat padding-box;
+      color: var(--green-color-500);
     }
   }
 

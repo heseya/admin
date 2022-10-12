@@ -12,6 +12,7 @@ export const createFurgonetkaPackage = async (
   provider: string,
 ) => {
   try {
+    // TODO[SDK]: request does not exist in sdk
     const { status, data } = await api.post<{ shipping_number: string }>(
       'furgonetka/create-package',
       {

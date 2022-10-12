@@ -7,7 +7,7 @@
         </template>
         <template v-else>
           {{ $t('newTitle') }}
-          <small class="gray-text" v-if="parent">
+          <small v-if="parent" class="gray-text">
             ({{ $t('titleSubcollection') }}
             <router-link :to="`/collections/${parent.id}`">{{ parent.name }}</router-link
             >)

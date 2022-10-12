@@ -1,8 +1,9 @@
-import { Role, RoleCreateDto, PermissionEntry } from '@heseya/store-core'
-import { createVuexCRUD, StoreMutations } from './generator'
-import { api } from '@/api'
+import { Role, RoleCreateDto, PermissionEntry, RoleUpdateDto } from '@heseya/store-core'
+import { createVuexCRUD } from './generator'
+import { DefaultVuexMutation } from '@/interfaces/VuexGenerator'
+import { sdk } from '@/api'
 
-export const roles = createVuexCRUD<Role, RoleCreateDto, RoleCreateDto>()('roles', {
+export const roles = createVuexCRUD<Role, RoleCreateDto, RoleUpdateDto>()('roles', {
   state: {
     permissions: [] as PermissionEntry[],
   },
@@ -14,15 +15,15 @@ export const roles = createVuexCRUD<Role, RoleCreateDto, RoleCreateDto>()('roles
   },
   actions: {
     async fetchPermissions({ commit }) {
-      commit(StoreMutations.SetLoading, true)
+      commit(DefaultVuexMutation.SetLoading, true)
       try {
-        const response = await api.get<{ data: PermissionEntry[] }>('/permissions')
-        commit('SET_PERMISSIONS', response.data.data)
-        commit(StoreMutations.SetError, null)
+        const permissions = await sdk.Roles.getPermissions()
+        commit('SET_PERMISSIONS', permissions)
+        commit(DefaultVuexMutation.SetError, null)
       } catch (e: any) {
-        commit(StoreMutations.SetError, e)
+        commit(DefaultVuexMutation.SetError, e)
       }
-      commit(StoreMutations.SetLoading, false)
+      commit(DefaultVuexMutation.SetLoading, false)
     },
   },
 })

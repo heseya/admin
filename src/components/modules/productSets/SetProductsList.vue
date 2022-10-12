@@ -96,7 +96,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import Draggable from 'vuedraggable'
-import { Product, ProductSet, HeseyaPaginatedResponseMeta } from '@heseya/store-core'
+import { ProductList, ProductSet } from '@heseya/store-core'
 
 import Selector from '@/components/Selector.vue'
 import Empty from '@/components/layout/Empty.vue'
@@ -105,7 +105,7 @@ import ProductPrice from '@/components/modules/products/ProductPrice.vue'
 
 import { UUID } from '@/interfaces/UUID'
 
-import { api } from '@/api'
+import { sdk } from '@/api'
 import { formatCurrency } from '@/utils/currency'
 import { formatApiNotificationError } from '@/utils/errors'
 
@@ -123,11 +123,11 @@ export default Vue.extend({
   },
   data: () => ({
     isSelectorActive: false,
-    products: [] as (Product & { unsaved?: true })[],
+    products: [] as (ProductList & { unsaved?: true })[],
   }),
   computed: {
     objectFit(): string {
-      return +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'
+      return +this.$accessor.config.env.dashboard_products_contain ? 'contain' : 'cover'
     },
   },
   watch: {
@@ -137,9 +137,9 @@ export default Vue.extend({
   },
   methods: {
     formatCurrency(amount: number) {
-      return formatCurrency(amount, this.$accessor.currency)
+      return formatCurrency(amount, this.$accessor.config.currency)
     },
-    addProduct(product: Product) {
+    addProduct(product: ProductList) {
       this.products.push({ ...product, unsaved: true })
     },
     removeProduct(productId: UUID) {
@@ -163,14 +163,13 @@ export default Vue.extend({
         this.products = []
 
         do {
-          const {
-            data: { data: products, meta },
-          } = await api.get<{ data: Product[]; meta: HeseyaPaginatedResponseMeta }>(
-            `/product-sets/id:${this.set.id}/products?limit=30&page=${page}`,
-          )
+          const { data: products, pagination } = await sdk.ProductSets.getProducts(this.set.id, {
+            limit: 100,
+            page,
+          })
           this.products.push(...products)
           page++
-          lastPage = meta.last_page
+          lastPage = pagination.lastPage
         } while (page < lastPage)
       } catch (e: any) {
         this.$toast.error(formatApiNotificationError(e))
@@ -181,13 +180,13 @@ export default Vue.extend({
     async reorderSetProducts({
       moved,
     }: {
-      moved: { element: Product; newIndex: number; oldIndex: number }
+      moved: { element: ProductList; newIndex: number; oldIndex: number }
     }) {
       if (!this.set) return
       try {
-        await api.post(`/product-sets/id:${this.set.id}/products/reorder`, {
-          products: [{ id: moved.element.id, order: moved.newIndex }],
-        })
+        await sdk.ProductSets.reorderProducts(this.set.id, [
+          { id: moved.element.id, order: moved.newIndex },
+        ])
         // Move element in local array to the new index
         this.products.splice(moved.newIndex, 0, this.products.splice(moved.oldIndex, 1)[0])
       } catch (e: any) {
@@ -200,7 +199,7 @@ export default Vue.extend({
       this.$accessor.startLoading()
       try {
         const products = this.products.map((p) => p.id)
-        await api.post(`/product-sets/id:${this.set.id}/products`, { products })
+        await sdk.ProductSets.updateProducts(this.set.id, products)
         this.$toast.success(this.$t('successMessage') as string)
         this.$emit('close')
       } catch (e: any) {
@@ -244,7 +243,7 @@ export default Vue.extend({
   }
 
   &:hover {
-    background-color: #f5f5f5;
+    background-color: var(--background-color-500);
   }
 
   &__main {

@@ -48,10 +48,10 @@
           <Log v-for="log in logs" :key="log.id" :data="log" />
 
           <pagination
-            v-if="logsMeta.last_page > 1"
+            v-if="logsMeta.lastPage > 1"
             class="logs-modal__pagination"
-            :length="logsMeta.last_page"
-            :value="logsMeta.current_page"
+            :length="logsMeta.lastPage"
+            :value="logsMeta.currentPage"
             @input="fetchLogs"
           />
         </template>
@@ -89,7 +89,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
-import { WebhookEntry, WebhookEntryUpdateDto, WebhookEventLog } from '@heseya/store-core'
+import {
+  HeseyaPaginationMeta,
+  WebhookEntry,
+  WebhookEntryUpdateDto,
+  WebhookEventLog,
+} from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
@@ -99,7 +104,6 @@ import Pagination from '@/components/cms/Pagination.vue'
 import Log from '@/components/modules/webhooks/Log.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
-import { ResponseMeta } from '@/interfaces/Response'
 import Loading from '@/components/layout/Loading.vue'
 
 const CLEAR_FORM: WebhookEntryUpdateDto = {
@@ -148,7 +152,7 @@ export default Vue.extend({
     logs(): WebhookEventLog[] {
       return this.$accessor.webhooks.logs
     },
-    logsMeta(): ResponseMeta {
+    logsMeta(): HeseyaPaginationMeta {
       return this.$accessor.webhooks.logsMeta
     },
   },
@@ -166,11 +170,7 @@ export default Vue.extend({
   async created() {
     this.$accessor.startLoading()
 
-    await Promise.all([
-      // @ts-ignore TODO: fix extended store actions typings
-      this.$accessor.webhooks.fetchEvents(),
-      this.fetchLogs(),
-    ])
+    await Promise.all([this.$accessor.webhooks.fetchEvents(), this.fetchLogs()])
 
     if (!this.isNew) await this.$accessor.webhooks.get(this.id)
 
@@ -179,7 +179,6 @@ export default Vue.extend({
   methods: {
     async fetchLogs(page = 1) {
       this.areLogsLoading = true
-      // @ts-ignore TODO: fix extended store actions typings
       await this.$accessor.webhooks.fetchLogs({ web_hook_id: this.id, page })
       this.areLogsLoading = false
     },

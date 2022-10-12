@@ -56,7 +56,7 @@
 
           <br />
           <small class="label">{{ $t('form.content') }}</small>
-          <RichEditor v-if="!isLoading" v-model="form.content_html" :disabled="!canModify" />
+          <RichEditor v-model="form.content_html" :disabled="!canModify" />
 
           <br />
 
@@ -216,7 +216,7 @@ export default Vue.extend({
           this.$router.push(`/pages/${page.id}`)
         }
       } else {
-        // Metadata can be saved only after product is created
+        // Metadata can be saved only after page is created
         await this.saveMetadata(this.id)
 
         const success = await this.$accessor.pages.update({

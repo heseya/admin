@@ -28,7 +28,7 @@ import Vue from 'vue'
 import { XlsxWorkbook, XlsxDownload, XlsxSheet } from 'vue-xlsx'
 
 import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
-import { BaseItem } from '@/store/generator'
+import { VuexBaseItem } from '@/interfaces/VuexGenerator'
 import { formatDateTimeInput } from '@/utils/dates'
 
 export default Vue.extend({
@@ -41,7 +41,7 @@ export default Vue.extend({
     items: {
       type: Array,
       default: null,
-    } as Vue.PropOptions<BaseItem[]>,
+    } as Vue.PropOptions<VuexBaseItem[]>,
     xlsxFileConfig: {
       type: Object,
       default: null,
@@ -53,7 +53,7 @@ export default Vue.extend({
         return this.xlsxFileConfig.headers.reduce((acc, { key, label, format }) => {
           return {
             ...acc,
-            [label]: format ? format(item[key]) : item[key],
+            [label]: format ? format(item[key], item) : item[key],
           }
         }, {})
       })

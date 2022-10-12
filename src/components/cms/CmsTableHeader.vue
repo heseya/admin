@@ -67,13 +67,13 @@ export default Vue.extend({
   display: grid;
   padding: 0 16px;
   grid-template-columns: var(--table-cols);
-  border-bottom: 2px solid $background-color-700;
+  border-bottom: 2px solid var(--background-color-700);
 
   &__col {
     all: unset;
     padding: 12px 16px;
     text-transform: uppercase;
-    color: $gray-color-600;
+    color: var(--gray-color-600);
     font-size: 0.8em;
     transition: 0.3s;
 
@@ -81,7 +81,7 @@ export default Vue.extend({
       cursor: pointer;
 
       &:hover {
-        background-color: $primary-color-100;
+        background-color: var(--primary-color-100);
       }
     }
   }

@@ -2,7 +2,7 @@
   <div class="condition-form">
     <div class="condition-form__header">
       <h3 class="condition-form__heading">{{ $t('condition', { number }) }}</h3>
-      <icon-button type="danger" size="small" @click="removeSelf()">
+      <icon-button :disabled="disabled" type="danger" size="small" @click="removeSelf()">
         {{ $t('remove') }}
         <template #icon>
           <i class="bx bx-trash"></i>
@@ -204,7 +204,7 @@ export default Vue.extend({
 
 <style lang="scss">
 .condition-form {
-  border: solid 1px #d9dbe0;
+  border: solid 1px var(--gray-color-300);
   background-color: white;
   border-radius: 4px;
   padding: 8px;

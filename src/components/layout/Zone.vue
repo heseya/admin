@@ -25,12 +25,12 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .zone {
-  --zone-border-color: #eeeeee;
-  --zone-text-color: #333333;
+  --zone-border-color: var(--gray-color-400);
+  --zone-text-color: var(--font-color);
 
   &--danger {
-    --zone-text-color: #{$red-color-500};
-    --zone-border-color: #{$red-color-500};
+    --zone-text-color: var(--red-color-500);
+    --zone-border-color: var(--red-color-500);
   }
 
   &__title {

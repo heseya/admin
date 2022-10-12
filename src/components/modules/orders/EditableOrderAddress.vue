@@ -101,7 +101,7 @@ export default Vue.extend({
 
   &__btn {
     margin-left: 3px;
-    color: $gray-color-500;
+    color: var(--gray-color-500);
   }
 }
 </style>

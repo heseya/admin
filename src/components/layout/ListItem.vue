@@ -58,14 +58,14 @@ export default Vue.extend({
 <style lang="scss">
 .list-item {
   border: none;
-  background-color: #fff0;
+  background-color: $transparent;
   width: 100%;
   box-sizing: border-box;
   cursor: pointer;
   border-radius: 7px;
   padding: 8px 12px;
   min-height: 32px;
-  display: flex !important;
+  display: flex;
   align-items: center;
   text-decoration: none;
   color: black;
@@ -83,21 +83,21 @@ export default Vue.extend({
   }
 
   &:hover {
-    background-color: $primary-color-100;
+    background-color: var(--primary-color-100);
     color: black;
   }
 
   &--no-hover:hover {
-    background-color: #ffffff00;
+    background-color: $transparent;
     cursor: default;
   }
 
   small {
     display: block;
-    color: #aaaaaa;
+    color: var(--gray-color-400);
 
     b {
-      color: #666666;
+      color: var(--gray-color-600);
     }
   }
 
@@ -113,7 +113,7 @@ export default Vue.extend({
 
 @media (hover: hover) and (pointer: fine) {
   .list__item:hover {
-    background-color: #ffffff00;
+    background-color: var(--white-color);
   }
 }
 </style>

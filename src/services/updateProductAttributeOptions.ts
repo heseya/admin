@@ -23,16 +23,13 @@ export const updateProductAttributeOptions = async (rawAttributes: ProductAttrib
     .map(
       async (attribute): Promise<UpdatedAttributesStructure> => ({
         ...attribute,
-        // TODO: fix extended store actions typings
         selected_options: attribute.option.id
-          ? // @ts-ignore
-            await accessor.attributes.updateOption({
+          ? await accessor.attributes.updateOption({
               attributeId: attribute.id,
               optionId: attribute.option.id,
               option: attribute.option,
             })
-          : // @ts-ignore
-            await accessor.attributes.addOption({
+          : await accessor.attributes.addOption({
               attributeId: attribute.id,
               option: attribute.option,
             }),

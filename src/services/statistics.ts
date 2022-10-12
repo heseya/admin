@@ -1,5 +1,4 @@
-import { api } from '@/api'
-import { format } from 'date-fns'
+import { sdk } from '@/api'
 
 interface OrdersCountSummary {
   amount: number
@@ -10,10 +9,7 @@ export const getPaymentsCount = async (
   from: number | Date,
   to: number | Date,
 ): Promise<OrdersCountSummary> => {
-  const query = from
-    ? `/analytics/payments?from=${format(from, 'yyyy-MM-dd')}&to=${format(to, 'yyyy-MM-dd')}`
-    : '/analytics/payments'
-
-  const { data } = await api.get<{ data?: { total: OrdersCountSummary } }>(query)
-  return data.data?.total || { amount: 0, count: 0 }
+  const params = from ? { from: new Date(from), to: new Date(to) } : {}
+  const data = await sdk.Analytics.getPayments(params)
+  return data?.total || { amount: 0, count: 0 }
 }

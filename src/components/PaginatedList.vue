@@ -235,7 +235,7 @@ export default Vue.extend({
     }
 
     > * {
-      display: block;
+      display: flex;
       width: 100% !important;
     }
   }

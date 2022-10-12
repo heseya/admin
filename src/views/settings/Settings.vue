@@ -26,7 +26,7 @@
         <modal-form>
           <validated-input
             v-model="editedItem.name"
-            rules="required|letters-only"
+            rules="required"
             :label="$t('form.name')"
             :disabled="editedItem.permanent || !canModify"
           />

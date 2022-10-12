@@ -2,7 +2,7 @@
   <div class="condition-form">
     <div class="condition-form__header">
       <h3 class="condition-form__heading">{{ $t('condition', { number }) }}</h3>
-      <icon-button type="danger" size="small" @click="removeSelf()">
+      <icon-button :disabled="disabled" type="danger" size="small" @click="removeSelf()">
         {{ $t('remove') }}
         <template #icon>
           <i class="bx bx-trash"></i>

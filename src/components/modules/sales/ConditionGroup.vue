@@ -1,13 +1,13 @@
 <template>
   <div class="condition-group">
     <div class="condition-group__header">
-      <icon-button size="small" @click="addCondition()">
+      <icon-button :disabled="disabled" size="small" @click="addCondition()">
         <template #icon>
           <i class="bx bx-plus"></i>
         </template>
         {{ $t('addCondition') }}
       </icon-button>
-      <icon-button type="danger" size="small" @click="removeSelf()">
+      <icon-button :disabled="disabled" type="danger" size="small" @click="removeSelf()">
         <template #icon>
           <i class="bx bx-trash"></i>
         </template>

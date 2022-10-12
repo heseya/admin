@@ -390,6 +390,27 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/b2b/companies',
+      name: 'CompaniesList',
+      component: () => import('./views/b2b/index.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Roles.Show],
+        disabled: () => accessor.config.env.b2b_enabled !== '1',
+      },
+    },
+    {
+      path: '/b2b/companies/:id',
+      name: 'CompanyView',
+      component: () => import('./views/b2b/view.vue'),
+      meta: {
+        returnUrl: '/b2b/companies',
+        requiresAuth: true,
+        permissions: [Permissions.Roles.ShowDetails],
+        disabled: () => accessor.config.env.b2b_enabled !== '1',
+      },
+    },
+    {
       path: '/settings/consents',
       name: 'Consents',
       component: () => import('./views/consents/index.vue'),
@@ -482,6 +503,10 @@ router.beforeEach((to, from, next) => {
     accessor.auth.setPermissionsError(new Error('Not authorized'))
     if (!from.name) next('/403')
     return
+  }
+
+  if (typeof to.meta?.disabled === 'function' ? to.meta?.disabled?.() : to.meta?.disabled) {
+    return next('/404')
   }
 
   next()

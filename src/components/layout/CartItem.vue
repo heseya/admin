@@ -224,7 +224,7 @@ export default Vue.extend({
     }
   }
 
-  .order-field {
+  .field {
     padding: 3px;
 
     @media ($viewport-8) {
@@ -236,17 +236,17 @@ export default Vue.extend({
     }
   }
 
-  .order-field__label {
+  .field__label {
     display: block;
     width: 100%;
   }
 
   @media ($viewport-8) {
-    .order-field__label {
+    .field__label {
       display: none;
     }
 
-    .order-field:last-of-type &__value {
+    .field:last-of-type &__value {
       justify-content: flex-end;
       align-items: flex-end;
       text-align: right;

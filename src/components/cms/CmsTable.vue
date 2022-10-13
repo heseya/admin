@@ -122,25 +122,6 @@ export default Vue.extend({
       .cms-table-header {
         padding-left: 30px;
       }
-
-      .cms-table-row {
-        padding-left: 30px !important;
-        position: relative;
-
-        &::before {
-          font-family: $boxiconsFont;
-          font-weight: 400;
-          content: '\eb5f';
-          position: absolute;
-          left: 0px;
-          font-size: 1.1em;
-          line-height: 1em;
-          padding: 6px 13px;
-          cursor: move;
-          transform: translateY(50%);
-          color: var(--gray-color-500);
-        }
-      }
     }
   }
 }

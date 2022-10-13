@@ -93,8 +93,12 @@ export default Vue.extend({
   }
 
   small {
-    display: block;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
     color: var(--gray-color-400);
+    word-break: break-word;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
 
     b {
       color: var(--gray-color-600);

@@ -11,7 +11,12 @@
       @sort="(v) => $emit('sort', v)"
     />
 
-    <component :is="draggable ? 'Draggable' : 'div'" v-model="items" class="cms-table__content">
+    <component
+      :is="draggable ? 'Draggable' : 'div'"
+      v-model="items"
+      class="cms-table__content"
+      handle=".reorder-handle"
+    >
       <template v-if="shouldRenderList">
         <div v-for="item in items" :key="item.id" class="cms-table__item">
           <slot name="item" :item="item">
@@ -20,6 +25,7 @@
               :headers="config.headers"
               :to="config.rowUrlBuilder ? config.rowUrlBuilder(item) : null"
               :no-hover="noHover"
+              :draggable="draggable"
               :el="rowEl"
               @click="config.rowOnClick || (() => {})"
             />

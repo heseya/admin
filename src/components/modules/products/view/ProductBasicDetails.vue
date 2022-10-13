@@ -136,14 +136,25 @@ export default Vue.extend({
   width: 100%;
 
   @media ($viewport-14) {
-    width: 70%;
+    width: 75%;
   }
 
   &__price-row {
     width: 100%;
     display: grid;
-    grid-template-columns: 1fr 0.5fr 1fr;
-    grid-gap: 24px;
+    grid-template-columns: 1.5fr 1fr;
+    grid-gap: 0 16px;
+
+    @media ($max-viewport-4) {
+      *:last-child {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media ($viewport-4) {
+      grid-gap: 24px;
+      grid-template-columns: 1fr 0.5fr 1fr;
+    }
 
     @media ($viewport-12) {
       width: 80%;

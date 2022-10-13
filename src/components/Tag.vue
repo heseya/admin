@@ -59,9 +59,11 @@ export default Vue.extend({
   white-space: nowrap;
 
   > .bx {
+    display: block;
     border-radius: 50%;
     background-color: var(--bg-color, var(--black-color));
     color: var(--white-color) !important;
+    padding: 2px 1px 1px 1px;
   }
 
   &--text-dark {

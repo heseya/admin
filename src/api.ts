@@ -52,7 +52,7 @@ export const createApiInstance = (baseURL: string, useAccessToken = true) => {
     }
 
     // Refreshing the token
-    const requestUrl = error.response?.config.url
+    const requestUrl = error.response?.config?.url
 
     if (error.response?.status === 401 && requestUrl !== REFRESH_URL && !originalRequest._retried) {
       // ? This wil prevent the second refresh if request fails twice

@@ -11,7 +11,7 @@
       <template #overlay>
         <a-menu>
           <a-menu-item @click="download"> {{ $t('downloadBtn') }} </a-menu-item>
-          <a-menu-item @click="sendToClient"> {{ $t('sendBtn') }} </a-menu-item>
+          <!-- <a-menu-item @click="sendToClient"> {{ $t('sendBtn') }} </a-menu-item> -->
           <a-menu-item @click="deleteFile"> {{ $t('deleteBtn') }} </a-menu-item>
         </a-menu>
       </template>

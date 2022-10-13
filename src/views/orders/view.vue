@@ -20,7 +20,12 @@
       <OrderSummary class="order-page__summary" :order="order" />
 
       <card class="order-page__status">
-        <StatusInput :order="order" @status-changed="updateStatus" />
+        <a-tooltip v-bind="!order?.status?.cancel ? { visible: false } : undefined">
+          <template #title>
+            {{ $t('errors.CLIENT_ERROR.CLIENT_CHANGE_CANCELED_ORDER_STATUS') }}
+          </template>
+          <StatusInput :order="order" />
+        </a-tooltip>
       </card>
       <card class="order-page__cart">
         <Cart :order="order" />
@@ -129,9 +134,6 @@ export default Vue.extend({
     this.$accessor.stopLoading()
   },
   methods: {
-    updateStatus(statusId: string) {
-      this.order.status.id = statusId
-    },
     onPackageCreated(shippingNumber: string) {
       this.order.shipping_number = shippingNumber
     },

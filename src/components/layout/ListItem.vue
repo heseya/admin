@@ -3,6 +3,7 @@
     :is="component"
     :to="url"
     class="list-item"
+    type="button"
     :class="{ 'list-item--no-hover': noHover }"
     @click.stop="click"
   >

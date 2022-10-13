@@ -33,7 +33,7 @@ export const orders = createVuexCRUD<Order, OrderCreateDto, OrderUpdateDto>()('o
       commit(DefaultVuexMutation.SetError, null)
       try {
         const order = await sdk.Orders.updateStatus(orderId, { status_id: statusId })
-        commit(StoreMutations.SetSelected, order)
+        commit(DefaultVuexMutation.SetSelected, order)
         return true
       } catch (error: any) {
         commit(DefaultVuexMutation.SetError, error)

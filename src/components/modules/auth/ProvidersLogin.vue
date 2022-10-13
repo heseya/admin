@@ -38,7 +38,7 @@ import { api } from '@/api'
 import { AuthProvider } from '@/interfaces/Providers'
 import { AuthProviderKey } from '@/interfaces/Providers'
 import { formatApiNotificationError } from '@/utils/errors'
-import { stringifyQueryParams } from '@/utils/stringifyQuery'
+import { OAUTH_PROVIDER_KEY, OAUTH_NEXT_URL_KEY } from '@/consts/oauthKeys'
 
 export default Vue.extend({
   data: () => ({
@@ -58,16 +58,14 @@ export default Vue.extend({
   methods: {
     async loginViaProvider(provider: AuthProviderKey) {
       try {
-        const returnUrl = `${window.location.origin}/oauth-login-return${stringifyQueryParams({
-          provider,
-          heseya_next: this.$route.query.next,
-        })}`
+        localStorage.setItem(OAUTH_NEXT_URL_KEY, (this.$route.query.next as string) || '/')
+        localStorage.setItem(OAUTH_PROVIDER_KEY, provider)
 
         // TODO: replace with sdk
         const {
           data: { redirect_url: redirectUrl },
         } = await api.post<{ redirect_url: string }>(`/auth/providers/${provider}/redirect`, {
-          return_url: returnUrl,
+          return_url: `${window.location.origin}/oauth-login-return`,
         })
 
         window.location.href = redirectUrl

@@ -116,10 +116,12 @@ const actions = actionTree(
       }
     },
 
-    async loginViaProvider({ commit, dispatch }, returnUrl: string) {
+    async loginViaProvider(
+      { commit, dispatch },
+      { provider, returnUrl }: { provider: string; returnUrl: string },
+    ) {
       commit('SET_ERROR', null)
       try {
-        const provider = new URL(returnUrl).searchParams.get('provider')
         const code = new URL(returnUrl).searchParams.get('code')
 
         // TODO: replace with sdk

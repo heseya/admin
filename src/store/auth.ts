@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 import { User, UserProfileUpdateDto, PERMISSIONS_TREE } from '@heseya/store-core'
-import { sdk } from '../api'
+import { api, sdk } from '../api'
 
 import { UUID } from '@/interfaces/UUID'
 import { hasAccess } from '@/utils/hasAccess'
@@ -85,6 +85,57 @@ const actions = actionTree(
       commit('SET_ERROR', null)
       try {
         const { user, ...tokens } = await sdk.Auth.login(email, password, code)
+
+        if (!hasAccess(PERMISSIONS_TREE.Admin.Login)(user.permissions))
+          throw new Error('Nie masz uprawnień, by zalogować się do panelu administracyjnego')
+
+        commit('SET_USER', user)
+        broadcastTokensUpdate(tokens)
+        dispatch('setTokens', tokens)
+
+        // side effect
+        dispatch('menuItems/initMicrofrontendMenuItems', null, { root: true })
+
+        return {
+          state: LoginState.Success,
+          user,
+        } as const
+      } catch (e: any) {
+        const response: AxiosResponse = e.response
+
+        // Two-Factor Authentication
+        if (response?.status === 403 && response?.data?.data?.type) {
+          return {
+            state: LoginState.TwoFactorAuthRequired,
+            method: response.data.data.type as TwoFactorAuthMethod,
+          } as const
+        }
+
+        commit('SET_ERROR', e)
+        return { state: LoginState.Error, error: e } as const
+      }
+    },
+
+    async loginViaProvider({ commit, dispatch }, returnUrl: string) {
+      commit('SET_ERROR', null)
+      try {
+        const provider = new URL(returnUrl).searchParams.get('provider')
+        const code = new URL(returnUrl).searchParams.get('code')
+
+        // TODO: replace with sdk
+        const { data } = await api.post<{
+          data: { user: User; token: string; identity_token: string; refresh_token: string }
+        }>(`/auth/providers/${provider}/login`, {
+          code,
+          return_url: returnUrl,
+        })
+
+        const { user, ...tokens } = {
+          user: data.data.user,
+          accessToken: data.data.token,
+          identityToken: data.data.identity_token,
+          refreshToken: data.data.refresh_token,
+        }
 
         if (!hasAccess(PERMISSIONS_TREE.Admin.Login)(user.permissions))
           throw new Error('Nie masz uprawnień, by zalogować się do panelu administracyjnego')

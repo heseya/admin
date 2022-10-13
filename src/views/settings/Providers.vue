@@ -16,7 +16,7 @@
       </template>
     </PaginatedList>
 
-    <validation-observer v-slot="{ handleSubmit }" v-can="$p.Auth.ProvidersManage">
+    <validation-observer v-slot="{ handleSubmit }">
       <a-modal
         v-model="isModalActive"
         width="550px"
@@ -25,13 +25,11 @@
         <modal-form>
           <validated-input
             v-model="editedItem.client_id"
-            :disabled="!editedItem.active"
             :rules="{ required: editedItem.active }"
             :label="$t('clientId')"
           />
           <validated-input
             v-model="editedItem.client_secret"
-            :disabled="!editedItem.active"
             :rules="{ required: editedItem.active }"
             :label="$t('secretId')"
           />

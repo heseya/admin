@@ -25,6 +25,14 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/oauth-login-return',
+      name: 'OAuthLoginReturn',
+      component: () => import('./views/auth/OAuthLoginReturn.vue'),
+      meta: {
+        hiddenNav: true,
+      },
+    },
+    {
       path: '/reset-password',
       name: 'ResetPassword',
       props: true,
@@ -38,14 +46,6 @@ const router = new VueRouter({
       name: 'NewPassword',
       props: true,
       component: () => import('./views/auth/NewPassword.vue'),
-      meta: {
-        hiddenNav: true,
-      },
-    },
-    {
-      path: '/redirect',
-      name: 'Redirect',
-      component: () => import('./views/auth/Redirect.vue'),
       meta: {
         hiddenNav: true,
       },

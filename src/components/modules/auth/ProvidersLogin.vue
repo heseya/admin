@@ -38,6 +38,7 @@ import { api } from '@/api'
 import { AuthProvider } from '@/interfaces/Providers'
 import { AuthProviderKey } from '@/interfaces/Providers'
 import { formatApiNotificationError } from '@/utils/errors'
+import { stringifyQueryParams } from '@/utils/stringifyQuery'
 
 export default Vue.extend({
   data: () => ({
@@ -55,16 +56,20 @@ export default Vue.extend({
     this.providers = providersData.data
   },
   methods: {
-    async loginViaProvider(provider: string) {
+    async loginViaProvider(provider: AuthProviderKey) {
       try {
-        const { data: redirectUrl } = await api.post<string>(
-          `/auth/providers/${provider}/redirect`,
-          {
-            return_url: window.location.origin + '/redirect',
-          },
-        )
-        window.localStorage.setItem('provider', provider)
-        window.localStorage.setItem('nextUrl', this.$route.query.next as string)
+        const returnUrl = `${window.location.origin}/oauth-login-return${stringifyQueryParams({
+          provider,
+          heseya_next: this.$route.query.next,
+        })}`
+
+        // TODO: replace with sdk
+        const {
+          data: { redirect_url: redirectUrl },
+        } = await api.post<{ redirect_url: string }>(`/auth/providers/${provider}/redirect`, {
+          return_url: returnUrl,
+        })
+
         window.location.href = redirectUrl
       } catch (error: any) {
         this.$toast.error(formatApiNotificationError(error))

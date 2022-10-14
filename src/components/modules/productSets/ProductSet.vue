@@ -322,7 +322,7 @@ export default Vue.extend({
 .product-set {
   cursor: default;
   border-radius: 0;
-  display: flex;
+  display: flex !important;
   padding: 6px 8px;
   padding-right: 0;
   border-bottom: solid 1px $background-color-700;

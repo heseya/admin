@@ -7,8 +7,15 @@
         :label="$t('username')"
         type="text"
         rules="required"
-      >
-      </validated-input>
+      />
+      <validated-input v-model="form.phone" name="phone" :label="$t('phone')" type="tel" rules="" />
+      <validated-input
+        v-model="form.birthday_date"
+        name="birthday_date"
+        :label="$t('birthday')"
+        type="date"
+        rules=""
+      />
       <div class="switches">
         <switch-input
           v-for="preference in Object.keys(form.preferences)"
@@ -32,6 +39,8 @@
 {
   "pl": {
     "username": "Nazwa użytkownika",
+    "phone": "Numer telefonu",
+    "birthday": "Data urodzenia",
     "successfull_login_attempt_alert": "Powiadomienie o sukcesie logowania",
     "failed_login_attempt_alert": "Powiadomienie o nieudanym logowaniu",
     "new_localization_login_alert": "Powiadomienie o logowaniu z nowej lokalizacji",
@@ -41,6 +50,8 @@
   },
   "en": {
     "username": "User name",
+    "phone": "Phone number",
+    "birthday": "Birthday",
     "successfull_login_attempt_alert": "Successfull login attempt alert",
     "failed_login_attempt_alert": "Failed login attempt alert",
     "new_localization_login_alert": "New localization login alert",
@@ -61,6 +72,8 @@ import { formatApiNotificationError } from '@/utils/errors'
 
 const UPDATE_USER_PREFERENCES_FORM: UserProfileUpdateDto = {
   name: '',
+  birthday_date: '',
+  phone: '',
   preferences: {
     successfull_login_attempt_alert: true,
     failed_login_attempt_alert: true,

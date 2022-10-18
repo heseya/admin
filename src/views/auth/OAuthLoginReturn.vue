@@ -68,7 +68,6 @@ export default Vue.extend({
       provider,
       returnUrl: window.location.href,
     })
-    console.log('🚀 ~ file: OAuthLoginReturn.vue ~ line 41 ~ created ~ result', result)
 
     if (result.state === LoginState.Error) {
       this.cleanupAfterOAuth()

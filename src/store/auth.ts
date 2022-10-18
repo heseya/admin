@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
-import { User, UserProfileUpdateDto, PERMISSIONS_TREE } from '@heseya/store-core'
-import { api, sdk } from '../api'
+import { User, UserProfileUpdateDto, AuthProviderKey, PERMISSIONS_TREE } from '@heseya/store-core'
+import { sdk } from '../api'
 
 import { UUID } from '@/interfaces/UUID'
 import { hasAccess } from '@/utils/hasAccess'
@@ -118,26 +118,11 @@ const actions = actionTree(
 
     async loginViaProvider(
       { commit, dispatch },
-      { provider, returnUrl }: { provider: string; returnUrl: string },
+      { provider, returnUrl }: { provider: AuthProviderKey; returnUrl: string },
     ) {
       commit('SET_ERROR', null)
       try {
-        const code = new URL(returnUrl).searchParams.get('code')
-
-        // TODO: replace with sdk
-        const { data } = await api.post<{
-          data: { user: User; token: string; identity_token: string; refresh_token: string }
-        }>(`/auth/providers/${provider}/login`, {
-          code,
-          return_url: returnUrl,
-        })
-
-        const { user, ...tokens } = {
-          user: data.data.user,
-          accessToken: data.data.token,
-          identityToken: data.data.identity_token,
-          refreshToken: data.data.refresh_token,
-        }
+        const { user, ...tokens } = await sdk.Auth.Providers.login(provider, returnUrl)
 
         if (!hasAccess(PERMISSIONS_TREE.Admin.Login)(user.permissions))
           throw new Error('Nie masz uprawnień, by zalogować się do panelu administracyjnego')

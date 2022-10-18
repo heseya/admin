@@ -36,6 +36,7 @@ import { stringifyQueryParams } from '@/utils/stringifyQuery'
 import CentralScreenForm from '@/components/form/CentralScreenForm.vue'
 import Zone from '@/components/layout/Zone.vue'
 import { OAUTH_NEXT_URL_KEY, OAUTH_PROVIDER_KEY } from '@/consts/oauthKeys'
+import { AuthProviderKey } from '@/interfaces/Providers'
 
 export default Vue.extend({
   metaInfo(this: any) {
@@ -60,7 +61,7 @@ export default Vue.extend({
   },
 
   async mounted(): Promise<void> {
-    const provider = localStorage.getItem(OAUTH_PROVIDER_KEY)
+    const provider = localStorage.getItem(OAUTH_PROVIDER_KEY) as AuthProviderKey
     if (!provider) return this.redirectToLogin()
 
     const result = await this.$accessor.auth.loginViaProvider({

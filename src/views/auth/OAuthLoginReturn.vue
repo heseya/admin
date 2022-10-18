@@ -1,11 +1,11 @@
 <template>
-  <central-screen-form v-if="!error">
-    <h1 class="redirect-title">{{ $t('title') }}</h1>
+  <central-screen-form v-if="!errorMessage" class="oauth-login-return">
+    <h1 class="oauth-login-return__title">{{ $t('title') }}</h1>
   </central-screen-form>
 
-  <central-screen-form v-else>
-    <h1 class="redirect-title">{{ $t('errorTitle') }}</h1>
-    <zone type="danger">{{ error }}</zone>
+  <central-screen-form v-else class="oauth-login-return">
+    <h1 class="oauth-login-return__title">{{ $t('errorTitle') }}</h1>
+    <div class="oauth-login-return__error"><i class="bx bx-error"></i> {{ errorMessage }}</div>
     <br />
     <app-button type="primary" :to="returnToLoginUrl">{{ $t('goBackToLogin') }}</app-button>
   </central-screen-form>
@@ -29,33 +29,31 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import { formatApiNotificationError } from '@/utils/errors'
+import { formatApiError, formatApiNotificationError } from '@/utils/errors'
 import { LoginState } from '@/enums/login'
 import { stringifyQueryParams } from '@/utils/stringifyQuery'
 
 import CentralScreenForm from '@/components/form/CentralScreenForm.vue'
-import Zone from '@/components/layout/Zone.vue'
 import { OAUTH_NEXT_URL_KEY, OAUTH_PROVIDER_KEY } from '@/consts/oauthKeys'
 import { AuthProviderKey } from '@/interfaces/Providers'
 
 export default Vue.extend({
   metaInfo(this: any) {
-    return { title: this.$t('title') as string }
+    return { title: (this.errorMessage ? this.$t('errorTitle') : this.$t('title')) as string }
   },
 
   components: {
     CentralScreenForm,
-    Zone,
   },
 
   data: () => ({
-    error: null as null | Error,
+    errorMessage: '',
   }),
 
   computed: {
     returnToLoginUrl(): string {
       return `/login${stringifyQueryParams({
-        next: localStorage.getItem(OAUTH_NEXT_URL_KEY) || '/',
+        next: localStorage.getItem(OAUTH_NEXT_URL_KEY) || undefined,
       })}`
     },
   },
@@ -64,24 +62,24 @@ export default Vue.extend({
     const provider = localStorage.getItem(OAUTH_PROVIDER_KEY) as AuthProviderKey
     if (!provider) return this.redirectToLogin()
 
-    const result = await this.$accessor.auth.loginViaProvider({
+    const result = await this.$accessor.auth.login({
       provider,
       returnUrl: window.location.href,
     })
 
     if (result.state === LoginState.Error) {
       this.cleanupAfterOAuth()
-      this.error = result.error
+      this.errorMessage = formatApiError(result.error).messages.join(', ')
       this.$toast.error(formatApiNotificationError(result.error))
     }
 
     if (result.state === LoginState.Success) this.redirectToNextUrl()
 
     if (result.state === LoginState.TwoFactorAuthRequired) {
-      // TODO
+      // TODO: 2FA when logging in via OAuth
       // eslint-disable-next-line no-console
       console.error('TODO: 2FA in OAuthLoginReturn')
-      this.error = new Error('Two factor auth required')
+      this.errorMessage = 'Two factor auth required'
     }
   },
 
@@ -106,7 +104,22 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.redirect-title {
+.oauth-login-return {
   text-align: center;
+
+  &__title {
+    text-align: center;
+  }
+
+  &__error {
+    font-size: 1.4em;
+    background-color: var(--red-color-200);
+    padding: 8px;
+    color: var(--red-color-500);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+  }
 }
 </style>

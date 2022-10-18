@@ -11,10 +11,15 @@ import { LoginState } from '@/enums/login'
 import { AxiosResponse } from 'axios'
 import { TwoFactorAuthMethod } from '@/enums/twoFactorAuth'
 
-interface ILoginRequest {
+interface PasswordLoginRequest {
   email: string
   password: string
   code?: string
+}
+
+interface ProviderLoginRequest {
+  provider: AuthProviderKey
+  returnUrl: string
 }
 
 const state = () => ({
@@ -81,48 +86,14 @@ const mutations = mutationTree(state, {
 const actions = actionTree(
   { state, getters, mutations },
   {
-    async login({ commit, dispatch }, { email, password, code }: ILoginRequest) {
+    async login({ commit, dispatch }, payload: PasswordLoginRequest | ProviderLoginRequest) {
       commit('SET_ERROR', null)
       try {
-        const { user, ...tokens } = await sdk.Auth.login(email, password, code)
+        const isPasswordLogin = 'password' in payload
 
-        if (!hasAccess(PERMISSIONS_TREE.Admin.Login)(user.permissions))
-          throw new Error('Nie masz uprawnień, by zalogować się do panelu administracyjnego')
-
-        commit('SET_USER', user)
-        broadcastTokensUpdate(tokens)
-        dispatch('setTokens', tokens)
-
-        // side effect
-        dispatch('menuItems/initMicrofrontendMenuItems', null, { root: true })
-
-        return {
-          state: LoginState.Success,
-          user,
-        } as const
-      } catch (e: any) {
-        const response: AxiosResponse = e.response
-
-        // Two-Factor Authentication
-        if (response?.status === 403 && response?.data?.data?.type) {
-          return {
-            state: LoginState.TwoFactorAuthRequired,
-            method: response.data.data.type as TwoFactorAuthMethod,
-          } as const
-        }
-
-        commit('SET_ERROR', e)
-        return { state: LoginState.Error, error: e } as const
-      }
-    },
-
-    async loginViaProvider(
-      { commit, dispatch },
-      { provider, returnUrl }: { provider: AuthProviderKey; returnUrl: string },
-    ) {
-      commit('SET_ERROR', null)
-      try {
-        const { user, ...tokens } = await sdk.Auth.Providers.login(provider, returnUrl)
+        const { user, ...tokens } = isPasswordLogin
+          ? await sdk.Auth.login(payload.email, payload.password, payload.code)
+          : await sdk.Auth.Providers.login(payload.provider, payload.returnUrl)
 
         if (!hasAccess(PERMISSIONS_TREE.Admin.Login)(user.permissions))
           throw new Error('Nie masz uprawnień, by zalogować się do panelu administracyjnego')

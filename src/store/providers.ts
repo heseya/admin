@@ -1,12 +1,13 @@
 import { createVuexCRUD } from './generator'
-import { AuthProvider } from '@/interfaces/Providers'
+import { AuthProvider, AuthProviderUpdateDto } from '@heseya/store-core'
 
-export const providers = createVuexCRUD<AuthProvider & { id: AuthProvider['key'] }, {}, {}>()(
-  'auth/providers',
-  {
-    state: {},
-    getters: {},
-    mutations: {},
-    actions: {},
-  },
-)
+export const providers = createVuexCRUD<
+  AuthProvider & { id: AuthProvider['key'] },
+  {},
+  AuthProviderUpdateDto
+>()('auth/providers', {
+  state: {},
+  getters: {},
+  mutations: {},
+  actions: {},
+})

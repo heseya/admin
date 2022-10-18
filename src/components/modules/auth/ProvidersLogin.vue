@@ -33,15 +33,15 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { AuthProviderKey, AuthProviderList } from '@heseya/store-core'
 
-import { api } from '@/api'
-import { AuthProvider } from '@/interfaces/Providers'
-import { AuthProviderKey } from '@/interfaces/Providers'
+import { sdk } from '@/api'
 import { formatApiNotificationError } from '@/utils/errors'
+import { OAUTH_PROVIDER_KEY, OAUTH_NEXT_URL_KEY } from '@/consts/oauthKeys'
 
 export default Vue.extend({
   data: () => ({
-    providers: [] as AuthProvider[],
+    providers: [] as AuthProviderList[],
   }),
   computed: {
     AuthProviderKey(): typeof AuthProviderKey {
@@ -49,22 +49,19 @@ export default Vue.extend({
     },
   },
   async created() {
-    const { data: providersData } = await api.get<{ data: AuthProvider[] }>(
-      `/auth/providers?active=1`,
-    )
-    this.providers = providersData.data
+    this.providers = (await sdk.Auth.Providers.get({ active: true })).data
   },
   methods: {
-    async loginViaProvider(provider: string) {
+    async loginViaProvider(provider: AuthProviderKey) {
       try {
-        const { data: redirectUrl } = await api.post<string>(
-          `/auth/providers/${provider}/redirect`,
-          {
-            return_url: window.location.origin + '/redirect',
-          },
+        localStorage.setItem(OAUTH_NEXT_URL_KEY, (this.$route.query.next as string) || '/')
+        localStorage.setItem(OAUTH_PROVIDER_KEY, provider)
+
+        const redirectUrl = await sdk.Auth.Providers.redirect(
+          provider,
+          `${window.location.origin}/oauth-login-return`,
         )
-        window.localStorage.setItem('provider', provider)
-        window.localStorage.setItem('nextUrl', this.$route.query.next as string)
+
         window.location.href = redirectUrl
       } catch (error: any) {
         this.$toast.error(formatApiNotificationError(error))

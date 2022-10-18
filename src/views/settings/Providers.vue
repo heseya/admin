@@ -16,7 +16,7 @@
       </template>
     </PaginatedList>
 
-    <validation-observer v-slot="{ handleSubmit }" v-can="$p.Auth.ProvidersManage">
+    <validation-observer v-slot="{ handleSubmit }">
       <a-modal
         v-model="isModalActive"
         width="550px"
@@ -25,13 +25,11 @@
         <modal-form>
           <validated-input
             v-model="editedItem.client_id"
-            :disabled="!editedItem.active"
             :rules="{ required: editedItem.active }"
             :label="$t('clientId')"
           />
           <validated-input
             v-model="editedItem.client_secret"
-            :disabled="!editedItem.active"
             :rules="{ required: editedItem.active }"
             :label="$t('secretId')"
           />
@@ -71,15 +69,14 @@
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import capitalize from 'lodash/capitalize'
-import { api } from '@/api'
+import { AuthProvider, AuthProviderKey } from '@heseya/store-core'
+import { sdk } from '@/api'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
-import { UUID } from '@/interfaces/UUID'
-import { AuthProvider } from '@/interfaces/Providers'
 
 export default Vue.extend({
   metaInfo(this: any) {
@@ -99,8 +96,8 @@ export default Vue.extend({
     capitalize(text: string) {
       return capitalize(text)
     },
-    async openModal(key: UUID) {
-      const { data: provider } = await api.get<AuthProvider>(`/auth/providers/${key}`)
+    async openModal(key: AuthProviderKey) {
+      const provider = await sdk.Auth.Providers.getOne(key)
       this.editedItem = provider
       this.isModalActive = true
     },

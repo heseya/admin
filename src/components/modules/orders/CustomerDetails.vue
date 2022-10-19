@@ -1,6 +1,10 @@
 <template>
   <div class="order-customer-details">
-    <field :label="$t('userSection')">
+    <field v-if="order.buyer" :label="$t('userSection')">
+      <order-buyer :buyer="order.buyer" />
+    </field>
+
+    <field :label="$t('emailSection')">
       <template #labelSuffix>
         <icon-button
           v-can="$p.Orders.Edit"
@@ -63,7 +67,7 @@
       v-model="isEditModalActive"
       width="800px"
       :footer="null"
-      :title="`${$t('common.edit')} ${modalFormTitle}`"
+      :title="`${$t('common.edit')} ${modalFormTitle.toLowerCase()}`"
     >
       <modal-form>
         <partial-update-form
@@ -80,7 +84,8 @@
 <i18n lang="json">
 {
   "en": {
-    "userSection": "User",
+    "emailSection": "E-mail address",
+    "userSection": "Buyer",
     "deliveryAddressSection": "Delivery address",
     "invoiceAddressSection": "Invoice address",
     "commentSection": "Comment",
@@ -89,7 +94,8 @@
     "commentEmpty": "-- No order comment --"
   },
   "pl": {
-    "userSection": "Użytkownik",
+    "emailSection": "Adres e-mail",
+    "userSection": "Kupujący",
     "deliveryAddressSection": "Adres dostawy",
     "invoiceAddressSection": "Adres do faktury",
     "commentSection": "Komentarz",
@@ -104,16 +110,18 @@
 import Vue from 'vue'
 import { AddressDto, Order, OrderUpdate, ShippingType } from '@heseya/store-core'
 
-import Field from '../../Field.vue'
-import EditableOrderAddress from './EditableOrderAddress.vue'
-import PartialUpdateForm from './PartialUpdateForm.vue'
+import Field from '@/components/Field.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import IconButton from '@/components/layout/IconButton.vue'
+
+import EditableOrderAddress from './EditableOrderAddress.vue'
+import PartialUpdateForm from './PartialUpdateForm.vue'
+import OrderBuyer from './OrderBuyer.vue'
 
 import { DEFAULT_ADDRESS_FORM } from '@/consts/addressConsts'
 
 export default Vue.extend({
-  components: { Field, EditableOrderAddress, PartialUpdateForm, ModalForm, IconButton },
+  components: { Field, EditableOrderAddress, PartialUpdateForm, ModalForm, IconButton, OrderBuyer },
   props: {
     order: {
       type: Object,
@@ -140,7 +148,7 @@ export default Vue.extend({
     },
     editEmail() {
       this.isEditModalActive = true
-      this.modalFormTitle = this.$t('userSection') as string
+      this.modalFormTitle = this.$t('emailSection') as string
       this.form = {
         email: this.order.email,
       }

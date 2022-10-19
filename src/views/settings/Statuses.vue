@@ -13,6 +13,7 @@
         <cms-table-row
           :key="status.id"
           :item="status"
+          draggable
           :headers="tableConfig.headers"
           @click="openModal(status.id)"
         >

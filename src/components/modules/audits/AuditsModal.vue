@@ -1,6 +1,6 @@
 <template>
   <div class="audits-modal">
-    <icon-button v-if="id" class="audits-modal__btn" @click="openModal">
+    <icon-button v-if="id" class="audits-modal__btn" html-type="button" @click="openModal">
       <template #icon>
         <i class="bx bx-history"></i>
       </template>

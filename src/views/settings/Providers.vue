@@ -97,9 +97,15 @@ export default Vue.extend({
       return capitalize(text)
     },
     async openModal(key: AuthProviderKey) {
-      const provider = await sdk.Auth.Providers.getOne(key)
-      this.editedItem = provider
-      this.isModalActive = true
+      try {
+        const provider = await sdk.Auth.Providers.getOne(key)
+        if (!provider)
+          return this.$toast.error(this.$t('errors.SERVER_ERROR.SERVER_ERROR') as string)
+        this.editedItem = provider
+        this.isModalActive = true
+      } catch (e: any) {
+        this.$toast.error(formatApiNotificationError(e))
+      }
     },
     async saveProvider() {
       this.$accessor.startLoading()

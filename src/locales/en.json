@@ -44,7 +44,7 @@
     "consents": "Marketing consents",
     "webhooks": "Webhooks",
     "seo": "SEO settings",
-    "providers": "oAuth",
+    "providers": "Manage oAuth login",
     "advanced": "Advanced settings",
     "b2b": "List of B2B Companies"
   },

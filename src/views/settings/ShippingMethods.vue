@@ -148,7 +148,7 @@ import { sdk } from '../../api'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import ShippingMethodsForm from '@/components/modules/shippingMethods/Index.vue'
+import ShippingMethodsForm from '@/components/modules/shippingMethods/Form.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { UUID } from '@/interfaces/UUID'
@@ -197,6 +197,12 @@ export default Vue.extend({
             label: this.$t('common.form.name') as string,
             width: '1fr',
             wordBreak: 'break-word',
+          },
+          {
+            key: 'shipping_type',
+            label: this.$t('common.form.type') as string,
+            width: '1fr',
+            render: (type: ShippingType) => this.$t(`shippingTypes.${type}`) as string,
           },
           {
             key: 'countries',

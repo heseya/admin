@@ -108,7 +108,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { AddressDto, Order, OrderUpdate, ShippingType } from '@heseya/store-core'
+import { AddressDto, Order, OrderUpdateDto } from '@heseya/store-core'
+import { ShippingType } from '@/interfaces/ShippingType'
 
 import Field from '@/components/Field.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
@@ -131,7 +132,7 @@ export default Vue.extend({
   data: () => ({
     isEditModalActive: false,
     modalFormTitle: '',
-    form: {} as OrderUpdate,
+    form: {} as OrderUpdateDto,
   }),
   computed: {
     ShippingType(): typeof ShippingType {

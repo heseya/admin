@@ -68,7 +68,8 @@
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { cloneDeep, isString } from 'lodash'
-import { AddressDto, Order, ShippingMethod, ShippingType } from '@heseya/store-core'
+import { AddressDto, Order, ShippingMethod } from '@heseya/store-core'
+import { ShippingType } from '@/interfaces/ShippingType'
 
 import AddressForm from './AddressForm.vue'
 

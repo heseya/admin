@@ -43,7 +43,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Address, Order, ShippingType } from '@heseya/store-core'
+import { Address, Order } from '@heseya/store-core'
+import { ShippingType } from '@/interfaces/ShippingType'
 
 export default Vue.extend({
   name: 'OrderAddress',

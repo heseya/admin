@@ -179,9 +179,9 @@ import {
   PaymentMethod,
   ShippingCountry,
   ShippingMethodCreateDto,
-  ShippingType,
   AddressDto,
 } from '@heseya/store-core'
+import { ShippingType } from '@/interfaces/ShippingType'
 
 import ModalForm from '@/components/form/ModalForm.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'

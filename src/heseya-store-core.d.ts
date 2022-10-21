@@ -1,4 +1,5 @@
 import '@heseya/store-core'
+import { ShippingType } from './interfaces/ShippingType'
 
 // ? Here we can ovveride types in SDK, when they changed but SDK is not yet updated
 declare module '@heseya/store-core' {
@@ -62,9 +63,10 @@ declare module '@heseya/store-core' {
     metadata: Metadata
     metadata_private?: Metadata
     documents: OrderDocument[]
+    buyer: any
   }
 
-  export interface OrderUpdate {
+  export interface OrderUpdateDto {
     comment?: string
     email?: string
     shipping_method_id?: UUID
@@ -105,12 +107,5 @@ declare module '@heseya/store-core' {
     integration_key?: string
     app_id?: UUID
     shipping_points: AddressDto[]
-  }
-
-  export enum ShippingType {
-    None = 'none',
-    Address = 'address',
-    Point = 'point',
-    PointExternal = 'point-external',
   }
 }

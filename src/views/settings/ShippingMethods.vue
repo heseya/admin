@@ -27,8 +27,8 @@
                       ? $t('list.allEnabled')
                       : $t('list.allDisabled')
                     : method.block_list
-                    ? $t('list.blackList')
-                    : $t('list.whiteList')
+                    ? $t('list.blockList')
+                    : $t('list.allowList')
                 }}
               </template>
             </CmsTableCellList>
@@ -142,12 +142,8 @@
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import omit from 'lodash/omit'
-import {
-  ShippingMethod,
-  ShippingMethodUpdateDto,
-  ShippingCountry,
-  ShippingType,
-} from '@heseya/store-core'
+import { ShippingMethod, ShippingMethodUpdateDto, ShippingCountry } from '@heseya/store-core'
+import { ShippingType } from '@/interfaces/ShippingType'
 import { sdk } from '../../api'
 
 import PaginatedList from '@/components/PaginatedList.vue'

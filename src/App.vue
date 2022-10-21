@@ -19,7 +19,7 @@
     <Loading :relative="false" :active="isLoading" />
 
     <SwUpdatePopup />
-
+    <OfflineBanner />
     <floating-qr-scanner v-if="$accessor.auth.isLogged" />
   </div>
 </template>
@@ -47,6 +47,7 @@ import AppHeader from './components/root/Header.vue'
 import Loading from './components/layout/Loading.vue'
 import SwUpdatePopup from './components/root/SwUpdatePopup.vue'
 import FloatingQrScanner from './components/modules/qrCode/FloatingScanner.vue'
+import OfflineBanner from './components/root/OfflineBanner.vue'
 
 import { onTokensSync } from './utils/authSync'
 import { getApiURL } from './utils/api'
@@ -64,6 +65,7 @@ export default Vue.extend({
     AppHeader,
     Loading,
     SwUpdatePopup,
+    OfflineBanner,
     FloatingQrScanner,
   },
   computed: {

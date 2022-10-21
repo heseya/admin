@@ -1,10 +1,16 @@
 import { createVuexCRUD } from './generator'
 import { DefaultVuexMutation } from '@/interfaces/VuexGenerator'
 import { sdk } from '../api'
-import { Order, OrderCreateDto, OrderDocument, OrderDocumentCreateDto } from '@heseya/store-core'
+import {
+  Order,
+  OrderCreateDto,
+  OrderDocument,
+  OrderDocumentCreateDto,
+  OrderUpdateDto,
+} from '@heseya/store-core'
 import { UUID } from '@/interfaces/UUID'
 
-export const orders = createVuexCRUD<Order, OrderCreateDto, never>()('orders', {
+export const orders = createVuexCRUD<Order, OrderCreateDto, OrderUpdateDto>()('orders', {
   state: {},
   getters: {},
   mutations: {
@@ -26,7 +32,8 @@ export const orders = createVuexCRUD<Order, OrderCreateDto, never>()('orders', {
     async changeStatus({ commit }, { orderId, statusId }: { orderId: UUID; statusId: UUID }) {
       commit(DefaultVuexMutation.SetError, null)
       try {
-        await sdk.Orders.updateStatus(orderId, { status_id: statusId })
+        const order = await sdk.Orders.updateStatus(orderId, { status_id: statusId })
+        commit(DefaultVuexMutation.SetSelected, order)
         return true
       } catch (error: any) {
         commit(DefaultVuexMutation.SetError, error)

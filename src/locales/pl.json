@@ -251,6 +251,7 @@
       "FORBIDDEN": "403: Odmowa dostępu",
       "NOT_FOUND": "404: Strona nie została znaleziona",
       "UNPROCESSABLE_ENTITY": "422: Nieprocesowalna zawartość",
+      "NO_ADMIN_PERMISSIONS": "Nie masz uprawnień, by zalogować się do panelu administracyjnego",
       "INTERNAL_SERVER_ERROR": "Wewnętrzny błąd serwera"
     },
     "SERVER_ERROR": {

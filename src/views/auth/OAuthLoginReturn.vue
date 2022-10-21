@@ -28,6 +28,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { AuthProviderKey } from '@heseya/store-core'
 
 import { formatApiError, formatApiNotificationError } from '@/utils/errors'
 import { LoginState } from '@/enums/login'
@@ -35,7 +36,6 @@ import { stringifyQueryParams } from '@/utils/stringifyQuery'
 
 import CentralScreenForm from '@/components/form/CentralScreenForm.vue'
 import { OAUTH_NEXT_URL_KEY, OAUTH_PROVIDER_KEY } from '@/consts/oauthKeys'
-import { AuthProviderKey } from '@/interfaces/Providers'
 
 export default Vue.extend({
   metaInfo(this: any) {

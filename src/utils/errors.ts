@@ -26,7 +26,15 @@ const getErrorType = (errorKey: string, statusCode: number) => {
   else if (statusCode >= 500) return ErrorType.ServerError
 }
 
-export const formatApiError = (error: ApiError) => {
+const isAxiosApiError = (e: any): e is ApiError => !!e?.isAxiosError
+
+export const formatApiError = (error: ApiError | Error) => {
+  if (!isAxiosApiError(error))
+    return {
+      title: i18n.te(error.message) ? (i18n.t(error.message) as string) : error.message,
+      messages: [],
+    }
+
   const responseData = error.response?.data.error
   const responseStatus = error.response?.status
   const errorCode = responseData?.code

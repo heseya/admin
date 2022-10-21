@@ -96,7 +96,7 @@ const actions = actionTree(
           : await sdk.Auth.Providers.login(payload.provider, payload.returnUrl)
 
         if (!hasAccess(PERMISSIONS_TREE.Admin.Login)(user.permissions))
-          throw new Error('Nie masz uprawnień, by zalogować się do panelu administracyjnego')
+          throw new Error('errors.CLIENT_ERROR.NO_ADMIN_PERMISSIONS')
 
         commit('SET_USER', user)
         broadcastTokensUpdate(tokens)

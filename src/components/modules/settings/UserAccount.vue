@@ -16,7 +16,7 @@
         type="date"
         rules=""
       />
-      <div class="switches">
+      <div v-if="form.preferences" class="switches">
         <switch-input
           v-for="preference in Object.keys(form.preferences)"
           :key="preference"
@@ -25,6 +25,16 @@
           horizontal
         />
       </div>
+
+      <template v-if="user.metadata_pesonal">
+        <hr />
+        <MetadataForm
+          ref="personalMeta"
+          :value="user.metadata_pesonal"
+          type="personal"
+          model="auth"
+        />
+      </template>
       <hr />
       <div class="center">
         <app-button type="primary" :loading="isLoading" html-type="submit">
@@ -69,6 +79,7 @@ import { ValidationObserver } from 'vee-validate'
 import { User, UserProfileUpdateDto } from '@heseya/store-core'
 
 import { formatApiNotificationError } from '@/utils/errors'
+import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 const UPDATE_USER_PREFERENCES_FORM: UserProfileUpdateDto = {
   name: '',
@@ -85,6 +96,7 @@ const UPDATE_USER_PREFERENCES_FORM: UserProfileUpdateDto = {
 export default Vue.extend({
   components: {
     ValidationObserver,
+    MetadataForm,
   },
   props: {
     user: {
@@ -117,6 +129,7 @@ export default Vue.extend({
     async changePreferences() {
       try {
         this.isLoading = true
+        await this.saveMetadata()
         await this.$accessor.auth.updateUserProfile({
           ...this.form,
           name: this.form.name as string,
@@ -128,6 +141,10 @@ export default Vue.extend({
         this.isLoading = false
         this.$emit('success')
       }
+    },
+
+    async saveMetadata() {
+      await Promise.all([(this.$refs.personalMeta as MetadataRef)?.saveMetadata(this.user.id)])
     },
   },
 })

@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
-import { User, UserProfileUpdateDto, PERMISSIONS_TREE } from '@heseya/store-core'
+import { User, UserProfileUpdateDto, PERMISSIONS_TREE, MetadataUpdateDto } from '@heseya/store-core'
 import { sdk } from '../api'
 
 import { UUID } from '@/interfaces/UUID'
@@ -170,6 +170,18 @@ const actions = actionTree(
         commit('SET_USER_PROFILE', profile)
       } catch (e: any) {
         commit('SET_ERROR', e)
+      }
+    },
+
+    // Metadata
+    async updateMetadata({ commit }, { metadata }: { metadata: MetadataUpdateDto }) {
+      commit('SET_ERROR', null)
+      try {
+        const data = await sdk.UserProfile.updateMetadataPersonal(metadata)
+        return data.data
+      } catch (error: any) {
+        commit('SET_ERROR', error)
+        return {}
       }
     },
 

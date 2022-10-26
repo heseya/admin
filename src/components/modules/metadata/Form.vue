@@ -253,8 +253,8 @@ export default Vue.extend({
       ]
     },
 
-    async saveMetadata(modelId: string) {
-      await this.$accessor[this.model].updateMetadata({
+    saveMetadata(modelId: string) {
+      return this.$accessor[this.model].updateMetadata({
         id: modelId,
         metadata: this.mergedMetadata,
         public: !this.isPrivate,

@@ -47,7 +47,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
-import { Order } from '@heseya/store-core'
+import { Metadata, Order } from '@heseya/store-core'
 
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 import Loading from '@/components/layout/Loading.vue'
@@ -76,10 +76,15 @@ export default Vue.extend({
     async saveMetadata(id: string) {
       this.isLoading = true
       try {
-        await Promise.all([
+        const [updatedPrivateMetadata, updatedMetadata] = await Promise.all([
           (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id),
           (this.$refs.publicMeta as MetadataRef)?.saveMetadata(id),
         ])
+        const data: { metadata?: Metadata; metadata_private?: Metadata } = {}
+        if (updatedMetadata) data['metadata'] = updatedMetadata
+        if (updatedPrivateMetadata) data['metadata_private'] = updatedPrivateMetadata
+
+        this.$accessor.orders.SET_SELECTED({ ...this.order, ...data })
         this.$toast.success(this.$t('metadataSaved') as string)
       } catch {
         this.$toast.error(this.$t('metadataError') as string)

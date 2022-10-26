@@ -207,6 +207,7 @@ import { UUID } from '@/interfaces/UUID'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { generateSlug } from '@/utils/generateSlug'
+import { sdk } from '@/api'
 
 export const CLEAR_PRODUCT_SET_FORM: ProductSetUpdateDto & { cover: CdnMedia | null } = {
   name: '',
@@ -302,7 +303,7 @@ export default Vue.extend({
 
     // fetch parent product set
     if (this.parentId && this.isNew) {
-      const parent = await this.$accessor.productSets.get(this.parentId)
+      const parent = await sdk.ProductSets.getOne(this.parentId)
       if (parent) this.parent = parent
     }
 

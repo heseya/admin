@@ -9,7 +9,7 @@
         rules="required"
       >
       </validated-input>
-      <div class="switches">
+      <div v-if="form.preferences" class="switches">
         <switch-input
           v-for="preference in Object.keys(form.preferences)"
           :key="preference"

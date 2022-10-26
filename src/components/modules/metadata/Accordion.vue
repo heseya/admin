@@ -66,13 +66,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { MetadataUpdateDto } from '@heseya/store-core'
+import { Metadata, MetadataUpdateDto } from '@heseya/store-core'
 
 import MetadataForm from './Form.vue'
 
 import { GeneratedStoreModulesKeys } from '@/store'
 
-export type SaveMetadataFunction = (id: string) => Promise<void>
+export type SaveMetadataFunction = (id: string) => Promise<Metadata | undefined>
 export type MetadataRef = Vue & { saveMetadata: SaveMetadataFunction }
 
 export default Vue.extend({
@@ -95,9 +95,9 @@ export default Vue.extend({
     } as Vue.PropOptions<GeneratedStoreModulesKeys | 'auth'>,
   },
   methods: {
-    async saveMetadata(id: string) {
+    saveMetadata(id: string) {
       // component may not be mounted before the save is triggered, then simply ignore
-      await (this.$refs.form as Vue & { saveMetadata?: SaveMetadataFunction })?.saveMetadata?.(id)
+      return (this.$refs.form as Vue & { saveMetadata?: SaveMetadataFunction })?.saveMetadata?.(id)
     },
   },
 })

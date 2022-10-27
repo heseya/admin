@@ -344,13 +344,13 @@ export const createVuexCRUD =
           {
             id,
             metadata,
-            public: isPublic,
-          }: { id: UUID; metadata: MetadataUpdateDto; public: boolean },
+            type,
+          }: { id: UUID; metadata: MetadataUpdateDto; type: 'default' | 'private' | 'personal' },
         ) {
           commit(DefaultVuexMutation.SetError, null)
           commit(DefaultVuexMutation.SetLoading, true)
           try {
-            const path = isPublic ? 'metadata' : 'metadata-private'
+            const path = type === 'default' ? 'metadata' : `metadata-${type}`
             const { data } = await api.patch<{ data: Metadata }>(
               `/${endpoint}/id:${id}/${path}`,
               metadata,

@@ -7,8 +7,15 @@
         :label="$t('username')"
         type="text"
         rules="required"
-      >
-      </validated-input>
+      />
+      <validated-input v-model="form.phone" name="phone" :label="$t('phone')" type="tel" rules="" />
+      <validated-input
+        v-model="form.birthday_date"
+        name="birthday_date"
+        :label="$t('birthday')"
+        type="date"
+        rules=""
+      />
       <div v-if="form.preferences" class="switches">
         <switch-input
           v-for="preference in Object.keys(form.preferences)"
@@ -18,6 +25,16 @@
           horizontal
         />
       </div>
+
+      <template v-if="user.metadata_pesonal">
+        <hr />
+        <MetadataForm
+          ref="personalMeta"
+          :value="user.metadata_pesonal"
+          type="personal"
+          model="auth"
+        />
+      </template>
       <hr />
       <div class="center">
         <app-button type="primary" :loading="isLoading" html-type="submit">
@@ -32,6 +49,8 @@
 {
   "pl": {
     "username": "Nazwa użytkownika",
+    "phone": "Numer telefonu",
+    "birthday": "Data urodzenia",
     "successfull_login_attempt_alert": "Powiadomienie o sukcesie logowania",
     "failed_login_attempt_alert": "Powiadomienie o nieudanym logowaniu",
     "new_localization_login_alert": "Powiadomienie o logowaniu z nowej lokalizacji",
@@ -41,6 +60,8 @@
   },
   "en": {
     "username": "User name",
+    "phone": "Phone number",
+    "birthday": "Birthday",
     "successfull_login_attempt_alert": "Successfull login attempt alert",
     "failed_login_attempt_alert": "Failed login attempt alert",
     "new_localization_login_alert": "New localization login alert",
@@ -58,9 +79,12 @@ import { ValidationObserver } from 'vee-validate'
 import { User, UserProfileUpdateDto } from '@heseya/store-core'
 
 import { formatApiNotificationError } from '@/utils/errors'
+import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 const UPDATE_USER_PREFERENCES_FORM: UserProfileUpdateDto = {
   name: '',
+  birthday_date: '',
+  phone: '',
   preferences: {
     successfull_login_attempt_alert: true,
     failed_login_attempt_alert: true,
@@ -72,6 +96,7 @@ const UPDATE_USER_PREFERENCES_FORM: UserProfileUpdateDto = {
 export default Vue.extend({
   components: {
     ValidationObserver,
+    MetadataForm,
   },
   props: {
     user: {
@@ -104,6 +129,7 @@ export default Vue.extend({
     async changePreferences() {
       try {
         this.isLoading = true
+        await this.saveMetadata()
         await this.$accessor.auth.updateUserProfile({
           ...this.form,
           name: this.form.name as string,
@@ -115,6 +141,10 @@ export default Vue.extend({
         this.isLoading = false
         this.$emit('success')
       }
+    },
+
+    async saveMetadata() {
+      await Promise.all([(this.$refs.personalMeta as MetadataRef)?.saveMetadata(this.user.id)])
     },
   },
 })

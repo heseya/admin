@@ -20,7 +20,15 @@
               ref="privateMeta"
               :value="selectedUser.metadata_private"
               :disabled="!canModify"
-              is-private
+              type="private"
+              model="users"
+            />
+            <MetadataForm
+              v-if="selectedUser.metadata_pesonal"
+              ref="personalMeta"
+              :value="selectedUser.metadata_pesonal"
+              :disabled="!canModify"
+              type="personal"
               model="users"
             />
           </template>
@@ -138,7 +146,7 @@ export default Vue.extend({
         this.editedUser = {
           ...user,
           roles: user.roles?.map(({ id }) => id) || [],
-        }
+        } as any // TODO: fix this any
         this.selectedUser = user
       } else {
         this.editedUser = clone(CLEAR_USER)
@@ -181,6 +189,7 @@ export default Vue.extend({
       await Promise.all([
         (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id),
         (this.$refs.publicMeta as MetadataRef)?.saveMetadata(id),
+        (this.$refs.personalMeta as MetadataRef)?.saveMetadata(id),
       ])
     },
   },

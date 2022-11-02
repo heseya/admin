@@ -38,7 +38,8 @@
       "code": "Kod",
       "value": "Wartość rabatu",
       "target_type": "Typ celu przeceny",
-      "used": "Zastosowano"
+      "used": "Zastosowano",
+      "active": "Aktywna"
     }
   },
   "en": {
@@ -48,7 +49,8 @@
       "code": "Code",
       "value": "Value",
       "target_type": "Target type",
-      "used": "Applied"
+      "used": "Applied",
+      "active": "Active"
     }
   }
 }
@@ -91,6 +93,7 @@ export default Vue.extend({
           },
           { key: 'value', label: this.$t('table.value') as string },
           { key: 'uses', label: this.$t('table.used') as string },
+          { key: 'active', label: this.$t('table.active') as string },
         ],
       }
     },

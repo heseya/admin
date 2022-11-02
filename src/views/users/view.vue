@@ -24,9 +24,9 @@
               model="users"
             />
             <MetadataForm
-              v-if="selectedUser.metadata_pesonal"
+              v-if="selectedUser.metadata_personal"
               ref="personalMeta"
-              :value="selectedUser.metadata_pesonal"
+              :value="selectedUser.metadata_personal"
               :disabled="!canModify"
               type="personal"
               model="users"
@@ -97,6 +97,16 @@ const CLEAR_USER: UserCreateDto = {
   roles: [],
 }
 
+type UserForm = UserCreateDto | (UserUpdateDto & { id: UUID })
+
+const mapUserToEditableUser = (user: User): UserForm => ({
+  ...user,
+  roles: user.roles?.map(({ id }) => id) || [],
+  birthday_date: user.birthday_date ?? undefined,
+  phone: user.birthday_date ?? undefined,
+  password: '',
+})
+
 export default Vue.extend({
   metaInfo(this: any) {
     return { title: this.isNewUser(this.editedUser) ? this.$t('newTitle') : this.$t('editTitle') }
@@ -111,7 +121,7 @@ export default Vue.extend({
   },
 
   data: () => ({
-    editedUser: clone(CLEAR_USER) as UserCreateDto | (UserUpdateDto & { id: UUID }),
+    editedUser: clone(CLEAR_USER) as UserForm,
     selectedUser: null as User | null,
   }),
 
@@ -143,10 +153,7 @@ export default Vue.extend({
         const user = await this.$accessor.users.get(id)
         if (!user) return this.$router.replace('/settings/users/create')
 
-        this.editedUser = {
-          ...user,
-          roles: user.roles?.map(({ id }) => id) || [],
-        } as any // TODO: fix this any
+        this.editedUser = mapUserToEditableUser(user)
         this.selectedUser = user
       } else {
         this.editedUser = clone(CLEAR_USER)
@@ -166,6 +173,11 @@ export default Vue.extend({
             id: this.editedUser.id,
             item: this.editedUser,
           })
+
+      if (updated) {
+        this.editedUser = mapUserToEditableUser(updated)
+        this.selectedUser = updated
+      }
 
       if (updated && updated?.id === this.$accessor.auth.user?.id) {
         this.$accessor.auth.SET_USER(updated)

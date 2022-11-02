@@ -26,11 +26,11 @@
         />
       </div>
 
-      <template v-if="user.metadata_pesonal">
+      <template v-if="user.metadata_personal">
         <hr />
         <MetadataForm
           ref="personalMeta"
-          :value="user.metadata_pesonal"
+          :value="user.metadata_personal"
           type="personal"
           model="auth"
         />

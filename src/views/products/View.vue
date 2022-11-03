@@ -105,8 +105,21 @@
         </card>
 
         <card class="product-page__visibility">
-          <h2 class="product-page__subtitle">{{ $t('visibilityTitle') }}</h2>
-          <product-visibility-switch v-model="form" :product="product" :disabled="!canModify" />
+          <div class="product-page__row">
+            <h2 class="product-page__subtitle">{{ $t('visibilityTitle') }}</h2>
+            <product-visibility-switch v-model="form" :product="product" :disabled="!canModify" />
+          </div>
+          <div class="product-page__row">
+            <h2 class="product-page__subtitle">
+              {{ $t('availability.title') }}
+              <info-tooltip :text="$t('availability.tooltip')" />
+            </h2>
+            <boolean-tag
+              :value="product.available"
+              :true-text="$t('availability.available')"
+              :false-text="$t('availability.unavailable')"
+            />
+          </div>
         </card>
 
         <card class="product-page__gallery">
@@ -125,6 +138,12 @@
     "titleNew": "Nowy produkt",
     "baseFormTitle": "Informacje podstawowe",
     "visibilityTitle": "Widoczność produktu",
+    "availability": {
+      "title": "Dostępność produktu",
+      "available": "Dostępny",
+      "unavailable": "Niedostępny",
+      "tooltip": "Dostępność produktu jest zależna od stanu przedmiotów na magazynie powiązanych z produktem oraz jego schematami. Jeśli produkt jest niedostępny, nie będzie możliwy do kupienia w sklepie."
+    },
     "galleryTitle": "Zdjęcia i wideo produktu",
     "deleteConfirm": "Czy na pewno chcesz usunąć ten produkt?",
     "messages": {
@@ -140,6 +159,12 @@
     "baseFormTitle": "Basic information",
     "galleryTitle": "Product gallery",
     "visibilityTitle": "Product visibility",
+    "availability": {
+      "title": "Product availability",
+      "available": "Available",
+      "unavailable": "Unavailable",
+      "tooltip": "Product availability is dependent on the availability of items in warehouses associated with the product and its schemas. If the product is unavailable, it will not be available for purchase in the store."
+    },
     "deleteConfirm": "Are you sure you want to delete this product?",
     "messages": {
       "removed": "Product has been removed.",
@@ -378,6 +403,12 @@ export default mixins(preventLeavingPage).extend({
   }
   &__gallery {
     grid-area: gallery;
+  }
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
   &__subtitle {

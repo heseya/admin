@@ -32,7 +32,7 @@
 {
   "pl": {
     "username": "Nazwa użytkownika",
-    "successfull_login_attempt_alert": "Powiadomienie o sukcesie logowania",
+    "successful_login_attempt_alert": "Powiadomienie o sukcesie logowania",
     "failed_login_attempt_alert": "Powiadomienie o nieudanym logowaniu",
     "new_localization_login_alert": "Powiadomienie o logowaniu z nowej lokalizacji",
     "recovery_code_changed_alert": "Powiadomienie o zmianie kodu przywracania",
@@ -41,7 +41,7 @@
   },
   "en": {
     "username": "User name",
-    "successfull_login_attempt_alert": "Successfull login attempt alert",
+    "successful_login_attempt_alert": "Successfull login attempt alert",
     "failed_login_attempt_alert": "Failed login attempt alert",
     "new_localization_login_alert": "New localization login alert",
     "recovery_code_changed_alert": "Recovery code changed alert",
@@ -62,7 +62,7 @@ import { formatApiNotificationError } from '@/utils/errors'
 const UPDATE_USER_PREFERENCES_FORM: UserProfileUpdateDto = {
   name: '',
   preferences: {
-    successfull_login_attempt_alert: true,
+    successful_login_attempt_alert: true,
     failed_login_attempt_alert: true,
     new_localization_login_alert: true,
     recovery_code_changed_alert: true,

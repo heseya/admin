@@ -9,7 +9,13 @@
 
           <div class="incomes">
             <card border class="income-box">
-              <div class="income-box__title">{{ $t('income.week') }}</div>
+              <div class="income-box__title">
+                {{ $t('income.week') }}
+                <small class="income-box__date">
+                  ({{ formatHourlessDate(dates.week.start) }} -
+                  {{ formatHourlessDate(dates.week.end) }})
+                </small>
+              </div>
               <div class="income-box__value">
                 {{ formatCurrency(currentWeekIncome) }}
               </div>
@@ -18,7 +24,13 @@
               </div>
             </card>
             <card border class="income-box">
-              <div class="income-box__title">{{ $t('income.month') }}</div>
+              <div class="income-box__title">
+                {{ $t('income.month') }}
+                <small class="income-box__date">
+                  ({{ formatHourlessDate(dates.month.start) }} -
+                  {{ formatHourlessDate(dates.month.end) }})
+                </small>
+              </div>
               <div class="income-box__value">
                 {{ formatCurrency(currentMonthIncome) }}
               </div>
@@ -27,7 +39,13 @@
               </div>
             </card>
             <card border class="income-box">
-              <div class="income-box__title">{{ $t('income.year') }}</div>
+              <div class="income-box__title">
+                {{ $t('income.year') }}
+                <small class="income-box__date">
+                  ({{ formatHourlessDate(dates.year.start) }} -
+                  {{ formatHourlessDate(dates.year.end) }})
+                </small>
+              </div>
               <div class="income-box__value">
                 {{ formatCurrency(currentYearIncome) }}
               </div>
@@ -36,7 +54,13 @@
               </div>
             </card>
             <card border class="income-box">
-              <div class="income-box__title">{{ $t('income.lastYear') }}</div>
+              <div class="income-box__title">
+                {{ $t('income.lastYear') }}
+                <small class="income-box__date">
+                  ({{ formatHourlessDate(dates.lastYear.start) }} -
+                  {{ formatHourlessDate(dates.lastYear.end) }})
+                </small>
+              </div>
               <div class="income-box__value">{{ formatCurrency(lastYearIncome) }}</div>
               <div class="income-box__orders">
                 {{ $tc('income.orders', lastYearOrdersCount) }}
@@ -109,8 +133,11 @@
 import Vue from 'vue'
 import sub from 'date-fns/sub'
 import startOfMonth from 'date-fns/startOfMonth'
+import endOfMonth from 'date-fns/endOfMonth'
 import startOfWeek from 'date-fns/startOfWeek'
+import endOfWeek from 'date-fns/endOfWeek'
 import startOfYear from 'date-fns/startOfYear'
+import endOfYear from 'date-fns/endOfYear'
 import { AnalyticsPaymentsSummary, Order } from '@heseya/store-core'
 
 import { sdk } from '@/api'
@@ -122,6 +149,8 @@ import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import MonthlyIncomeChart from '@/components/modules/analytics/MonthlyIncomeChart.vue'
+
+type DateRange = { start: Date; end: Date }
 
 export default Vue.extend({
   metaInfo(this: any) {
@@ -151,18 +180,42 @@ export default Vue.extend({
     orders(): Order[] {
       return this.$accessor.orders.getData
     },
+    dates(): {
+      week: DateRange
+      month: DateRange
+      year: DateRange
+      lastYear: DateRange
+    } {
+      return {
+        week: {
+          start: startOfWeek(new Date(), { weekStartsOn: 1 }),
+          end: endOfWeek(new Date(), { weekStartsOn: 1 }),
+        },
+        month: {
+          start: startOfMonth(new Date()),
+          end: endOfMonth(new Date()),
+        },
+        year: {
+          start: startOfYear(new Date()),
+          end: endOfYear(new Date()),
+        },
+        lastYear: {
+          start: startOfYear(sub(new Date(), { years: 1 })),
+          end: endOfYear(sub(new Date(), { years: 1 })),
+        },
+      }
+    },
   },
   async created() {
     this.$accessor.startLoading()
 
     try {
-      const yearStart = startOfYear(Date.now())
       const [, currentWeek, currentMonth, currentYear, lastYear, monthlyStats] = await Promise.all([
         this.getOrders(),
-        getPaymentsCount(startOfWeek(Date.now()), Date.now()),
-        getPaymentsCount(startOfMonth(Date.now()), Date.now()),
-        getPaymentsCount(startOfYear(Date.now()), Date.now()),
-        getPaymentsCount(sub(yearStart, { years: 1 }), sub(yearStart, { days: 1 })),
+        getPaymentsCount(this.dates.week.start, this.dates.week.end),
+        getPaymentsCount(this.dates.month.start, this.dates.month.end),
+        getPaymentsCount(this.dates.year.start, this.dates.year.end),
+        getPaymentsCount(this.dates.lastYear.start, this.dates.lastYear.end),
         sdk.Analytics.getPayments({
           group: 'monthly',
           from: startOfMonth(sub(Date.now(), { years: 1 })),
@@ -191,6 +244,9 @@ export default Vue.extend({
   methods: {
     formatDate(date: DateInput) {
       return formatDate(date)
+    },
+    formatHourlessDate(date: DateInput) {
+      return formatDate(date, false)
     },
     formatCurrency(amount: number) {
       return formatCurrency(amount, this.$accessor.config.currency)
@@ -275,6 +331,12 @@ export default Vue.extend({
     font-weight: 600;
   }
 
+  &__date {
+    color: $gray-color-600;
+    font-weight: 400;
+    font-style: italic;
+  }
+
   &__value {
     font-weight: 600;
     font-size: 2rem;
@@ -288,7 +350,7 @@ export default Vue.extend({
 
   &__orders {
     font-size: 0.9rem;
-    color: #aaaaaa;
+    color: $gray-color-600;
   }
 }
 

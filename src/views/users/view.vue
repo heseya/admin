@@ -104,7 +104,7 @@ const mapUserToEditableUser = (user: User): UserForm => ({
   ...user,
   roles: user.roles?.map(({ id }) => id) || [],
   birthday_date: user.birthday_date ?? undefined,
-  phone: user.birthday_date ?? undefined,
+  phone: user.phone ?? undefined,
   password: '',
 })
 

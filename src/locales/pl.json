@@ -186,6 +186,7 @@
       "VALIDATION_REQUIRED_WITH_ALL": "Wartość pola musi być obecna i nie może być pusta, jeśli inne podane pola są obecne i nie są puste.",
       "VALIDATION_GTE": "Wartość pola musi być większa bądź równa wartości pola {field}.",
       "VALIDATION_APP_UNIQUE_ID": "Aplikacja o podanym url jest już zainstalowana.",
+      "VALIDATION_PHONE": "Wartość pola musi być poprawnym numerem telefonu",
       "INTERNAL_SERVER_ERROR": "Wewnętrzny błąd serwera"
     },
     "CLIENT_ERROR": {

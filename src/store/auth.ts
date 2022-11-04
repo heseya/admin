@@ -163,13 +163,15 @@ const actions = actionTree(
       }
     },
 
-    async updateUserProfile({ commit }, { name, preferences }: UserProfileUpdateDto) {
+    async updateUserProfile({ commit }, payload: UserProfileUpdateDto) {
       commit('SET_ERROR', null)
       try {
-        const profile = await sdk.UserProfile.update({ name, preferences })
+        const profile = await sdk.UserProfile.update(payload)
         commit('SET_USER_PROFILE', profile)
+        return profile
       } catch (e: any) {
         commit('SET_ERROR', e)
+        return false
       }
     },
 

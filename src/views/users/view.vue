@@ -89,6 +89,7 @@ import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordi
 
 import { UUID } from '@/interfaces/UUID'
 import Card from '@/components/layout/Card.vue'
+import { formatApiNotificationError } from '@/utils/errors'
 
 const CLEAR_USER: UserCreateDto = {
   name: '',
@@ -140,6 +141,9 @@ export default Vue.extend({
       handler() {
         this.fetchUser()
       },
+    },
+    '$accessor.users.error'(error) {
+      if (error) this.$toast.error(formatApiNotificationError(error))
     },
   },
 

@@ -51,7 +51,8 @@
     "form": {
       "price": "Cena brutto",
       "tags": "Tagi",
-      "public": "Widoczność"
+      "public": "Widoczność",
+      "available": "Dostępny"
     }
   },
   "en": {
@@ -65,7 +66,8 @@
     "form": {
       "price": "Price (gross)",
       "tags": "Tags",
-      "public": "Visibility"
+      "public": "Visibility",
+      "available": "Available"
     }
   }
 }
@@ -130,6 +132,11 @@ export default Vue.extend({
             label: this.$t('form.public') as string,
             width: '0.4fr',
             sortable: true,
+          },
+          {
+            key: 'available',
+            label: this.$t('form.available') as string,
+            width: '0.4fr',
           },
           { key: 'action', label: '', width: '64px' },
         ],

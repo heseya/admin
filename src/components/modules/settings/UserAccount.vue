@@ -1,6 +1,6 @@
 <template>
   <validation-observer v-slot="{ handleSubmit }">
-    <form class="change-preferences-form" @submit.prevent="handleSubmit(changePreferences)">
+    <form class="change-preferences-form" @submit.prevent="handleSubmit(saveProfile)">
       <validated-input
         v-model="form.name"
         name="name"
@@ -51,7 +51,7 @@
     "username": "Nazwa użytkownika",
     "phone": "Numer telefonu",
     "birthday": "Data urodzenia",
-    "successfull_login_attempt_alert": "Powiadomienie o sukcesie logowania",
+    "successful_login_attempt_alert": "Powiadomienie o sukcesie logowania",
     "failed_login_attempt_alert": "Powiadomienie o nieudanym logowaniu",
     "new_localization_login_alert": "Powiadomienie o logowaniu z nowej lokalizacji",
     "recovery_code_changed_alert": "Powiadomienie o zmianie kodu przywracania",
@@ -62,7 +62,7 @@
     "username": "User name",
     "phone": "Phone number",
     "birthday": "Birthday",
-    "successfull_login_attempt_alert": "Successfull login attempt alert",
+    "successful_login_attempt_alert": "Successfull login attempt alert",
     "failed_login_attempt_alert": "Failed login attempt alert",
     "new_localization_login_alert": "New localization login alert",
     "recovery_code_changed_alert": "Recovery code changed alert",
@@ -81,12 +81,12 @@ import { User, UserProfileUpdateDto } from '@heseya/store-core'
 import { formatApiNotificationError } from '@/utils/errors'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
-const UPDATE_USER_PREFERENCES_FORM: UserProfileUpdateDto = {
+const UPDATE_USER_FORM: UserProfileUpdateDto = {
   name: '',
   birthday_date: '',
   phone: '',
   preferences: {
-    successfull_login_attempt_alert: true,
+    successful_login_attempt_alert: true,
     failed_login_attempt_alert: true,
     new_localization_login_alert: true,
     recovery_code_changed_alert: true,
@@ -109,38 +109,44 @@ export default Vue.extend({
     isLoading: false,
   }),
   watch: {
-    user(v: User) {
+    user(user: User) {
       this.form = cloneDeep({
-        ...UPDATE_USER_PREFERENCES_FORM,
-        name: v.name,
-        // Preferences are not implemented yet
-        preferences: v?.preferences || UPDATE_USER_PREFERENCES_FORM.preferences,
+        ...UPDATE_USER_FORM,
+        name: user.name,
+        birthday_date: user.birthday_date ?? undefined,
+        phone: user.phone ?? undefined,
+        preferences: user.preferences || UPDATE_USER_FORM.preferences,
       })
+    },
+
+    '$accessor.auth.error'(error) {
+      if (error) this.$toast.error(formatApiNotificationError(error))
     },
   },
   created() {
     this.form = cloneDeep({
-      ...UPDATE_USER_PREFERENCES_FORM,
+      ...UPDATE_USER_FORM,
       name: this.user.name,
-      preferences: this.user?.preferences || UPDATE_USER_PREFERENCES_FORM.preferences,
+      birthday_date: this.user.birthday_date ?? undefined,
+      phone: this.user.phone ?? undefined,
+      preferences: this.user.preferences || UPDATE_USER_FORM.preferences,
     })
   },
   methods: {
-    async changePreferences() {
-      try {
-        this.isLoading = true
-        await this.saveMetadata()
-        await this.$accessor.auth.updateUserProfile({
-          ...this.form,
-          name: this.form.name as string,
-        })
+    async saveProfile() {
+      this.isLoading = true
+      await this.saveMetadata()
+      const success = await this.$accessor.auth.updateUserProfile({
+        ...this.form,
+        name: this.form.name as string,
+      })
+
+      if (success) {
         this.$toast.success(this.$t('successMessage') as string)
-      } catch (error: any) {
-        this.$toast.error(formatApiNotificationError(error))
-      } finally {
-        this.isLoading = false
+
         this.$emit('success')
       }
+      this.isLoading = false
     },
 
     async saveMetadata() {

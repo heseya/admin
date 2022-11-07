@@ -186,6 +186,7 @@
       "VALIDATION_REQUIRED_WITH_ALL": "The field value must be present and cannot be empty if the other specified fields are present and not empty.",
       "VALIDATION_GTE": "The field value must be greater than or equal to the value of field {field}.",
       "VALIDATION_APP_UNIQUE_ID": "App with given url is already installed.",
+      "VALIDATION_PHONE": "The field value must be a valid phone number.",
       "INTERNAL_SERVER_ERROR": "Internal server error"
     },
     "CLIENT_ERROR": {

@@ -1,5 +1,15 @@
 <template>
   <div class="sale-configurator">
+    <div class="sale-configurator__status sale-status">
+      <span class="sale-status__title">
+        {{ $t('status.title') }}
+      </span>
+      <span class="sale-status__value" :class="{ 'sale-status__value--inactive': !form.active }">
+        {{ form.active ? $t('status.active') : $t('status.inactive') }}
+      </span>
+      <SwitchInput v-model="form.active" class="sale-status__input" name="active" />
+    </div>
+
     <div class="sale-configurator__fields">
       <validated-input
         v-model="form.name"
@@ -152,6 +162,11 @@
 {
   "pl": {
     "refers": "Dotyczy",
+    "status": {
+      "title": "Status",
+      "active": "Aktywna",
+      "inactive": "Nieaktywna"
+    },
     "form": {
       "code": "Kod",
       "discount": "Wartość zniżki",
@@ -167,6 +182,11 @@
   },
   "en": {
     "refers": "Refers to",
+    "status": {
+      "title": "Status",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
     "form": {
       "code": "Code",
       "discount": "Discount value",
@@ -347,6 +367,39 @@ export default Vue.extend({
         margin-right: 20px !important;
       }
     }
+  }
+}
+
+.sale-status {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--background-color-700);
+  margin-bottom: 8px;
+
+  &__title {
+    margin-right: 12px;
+    font-size: 1.1em;
+    font-weight: 500;
+  }
+
+  &__value {
+    color: var(--green-color-500);
+    text-transform: uppercase;
+    font-weight: 300;
+    font-size: 0.8em;
+    margin-right: 8px;
+    line-height: 0.8em;
+
+    &--inactive {
+      color: var(--red-color-500);
+    }
+  }
+
+  &__input {
+    margin-top: -4px;
   }
 }
 </style>

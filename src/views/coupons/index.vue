@@ -1,6 +1,12 @@
 <template>
   <div>
-    <PaginatedList :title="$t('title')" store-key="coupons" :table="tableConfig">
+    <PaginatedList
+      :title="$t('title')"
+      store-key="coupons"
+      :table="tableConfig"
+      :filters="filters"
+      @clear-filters="clearFilters"
+    >
       <template #nav>
         <icon-button v-can="$p.Coupons.Add" to="/coupons/create">
           <template #icon>
@@ -8,6 +14,19 @@
           </template>
           {{ $t('add') }}
         </icon-button>
+      </template>
+
+      <template #filters>
+        <div>
+          <app-input
+            v-model="filters.search"
+            class="span-2"
+            type="search"
+            :label="$t('common.search')"
+            allow-clear
+            @input="debouncedSearch"
+          />
+        </div>
       </template>
 
       <template #default="{ item: coupon }">
@@ -63,6 +82,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { debounce } from 'lodash'
 import { Coupon, DiscountType } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
@@ -75,10 +95,18 @@ export default Vue.extend({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },
+
   components: {
     PaginatedList,
     CmsTableRow,
   },
+
+  data: () => ({
+    filters: {
+      search: '',
+    },
+  }),
+
   computed: {
     DiscountType(): typeof DiscountType {
       return DiscountType
@@ -105,7 +133,28 @@ export default Vue.extend({
     },
   },
 
+  created() {
+    this.filters.search = (this.$route.query.search as string) || ''
+  },
+
   methods: {
+    makeSearch() {
+      if (this.filters.search !== this.$route.query.search) {
+        this.$router.push({
+          path: '/coupons',
+          query: { page: undefined, search: this.filters.search || undefined },
+        })
+      }
+    },
+    debouncedSearch: debounce(function (this: any) {
+      this.$nextTick(() => {
+        this.makeSearch()
+      })
+    }, 300),
+    clearFilters() {
+      this.filters.search = ''
+      this.makeSearch()
+    },
     formatCurrency(amount: number) {
       return formatCurrency(amount, this.$accessor.config.currency)
     },

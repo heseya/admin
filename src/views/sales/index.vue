@@ -1,6 +1,12 @@
 <template>
   <div>
-    <PaginatedList :title="$t('title')" store-key="sales" :table="tableConfig">
+    <PaginatedList
+      :title="$t('title')"
+      store-key="sales"
+      :table="tableConfig"
+      :filters="filters"
+      @clear-filters="clearFilters"
+    >
       <template #nav>
         <icon-button v-can="$p.Sales.Add" to="/sales/create">
           <template #icon>
@@ -8,6 +14,19 @@
           </template>
           {{ $t('add') }}
         </icon-button>
+      </template>
+
+      <template #filters>
+        <div>
+          <app-input
+            v-model="filters.search"
+            class="span-2"
+            type="search"
+            :label="$t('common.search')"
+            allow-clear
+            @input="debouncedSearch"
+          />
+        </div>
       </template>
 
       <template #default="{ item: sale }">
@@ -58,6 +77,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { debounce } from 'lodash'
 import { DiscountType, Sale } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
@@ -74,6 +94,13 @@ export default Vue.extend({
     PaginatedList,
     CmsTableRow,
   },
+
+  data: () => ({
+    filters: {
+      search: '',
+    },
+  }),
+
   computed: {
     DiscountType(): typeof DiscountType {
       return DiscountType
@@ -99,7 +126,28 @@ export default Vue.extend({
     },
   },
 
+  created() {
+    this.filters.search = (this.$route.query.search as string) || ''
+  },
+
   methods: {
+    makeSearch() {
+      if (this.filters.search !== this.$route.query.search) {
+        this.$router.push({
+          path: '/sales',
+          query: { page: undefined, search: this.filters.search || undefined },
+        })
+      }
+    },
+    debouncedSearch: debounce(function (this: any) {
+      this.$nextTick(() => {
+        this.makeSearch()
+      })
+    }, 300),
+    clearFilters() {
+      this.filters.search = ''
+      this.makeSearch()
+    },
     formatCurrency(amount: number) {
       return formatCurrency(amount, this.$accessor.config.currency)
     },

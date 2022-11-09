@@ -105,21 +105,7 @@
         </card>
 
         <card class="product-page__visibility">
-          <div class="product-page__row">
-            <h2 class="product-page__subtitle">{{ $t('visibilityTitle') }}</h2>
-            <product-visibility-switch v-model="form" :product="product" :disabled="!canModify" />
-          </div>
-          <div class="product-page__row">
-            <h2 class="product-page__subtitle">
-              {{ $t('availability.title') }}
-              <info-tooltip :text="$t('availability.tooltip')" />
-            </h2>
-            <boolean-tag
-              :value="product.available"
-              :true-text="$t('availability.available')"
-              :false-text="$t('availability.unavailable')"
-            />
-          </div>
+          <product-aside-details v-model="form" :product="product" :disabled="!canModify" />
         </card>
 
         <card class="product-page__gallery">
@@ -137,13 +123,6 @@
     "title": "Konfiguracja produktu:",
     "titleNew": "Nowy produkt",
     "baseFormTitle": "Informacje podstawowe",
-    "visibilityTitle": "Widoczność produktu",
-    "availability": {
-      "title": "Dostępność produktu",
-      "available": "Dostępny",
-      "unavailable": "Niedostępny",
-      "tooltip": "Dostępność produktu jest zależna od stanu przedmiotów na magazynie powiązanych z produktem oraz jego schematami. Jeśli produkt jest niedostępny, nie będzie możliwy do kupienia w sklepie."
-    },
     "galleryTitle": "Zdjęcia i wideo produktu",
     "deleteConfirm": "Czy na pewno chcesz usunąć ten produkt?",
     "messages": {
@@ -158,13 +137,6 @@
     "titleNew": "New product",
     "baseFormTitle": "Basic information",
     "galleryTitle": "Product gallery",
-    "visibilityTitle": "Product visibility",
-    "availability": {
-      "title": "Product availability",
-      "available": "Available",
-      "unavailable": "Unavailable",
-      "tooltip": "Product availability is dependent on the availability of items in warehouses associated with the product and its schemas. If the product is unavailable, it will not be available for purchase in the store."
-    },
     "deleteConfirm": "Are you sure you want to delete this product?",
     "messages": {
       "removed": "Product has been removed.",
@@ -195,8 +167,8 @@ import WarehouseItemsConfigurator from '@/components/modules/products/WarehouseI
 
 import ProductBasicDetails from '@/components/modules/products/view/ProductBasicDetails.vue'
 import ProductAdvancedDetails from '@/components/modules/products/view/ProductAdvancedDetails.vue'
+import ProductAsideDetails from '@/components/modules/products/view/ProductAsideDetails.vue'
 import ProductDescription from '@/components/modules/products/view/ProductDescription.vue'
-import ProductVisibilitySwitch from '@/components/modules/products/view/ProductVisibilitySwitch.vue'
 
 import preventLeavingPage from '@/mixins/preventLeavingPage'
 
@@ -248,7 +220,7 @@ export default mixins(preventLeavingPage).extend({
     ProductBasicDetails,
     ProductAdvancedDetails,
     ProductDescription,
-    ProductVisibilitySwitch,
+    ProductAsideDetails,
   },
   data: () => ({
     form: cloneDeep(EMPTY_FORM),
@@ -403,12 +375,6 @@ export default mixins(preventLeavingPage).extend({
   }
   &__gallery {
     grid-area: gallery;
-  }
-
-  &__row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
   }
 
   &__subtitle {

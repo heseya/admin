@@ -12,7 +12,11 @@
         mode="default"
         model-url="product-sets"
         :banned-set-ids="bannedSetIds"
-      />
+      >
+        <template #option="option">
+          {{ option.name }}&nbsp;<small>(/{{ option.slug }})</small>
+        </template>
+      </autocomplete-input>
     </div>
 
     <template #footer>

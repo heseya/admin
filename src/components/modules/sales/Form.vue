@@ -119,7 +119,11 @@
           :disabled="disabled"
           :rules="{ required: form.target_is_allow_list && form.target_sets.length === 0 }"
           class="target-products"
-        />
+        >
+          <template #option="product">
+            {{ product.name }}&nbsp;<small>(/{{ product.slug }})</small>
+          </template>
+        </autocomplete-input>
 
         <autocomplete-input
           v-model="form.target_sets"
@@ -128,7 +132,11 @@
           :disabled="disabled"
           :rules="{ required: form.target_is_allow_list && form.target_products.length === 0 }"
           class="target-sets"
-        />
+        >
+          <template #option="set">
+            {{ set.name }}&nbsp;<small>(/{{ set.slug }})</small>
+          </template>
+        </autocomplete-input>
       </template>
 
       <autocomplete-input

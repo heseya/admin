@@ -1,12 +1,15 @@
 <template>
   <div class="sw-update-popup" :class="{ 'sw-update-popup--active': updateExists }">
     <p class="sw-update-popup__text">Dostępna jest aktualizacja</p>
-    <app-button type="white" size="small" @click.stop="refreshApp"> Zaktualizuj </app-button>
+    <app-button type="white" size="small" @click.stop="refreshApp"> Odśwież stronę </app-button>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+
+import { SERVICE_WORKER_UPDATED_EVENT } from '@/consts/serviceWorkerUpdated'
+
 export default Vue.extend({
   data() {
     return {
@@ -15,21 +18,18 @@ export default Vue.extend({
       registration: null as null | ServiceWorkerRegistration,
     }
   },
-  // watch: {
-  //   updateExists(val: boolean) {
-  //     if (!val) return
 
-  //   },
-  // },
   created() {
-    document.addEventListener('swUpdated', this.updateAvailable, { once: true })
+    document.addEventListener(SERVICE_WORKER_UPDATED_EVENT, this.updateAvailable, { once: true })
 
+    // Watch for a new service worker to take control, then refresh the page
     navigator.serviceWorker.addEventListener('controllerchange', () => {
       if (this.refreshing) return
       this.refreshing = true
       window.location.reload()
     })
   },
+
   methods: {
     updateAvailable(event: any) {
       this.registration = event.detail
@@ -49,10 +49,10 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .sw-update-popup {
   position: fixed;
-  right: 20px;
+  right: 10px;
   bottom: -120px;
   width: 100%;
-  max-width: calc(100vw - 40px);
+  max-width: calc(100vw - 20px);
   padding: 8px;
   background-color: $primary-color-500;
   color: white;
@@ -68,7 +68,8 @@ export default Vue.extend({
 
   @media ($viewport-4) {
     flex-direction: row;
-    max-width: 320px;
+    max-width: 340px;
+    right: 20px;
   }
 
   &--active {

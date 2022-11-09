@@ -27,6 +27,6 @@ export const getApiURL = () => {
     case '***REMOVED***':
       return '***REMOVED***'
     default:
-      return process.env.VUE_APP_API_URL || 'https://dev.***REMOVED***'
+      return process.env.VUE_APP_API_URL || '***REMOVED***'
   }
 }

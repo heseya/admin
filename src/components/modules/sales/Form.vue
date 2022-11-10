@@ -112,13 +112,15 @@
       </div>
 
       <template v-if="form.target_type === DiscountTargetType.Products">
+        <!-- Without key in following autocompletes, when switching target type, the products autocomplete is transformed into shipping one - just as the props would be changed, no new component is created -->
         <autocomplete-input
+          key="target_products"
           v-model="form.target_products"
           :label="$t('form.target_products')"
           model-url="products"
           :disabled="disabled"
           :rules="{ required: form.target_is_allow_list && form.target_sets.length === 0 }"
-          class="target-products"
+          class="sale-configurator__autocomplete"
         >
           <template #option="product">
             {{ product.name }}&nbsp;<small>(/{{ product.slug }})</small>
@@ -126,12 +128,13 @@
         </autocomplete-input>
 
         <autocomplete-input
+          key="target_sets"
           v-model="form.target_sets"
           :label="$t('form.target_sets')"
           model-url="product-sets"
           :disabled="disabled"
           :rules="{ required: form.target_is_allow_list && form.target_products.length === 0 }"
-          class="target-sets"
+          class="sale-configurator__autocomplete"
         >
           <template #option="set">
             {{ set.name }}&nbsp;<small>(/{{ set.slug }})</small>
@@ -141,12 +144,13 @@
 
       <autocomplete-input
         v-if="form.target_type === DiscountTargetType.ShippingPrice"
+        key="target_shipping_methods"
         v-model="form.target_shipping_methods"
         :label="$t('form.target_shipping_methods')"
         model-url="shipping-methods"
         :disabled="disabled"
         :rules="{ required: form.target_is_allow_list }"
-        class="target-shipping"
+        class="sale-configurator__autocomplete"
       />
     </div>
 
@@ -280,9 +284,7 @@ export default Vue.extend({
       }
     }
 
-    .target-products,
-    .target-sets,
-    .target-shipping {
+    .sale-configurator__autocomplete {
       width: 100%;
       grid-column: 1/-1;
     }

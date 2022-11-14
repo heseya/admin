@@ -357,7 +357,7 @@ export const createVuexCRUD =
             )
 
             // ? Typescript is complaining, that Item does not need to have metadata, but if this method is called, it does
-            // ? When removing all metadata, empty response is an array instead of object
+
             // @ts-ignore
             // commit(StoreMutations.EditData, {
             //   key: 'id',
@@ -365,7 +365,8 @@ export const createVuexCRUD =
             //   item: { [isPublic ? 'metadata' : 'metadata_private']: Array.isArray(data.data) ? {} : data.data },
             // })
             commit(DefaultVuexMutation.SetLoading, false)
-            return data.data
+            // ? When removing all metadata, empty response is an array instead of object
+            return Array.isArray(data.data) ? {} : data.data
           } catch (error: any) {
             commit(DefaultVuexMutation.SetError, error)
             commit(DefaultVuexMutation.SetLoading, false)

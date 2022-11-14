@@ -217,10 +217,20 @@ export default Vue.extend({
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-right: 24px;
+    flex-direction: column;
+
+    @media ($viewport-10) {
+      flex-direction: row;
+      padding-right: 24px;
+    }
 
     h4 {
       margin-bottom: 0;
+      margin-right: auto;
+    }
+
+    :deep(.icon-button) {
+      margin-left: auto;
     }
   }
 
@@ -238,14 +248,15 @@ export default Vue.extend({
   transition: 0.3s;
   cursor: move;
 
+  @media (pointer: fine) {
+    &:hover {
+      background-color: var(--background-color-500);
+    }
+  }
+
   &.undragabble {
     cursor: not-allowed;
   }
-
-  &:hover {
-    background-color: var(--background-color-500);
-  }
-
   &__main {
     margin-left: 8px;
   }

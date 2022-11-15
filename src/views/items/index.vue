@@ -143,14 +143,14 @@ export default Vue.extend({
             key: 'availability',
             label: this.$t('table.availability') as string,
             width: '0.6fr',
-            sortable: true,
+            sortable: false,
             render: (_v, item) => this.formatAvailability(item),
           },
           {
             key: 'unlimited',
             label: this.$t('table.unlimited') as string,
             width: '0.6fr',
-            sortable: true,
+            sortable: false,
             render: (_v, item) =>
               !!item.unlimited_stock_shipping_time || !!item.unlimited_stock_shipping_date,
           },

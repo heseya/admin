@@ -45,10 +45,14 @@ export const formatApiError = (error: ApiError) => {
   const messages = !isEmpty(responseData?.errors)
     ? Object.entries(responseData?.errors!)
         .map(([key, value]) => {
-          const fieldName = i18n.te(`common.form.${key}`) ? i18n.t(`common.form.${key}`) : key
+          const fieldName = (
+            i18n.te(`common.form.${key}`) ? (i18n.t(`common.form.${key}`) as string) : key
+          ).toLowerCase()
+
           const errorKey = value[0].key
           return errorKey
-            ? fieldName + ': ' + i18n.t(`errors.${errorType}.${errorKey}`, value[0])
+            ? `${i18n.t('errors.field')} <b>"${fieldName}"</b>: ` +
+                i18n.t(`errors.${errorType}.${errorKey}`, value[0])
             : ''
         })
         .filter(Boolean)

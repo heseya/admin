@@ -30,6 +30,7 @@ export default Vue.extend({
   padding: 16px 12px;
   margin: 8px 0;
   color: #7b8589;
+  text-align: center;
 
   &__icon {
     font-size: 3em;
@@ -43,6 +44,7 @@ export default Vue.extend({
     font-weight: 300;
     font-size: 0.9em;
     letter-spacing: 0.55px;
+    max-width: 1000px;
   }
 
   &--small {

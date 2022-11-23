@@ -38,22 +38,9 @@
         name="vat_rate"
         :disabled="disabled"
       />
-
-      <validated-input
-        v-model="form.quantity_step"
-        rules="required"
-        type="number"
-        max="999999"
-        step="0.01"
-        name="quantity_step"
-        :disabled="disabled"
-      >
-        <template #label>
-          {{ $t('form.quantityStep') }}
-          <info-tooltip>{{ $t('form.quantityStepTooltip') }}</info-tooltip>
-        </template>
-      </validated-input>
     </div>
+
+    <tags-select v-model="form.tags" :disabled="disabled" />
 
     <app-textarea
       v-if="!loading"
@@ -70,8 +57,6 @@
     "form": {
       "price": "Cena brutto",
       "vatRate": "Stawka VAT (%)",
-      "quantityStep": "Format ilości",
-      "quantityStepTooltip": "Oznacza jaki jest najmniejszy możliwy krok zmiany ilości produktu. Domyślnie jest to 1, ale dla niektórych produktów konieczna może okazać się możliwość zamawiania w krokach mniejszych lub większych krokach (Np. sprzedając sznurek na metry, możemy chcieć sprzedawać co 10 cm))",
       "shortDescription": "Krótki opis"
     }
   },
@@ -79,8 +64,6 @@
     "form": {
       "price": "Price (gross)",
       "vatRate": "VAT rate (%)",
-      "quantityStep": "Quantity format",
-      "quantityStepTooltip": "Indicates the smallest possible step of quantity change. Default is 1, but for some products it may be necessary to change the step in smaller or larger steps (e.g. selling a screw on meters, you can change the step to 10 cm)",
       "shortDescription": "Short description"
     }
   }
@@ -93,12 +76,13 @@ import { Product } from '@heseya/store-core'
 
 import { ProductComponentForm } from '@/interfaces/Product'
 import ProductSetSelect from '../ProductSetSelect.vue'
+import Textarea from '@/components/form/Textarea.vue'
+import TagsSelect from '@/components/TagsSelect.vue'
 
 import { generateSlug } from '@/utils/generateSlug'
-import Textarea from '@/components/form/Textarea.vue'
 
 export default Vue.extend({
-  components: { ProductSetSelect, AppTextarea: Textarea },
+  components: { ProductSetSelect, AppTextarea: Textarea, TagsSelect },
   props: {
     value: {
       type: Object,
@@ -142,18 +126,11 @@ export default Vue.extend({
   &__price-row {
     width: 100%;
     display: grid;
-    grid-template-columns: 1.5fr 1fr;
+    grid-template-columns: 1fr;
     grid-gap: 0 16px;
 
-    @media ($max-viewport-4) {
-      *:last-child {
-        grid-column: 1 / -1;
-      }
-    }
-
     @media ($viewport-4) {
-      grid-gap: 24px;
-      grid-template-columns: 1fr 0.5fr 1fr;
+      grid-template-columns: 1.5fr 1fr;
     }
 
     @media ($viewport-12) {

@@ -11,7 +11,7 @@
         :disabled="disabled"
         show-search
         allow-clear
-        label-in-value
+        :filter-option="false"
         :loading="isLoading"
         :placeholder="`${$t('placeholder')}`"
         @search="onSearch"
@@ -82,6 +82,7 @@ export default Vue.extend({
     disabled: { type: Boolean, default: false },
     propMode: { type: String, default: undefined } as Vue.PropOptions<keyof BaseItem>,
     label: { type: String, default: '' },
+    limit: { type: [Number, String], default: 24 },
     placeholderModel: { type: String, default: '' },
     rules: { type: [String, Object], default: null },
     mode: { type: String, default: 'multiple' },
@@ -185,7 +186,9 @@ export default Vue.extend({
       this.isLoading = true
       const {
         data: { data: data },
-      } = await api.get<{ data: BaseItem[] }>(`/${this.modelUrl}?search=${query}`)
+      } = await api.get<{ data: BaseItem[] }>(
+        `/${this.modelUrl}?search=${query}&limit=${this.limit}`,
+      )
 
       this.searchedOptions = data
 

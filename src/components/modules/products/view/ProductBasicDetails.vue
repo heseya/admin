@@ -36,7 +36,7 @@
         type="number"
         :label="$t('form.vatRate')"
         name="vat_rate"
-        min="0"
+        :min="0"
         :disabled="disabled"
       />
     </div>

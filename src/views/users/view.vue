@@ -66,12 +66,22 @@
   "pl": {
     "editTitle": "Edycja użytkownika",
     "newTitle": "Nowy użytkownik",
-    "deleteText": "Czy na pewno chcesz usunąć tego użytkownika?"
+    "deleteText": "Czy na pewno chcesz usunąć tego użytkownika?",
+    "messages": {
+      "removed": "Użytkownik został usunięty.",
+      "created": "Użytkownik został utworzony.",
+      "updated": "Użytkownik został zaktualizowany."
+    }
   },
   "en": {
     "editTitle": "Edit user",
     "newTitle": "New user",
-    "deleteText": "Are you sure you want to delete this user?"
+    "deleteText": "Are you sure you want to delete this user?",
+    "messages": {
+      "removed": "User has been removed.",
+      "created": "User has been created.",
+      "updated": "User has been updated."
+    }
   }
 }
 </i18n>
@@ -179,8 +189,17 @@ export default Vue.extend({
           })
 
       if (updated) {
+        const successMessage = this.isNewUser(this.editedUser)
+          ? (this.$t('messages.created') as string)
+          : (this.$t('messages.updated') as string)
+        this.$toast.success(successMessage)
+
         this.editedUser = mapUserToEditableUser(updated)
         this.selectedUser = updated
+
+        if (updated.id !== this.$route.params.id) {
+          this.$router.push(`/settings/users/${updated.id}`)
+        }
       }
 
       if (updated && updated?.id === this.$accessor.auth.user?.id) {
@@ -193,7 +212,11 @@ export default Vue.extend({
       if (this.isNewUser(this.editedUser)) return
 
       this.$accessor.startLoading()
-      await this.$accessor.users.remove(this.editedUser.id)
+      const success = await this.$accessor.users.remove(this.editedUser.id)
+      if (success) {
+        this.$toast.success(this.$t('messages.removed') as string)
+        this.$router.push('/settings/users')
+      }
       this.$accessor.stopLoading()
     },
 

@@ -11,6 +11,7 @@
         :label="$t('title')"
         mode="default"
         model-url="product-sets"
+        limit="48"
         :banned-set-ids="bannedSetIds"
       >
         <template #option="option">

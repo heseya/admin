@@ -64,6 +64,7 @@ export default Vue.extend({
     allText: String,
     showSearch: Boolean,
     labelInValue: Boolean,
+    filterOption: Boolean,
     tokenSeparators: Array,
     optionFilterProp: String,
     dataCy: String,

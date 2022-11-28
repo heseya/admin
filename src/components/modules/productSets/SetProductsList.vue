@@ -38,7 +38,7 @@
             <span class="set-product-item__name">{{ product.name }}</span>
             <product-price tag="span" class="set-product-item__price" :product="product" />
           </div>
-          <div class="set-product-item__actions">
+          <div class="set-product-item__actions undragabble">
             <icon-button
               v-can="$p.ProductSets.Edit"
               size="small"
@@ -273,6 +273,8 @@ export default Vue.extend({
 
   &__actions {
     margin-left: auto;
+    position: relative;
+    z-index: 100;
   }
 }
 </style>

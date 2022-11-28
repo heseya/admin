@@ -105,6 +105,11 @@
     "editTitle": "Edycja użytkownika",
     "newTitle": "Nowy użytkownik",
     "deleteText": "Czy na pewno chcesz usunąć tego użytkownika?",
+    "messages": {
+      "removed": "Użytkownik został usunięty.",
+      "created": "Użytkownik został utworzony.",
+      "updated": "Użytkownik został zaktualizowany."
+    },
     "table": {
       "email": "E-mail",
       "roles": "Role",
@@ -117,6 +122,11 @@
     "editTitle": "Edit user",
     "newTitle": "New user",
     "deleteText": "Are you sure you want to delete this user?",
+    "messages": {
+      "removed": "User has been removed.",
+      "created": "User has been created.",
+      "updated": "User has been updated."
+    },
     "table": {
       "email": "E-mail",
       "roles": "Roles",
@@ -269,7 +279,15 @@ export default Vue.extend({
             id: this.editedUser.id,
             item: this.editedUser,
           })
-      if (updated) this.isModalActive = false
+      if (updated) {
+        this.isModalActive = false
+
+        const successMessage = this.isNewUser(this.editedUser)
+          ? (this.$t('messages.created') as string)
+          : (this.$t('messages.updated') as string)
+
+        this.$toast.success(successMessage)
+      }
 
       if (updated && updated?.id === this.$accessor.auth.user?.id) {
         this.$accessor.auth.SET_USER(updated)
@@ -281,7 +299,8 @@ export default Vue.extend({
       if (this.isNewUser(this.editedUser)) return
 
       this.$accessor.startLoading()
-      await this.$accessor.users.remove(this.editedUser.id)
+      const success = await this.$accessor.users.remove(this.editedUser.id)
+      if (success) this.$toast.success(this.$t('messages.removed') as string)
       this.isModalActive = false
       this.$accessor.stopLoading()
     },

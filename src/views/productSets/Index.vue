@@ -65,6 +65,7 @@ import { CLEAR_PRODUCT_SET_FORM } from './View.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import { formatFilters } from '@/utils/utils'
+import { ALL_FILTER_VALUE } from '@/consts/filters'
 
 export default Vue.extend({
   metaInfo(this: any) {
@@ -98,6 +99,12 @@ export default Vue.extend({
     if (this.$route.query.open) {
       this.editProductSet(this.$route.query.open as string)
     }
+  },
+  created() {
+    const { search, public: isPublic } = this.$route.query
+
+    this.filters.public = (isPublic as string) || ALL_FILTER_VALUE
+    this.filters.search = (search as string) || ''
   },
   methods: {
     editProductSet(set: ProductSet | string) {

@@ -11,6 +11,7 @@
         :disabled="disabled"
         show-search
         allow-clear
+        label-in-value
         :filter-option="false"
         :loading="isLoading"
         :placeholder="`${$t('placeholder')}`"

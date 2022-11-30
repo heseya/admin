@@ -149,8 +149,7 @@
     "alerts": {
       "deleted": "Status zamówienia został usunięty.",
       "created": "Status zamówienia został dodany.",
-      "updated": "Status zamówienia został zaktualizowany.",
-      "metadataUpdated": "Metadane statusu zamówienia zostały zaktualizowane."
+      "updated": "Status zamówienia został zaktualizowany."
     }
   },
   "en": {
@@ -170,8 +169,7 @@
     "alerts": {
       "deleted": "Order status has been deleted.",
       "created": "Order status has been added.",
-      "updated": "Order status has been updated.",
-      "metadataUpdated": "Metadata of order status has been updated."
+      "updated": "Order status has been updated."
     }
   }
 }
@@ -287,20 +285,17 @@ export default Vue.extend({
         })
 
         if (updatedStatus) this.$toast.success(this.$t('alerts.updated') as string)
-        else this.$toast.success(this.$t('alerts.metadataUpdated') as string)
       } else {
-        await this.$accessor.statuses.add(this.editedItem)
-
-        this.$toast.success(this.$t('alerts.created') as string)
+        const success = await this.$accessor.statuses.add(this.editedItem)
+        if (success) this.$toast.success(this.$t('alerts.created') as string)
       }
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
     async deleteItem() {
       this.$accessor.startLoading()
-      await this.$accessor.statuses.remove(this.editedItem.id!)
-
-      this.$toast.success(this.$t('alerts.deleted') as string)
+      const success = await this.$accessor.statuses.remove(this.editedItem.id!)
+      if (success) this.$toast.success(this.$t('alerts.deleted') as string)
       this.$accessor.stopLoading()
       this.isModalActive = false
     },

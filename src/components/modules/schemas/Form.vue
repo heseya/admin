@@ -376,7 +376,7 @@ export default Vue.extend({
 
           const success = await this.$accessor.schemas.update({
             id: this.form.id,
-            item: { ...this.form, options },
+            item: { ...this.form, options, metadata: undefined, metadata_private: undefined },
           })
           if (!success) throw new Error('Schema not updated')
 

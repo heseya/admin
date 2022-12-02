@@ -127,7 +127,7 @@ import TopNav from '@/components/layout/TopNav.vue'
 
 import ListItem from '@/components/layout/ListItem.vue'
 
-import { MENU_AVAILABLE_ITEMS, MenuItem, MenuItemType, MenuLink } from '@/consts/menuItems'
+import { MENU_LINKS, MenuItem, MenuItemType, MenuLink } from '@/consts/menuItems'
 
 export default Vue.extend({
   metaInfo(this: any) {
@@ -163,7 +163,7 @@ export default Vue.extend({
       }))
     },
     availableItems(): MenuLink[] {
-      return [...MENU_AVAILABLE_ITEMS, ...this.microfrontendItems]
+      return [...MENU_LINKS, ...this.microfrontendItems]
         .filter((item) => !this.menu.find((activeItem) => activeItem.id === item.id))
         .filter((link) => (typeof link.hidden === 'function' ? !link.hidden() : !link.hidden))
     },

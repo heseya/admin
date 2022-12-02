@@ -60,6 +60,7 @@ export default Vue.extend({
     component(): string {
       if (this.type === 'password') return 'a-input-password'
       if (this.type === 'textarea') return 'a-textarea'
+      if (this.type === 'number') return 'a-input-number'
       return 'a-input'
     },
   },

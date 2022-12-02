@@ -44,7 +44,7 @@
         >
           <template #action>
             <BooleanTag
-              :value="user.is_tfa_active"
+              :value="user && user.is_tfa_active"
               :true-text="$t('common.active')"
               :false-text="$t('common.inactive')"
             />

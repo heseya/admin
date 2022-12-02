@@ -20,7 +20,15 @@
               ref="privateMeta"
               :value="selectedUser.metadata_private"
               :disabled="!canModify"
-              is-private
+              type="private"
+              model="users"
+            />
+            <MetadataForm
+              v-if="selectedUser.metadata_personal"
+              ref="personalMeta"
+              :value="selectedUser.metadata_personal"
+              :disabled="!canModify"
+              type="personal"
               model="users"
             />
           </template>
@@ -58,12 +66,22 @@
   "pl": {
     "editTitle": "Edycja użytkownika",
     "newTitle": "Nowy użytkownik",
-    "deleteText": "Czy na pewno chcesz usunąć tego użytkownika?"
+    "deleteText": "Czy na pewno chcesz usunąć tego użytkownika?",
+    "messages": {
+      "removed": "Użytkownik został usunięty.",
+      "created": "Użytkownik został utworzony.",
+      "updated": "Użytkownik został zaktualizowany."
+    }
   },
   "en": {
     "editTitle": "Edit user",
     "newTitle": "New user",
-    "deleteText": "Are you sure you want to delete this user?"
+    "deleteText": "Are you sure you want to delete this user?",
+    "messages": {
+      "removed": "User has been removed.",
+      "created": "User has been created.",
+      "updated": "User has been updated."
+    }
   }
 }
 </i18n>
@@ -81,6 +99,7 @@ import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordi
 
 import { UUID } from '@/interfaces/UUID'
 import Card from '@/components/layout/Card.vue'
+import { formatApiNotificationError } from '@/utils/errors'
 
 const CLEAR_USER: UserCreateDto = {
   name: '',
@@ -88,6 +107,16 @@ const CLEAR_USER: UserCreateDto = {
   password: '',
   roles: [],
 }
+
+type UserForm = UserCreateDto | (UserUpdateDto & { id: UUID })
+
+const mapUserToEditableUser = (user: User): UserForm => ({
+  ...user,
+  roles: user.roles?.map(({ id }) => id) || [],
+  birthday_date: user.birthday_date ?? undefined,
+  phone: user.phone ?? undefined,
+  password: '',
+})
 
 export default Vue.extend({
   metaInfo(this: any) {
@@ -103,7 +132,7 @@ export default Vue.extend({
   },
 
   data: () => ({
-    editedUser: clone(CLEAR_USER) as UserCreateDto | (UserUpdateDto & { id: UUID }),
+    editedUser: clone(CLEAR_USER) as UserForm,
     selectedUser: null as User | null,
   }),
 
@@ -123,6 +152,9 @@ export default Vue.extend({
         this.fetchUser()
       },
     },
+    '$accessor.users.error'(error) {
+      if (error) this.$toast.error(formatApiNotificationError(error))
+    },
   },
 
   methods: {
@@ -135,10 +167,7 @@ export default Vue.extend({
         const user = await this.$accessor.users.get(id)
         if (!user) return this.$router.replace('/settings/users/create')
 
-        this.editedUser = {
-          ...user,
-          roles: user.roles?.map(({ id }) => id) || [],
-        }
+        this.editedUser = mapUserToEditableUser(user)
         this.selectedUser = user
       } else {
         this.editedUser = clone(CLEAR_USER)
@@ -159,6 +188,20 @@ export default Vue.extend({
             item: this.editedUser,
           })
 
+      if (updated) {
+        const successMessage = this.isNewUser(this.editedUser)
+          ? (this.$t('messages.created') as string)
+          : (this.$t('messages.updated') as string)
+        this.$toast.success(successMessage)
+
+        this.editedUser = mapUserToEditableUser(updated)
+        this.selectedUser = updated
+
+        if (updated.id !== this.$route.params.id) {
+          this.$router.push(`/settings/users/${updated.id}`)
+        }
+      }
+
       if (updated && updated?.id === this.$accessor.auth.user?.id) {
         this.$accessor.auth.SET_USER(updated)
       }
@@ -169,7 +212,11 @@ export default Vue.extend({
       if (this.isNewUser(this.editedUser)) return
 
       this.$accessor.startLoading()
-      await this.$accessor.users.remove(this.editedUser.id)
+      const success = await this.$accessor.users.remove(this.editedUser.id)
+      if (success) {
+        this.$toast.success(this.$t('messages.removed') as string)
+        this.$router.push('/settings/users')
+      }
       this.$accessor.stopLoading()
     },
 
@@ -181,6 +228,7 @@ export default Vue.extend({
       await Promise.all([
         (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id),
         (this.$refs.publicMeta as MetadataRef)?.saveMetadata(id),
+        (this.$refs.personalMeta as MetadataRef)?.saveMetadata(id),
       ])
     },
   },

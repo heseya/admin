@@ -21,6 +21,7 @@
     "visible": "Widoczny",
     "hidden": "Ukryty",
     "reset": "Przywróć domyślne",
+    "hidden": "Ukryty",
     "confirmLeave": "Czy na pewno chcesz wyjść? Masz niezapisane zmiany!",
     "form": {
       "name": "Nazwa",
@@ -134,6 +135,7 @@
     "other": "Inne"
   },
   "errors": {
+    "field": "Pole",
     "ERROR_TYPES": {
       "VALIDATION_ERROR": "Błąd walidacji",
       "CLIENT_ERROR": "Błąd klienta",
@@ -154,7 +156,7 @@
       "VALIDATION_FILE": "Wartość pola musi być plikiem.",
       "VALIDATION_REGEX": "Wartość pola musi pasować do podanego wzoru.",
       "VALIDATION_SIZE": "Wartość pola musi mieć określony rozmiar: {size}.",
-      "VALIDATION_UNIQUE": "Wartość pola musi być unikatowa.",
+      "VALIDATION_UNIQUE": "Wartość pola musi być unikalna, a podana wartość jest już używana w innym miejscu.",
       "VALIDATION_BOOLEAN": "Wartość pola musi być typu boolean.",
       "VALIDATION_URL": "Wartość pola musi być poprawnym linkiem.",
       "VALIDATION_UUID": "Wartość pola musi mieć format UUID.",
@@ -173,7 +175,7 @@
       "VALIDATION_APP_UNIQUE_URL": "Link aplikacji jest identyczny z linkiem jednej z aplikacji, która jest już zainstalowana.",
       "VALIDATION_ATTRIBUTE_OPTION_EXISTS": "Nie istnieje taka opcja dla podanej cechy.",
       "VALIDATION_CAN_SHOW_PRIVATE_METADATA": "Użytkownik nie ma uprawnień do podglądu prywatnych metadanych.",
-      "VALIDATION_CONSENT_EXISTS": "Nie istnieje zgoda o takim ID.",
+      "VALIDATION_CONSENT_EXISTS": "Nie istnieje zgoda o podanym ID.",
       "VALIDATION_DECIMAL": "Wartość pola musi być numerem.",
       "VALIDATION_ENUM_KEY": "Wartość pola musi być istniejącym kluczem w danej klasie Enum.",
       "VALIDATION_EVENT_EXISTS": "Wartość pola musi być istniejącym Eventem.",
@@ -187,17 +189,20 @@
       "VALIDATION_ENUM_VALUE": "Wartość pola musi być jedną z wartości podanego Enuma.",
       "VALIDATION_REQUIRED_WITH_ALL": "Wartość pola musi być obecna i nie może być pusta, jeśli inne podane pola są obecne i nie są puste.",
       "VALIDATION_GTE": "Wartość pola musi być większa bądź równa wartości pola {field}.",
+      "VALIDATION_APP_UNIQUE_ID": "Aplikacja o podanym url jest już zainstalowana.",
+      "VALIDATION_PHONE": "Wartość pola musi być poprawnym numerem telefonu",
       "INTERNAL_SERVER_ERROR": "Wewnętrzny błąd serwera"
     },
     "CLIENT_ERROR": {
+      "ERR_NETWORK": "Brak dostępu do internetu",
       "CLIENT_INVALID_INSTALLATION_RESPONSE": "Aplikacja ma nieprawidłową odpowiedź dotyczącą instalacji.",
       "CDN_NOT_ALLOWED_TO_CHANGE_ALT": "Nie możesz zmienić tekstu alternatywnego tego zdjęcia.",
       "CLIENT_FAILED_TO_CONNECT_WITH_APP": "Nie udało połączyć się z aplikacją.",
       "CLIENT_FAILED_TO_UNINSTALL_APP": "Nie udało się odinstalować aplikacji. Brak odpowiedzi aplikacji.",
       "CLIENT_ASSIGN_INVALID_PERMISSIONS": "Przypisano nieprawidłe uprawnienia, nie ma różnicy między wszystkimi możliwymi uprawnieniami a uprawnieniami przyznanymi.",
       "CLIENT_ADD_APP_WITH_PERMISSIONS_USER_DONT_HAVE": "Nie możesz dodać aplikacji z uprawnieniami, których nie masz.",
-      "CLIENT_APP_RESPONDED_WITH_INVALID_CODE": "Aplikacja odpowiedziała z nieprawidłowym kodem statusu.",
-      "CLIENT_APP_RESPONDED_WITH_INVALID_INFO": "Aplikacja odpowiedziała z nieprawidłowymi informacjami.",
+      "CLIENT_APP_INSTALLATION_RESPONDED_WITH_INVALID_CODE": "Aplikacja odpowiedziała z nieprawidłowym kodem statusu.",
+      "CLIENT_APP_INSTALLATION_RESPONDED_WITH_INVALID_INFO": "Aplikacja odpowiedziała z nieprawidłowymi informacjami.",
       "CLIENT_APP_WANTS_INVALID_PERMISSIONS": "Aplikacja żąda nieprawidłowych uprawnień.",
       "CLIENT_ADD_APP_WITHOUT_REQUIRED_PERMISSIONS": "Nie można dodać aplikacji bez wszystkich wymaganych uprawnień.",
       "CLIENT_ADD_PERMISSION_APP_DOESNT_WANT": "Nie można dodać uprawnień, których aplikacja nie przyjmuje.",

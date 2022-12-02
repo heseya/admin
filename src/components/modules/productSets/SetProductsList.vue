@@ -38,7 +38,7 @@
             <span class="set-product-item__name">{{ product.name }}</span>
             <product-price tag="span" class="set-product-item__price" :product="product" />
           </div>
-          <div class="set-product-item__actions">
+          <div class="set-product-item__actions undragabble">
             <icon-button
               v-can="$p.ProductSets.Edit"
               size="small"
@@ -217,10 +217,20 @@ export default Vue.extend({
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-right: 24px;
+    flex-direction: column;
+
+    @media ($viewport-10) {
+      flex-direction: row;
+      padding-right: 24px;
+    }
 
     h4 {
       margin-bottom: 0;
+      margin-right: auto;
+    }
+
+    :deep(.icon-button) {
+      margin-left: auto;
     }
   }
 
@@ -238,14 +248,15 @@ export default Vue.extend({
   transition: 0.3s;
   cursor: move;
 
+  @media (pointer: fine) {
+    &:hover {
+      background-color: var(--background-color-500);
+    }
+  }
+
   &.undragabble {
     cursor: not-allowed;
   }
-
-  &:hover {
-    background-color: var(--background-color-500);
-  }
-
   &__main {
     margin-left: 8px;
   }
@@ -262,6 +273,8 @@ export default Vue.extend({
 
   &__actions {
     margin-left: auto;
+    position: relative;
+    z-index: 100;
   }
 }
 </style>

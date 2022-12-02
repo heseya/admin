@@ -26,16 +26,17 @@
         v-model="items"
         :sort-filters="filters && filters.sort"
         v-bind="!!table ? { config: table, draggable } : {}"
-        handle=".handle"
+        handle=".reorder-handle"
         class="paginated-list__list"
         @sort="onSort"
       >
-        <div v-for="item in items" :key="item.id" class="paginated-list__list-item handle">
+        <div v-for="item in items" :key="item.id" class="paginated-list__list-item">
           <slot :item="item">
             <cms-table-row
               v-if="table"
               :key="item.id"
               :item="item"
+              :draggable="draggable"
               :headers="table.headers"
               :to="table.rowUrlBuilder ? table.rowUrlBuilder(item) : null"
               @click="table.rowOnClick ? table.rowOnClick(item) : null"
@@ -235,7 +236,7 @@ export default Vue.extend({
     }
 
     > * {
-      display: block;
+      display: flex;
       width: 100% !important;
     }
   }

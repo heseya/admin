@@ -122,6 +122,7 @@ const EMPTY_SALE_FORM: SaleFormDto = {
   name: '',
   description: '',
   value: 0,
+  active: true,
   type: DiscountType.Percentage,
   priority: 0,
   condition_groups: [],

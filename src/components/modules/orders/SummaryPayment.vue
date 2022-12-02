@@ -25,7 +25,7 @@
     />
 
     <pop-confirm
-      v-if="order.payable"
+      v-if="!order.paid"
       :title="$t('offlinePayment.confirmText')"
       :ok-text="$t('offlinePayment.successText')"
       ok-color="success"

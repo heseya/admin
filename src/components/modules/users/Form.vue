@@ -14,6 +14,16 @@
       :label="$t('email')"
     />
 
+    <validated-input v-model="form.phone" name="phone" :label="$t('phone')" type="tel" rules="" />
+
+    <validated-input
+      v-model="form.birthday_date"
+      name="birthday_date"
+      :label="$t('birthday')"
+      type="date"
+      rules=""
+    />
+
     <validated-input
       v-if="isNewUser(form)"
       v-model="form.password"
@@ -56,12 +66,16 @@
   "pl": {
     "name": "Nazwa",
     "email": "Email",
+    "phone": "Numer telefonu",
+    "birthday": "Data urodzenia",
     "password": "Hasło",
     "roles": "Role"
   },
   "en": {
     "name": "Name",
     "email": "Email",
+    "phone": "Phone number",
+    "birthday": "Birthday",
     "password": "Password",
     "roles": "Roles"
   }

@@ -149,7 +149,8 @@
     "alerts": {
       "deleted": "Status zamówienia został usunięty.",
       "created": "Status zamówienia został dodany.",
-      "updated": "Status zamówienia został zaktualizowany."
+      "updated": "Status zamówienia został zaktualizowany.",
+      "metadataUpdated": "Metadane statusu zamówienia zostały zaktualizowane."
     }
   },
   "en": {
@@ -169,7 +170,8 @@
     "alerts": {
       "deleted": "Order status has been deleted.",
       "created": "Order status has been added.",
-      "updated": "Order status has been updated."
+      "updated": "Order status has been updated.",
+      "metadataUpdated": "Metadata of order status has been updated."
     }
   }
 }
@@ -179,7 +181,7 @@
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { clone } from 'lodash'
-import { OrderStatus, OrderStatusUpdateDto } from '@heseya/store-core'
+import { Metadata, OrderStatus, OrderStatusUpdateDto } from '@heseya/store-core'
 
 import { UUID } from '@/interfaces/UUID'
 import { TableConfig } from '@/interfaces/CmsTable'
@@ -266,20 +268,28 @@ export default Vue.extend({
         this.setColor(this.editedItem.color)
       } else {
         this.editedItem = clone(CLEAR_STATUS)
+        this.selectedItem = null
       }
     },
     async saveModal() {
       this.$accessor.startLoading()
       if (this.editedItem.id) {
         // Metadata can be saved only after status is created
-        await this.saveMetadata(this.editedItem.id)
+        const updatedMetadata = await this.saveMetadata(this.editedItem.id)
 
-        await this.$accessor.statuses.update({
+        this.$accessor.statuses.EDIT_DATA({
+          key: 'id',
+          value: this.editedItem.id,
+          item: updatedMetadata,
+        })
+
+        const updatedStatus = await this.$accessor.statuses.update({
           id: this.editedItem.id,
           item: this.editedItem,
         })
 
-        this.$toast.success(this.$t('alerts.updated') as string)
+        if (updatedStatus) this.$toast.success(this.$t('alerts.updated') as string)
+        else this.$toast.success(this.$t('alerts.metadataUpdated') as string)
       } else {
         await this.$accessor.statuses.add(this.editedItem)
 
@@ -298,10 +308,14 @@ export default Vue.extend({
     },
 
     async saveMetadata(id: string) {
-      await Promise.all([
-        (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id),
+      const [publicMetadata, privateMetadata] = await Promise.all([
         (this.$refs.publicMeta as MetadataRef)?.saveMetadata(id),
+        (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id),
       ])
+      const metadata: { metadata?: Metadata; metadata_private?: Metadata } = {}
+      if (publicMetadata) metadata.metadata = publicMetadata
+      if (privateMetadata) metadata.metadata_private = privateMetadata
+      return metadata
     },
   },
 })

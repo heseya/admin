@@ -101,6 +101,15 @@ export default Vue.extend({
     }
   }
 
+  &--gray {
+    background-color: $background-color-700;
+    color: $gray-color-600;
+
+    > .bx {
+      background-color: $gray-color-600;
+    }
+  }
+
   i {
     font-size: 1.2em;
     line-height: 1em;

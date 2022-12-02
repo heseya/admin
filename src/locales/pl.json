@@ -140,6 +140,7 @@
     "other": "Inne"
   },
   "errors": {
+    "field": "Pole",
     "ERROR_TYPES": {
       "VALIDATION_ERROR": "Błąd walidacji",
       "CLIENT_ERROR": "Błąd klienta",
@@ -160,7 +161,7 @@
       "VALIDATION_FILE": "Wartość pola musi być plikiem.",
       "VALIDATION_REGEX": "Wartość pola musi pasować do podanego wzoru.",
       "VALIDATION_SIZE": "Wartość pola musi mieć określony rozmiar: {size}.",
-      "VALIDATION_UNIQUE": "Wartość pola musi być unikatowa.",
+      "VALIDATION_UNIQUE": "Wartość pola musi być unikalna, a podana wartość jest już używana w innym miejscu.",
       "VALIDATION_BOOLEAN": "Wartość pola musi być typu boolean.",
       "VALIDATION_URL": "Wartość pola musi być poprawnym linkiem.",
       "VALIDATION_UUID": "Wartość pola musi mieć format UUID.",
@@ -179,7 +180,7 @@
       "VALIDATION_APP_UNIQUE_URL": "Link aplikacji jest identyczny z linkiem jednej z aplikacji, która jest już zainstalowana.",
       "VALIDATION_ATTRIBUTE_OPTION_EXISTS": "Nie istnieje taka opcja dla podanej cechy.",
       "VALIDATION_CAN_SHOW_PRIVATE_METADATA": "Użytkownik nie ma uprawnień do podglądu prywatnych metadanych.",
-      "VALIDATION_CONSENT_EXISTS": "Nie istnieje zgoda o takim ID.",
+      "VALIDATION_CONSENT_EXISTS": "Nie istnieje zgoda o podanym ID.",
       "VALIDATION_DECIMAL": "Wartość pola musi być numerem.",
       "VALIDATION_ENUM_KEY": "Wartość pola musi być istniejącym kluczem w danej klasie Enum.",
       "VALIDATION_EVENT_EXISTS": "Wartość pola musi być istniejącym Eventem.",
@@ -194,6 +195,7 @@
       "VALIDATION_REQUIRED_WITH_ALL": "Wartość pola musi być obecna i nie może być pusta, jeśli inne podane pola są obecne i nie są puste.",
       "VALIDATION_GTE": "Wartość pola musi być większa bądź równa wartości pola {field}.",
       "VALIDATION_APP_UNIQUE_ID": "Aplikacja o podanym url jest już zainstalowana.",
+      "VALIDATION_PHONE": "Wartość pola musi być poprawnym numerem telefonu",
       "INTERNAL_SERVER_ERROR": "Wewnętrzny błąd serwera"
     },
     "CLIENT_ERROR": {

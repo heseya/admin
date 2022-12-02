@@ -168,7 +168,7 @@ export default Vue.extend({
     padding-left: $navWidth;
   }
   @media ($max-viewport-11) {
-    padding-bottom: 60px;
+    padding-bottom: 140px;
   }
 
   &--full-size {

@@ -15,7 +15,11 @@
       model-url="users"
       :disabled="disabled"
       :rules="{ required: form.is_allow_list }"
-    />
+    >
+      <template #option="option">
+        {{ option.name }}&nbsp;<small>({{ option.email }})</small>
+      </template>
+    </autocomplete-input>
     <autocomplete-input
       v-else-if="type === DiscountConditionType.ProductIn"
       v-model="form.products"
@@ -23,7 +27,11 @@
       model-url="products"
       :disabled="disabled"
       :rules="{ required: form.is_allow_list }"
-    />
+    >
+      <template #option="option">
+        {{ option.name }}&nbsp;<small>(/{{ option.slug }})</small>
+      </template>
+    </autocomplete-input>
     <autocomplete-input
       v-else-if="type === DiscountConditionType.ProductInSet"
       v-model="form.product_sets"
@@ -31,7 +39,11 @@
       model-url="product-sets"
       :disabled="disabled"
       :rules="{ required: form.is_allow_list }"
-    />
+    >
+      <template #option="option">
+        {{ option.name }}&nbsp;<small>(/{{ option.slug }})</small>
+      </template>
+    </autocomplete-input>
 
     <div class="condition-form__row">
       <switch-input v-model="form.is_allow_list" :disabled="disabled">

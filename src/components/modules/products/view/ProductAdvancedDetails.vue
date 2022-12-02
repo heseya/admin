@@ -12,34 +12,54 @@
       </template>
 
       <div class="product-advanced-details__form">
-        <tags-select v-model="form.tags" :disabled="disabled" />
         <google-category-select v-model="form.google_product_category" :disabled="disabled" />
 
-        <validated-input v-model="form.order" type="number" name="order" :disabled="disabled">
-          <template #label>
-            {{ $t('form.order') }}
-            <info-tooltip>{{ $t('form.orderTooltip') }}</info-tooltip>
-          </template>
-        </validated-input>
+        <div class="product-advanced-details__row">
+          <validated-input
+            v-model="form.quantity_step"
+            rules="required"
+            type="number"
+            max="999999"
+            step="0.01"
+            name="quantity_step"
+            :disabled="disabled"
+          >
+            <template #label>
+              {{ $t('form.quantityStep') }}
+              <info-tooltip>{{ $t('form.quantityStepTooltip') }}</info-tooltip>
+            </template>
+          </validated-input>
+
+          <validated-input v-model="form.order" type="number" name="order" :disabled="disabled">
+            <template #label>
+              {{ $t('form.order') }}
+              <info-tooltip>{{ $t('form.orderTooltip') }}</info-tooltip>
+            </template>
+          </validated-input>
+        </div>
       </div>
     </a-collapse-panel>
   </a-collapse>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Pozostałe informacje",
     "form": {
       "order": "Priorytet sortowania",
-      "orderTooltip": "Pozwala na zmianę kolejności produktów na liście. Produkty z mniejszą liczbą wyświetlane są wyżej."
+      "orderTooltip": "Pozwala na zmianę kolejności produktów na liście. Produkty z mniejszą liczbą wyświetlane są wyżej.",
+      "quantityStep": "Format ilości",
+      "quantityStepTooltip": "Oznacza jaki jest najmniejszy możliwy krok zmiany ilości produktu. Domyślnie jest to 1, ale dla niektórych produktów konieczna może okazać się możliwość zamawiania w krokach mniejszych lub większych krokach (Np. sprzedając sznurek na metry, możemy chcieć sprzedawać co 10 cm))"
     }
   },
   "en": {
     "title": "Other information",
     "form": {
       "order": "Sort priority",
-      "orderTooltip": "Allows you to change the order of the products in the list. Products with a lower number are displayed higher."
+      "orderTooltip": "Allows you to change the order of the products in the list. Products with a lower number are displayed higher.",
+      "quantityStep": "Quantity format",
+      "quantityStepTooltip": "Indicates the smallest possible step of quantity change. Default is 1, but for some products it may be necessary to change the step in smaller or larger steps (e.g. selling a screw on meters, you can change the step to 10 cm)"
     }
   }
 }
@@ -51,13 +71,12 @@ import { Product } from '@heseya/store-core'
 
 import { ProductComponentForm } from '@/interfaces/Product'
 
-import TagsSelect from '@/components/TagsSelect.vue'
 import GoogleCategorySelect from '../GoogleCategorySelect.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 import InfoTooltip from '@/components/layout/InfoTooltip.vue'
 
 export default Vue.extend({
-  components: { TagsSelect, GoogleCategorySelect, ValidatedInput, InfoTooltip },
+  components: { GoogleCategorySelect, ValidatedInput, InfoTooltip },
   props: {
     value: {
       type: Object,
@@ -83,11 +102,24 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.product-advanced-details__form {
-  width: 100%;
+.product-advanced-details {
+  &__form {
+    width: 100%;
 
-  @media ($viewport-14) {
-    width: 75%;
+    @media ($viewport-14) {
+      width: 75%;
+    }
+  }
+
+  &__row {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-gap: 0 16px;
+
+    @media ($viewport-4) {
+      grid-template-columns: 1fr 1fr;
+    }
   }
 }
 </style>

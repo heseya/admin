@@ -105,8 +105,7 @@
         </card>
 
         <card class="product-page__visibility">
-          <h2 class="product-page__subtitle">{{ $t('visibilityTitle') }}</h2>
-          <product-visibility-switch v-model="form" :product="product" :disabled="!canModify" />
+          <product-aside-details v-model="form" :product="product" :disabled="!canModify" />
         </card>
 
         <card class="product-page__gallery">
@@ -124,7 +123,6 @@
     "title": "Konfiguracja produktu:",
     "titleNew": "Nowy produkt",
     "baseFormTitle": "Informacje podstawowe",
-    "visibilityTitle": "Widoczność produktu",
     "galleryTitle": "Zdjęcia i wideo produktu",
     "deleteConfirm": "Czy na pewno chcesz usunąć ten produkt?",
     "messages": {
@@ -139,7 +137,6 @@
     "titleNew": "New product",
     "baseFormTitle": "Basic information",
     "galleryTitle": "Product gallery",
-    "visibilityTitle": "Product visibility",
     "deleteConfirm": "Are you sure you want to delete this product?",
     "messages": {
       "removed": "Product has been removed.",
@@ -170,8 +167,8 @@ import WarehouseItemsConfigurator from '@/components/modules/products/WarehouseI
 
 import ProductBasicDetails from '@/components/modules/products/view/ProductBasicDetails.vue'
 import ProductAdvancedDetails from '@/components/modules/products/view/ProductAdvancedDetails.vue'
+import ProductAsideDetails from '@/components/modules/products/view/ProductAsideDetails.vue'
 import ProductDescription from '@/components/modules/products/view/ProductDescription.vue'
-import ProductVisibilitySwitch from '@/components/modules/products/view/ProductVisibilitySwitch.vue'
 
 import preventLeavingPage from '@/mixins/preventLeavingPage'
 
@@ -223,7 +220,7 @@ export default mixins(preventLeavingPage).extend({
     ProductBasicDetails,
     ProductAdvancedDetails,
     ProductDescription,
-    ProductVisibilitySwitch,
+    ProductAsideDetails,
   },
   data: () => ({
     form: cloneDeep(EMPTY_FORM),

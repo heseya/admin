@@ -59,9 +59,11 @@ export default Vue.extend({
   white-space: nowrap;
 
   > .bx {
+    display: block;
     border-radius: 50%;
     background-color: var(--bg-color, var(--black-color));
     color: var(--white-color) !important;
+    padding: 2px 1px 1px 1px;
   }
 
   &--text-dark {
@@ -96,6 +98,15 @@ export default Vue.extend({
 
     > .bx {
       background-color: var(--primary-color-500);
+    }
+  }
+
+  &--gray {
+    background-color: $background-color-700;
+    color: $gray-color-600;
+
+    > .bx {
+      background-color: $gray-color-600;
     }
   }
 

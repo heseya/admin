@@ -13,7 +13,12 @@
       </icon-button>
     </div>
 
-    <empty v-if="items.length === 0">{{ $t('noItemsInProduct') }}</empty>
+    <empty v-if="items.length === 0" class="warehouse-items-configurator__empty">
+      <template #icon><i class="bx bxs-error"></i></template>
+
+      <div class="warehouse-items-configurator__title">{{ $t('empty.title') }}</div>
+      <div>{{ $t('empty.message') }}</div>
+    </empty>
 
     <list class="warehouse-items-configurator__items">
       <list-item v-for="item in items" :key="item.id" no-hover>
@@ -64,9 +69,12 @@
 {
   "en": {
     "title": "Warehouse items",
-    "titleTooltip": "A list of stock items available for a product, if a product is purchased, as many items as listed below will be taken out of stock. The product will not be available when there are not enough items left in stock.",
+    "titleTooltip": "A list of stock items available for a product, if a product is purchased, as many items as listed below will be taken out of stock. The product will not be available when there are not enough items left in warehouse.",
     "addItem": "Add item requirement",
-    "noItemsInProduct": "This product has no warehouse items yet",
+    "empty": {
+      "title": "This product has no warehouse items connected",
+      "message": "If there are no related products, you will not be able to track inventory when you place an order for that product. You will also not be able to automatically turn off the sale of a product when there are not enough items in warehouse."
+    },
     "chooseExisting": "Choose existing warehouse item",
     "typeName": "warehouse item",
     "requiredQuantity": "Required quantity"
@@ -75,7 +83,10 @@
     "title": "Pozycje na magazynie",
     "titleTooltip": "Lista przedmiotów magazynowych dostępnych w danym produkcie, jeśli produkt zostanie zakupiony, to z magazynu zostanie zdjęte tyle przedmiotów, ile podane jest poniżej. Produkt nie będzie dostępny, gdy nie będzie już wystarczająco przedmiotów w magazynie.",
     "addItem": "Dodaj pozycję z magazynu",
-    "noItemsInProduct": "Ten produkt nie posiada jeszcze przedmiotów magazynowych",
+    "empty": {
+      "title": "Ten produkt nie ma powiązania do żadnych pozycji z magazynu",
+      "message": "Brak powiązanych produktów skutkuje tym, że nie będzie można śledzić stanu magazynowego w momencie złożenia zamówienia na ten produkt. Nie będzie można też automatycznie wyłączyć sprzedaży produktu w momencie, gdy nie będzie wystarczająco przedmiotów w magazynie."
+    },
     "chooseExisting": "Wybierz istniejący przedmiot magazynowy",
     "typeName": "przedmiot magazynowy",
     "requiredQuantity": "Wymagana ilość"
@@ -143,6 +154,11 @@ export default Vue.extend({
   &__title {
     font-size: 1.1em;
     font-weight: 600;
+  }
+
+  &__empty {
+    color: $orange-color-500;
+    border-color: $orange-color-500;
   }
 
   &__items {

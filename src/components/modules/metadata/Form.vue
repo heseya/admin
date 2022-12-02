@@ -22,16 +22,16 @@
         :value="meta.type"
         :label="$t('form.type')"
         :disabled="isDeleted(meta)"
-        @input="(type) => changeMetaType(meta, type)"
+        @input="(t) => changeMetaType(meta, t)"
       >
         <a-select-option
-          v-for="type in Object.values(MetadataType)"
-          :key="type"
-          :value="type"
-          :disabled="type === MetadataType.Deleted"
-          :label="$t(`form.types.${type}`)"
+          v-for="valueType in Object.values(MetadataType)"
+          :key="valueType"
+          :value="valueType"
+          :disabled="valueType === MetadataType.Deleted"
+          :label="$t(`form.types.${valueType}`)"
         >
-          {{ $t(`form.types.${type}`) }}
+          {{ $t(`form.types.${valueType}`) }}
         </a-select-option>
       </app-select>
 
@@ -153,11 +153,13 @@ export default Vue.extend({
       default: () => ({}),
     } as Vue.PropOptions<MetadataUpdateDto>,
     disabled: { type: Boolean, default: false },
-    isPrivate: { type: Boolean, default: false },
+    type: { type: String, default: 'default' } as Vue.PropOptions<
+      'default' | 'private' | 'personal'
+    >,
     model: {
       type: String,
       required: true,
-    } as Vue.PropOptions<GeneratedStoreModulesKeys>,
+    } as Vue.PropOptions<GeneratedStoreModulesKeys | 'auth'>,
   },
 
   data: () => ({
@@ -253,11 +255,11 @@ export default Vue.extend({
       ]
     },
 
-    async saveMetadata(modelId: string) {
-      await this.$accessor[this.model].updateMetadata({
+    saveMetadata(modelId: string) {
+      return this.$accessor[this.model].updateMetadata({
         id: modelId,
         metadata: this.mergedMetadata,
-        public: !this.isPrivate,
+        type: this.type,
       })
     },
   },

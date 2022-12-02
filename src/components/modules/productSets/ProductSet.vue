@@ -4,6 +4,10 @@
     :class="{ 'product-set--searched': asSearched }"
     @click.stop="toggleChildrenVisibility"
   >
+    <icon-button class="product-set__reorder reorder-handle" size="small" type="transparent">
+      <template #icon> <i class="bx bx-menu"></i> </template>
+    </icon-button>
+
     <div class="product-set__expandable">
       <icon-button
         :type="areChildrenVisible && childrenQuantity ? 'burgund' : 'primary'"
@@ -32,12 +36,12 @@
           <div class="product-set__visibility">
             <span v-if="set.public" class="product-set__public product-set__public--visible">
               <i class="bx bx-show-alt"></i>
-              <span class="product-set__public_text">{{ $t('visible') }}</span></span
-            >
-            <span v-else class="product-set__public"
-              ><i class="bx bx-low-vision"></i
-              ><span class="product-set__public_text">{{ $t('hidden') }}</span></span
-            >
+              <span class="product-set__public_text">{{ $t('visible') }}</span>
+            </span>
+            <span v-else class="product-set__public">
+              <i class="bx bx-low-vision"></i>
+              <span class="product-set__public_text">{{ $t('hidden') }}</span>
+            </span>
           </div>
           <a-dropdown
             v-can.any="[$p.ProductSets.ShowDetails, $p.ProductSets.Add]"
@@ -85,7 +89,7 @@
       </div>
 
       <div v-show="areChildrenVisible">
-        <Draggable v-model="children" handle=".handle" @change="onDrop">
+        <Draggable v-model="children" handle=".reorder-handle" @change="onDrop">
           <product-set
             v-for="child in uniqueChildren"
             :key="child.id"
@@ -318,7 +322,7 @@ export default Vue.extend({
 .product-set {
   cursor: default;
   border-radius: 0;
-  display: flex;
+  display: flex !important;
   padding: 6px 8px;
   padding-right: 0;
   border-bottom: solid 1px var(--background-color-700);
@@ -326,6 +330,12 @@ export default Vue.extend({
 
   &--searched {
     background-color: var(--green-color-200);
+  }
+
+  &__reorder {
+    align-self: flex-start;
+    color: $gray-color-500;
+    cursor: move;
   }
 
   &__search {

@@ -16,6 +16,7 @@
           :item="page"
           :headers="tableConfig.headers"
           :to="`/pages/${page.id}`"
+          draggable
         >
           <template #slug="{ value }">
             <code>{{ value }}</code>

@@ -25,6 +25,12 @@ export const productSets = createVuexCRUD<ProductSet, ProductSetCreateDto, Produ
         state,
         { item }: { item: Partial<ProductSet> & { id: UUID } },
       ) {
+        if (state.selected?.id === item.id) {
+          // Edits selected item
+          // @ts-ignore
+          state.selected = { ...state.selected, ...item }
+        }
+
         // Root level set
         if (!item.parent) {
           state.data = state.data.map((state) => {

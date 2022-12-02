@@ -125,7 +125,7 @@ export const MENU_ITEMS: MenuItem[] = [
     type: MenuItemType.Link,
     default: true,
     to: '/coupons',
-    svgIconPath: 'icons/coupons-icon.svg',
+    iconClass: 'bx bxs-coupon',
     label: 'models.coupons',
     can: PERMISSIONS_TREE.Coupons.Show,
     section: SettingsSection.Products,
@@ -292,5 +292,4 @@ export const MENU_LINKS = MENU_ITEMS.filter((item) => item.type === MenuItemType
 export const DEFAULT_MENU_ITEMS = MENU_ITEMS.filter(
   (item) => item.type === MenuItemType.Spacer || item.default,
 )
-export const MENU_AVAILABLE_ITEMS = MENU_LINKS.filter((item) => !item.default)
 export const SETTINGS_LINKS = MENU_LINKS.filter((item) => item.section) as MenuLink[]

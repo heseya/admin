@@ -3,6 +3,7 @@
     :is="component"
     :to="url"
     class="list-item"
+    type="button"
     :class="{ 'list-item--no-hover': noHover }"
     @click.stop="click"
   >
@@ -93,8 +94,12 @@ export default Vue.extend({
   }
 
   small {
-    display: block;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
     color: var(--gray-color-400);
+    word-break: break-word;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
 
     b {
       color: var(--gray-color-600);

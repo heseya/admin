@@ -70,8 +70,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
-import { Order, AddressDto, ShippingMethod } from '@heseya/store-core'
-import { ShippingType } from '@/interfaces/ShippingType'
+import { Order, AddressDto, ShippingMethod, ShippingType } from '@heseya/store-core'
 
 import AddressForm from './AddressForm.vue'
 

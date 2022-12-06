@@ -28,7 +28,6 @@
         :address="order.shipping_place"
         :order="order"
         hide-remove
-        :hide-edit="order.shipping_type === ShippingType.None"
         @edit="editShippingAddress"
       />
 
@@ -108,8 +107,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { AddressDto, Order, OrderUpdateDto } from '@heseya/store-core'
-import { ShippingType } from '@/interfaces/ShippingType'
+import { AddressDto, Order, OrderUpdateDto, ShippingType } from '@heseya/store-core'
 
 import Field from '@/components/Field.vue'
 import ModalForm from '@/components/form/ModalForm.vue'

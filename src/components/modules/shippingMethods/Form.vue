@@ -180,8 +180,8 @@ import {
   ShippingCountry,
   ShippingMethodCreateDto,
   AddressDto,
+  ShippingType,
 } from '@heseya/store-core'
-import { ShippingType } from '@/interfaces/ShippingType'
 
 import ModalForm from '@/components/form/ModalForm.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'

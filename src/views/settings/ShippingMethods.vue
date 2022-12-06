@@ -142,8 +142,12 @@
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import omit from 'lodash/omit'
-import { ShippingMethod, ShippingMethodUpdateDto, ShippingCountry } from '@heseya/store-core'
-import { ShippingType } from '@/interfaces/ShippingType'
+import {
+  ShippingMethod,
+  ShippingType,
+  ShippingMethodUpdateDto,
+  ShippingCountry,
+} from '@heseya/store-core'
 import { sdk } from '../../api'
 
 import PaginatedList from '@/components/PaginatedList.vue'
@@ -254,7 +258,7 @@ export default Vue.extend({
         this.selectedItem = null
         this.editedItem = {
           name: '',
-          shipping_type: ShippingType.None,
+          shipping_type: ShippingType.Digital,
           block_list: false,
           payment_methods: [],
           countries: [],

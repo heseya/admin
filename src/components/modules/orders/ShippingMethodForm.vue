@@ -49,6 +49,7 @@
   "en": {
     "method": "Shipping method",
     "changeSuccess": "Changed shipping method",
+    "editFailed": "Failed to change shipping method",
     "pointExternalId": "External point ID",
     "shippingPoint": "Shipping Point",
     "pointExternalInfo": "External point ID can be used by integration to send parcels"
@@ -56,6 +57,7 @@
   "pl": {
     "method": "Metoda dostawy",
     "changeSuccess": "Zmieniono metodę dostawy",
+    "editFailed": "Nie udało się zmienić metody dostawy",
     "pointExternalId": "Zewnętrzny identyfikator punktu",
     "shippingPoint": "Punkt dostawy",
     "pointExternalInfo": "Zewnętrzny identyfikator punktu może być używany przez integracje do nadawania paczek"
@@ -68,8 +70,7 @@
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { cloneDeep, isString } from 'lodash'
-import { AddressDto, Order, ShippingMethod } from '@heseya/store-core'
-import { ShippingType } from '@/interfaces/ShippingType'
+import { Address, AddressDto, Order, ShippingMethod, ShippingType } from '@heseya/store-core'
 
 import AddressForm from './AddressForm.vue'
 
@@ -110,7 +111,7 @@ export default Vue.extend({
         const newMethod = this.shippingMethods.find((method) => method.id === newMethodId)
         if (newMethod?.shipping_type) {
           switch (newMethod?.shipping_type) {
-            case ShippingType.None:
+            case ShippingType.Digital:
               this.form.shipping_place = undefined
               break
             case ShippingType.Address:
@@ -140,14 +141,14 @@ export default Vue.extend({
   created() {
     this.$accessor.shippingMethods.fetch()
     this.form = {
-      shipping_method_id: this.order.shipping_method_id,
+      shipping_method_id: this.order.shipping_method?.id,
       shipping_place:
-        this.order.shipping_type === ShippingType.Point
-          ? (this.order.shipping_place as AddressDto).id
+        this.order.shipping_method?.shipping_type === ShippingType.Point
+          ? (this.order.shipping_place as Address).id
           : this.order.shipping_place,
     }
-    this.shippingType = this.order.shipping_type
-    this.shippingPoints = this.order.shipping_method.shipping_points as AddressDto[]
+    this.shippingType = this.order.shipping_method?.shipping_type
+    this.shippingPoints = (this.order.shipping_method?.shipping_points as AddressDto[]) || []
   },
   methods: {
     async changeShippingMethod() {
@@ -162,9 +163,7 @@ export default Vue.extend({
     },
     isValidPointId(pointId: string) {
       const selectedShippingMethod = this.findShippingMethod(this.form.shipping_method_id as string)
-      return (selectedShippingMethod?.shipping_points as AddressDto[]).find(
-        (point: AddressDto) => pointId === point.id,
-      )
+      return selectedShippingMethod?.shipping_points?.find((point) => pointId === point.id)
     },
   },
 })

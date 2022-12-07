@@ -13,7 +13,7 @@
         ref="privateMeta"
         :value="order.metadata_private"
         :disabled="isDisabled"
-        is-private
+        type="private"
         model="orders"
       />
       <app-button

@@ -31,7 +31,7 @@
           ref="privateMeta"
           :value="selectedBanner.metadata_private"
           :disabled="isDisabled"
-          is-private
+          type="private"
           model="banners"
         />
       </template>

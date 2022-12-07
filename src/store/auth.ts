@@ -1,6 +1,12 @@
 /* eslint-disable camelcase */
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
-import { User, UserProfileUpdateDto, AuthProviderKey, PERMISSIONS_TREE, MetadataUpdateDto } from '@heseya/store-core'
+import {
+  User,
+  UserProfileUpdateDto,
+  AuthProviderKey,
+  PERMISSIONS_TREE,
+  MetadataUpdateDto,
+} from '@heseya/store-core'
 import { sdk } from '../api'
 
 import { UUID } from '@/interfaces/UUID'

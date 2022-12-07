@@ -38,7 +38,7 @@
               ref="privateMeta"
               :value="sale.metadata_private"
               :disabled="!canModify"
-              is-private
+              type="private"
               model="sales"
             />
           </template>

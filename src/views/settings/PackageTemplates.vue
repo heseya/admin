@@ -82,7 +82,7 @@
               ref="privateMeta"
               :value="editedItem.metadata_private"
               :disabled="!canModify"
-              is-private
+              type="private"
               model="packageTemplates"
             />
           </template>

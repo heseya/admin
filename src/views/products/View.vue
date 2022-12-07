@@ -79,7 +79,7 @@
               ref="privateMeta"
               :value="product.metadata_private"
               :disabled="!canModify"
-              is-private
+              type="private"
               model="products"
             />
           </template>

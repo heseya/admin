@@ -57,7 +57,7 @@
             ref="privateMeta"
             :value="selectedItem.metadata_private"
             :disabled="!canModify"
-            is-private
+            type="private"
             model="shippingMethods"
           />
         </template>

@@ -46,7 +46,7 @@
               ref="privateMeta"
               :value="coupon.metadata_private"
               :disabled="!canModify"
-              is-private
+              type="private"
               model="coupons"
             />
           </template>

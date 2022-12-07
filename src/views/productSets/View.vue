@@ -129,7 +129,7 @@
               ref="privateMeta"
               :value="form.metadata_private"
               :disabled="!canModify"
-              is-private
+              type="private"
               model="productSets"
             />
 

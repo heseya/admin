@@ -32,7 +32,7 @@
           ref="privateMeta"
           :value="selectedRole.metadata_private"
           :disabled="isDisabled"
-          is-private
+          type="private"
           model="roles"
         />
       </template>

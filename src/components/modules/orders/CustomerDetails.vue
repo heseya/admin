@@ -70,8 +70,9 @@
     >
       <modal-form>
         <partial-update-form
+          v-if="order.shipping_method"
           v-model="form"
-          :shipping-type="order.shipping_type"
+          :shipping-type="order.shipping_method.shipping_type"
           :shipping-method="order.shipping_method"
           @save="saveForm"
         />
@@ -86,7 +87,7 @@
     "emailSection": "E-mail address",
     "userSection": "Buyer",
     "deliveryAddressSection": "Delivery address",
-    "invoiceAddressSection": "Invoice address",
+    "invoiceAddressSection": "Billing address",
     "commentSection": "Comment",
     "editSuccess": "Order has been updated.",
     "editFailed": "Order has not been updated.",
@@ -96,7 +97,7 @@
     "emailSection": "Adres e-mail",
     "userSection": "Kupujący",
     "deliveryAddressSection": "Adres dostawy",
-    "invoiceAddressSection": "Adres do faktury",
+    "invoiceAddressSection": "Adres rozliczeniowy",
     "commentSection": "Komentarz",
     "editSuccess": "Zamówienie zostało zaktualizowane.",
     "editFailed": "Zamówienie nie zostało zaktualizowane.",
@@ -107,7 +108,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { AddressDto, Order, OrderUpdateDto, ShippingType } from '@heseya/store-core'
+import { Address, Order, OrderUpdateDto, ShippingType } from '@heseya/store-core'
 
 import Field from '@/components/Field.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
@@ -155,17 +156,17 @@ export default Vue.extend({
     editShippingAddress() {
       this.isEditModalActive = true
       this.modalFormTitle = (this.$t('deliveryAddressSection') as string).toLowerCase()
-      switch (this.order.shipping_type) {
+      switch (this.order.shipping_method?.shipping_type) {
         case ShippingType.Address:
           this.form = {
             shipping_place: {
-              ...(this.order.shipping_place as AddressDto),
+              ...(this.order.shipping_place as Address),
             },
           }
           break
         case ShippingType.Point:
           this.form = {
-            shipping_place: (this.order.shipping_place as AddressDto).id,
+            shipping_place: (this.order.shipping_place as Address).id,
           }
           break
         case ShippingType.PointExternal:
@@ -185,7 +186,7 @@ export default Vue.extend({
       }
     },
     removeInvoiceAddress() {
-      this.form = { billing_address: null }
+      this.form = { billing_address: undefined }
       this.saveForm()
     },
     async saveForm() {
@@ -193,8 +194,8 @@ export default Vue.extend({
       //TODO: Delete this when [PATCH] will works correctly
       this.form = {
         shipping_place:
-          this.order.shipping_type === ShippingType.Point
-            ? (this.order.shipping_place as AddressDto).id
+          this.order.shipping_method?.shipping_type === ShippingType.Point
+            ? (this.order.shipping_place as Address).id
             : this.order.shipping_place,
         ...this.form,
       }

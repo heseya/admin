@@ -38,7 +38,7 @@
       </card>
       <card class="order-page__shipping">
         <send-package
-          v-if="order.id"
+          v-if="order.id && order.shipping_method"
           :order-id="order.id"
           :shipping-method="order.shipping_method.name"
           :shipping-number="order.shipping_number"

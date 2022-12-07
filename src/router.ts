@@ -25,6 +25,14 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/oauth-login-return',
+      name: 'OAuthLoginReturn',
+      component: () => import('./views/auth/OAuthLoginReturn.vue'),
+      meta: {
+        hiddenNav: true,
+      },
+    },
+    {
       path: '/reset-password',
       name: 'ResetPassword',
       props: true,
@@ -333,6 +341,15 @@ const router = new VueRouter({
       meta: {
         requiresAuth: true,
         permissions: [Permissions.Packages.Show],
+      },
+    },
+    {
+      path: '/settings/providers',
+      name: 'Providers',
+      component: () => import('./views/settings/Providers.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Auth.ProvidersManage],
       },
     },
     {

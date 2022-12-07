@@ -72,7 +72,7 @@
               ref="privateMeta"
               :value="page.metadata_private"
               :disabled="!canModify"
-              is-private
+              type="private"
               model="pages"
             />
           </template>

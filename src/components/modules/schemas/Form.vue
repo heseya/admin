@@ -172,7 +172,7 @@
         ref="privateMeta"
         :value="schema.metadata_private"
         :disabled="disabled"
-        is-private
+        type="private"
         model="schemas"
       />
     </template>

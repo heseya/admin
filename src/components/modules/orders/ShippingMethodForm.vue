@@ -78,9 +78,7 @@ import { UUID } from '@/interfaces/UUID'
 import { DEFAULT_ADDRESS_FORM } from '@/consts/addressConsts'
 
 interface ShippingMethodUpdate {
-  // eslint-disable-next-line camelcase
   shipping_method_id?: UUID
-  // eslint-disable-next-line camelcase
   shipping_place?: AddressDto | string
 }
 
@@ -91,23 +89,33 @@ export default Vue.extend({
       type: Object,
       required: true,
     } as Vue.PropOptions<Order>,
+    digital: {
+      type: Boolean,
+      default: false,
+    },
   },
   data: () => ({
     form: {} as ShippingMethodUpdate,
     shippingType: '' as ShippingType,
-    shippingPoints: [] as AddressDto[],
+    shippingPoints: [] as Address[],
   }),
   computed: {
     ShippingType(): typeof ShippingType {
       return ShippingType
     },
     shippingMethods(): ShippingMethod[] {
-      return this.$accessor.shippingMethods.getData
+      return this.$accessor.shippingMethods.getData.filter((method) => {
+        return this.digital
+          ? method.shipping_type === ShippingType.Digital
+          : method.shipping_type !== ShippingType.Digital
+      })
     },
   },
   watch: {
     'form.shipping_method_id': {
       handler(newMethodId) {
+        if (newMethodId === this.order.shipping_method?.id) return
+
         const newMethod = this.shippingMethods.find((method) => method.id === newMethodId)
         if (newMethod?.shipping_type) {
           switch (newMethod?.shipping_type) {
@@ -118,7 +126,7 @@ export default Vue.extend({
               this.form.shipping_place = { ...cloneDeep(DEFAULT_ADDRESS_FORM) }
               break
             case ShippingType.Point:
-              this.shippingPoints = newMethod.shipping_points as AddressDto[]
+              this.shippingPoints = newMethod.shipping_points
               if (!isString(this.form.shipping_place)) {
                 this.form.shipping_place = this.shippingPoints[0].id
               } else {
@@ -140,20 +148,27 @@ export default Vue.extend({
 
   created() {
     this.$accessor.shippingMethods.fetch()
+    const method = this.digital ? this.order.digital_shipping_method! : this.order.shipping_method!
+
     this.form = {
-      shipping_method_id: this.order.shipping_method?.id,
+      shipping_method_id: method?.id,
       shipping_place:
-        this.order.shipping_method?.shipping_type === ShippingType.Point
+        method?.shipping_type === ShippingType.Point
           ? (this.order.shipping_place as Address).id
           : this.order.shipping_place,
     }
-    this.shippingType = this.order.shipping_method?.shipping_type
-    this.shippingPoints = (this.order.shipping_method?.shipping_points as AddressDto[]) || []
+    this.shippingType = method?.shipping_type
+    this.shippingPoints = (method?.shipping_points as AddressDto[]) || []
   },
   methods: {
     async changeShippingMethod() {
       this.$accessor.startLoading()
-      const success = await this.$accessor.orders.update({ id: this.order.id, item: this.form })
+      const form: ShippingMethodUpdate = {
+        [this.digital ? 'digital_shipping_method_id' : 'shipping_method_id']:
+          this.form.shipping_method_id,
+        shipping_place: this.form.shipping_place,
+      }
+      const success = await this.$accessor.orders.update({ id: this.order.id, item: form })
       if (success) this.$toast.success(this.$t('changeSuccess') as string)
       else this.$toast.error(this.$t('editFailed') as string)
       this.$accessor.stopLoading()

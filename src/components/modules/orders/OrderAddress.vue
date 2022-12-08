@@ -1,6 +1,13 @@
 <template>
   <div class="address">
-    <template v-if="address">
+    <template
+      v-if="
+        address &&
+        (orderShippingType === ShippingType.Address ||
+          orderShippingType === ShippingType.Point ||
+          billing)
+      "
+    >
       <span class="address__name">{{ address.name }}</span>
       <span class="address__field">{{ address.address }}</span>
       <span class="address__field"> {{ address.zip }} {{ address.city }} </span>
@@ -16,10 +23,12 @@
         <span class="address__field">{{ address.phone }}</span>
       </template>
     </template>
-    <template v-else-if="order && order.shipping_type === ShippingType.PointExternal"
-      ><span class="address__subtitle">{{ $t('externalPoint') }}:</span
-      ><span class="address__name">{{ order.shipping_place }}</span></template
-    >
+
+    <template v-else-if="orderShippingType === ShippingType.PointExternal">
+      <span class="address__subtitle">{{ $t('externalPoint') }}:</span>
+      <span class="address__name">{{ order.shipping_place }}</span>
+    </template>
+
     <template v-else>
       <small class="address__error">{{ $t('common.none') }}</small>
     </template>
@@ -31,7 +40,7 @@
   "pl": {
     "phone": "Telefon",
     "vat": "NIP",
-    "externalPoint": "Punkt zewnętrzny"
+    "externalPoint": "Zewnętrzny punkt dostawy"
   },
   "en": {
     "phone": "Phone",
@@ -48,16 +57,22 @@ import { Address, Order, ShippingType } from '@heseya/store-core'
 export default Vue.extend({
   name: 'OrderAddress',
   props: {
-    address: {
-      type: Object,
-      default: () => null,
-    } as Vue.PropOptions<Address>,
     order: {
       type: Object,
       required: true,
     } as Vue.PropOptions<Order>,
+    billing: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
+    address(): Address | undefined {
+      return this.billing ? this.order.billing_address : (this.order.shipping_place as Address)
+    },
+    orderShippingType(): ShippingType {
+      return this.order.shipping_method?.shipping_type || ShippingType.Address
+    },
     ShippingType(): typeof ShippingType {
       return ShippingType
     },
@@ -81,7 +96,6 @@ export default Vue.extend({
     color: var(--gray-color-500);
     margin-top: 4px;
     margin-bottom: -4px;
-    height: 30px;
     display: flex;
     align-items: center;
   }

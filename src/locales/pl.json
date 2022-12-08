@@ -87,6 +87,7 @@
 
   "shippingTypes": {
     "none": "Brak",
+    "digital": "Cyfrowa dostawa",
     "address": "Adres",
     "point": "Punkt",
     "point-external": "Punkt zewnętrzny"

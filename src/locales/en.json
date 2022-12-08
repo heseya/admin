@@ -87,6 +87,7 @@
 
   "shippingTypes": {
     "none": "None",
+    "digital": "Digital",
     "address": "Address",
     "point": "Point",
     "point-external": "External point"

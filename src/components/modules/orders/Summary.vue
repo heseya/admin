@@ -3,8 +3,9 @@
     <OrderField :label="$t('labels.code')" :value="order.code" :horizontal="isHorizontal" />
     <OrderField :label="$t('labels.date')" :value="formattedDate" :horizontal="isHorizontal" />
     <OrderField
+      v-if="order.shipping_method"
       :label="$t('labels.shipping')"
-      :value="order.shipping_method && order.shipping_method.name"
+      :value="order.shipping_method.name"
       :horizontal="isHorizontal"
     >
       <template #labelSuffix>
@@ -13,7 +14,28 @@
           size="small"
           type="transparent"
           class="order-summary__edit-btn"
-          @click="editShipppingMethod"
+          @click="editShipppingMethod(false)"
+        >
+          <template #icon>
+            <i class="bx bxs-pencil"></i>
+          </template>
+        </icon-button>
+      </template>
+    </OrderField>
+
+    <OrderField
+      v-if="order.digital_shipping_method"
+      :label="$t('labels.digitalShipping')"
+      :value="order.digital_shipping_method.name"
+      :horizontal="isHorizontal"
+    >
+      <template #labelSuffix>
+        <icon-button
+          v-can="$p.Orders.Edit"
+          size="small"
+          type="transparent"
+          class="order-summary__edit-btn"
+          @click="editShipppingMethod(true)"
         >
           <template #icon>
             <i class="bx bxs-pencil"></i>
@@ -48,12 +70,16 @@
       <cms-table :value="order.payments" :config="paymentsTableConfig" no-hover />
     </a-modal>
     <a-modal
-      v-model="isEditModalActive"
+      v-model="isShippingModalActive"
       width="750px"
       :footer="null"
       :title="`${$t('labels.editShippingMethod')}`"
     >
-      <ShippingMethodForm v-if="isEditModalActive" :order="order" />
+      <ShippingMethodForm
+        v-if="isShippingModalActive"
+        :order="order"
+        :digital="isDigitalShippingMethodEdited"
+      />
     </a-modal>
   </card>
 </template>
@@ -65,6 +91,7 @@
       "code": "Order code",
       "date": "Order date",
       "shipping": "Shipping method",
+      "digitalShipping": "Digital shipping",
       "payment": "Payment",
       "history": "Payment history",
       "editShippingMethod": "Edit shipping method"
@@ -82,6 +109,7 @@
       "code": "Nr zamówienia",
       "date": "Data zamówienia",
       "shipping": "Metoda dostawy",
+      "digitalShipping": "Dostawa cyfrowa",
       "payment": "Płatność",
       "history": "Historia płatności",
       "editShippingMethod": "Edytuj metodę dostawy"
@@ -129,7 +157,8 @@ export default Vue.extend({
   data: () => ({
     viewportWidth: window.innerWidth,
     isPaymentHistoryVisible: false,
-    isEditModalActive: false,
+    isShippingModalActive: false,
+    isDigitalShippingMethodEdited: false,
   }),
   computed: {
     formattedDate(): string | null {
@@ -180,8 +209,9 @@ export default Vue.extend({
     closePaymentHistory() {
       this.isPaymentHistoryVisible = false
     },
-    editShipppingMethod() {
-      this.isEditModalActive = true
+    editShipppingMethod(isDigitalEdited: boolean) {
+      this.isDigitalShippingMethodEdited = isDigitalEdited
+      this.isShippingModalActive = true
     },
   },
 })

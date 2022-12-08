@@ -25,18 +25,15 @@
     <div class="order-customer-details__addresses">
       <EditableOrderAddress
         :title="$t('deliveryAddressSection')"
-        :address="order.shipping_place"
         :order="order"
-        hide-remove
         @edit="editShippingAddress"
       />
 
       <EditableOrderAddress
         :title="$t('invoiceAddressSection')"
-        :address="order.billing_address"
         :order="order"
+        billing
         @edit="editBillingAddress"
-        @remove="removeInvoiceAddress"
       />
     </div>
 
@@ -184,10 +181,6 @@ export default Vue.extend({
           ...(this.order.billing_address || DEFAULT_ADDRESS_FORM),
         },
       }
-    },
-    removeInvoiceAddress() {
-      this.form = { billing_address: undefined }
-      this.saveForm()
     },
     async saveForm() {
       this.$accessor.startLoading()

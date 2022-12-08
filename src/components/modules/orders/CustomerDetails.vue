@@ -159,19 +159,16 @@ export default Vue.extend({
             shipping_place: {
               ...(this.order.shipping_place as Address),
             },
-            invoice_requested: undefined,
           }
           break
         case ShippingType.Point:
           this.form = {
             shipping_place: (this.order.shipping_place as Address).id,
-            invoice_requested: undefined,
           }
           break
         case ShippingType.PointExternal:
           this.form = {
             shipping_place: this.order.shipping_place,
-            invoice_requested: undefined,
           }
           break
       }

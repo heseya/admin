@@ -159,16 +159,19 @@ export default Vue.extend({
             shipping_place: {
               ...(this.order.shipping_place as Address),
             },
+            invoice_requested: undefined,
           }
           break
         case ShippingType.Point:
           this.form = {
             shipping_place: (this.order.shipping_place as Address).id,
+            invoice_requested: undefined,
           }
           break
         case ShippingType.PointExternal:
           this.form = {
             shipping_place: this.order.shipping_place,
+            invoice_requested: undefined,
           }
           break
       }
@@ -180,11 +183,11 @@ export default Vue.extend({
         billing_address: {
           ...(this.order.billing_address || DEFAULT_ADDRESS_FORM),
         },
+        invoice_requested: this.order.invoice_requested,
       }
     },
     async saveForm() {
       this.$accessor.startLoading()
-      //TODO: Delete this when [PATCH] will works correctly
       this.form = {
         shipping_place:
           this.order.shipping_method?.shipping_type === ShippingType.Point

@@ -22,6 +22,12 @@
         <span class="address__subtitle">{{ $t('phone') }}:</span>
         <span class="address__field">{{ address.phone }}</span>
       </template>
+
+      <tag v-if="billing" :type="order.invoice_requested ? 'success' : 'gray'" small>
+        <i v-if="order.invoice_requested" class="bx bx-check"></i>
+        <i v-else class="bx bx-x"></i>
+        {{ order.invoice_requested ? $t('invoiceRequested') : $t('noInvoice') }}
+      </tag>
     </template>
 
     <template v-else-if="orderShippingType === ShippingType.PointExternal">
@@ -40,12 +46,16 @@
   "pl": {
     "phone": "Telefon",
     "vat": "NIP",
-    "externalPoint": "Zewnętrzny punkt dostawy"
+    "externalPoint": "Zewnętrzny punkt dostawy",
+    "invoiceRequested": "Faktura",
+    "noInvoice": "Brak faktury"
   },
   "en": {
     "phone": "Phone",
     "vat": "VAT ID",
-    "externalPoint": "External Point"
+    "externalPoint": "External Point",
+    "invoiceRequested": "Invoice",
+    "noInvoice": "No invoice"
   }
 }
 </i18n>
@@ -86,6 +96,7 @@ export default Vue.extend({
   display: flex;
   flex-direction: column;
   position: relative;
+  align-items: flex-start;
 
   &__field {
     display: block;

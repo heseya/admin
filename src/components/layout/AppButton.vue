@@ -92,6 +92,7 @@ export default Vue.extend({
   transition: 0.3s;
   display: flex;
   align-items: center;
+  justify-content: center;
   position: relative;
   border-radius: 4px;
   min-height: $default-icon-size;

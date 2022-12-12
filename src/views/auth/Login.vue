@@ -1,7 +1,6 @@
 <template>
   <central-screen-form :title="isTwoFactorAuth ? $t('twoFactorAuthTitle') : $t('loginTitle')">
     <login-form v-if="!isTwoFactorAuth" v-model="form" @submit="login" />
-
     <two-factor-auth-code-form
       v-else
       v-model="securityCode"
@@ -9,6 +8,7 @@
       @cancel="clearForm"
       @submit="login"
     />
+    <providers-login />
   </central-screen-form>
 </template>
 
@@ -32,6 +32,7 @@ import { first, isNull } from 'lodash'
 import CentralScreenForm from '@/components/form/CentralScreenForm.vue'
 import LoginForm from '@/components/modules/auth/LoginForm.vue'
 import TwoFactorAuthCodeForm from '@/components/modules/auth/TwoFactorAuthCodeForm.vue'
+import ProvidersLogin from '@/components/modules/auth/ProvidersLogin.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { TwoFactorAuthMethod } from '@/enums/twoFactorAuth'
@@ -52,6 +53,7 @@ export default Vue.extend({
     CentralScreenForm,
     LoginForm,
     TwoFactorAuthCodeForm,
+    ProvidersLogin,
   },
   data: () => ({
     twoFactorAuthMethod: null as TwoFactorAuthMethod | null,

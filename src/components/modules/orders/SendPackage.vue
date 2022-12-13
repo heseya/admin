@@ -147,7 +147,7 @@ export default Vue.extend({
       ]
     },
     isLegacyPackageCreation(): boolean {
-      return this.$accessor.env.show_legacy_furgonetka === '1'
+      return this.$accessor.config.env.show_legacy_furgonetka === '1'
     },
   },
 

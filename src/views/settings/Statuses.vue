@@ -192,8 +192,6 @@ import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordi
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 import Avatar from '@/components/layout/Avatar.vue'
 
-import { UUID } from '@/interfaces/UUID'
-
 const CLEAR_STATUS: OrderStatusUpdateDto = {
   name: '',
   description: '',

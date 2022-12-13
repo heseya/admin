@@ -6,5 +6,6 @@ export const DEFAULT_ADDRESS_FORM: AddressDto = {
   zip: '',
   city: '',
   country: 'PL',
+  country_name: 'Polska',
   phone: '',
 }

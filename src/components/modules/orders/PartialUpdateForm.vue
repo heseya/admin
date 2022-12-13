@@ -27,6 +27,13 @@
           </a-select-option>
         </app-select>
 
+        <switch-input
+          v-else-if="key === 'invoice_requested'"
+          v-model="form.invoice_requested"
+          :label="$t('invoiceRequested')"
+          horizontal
+        />
+
         <validated-input
           v-else-if="key === 'shipping_place' && shippingType === ShippingType.PointExternal"
           v-model="form[key]"
@@ -55,14 +62,16 @@
     "comment": "Komentarz do zamówienia",
     "choosePoint": "Wybierz punkt",
     "pointExternalId": "Zewnętrzny identyfikator punktu",
-    "pointExternalInfo": "Zewnętrzny identyfikator punktu może być używany przez integracje do nadawania paczek"
+    "pointExternalInfo": "Zewnętrzny identyfikator punktu może być używany przez integracje do nadawania paczek",
+    "invoiceRequested": "Żądanie faktury"
   },
   "en": {
     "email": "Email address",
     "comment": "Order comment",
     "choosePoint": "Choose point",
     "pointExternalId": "External point ID",
-    "pointExternalInfo": "External point ID can be used by integration to send parcels"
+    "pointExternalInfo": "External point ID can be used by integration to send parcels",
+    "invoiceRequested": "Invoice requested"
   }
 }
 </i18n>
@@ -70,8 +79,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
-import { Order, AddressDto, ShippingMethod } from '@heseya/store-core'
-import { ShippingType } from '@/interfaces/ShippingType'
+import { Order, Address, ShippingMethod, ShippingType } from '@heseya/store-core'
 
 import AddressForm from './AddressForm.vue'
 
@@ -107,7 +115,7 @@ export default Vue.extend({
     ShippingType(): typeof ShippingType {
       return ShippingType
     },
-    shippingPoints(): AddressDto[] {
+    shippingPoints(): Address[] {
       return this.shippingMethod.shipping_points
     },
   },

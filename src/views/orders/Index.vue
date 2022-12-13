@@ -86,7 +86,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Address, Order, OrderStatus, ShippingMethod } from '@heseya/store-core'
+import { Order, OrderStatus, ShippingMethod } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
@@ -121,8 +121,8 @@ export default Vue.extend({
       return {
         rowUrlBuilder: (order) => `/orders/${order.id}`,
         headers: [
-          { key: 'code', label: this.$t('form.code') as string, sortable: true },
-          { key: 'delivery_address.name', label: this.$t('form.clientName') as string },
+          { key: 'code', label: this.$t('form.code') as string, sortable: true, width: '0.8fr' },
+          { key: 'email', label: this.$t('form.clientName') as string, width: '1.5fr' },
           {
             key: 'summary',
             label: this.$t('form.summary') as string,
@@ -147,9 +147,8 @@ export default Vue.extend({
         headers: [
           { key: 'code', label: this.$t('form.code') as string },
           {
-            key: 'delivery_address',
+            key: 'email',
             label: this.$t('form.clientName') as string,
-            format: (v: Address) => v.name,
           },
           { key: 'summary', label: this.$t('form.summary') as string },
           {

@@ -13,27 +13,9 @@
           <i class="bx bxs-pencil"></i>
         </template>
       </icon-button>
-      <pop-confirm
-        v-if="!hideRemove && address"
-        v-can="$p.Orders.Edit"
-        :title="$t('removeConfirm')"
-        :ok-text="$t('common.delete')"
-        :cancel-text="$t('common.cancel')"
-        @confirm="remove"
-      >
-        <icon-button
-          size="small"
-          type="transparent"
-          class="editable-address__btn editable-address__btn--remove"
-        >
-          <template #icon>
-            <i class="bx bxs-trash"></i>
-          </template>
-        </icon-button>
-      </pop-confirm>
     </template>
 
-    <OrderAddress :address="address" :order="order" />
+    <OrderAddress :order="order" :billing="billing" />
   </field>
 </template>
 
@@ -52,13 +34,12 @@
 import Vue from 'vue'
 import { Address, Order } from '@heseya/store-core'
 
-import PopConfirm from '../../layout/PopConfirm.vue'
 import OrderAddress from './OrderAddress.vue'
 import Field from '../../Field.vue'
 
 export default Vue.extend({
   name: 'EditableOrderAddress',
-  components: { PopConfirm, OrderAddress, Field },
+  components: { OrderAddress, Field },
   props: {
     title: {
       type: String,
@@ -72,7 +53,7 @@ export default Vue.extend({
       type: Boolean,
       default: false,
     },
-    hideRemove: {
+    billing: {
       type: Boolean,
       default: false,
     },
@@ -84,9 +65,6 @@ export default Vue.extend({
   methods: {
     edit() {
       this.$emit('edit')
-    },
-    remove() {
-      this.$emit('remove')
     },
   },
 })

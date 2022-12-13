@@ -30,6 +30,15 @@
             </span>
           </div>
         </div>
+
+        <div class="cart-item__row">
+          <tag v-if="item.shipping_digital" type="primary" small>{{ $t('shippingDigital') }}</tag>
+
+          <icon-button v-if="item.urls.length" size="small" reversed @click="showProductUrls">
+            <template #icon><i class="bx bx-link"></i></template>
+            {{ $t('showProductUrls') }}
+          </icon-button>
+        </div>
       </div>
     </div>
 
@@ -75,7 +84,9 @@
     },
     "productSets": "Kolekcje produktu",
     "priceTooltip": "Kwota po rabacie może być błędna, sprawdź czy nie brakuje części groszowej zanim zaczniesz wystawiać dokumenty księgowe.",
-    "beforeDiscount": "Przed rabatem"
+    "beforeDiscount": "Przed rabatem",
+    "shippingDigital": "Product z wysyłką cyfrową",
+    "showProductUrls": "Pokaż linki do produktu"
   },
   "en": {
     "header": {
@@ -87,7 +98,9 @@
     },
     "productSets": "Product sets",
     "priceTooltip": "The price may be incorrect, check if there is a penny left before you start issuing invoices.",
-    "beforeDiscount": "Before discount"
+    "beforeDiscount": "Before discount",
+    "shippingDigital": "Product with digital shipping",
+    "showProductUrls": "Show product links"
   }
 }
 </i18n>
@@ -100,12 +113,14 @@ import { formatCurrency } from '@/utils/currency'
 import Field from '../Field.vue'
 import InfoTooltip from './InfoTooltip.vue'
 import OrderDiscountSummary from '../modules/orders/OrderDiscountSummary.vue'
+import IconButton from './IconButton.vue'
 
 export default Vue.extend({
   components: {
     Field,
     InfoTooltip,
     OrderDiscountSummary,
+    IconButton,
   },
   props: {
     item: {
@@ -127,6 +142,9 @@ export default Vue.extend({
   methods: {
     formatCurrency(amount: number) {
       return formatCurrency(amount, this.$accessor.config.currency)
+    },
+    showProductUrls() {
+      this.$emit('show-urls')
     },
   },
 })
@@ -178,8 +196,16 @@ export default Vue.extend({
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: flex-start;
     width: 100%;
     margin-left: 12px;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
   }
 
   &__title {

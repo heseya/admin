@@ -14,7 +14,7 @@
           size="small"
           type="transparent"
           class="order-summary__edit-btn"
-          @click="editShipppingMethod(false)"
+          @click="editShippingMethod(false)"
         >
           <template #icon>
             <i class="bx bxs-pencil"></i>
@@ -35,7 +35,7 @@
           size="small"
           type="transparent"
           class="order-summary__edit-btn"
-          @click="editShipppingMethod(true)"
+          @click="editShippingMethod(true)"
         >
           <template #icon>
             <i class="bx bxs-pencil"></i>
@@ -209,7 +209,7 @@ export default Vue.extend({
     closePaymentHistory() {
       this.isPaymentHistoryVisible = false
     },
-    editShipppingMethod(isDigitalEdited: boolean) {
+    editShippingMethod(isDigitalEdited: boolean) {
       this.isDigitalShippingMethodEdited = isDigitalEdited
       this.isShippingModalActive = true
     },

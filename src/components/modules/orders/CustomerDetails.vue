@@ -26,6 +26,7 @@
       <EditableOrderAddress
         :title="$t('deliveryAddressSection')"
         :order="order"
+        :hide-edit="order.shipping_place === null"
         @edit="editShippingAddress"
       />
 

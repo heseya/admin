@@ -58,6 +58,7 @@ export default Vue.extend({
 <style lang="scss">
 .product-box {
   all: unset;
+  display: block !important;
   color: var(--font-color);
   text-decoration: none;
   position: relative;

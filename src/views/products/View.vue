@@ -3,7 +3,7 @@
     <top-nav>
       <template #title>
         <template v-if="!isNew">
-          <span class="gray-text">{{ $t('title') }}</span> {{ product.name }}
+          <span class="gray-text">{{ $t('title') }}&nbsp;</span>{{ product.name }}
         </template>
         <template v-else>
           {{ $t('titleNew') }}
@@ -120,7 +120,7 @@
 <i18n lang="json">
 {
   "pl": {
-    "title": "Konfiguracja produktu:",
+    "title": "Konfiguracja produktu",
     "titleNew": "Nowy produkt",
     "baseFormTitle": "Informacje podstawowe",
     "galleryTitle": "Zdjęcia i wideo produktu",
@@ -133,7 +133,7 @@
     "saveAndNext": "Zapisz i dodaj następny"
   },
   "en": {
-    "title": "Product configuration:",
+    "title": "Product configuration",
     "titleNew": "New product",
     "baseFormTitle": "Basic information",
     "galleryTitle": "Product gallery",

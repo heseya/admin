@@ -86,7 +86,7 @@
     "priceTooltip": "Kwota po rabacie może być błędna, sprawdź czy nie brakuje części groszowej zanim zaczniesz wystawiać dokumenty księgowe.",
     "beforeDiscount": "Przed rabatem",
     "shippingDigital": "Product z wysyłką cyfrową",
-    "showProductUrls": "Pokaż linki do produktu"
+    "showProductUrls": "Pokaż linki"
   },
   "en": {
     "header": {
@@ -100,7 +100,7 @@
     "priceTooltip": "The price may be incorrect, check if there is a penny left before you start issuing invoices.",
     "beforeDiscount": "Before discount",
     "shippingDigital": "Product with digital shipping",
-    "showProductUrls": "Show product links"
+    "showProductUrls": "Show links"
   }
 }
 </i18n>

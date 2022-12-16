@@ -52,7 +52,7 @@
       :footer="null"
       @cancel="isProductUrlsModalActive = false"
     >
-      <order-product-urls v-if="selectedProduct" :product="selectedProduct" />
+      <order-product-urls v-if="selectedProduct" :product="selectedProduct" :order-id="order.id" />
     </a-modal>
   </div>
 </template>

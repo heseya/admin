@@ -1,7 +1,7 @@
 <template>
   <div class="flex-column send-package">
     <span class="order-title send-package__title">{{ $t('sendPackage.title') }}</span>
-    <div v-if="!shippingNumber" class="send-package__content">
+    <!-- <div v-if="!shippingNumber" class="send-package__content">
       <div class="send-package__selects">
         <app-select
           v-model="packageTemplateId"
@@ -39,9 +39,9 @@
       <i class="bx bxs-check-circle"></i>
       {{ $t('sendPackage.existing', { number: shippingNumber }) }}
     </small>
-    <span class="order-title send-package__title send-package__title--shipping">{{
-      $t('setShippingNumber.title')
-    }}</span>
+    <span class="order-title send-package__title send-package__title--shipping">
+      {{ $t('setShippingNumber.title') }}
+    </span> -->
     <div class="send-package__content">
       <app-input
         v-model="packageShippingNumber"
@@ -64,7 +64,7 @@
 {
   "pl": {
     "sendPackage": {
-      "title": "Nadaj przesyłkę",
+      "title": "List przewozowy",
       "template": "Szablon przesyłki",
       "templatePlaceholder": "-- Wybierz szablon --",
       "provider": "Operator dostawy",
@@ -83,7 +83,7 @@
   },
   "en": {
     "sendPackage": {
-      "title": "Send package",
+      "title": "Shipping list",
       "template": "Package template",
       "templatePlaceholder": "-- Select template --",
       "provider": "Shipping provider",

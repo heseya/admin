@@ -18,6 +18,7 @@
           </a-select-option>
         </app-select>
         <app-select
+          v-if="isLegacyPackageCreation"
           v-model="providerKey"
           :label="$t('sendPackage.provider')"
           option-filter-prop="label"
@@ -106,8 +107,9 @@
 <script lang="ts">
 import Vue from 'vue'
 import { PackagesTemplate } from '@heseya/store-core'
+import { createStandardPackage } from '@/services/createStandardPackage'
+import { createFurgonetkaPackage } from '@/services/createFurgonetkaPackage'
 
-import { createPackage } from '@/services/createPackage'
 import { formatApiNotificationError } from '@/utils/errors'
 
 export default Vue.extend({
@@ -143,6 +145,9 @@ export default Vue.extend({
         { key: 'dhl', label: 'Kurier DHL Parcel' },
         { key: 'dhlinternational', label: 'Kurier DHL Express' },
       ]
+    },
+    isLegacyPackageCreation(): boolean {
+      return this.$accessor.config.env.show_legacy_furgonetka === '1'
     },
   },
 
@@ -189,7 +194,9 @@ export default Vue.extend({
     async createPackage() {
       if (!this.packageTemplateId) return
       this.$accessor.startLoading()
-      const res = await createPackage(this.orderId, this.packageTemplateId, this.providerKey)
+      const res = this.isLegacyPackageCreation
+        ? await createFurgonetkaPackage(this.orderId, this.packageTemplateId, this.providerKey)
+        : await createStandardPackage(this.orderId, this.packageTemplateId)
 
       if (res.success) {
         this.$emit('created', res.shippingNumber)

@@ -62,6 +62,7 @@
       "summary": "Wartość",
       "paid": "Płatność",
       "status": "Status",
+      "digital_shipping": "Przesyłka cyfrowa",
       "shipping": "Przesyłka",
       "date": "Data"
     }
@@ -77,6 +78,7 @@
       "summary": "Value",
       "paid": "Payment",
       "status": "Status",
+      "digital_shipping": "Digital shipping",
       "shipping": "Shipping",
       "date": "Date"
     }
@@ -86,7 +88,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Address, Order, OrderStatus, ShippingMethod } from '@heseya/store-core'
+import { Order, OrderStatus, ShippingMethod } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
@@ -121,8 +123,8 @@ export default Vue.extend({
       return {
         rowUrlBuilder: (order) => `/orders/${order.id}`,
         headers: [
-          { key: 'code', label: this.$t('form.code') as string, sortable: true },
-          { key: 'delivery_address.name', label: this.$t('form.clientName') as string },
+          { key: 'code', label: this.$t('form.code') as string, sortable: true, width: '0.8fr' },
+          { key: 'email', label: this.$t('form.clientName') as string, width: '1.5fr' },
           {
             key: 'summary',
             label: this.$t('form.summary') as string,
@@ -131,7 +133,14 @@ export default Vue.extend({
           },
           { key: 'paid', label: this.$t('form.paid') as string, width: '0.8fr' },
           { key: 'status', label: this.$t('form.status') as string, width: '0.8fr' },
-          { key: 'shipping_method.name', label: this.$t('form.shipping') as string },
+          {
+            key: 'shipping_method',
+            label: this.$t('form.shipping') as string,
+            render: (_v, r) =>
+              [r.shipping_method?.name, r.digital_shipping_method?.name]
+                .filter(Boolean)
+                .join(', ') || '-',
+          },
           {
             key: 'created_at',
             label: this.$t('form.date') as string,
@@ -147,9 +156,8 @@ export default Vue.extend({
         headers: [
           { key: 'code', label: this.$t('form.code') as string },
           {
-            key: 'delivery_address',
+            key: 'email',
             label: this.$t('form.clientName') as string,
-            format: (v: Address) => v.name,
           },
           { key: 'summary', label: this.$t('form.summary') as string },
           {
@@ -165,7 +173,12 @@ export default Vue.extend({
           {
             key: 'shipping_method',
             label: this.$t('form.shipping') as string,
-            format: (v: ShippingMethod) => v.name,
+            format: (v: ShippingMethod) => v?.name || '-',
+          },
+          {
+            key: 'digital_shipping_method',
+            label: this.$t('form.digital_shipping') as string,
+            format: (v: ShippingMethod) => v?.name || '-',
           },
           {
             key: 'created_at',

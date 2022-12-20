@@ -185,7 +185,11 @@ export default Vue.extend({
         ? await this.$accessor.users.add(this.editedUser)
         : await this.$accessor.users.update({
             id: this.editedUser.id,
-            item: this.editedUser,
+            item: {
+              ...this.editedUser,
+              // @ts-ignore
+              password: undefined,
+            },
           })
 
       if (updated) {

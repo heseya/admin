@@ -1,16 +1,19 @@
 <template>
   <app-select
     :value="value"
-    :label="label"
     :add-all="addAll"
     option-filter-prop="label"
     @input="(e) => $emit('input', e)"
     @change="(e) => $emit('change', e)"
   >
-    <a-select-option :value="'1'" :label="trueText || $t('common.yes')">
+    <template #label>
+      <slot name="label"> {{ label }} </slot>
+    </template>
+
+    <a-select-option :value="trueValue" :label="trueText || $t('common.yes')">
       {{ trueText || $t('common.yes') }}
     </a-select-option>
-    <a-select-option :value="'0'" :label="$t('common.no')">
+    <a-select-option :value="falseValue" :label="$t('common.no')">
       {{ falseText || $t('common.no') }}
     </a-select-option>
   </app-select>
@@ -24,6 +27,8 @@ export default Vue.extend({
     label: { type: String, default: null },
     trueText: { type: String, default: null },
     falseText: { type: String, default: null },
+    trueValue: { type: [String, Number], default: '1' },
+    falseValue: { type: [String, Number], default: '0' },
     addAll: { type: Boolean, default: true },
   },
 })

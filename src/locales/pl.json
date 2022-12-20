@@ -86,6 +86,14 @@
     "file": "Plik"
   },
 
+  "shippingTypes": {
+    "none": "Brak",
+    "digital": "Cyfrowa dostawa",
+    "address": "Adres",
+    "point": "Punkt",
+    "point-external": "Punkt zewnętrzny"
+  },
+
   "orderDocumentsTypes": {
     "invoice": "Faktura",
     "receipt": "Rachunek",
@@ -122,6 +130,7 @@
     "dateBefore": "Data zakończenia musi być przed datą startu",
     "priceRangesDuplicates": "Zakresy cen nie mogą zawierać zduplikowanych progów",
     "schemaCheckbox": "Schemat nie może być jednocześnie ukryty i wymagany",
+    "shippingPointsDuplicates": "Punkt o takiej nazwie już istnieje",
     "timeBefore": "Godzina zakończenia musi być przed godziną startu",
     "couponCode": "Kod kuponu może składać się tylko z małych liter, cyfr, myślników i podkreślników (_)"
   },

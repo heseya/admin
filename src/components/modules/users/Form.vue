@@ -4,6 +4,7 @@
       v-model="form.name"
       :disabled="disabled"
       rules="required"
+      name="name"
       :label="$t('name')"
     />
 
@@ -11,6 +12,7 @@
       v-model="form.email"
       :disabled="disabled"
       rules="required|email"
+      name="email"
       :label="$t('email')"
     />
 
@@ -29,6 +31,7 @@
       v-model="form.password"
       :disabled="disabled"
       type="password"
+      name="password"
       rules="required|password"
       :label="$t('password')"
     />

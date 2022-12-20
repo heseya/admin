@@ -211,6 +211,11 @@ export default Vue.extend({
     line-height: 17px;
   }
 
+  &__heading {
+    font-size: 14px;
+    line-height: 17px;
+  }
+
   &__header {
     width: 100%;
     display: flex;

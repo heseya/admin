@@ -86,6 +86,14 @@
     "file": "File"
   },
 
+  "shippingTypes": {
+    "none": "None",
+    "digital": "Digital",
+    "address": "Address",
+    "point": "Point",
+    "point-external": "External point"
+  },
+
   "orderDocumentsTypes": {
     "invoice": "Invoice",
     "receipt": "Receipt",
@@ -121,6 +129,7 @@
     "dateBefore": "The end date must be before the start date",
     "priceRangesDuplicates": "Price ranges shall not contain duplicate thresholds",
     "schemaCheckbox": "A scheme cannot be both hidden and required",
+    "shippingPointsDuplicates": "Point of given name already exists",
     "timeBefore": "The end time must be before the start time",
     "couponCode": "The coupon code can only consist of letters, numbers, dashes and underscores (_)"
   },

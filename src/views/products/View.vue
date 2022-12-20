@@ -187,6 +187,8 @@ const EMPTY_FORM: ProductComponentForm = {
   description_short: '',
   vat_rate: 0,
   google_product_category: null,
+  shipping_digital: '0',
+  purchase_limit_per_user: 0,
   public: true,
   sets: [],
   quantity_step: 1,
@@ -251,6 +253,8 @@ export default mixins(preventLeavingPage).extend({
         this.form = {
           ...product,
           sets: product.sets?.map(({ id }) => id) || [],
+          shipping_digital: (+product.shipping_digital).toString() as '0' | '1',
+          purchase_limit_per_user: product.purchase_limit_per_user || 0,
           seo: product.seo || {},
         }
       }
@@ -302,6 +306,8 @@ export default mixins(preventLeavingPage).extend({
         media: this.form.gallery.map(({ id }) => id),
         tags: this.form.tags.map(({ id }) => id),
         schemas: this.form.schemas.map(({ id }) => id),
+        shipping_digital: Boolean(+this.form.shipping_digital),
+        purchase_limit_per_user: this.form.purchase_limit_per_user || null,
         attributes: attributes.reduce(
           (acc, { id, selected_options: option }) => ({
             ...acc,

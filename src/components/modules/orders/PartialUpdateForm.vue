@@ -17,7 +17,7 @@
           :label="$t('comment')"
         />
         <app-select
-          v-else-if="key === 'shipping_place' && shippingType === ShippingType.Point"
+          v-else-if="key === 'shipping_place' && orderShippingType === ShippingType.Point"
           v-model="form.shipping_place"
           option-filter-prop="label"
           :label="$t('choosePoint')"
@@ -35,7 +35,7 @@
         />
 
         <validated-input
-          v-else-if="key === 'shipping_place' && shippingType === ShippingType.PointExternal"
+          v-else-if="key === 'shipping_place' && orderShippingType === ShippingType.PointExternal"
           v-model="form[key]"
           name="shipping_place"
           rules="required"
@@ -46,7 +46,7 @@
           </template>
         </validated-input>
         <address-form
-          v-else-if="key === 'shipping_place' || key === 'billing_address'"
+          v-else-if="(key === 'shipping_place' || key === 'billing_address') && form[key]"
           v-model="form[key]"
         />
       </div>
@@ -94,11 +94,7 @@ export default Vue.extend({
     shippingMethod: {
       type: Object,
       default: () => {},
-    } as Vue.PropOptions<ShippingMethod>,
-    shippingType: {
-      type: String,
-      default: () => null,
-    } as Vue.PropOptions<ShippingType>,
+    } as Vue.PropOptions<ShippingMethod | undefined>,
   },
   computed: {
     form: {
@@ -115,8 +111,11 @@ export default Vue.extend({
     ShippingType(): typeof ShippingType {
       return ShippingType
     },
+    orderShippingType(): ShippingType | undefined {
+      return this.shippingMethod?.shipping_type
+    },
     shippingPoints(): Address[] {
-      return this.shippingMethod.shipping_points
+      return this.shippingMethod?.shipping_points || []
     },
   },
   methods: {

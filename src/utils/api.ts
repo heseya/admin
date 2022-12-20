@@ -36,10 +36,6 @@ export const getApiURL = () => {
       return 'https://sandbox-***REMOVED***.***REMOVED***'
     case 'flowy.demo.heseya.pl':
       return 'https://demo-flowy.***REMOVED***/'
-    case 'store-admin-git-feature-shipping-***REMOVED***':
-      return 'https://feature-shipping.***REMOVED***'
-    case 'store-admin-git-feature-digital-offers-***REMOVED***':
-      return 'https://feature-digital-offers.***REMOVED***'
     case '***REMOVED***.demo.heseya.pl':
       return 'https://demo-***REMOVED***.***REMOVED***'
     default:

@@ -34,7 +34,12 @@
         <div class="cart-item__row">
           <tag v-if="item.shipping_digital" type="primary" small>{{ $t('shippingDigital') }}</tag>
 
-          <icon-button v-if="item.urls.length" size="small" reversed @click="showProductUrls">
+          <icon-button
+            v-if="item.urls.length || item.shipping_digital"
+            size="small"
+            reversed
+            @click="showProductUrls"
+          >
             <template #icon><i class="bx bx-link"></i></template>
             {{ $t('showProductUrls') }}
           </icon-button>

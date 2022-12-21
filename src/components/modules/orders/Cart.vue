@@ -48,7 +48,7 @@
 
     <a-modal
       :visible="isProductUrlsModalActive"
-      width="600px"
+      width="800px"
       :footer="null"
       @cancel="isProductUrlsModalActive = false"
     >
@@ -117,13 +117,17 @@ export default Vue.extend({
   },
   data: () => ({
     isProductUrlsModalActive: false,
-    selectedProduct: null as OrderProduct | null,
+    selectedProductId: null as string | null,
   }),
   computed: {
     totalDiscount(): number {
       return this.order.discounts
         .map((d) => d.applied_discount)
         .reduce((sum, discount) => sum + discount, 0)
+    },
+
+    selectedProduct(): OrderProduct | null {
+      return this.order.products?.find((p) => p.id === this.selectedProductId) || null
     },
   },
   methods: {
@@ -132,7 +136,7 @@ export default Vue.extend({
     },
     openProductUrls(item: OrderProduct) {
       this.isProductUrlsModalActive = true
-      this.selectedProduct = item
+      this.selectedProductId = item.id
     },
   },
 })

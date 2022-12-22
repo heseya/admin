@@ -104,7 +104,7 @@
     "title": "Dashboard",
     "income": {
       "title": "Przychody",
-      "orders": "brak zamówień | {count} zamówienie | {count} zamówienia | {count} zamówień",
+      "orders": "brak transakcji | {count} transakcja | {count} transakcje | {count} transakcji",
       "week": "W tym tygodniu",
       "month": "W tym miesiącu",
       "year": "W tym roku",
@@ -117,7 +117,7 @@
     "title": "Dashboard",
     "income": {
       "title": "Income",
-      "orders": "no orders | 1 order | {count} orders",
+      "orders": "no transactions | 1 transaction | {count} transactions",
       "week": "This week",
       "month": "This month",
       "year": "This year",

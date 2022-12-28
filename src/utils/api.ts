@@ -8,6 +8,8 @@ export const getApiURL = () => {
       return 'https://***REMOVED***.***REMOVED***'
     case 'admin.***REMOVED***.eu':
       return 'https://***REMOVED***.***REMOVED***'
+    case '***REMOVED***.demo.heseya.pl':
+      return 'https://***REMOVED***.***REMOVED***'
     case '***REMOVED***':
       return '***REMOVED***'
     case '***REMOVED***.heseya.com':

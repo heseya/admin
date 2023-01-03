@@ -53,7 +53,8 @@
     <pop-confirm
       v-if="product.urls.length"
       :title="$t('send.confirmText')"
-      :ok-text="$t('common.delete')"
+      :ok-text="$t('send.btn')"
+      ok-color="primary"
       :cancel-text="$t('common.cancel')"
       @confirm="sendProductViaMail"
     >
@@ -91,7 +92,8 @@
       "title": "Wyślij maila do klienta z linkami do pobrania produktów",
       "confirmText": "Czy na pewno chcesz wysłać linki do pobrania produktów do klienta?",
       "messageSuccess": "Linki do pobrania produktów zostały wysłane na adres email klienta",
-      "messageError": "Wystąpił błąd podczas wysyłania maila z linkami do pobrania produktów"
+      "messageError": "Wystąpił błąd podczas wysyłania maila z linkami do pobrania produktów",
+      "btn": "Wyślij"
     },
     "delete": {
       "confirmText": "Czy na pewno chcesz usunąć ten link?",
@@ -109,7 +111,8 @@
       "title": "Send email to customer with links to download products",
       "confirmText": "Are you sure you want to send links to download products to the customer?",
       "messageSuccess": "Links to download products have been sent to the customer's email address",
-      "messageError": "An error occurred while sending an email with links to download products"
+      "messageError": "An error occurred while sending an email with links to download products",
+      "btn": "Send"
     },
     "delete": {
       "confirmText": "Are you sure you want to delete this link?",

@@ -6,8 +6,17 @@
         option-filter-prop="label"
         :label="$t('method')"
       >
-        <a-select-option v-for="method in shippingMethods" :key="method.id" :label="method.name">
+        <a-select-option
+          v-for="method in shippingMethods"
+          :key="method.id"
+          :label="method.name"
+          :disabled="isShippingMethodDisabled(method)"
+        >
           {{ method.name }}
+
+          <info-tooltip v-if="isShippingMethodDisabled(method)">
+            {{ $t('disabledMethodInfo') }}
+          </info-tooltip>
         </a-select-option>
       </app-select>
 
@@ -52,7 +61,8 @@
     "editFailed": "Failed to change shipping method",
     "pointExternalId": "External point ID",
     "shippingPoint": "Shipping Point",
-    "pointExternalInfo": "External point ID can be used by integration to send parcels"
+    "pointExternalInfo": "External point ID can be used by integration to send parcels",
+    "disabledMethodInfo": "Shipping method is disabled because it has no shipping points"
   },
   "pl": {
     "method": "Metoda dostawy",
@@ -60,8 +70,8 @@
     "editFailed": "Nie udało się zmienić metody dostawy",
     "pointExternalId": "Zewnętrzny identyfikator punktu",
     "shippingPoint": "Punkt dostawy",
-    "pointExternalInfo": "Zewnętrzny identyfikator punktu może być używany przez integracje do nadawania paczek"
-
+    "pointExternalInfo": "Zewnętrzny identyfikator punktu może być używany przez integracje do nadawania paczek",
+    "disabledMethodInfo": "Metoda dostawy jest niedostępna, ponieważ nie posiada żadnych punktów dostawy"
   }
 }
 </i18n>
@@ -104,19 +114,23 @@ export default Vue.extend({
       return ShippingType
     },
     shippingMethods(): ShippingMethod[] {
-      return this.$accessor.shippingMethods.getData.filter((method) => {
-        return this.digital
+      return this.$accessor.shippingMethods.getData.filter((method) =>
+        this.digital
           ? method.shipping_type === ShippingType.Digital
-          : method.shipping_type !== ShippingType.Digital
-      })
+          : method.shipping_type !== ShippingType.Digital,
+      )
     },
   },
   watch: {
     'form.shipping_method_id': {
-      handler(newMethodId) {
-        if (newMethodId === this.order.shipping_method?.id) return
-
+      handler(newMethodId, prevMethodId) {
+        if (!prevMethodId) return
+        const prevMethod = this.shippingMethods.find((method) => method.id === prevMethodId)
         const newMethod = this.shippingMethods.find((method) => method.id === newMethodId)
+
+        // Dont clear form if shipping type is the same
+        if (newMethod?.shipping_type === prevMethod?.shipping_type) return
+
         if (newMethod?.shipping_type) {
           switch (newMethod?.shipping_type) {
             case ShippingType.Digital:
@@ -128,10 +142,10 @@ export default Vue.extend({
             case ShippingType.Point:
               this.shippingPoints = newMethod.shipping_points
               if (!isString(this.form.shipping_place)) {
-                this.form.shipping_place = this.shippingPoints[0].id
+                this.form.shipping_place = this.shippingPoints[0]?.id
               } else {
                 if (!this.isValidPointId(this.form.shipping_place)) {
-                  this.form.shipping_place = this.shippingPoints[0].id
+                  this.form.shipping_place = this.shippingPoints[0]?.id
                 }
               }
               break
@@ -161,6 +175,10 @@ export default Vue.extend({
     this.shippingPoints = (method?.shipping_points as AddressDto[]) || []
   },
   methods: {
+    isShippingMethodDisabled(method: ShippingMethod) {
+      return method.shipping_type === ShippingType.Point && method.shipping_points.length === 0
+    },
+
     async changeShippingMethod() {
       this.$accessor.startLoading()
       const form: ShippingMethodUpdate = {

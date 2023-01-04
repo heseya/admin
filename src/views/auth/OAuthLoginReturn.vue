@@ -16,12 +16,14 @@
   "pl": {
     "title": "Przekierowywanie...",
     "errorTitle": "Coś poszło nie tak",
-    "goBackToLogin": "Wróć do logowania"
+    "goBackToLogin": "Wróć do logowania",
+    "2faError": "Logowanie przez SocialMedia z dwuetapową weryfikacją nie jest jeszcze obsługiwane. Skontaktuj się z administratorem."
   },
   "en": {
     "title": "Redirecting...",
     "errorTitle": "Something went wrong",
-    "goBackToLogin": "Go back to login"
+    "goBackToLogin": "Go back to login",
+    "2faError": "Logging in via SocialMedia with two-factor authentication is not yet supported. Contact the administrator."
   }
 }
 </i18n>
@@ -69,7 +71,8 @@ export default Vue.extend({
 
     if (result.state === LoginState.Error) {
       this.cleanupAfterOAuth()
-      this.errorMessage = formatApiError(result.error).messages.join(', ')
+      const error = formatApiError(result.error)
+      this.errorMessage = error.messages.join(', ') || error.title
       this.$toast.error(formatApiNotificationError(result.error))
     }
 
@@ -79,7 +82,7 @@ export default Vue.extend({
       // TODO: 2FA when logging in via OAuth
       // eslint-disable-next-line no-console
       console.error('TODO: 2FA in OAuthLoginReturn')
-      this.errorMessage = 'Two factor auth required'
+      this.errorMessage = this.$t('2faError') as string
     }
   },
 

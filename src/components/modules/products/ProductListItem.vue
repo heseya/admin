@@ -96,6 +96,7 @@ import ProductPrice from './ProductPrice.vue'
 
 import { formatCurrency } from '@/utils/currency'
 import { TableConfig } from '@/interfaces/CmsTable'
+import { FEATURE_FLAGS } from '@/consts/featureFlags'
 
 export default Vue.extend({
   components: { Avatar, CmsTableRow, MediaElement, ProductPrice, PopConfirm },
@@ -112,7 +113,7 @@ export default Vue.extend({
   data: () => ({ publicIsLoading: false }),
   computed: {
     objectFit(): string {
-      return +this.$accessor.config.env.dashboard_products_contain ? 'contain' : 'cover'
+      return +this.$accessor.config.env[FEATURE_FLAGS.ProductContain] ? 'contain' : 'cover'
     },
   },
   mounted() {

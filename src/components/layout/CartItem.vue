@@ -120,6 +120,8 @@ import InfoTooltip from './InfoTooltip.vue'
 import OrderDiscountSummary from '../modules/orders/OrderDiscountSummary.vue'
 import IconButton from './IconButton.vue'
 
+import { FEATURE_FLAGS } from '@/consts/featureFlags'
+
 export default Vue.extend({
   components: {
     Field,
@@ -138,7 +140,7 @@ export default Vue.extend({
       return this.item?.product?.cover?.url || ''
     },
     objectFit(): string {
-      return +this.$accessor.config.env.dashboard_products_contain ? 'contain' : 'cover'
+      return +this.$accessor.config.env[FEATURE_FLAGS.ProductContain] ? 'contain' : 'cover'
     },
     totalPrice(): number {
       return this.item.price * this.item.quantity

@@ -21,6 +21,7 @@ const router = new VueRouter({
       component: () => import('./views/auth/Login.vue'),
       meta: {
         hiddenNav: true,
+        redirectIfLoggedIn: true,
       },
     },
     {
@@ -30,6 +31,7 @@ const router = new VueRouter({
       component: () => import('./views/auth/ResetPassword.vue'),
       meta: {
         hiddenNav: true,
+        redirectIfLoggedIn: true,
       },
     },
     {
@@ -445,8 +447,13 @@ router.beforeEach((to, from, next) => {
       JSON.stringify({ path: from.path, fullPath: from.fullPath }),
     )
 
+  const redirectIfLoggedIn = !!to.meta?.redirectIfLoggedIn || false
   const authRequired = !!to.meta?.requiresAuth || false
   const requiredPermissions: Permission[] = to.meta?.permissions || []
+
+  if (redirectIfLoggedIn && accessor.auth.isLogged) {
+    return next('/')
+  }
 
   if (authRequired && !accessor.auth.isLogged) {
     accessor.auth.setPermissionsError(new Error('Not logged in'))

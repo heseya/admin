@@ -18,8 +18,9 @@
     "false": "False",
     "edit": "Edit",
     "continue": "Continue",
-    "reset": "Reset",
+    "visible": "Visible",
     "hidden": "Hidden",
+    "reset": "Reset",
     "confirmLeave": "Do you really want to leave? You have unsaved changes!",
     "form": {
       "name": "Name",
@@ -59,6 +60,7 @@
     "tags": "Tags",
     "schemas": "Schemas",
     "statuses": "Order statuses",
+    "payment_methods": "Payment methods",
     "shipping_methods": "Shipping methods",
     "package_templates": "Package templates",
     "users": "Users",
@@ -92,6 +94,12 @@
     "address": "Address",
     "point": "Point",
     "point-external": "External point"
+  },
+
+  "paymentStatus": {
+    "failed": "Failed",
+    "pending": "Pending",
+    "successful": "Successful"
   },
 
   "orderDocumentsTypes": {

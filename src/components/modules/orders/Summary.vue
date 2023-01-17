@@ -100,7 +100,7 @@
       "date": "Date of transaction",
       "method": "Payment method",
       "amount": "Amount",
-      "success": "Is payment successful?"
+      "status": "Status"
     },
     "showList": "Show list"
   },
@@ -118,7 +118,7 @@
       "date": "Data transakcji",
       "method": "Metoda płatności",
       "amount": "Kwota",
-      "success": "Płatność się powiodła?"
+      "status": "Status"
     },
     "showList": "Pokaż listę"
   }
@@ -185,7 +185,11 @@ export default Vue.extend({
             label: this.$t('table.amount') as string,
             render: (v: number) => this.formatCurrency(v),
           },
-          { key: 'paid', label: this.$t('table.success') as string },
+          {
+            key: 'status',
+            label: this.$t('table.status') as string,
+            render: (v) => this.$t(`paymentStatus.${v}`) as string,
+          },
         ],
       }
     },

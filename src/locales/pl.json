@@ -18,8 +18,9 @@
     "false": "Fałsz",
     "edit": "Edytuj",
     "continue": "Kontynuuj",
-    "reset": "Przywróć domyślne",
+    "visible": "Widoczny",
     "hidden": "Ukryty",
+    "reset": "Przywróć domyślne",
     "confirmLeave": "Czy na pewno chcesz wyjść? Masz niezapisane zmiany!",
     "form": {
       "name": "Nazwa",
@@ -59,6 +60,7 @@
     "tags": "Tagi",
     "schemas": "Schematy",
     "statuses": "Statusy zamówień",
+    "payment_methods": "Metody płatności",
     "shipping_methods": "Metody dostawy",
     "package_templates": "Szablony przesyłek",
     "users": "Użytkownicy",
@@ -92,6 +94,12 @@
     "address": "Adres",
     "point": "Punkt",
     "point-external": "Punkt zewnętrzny"
+  },
+
+  "paymentStatus": {
+    "failed": "Nieudana",
+    "pending": "W trakcie",
+    "successful": "Zakończona z sukcesem"
   },
 
   "orderDocumentsTypes": {

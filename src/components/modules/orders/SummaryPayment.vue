@@ -76,7 +76,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Order, Payment } from '@heseya/store-core'
+import { Order, OrderPayment, PaymentStatus } from '@heseya/store-core'
 
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import InfoTooltip from '@/components/layout/InfoTooltip.vue'
@@ -94,8 +94,8 @@ export default Vue.extend({
     } as Vue.PropOptions<Order>,
   },
   computed: {
-    lastSuccessfullPayment(): Payment | undefined {
-      return this.order.payments?.find((payment) => payment.paid)
+    lastSuccessfullPayment(): OrderPayment | undefined {
+      return this.order.payments?.find((payment) => payment.status === PaymentStatus.Successful)
     },
     PAYMENT_METHODS(): Record<string, string> {
       return PAYMENT_METHODS

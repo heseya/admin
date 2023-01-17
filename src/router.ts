@@ -22,6 +22,15 @@ const router = new VueRouter({
       component: () => import('./views/auth/Login.vue'),
       meta: {
         hiddenNav: true,
+        redirectIfLoggedIn: true,
+      },
+    },
+    {
+      path: '/oauth-login-return',
+      name: 'OAuthLoginReturn',
+      component: () => import('./views/auth/OAuthLoginReturn.vue'),
+      meta: {
+        hiddenNav: true,
       },
     },
     {
@@ -31,6 +40,7 @@ const router = new VueRouter({
       component: () => import('./views/auth/ResetPassword.vue'),
       meta: {
         hiddenNav: true,
+        redirectIfLoggedIn: true,
       },
     },
     {
@@ -345,6 +355,15 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/settings/providers',
+      name: 'Providers',
+      component: () => import('./views/settings/Providers.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Auth.ProvidersManage],
+      },
+    },
+    {
       path: '/settings/advanced',
       name: 'PageSettings',
       component: () => import('./views/settings/Settings.vue'),
@@ -495,8 +514,13 @@ router.beforeEach((to, from, next) => {
       JSON.stringify({ path: from.path, fullPath: from.fullPath }),
     )
 
+  const redirectIfLoggedIn = !!to.meta?.redirectIfLoggedIn || false
   const authRequired = !!to.meta?.requiresAuth || false
   const requiredPermissions: Permission[] = to.meta?.permissions || []
+
+  if (redirectIfLoggedIn && accessor.auth.isLogged) {
+    return next('/')
+  }
 
   if (authRequired && !accessor.auth.isLogged) {
     accessor.auth.setPermissionsError(new Error('Not logged in'))

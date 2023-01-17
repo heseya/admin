@@ -1,5 +1,5 @@
 <template>
-  <div class="narrower-page">
+  <div>
     <PaginatedList
       :title="$t('title')"
       :filters="filters"
@@ -53,7 +53,8 @@
     "table": {
       "email": "E-mail",
       "roles": "Role",
-      "isTfaActive": "Aktywne 2FA"
+      "isTfaActive": "Aktywne 2FA",
+      "createdAt": "Data rejestracji"
     }
   },
   "en": {
@@ -62,7 +63,8 @@
     "table": {
       "email": "E-mail",
       "roles": "Roles",
-      "isTfaActive": "Active 2FA"
+      "isTfaActive": "Active 2FA",
+      "createdAt": "Registration date"
     }
   }
 }
@@ -82,6 +84,7 @@ import { ALL_FILTER_VALUE } from '@/consts/filters'
 import { formatFilters } from '@/utils/utils'
 import { TableConfig } from '@/interfaces/CmsTable'
 import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
+import { formatDate } from '@/utils/dates'
 
 export default Vue.extend({
   metaInfo(this: any) {
@@ -123,6 +126,11 @@ export default Vue.extend({
             width: '0.6fr',
             render: (_v, item) => item.is_tfa_active,
           },
+          {
+            key: 'created_at',
+            label: this.$t('table.createdAt') as string,
+            render: (_v, item) => formatDate(item.created_at) as string,
+          },
         ],
       }
     },
@@ -143,6 +151,7 @@ export default Vue.extend({
             label: this.$t('table.isTfaActive') as string,
             format: (v: boolean) => (v ? this.$t('common.yes') : this.$t('common.no')) as string,
           },
+          { key: 'created_at', label: this.$t('table.createdAt') as string },
         ],
       }
     },

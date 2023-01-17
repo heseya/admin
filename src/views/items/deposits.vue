@@ -7,7 +7,7 @@
       :table="tableConfig"
     >
       <template #title>
-        <span class="gray-text">{{ $t('title') }}:</span>
+        <span class="gray-text">{{ $t('title') }}&nbsp;</span>
         {{ item.name }}
       </template>
 

@@ -8,7 +8,12 @@
       <span class="order-title">{{ $t('header.quantity') }}</span>
       <span class="order-title">{{ $t('header.total') }}</span>
     </div>
-    <CartItem v-for="item in order.products" :key="item.id" :item="item" />
+    <CartItem
+      v-for="item in order.products"
+      :key="item.id"
+      :item="item"
+      @show-urls="openProductUrls(item)"
+    />
     <hr />
     <div class="order-cart__summary">
       <field :label="$t('summary.cart')" horizontal>
@@ -40,6 +45,15 @@
         :false-text="$t('orderNotPaid')"
       />
     </div>
+
+    <a-modal
+      :visible="isProductUrlsModalActive"
+      width="800px"
+      :footer="null"
+      @cancel="isProductUrlsModalActive = false"
+    >
+      <order-product-urls v-if="selectedProduct" :product="selectedProduct" :order-id="order.id" />
+    </a-modal>
   </div>
 </template>
 
@@ -84,32 +98,45 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Order } from '@heseya/store-core'
+import { Order, OrderProduct } from '@heseya/store-core'
 
 import CartItem from '@/components/layout/CartItem.vue'
 import Field from '../../Field.vue'
 import OrderDiscountSummary from './OrderDiscountSummary.vue'
+import OrderProductUrls from './OrderProductUrls.vue'
 
 import { formatCurrency } from '@/utils/currency'
 
 export default Vue.extend({
-  components: { CartItem, Field, OrderDiscountSummary },
+  components: { CartItem, Field, OrderDiscountSummary, OrderProductUrls },
   props: {
     order: {
       type: Object,
       required: true,
     } as Vue.PropOptions<Order>,
   },
+  data: () => ({
+    isProductUrlsModalActive: false,
+    selectedProductId: null as string | null,
+  }),
   computed: {
     totalDiscount(): number {
       return this.order.discounts
         .map((d) => d.applied_discount)
         .reduce((sum, discount) => sum + discount, 0)
     },
+
+    selectedProduct(): OrderProduct | null {
+      return this.order.products?.find((p) => p.id === this.selectedProductId) || null
+    },
   },
   methods: {
     formatCurrency(amount: number) {
       return formatCurrency(amount, this.$accessor.config.currency)
+    },
+    openProductUrls(item: OrderProduct) {
+      this.isProductUrlsModalActive = true
+      this.selectedProductId = item.id
     },
   },
 })

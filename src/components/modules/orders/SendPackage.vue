@@ -17,31 +17,20 @@
             {{ template.name }}
           </a-select-option>
         </app-select>
-        <app-select
-          v-model="providerKey"
-          :label="$t('sendPackage.provider')"
-          option-filter-prop="label"
-        >
-          <a-select-option
-            v-for="provider in PROVIDERS"
-            :key="provider.key"
-            :label="provider.label"
-          >
-            {{ provider.label }}
-          </a-select-option>
-        </app-select>
       </div>
       <app-button type="primary" size="small" class="send-package__btn" @click="createPackage">
         {{ $t('sendPackage.create') }}
       </app-button>
     </div>
+
     <small v-else>
       <i class="bx bxs-check-circle"></i>
       {{ $t('sendPackage.existing', { number: shippingNumber }) }}
     </small>
-    <span class="order-title send-package__title send-package__title--shipping">{{
-      $t('setShippingNumber.title')
-    }}</span>
+
+    <span class="order-title send-package__title send-package__title--shipping">
+      {{ $t('setShippingNumber.title') }}
+    </span>
     <div class="send-package__content">
       <app-input
         v-model="packageShippingNumber"
@@ -64,11 +53,11 @@
 {
   "pl": {
     "sendPackage": {
-      "title": "Nadaj przesyłkę",
+      "title": "List przewozowy",
       "template": "Szablon przesyłki",
       "templatePlaceholder": "-- Wybierz szablon --",
       "provider": "Operator dostawy",
-      "create": "Kontynuuj",
+      "create": "Wygeneruj",
       "created": "Przesyłka została utworzona",
       "existing": "Przesyłka została już zamówiona (Numer śledzenia: {number})"
     },
@@ -83,11 +72,11 @@
   },
   "en": {
     "sendPackage": {
-      "title": "Send package",
+      "title": "Shipping list",
       "template": "Package template",
       "templatePlaceholder": "-- Select template --",
       "provider": "Shipping provider",
-      "create": "Continue",
+      "create": "Generate",
       "created": "Package was created",
       "existing": "Package was already ordered (Tracking number: {number})"
     },
@@ -106,8 +95,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import { PackagesTemplate } from '@heseya/store-core'
+import { createStandardPackage } from '@/services/createStandardPackage'
 
-import { createPackage } from '@/services/createPackage'
 import { formatApiNotificationError } from '@/utils/errors'
 
 export default Vue.extend({
@@ -116,33 +105,20 @@ export default Vue.extend({
       type: String,
       default: null,
     },
-    shippingMethod: {
-      type: String,
-      default: null,
-    },
     orderId: {
       type: String,
       required: true,
     },
   },
+
   data: () => ({
     packageTemplateId: undefined as string | undefined,
     packageShippingNumber: undefined as string | undefined,
-    providerKey: 'dpd',
   }),
+
   computed: {
     packageTemplates(): PackagesTemplate[] {
       return this.$accessor.packageTemplates.getData
-    },
-    PROVIDERS(): { key: string; label: string }[] {
-      return [
-        { key: 'dpd', label: 'Kurier DPD' },
-        { key: 'ups', label: 'Kurier UPS' },
-        { key: 'gls', label: 'Kurier GLS' },
-        { key: 'inpostkurier', label: 'Kurier InPost' },
-        { key: 'dhl', label: 'Kurier DHL Parcel' },
-        { key: 'dhlinternational', label: 'Kurier DHL Express' },
-      ]
     },
   },
 
@@ -154,9 +130,6 @@ export default Vue.extend({
 
   created() {
     this.$accessor.packageTemplates.fetch()
-    this.providerKey =
-      this.PROVIDERS.find(({ key }) => this.shippingMethod.toLowerCase().includes(key))?.key ||
-      'dpd'
   },
 
   mounted() {
@@ -189,13 +162,16 @@ export default Vue.extend({
     async createPackage() {
       if (!this.packageTemplateId) return
       this.$accessor.startLoading()
-      const res = await createPackage(this.orderId, this.packageTemplateId, this.providerKey)
+      const { success, shippingNumber, error } = await createStandardPackage(
+        this.orderId,
+        this.packageTemplateId,
+      )
 
-      if (res.success) {
-        this.$emit('created', res.shippingNumber)
+      if (success) {
+        this.$emit('created', shippingNumber)
         this.$toast.success(this.$t('sendPackage.created') as string)
       } else {
-        this.$toast.error(formatApiNotificationError(res.error))
+        this.$toast.error(formatApiNotificationError(error))
       }
 
       this.$accessor.stopLoading()

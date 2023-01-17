@@ -43,6 +43,7 @@ import Vue from 'vue'
 import { CdnMedia, CdnMediaType } from '@heseya/store-core'
 
 import PictureElement from './PictureElement.vue'
+import { FEATURE_FLAGS } from '@/consts/featureFlags'
 
 export default Vue.extend({
   components: { PictureElement },
@@ -66,7 +67,7 @@ export default Vue.extend({
     },
     objectFit(): string {
       return (
-        this.fit ?? (+this.$accessor.config.env.dashboard_products_contain ? 'contain' : 'cover')
+        this.fit ?? (+this.$accessor.config.env[FEATURE_FLAGS.ProductContain] ? 'contain' : 'cover')
       )
     },
   },

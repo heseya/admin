@@ -15,11 +15,31 @@
         <google-category-select v-model="form.google_product_category" :disabled="disabled" />
 
         <div class="product-advanced-details__row">
+          <boolean-select v-model="form.shipping_digital" :add-all="false" :disabled="disabled">
+            <template #label>
+              {{ $t('form.shippingDigital') }}
+              <info-tooltip>{{ $t('form.shippingDigitalTooltip') }}</info-tooltip>
+            </template>
+          </boolean-select>
+
+          <validated-input
+            v-model="form.purchase_limit_per_user"
+            type="number"
+            name="purchase_limit_per_user"
+            :disabled="disabled"
+          >
+            <template #label>
+              {{ $t('form.purchaseLimit') }}
+              <info-tooltip>{{ $t('form.purchaseLimitTooltip') }}</info-tooltip>
+            </template>
+          </validated-input>
+        </div>
+
+        <div class="product-advanced-details__row">
           <validated-input
             v-model="form.quantity_step"
             rules="required"
             type="number"
-            max="999999"
             step="0.01"
             name="quantity_step"
             :disabled="disabled"
@@ -47,6 +67,10 @@
   "pl": {
     "title": "Pozostałe informacje",
     "form": {
+      "shippingDigital": "Produkt z wysyłką cyfrową",
+      "shippingDigitalTooltip": "Produkt z wysyłką cyfrową wymaga cyfrowej metody dostawy zamiast standardowych podczas składania zamówienia.",
+      "purchaseLimit": "Limit zakupów na użytkownika",
+      "purchaseLimitTooltip": "Ogranicza liczbę zakupów danego produktu przez jednego użytkownika. Wartość 0 oznacza brak limitu.",
       "order": "Priorytet sortowania",
       "orderTooltip": "Pozwala na zmianę kolejności produktów na liście. Produkty z mniejszą liczbą wyświetlane są wyżej.",
       "quantityStep": "Format ilości",
@@ -56,6 +80,10 @@
   "en": {
     "title": "Other information",
     "form": {
+      "shippingDigital": "Product with digital shipping",
+      "shippingDigitalTooltip": "Product with digital shipping requires a digital shipping method instead of standard shipping when placing an order.",
+      "purchaseLimit": "Purchase limit per user",
+      "purchaseLimitTooltip": "Limits the number of purchases of a given product by one user. The value 0 means no limit.",
       "order": "Sort priority",
       "orderTooltip": "Allows you to change the order of the products in the list. Products with a lower number are displayed higher.",
       "quantityStep": "Quantity format",
@@ -74,9 +102,10 @@ import { ProductComponentForm } from '@/interfaces/Product'
 import GoogleCategorySelect from '../GoogleCategorySelect.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 import InfoTooltip from '@/components/layout/InfoTooltip.vue'
+import BooleanSelect from '@/components/form/BooleanSelect.vue'
 
 export default Vue.extend({
-  components: { GoogleCategorySelect, ValidatedInput, InfoTooltip },
+  components: { GoogleCategorySelect, ValidatedInput, InfoTooltip, BooleanSelect },
   props: {
     value: {
       type: Object,

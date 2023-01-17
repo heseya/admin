@@ -25,16 +25,16 @@
     <div class="order-customer-details__addresses">
       <EditableOrderAddress
         :title="$t('deliveryAddressSection')"
-        :address="order.delivery_address"
-        hide-remove
-        @edit="editDeliveryAddress"
+        :order="order"
+        :hide-edit="order.shipping_place === null"
+        @edit="editShippingAddress"
       />
 
       <EditableOrderAddress
         :title="$t('invoiceAddressSection')"
-        :address="order.invoice_address"
-        @edit="editInvoiceAddress"
-        @remove="removeInvoiceAddress"
+        :order="order"
+        billing
+        @edit="editBillingAddress"
       />
     </div>
 
@@ -67,7 +67,11 @@
       :title="`${$t('common.edit')} ${modalFormTitle.toLowerCase()}`"
     >
       <modal-form>
-        <partial-update-form v-model="form" @save="saveForm" />
+        <partial-update-form
+          v-model="form"
+          :shipping-method="order.shipping_method"
+          @save="saveForm"
+        />
       </modal-form>
     </a-modal>
   </div>
@@ -79,7 +83,7 @@
     "emailSection": "E-mail address",
     "userSection": "Buyer",
     "deliveryAddressSection": "Delivery address",
-    "invoiceAddressSection": "Invoice address",
+    "invoiceAddressSection": "Billing address",
     "commentSection": "Comment",
     "editSuccess": "Order has been updated.",
     "editFailed": "Order has not been updated.",
@@ -89,7 +93,7 @@
     "emailSection": "Adres e-mail",
     "userSection": "Kupujący",
     "deliveryAddressSection": "Adres dostawy",
-    "invoiceAddressSection": "Adres do faktury",
+    "invoiceAddressSection": "Adres rozliczeniowy",
     "commentSection": "Komentarz",
     "editSuccess": "Zamówienie zostało zaktualizowane.",
     "editFailed": "Zamówienie nie zostało zaktualizowane.",
@@ -100,7 +104,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Order } from '@heseya/store-core'
+import { Address, Order, OrderUpdateDto, ShippingType } from '@heseya/store-core'
 
 import Field from '@/components/Field.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
@@ -110,16 +114,7 @@ import EditableOrderAddress from './EditableOrderAddress.vue'
 import PartialUpdateForm from './PartialUpdateForm.vue'
 import OrderBuyer from './OrderBuyer.vue'
 
-const DEFAULT_ADDRESS_FORM = {
-  address: '',
-  city: '',
-  country: 'PL',
-  country_name: '',
-  name: '',
-  phone: '',
-  vat: '',
-  zip: '',
-}
+import { DEFAULT_ADDRESS_FORM } from '@/consts/addressConsts'
 
 export default Vue.extend({
   components: { Field, EditableOrderAddress, PartialUpdateForm, ModalForm, IconButton, OrderBuyer },
@@ -132,8 +127,13 @@ export default Vue.extend({
   data: () => ({
     isEditModalActive: false,
     modalFormTitle: '',
-    form: {},
+    form: {} as OrderUpdateDto,
   }),
+  computed: {
+    ShippingType(): typeof ShippingType {
+      return ShippingType
+    },
+  },
   methods: {
     editComment() {
       this.isEditModalActive = true
@@ -149,32 +149,51 @@ export default Vue.extend({
         email: this.order.email,
       }
     },
-    editDeliveryAddress() {
+    editShippingAddress() {
       this.isEditModalActive = true
       this.modalFormTitle = (this.$t('deliveryAddressSection') as string).toLowerCase()
-      this.form = {
-        delivery_address: {
-          ...this.order.delivery_address,
-        },
+      switch (this.order.shipping_method?.shipping_type) {
+        case ShippingType.Address:
+          this.form = {
+            shipping_place: {
+              ...(this.order.shipping_place as Address),
+            },
+          }
+          break
+        case ShippingType.Point:
+          this.form = {
+            shipping_place: (this.order.shipping_place as Address).id,
+          }
+          break
+        case ShippingType.PointExternal:
+          this.form = {
+            shipping_place: this.order.shipping_place,
+          }
+          break
       }
     },
-    editInvoiceAddress() {
+    editBillingAddress() {
       this.isEditModalActive = true
       this.modalFormTitle = (this.$t('invoiceAddressSection') as string).toLowerCase()
       this.form = {
-        invoice_address: {
-          ...(this.order.invoice_address || DEFAULT_ADDRESS_FORM),
+        billing_address: {
+          ...(this.order.billing_address || DEFAULT_ADDRESS_FORM),
         },
+        invoice_requested: this.order.invoice_requested,
       }
-    },
-    removeInvoiceAddress() {
-      this.form = { invoice_address: null }
-      this.saveForm()
     },
     async saveForm() {
       this.$accessor.startLoading()
-      const success = await this.$accessor.orders.update({ id: this.order.id, item: this.form })
 
+      const form = { ...this.form }
+      if ('shipping_place' in form) {
+        form.shipping_place =
+          this.order.shipping_method?.shipping_type === ShippingType.Point
+            ? (this.order.shipping_place as Address).id
+            : this.order.shipping_place
+      }
+
+      const success = await this.$accessor.orders.update({ id: this.order.id, item: form })
       this.isEditModalActive = false
       if (success) this.$toast.success(this.$t('editSuccess') as string)
       else this.$toast.error(this.$t('editFailed') as string)

@@ -31,6 +31,8 @@ import { formatCurrency } from '@/utils/currency'
 import MediaElement from '@/components/MediaElement.vue'
 import ProductPrice from './ProductPrice.vue'
 
+import { FEATURE_FLAGS } from '@/consts/featureFlags'
+
 export default Vue.extend({
   components: { MediaElement, ProductPrice },
   props: {
@@ -41,7 +43,7 @@ export default Vue.extend({
   },
   computed: {
     objectFit(): string {
-      return +this.$accessor.config.env.dashboard_products_contain ? 'contain' : 'cover'
+      return +this.$accessor.config.env[FEATURE_FLAGS.ProductContain] ? 'contain' : 'cover'
     },
   },
   mounted() {
@@ -58,6 +60,7 @@ export default Vue.extend({
 <style lang="scss">
 .product-box {
   all: unset;
+  display: block !important;
   color: var(--font-color);
   text-decoration: none;
   position: relative;

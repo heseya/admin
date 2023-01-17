@@ -36,11 +36,9 @@
       <card class="order-page__address">
         <CustomerDetails :order="order" />
       </card>
-      <card class="order-page__shipping">
+      <card v-if="order.id && order.shipping_method" class="order-page__shipping">
         <send-package
-          v-if="order.id"
           :order-id="order.id"
-          :shipping-method="order.shipping_method.name"
           :shipping-number="order.shipping_number"
           @created="onPackageCreated"
         />

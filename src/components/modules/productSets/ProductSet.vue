@@ -145,6 +145,14 @@
       "delete": "Delete collection",
       "showProducts": "Show products in collection"
     },
+    "search": {
+      "placeholder": "Search (min. 3 letters)",
+      "found": "Found {positions} positions with phrase '{phrase}'",
+      "didNotFound": "Did not found positions for '{phrase}'",
+      "error": "An error occurred while downloading a data",
+      "display": "Positions displayed: {positions}",
+      "specify": "For more accurate results, please refine your query"
+    },
     "collection": "Collection",
     "deleteText": "Are you sure you want to delete this collection? All subcollections will be deleted as well!",
     "deleteSuccess": "Collection has been deleted",
@@ -211,6 +219,11 @@ export default Vue.extend({
     totalSearchedResults: null as null | number,
   }),
   computed: {
+    isSearchError(): boolean {
+      if (Number.isInteger(this.totalSearchedResults))
+        return !this.totalSearchedResults || this.searchingError
+      return false
+    },
     areMoreChildren(): boolean {
       return this.children.length < this.childrenQuantity
     },
@@ -295,6 +308,27 @@ export default Vue.extend({
         tree: false,
       })
       return list
+    },
+    async fetchBySearch(parentId: UUID, search: string) {
+      this.isSearching = true
+      try {
+        this.searchedPhrase = this.searchPhrase
+        const { data: res } = await api.get<{
+          data: ProductSet[]
+          meta: HeseyaPaginatedResponseMeta
+        }>(`/product-sets?parent_id=${parentId}&search=${search}`)
+
+        this.searchedChildren = res.data
+        this.totalSearchedResults = res.meta.total
+        this.searchedDisplayLimit = res.meta.per_page
+      } catch (e: any) {
+        this.searchedPhrase = ''
+        this.searchingError = true
+        this.isSearching = false
+        this.totalSearchedResults = null
+        this.$toast.error(formatApiNotificationError(e))
+      }
+      this.isSearching = false
     },
     async deleteCollection() {
       this.$accessor.startLoading()
@@ -446,6 +480,40 @@ export default Vue.extend({
 
   .handle {
     cursor: grab;
+  }
+}
+
+.search-results {
+  min-height: 53px;
+  position: relative;
+  padding: 16px;
+  text-align: center;
+  margin-bottom: 8px;
+
+  &--success {
+    background-color: $green-color-200;
+  }
+
+  &--error {
+    background-color: $red-color-400;
+    color: white;
+  }
+
+  &__description {
+    font-size: 13px;
+    text-align: left;
+  }
+
+  &__info {
+    display: block;
+
+    &--last {
+      margin-top: 8px;
+    }
+  }
+
+  p {
+    margin: 0;
   }
 }
 </style>

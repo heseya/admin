@@ -36,10 +36,19 @@
               <span class="order-icon"> <i class="bx bxs-error"></i> </span>
             </a-tooltip>
           </template>
+
+          <template #billing_address="{ rawValue, item }">
+            {{ rawValue.name }}
+            <button class="order-email-btn" @click.prevent="copyToClipboard(item.email)">
+              ({{ item.email }} <i class="bx bx-copy"></i>)
+            </button>
+          </template>
+
           <template #paid="{ rawValue }">
             <span v-if="rawValue" class="order-tag success-text">{{ $t('paid') }}</span>
             <span v-else class="order-tag danger-text">{{ $t('notpaid') }}</span>
           </template>
+
           <template #status="{ rawValue: { name, color } }">
             <span class="order-tag" :style="{ color: `#${color}` }"> {{ name }} </span>
           </template>
@@ -56,6 +65,7 @@
     "overpaid": "Nadpłacono",
     "paid": "Opłacone",
     "notpaid": "Nieopłacone",
+    "copySuccess": "Skopiowiano do schowka",
     "form": {
       "code": "Kod zamówienia",
       "clientName": "Klient",
@@ -72,6 +82,7 @@
     "overpaid": "Overpaid",
     "paid": "Paid",
     "notpaid": "Not paid",
+    "copySuccess": "Copied to clipboard",
     "form": {
       "code": "Order code",
       "clientName": "Client",
@@ -124,7 +135,7 @@ export default Vue.extend({
         rowUrlBuilder: (order) => `/orders/${order.id}`,
         headers: [
           { key: 'code', label: this.$t('form.code') as string, sortable: true, width: '0.8fr' },
-          { key: 'email', label: this.$t('form.clientName') as string, width: '1.5fr' },
+          { key: 'billing_address', label: this.$t('form.clientName') as string, width: '1.5fr' },
           {
             key: 'summary',
             label: this.$t('form.summary') as string,
@@ -216,6 +227,10 @@ export default Vue.extend({
     formatCurrency(value: number) {
       return formatCurrency(value, this.$accessor.config.currency)
     },
+    async copyToClipboard(value: string) {
+      await navigator.clipboard.writeText(value)
+      this.$toast.info(this.$t('copySuccess') as string)
+    },
   },
 })
 </script>
@@ -238,6 +253,18 @@ export default Vue.extend({
     margin-left: 4px;
     position: relative;
     top: -3px;
+  }
+
+  .order-email-btn {
+    all: unset;
+    font-size: 0.8em;
+    cursor: pointer;
+    color: var(--gray-color-600);
+    transition: color 0.3s;
+
+    &:hover {
+      color: var(--primary-color-500);
+    }
   }
 }
 </style>

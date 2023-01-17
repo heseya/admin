@@ -21,7 +21,6 @@
     "visible": "Widoczny",
     "hidden": "Ukryty",
     "reset": "Przywróć domyślne",
-    "hidden": "Ukryty",
     "confirmLeave": "Czy na pewno chcesz wyjść? Masz niezapisane zmiany!",
     "form": {
       "name": "Nazwa",
@@ -95,6 +94,12 @@
     "address": "Adres",
     "point": "Punkt",
     "point-external": "Punkt zewnętrzny"
+  },
+
+  "paymentStatus": {
+    "failed": "Nieudana",
+    "pending": "W trakcie",
+    "successful": "Zakończona z sukcesem"
   },
 
   "orderDocumentsTypes": {

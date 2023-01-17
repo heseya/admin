@@ -21,7 +21,6 @@
     "visible": "Visible",
     "hidden": "Hidden",
     "reset": "Reset",
-    "hidden": "Hidden",
     "confirmLeave": "Do you really want to leave? You have unsaved changes!",
     "form": {
       "name": "Name",
@@ -95,6 +94,12 @@
     "address": "Address",
     "point": "Point",
     "point-external": "External point"
+  },
+
+  "paymentStatus": {
+    "failed": "Failed",
+    "pending": "Pending",
+    "successful": "Successful"
   },
 
   "orderDocumentsTypes": {

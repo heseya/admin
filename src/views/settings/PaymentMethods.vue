@@ -29,20 +29,20 @@
       @cancel="selectedMethod = null"
     >
       <div class="payment-method-details">
-        <label>{{ $t('common.form.name') }}:</label>
-        <span>{{ selectedMethod.name }}</span>
+        <field :label="$t('method.icon')">
+          <avatar color="#eee" class="payment-method-details__icon">
+            <img v-if="selectedMethod.icon" :src="selectedMethod.icon" />
+            <i v-else class="bx bx-image"></i>
+          </avatar>
+        </field>
 
-        <label>{{ $t('method.icon') }}:</label>
-        <avatar color="#eee" class="payment-method-details__icon">
-          <img v-if="selectedMethod.icon" :src="selectedMethod.icon" />
-          <i v-else class="bx bx-image"></i>
-        </avatar>
+        <field :label="$t('common.form.name')">
+          <span>{{ selectedMethod.name }}</span>
+        </field>
 
-        <label>{{ $t('method.url') }}:</label>
-        <span>{{ selectedMethod.url || $t('common.none') }}</span>
-
-        <label>{{ $t('method.public') }} :</label>
-        <boolean-tag :value="selectedMethod.public" class="payment-method-details__public" />
+        <field :label="$t('method.public')">
+          <boolean-tag :value="selectedMethod.public" class="payment-method-details__public" />
+        </field>
       </div>
     </a-modal>
   </div>
@@ -55,7 +55,6 @@
     "methodDetails": "Szczegóły metody płatności",
     "method": {
       "icon":"Ikona",
-      "url":"Url",
       "public":"Publiczna"
     }
   },
@@ -64,7 +63,6 @@
     "methodDetails": "Payment method details",
     "method": {
       "icon":"Icon",
-      "url":"Url",
       "public":"Public"
     }
   }
@@ -78,6 +76,7 @@ import { PaymentMethod } from '@heseya/store-core'
 import PaginatedList from '@/components/PaginatedList.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import Avatar from '@/components/layout/Avatar.vue'
+import Field from '@/components/Field.vue'
 
 import { UUID } from '@/interfaces/UUID'
 
@@ -86,6 +85,7 @@ export default Vue.extend({
     PaginatedList,
     ListItem,
     Avatar,
+    Field,
   },
   data: () => ({
     selectedMethod: null as PaymentMethod | null,
@@ -102,7 +102,8 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .payment-method-details {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: flex-start;
 
   &__public,
   &__icon {
@@ -111,13 +112,6 @@ export default Vue.extend({
 
   &__public {
     width: 65px;
-  }
-
-  label {
-    font-size: 0.8em;
-    color: $gray-color-500;
-    margin-top: 4px;
-    margin-bottom: -4px;
   }
 
   :first-child {

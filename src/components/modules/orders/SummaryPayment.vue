@@ -108,7 +108,7 @@ export default Vue.extend({
     async payOffline() {
       this.$accessor.startLoading()
       try {
-        await sdk.Orders.pay(this.order.code, 'offline', '/')
+        await sdk.Orders.markAsPaid(this.order.code)
         await this.$accessor.orders.get(this.$route.params.id)
         this.$toast.success(this.$t('offlinePayment.resultSuccess') as string)
       } catch {

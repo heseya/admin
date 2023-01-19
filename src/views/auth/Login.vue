@@ -1,5 +1,12 @@
 <template>
-  <central-screen-form :title="isTwoFactorAuth ? $t('twoFactorAuthTitle') : $t('loginTitle')">
+  <central-screen-form :title="title">
+    <Zone
+      v-if="isMergingAccounts"
+      :style="{ marginBottom: '24px' }"
+      type="info"
+      :title="$t('mergeAccountsInfo')"
+    />
+
     <login-form v-if="!isTwoFactorAuth" v-model="form" @submit="login" />
     <two-factor-auth-code-form
       v-else
@@ -8,6 +15,7 @@
       @cancel="clearForm"
       @submit="login"
     />
+
     <providers-login />
   </central-screen-form>
 </template>
@@ -16,11 +24,15 @@
 {
   "pl": {
     "loginTitle": "Logowanie",
-    "twoFactorAuthTitle": "Weryfikacja dwuetapowa"
+    "twoFactorAuthTitle": "Weryfikacja dwuetapowa",
+    "mergeAccountsTitle": "Połącz konta",
+    "mergeAccountsInfo": "Zalogowałeś się na konto, którego adres email jest już przypisany do innego konta. Aby połączyć te konta, zaloguj się na drugie konto i kliknij przycisk \"Połącz konta\"."
   },
   "en": {
     "loginTitle": "Login",
-    "twoFactorAuthTitle": "Two-factor authentication"
+    "twoFactorAuthTitle": "Two-factor authentication",
+    "mergeAccountsTitle": "Merge accounts",
+    "mergeAccountsInfo": "You have logged in to an account whose email address is already assigned to another account. To merge these accounts, log in to the second account and click the \"Merge accounts\" button."
   }
 }
 </i18n>
@@ -37,6 +49,7 @@ import ProvidersLogin from '@/components/modules/auth/ProvidersLogin.vue'
 import { formatApiNotificationError } from '@/utils/errors'
 import { TwoFactorAuthMethod } from '@/enums/twoFactorAuth'
 import { LoginState } from '@/enums/login'
+import Zone from '@/components/layout/Zone.vue'
 
 const DEFAULT_CREDENTIALS = process.env.NODE_ENV === 'development'
 
@@ -54,6 +67,7 @@ export default Vue.extend({
     LoginForm,
     TwoFactorAuthCodeForm,
     ProvidersLogin,
+    Zone,
   },
   data: () => ({
     twoFactorAuthMethod: null as TwoFactorAuthMethod | null,
@@ -61,12 +75,27 @@ export default Vue.extend({
     form: { ...CLEAR_LOGIN_FORM },
   }),
   computed: {
-    nextURL(): string {
+    nextURLParam(): string {
       const { next } = this.$route.query
       return (Array.isArray(next) ? first(next) : next) || '/'
     },
+
+    nextURL(): string {
+      if (this.isMergingAccounts) return `/merge-accounts?token=${this.$route.query.mergeToken}`
+      return this.nextURLParam
+    },
+
     isTwoFactorAuth(): boolean {
       return !isNull(this.twoFactorAuthMethod)
+    },
+    isMergingAccounts(): boolean {
+      return !!this.$route.query.mergeToken
+    },
+
+    title(): string {
+      if (this.isMergingAccounts) return this.$t('mergeAccountsTitle') as string
+      if (this.isTwoFactorAuth) return this.$t('twoFactorAuthTitle') as string
+      return this.$t('loginTitle') as string
     },
   },
   watch: {

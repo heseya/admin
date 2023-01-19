@@ -34,6 +34,14 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/merge-accounts',
+      name: 'MergeAccounts',
+      component: () => import('./views/auth/MergeAccounts.vue'),
+      meta: {
+        hiddenNav: true,
+      },
+    },
+    {
       path: '/reset-password',
       name: 'ResetPassword',
       props: true,

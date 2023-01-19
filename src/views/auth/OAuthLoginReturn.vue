@@ -11,7 +11,7 @@
   </central-screen-form>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Przekierowywanie...",
@@ -74,6 +74,16 @@ export default Vue.extend({
       const error = formatApiError(result.error)
       this.errorMessage = error.messages.join(', ') || error.title
       this.$toast.error(formatApiNotificationError(result.error))
+    }
+
+    if (result.state === LoginState.AccountMergeRequired) {
+      this.cleanupAfterOAuth()
+      this.$router.push({
+        name: 'Login',
+        query: {
+          mergeToken: result.mergeToken,
+        },
+      })
     }
 
     if (result.state === LoginState.Success) this.redirectToNextUrl()

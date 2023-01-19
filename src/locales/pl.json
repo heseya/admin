@@ -268,6 +268,7 @@
       "CLIENT_NO_ACCESS_TO_DOWNLOAD_DOCUMENT": "Brak dostępu do pobrania dokumentu. Klient nie ma uprawnień lub nie jest kupującym.",
       "CLIENT_STATUS_USED": "Nie można zaktualizować ani usunąć statusu, który jest aktualnie używany w zamówieniu.",
       "PRODUCT_IS_NOT_ON_WISHLIST": "Produkt nie znajduje się na liście życzeń.",
+      "CLIENT_PROVIDER_MERGE_TOKEN_EXPIRED": "Możliwość połączenia kont wygasła, przejdź ten proces jeszcze raz.",
       "BAD_REQUEST": "400: Nieprawidłowe żądanie",
       "UNAUTHORIZED": "401: Brak autoryzacji",
       "FORBIDDEN": "403: Odmowa dostępu",

@@ -9,10 +9,6 @@ import { findAppByHost, installApp, uninstallApp } from 'bout'
 export default Vue.extend({
   name: 'MicroFrontend',
   props: {
-    appKey: {
-      type: String,
-      required: true,
-    },
     host: {
       type: String,
       required: true,
@@ -22,9 +18,6 @@ export default Vue.extend({
     container: null as null | string | Element,
   }),
   computed: {
-    containerId(): string {
-      return `${this.appKey}-container`
-    },
     standardHost(): string {
       return this.host.endsWith('/') ? this.host : `${this.host}/`
     },

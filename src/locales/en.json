@@ -268,6 +268,7 @@
       "CLIENT_APPS_NO_ACCESS": "Applications cannot access this endpoint.",
       "CLIENT_NO_ACCESS_TO_DOWNLOAD_DOCUMENT": "No access to download the document. Client has no permission or he is not the buyer.",
       "CLIENT_STATUS_USED": "Can't update or remove status that is currently used in order",
+      "CLIENT_PROVIDER_MERGE_TOKEN_EXPIRED": "The ability to link accounts has expired, go through the process again.",
       "PRODUCT_IS_NOT_ON_WISHLIST": "Product is not on wishlist",
       "BAD_REQUEST": "400: Bad request",
       "UNAUTHORIZED": "401: Unauthorized",

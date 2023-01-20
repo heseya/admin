@@ -6,6 +6,8 @@ import {
   AuthProviderKey,
   PERMISSIONS_TREE,
   MetadataUpdateDto,
+  HeseyaClientErrorCode,
+  formatApiError,
 } from '@heseya/store-core'
 import { sdk } from '../api'
 
@@ -123,6 +125,14 @@ const actions = actionTree(
           return {
             state: LoginState.TwoFactorAuthRequired,
             method: response.data.data.type as TwoFactorAuthMethod,
+          } as const
+        }
+
+        // Account Merge is required due to multiple accounts with the same email
+        if (formatApiError(e).key === HeseyaClientErrorCode.AlreadyHasAccount) {
+          return {
+            state: LoginState.AccountMergeRequired,
+            mergeToken: response.data?.error?.errors?.merge_token as string,
           } as const
         }
 

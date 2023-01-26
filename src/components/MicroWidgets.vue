@@ -25,6 +25,13 @@ const fetchWidgets = async (): Promise<AppWidget[]> =>
       section: 'section',
       permissions: [],
     },
+    {
+      id: '000e1dc9-72af-4d5c-9627-sadas',
+      name: 'name',
+      url: 'https://microfrontend-demo.app.heseya.com/',
+      section: 'section',
+      permissions: [],
+    },
   ])
 
 export default Vue.extend({
@@ -46,6 +53,7 @@ export default Vue.extend({
 
   methods: {
     async fetchWidgets() {
+      // TODO: fetch widgets from API based on section
       this.widgets = await fetchWidgets()
     },
   },

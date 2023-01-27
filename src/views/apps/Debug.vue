@@ -20,7 +20,7 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import MicroFrontend from '@/components/MicroFrontend.vue'
+import MicroFrontend from '@/components/microfrontends/MicroFrontend.vue'
 
 export default Vue.extend({
   metaInfo(this: any) {

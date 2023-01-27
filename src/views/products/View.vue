@@ -104,6 +104,8 @@
           </div>
         </card>
 
+        <card-micro-widgets class="product-page__widgets-main" section="ProductMain" />
+
         <card class="product-page__visibility">
           <product-aside-details v-model="form" :product="product" :disabled="!canModify" />
         </card>
@@ -113,9 +115,7 @@
           <gallery ref="gallery" v-model="form.gallery" :disabled="!canModify" />
         </card>
 
-        <card class="product-page__widgets">
-          <micro-widgets section="ProductAside" />
-        </card>
+        <card-micro-widgets class="product-page__widgets-aside" section="ProductAside" />
       </form>
     </validation-observer>
   </div>
@@ -173,7 +173,7 @@ import ProductBasicDetails from '@/components/modules/products/view/ProductBasic
 import ProductAdvancedDetails from '@/components/modules/products/view/ProductAdvancedDetails.vue'
 import ProductAsideDetails from '@/components/modules/products/view/ProductAsideDetails.vue'
 import ProductDescription from '@/components/modules/products/view/ProductDescription.vue'
-import MicroWidgets from '@/components/MicroWidgets.vue'
+import CardMicroWidgets from '@/components/microfrontends/CardMicroWidgets.vue'
 
 import preventLeavingPage from '@/mixins/preventLeavingPage'
 
@@ -228,7 +228,7 @@ export default mixins(preventLeavingPage).extend({
     ProductAdvancedDetails,
     ProductDescription,
     ProductAsideDetails,
-    MicroWidgets,
+    CardMicroWidgets,
   },
   data: () => ({
     form: cloneDeep(EMPTY_FORM),
@@ -372,11 +372,11 @@ export default mixins(preventLeavingPage).extend({
   grid-gap: 14px;
   align-items: start;
   grid-template-columns: 1fr;
-  grid-template-areas: 'visibility' 'gallery' 'aside-widgets' 'main';
+  grid-template-areas: 'visibility' 'gallery' 'aside-widgets' 'main' 'main-widgets';
 
   @media ($viewport-7) {
     grid-template-columns: 2.6fr 1fr;
-    grid-template-areas: 'main visibility' 'main gallery' 'main aside-widgets' 'main .';
+    grid-template-areas: 'main visibility' 'main gallery' 'main aside-widgets' 'main .' 'main-widgets .';
   }
 
   &__main {
@@ -385,8 +385,11 @@ export default mixins(preventLeavingPage).extend({
   &__visibility {
     grid-area: visibility;
   }
-  &__widgets {
+  &__widgets-aside {
     grid-area: aside-widgets;
+  }
+  &__widgets-main {
+    grid-area: main-widgets;
   }
   &__gallery {
     grid-area: gallery;

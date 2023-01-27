@@ -22,7 +22,7 @@
 import Vue from 'vue'
 import { App } from '@heseya/store-core'
 
-import MicroFrontend from '@/components/MicroFrontend.vue'
+import MicroFrontend from '@/components/microfrontends/MicroFrontend.vue'
 import Loading from '@/components/layout/Loading.vue'
 
 export default Vue.extend({

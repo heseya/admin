@@ -184,16 +184,7 @@ export default Vue.extend({
     },
     async saveForm() {
       this.$accessor.startLoading()
-
-      const form = { ...this.form }
-      if ('shipping_place' in form) {
-        form.shipping_place =
-          this.order.shipping_method?.shipping_type === ShippingType.Point
-            ? (this.order.shipping_place as Address).id
-            : this.order.shipping_place
-      }
-
-      const success = await this.$accessor.orders.update({ id: this.order.id, item: form })
+      const success = await this.$accessor.orders.update({ id: this.order.id, item: this.form })
       this.isEditModalActive = false
       if (success) this.$toast.success(this.$t('editSuccess') as string)
       else this.$toast.error(this.$t('editFailed') as string)

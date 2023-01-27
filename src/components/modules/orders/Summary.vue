@@ -79,6 +79,7 @@
         v-if="isShippingModalActive"
         :order="order"
         :digital="isDigitalShippingMethodEdited"
+        @success="isShippingModalActive = false"
       />
     </a-modal>
   </card>

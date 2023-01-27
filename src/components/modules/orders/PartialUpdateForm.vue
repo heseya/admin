@@ -16,6 +16,7 @@
           name="comment"
           :label="$t('comment')"
         />
+
         <app-select
           v-else-if="key === 'shipping_place' && orderShippingType === ShippingType.Point"
           v-model="form.shipping_place"
@@ -26,13 +27,6 @@
             {{ point.name }}
           </a-select-option>
         </app-select>
-
-        <switch-input
-          v-else-if="key === 'invoice_requested'"
-          v-model="form.invoice_requested"
-          :label="$t('invoiceRequested')"
-          horizontal
-        />
 
         <validated-input
           v-else-if="key === 'shipping_place' && orderShippingType === ShippingType.PointExternal"
@@ -48,6 +42,13 @@
         <address-form
           v-else-if="(key === 'shipping_place' || key === 'billing_address') && form[key]"
           v-model="form[key]"
+        />
+
+        <switch-input
+          v-else-if="key === 'invoice_requested'"
+          v-model="form.invoice_requested"
+          :label="$t('invoiceRequested')"
+          horizontal
         />
       </div>
       <app-button @click="handleSubmit(save)">{{ $t('common.save') }}</app-button>

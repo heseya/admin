@@ -187,8 +187,10 @@ export default Vue.extend({
         shipping_place: this.form.shipping_place,
       }
       const success = await this.$accessor.orders.update({ id: this.order.id, item: form })
-      if (success) this.$toast.success(this.$t('changeSuccess') as string)
-      else this.$toast.error(this.$t('editFailed') as string)
+      if (success) {
+        this.$toast.success(this.$t('changeSuccess') as string)
+        this.$emit('success')
+      } else this.$toast.error(this.$t('editFailed') as string)
       this.$accessor.stopLoading()
     },
     findShippingMethod(shippingMethodId: string) {

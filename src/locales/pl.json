@@ -269,6 +269,8 @@
       "CLIENT_STATUS_USED": "Nie można zaktualizować ani usunąć statusu, który jest aktualnie używany w zamówieniu.",
       "PRODUCT_IS_NOT_ON_WISHLIST": "Produkt nie znajduje się na liście życzeń.",
       "CLIENT_PROVIDER_MERGE_TOKEN_EXPIRED": "Możliwość połączenia kont wygasła, przejdź ten proces jeszcze raz.",
+      "CLIENT_PROVIDER_MERGE_TOKEN_INVALID": "Nie można połączyć kont, ponieważ token jest nieprawidłowy.",
+      "CLIENT_PROVIDER_MERGE_TOKEN_MISMATCH": "Nie można połączyć kont, ponieważ zalogowałeś się na konto o innym adresie email, przejdź ten proces jeszcze raz.",
       "BAD_REQUEST": "400: Nieprawidłowe żądanie",
       "UNAUTHORIZED": "401: Brak autoryzacji",
       "FORBIDDEN": "403: Odmowa dostępu",

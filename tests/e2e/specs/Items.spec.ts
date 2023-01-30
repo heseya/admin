@@ -1,27 +1,37 @@
 describe('Items page', () => {
+  const id = cy.util.uuid()
+  const itemName = `Item-${id}`
+  const skuName = `SKU-${id}`
+
   it('should load items page', () => {
     cy.login()
     cy.visit('/items')
-    cy.get('h1').should('contain', 'Magazyn')
+    cy.get('h1').should('contain', 'Warehouse')
   })
-})
 
-describe('add new items', () => {
   it('add new items', () => {
-    cy.get('.icon-button__text').contains('Dodaj przedmiot').click()
+    cy.dataCy('add-btn').click()
 
-    const uuid = () => Cypress._.random(0, 1e6)
-    const id = uuid()
-    const itemName = `Item${id}`
-    const skuName = `SKU${id}`
+    cy.dataCy('name').type(itemName, { delay: 30 })
+    cy.dataCy('sku').type(skuName, { delay: 30 })
+    cy.dataCy('save-btn').click()
 
-    cy.get('input[label="Nazwa"]').type(itemName)
-    cy.get('input[label="SKU"]').type(skuName)
-    cy.get('.app-button__text').contains('Zapisz').click()
     cy.get('.app__content').contains(skuName).should('be.visible')
     cy.get('.app__content').contains(skuName).click()
-    cy.get('input[label="Ilość w magazynie"]').clear().type('100')
-    cy.get('.app-button__text').contains('Zapisz').click()
-    cy.get('.app__content').contains(skuName).should('be.visible')
+  })
+
+  it('adds deposit to item', () => {
+    cy.dataCy('deposit-create-btn').click()
+    cy.dataCy('quantity').clear().type('12')
+    cy.dataCy('deposit-add-btn').click()
+
+    cy.dataCy('total-quantity').should('have.text', ' 120 ')
+  })
+
+  it('removes item', () => {
+    cy.dataCy('delete-btn').click()
+    cy.dataCy('pop-confirm-btn').click()
+
+    cy.get('.app__content').contains(skuName).should('not.exist')
   })
 })

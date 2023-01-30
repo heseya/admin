@@ -1,8 +1,8 @@
 <template>
-  <button class="product-box" @click="onClick">
-    <avatar v-if="!product.visible" small class="product-box__icon">
-      <i class="bx bx-lock-alt"></i>
-    </avatar>
+  <router-link class="product-box" :to="`/products/${product.id}`">
+    <tag v-if="!product.visible" small class="product-box__icon" type="error">
+      <i class="bx bx-low-vision"></i> {{ $t('common.hidden') }}
+    </tag>
     <div class="product-box__img">
       <media-element v-if="product.cover" :media="product.cover" :size="350" />
       <i v-else class="product-box__img-icon bx bx-image"></i>
@@ -14,31 +14,25 @@
       </div>
     </div>
     <div class="flex">
-      <div class="name">
+      <div class="product-box__name">
         {{ product.name }}<br />
-        <small v-if="product.price_min !== product.price_max">
-          {{ formatCurrency(product.price_min) }} - {{ formatCurrency(product.price_max) }}
-        </small>
-        <small v-else>
-          {{ formatCurrency(product.price_min) }}
-        </small>
+        <ProductPrice :product="product" tag="small" />
       </div>
     </div>
-  </button>
+  </router-link>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import { Product } from '@heseya/store-core'
 
-import { Product } from '@/interfaces/Product'
 import { formatCurrency } from '@/utils/currency'
 
-import Avatar from '@/components/layout/Avatar.vue'
-import Tag from '@/components/Tag.vue'
 import MediaElement from '@/components/MediaElement.vue'
+import ProductPrice from './ProductPrice.vue'
 
 export default Vue.extend({
-  components: { Avatar, Tag, MediaElement },
+  components: { MediaElement, ProductPrice },
   props: {
     product: {
       type: Object,
@@ -47,7 +41,7 @@ export default Vue.extend({
   },
   computed: {
     objectFit(): string {
-      return +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'
+      return +this.$accessor.config.env.dashboard_products_contain ? 'contain' : 'cover'
     },
   },
   mounted() {
@@ -55,20 +49,7 @@ export default Vue.extend({
   },
   methods: {
     formatCurrency(amount: number) {
-      return formatCurrency(amount, this.$accessor.currency)
-    },
-    onClick() {
-      // @ts-ignore
-      if (window.copyIdMode === true) {
-        this.copyId()
-        return
-      }
-
-      this.$router.push(`products/${this.product.id}`)
-    },
-    async copyId() {
-      await navigator.clipboard.writeText(this.product.id)
-      this.$toast.success('Skopiowano ID')
+      return formatCurrency(amount, this.$accessor.config.currency)
     },
   },
 })
@@ -145,18 +126,15 @@ export default Vue.extend({
     }
   }
 
-  .name {
+  &__name {
     font-weight: 500;
     padding: 5px;
     padding-bottom: 2px;
+    color: $font-color;
   }
 
   small {
     color: #777777;
-  }
-
-  .price {
-    padding: 5px 5px 0 0;
   }
 }
 </style>

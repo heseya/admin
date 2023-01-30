@@ -1,10 +1,11 @@
 <template>
   <div class="products-container" :class="{ 'products-container--grid-view': !listView }">
     <PaginatedList
-      title="Asortyment"
+      :title="$t('title')"
       :filters="filters"
       store-key="products"
       :table="listView ? tableConfig : undefined"
+      :xlsx-file-config="fileConfig"
       @search="makeSearch"
       @clear-filters="clearFilters"
     >
@@ -14,14 +15,14 @@
             <i v-if="!listView" class="bx bx-list-ul"></i>
             <i v-else class="bx bx-grid"></i>
           </template>
-          Przełącz na widok {{ listView ? 'siatki' : 'listy' }}
+          {{ $t('view.message') }} {{ listView ? $t('view.grid') : $t('view.list') }}
         </icon-button>
 
-        <icon-button to="/products/create">
+        <icon-button to="/products/create" data-cy="add-btn">
           <template #icon>
             <i class="bx bx-plus"></i>
           </template>
-          Dodaj produkt
+          {{ $t('add') }}
         </icon-button>
       </template>
 
@@ -37,34 +38,85 @@
   </div>
 </template>
 
+<i18n lang="json">
+{
+  "pl": {
+    "title": "Asortyment",
+    "add": "Dodaj produkt",
+    "view": {
+      "message": "Przełącz na widok",
+      "grid": "siatki",
+      "list": "listy"
+    },
+    "form": {
+      "price": "Cena brutto",
+      "tags": "Tagi",
+      "public": "Widoczność",
+      "available": "Dostępny"
+    }
+  },
+  "en": {
+    "title": "Products",
+    "add": "Add product",
+    "view": {
+      "message": "Switch to view",
+      "grid": "grid",
+      "list": "list"
+    },
+    "form": {
+      "price": "Price (gross)",
+      "tags": "Tags",
+      "public": "Visibility",
+      "available": "Available"
+    }
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
-import { isArray } from 'lodash'
+import { cloneDeep } from 'lodash'
+import { Product, Tag } from '@heseya/store-core'
 
 import ProductTile from '@/components/modules/products/ProductTile.vue'
 import ProductListItem from '@/components/modules/products/ProductListItem.vue'
 import ProductsFilter, {
   EMPTY_PRODUCT_FILTERS,
+  ProductFilers,
 } from '@/components/modules/products/ProductsFilter.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 
 import { formatFilters } from '@/utils/utils'
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 import { TableConfig } from '@/interfaces/CmsTable'
-import { Product } from '@/interfaces/Product'
+import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 
 const LOCAL_STORAGE_KEY = 'products-list-view'
 
 export default Vue.extend({
-  metaInfo: { title: 'Produkty' },
+  metaInfo(this: any) {
+    return { title: this.$t('title') as string }
+  },
   components: {
     ProductTile,
     ProductsFilter,
     PaginatedList,
     ProductListItem,
   },
+
+  beforeRouteLeave(to, _from, next) {
+    // @ts-ignore
+    if (window.copyIdMode && to.name === 'ProductsView') {
+      navigator.clipboard.writeText(to.params.id).then(() => {
+        this.$toast.success('Skopiowano ID')
+      })
+      return next(false)
+    }
+    return next()
+  },
+
   data: () => ({
-    filters: { ...EMPTY_PRODUCT_FILTERS },
+    filters: cloneDeep(EMPTY_PRODUCT_FILTERS),
     listView: false,
   }),
   computed: {
@@ -72,10 +124,40 @@ export default Vue.extend({
       return {
         headers: [
           { key: 'cover', label: '', width: '60px' },
-          { key: 'name', label: 'Nazwa', sortable: true },
-          { key: 'price', label: 'Cena', width: '0.5fr', sortable: true },
-          { key: 'tags', label: 'Tagi' },
-          { key: 'public', label: 'Widoczność', width: '0.5fr', sortable: true },
+          { key: 'name', label: this.$t('common.form.name') as string, sortable: true },
+          { key: 'tags', label: this.$t('form.tags') as string, width: '0.6fr' },
+          { key: 'price', label: this.$t('form.price') as string, width: '0.6fr', sortable: true },
+          {
+            key: 'public',
+            label: this.$t('form.public') as string,
+            width: '0.4fr',
+            sortable: true,
+          },
+          {
+            key: 'available',
+            label: this.$t('form.available') as string,
+            width: '0.4fr',
+          },
+          { key: 'action', label: '', width: '64px' },
+        ],
+      }
+    },
+    fileConfig(): XlsxFileConfig<Product> {
+      return {
+        name: this.$t('title') as string,
+        headers: [
+          { key: 'name', label: this.$t('common.form.name') as string },
+          { key: 'price', label: this.$t('form.price') as string },
+          {
+            key: 'tags',
+            label: this.$t('form.tags') as string,
+            format: (v: Tag[]) => v.map((tag) => tag.name).join(', '),
+          },
+          {
+            key: 'public',
+            label: this.$t('form.public') as string,
+            format: (v: boolean) => (v ? this.$t('common.yes') : this.$t('common.no')) as string,
+          },
         ],
       }
     },
@@ -85,20 +167,27 @@ export default Vue.extend({
       window.localStorage.setItem(LOCAL_STORAGE_KEY, String(Number(listView)))
     },
   },
-  created() {
-    this.filters.search = (this.$route.query.search as string) || ''
-    const sets = this.$route.query.sets || [ALL_FILTER_VALUE]
-    this.filters.sets = isArray(sets) ? (sets as string[]) : [sets]
-    const tags = this.$route.query.tags || [ALL_FILTER_VALUE]
-    this.filters.tags = isArray(tags) ? (tags as string[]) : [tags]
 
-    this.filters.public = (this.$route.query.public as string) || ALL_FILTER_VALUE
-    this.filters.sort = (this.$route.query.sort as string) || ''
+  mounted() {
+    navigator.permissions.query({ name: 'clipboard-write' as PermissionName })
+  },
+
+  created() {
+    Object.entries(this.$route.query).forEach(([key, value]) => {
+      this.filters[key] = value as any
+    })
+
+    const { sets, tags, public: isPublic, available, has_cover: hasCover } = this.$route.query
+    this.filters.sets = (Array.isArray(sets) ? (sets as string[]) : [sets]).filter(Boolean)
+    this.filters.tags = (Array.isArray(tags) ? (tags as string[]) : [tags]).filter(Boolean)
+    this.filters.public = (isPublic as string) || ALL_FILTER_VALUE
+    this.filters.available = (available as string) || ALL_FILTER_VALUE
+    this.filters.has_cover = (hasCover as string) || ALL_FILTER_VALUE
 
     this.listView = !!+(window.localStorage.getItem(LOCAL_STORAGE_KEY) || 0)
   },
   methods: {
-    makeSearch(filters: typeof EMPTY_PRODUCT_FILTERS) {
+    makeSearch(filters: ProductFilers) {
       this.filters = filters
 
       const queryFilters = formatFilters(filters)
@@ -109,7 +198,7 @@ export default Vue.extend({
       })
     },
     clearFilters() {
-      this.makeSearch({ ...EMPTY_PRODUCT_FILTERS })
+      this.makeSearch(cloneDeep(EMPTY_PRODUCT_FILTERS))
     },
   },
 })

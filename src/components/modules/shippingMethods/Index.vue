@@ -1,14 +1,19 @@
 <template>
   <div class="shipping-methods-form">
     <modal-form>
-      <validated-input v-model="form.name" :disabled="disabled" rules="required" label="Nazwa" />
+      <validated-input
+        v-model="form.name"
+        :disabled="disabled"
+        rules="required"
+        :label="$t('common.form.name')"
+      />
       <div class="center">
         <app-select
           v-model="form.payment_methods"
           :disabled="disabled"
           mode="multiple"
           option-filter-prop="label"
-          label="Dostępne metody płatności"
+          :label="$t('form.paymentMethods')"
         >
           <a-select-option v-for="method in paymentMethods" :key="method.id" :label="method.name">
             {{ method.name }}
@@ -18,7 +23,7 @@
 
       <div class="center">
         <flex-input>
-          <label class="title">Widoczność opcji dostawy</label>
+          <label class="title">{{ $t('form.public') }}</label>
           <switch-input v-model="form.public" :disabled="disabled"> </switch-input>
         </flex-input>
       </div>
@@ -31,66 +36,90 @@
 
       <hr />
 
-      <h5>Czas dostawy</h5>
+      <h5>{{ $t('form.deliveryTime') }}</h5>
       <div class="row">
         <validated-input
           v-model="form.shipping_time_min"
           type="number"
-          min="0"
+          :min="0"
           name="shipping_time_min"
           :disabled="disabled"
           rules="not-negative|less-than:@shipping_time_max"
-          label="Minimalna ilość dni dostawy"
+          :label="$t('form.minDeliveryDays')"
         />
         <validated-input
           v-model="form.shipping_time_max"
           type="number"
-          min="0"
+          :min="0"
           name="shipping_time_max"
           :disabled="disabled"
           rules="not-negative"
-          label="Maksymalna ilość dni dostawy"
+          :label="$t('form.maxDeliveryDays')"
         />
       </div>
 
       <hr />
 
-      <h5>Wysyłka możliwa do</h5>
+      <h5>{{ $t('form.deliveryRegions') }}</h5>
       <div class="center">
         <flex-input>
-          <label class="title">Biała lista</label>
-          <a-switch v-model="form.black_list" :disabled="disabled" />
-          <label class="title">Czarna lista</label>
+          <label class="title">{{ $t('common.allowList') }}</label>
+          <a-switch v-model="form.block_list" :disabled="disabled" />
+          <label class="title">{{ $t('common.blockList') }}</label>
         </flex-input>
       </div>
-
       <div class="center">
-        <app-select
+        <validated-select
           v-model="form.countries"
+          :options="countries"
+          option-key="code"
           :disabled="disabled"
           mode="multiple"
-          label="Kraje"
+          :label="$t('form.countries')"
           option-filter-prop="label"
-        >
-          <a-select-option v-for="country in countries" :key="country.code" :label="country.name">
-            {{ country.name }}
-          </a-select-option>
-        </app-select>
+          :rules="{ required: !form.block_list && form.countries.length === 0 }"
+        />
       </div>
     </modal-form>
   </div>
 </template>
 
+<i18n lang="json">
+{
+  "pl": {
+    "form": {
+      "paymentMethods": "Dostępne metody płatności",
+      "public": "Widoczność opcji dostawy",
+      "deliveryTime": "Czas dostawy",
+      "minDeliveryDays": "Minimalna ilość dni dostawy",
+      "maxDeliveryDays": "Maksymalna ilość dni dostawy",
+      "deliveryRegions": "Wysyłka możliwa do",
+      "countries": "Kraje"
+    }
+  },
+  "en": {
+    "form": {
+      "paymentMethods": "Available payment methods",
+      "public": "Shipping option visibility",
+      "deliveryTime": "Delivery time",
+      "minDeliveryDays": "Minimal number of days of delivery",
+      "maxDeliveryDays": "Maximum number of days of delivery",
+      "deliveryRegions": "Delivery is possible to",
+      "countries": "Countries"
+    }
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationProvider } from 'vee-validate'
+import { PaymentMethod, ShippingCountry, ShippingMethodCreateDto } from '@heseya/store-core'
 
 import ModalForm from '@/components/form/ModalForm.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import FlexInput from '@/components/layout/FlexInput.vue'
 
-import { ShippingMethodCountry, ShippingMethodDTO } from '@/interfaces/ShippingMethod'
-import { PaymentMethod } from '@/interfaces/PaymentMethod'
 import PriceRangesForm from './PriceRangesForm.vue'
 
 export default Vue.extend({
@@ -106,11 +135,11 @@ export default Vue.extend({
     value: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<ShippingMethodDTO>,
+    } as Vue.PropOptions<ShippingMethodCreateDto>,
     countries: {
       type: Array,
       required: true,
-    } as Vue.PropOptions<ShippingMethodCountry[]>,
+    } as Vue.PropOptions<ShippingCountry[]>,
     disabled: {
       type: Boolean,
       required: true,
@@ -118,10 +147,10 @@ export default Vue.extend({
   },
   computed: {
     form: {
-      get(): ShippingMethodDTO {
+      get(): ShippingMethodCreateDto {
         return this.value
       },
-      set(value: ShippingMethodDTO) {
+      set(value: ShippingMethodCreateDto) {
         this.$emit('input', value)
       },
     },

@@ -2,7 +2,7 @@
   <img
     v-if="media.type === CdnMediaType.Photo"
     class="media-element media-element--media"
-    :src="`${media.url}?w=350&h=350`"
+    :src="`${media.url}?w=${size}&h=${size}`"
     :style="{ objectFit }"
   />
   <video
@@ -13,12 +13,23 @@
     loop
     muted
   />
-  <div v-else class="media-element media-element--unknown">unknown media type</div>
+  <div v-else class="media-element media-element--unknown">{{ $t('unknownType') }}</div>
 </template>
+
+<i18n lang="json">
+{
+  "pl": {
+    "unknownType": "Nieznany typ pliku"
+  },
+  "en": {
+    "unknownType": "Unknown media type"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
-import { CdnMedia, CdnMediaType } from '@/interfaces/Media'
+import { CdnMedia, CdnMediaType } from '@heseya/store-core'
 
 export default Vue.extend({
   props: {
@@ -30,13 +41,17 @@ export default Vue.extend({
       type: Number,
       default: 350,
     },
+    fit: {
+      type: String,
+      default: undefined,
+    },
   },
   computed: {
     CdnMediaType(): typeof CdnMediaType {
       return CdnMediaType
     },
     objectFit(): string {
-      return +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'
+      return this.fit ?? +this.$accessor.config.env.dashboard_products_contain ? 'contain' : 'cover'
     },
   },
 })

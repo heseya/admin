@@ -12,21 +12,10 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { CdnMedia } from '@heseya/store-core'
 
 import { uploadMedia } from '@/services/uploadMedia'
-import { CdnMedia } from '@/interfaces/Media'
-
-const articleUpload = async (upload: any, data: { files: File[]; e: any }) => {
-  const rawFiles = Array.from(data.files)
-  const responses = await Promise.all(rawFiles.map((file: File) => uploadMedia(file)))
-  const files = responses.map((r) => (r.success ? r.file : null)).filter((v) => !!v) as CdnMedia[]
-
-  // create response
-  const uploadedFiles = files.reduce((acc, file) => ({ ...acc, [file.id]: file }), {})
-
-  // call complete
-  upload.complete(uploadedFiles, data.e)
-}
+import { formatApiError } from '@/utils/errors'
 
 export default Vue.extend({
   props: {
@@ -47,31 +36,32 @@ export default Vue.extend({
       default: false,
     },
   },
-  data: () => ({
-    editorConfig: {
-      css: '/article-editor/css/',
-      plugins: [
-        'imageposition',
-        // TODO: plugin below throw errors when unmounted
-        // 'imageresize',
-        'underline',
-        'removeformat',
-        'reorder',
-        // TODO: enable when CDN will support more files
-        // 'filelink',
-      ],
-      link: {
-        nofollow: true,
-      },
-      image: {
-        upload: articleUpload,
-      },
-      filelink: {
-        upload: articleUpload,
-      },
-    },
-  }),
+
   computed: {
+    editorConfig(): any {
+      return {
+        css: '/article-editor/css/',
+        plugins: [
+          'imageposition',
+          //  plugin below throw errors when unmounted
+          // 'imageresize',
+          'underline',
+          'removeformat',
+          'reorder',
+          'filelink',
+        ],
+        link: {
+          nofollow: true,
+        },
+        image: {
+          upload: this.uploadFileToArticle,
+        },
+        filelink: {
+          upload: this.uploadFileToArticle,
+        },
+      }
+    },
+
     innerValue: {
       get(): string {
         return this.value
@@ -79,6 +69,25 @@ export default Vue.extend({
       set(value: string) {
         this.$emit('input', value)
       },
+    },
+  },
+
+  methods: {
+    async uploadFileToArticle(upload: any, data: { files: File[]; e: any }) {
+      const rawFiles = Array.from(data.files)
+      const responses = await Promise.all(rawFiles.map((file: File) => uploadMedia(file)))
+      const files = responses
+        .map((r) => (r.success ? r.file : null))
+        .filter((v) => !!v) as CdnMedia[]
+
+      const errors = responses.map((r) => (r.success ? null : r.error)).filter(Boolean)
+      if (errors.length) this.$toast.error(formatApiError(errors[0]!).title)
+
+      // create response
+      const uploadedFiles = files.reduce((acc, file) => ({ ...acc, [file.id]: file }), {})
+
+      // call complete
+      upload.complete(uploadedFiles, data.e)
     },
   },
 })
@@ -93,5 +102,9 @@ export default Vue.extend({
   .arx-editor-container {
     border-right-width: 2px;
   }
+}
+
+.arx-popup {
+  z-index: 100000;
 }
 </style>

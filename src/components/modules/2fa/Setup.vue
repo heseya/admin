@@ -12,7 +12,7 @@
           <template #icon>
             <i class="bx bx-left-arrow-alt"></i>
           </template>
-          Zmień metodę
+          {{ $t('changeMethod') }}
         </icon-button>
 
         <setup-app
@@ -35,6 +35,17 @@
     </transition>
   </div>
 </template>
+
+<i18n lang="json">
+{
+  "pl": {
+    "changeMethod": "Zmień metodę"
+  },
+  "en": {
+    "changeMethod": "Change method"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

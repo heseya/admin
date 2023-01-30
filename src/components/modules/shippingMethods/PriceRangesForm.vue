@@ -1,16 +1,24 @@
 <template>
   <div class="price-ranges-form">
-    <h5 class="price-ranges-form__title">Zakresy cen</h5>
+    <h5 class="price-ranges-form__title">
+      {{ $t('title') }}
+    </h5>
     <div class="price-ranges-form__list">
       <div v-for="(range, i) in priceRanges" :key="`${i}`" class="price-ranges-form__row">
         <app-input
           v-model="range.start"
-          label="Minimalna wartość koszyka"
+          :label="$t('rangeStart')"
           type="number"
           :disabled="i === 0 || disabled"
         />
-        <app-input v-model="range.value" :disabled="disabled" label="Stawka" type="number" />
+        <app-input
+          v-model="range.value"
+          :disabled="disabled"
+          :label="$t('rangeValue')"
+          type="number"
+        />
         <icon-button
+          class="price-ranges-form__button"
           :disabled="disabled || i === 0"
           type="transparent"
           @click.stop="removeRange(i)"
@@ -31,22 +39,38 @@
       <template #icon>
         <i class="bx bx-plus"></i>
       </template>
-      Dodaj zakres
+      {{ $t('addRange') }}
     </icon-button>
   </div>
 </template>
 
+<i18n lang="json">
+{
+  "pl": {
+    "title": "Zakresy cen",
+    "addRange": "Dodaj zakres",
+    "rangeStart": "Minimalna wartość koszyka",
+    "rangeValue": "Stawka"
+  },
+  "en": {
+    "title": "Price ranges",
+    "addRange": "Add range",
+    "rangeStart": "Minimal cart value",
+    "rangeValue": "Rate"
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
-
-import { ShippingMethodPriceRangeDTO } from '@/interfaces/ShippingMethod'
+import { ShippingMethodPriceRangeDto } from '@heseya/store-core'
 
 export default Vue.extend({
   props: {
     value: {
       type: Array,
       default: () => [{ start: 0, value: 0 }],
-    } as Vue.PropOptions<ShippingMethodPriceRangeDTO[]>,
+    } as Vue.PropOptions<ShippingMethodPriceRangeDto[]>,
     error: {
       type: String,
       default: '',
@@ -58,10 +82,10 @@ export default Vue.extend({
   },
   computed: {
     priceRanges: {
-      get(): ShippingMethodPriceRangeDTO[] {
+      get(): ShippingMethodPriceRangeDto[] {
         return this.value
       },
-      set(v: ShippingMethodPriceRangeDTO[]) {
+      set(v: ShippingMethodPriceRangeDto[]) {
         this.$emit('input', v)
       },
     },
@@ -98,8 +122,12 @@ export default Vue.extend({
   &__row {
     display: grid;
     grid-template-columns: 1fr 1fr 32px;
-    align-items: center;
+    align-items: end;
     grid-gap: 12px;
+  }
+
+  &__button {
+    align-self: center;
   }
 
   &__error {

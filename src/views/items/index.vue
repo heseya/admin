@@ -1,19 +1,20 @@
 <template>
   <div>
     <PaginatedList
-      title="Magazyn"
+      :title="$t('title')"
       store-key="items"
       :filters="filters"
       :table="tableConfig"
+      :xlsx-file-config="fileConfig"
       @search="makeSearch"
       @clear-filters="clearFilters"
     >
       <template #nav>
-        <icon-button v-can="$p.Items.Add" @click="openModal()">
+        <icon-button v-can="$p.Items.Add" data-cy="add-btn" @click="openModal()">
           <template #icon>
             <i class="bx bx-plus"></i>
           </template>
-          Dodaj przedmiot
+          {{ $t('add') }}
         </icon-button>
       </template>
 
@@ -22,117 +23,155 @@
       </template>
     </PaginatedList>
 
-    <validation-observer v-slot="{ handleSubmit }">
-      <a-modal
-        v-model="isModalActive"
-        width="550px"
-        :title="editedItem.id ? 'Edycja przedmiot' : 'Nowy przedmiot'"
-      >
-        <modal-form>
-          <validated-input
-            v-model="editedItem.name"
-            :disabled="!canModify"
-            rules="required"
-            label="Nazwa"
-          />
-
-          <validated-input
-            v-model="editedItem.sku"
-            :disabled="!canModify"
-            rules="required"
-            label="SKU"
-          />
-          <validated-input
-            v-if="editedItem.id"
-            v-model="editedItem.quantity"
-            :disabled="!canModify"
-            rules="required"
-            type="number"
-            label="Ilość w magazynie"
-          />
-        </modal-form>
-        <template #footer>
-          <div class="row">
-            <app-button v-if="canModify" @click="handleSubmit(saveModal)"> Zapisz </app-button>
-            <pop-confirm
-              v-can="$p.Items.Remove"
-              title="Czy na pewno chcesz usunąć ten przedmiot?"
-              ok-text="Usuń"
-              cancel-text="Anuluj"
-              @confirm="deleteItem"
-            >
-              <app-button v-if="editedItem.id" type="danger">Usuń</app-button>
-            </pop-confirm>
-          </div>
-        </template>
-      </a-modal>
-    </validation-observer>
+    <item-modal
+      v-model="editedItem"
+      :visible="isModalActive"
+      :item="selectedItem"
+      :disabled="!canModify"
+      @close="isModalActive = false"
+    />
   </div>
 </template>
 
+<i18n lang="json">
+{
+  "pl": {
+    "title": "Magazyn",
+    "add": "Dodaj przedmiot",
+    "table": {
+      "sku": "SKU",
+      "quantity": "Ilość w magazynie",
+      "unlimited": "Nieograniczona możliwość zakupu",
+      "availability": "Dostępność",
+      "availabilityTime": "w {time} dni",
+      "availabilityDate": "od {date}"
+    }
+  },
+  "en": {
+    "title": "Warehouse",
+    "add": "Add item",
+    "editTitle": "Edit item",
+    "newTitle": "New item",
+    "deleteText": "Are you sure you want to delete this item?",
+    "table": {
+      "sku": "SKU",
+      "quantity": "Quantity in stock",
+      "unlimited": "Unlimited purchase",
+      "availability": "Availibility",
+      "availabilityTime": "in {time} days",
+      "availabilityDate": "from {date}"
+    }
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
-import { ValidationObserver } from 'vee-validate'
+import cloneDeep from 'lodash/cloneDeep'
+import { WarehouseItem, WarehouseItemCreateDto } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
-import ModalForm from '@/components/form/ModalForm.vue'
-import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ItemsFilter, {
   EMPTY_ITEMS_FILTERS,
   ItemsFilersType,
 } from '@/components/modules/items/ItemsFilter.vue'
+import ItemModal from '@/components/modules/items/ItemModal.vue'
 
 import { UUID } from '@/interfaces/UUID'
-import { ProductItem } from '@/interfaces/Product'
 import { TableConfig } from '@/interfaces/CmsTable'
+
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 import { formatFilters } from '@/utils/utils'
+import { formatDate } from '@/utils/dates'
+import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 
-const EMPTY_FORM: ProductItem = {
-  id: '',
+const EMPTY_FORM: WarehouseItemCreateDto = {
   name: '',
   sku: '',
-  quantity: 0,
+  unlimited_stock_shipping_time: null,
+  unlimited_stock_shipping_date: null,
 }
 
 export default Vue.extend({
-  metaInfo: { title: 'Magazyn' },
+  metaInfo(this: any) {
+    return { title: this.$t('title') as string }
+  },
   components: {
-    ModalForm,
-    PopConfirm,
-    ValidationObserver,
     PaginatedList,
     ItemsFilter,
+    ItemModal,
   },
   beforeRouteLeave(to, from, next) {
-    if (this.isModalActive) {
-      this.isModalActive = false
-      next(false)
-    } else {
-      next()
-    }
+    if (this.isModalActive) this.isModalActive = false
+    next()
   },
   data: () => ({
     filters: { ...EMPTY_ITEMS_FILTERS } as ItemsFilersType,
     isModalActive: false,
-    editedItem: { ...EMPTY_FORM },
-    editedOriginalQuantity: 0,
+    editedItem: { ...EMPTY_FORM } as Omit<
+      WarehouseItemCreateDto & Partial<WarehouseItem>,
+      'metadata' | 'metadata_private'
+    >,
+    selectedItemId: null as null | UUID,
   }),
   computed: {
-    depositsError(): any {
+    depositsError(): Error | null {
       // @ts-ignore // TODO: fix extended store getters typings
       return this.$accessor.items.getDepositError
     },
     canModify(): boolean {
       return this.$can(this.editedItem.id ? this.$p.Items.Edit : this.$p.Items.Add)
     },
-    tableConfig(): TableConfig<ProductItem> {
+    selectedItem(): null | WarehouseItem {
+      return this.$accessor.items.getSelected?.id === this.selectedItemId
+        ? this.$accessor.items.getSelected
+        : null
+    },
+    tableConfig(): TableConfig<WarehouseItem> {
       return {
         rowOnClick: (item) => this.openModal(item.id),
         headers: [
-          { key: 'name', label: 'Nazwa', sortable: true },
-          { key: 'sku', label: 'SKU', width: '0.5fr', sortable: true },
-          { key: 'quantity', label: 'Ilość w magazynie', width: '0.5fr', sortable: true },
+          { key: 'name', label: this.$t('common.form.name') as string, sortable: true },
+          { key: 'sku', label: this.$t('table.sku') as string, width: '0.6fr', sortable: true },
+          {
+            key: 'quantity',
+            label: this.$t('table.quantity') as string,
+            width: '0.6fr',
+            sortable: true,
+          },
+          {
+            key: 'availability',
+            label: this.$t('table.availability') as string,
+            width: '0.6fr',
+            sortable: false,
+            render: (_v, item) => this.formatAvailability(item),
+          },
+          {
+            key: 'unlimited',
+            label: this.$t('table.unlimited') as string,
+            width: '0.6fr',
+            sortable: false,
+            render: (_v, item) =>
+              !!item.unlimited_stock_shipping_time || !!item.unlimited_stock_shipping_date,
+          },
+        ],
+      }
+    },
+    fileConfig(): XlsxFileConfig<WarehouseItem> {
+      return {
+        name: this.$t('title') as string,
+        headers: [
+          { key: 'sku', label: this.$t('table.sku') as string },
+          { key: 'name', label: this.$t('common.form.name') as string },
+          {
+            key: 'quantity',
+            label: this.$t('table.quantity') as string,
+          },
+          {
+            key: 'availability',
+            label: this.$t('table.availability') as string,
+            format: (_v, item) => this.formatAvailability(item),
+          },
         ],
       }
     },
@@ -152,6 +191,16 @@ export default Vue.extend({
     this.filters.sort = (this.$route.query.sort as string) || ''
   },
   methods: {
+    formatAvailability(item: WarehouseItem) {
+      if (item.shipping_time)
+        return this.$t('table.availabilityTime', { time: item.shipping_time }) as string
+      if (item.shipping_date)
+        return this.$t('table.availabilityDate', {
+          date: formatDate(item.shipping_date),
+        }) as string
+      return '-'
+    },
+
     makeSearch(filters: ItemsFilersType) {
       this.filters = filters
 
@@ -169,47 +218,19 @@ export default Vue.extend({
       this.makeSearch({ ...EMPTY_ITEMS_FILTERS })
     },
 
-    openModal(id?: UUID) {
+    async openModal(id?: UUID) {
       if (!this.$verboseCan(this.$p.Items.ShowDetails)) return
       this.isModalActive = true
       if (id) {
-        this.editedItem = this.$accessor.items.getFromListById(id)
-        this.editedOriginalQuantity = this.editedItem.quantity || 0
+        const item = await this.$accessor.items.get(id)
+        if (!item) return
+
+        this.editedItem = cloneDeep(item)
+        this.selectedItemId = id
       } else {
         this.editedItem = { ...EMPTY_FORM }
+        this.selectedItemId = null
       }
-    },
-    async saveModal() {
-      this.$accessor.startLoading()
-      let success = false
-      if (this.editedItem.id) {
-        const quantityDiff = this.editedItem.quantity - this.editedOriginalQuantity
-        if (quantityDiff) {
-          // @ts-ignore // TODO: fix extended store actions typings
-          success = await this.$accessor.items.updateQuantity({
-            id: this.editedItem.id,
-            quantity: quantityDiff,
-          })
-        }
-
-        success = !!(await this.$accessor.items.update({
-          id: this.editedItem.id,
-          item: this.editedItem,
-        }))
-      } else {
-        success = !!(await this.$accessor.items.add(this.editedItem))
-      }
-      this.$accessor.stopLoading()
-
-      if (success) {
-        this.isModalActive = false
-      }
-    },
-    async deleteItem() {
-      this.$accessor.startLoading()
-      await this.$accessor.items.remove(this.editedItem.id)
-      this.$accessor.stopLoading()
-      this.isModalActive = false
     },
   },
 })

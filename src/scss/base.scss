@@ -1,12 +1,16 @@
 @import './01_abstracts/index.scss';
 @import './02_components/index';
-@import './font';
 
 body {
   font-family: $primaryFont, 'BlinkMacSystemFont', sans-serif !important;
   background: $background-color-500 !important;
   color: $font-color !important;
   margin: 0;
+}
+
+*::selection {
+  background-color: $primary-color-300 !important;
+  color: #fff !important;
 }
 
 .uppercase {
@@ -20,6 +24,10 @@ body {
 
 .success-text {
   color: $green-color-500;
+}
+
+.gray-text {
+  color: $gray-color-500;
 }
 
 hr {
@@ -59,10 +67,9 @@ hr {
 
 .label {
   display: block;
-  margin-left: 5px;
-  margin-bottom: 3px;
-  color: #000000 !important;
-  font-size: 0.75rem;
+  font-size: 0.8em;
+  color: #7b8589;
+  margin-bottom: 2px;
   font-weight: 500;
 }
 
@@ -121,6 +128,10 @@ code {
   color: $font-color;
   padding: 2px 4px;
   border-radius: 3px;
+}
+
+legend {
+  font-size: 1.2em !important;
 }
 
 .ant-tooltip {

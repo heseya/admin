@@ -1,55 +1,27 @@
 <template>
   <nav class="nav" :class="{ 'nav--hidden': isHidden }">
     <nav-store-logo />
-
-    <router-link class="nav__link" to="/" exact>
-      <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/dashboard-icon.svg')" />
-      <span class="nav__link-label">Dashboard</span>
-    </router-link>
-
-    <div class="nav__spacer"></div>
-
-    <router-link v-can="$p.Orders.Show" class="nav__link" to="/orders">
-      <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/orders-icon.svg')" />
-      <span class="nav__link-label">Zamówienia</span>
-    </router-link>
-
-    <div class="nav__spacer"></div>
-
-    <!-- <router-link class="nav__link" to="/analytics">
-      <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/stats-icon.svg')" />
-      <span class="nav__link-label">Statystyka</span>
-    </router-link> -->
-
-    <router-link v-can="$p.Products.Show" class="nav__link" to="/products">
-      <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/products-icon.svg')" />
-      <span class="nav__link-label">Produkty</span>
-    </router-link>
-
-    <router-link v-can="$p.ProductSets.Show" class="nav__link" to="/collections">
-      <InlineSvg
-        class="nav-link-img"
-        :src="require('@/assets/images/icons/collections-icon.svg')"
-      />
-      <span class="nav__link-label">Kolekcje</span>
-    </router-link>
-
-    <router-link v-can="$p.Items.Show" class="nav__link" to="/items">
-      <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/warehouse-icon.svg')" />
-      <span class="nav__link-label">Magazyn</span>
-    </router-link>
-
-    <router-link v-can="$p.Discounts.Show" class="nav__link" to="/discounts">
-      <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/discounts-icon.svg')" />
-      <span class="nav__link-label">Kody rabatowe</span>
-    </router-link>
-
-    <div class="nav__spacer"></div>
-
-    <router-link class="nav__link" to="/settings">
-      <InlineSvg class="nav-link-img" :src="require('@/assets/images/icons/settings-icon.svg')" />
-      <span class="nav__link-label">Ustawienia</span>
-    </router-link>
+    <div class="nav__wrapper">
+      <template v-for="(item, i) in menu">
+        <router-link
+          v-if="item.type === MenuItemType.Link"
+          :key="i"
+          class="nav__link"
+          :to="item.to"
+          :exact="item.exact"
+        >
+          <InlineSvg
+            v-if="item.svgIconPath"
+            class="nav-link-img"
+            :src="require(`@/assets/images/${item.svgIconPath}`)"
+          />
+          <img v-else-if="item.iconPath" :src="item.iconPath" class="nav-link-img" />
+          <i v-else :class="item.iconClass" class="nav-link-svg" />
+          <span class="nav__link-label">{{ $t(item.label) }}</span>
+        </router-link>
+        <div v-else-if="item.type === MenuItemType.Spacer" :key="i" class="nav__spacer"></div>
+      </template>
+    </div>
 
     <powered-by class="nav__author" />
   </nav>
@@ -59,15 +31,24 @@
 import Vue from 'vue'
 // @ts-ignore
 import InlineSvg from 'vue-inline-svg'
+
 import NavStoreLogo from './NavStoreLogo.vue'
 import PoweredBy from './PoweredBy.vue'
+
+import { MenuItem, MenuItemType } from '@/consts/menuItems'
 
 export default Vue.extend({
   name: 'DesktopNavigation',
   components: { NavStoreLogo, InlineSvg, PoweredBy },
   computed: {
+    MenuItemType(): typeof MenuItemType {
+      return MenuItemType
+    },
     isHidden(): boolean {
       return !!this.$route.meta?.hiddenNav || false
+    },
+    menu(): MenuItem[] {
+      return this.$accessor.menuItems.activeItems
     },
   },
 })
@@ -90,6 +71,11 @@ export default Vue.extend({
   align-items: flex-start;
   transition: 0.2s;
   transition-timing-function: ease-out;
+
+  &__wrapper {
+    width: 100%;
+    overflow-y: auto;
+  }
 
   &--hidden {
     transform: translateX(-100%);
@@ -118,9 +104,15 @@ export default Vue.extend({
       width: 18px;
       height: 18px;
       margin-right: 16px;
+      line-height: 21px;
       box-sizing: border-box;
       opacity: 0.5;
       transition: color 0.3s;
+    }
+
+    .nav-link-svg {
+      @extend .nav-link-img;
+      font-size: 18px;
     }
 
     &:hover {

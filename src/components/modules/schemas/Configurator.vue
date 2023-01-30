@@ -1,29 +1,26 @@
 <template>
   <div class="configurator">
     <div class="configurator__head">
-      <div class="configurator__title">Schematy</div>
+      <div class="configurator__title">{{ $t('title') }}</div>
       <icon-button v-if="!disabled" @click="isModalActive = true">
         <template #icon>
           <i class="bx bx-plus"></i>
         </template>
-        Dodaj schemat do produktu
+        {{ $t('addSchema') }}
       </icon-button>
     </div>
-    <empty v-if="schemas.length === 0">Ten produkt nie ma jeszcze żadnego schematu</empty>
+    <empty v-if="schemas.length === 0">{{ $t('noSchemaInProduct') }}</empty>
     <list class="configurator__schemas">
       <draggable v-model="schemas" :disabled="disabled">
         <list-item
           v-for="schema in value"
           :key="schema.id"
           class="configurator__schema"
-          :class="{ [`configurator__schema--dep`]: schema.auto_dependecy }"
-          :title="schema.auto_dependecy ? 'Schemat jest automatyczny - nie możesz go usunąć' : ''"
           no-hover
           :hidden="schema.hidden"
         >
-          <i v-if="schema.auto_dependecy" class="bx bx-network-chart"></i>
           {{ schema.name }}
-          <small class="optional">{{ !schema.required ? '(opcjonalny)' : '' }}</small>
+          <small class="optional">{{ !schema.required ? `(${$t('optional')})` : '' }}</small>
           <small>{{ schema.description }}</small>
           <template #action>
             <div class="flex">
@@ -52,7 +49,7 @@
       v-model="isFormModalActive"
       width="1000px"
       :footer="null"
-      :title="editedSchema.id ? 'Edycja schematu' : 'Nowy schemat'"
+      :title="editedSchema.id ? $t('editTitle') : $t('newTitle')"
     >
       <modal-form v-if="isFormModalActive">
         <SchemaForm
@@ -67,7 +64,7 @@
     <a-modal v-model="isModalActive" width="800px" :footer="null">
       <template #title>
         <h4 class="flex schema-selector-title">
-          Wybierz istniejący schemat lub
+          <span>{{ $t('chooseExisting') }}</span>
           <icon-button
             reversed
             size="small"
@@ -76,20 +73,46 @@
               isFormModalActive = true
             "
           >
-            <template #icon> <i class="bx bx-plus"></i> </template> Utwórz nowy
+            <template #icon> <i class="bx bx-plus"></i> </template> {{ $t('createNew') }}
           </icon-button>
         </h4>
       </template>
-      <modal-form>
+      <modal-form v-if="isModalActive">
         <Selector type="schemas" :existing="value" @select="addSchema" />
       </modal-form>
     </a-modal>
   </div>
 </template>
 
+<i18n lang="json">
+{
+  "pl": {
+    "title": "Schematy produktu",
+    "addSchema": "Dodaj schemat",
+    "noSchemaInProduct": "Ten produkt nie ma jeszcze żadnego schematu",
+    "optional": "opcjonalny",
+    "editTitle": "Edycja schematu",
+    "newTitle": "Nowy schemat",
+    "chooseExisting": "Wybierz istniejący schemat lub",
+    "createNew": "utwórz nowy"
+  },
+  "en": {
+    "title": "Product schemas",
+    "addSchema": "Add schema",
+    "noSchemaInProduct": "This product has no schemas yet",
+    "optional": "optional",
+    "editTitle": "Edit schema",
+    "newTitle": "New schema",
+    "chooseExisting": "Choose existing schema or",
+    "createNew": "create new"
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 import Draggable from 'vuedraggable'
+import { Schema } from '@heseya/store-core'
 
 import List from '@/components/layout/List.vue'
 import ListItem from '@/components/layout/ListItem.vue'
@@ -98,8 +121,6 @@ import ModalForm from '@/components/form/ModalForm.vue'
 import SchemaForm from '@/components/modules/schemas/Form.vue'
 import Selector from '@/components/Selector.vue'
 
-import { SchemaTypeLabel } from '@/consts/schemaTypeLabels'
-import { Schema } from '@/interfaces/Schema'
 import { UUID } from '@/interfaces/UUID'
 
 export default Vue.extend({
@@ -121,7 +142,6 @@ export default Vue.extend({
     disabled: { type: Boolean, default: false },
   },
   data: () => ({
-    SchemaTypeLabel: Object.freeze(SchemaTypeLabel),
     isModalActive: false,
     isFormModalActive: false,
     editedSchema: {} as Schema,
@@ -181,7 +201,7 @@ export default Vue.extend({
   }
 
   &__title {
-    font-size: 1.3em;
+    font-size: 1.1em;
     font-weight: 600;
   }
 
@@ -190,18 +210,14 @@ export default Vue.extend({
   }
 
   &__schema {
-    &--dep {
-      .schema-delete {
-        display: none;
-      }
-    }
   }
 }
 
 .schema-selector-title {
   display: flex;
-  // justify-content: center;
+  column-gap: 8px;
   align-items: center;
+  justify-content: space-between;
   margin-top: 0;
   margin-bottom: 0;
 }

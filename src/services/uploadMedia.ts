@@ -1,18 +1,15 @@
-import { api } from '@/api'
+import { sdk } from '@/api'
 import { UUID } from '@/interfaces/UUID'
-import { CdnMedia } from '@/interfaces/Media'
+import { CdnMediaUpdateDto } from '@heseya/store-core'
 import { ApiError } from '@/utils/errors'
 
 export const uploadMedia = async (file: File) => {
   try {
-    const form = new FormData()
-    form.append('file', file)
-
-    const { data } = await api.post<{ data: CdnMedia }>('/media', form)
+    const uploadedFile = await sdk.Media.create({ file })
 
     return {
       success: true as const,
-      file: data.data,
+      file: uploadedFile,
     }
   } catch (error: any) {
     return {
@@ -22,13 +19,13 @@ export const uploadMedia = async (file: File) => {
   }
 }
 
-export const updateMedia = async (media: CdnMedia) => {
+export const updateMedia = async (media: CdnMediaUpdateDto & { id: UUID }) => {
   try {
-    const { data } = await api.patch<{ data: CdnMedia }>(`/media/id:${media.id}`, media)
+    const updatedMedia = await sdk.Media.update(media.id, media)
 
     return {
       success: true as const,
-      file: data.data,
+      file: updatedMedia,
     }
   } catch (error: any) {
     return {
@@ -38,9 +35,9 @@ export const updateMedia = async (media: CdnMedia) => {
   }
 }
 
-export const removeMedia = async (fileId: UUID): Promise<true | Error> => {
+export const removeMedia = async (mediaId: UUID): Promise<true | Error> => {
   try {
-    await api.delete<null>(`/media/id:${fileId}`)
+    await sdk.Media.delete(mediaId)
     return true
   } catch (error: any) {
     return error as ApiError

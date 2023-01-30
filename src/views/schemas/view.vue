@@ -1,19 +1,19 @@
 <template>
   <div :key="schema.id" class="narrower-page">
-    <top-nav :title="!isNew ? schema.name : 'Nowy schemat'">
+    <top-nav :title="!isNew ? schema.name : $t('newTitle')">
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Schemas.Remove"
-        title="Czy na pewno chcesz usunąć ten schemat?"
-        ok-text="Usuń"
-        cancel-text="Anuluj"
+        :title="$t('deleteText')"
+        :ok-text="$t('common.delete')"
+        :cancel-text="$t('common.cancel')"
         @confirm="deleteSchema"
       >
         <icon-button type="danger" data-cy="delete-btn">
           <template #icon>
             <i class="bx bx-trash"></i>
           </template>
-          Usuń
+          {{ $t('common.delete') }}
         </icon-button>
       </pop-confirm>
     </top-nav>
@@ -31,11 +31,25 @@
   </div>
 </template>
 
+<i18n lang="json">
+{
+  "pl": {
+    "newTitle": "Nowy schemat",
+    "deleteText": "Czy na pewno chcesz usunąć ten schemat?",
+    "deletedMessage": "Schemat został usunięty"
+  },
+  "en": {
+    "newTitle": "New schema",
+    "deleteText": "Are you sure you want to delete this schema?",
+    "deletedMessage": "Schema has been deleted"
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 import { cloneDeep } from 'lodash'
-
-import { Schema } from '@/interfaces/Schema'
+import { Schema } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
@@ -45,8 +59,11 @@ import SchemaForm from '@/components/modules/schemas/Form.vue'
 import { formatApiNotificationError } from '@/utils/errors'
 
 export default Vue.extend({
-  metaInfo(): any {
-    return { title: this.schema?.name || 'Nowy schemat' }
+  metaInfo(this: any): any {
+    const fallback = this.$t('newTitle') as string
+    return {
+      title: this.isNew ? fallback : this.schema?.name || fallback,
+    }
   },
   components: {
     TopNav,
@@ -65,7 +82,7 @@ export default Vue.extend({
       return this.id === 'create'
     },
     schema(): Schema {
-      return this.$accessor.schemas.getSelected
+      return this.$accessor.schemas.getSelected || ({} as any)
     },
     error(): any {
       return this.$accessor.schemas.getError
@@ -96,7 +113,7 @@ export default Vue.extend({
       this.$accessor.startLoading()
       const success = await this.$accessor.schemas.remove(this.id)
       if (success) {
-        this.$toast.success('Schemat został usunięty.')
+        this.$toast.success(this.$t('deletedMessage') as string)
         this.$router.push('/schemas')
       }
       this.$accessor.stopLoading()

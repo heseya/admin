@@ -1,126 +1,182 @@
 <template>
   <div class="settings-page narrower-page">
-    <top-nav title="Ustawienia" />
+    <top-nav :title="$t('nav.settings')" />
 
     <card>
       <list>
-        <h2 v-can="$p.Pages.Show" class="section-title">Sklep</h2>
-        <SettingsItem v-can="$p.Pages.Show" name="Strony" url="/pages" icon="bx bxs-copy-alt" />
+        <div v-for="(group, section) in settingsGroups" :key="section">
+          <h2 v-can.any="groupPermissions(group)" class="section-title">
+            {{ $t(`sections.${section}`) }}
+          </h2>
+          <SettingsItem
+            v-for="item in group"
+            :key="item.id"
+            :v-can="item.can"
+            :name="$t(item.label)"
+            :url="item.to"
+            :icon-class="item.iconClass"
+            :svg-icon-path="item.svgIconPath"
+          />
+        </div>
 
-        <h2 v-can.any="[$p.Tags.Show, $p.Products.Show]" class="section-title">Produkty</h2>
+        <h2 class="section-title">{{ $t('sections.account') }}</h2>
         <SettingsItem
-          v-can="$p.Tags.Show"
-          name="Tagi"
-          icon="bx bxs-purchase-tag"
-          url="/settings/tags"
+          :name="$t('items.user_account')"
+          icon-class="bx bxs-bell"
+          @click="isUserAccountModal = true"
+        />
+        <SettingsItem :name="$t('items.menu')" icon-class="bx bx-menu" url="/settings/menu" />
+        <SettingsItem
+          :name="$t('items.lang_preferences')"
+          icon-class="bx bxs-user-detail"
+          @click="isLangPreferencesModal = true"
         />
         <SettingsItem
-          v-can="$p.Products.Show"
-          name="Schematy"
-          icon="bx bxs-customize"
-          url="/schemas"
-        />
-
-        <h2 v-can.any="[$p.Statuses.Show]" class="section-title">Zamówienia</h2>
-        <SettingsItem
-          v-can="$p.Statuses.Show"
-          name="Statusy zamówień"
-          icon="bx bxs-check-circle"
-          url="/settings/statuses"
-        />
-
-        <h2 v-can.any="[$p.ShippingMethods.Show, $p.Packages.Show]" class="section-title">
-          Dostawa
-        </h2>
-        <SettingsItem
-          v-can="$p.ShippingMethods.Show"
-          name="Opcje dostawy"
-          icon="bx bxs-truck"
-          url="/settings/shipping-methods"
+          :name="$t('items.change_password')"
+          icon-class="bx bxs-lock"
+          @click="isChangePasswordModal = true"
         />
         <SettingsItem
-          v-can="$p.Packages.Show"
-          name="Szablony przesyłek"
-          icon="bx bxs-box"
-          url="/settings/package-templates"
-        />
-
-        <h2 v-can.any="[$p.Roles.Show, $p.Users.Show]" class="section-title">Użytkownicy</h2>
-        <SettingsItem
-          v-can="$p.Users.Show"
-          name="Lista użytkowników"
-          icon="bx bxs-group"
-          url="/settings/users"
-        />
-        <SettingsItem
-          v-can="$p.Roles.Show"
-          name="Role użytkowników"
-          icon="bx bx-task"
-          url="/settings/roles"
-        />
-
-        <h2 v-can.any="[$p.Apps.Show, $p.Settings.Show]" class="section-title">Inne</h2>
-        <SettingsItem v-can="$p.Apps.Show" name="Aplikacje" icon="bx bxs-store-alt" url="/apps" />
-        <SettingsItem v-can="$p.Webhooks.Show" name="Webhooki" icon="bx bxs-bot" url="/webhooks" />
-        <SettingsItem name="Ustawienia SEO" icon="bx bxl-google" url="/settings/seo" />
-        <SettingsItem
-          v-can="$p.Settings.Show"
-          name="Ustawienia zaawansowane"
-          icon="bx bxs-cog"
-          url="/settings/advanced"
-        />
-
-        <h2 class="section-title">Konto</h2>
-        <SettingsItem name="Zmień hasło" icon="bx bxs-lock" @click="isChangePasswordModal = true" />
-        <SettingsItem
-          name="Weryfikacja dwuetapowa"
-          icon="bx bx-mobile-vibration"
+          :name="$t('items.2fa')"
+          icon-class="bx bx-mobile-vibration"
           url="/settings/two-factor-authentication"
         >
           <template #action>
-            <tag v-if="user.is_tfa_active" type="success">
-              <i class="bx bx-check"></i> Aktywna
-            </tag>
-            <tag v-else type="error"> <i class="bx bx-x"></i> Nieaktywna </tag>
+            <BooleanTag
+              :value="user && user.is_tfa_active"
+              :true-text="$t('common.active')"
+              :false-text="$t('common.inactive')"
+            />
           </template>
         </SettingsItem>
         <!-- <SettingsItem
           v-can="$p.Auth.SessionsShow"
-          name="Sesje użytkownika"
-          icon="bx bx-history"
+          :name="$t('items.sessions')"
+          icon-class="bx bx-history"
           url="/settings/login-history"
         /> -->
-        <SettingsItem name="Wyloguj" icon="bx bx-log-out-circle" @click="logout" />
+        <SettingsItem
+          :name="$t('items.logout')"
+          icon-class="bx bx-log-out-circle"
+          @click="logout"
+        />
       </list>
     </card>
 
-    <a-modal v-model="isChangePasswordModal" width="350px" :footer="null" title="Zmiana hasła">
+    <a-modal
+      v-model="isChangePasswordModal"
+      width="500px"
+      :footer="null"
+      :title="$t('items.change_password')"
+    >
       <ChangePasswordForm @close="isChangePasswordModal = false" />
+    </a-modal>
+
+    <a-modal
+      v-model="isLangPreferencesModal"
+      width="500px"
+      :footer="null"
+      :title="$t('items.lang_preferences')"
+    >
+      <LangPreferencesForm @close="isLangPreferencesModal = false" />
+    </a-modal>
+
+    <a-modal
+      v-model="isUserAccountModal"
+      width="500px"
+      :footer="null"
+      :title="$t('items.user_account')"
+    >
+      <UserAccountForm :user="user" @success="isUserAccountModal = false" />
     </a-modal>
   </div>
 </template>
 
+<i18n lang="json">
+{
+  "en": {
+    "sections": {
+      "shop": "Shop",
+      "products": "Products",
+      "orders": "Orders",
+      "shipping": "Shipping",
+      "users": "Users",
+      "other": "Other",
+      "account": "Account"
+    },
+    "items": {
+      "users": "Users list",
+      "roles": "User roles",
+      "consents": "Marketing consents",
+      "seo": "SEO settings",
+      "advanced": "Advanced settings",
+      "lang_preferences": "Language preferences",
+      "user_account": "User account",
+      "menu": "Customize menu",
+      "change_password": "Change password",
+      "2fa": "Two-factor authentication",
+      "sessions": "Login history",
+      "logout": "Logout"
+    }
+  },
+
+  "pl": {
+    "sections": {
+      "shop": "Sklep",
+      "products": "Produkty",
+      "orders": "Zamówienia",
+      "shipping": "Dostawa",
+      "users": "Użytkownicy",
+      "other": "Inne",
+      "account": "Konto"
+    },
+    "items": {
+      "users": "Lista użytkowników",
+      "roles": "Role użytkowników",
+      "consents": "Zgody marketingowe",
+      "seo": "Ustawienia SEO",
+      "advanced": "Ustawienia zaawansowane",
+      "lang_preferences": "Preferencje językowe",
+      "user_account": "Konto użytkownika",
+      "menu": "Dostosuj menu",
+      "change_password": "Zmień hasło",
+      "2fa": "Weryfikacja dwuetapowa",
+      "sessions": "Sesje użytkownika",
+      "logout": "Wyloguj"
+    }
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
+import { groupBy, Dictionary } from 'lodash'
+import { User } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import List from '@/components/layout/List.vue'
 import ChangePasswordForm from '@/components/modules/auth/ChangePassword.vue'
+import UserAccountForm from '@/components/modules/settings/UserAccount.vue'
 import SettingsItem from '@/components/modules/settings/SettingsItem.vue'
-import Tag from '@/components/Tag.vue'
+import LangPreferencesForm from '@/components/modules/settings/LangPreferences.vue'
 
-import { User } from '@/interfaces/User'
+import { SettingsSection, SETTINGS_LINKS, MenuLink } from '@/consts/menuItems'
 
 export default Vue.extend({
-  metaInfo: { title: 'Ustawienia' },
+  metaInfo(this: any) {
+    return {
+      title: this.$t('nav.settings') as string,
+    }
+  },
   components: {
     TopNav,
     Card,
     List,
     SettingsItem,
     ChangePasswordForm,
-    Tag,
+    UserAccountForm,
+    LangPreferencesForm,
   },
   beforeRouteLeave(to, from, next) {
     if (this.isChangePasswordModal) {
@@ -132,8 +188,19 @@ export default Vue.extend({
   },
   data: () => ({
     isChangePasswordModal: false,
+    isLangPreferencesModal: false,
+    isUserAccountModal: false,
   }),
   computed: {
+    SETTINGS_LINKS(): MenuLink[] {
+      return SETTINGS_LINKS
+    },
+    SettingsSection(): typeof SettingsSection {
+      return SettingsSection
+    },
+    settingsGroups(): Dictionary<MenuLink[]> {
+      return groupBy(this.SETTINGS_LINKS, 'section')
+    },
     user(): User {
       return this.$accessor.auth.user!
     },
@@ -142,6 +209,9 @@ export default Vue.extend({
     async logout() {
       await this.$accessor.auth.logout()
       this.$router.push('/login')
+    },
+    groupPermissions(items: MenuLink[]) {
+      return items.map((item) => item.can)
     },
   },
 })
@@ -178,5 +248,8 @@ export default Vue.extend({
   font-weight: 600;
   margin-bottom: 5px;
   margin-top: 16px;
+}
+.avatar__content {
+  font-size: 21px !important;
 }
 </style>

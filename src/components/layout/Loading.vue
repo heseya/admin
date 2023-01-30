@@ -1,5 +1,9 @@
 <template>
-  <div class="loading" :class="{ 'loading--active': active, 'loading--relative': relative }">
+  <div
+    class="loading"
+    :class="{ 'loading--active': active, 'loading--relative': relative }"
+    :style="`font-size: ${size}px`"
+  >
     <div class="loading__loader">
       <loading-indicator />
     </div>
@@ -19,6 +23,10 @@ export default Vue.extend({
     relative: {
       type: Boolean,
       default: true,
+    },
+    size: {
+      type: Number,
+      default: 48,
     },
   },
 })

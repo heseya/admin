@@ -1,17 +1,37 @@
 <template>
   <div class="setup-2fa-email">
-    <h3>Aktywacja weryfikacji dwuetapowej przez wiadomości e-mail</h3>
+    <h3>{{ $t('title') }}</h3>
     <p>
-      Wysłaliśmy do Ciebie maila, który zawiera kod autoryzujący. Wpisz go poniżej, aby aktywować
-      weryfikację dwuetapowa.
+      {{ $t('text') }}
     </p>
-    <small>Jeśli email nie doszedł, możesz wysłać go ponownie. Stary kod przestanie działać.</small>
+    <small>{{ $t('subtext') }}</small>
     <app-button type="primary" size="small" :disabled="remainingSeconds > 0" @click="sendEmail()">
-      Wyślij maila ponownie
-      <template v-if="remainingSeconds"> (poczekaj jeszcze {{ remainingSeconds }}s) </template>
+      {{ $t('resend') }}
+      <template v-if="remainingSeconds">
+        ({{ $t('remaningSeconds') }} {{ remainingSeconds }}s)
+      </template>
     </app-button>
   </div>
 </template>
+
+<i18n lang="json">
+{
+  "pl": {
+    "title": "Aktywacja weryfikacji dwuetapowej przez wiadomości e-mail",
+    "text": "Wysłaliśmy do Ciebie maila, który zawiera kod autoryzujący. Wpisz go poniżej, aby aktywować weryfikację dwuetapowa.",
+    "subtext": "Jeśli email nie doszedł, możesz wysłać go ponownie. Stary kod przestanie działać.",
+    "resend": "Wyślij maila ponownie",
+    "remaningSeconds": "poczekaj jeszcze"
+  },
+  "en": {
+    "title": "Activate two-factor authentication by email",
+    "text": "We sent you an email with a code to verify. Enter it below to activate two-factor authentication.",
+    "subtext": "If you don't receive the email, you can send it again. The old code will stop working.",
+    "resend": "Send email again",
+    "remaningSeconds": "wait"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

@@ -1,34 +1,39 @@
 <template>
-  <div class="narrower-page">
-    <PaginatedList title="Opcje Dostawy" store-key="shippingMethods" draggable>
+  <div>
+    <PaginatedList :title="$t('title')" store-key="shippingMethods" draggable :table="tableConfig">
       <template #nav>
         <icon-button v-can="$p.ShippingMethods.Add" @click="openModal()">
           <template #icon>
             <i class="bx bx-plus"></i>
           </template>
-          Dodaj opcję dostawy
+          {{ $t('add') }}
         </icon-button>
       </template>
 
-      <template #default="{ item: shippingMethod }">
-        <list-item
-          :key="shippingMethod.id"
-          :hidden="!shippingMethod.public"
-          @click="openModal(shippingMethod.id)"
+      <template #default="{ item: method }">
+        <cms-table-row
+          :key="method.id"
+          :item="method"
+          :headers="tableConfig.headers"
+          draggable
+          @click="openModal(method.id)"
         >
-          {{ shippingMethod.name }}
-          <small v-if="shippingMethod.countries.length">
-            {{ shippingMethod.black_list ? 'Wszystkie kraje poza:' : 'Tylko wybrane kraje:' }}
-            {{ shippingMethod.countries.map((c) => c.name).join(', ') }}
-          </small>
-          <small v-else>
-            {{
-              shippingMethod.black_list
-                ? 'Metoda dostepna w każdym kraju'
-                : 'Metoda niedostepna w żadnym kraju'
-            }}
-          </small>
-        </list-item>
+          <template #countries="{ value }">
+            <CmsTableCellList :items="value">
+              <template #title>
+                {{
+                  !method.countries.length
+                    ? method.block_list
+                      ? $t('list.allEnabled')
+                      : $t('list.allDisabled')
+                    : method.block_list
+                    ? $t('list.blackList')
+                    : $t('list.whiteList')
+                }}
+              </template>
+            </CmsTableCellList>
+          </template>
+        </cms-table-row>
       </template>
     </PaginatedList>
 
@@ -36,20 +41,41 @@
       <a-modal
         v-model="isModalActive"
         width="660px"
-        :title="editedItem.id ? 'Edycja opcji dostawy' : 'Nowa opcja dostawy'"
+        :title="editedItem.id ? $t('editTitle') : $t('newTitle')"
       >
         <ShippingMethodsForm v-model="editedItem" :countries="countries" :disabled="!canModify" />
+
+        <template v-if="selectedItem">
+          <hr />
+          <MetadataForm
+            ref="publicMeta"
+            :value="selectedItem.metadata"
+            :disabled="!canModify"
+            model="shippingMethods"
+          />
+          <MetadataForm
+            v-if="selectedItem.metadata_private"
+            ref="privateMeta"
+            :value="selectedItem.metadata_private"
+            :disabled="!canModify"
+            is-private
+            model="shippingMethods"
+          />
+        </template>
+
         <template #footer>
           <div class="row">
-            <app-button v-if="canModify" @click="handleSubmit(saveModal)"> Zapisz </app-button>
+            <app-button v-if="canModify" @click="handleSubmit(saveModal)">
+              {{ $t('common.save') }}
+            </app-button>
             <pop-confirm
               v-can="$p.ShippingMethods.Remove"
-              title="Czy na pewno chcesz usunąć tą metode dostawy?"
-              ok-text="Usuń"
-              cancel-text="Anuluj"
+              :title="$t('deleteText')"
+              :ok-text="$t('common.delete')"
+              :cancel-text="$t('common.cancel')"
               @confirm="deleteItem"
             >
-              <app-button v-if="editedItem.id" type="danger">Usuń</app-button>
+              <app-button v-if="editedItem.id" type="danger">{{ $t('common.delete') }}</app-button>
             </pop-confirm>
           </div>
         </template>
@@ -58,28 +84,89 @@
   </div>
 </template>
 
+<i18n lang="json">
+{
+  "pl": {
+    "title": "Metody dostawy",
+    "add": "Dodaj metodę dostawy",
+    "editTitle": "Edycja metody dostawy",
+    "newTitle": "Nowa metoda dostawy",
+    "deleteText": "Czy na pewno chcesz usunąć tą metode dostawy?",
+    "list": {
+      "allEnabled": "Metoda dostepna w każdym kraju",
+      "allDisabled": "Metoda niedostepna w żadnym kraju",
+      "whiteList": "Tylko wybrane kraje:",
+      "blackList": "Wszystkie kraje poza:"
+    },
+    "alerts": {
+      "deleted": "Metoda dostawy została usunięta.",
+      "created": "Metoda dostawy została dodana.",
+      "updated": "Metoda dostawy została zaktualizowana."
+    },
+    "headers": {
+      "availabilty": "Dostępność w krajach",
+      "basePrice": "Bazowa cena",
+      "minShippingTime": "Minimalny czas dostawy",
+      "maxShippingTime": "Maksymalny czas dostawy",
+      "visibility": "Widoczność"
+    }
+  },
+  "en": {
+    "title": "Shipping methods",
+    "add": "Add shipping method",
+    "editTitle": "Edit shipping method",
+    "newTitle": "New shipping method",
+    "deleteText": "Are you sure you want to delete this shipping method?",
+    "list": {
+      "allEnabled": "Shipping method available in all countries",
+      "allDisabled": "Shipping method unavailable in any country",
+      "whiteList": "Only selected countries:",
+      "blackList": "All countries except:"
+    },
+    "alerts": {
+      "deleted": "Shipping method has been deleted.",
+      "created": "Shipping method has been created.",
+      "updated": "Shipping method has been updated."
+    },
+    "headers": {
+      "availabilty": "Availability in countries",
+      "basePrice": "Base price",
+      "minShippingTime": "Minimal delivery time",
+      "maxShippingTime": "Maximum delivery time",
+      "visibility": "Visibility"
+    }
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
-import { api } from '../../api'
+import { ShippingMethod, ShippingMethodUpdateDto, ShippingCountry } from '@heseya/store-core'
+import { sdk } from '../../api'
 
 import PaginatedList from '@/components/PaginatedList.vue'
-import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ShippingMethodsForm from '@/components/modules/shippingMethods/Index.vue'
+import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { UUID } from '@/interfaces/UUID'
-import { ShippingMethodDTO } from '@/interfaces/ShippingMethod'
-import { Country } from '@/interfaces/Country'
+import { TableConfig } from '@/interfaces/CmsTable'
+import CmsTableRow from '@/components/cms/CmsTableRow.vue'
+import CmsTableCellList from '@/components/cms/CmsTableCellList.vue'
 
 export default Vue.extend({
-  metaInfo: { title: 'Metody dostawy' },
+  metaInfo(this: any) {
+    return { title: this.$t('title') as string }
+  },
   components: {
-    ListItem,
     PopConfirm,
     ValidationObserver,
     PaginatedList,
     ShippingMethodsForm,
+    MetadataForm,
+    CmsTableRow,
+    CmsTableCellList,
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {
@@ -91,8 +178,9 @@ export default Vue.extend({
   },
   data: () => ({
     isModalActive: false,
-    editedItem: {} as ShippingMethodDTO,
-    countries: [] as Country[],
+    editedItem: {} as ShippingMethodUpdateDto & { id?: UUID },
+    selectedItem: null as ShippingMethod | null,
+    countries: [] as ShippingCountry[],
   }),
   computed: {
     canModify(): boolean {
@@ -100,12 +188,43 @@ export default Vue.extend({
         this.editedItem.id ? this.$p.ShippingMethods.Edit : this.$p.ShippingMethods.Add,
       )
     },
+    tableConfig(): TableConfig<ShippingMethod> {
+      return {
+        headers: [
+          {
+            key: 'name',
+            label: this.$t('common.form.name') as string,
+            width: '1fr',
+            wordBreak: 'break-word',
+          },
+          {
+            key: 'countries',
+            label: this.$t('headers.availabilty') as string,
+            width: '1.5fr',
+            render: (countries: ShippingMethod['countries']) => countries.map(({ name }) => name),
+            wordBreak: 'break-word',
+          },
+          { key: 'price', label: this.$t('headers.basePrice') as string, width: '1fr' },
+          {
+            key: 'shipping_time_min',
+            label: this.$t('headers.minShippingTime') as string,
+            width: '1fr',
+          },
+          {
+            key: 'shipping_time_max',
+            label: this.$t('headers.maxShippingTime') as string,
+            width: '1fr',
+          },
+          { key: 'public', label: this.$t('headers.visibility') as string, width: '0.5fr' },
+        ],
+      }
+    },
   },
   async created() {
     this.$accessor.startLoading()
     this.$accessor.paymentMethods.fetch()
-    const { data } = await api.get<{ data: Country[] }>('countries')
-    this.countries = data.data
+    const countries = await sdk.ShippingMethods.getCountries()
+    this.countries = countries
     this.$accessor.stopLoading()
   },
   methods: {
@@ -113,6 +232,7 @@ export default Vue.extend({
       this.isModalActive = true
       if (id) {
         const item = this.$accessor.shippingMethods.getFromListById(id)
+        this.selectedItem = item
         this.editedItem = {
           ...item,
           payment_methods: item.payment_methods.map(({ id }) => id),
@@ -123,9 +243,10 @@ export default Vue.extend({
           })),
         }
       } else {
+        this.selectedItem = null
         this.editedItem = {
           name: '',
-          black_list: false,
+          block_list: false,
           payment_methods: [],
           countries: [],
           shipping_time_min: 0,
@@ -143,12 +264,19 @@ export default Vue.extend({
     async saveModal() {
       this.$accessor.startLoading()
       if (this.editedItem.id) {
+        // Metadata can be saved only after shipping method is created
+        await this.saveMetadata(this.editedItem.id)
+
         await this.$accessor.shippingMethods.update({
           id: this.editedItem.id,
           item: this.editedItem,
         })
+
+        this.$toast.success(this.$t('alerts.updated') as string)
       } else {
         await this.$accessor.shippingMethods.add(this.editedItem)
+
+        this.$toast.success(this.$t('alerts.created') as string)
       }
       this.$accessor.stopLoading()
       this.isModalActive = false
@@ -157,8 +285,17 @@ export default Vue.extend({
       if (!this.editedItem.id) return
       this.$accessor.startLoading()
       await this.$accessor.shippingMethods.remove(this.editedItem.id)
+
+      this.$toast.success(this.$t('alerts.deleted') as string)
       this.$accessor.stopLoading()
       this.isModalActive = false
+    },
+
+    async saveMetadata(id: string) {
+      await Promise.all([
+        (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id),
+        (this.$refs.publicMeta as MetadataRef)?.saveMetadata(id),
+      ])
     },
   },
 })

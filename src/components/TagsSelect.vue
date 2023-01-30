@@ -2,7 +2,7 @@
   <div class="tags">
     <app-select
       :value="tagsValue"
-      label="Tagi"
+      :label="$t('tags')"
       class="tags__select"
       mode="tags"
       option-filter-prop="label"
@@ -23,10 +23,22 @@
     </app-select>
   </div>
 </template>
+
+<i18n lang="json">
+{
+  "pl": {
+    "tags": "Tagi"
+  },
+  "en": {
+    "tags": "Tags"
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 import { debounce, uniqBy } from 'lodash'
-import { Tag } from '@/interfaces/Tag'
+import { Tag } from '@heseya/store-core'
 
 type AntSelectOption = { key: string; label: string }
 

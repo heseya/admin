@@ -4,14 +4,14 @@
       v-model="local.search"
       class="span-2"
       type="search"
-      label="Wyszukiwanie"
+      :label="$t('common.search')"
       allow-clear
       @input="debouncedSearch"
     />
 
     <app-select
       v-model="local.status_id"
-      label="Status"
+      :label="$t('status')"
       add-all
       option-filter-prop="label"
       @change="debouncedSearch"
@@ -23,7 +23,7 @@
 
     <app-select
       v-model="local.shipping_method_id"
-      label="Dostawa"
+      :label="$t('shipping')"
       add-all
       option-filter-prop="label"
       @change="debouncedSearch"
@@ -35,26 +35,43 @@
 
     <app-select
       v-model="local.paid"
-      label="Status płatności"
+      :label="$t('paymentStatus')"
       add-all
       option-filter-prop="label"
       @change="debouncedSearch"
     >
-      <a-select-option :value="'1'" label="Opłacone"> Opłacone </a-select-option>
-      <a-select-option :value="'0'" label="Nie opłacone"> Nie opłacone </a-select-option>
+      <a-select-option :value="'1'" :label="$t('paid')"> {{ $t('paid') }} </a-select-option>
+      <a-select-option :value="'0'" :label="$t('notpaid')"> {{ $t('notpaid') }} </a-select-option>
     </app-select>
   </div>
 </template>
+
+<i18n lang="json">
+{
+  "pl": {
+    "status": "Status",
+    "shipping": "Dostawa",
+    "paymentStatus": "Status płatności",
+    "paid": "Opłacone",
+    "notpaid": "Nie opłacone"
+  },
+  "en": {
+    "status": "Status",
+    "shipping": "Shipping",
+    "paymentStatus": "Payment status",
+    "paid": "Paid",
+    "notpaid": "Not paid"
+  }
+}
+</i18n>
 
 <script lang="ts">
 /* eslint-disable camelcase */
 import Vue from 'vue'
 import { debounce } from 'lodash'
+import { OrderStatus, ShippingMethod } from '@heseya/store-core'
 
 import { ALL_FILTER_VALUE } from '@/consts/filters'
-
-import { OrderStatus } from '@/interfaces/Order'
-import { ShippingMethod } from '@/interfaces/ShippingMethod'
 
 export type OrderFilersType = {
   search: string

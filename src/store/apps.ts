@@ -1,19 +1,11 @@
 import { createVuexCRUD } from './generator'
-import { api } from '@/api'
-import { App, CreateAppDto } from '@/interfaces/App'
+import { App, AppCreateDto } from '@heseya/store-core'
 
-export const apps = createVuexCRUD<App, CreateAppDto, CreateAppDto>()('apps', {
+export const apps = createVuexCRUD<App, AppCreateDto, AppCreateDto>()('apps', {
   state: {},
-  getters: {},
-  mutations: {},
-  actions: {
-    async addApp(_u, url: string) {
-      try {
-        const { data } = await api.post('/apps', { url })
-        return data
-      } catch (error: any) {
-        return false
-      }
-    },
+  getters: {
+    getMicrofrontendsApps: (state) => state.data.filter((app) => !!app.microfrontend_url),
   },
+  mutations: {},
+  actions: {},
 })

@@ -3,7 +3,7 @@
     <validated-input
       v-model="form.url"
       rules="required|url"
-      label="Link do aplikacji"
+      :label="$t('form.url')"
       :loading="isLoading"
     />
 
@@ -15,8 +15,8 @@
       v-else-if="isError && form.url"
       type="error"
       show-icon
-      message="Nie udało się pobrać informacji o aplikacji"
-      description="Aplikacja którą próbujesz dodać nie istnieje, albo powoduje błąd. Nie można jej obecnie zainstalować."
+      :message="$t('error.no_app')"
+      :description="$t('error.no_app_description')"
     />
 
     <template v-else-if="appInfo && form.url">
@@ -24,27 +24,27 @@
       <div class="add-app-form__row">
         <img v-if="appInfo.icon" :src="appInfo.icon" alt="" class="app-icon" />
         <div class="field">
-          <div class="field__label">Nazwa</div>
+          <div class="field__label">{{ $t('preview.name') }}</div>
           <div class="field__value">
             <b>{{ appInfo.name }}</b>
           </div>
         </div>
       </div>
       <div class="field">
-        <div class="field__label">Opis</div>
+        <div class="field__label">{{ $t('preview.description') }}</div>
         <div class="field__value">{{ appInfo.description }}</div>
       </div>
       <div class="add-app-form__row">
         <div class="field">
-          <div class="field__label">Wersja aplikacji</div>
+          <div class="field__label">{{ $t('preview.version') }}</div>
           <div class="field__value">{{ appInfo.version }}</div>
         </div>
         <div class="field">
-          <div class="field__label">Wymagana wersja sklepu</div>
+          <div class="field__label">{{ $t('preview.api_version') }}</div>
           <div class="field__value">{{ appInfo.api_version }}</div>
         </div>
         <div class="field">
-          <div class="field__label">Autor</div>
+          <div class="field__label">{{ $t('preview.author') }}</div>
           <div class="field__value">{{ appInfo.author }}</div>
         </div>
       </div>
@@ -53,35 +53,32 @@
         v-if="appInfo.licence_required"
         v-model="form.licence_key"
         rules="required"
-        label="Klucz licencyjny"
+        :label="$t('form.licence_key')"
       />
 
       <div class="field">
-        <div class="field__label">Wymagane uprawnienia</div>
+        <div class="field__label">{{ $t('preview.required_permissions') }}</div>
         <div class="field__value">
           <ul v-if="requiredPermissions.length">
             <li v-for="perm in requiredPermissions" :key="perm.id">
               {{ perm.display_name || perm.name }}
 
-              <a-tooltip v-if="perm.description">
-                <template #title> {{ perm.description }} </template>
-                <i class="bx bxs-info-circle"></i>
-              </a-tooltip>
+              <info-tooltip v-if="perm.description"> {{ perm.description }} </info-tooltip>
             </li>
           </ul>
-          <small v-else>Brak</small>
+          <small v-else>{{ $t('common.none') }}</small>
         </div>
       </div>
 
       <div class="field">
-        <div class="field__label">Wewnętrzne uprawnienia aplikacji</div>
+        <div class="field__label">{{ $t('preview.internal_permissions') }}</div>
         <div class="field__value">
           <div class="field__value">
             <ul v-if="appInfo.internal_permissions.length">
               <li v-for="perm in appInfo.internal_permissions" :key="perm.id" class="permission">
                 <a-tooltip>
                   <template #title>
-                    Czy to uprawnienie ma zostać nadane niezalogowanym użytkownikom?
+                    {{ $t('preview.should_be_unauthenticated') }}
                   </template>
                   <switch-input
                     :value="isPermUnauthenticated(perm)"
@@ -96,33 +93,80 @@
                   {{ perm.display_name || perm.name }}
                 </div>
 
-                <a-tooltip v-if="perm.description">
-                  <template #title> {{ perm.description }} </template>
-                  <i class="bx bxs-info-circle"></i>
-                </a-tooltip>
+                <info-tooltip v-if="perm.description"> {{ perm.description }} </info-tooltip>
               </li>
             </ul>
-            <small v-else>Brak</small>
+            <small v-else>{{ $t('common.none') }}</small>
           </div>
         </div>
       </div>
 
       <hr />
 
-      <app-button @click="$emit('submit')">Zainstaluj</app-button>
+      <app-button @click="$emit('submit')">{{ $t('form.install') }}</app-button>
     </template>
   </div>
 </template>
+
+<i18n lang="json">
+{
+  "pl": {
+    "form": {
+      "url": "Link do aplikacji",
+      "licence_key": "Klucz licencyjny",
+      "install": "Zainstaluj"
+    },
+    "preview": {
+      "name": "Nazwa",
+      "description": "Opis",
+      "version": "Wersja aplikacji",
+      "api_version": "Wymagana wersja sklepu",
+      "author": "Autor",
+      "required_permissions": "Wymagane uprawnienia",
+      "internal_permissions": "Wewnętrzne uprawnienia aplikacji",
+      "should_be_unauthenticated": "Uprawnienie powinno być nadane niezalogowanym użytkownikom"
+    },
+    "error": {
+      "no_app": "Nie udało się pobrać informacji o aplikacji",
+      "no_app_description": "Aplikacja którą próbujesz dodać nie istnieje, albo powoduje błąd. Nie można jej obecnie zainstalować."
+    }
+  },
+  "en": {
+    "form": {
+      "url": "App URL",
+      "licence_key": "Licence key",
+      "install": "Install"
+    },
+    "preview": {
+      "name": "Name",
+      "description": "Description",
+      "version": "App version",
+      "api_version": "Required API version",
+      "author": "Author",
+      "required_permissions": "Required permissions",
+      "internal_permissions": "Internal permissions",
+      "should_be_unauthenticated": "Permission should be given to unauthenticated users"
+    },
+    "error": {
+      "no_app": "Failed to load app info",
+      "no_app_description": "The app you are trying to add does not exist or causes an error. It cannot be installed at the moment."
+    }
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
 import axios from 'axios'
 import { debounce } from 'lodash'
+import {
+  AppInternalPermission,
+  AppCreateDto,
+  IntegrationInfo,
+  PermissionEntry,
+} from '@heseya/store-core'
 
 import LoadingIndicator from '@/components/layout/LoadingIndicator.vue'
-
-import { AppInternalPermission, CreateAppDto, IntegrationInfo } from '@/interfaces/App'
-import { PermissionObject } from '@/interfaces/Permissions'
 
 export default Vue.extend({
   components: { LoadingIndicator },
@@ -130,7 +174,7 @@ export default Vue.extend({
     value: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<CreateAppDto>,
+    } as Vue.PropOptions<AppCreateDto>,
     isValidUrl: {
       type: Boolean,
       default: false,
@@ -143,17 +187,24 @@ export default Vue.extend({
   }),
   computed: {
     form: {
-      get(): CreateAppDto {
+      get(): AppCreateDto {
         return this.value
       },
-      set(value: CreateAppDto) {
+      set(value: AppCreateDto) {
         this.$emit('input', value)
       },
     },
-    requiredPermissions(): PermissionObject[] {
-      return (this.appInfo?.required_permissions || [])
-        .map((name) => this.$accessor.roles.permissions.find((perm) => perm.name === name))
-        .filter((perm) => !!perm) as PermissionObject[]
+    requiredPermissions(): PermissionEntry[] {
+      return (this.appInfo?.required_permissions || []).map(
+        (name) =>
+          this.$accessor.roles.permissions.find((perm) => perm.name === name) ||
+          ({
+            id: `${Math.random()}`,
+            name,
+            display_name: name,
+            assignable: false,
+          } as PermissionEntry),
+      )
     },
   },
   watch: {
@@ -199,13 +250,13 @@ export default Vue.extend({
     },
 
     isPermUnauthenticated(perm: AppInternalPermission) {
-      return !!this.form.public_app_permissions.find((p) => p === perm.name) ?? false
+      return !!this.form.public_app_permissions?.find((p) => p === perm.name) ?? false
     },
     changeIsPermUnauthenticated(perm: AppInternalPermission, value: boolean) {
       if (value) {
-        this.form.public_app_permissions.push(perm.name)
+        this.form.public_app_permissions?.push(perm.name)
       } else {
-        this.form.public_app_permissions = this.form.public_app_permissions.filter(
+        this.form.public_app_permissions = this.form.public_app_permissions?.filter(
           (p) => p !== perm.name,
         )
       }

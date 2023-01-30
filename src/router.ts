@@ -2,11 +2,10 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import VueMeta from 'vue-meta'
 
-import { Permission } from './interfaces/Permissions'
-
+import { Permission } from '@/interfaces/Permissions'
+import { PERMISSIONS_TREE as Permissions } from '@/consts/permissions'
 import { accessor } from './store'
 import { hasAccess } from './utils/hasAccess'
-import { PERMISSIONS_TREE as Permissions } from './consts/permissions'
 
 Vue.use(VueRouter)
 Vue.use(VueMeta)
@@ -22,7 +21,7 @@ const router = new VueRouter({
       component: () => import('./views/auth/Login.vue'),
       meta: {
         hiddenNav: true,
-        recaptchaAlert: true,
+        redirectIfLoggedIn: true,
       },
     },
     {
@@ -32,7 +31,7 @@ const router = new VueRouter({
       component: () => import('./views/auth/ResetPassword.vue'),
       meta: {
         hiddenNav: true,
-        recaptchaAlert: true,
+        redirectIfLoggedIn: true,
       },
     },
     {
@@ -42,7 +41,6 @@ const router = new VueRouter({
       component: () => import('./views/auth/NewPassword.vue'),
       meta: {
         hiddenNav: true,
-        recaptchaAlert: true,
       },
     },
     {
@@ -68,6 +66,16 @@ const router = new VueRouter({
       meta: {
         requiresAuth: true,
         permissions: [Permissions.Items.Show],
+      },
+    },
+    {
+      path: '/items/:id/deposits',
+      name: 'ItemDepositsList',
+      component: () => import('./views/items/deposits.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Deposits.Show],
+        returnUrl: '/items',
       },
     },
     {
@@ -128,12 +136,41 @@ const router = new VueRouter({
       },
     },
     {
-      path: '/discounts',
-      name: 'Discounts',
-      component: () => import('./views/discounts/index.vue'),
+      path: '/coupons',
+      name: 'Coupons',
+      component: () => import('./views/coupons/index.vue'),
       meta: {
         requiresAuth: true,
-        permissions: [Permissions.Discounts.Show],
+        permissions: [Permissions.Coupons.Show],
+      },
+    },
+    {
+      path: '/coupons/:id',
+      name: 'CouponsView',
+      component: () => import('./views/coupons/view.vue'),
+      meta: {
+        returnUrl: '/coupons',
+        requiresAuth: true,
+        permissions: [Permissions.Coupons.ShowDetails],
+      },
+    },
+    {
+      path: '/sales',
+      name: 'Sales',
+      component: () => import('./views/sales/index.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Sales.Show],
+      },
+    },
+    {
+      path: '/sales/:id',
+      name: 'SalesView',
+      component: () => import('./views/sales/view.vue'),
+      meta: {
+        returnUrl: '/sales',
+        requiresAuth: true,
+        permissions: [Permissions.Sales.Show],
       },
     },
     {
@@ -156,12 +193,39 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/settings/banners',
+      name: 'Banners',
+      component: () => import('./views/banners/index.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Banners.Show],
+      },
+    },
+    {
+      path: '/settings/banners/:id',
+      name: 'BannersView',
+      component: () => import('./views/banners/view.vue'),
+      meta: {
+        returnUrl: '/settings/banners',
+        requiresAuth: true,
+        permissions: [Permissions.Banners.Show],
+      },
+    },
+    {
       path: '/apps',
       name: 'Apps',
       component: () => import('./views/apps/index.vue'),
       meta: {
         requiresAuth: true,
         permissions: [Permissions.Apps.Show],
+      },
+    },
+    {
+      path: '/apps/debug',
+      name: 'AppsDebug',
+      component: () => import('./views/apps/Debug.vue'),
+      meta: {
+        requiresAuth: true,
       },
     },
     {
@@ -195,6 +259,36 @@ const router = new VueRouter({
       meta: {
         requiresAuth: true,
         permissions: [Permissions.ProductSets.Show],
+      },
+    },
+    {
+      path: '/collections/:id',
+      name: 'ProductSets View',
+      component: () => import('./views/productSets/View.vue'),
+      meta: {
+        returnUrl: '/collections',
+        requiresAuth: true,
+        permissions: [Permissions.ProductSets.ShowDetails],
+      },
+    },
+
+    {
+      path: '/settings/attributes',
+      name: 'Attributes',
+      component: () => import('./views/attributes/index.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Attributes.Show],
+      },
+    },
+    {
+      path: '/settings/attributes/:id',
+      name: 'AttributesView',
+      component: () => import('./views/attributes/view.vue'),
+      meta: {
+        returnUrl: '/settings/attributes',
+        requiresAuth: true,
+        permissions: [Permissions.Attributes.Show],
       },
     },
     {
@@ -279,6 +373,25 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/settings/consents',
+      name: 'Consents',
+      component: () => import('./views/consents/index.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Consents.Show],
+      },
+    },
+    {
+      path: '/settings/consents/:id',
+      name: 'ConsentsView',
+      component: () => import('./views/consents/view.vue'),
+      meta: {
+        returnUrl: '/settings/consents',
+        requiresAuth: true,
+        permissions: [Permissions.Consents.Edit],
+      },
+    },
+    {
       path: '/webhooks',
       name: 'WebHooks',
       component: () => import('./views/webhooks/index.vue'),
@@ -297,15 +410,14 @@ const router = new VueRouter({
         permissions: [Permissions.Webhooks.Show],
       },
     },
-    // {
-    //   path: '/settings/login-history',
-    //   name: 'LoginHistory',
-    //   component: () => import('./views/settings/LoginHistory.vue'),
-    //   meta: {
-    //     requiresAuth: true,
-    //     permissions: [Permissions.Auth.SessionsShow],
-    //   },
-    // },
+    {
+      path: '/settings/menu',
+      name: 'Menu',
+      component: () => import('./views/menu/index.vue'),
+      meta: {
+        requiresAuth: true,
+      },
+    },
     {
       path: '/403',
       name: 'Error403',
@@ -328,14 +440,26 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   window.scrollTo(0, 0)
 
+  // Save prevoirous route for return to list button
+  if (from.name)
+    window.sessionStorage.setItem(
+      'previousRoute',
+      JSON.stringify({ path: from.path, fullPath: from.fullPath }),
+    )
+
+  const redirectIfLoggedIn = !!to.meta?.redirectIfLoggedIn || false
   const authRequired = !!to.meta?.requiresAuth || false
   const requiredPermissions: Permission[] = to.meta?.permissions || []
+
+  if (redirectIfLoggedIn && accessor.auth.isLogged) {
+    return next('/')
+  }
 
   if (authRequired && !accessor.auth.isLogged) {
     accessor.auth.setPermissionsError(new Error('Not logged in'))
     return next({
       name: 'Login',
-      query: { next: to.fullPath !== '/' ? to.fullPath : undefined },
+      query: { next: to.path !== '/' ? to.path : undefined },
     })
   }
 

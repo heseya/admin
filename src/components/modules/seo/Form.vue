@@ -1,33 +1,31 @@
 <template>
   <modal-form class="seo-form">
-    <validated-input v-model="form.title" :disabled="disabled" label="Tytuł strony" />
+    <validated-input v-model="form.title" :disabled="disabled" :label="$t('form.title')" />
     <small class="seo-form__subtext">
-      Ilość znaków: {{ form.title ? form.title.length : 0 }}
-      <a-tooltip>
-        <template #title> Zalecana maksymalna długość tytułu to 70 znaków </template>
-        <i class="bx bxs-info-circle"></i>
-      </a-tooltip>
+      {{ $t('charsCount') }}: {{ form.title ? form.title.length : 0 }}
+      <info-tooltip>
+        {{ $t('titleCharsRecomendation') }}
+      </info-tooltip>
     </small>
 
-    <validated-input v-model="form.description" :disabled="disabled" label="Opis strony" />
+    <validated-input
+      v-model="form.description"
+      :disabled="disabled"
+      :label="$t('form.description')"
+    />
     <small class="seo-form__subtext">
-      Ilość znaków: {{ form.description ? form.description.length : 0 }}
-      <a-tooltip>
-        <template #title> Zalecana maksymalna długość opisu to 160 znaków </template>
-        <i class="bx bxs-info-circle"></i>
-      </a-tooltip>
+      {{ $t('charsCount') }}: {{ form.description ? form.description.length : 0 }}
+      <info-tooltip>
+        {{ $t('descriptionCharsRecomendation') }}
+      </info-tooltip>
     </small>
 
     <switch-input v-if="!forceIndex" v-model="form.no_index" :disabled="disabled" type="red">
       <template #title>
-        Wyłącz indeksowanie podstrony
-        <a-tooltip>
-          <template #title>
-            Wyłączenie indeksowanie strony zapobiegnie wyświetlaniu strony w wynikach wyszukiwania
-            (np. Google).
-          </template>
-          <i class="seo-form__switch-tooltip-icon bx bxs-info-circle"></i>
-        </a-tooltip>
+        {{ $t('form.no_index') }}
+        <info-tooltip icon="seo-form__switch-tooltip-icon bx bxs-info-circle">
+          {{ $t('noIndexTooltip') }}
+        </info-tooltip>
       </template>
       <template #checkedChildren> <i class="bx bxs-low-vision"></i> </template>
       <template #unCheckedChildren> <i class="bx bx-show"></i> </template>
@@ -35,7 +33,7 @@
 
     <app-select
       :value="form.keywords || []"
-      label="Słowa kluczowe"
+      :label="$t('form.keywords')"
       :disabled="disabled"
       mode="tags"
       @input="(v) => (form.keywords = v)"
@@ -43,21 +41,25 @@
 
     <a-alert v-if="duplicatedKeywordsItem" type="warning" show-icon style="margin-bottom: 1rem">
       <template #message>
-        Słowa kluczowe podane powyżej duplikują słowa kluczowe w
-        <a :href="duplicatedKeywordUrl" target="_blank">innym elemencie</a>. Rozważ ich zmianę, aby
-        osiągnąć lepsze rezultaty SEO.
+        {{ $t('duplicatedKeywords.text1') }}
+        <a :href="duplicatedKeywordUrl" target="_blank">{{ $t('duplicatedKeywords.link') }}</a
+        >. {{ $t('duplicatedKeywords.text2') }}
       </template>
     </a-alert>
 
-    <app-select v-model="form.twitter_card" label="Typ kart Twittera" :disabled="disabled">
-      <a-select-option value="summary"> Podsumowanie (<code>summary</code>) </a-select-option>
+    <app-select v-model="form.twitter_card" :label="$t('form.twitter_card')" :disabled="disabled">
+      <a-select-option value="summary">
+        {{ $t('form.twitter.summary') }} (<code>{{ 'summary' }}</code
+        >)
+      </a-select-option>
       <a-select-option value="summary_large_image">
-        Podsumowanie z dużym zdjęciem (<code>summary_large_image</code>)
+        {{ $t('form.twitter.summary_large_image') }} (<code>{{ 'summary_large_image' }}</code
+        >)
       </a-select-option>
     </app-select>
 
     <media-upload-input
-      label="Zdjęcie udostępniania w mediach społecznościowych"
+      :label="$t('form.og_image')"
       :disabled="disabled"
       :image="form.og_image"
       @upload="changeMedia"
@@ -65,13 +67,68 @@
   </modal-form>
 </template>
 
+<i18n lang="json">
+{
+  "pl": {
+    "form": {
+      "title": "Tytuł strony",
+      "description": "Opis strony",
+      "no_index": "Wyłącz indeksowanie podstrony",
+      "keywords": "Słowa kluczowe",
+      "twitter_card": "Typ kart Twittera",
+      "twitter": {
+        "summary": "Podsumowanie",
+        "summary_large_image": "Podsumowanie z dużym zdjęciem"
+      },
+      "og_image": "Zdjęcie udostępniania w mediach społecznościowych"
+    },
+    "charsCount": "Ilość znaków",
+    "titleCharsRecomendation": "Zalecana maksymalna długość tytułu to 70 znaków",
+    "descriptionCharsRecomendation": "Zalecana maksymalna długość opisu to 160 znaków",
+    "noIndexTooltip": "Wyłączenie indeksowanie strony zapobiegnie wyświetlaniu strony w wynikach wyszukiwania (np. Google).",
+    "duplicatedKeywords": {
+      "text1": "Słowa kluczowe podane powyżej duplikują słowa kluczowe w",
+      "link": "innym elemencie",
+      "text2": "Rozważ ich zmianę, aby osiągnąć lepsze rezultaty SEO."
+    }
+  },
+  "en": {
+    "form": {
+      "title": "Page title",
+      "description": "Page description",
+      "no_index": "Disable page indexing",
+      "keywords": "Keywords",
+      "twitter_card": "Twitter card type",
+      "twitter": {
+        "summary": "Summary",
+        "summary_large_image": "Summary with large image"
+      },
+      "og_image": "Social media share image"
+    },
+    "charsCount": "Chars count",
+    "titleCharsRecomendation": "Recommended max length of title is 70 chars",
+    "descriptionCharsRecomendation": "Recommended max length of description is 160 chars",
+    "noIndexTooltip": "Disabling page indexing will prevent it from appearing in search results (eg. Google).",
+    "duplicatedKeywords": {
+      "text1": "Keywords specified above are duplicated in",
+      "link": "the other element",
+      "text2": "Consider changing them to improve SEO."
+    }
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
+import {
+  SeoMetadata,
+  SeoMetadataDto,
+  TwitterCardType,
+  CdnMedia,
+  SeoCheckModelType,
+} from '@heseya/store-core'
 
 import ModalForm from '@/components/form/ModalForm.vue'
-
-import { SeoMetadata, SeoMetadataDto, TwitterCardType } from '@/interfaces/SeoMetadata'
-import { CdnMedia } from '@/interfaces/Media'
 import MediaUploadInput from '@/components/modules/media/MediaUploadInput.vue'
 import { UUID } from '@/interfaces/UUID'
 
@@ -86,8 +143,6 @@ export const CLEAR_SEO_FORM: SeoMeta = {
   og_image_id: undefined,
   no_index: false,
 }
-
-type ModelType = 'Product' | 'ProductSet' | 'Page'
 
 export default Vue.extend({
   components: {
@@ -110,13 +165,13 @@ export default Vue.extend({
     current: {
       type: Object,
       default: null,
-    } as Vue.PropOptions<{ id: UUID; model: ModelType }>,
+    } as Vue.PropOptions<{ id: UUID; model: SeoCheckModelType }>,
   },
 
   data: () => ({
     duplicatedKeywordsItem: null as null | {
       // eslint-disable-next-line camelcase
-      model_type: ModelType
+      model_type: SeoCheckModelType
       id: UUID
     },
   }),

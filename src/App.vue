@@ -11,15 +11,33 @@
       </transition>
     </main>
 
+    <!-- eslint-disable-next-line vue/no-bare-strings-in-template -->
+    <div class="app__version" :class="{ 'app__version--center': !isNavHidden }">
+      &copy; {{ currentYear }} | v{{ version }}
+    </div>
+
     <Loading :relative="false" :active="isLoading" />
 
-    <sw-update-popup />
+    <SwUpdatePopup />
+    <OfflineBanner />
   </div>
 </template>
 
+<i18n lang="json">
+{
+  "en": {
+    "noPermissionError": "You don't have permission to this action."
+  },
+  "pl": {
+    "noPermissionError": "Nie posiadasz uprawnień do tej akcji."
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
-import { first, isArray } from 'lodash'
+import { first } from 'lodash'
+import pkg from '../package.json'
 import { init as initMicroApps, onMounted, openCommunicationChannel } from 'bout'
 
 import DesktopNavigation from './components/root/DesktopNavigation.vue'
@@ -27,6 +45,7 @@ import MobileNavigation from './components/root/MobileNavigation.vue'
 import AppHeader from './components/root/Header.vue'
 import Loading from './components/layout/Loading.vue'
 import SwUpdatePopup from './components/root/SwUpdatePopup.vue'
+import OfflineBanner from './components/root/OfflineBanner.vue'
 
 import { onTokensSync } from './utils/authSync'
 import { getApiURL } from './utils/api'
@@ -44,6 +63,7 @@ export default Vue.extend({
     AppHeader,
     Loading,
     SwUpdatePopup,
+    OfflineBanner,
   },
   computed: {
     isLoading(): boolean {
@@ -58,31 +78,41 @@ export default Vue.extend({
     mainChannel() {
       return openCommunicationChannel('Main')
     },
+    currentYear(): string {
+      return new Date().getFullYear().toString()
+    },
+    version(): string {
+      return pkg.version
+    },
   },
   watch: {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     '$accessor.auth.permissionsError'(_permissionsError) {
-      this.$toast.error('Nie posiadasz uprawnień do tej akcji')
+      this.$toast.error(this.$t('noPermissionError') as string)
     },
 
-    '$accessor.auth.getIdentityToken'(token) {
+    '$accessor.auth.getIdentityToken'(token: string) {
       this.tokenChannel.emit('set', token)
+    },
+
+    '$i18n.locale'(locale: string) {
+      this.mainChannel.emit('uiLanguage:set', locale)
     },
   },
   created() {
     initMicroApps()
-    this.$accessor.fetchEnv()
+    this.$accessor.config.fetchSettings()
+    this.$accessor.menuItems.initMicrofrontendMenuItems()
+
     if (this.$accessor.auth.isLogged) this.$accessor.auth.fetchProfile()
 
     // MicroFrontend Events Start
     onMounted(() => {
-      // ! deprecated: remove before 3.0.0
-      this.tokenChannel.emit('set', this.$accessor.auth.getIdentityToken)
-
       this.mainChannel.emit('init', {
         coreUrl: getApiURL(),
         token: this.$accessor.auth.getIdentityToken,
         user: this.$accessor.auth.user,
+        uiLanguage: this.$i18n.locale,
       })
     })
 
@@ -105,7 +135,7 @@ export default Vue.extend({
           await this.$accessor.auth.fetchProfile()
 
           const { next } = this.$route.query
-          const nextURL = (isArray(next) ? first(next) : next) || '/'
+          const nextURL = (Array.isArray(next) ? first(next) : next) || '/'
           this.$router.push(nextURL)
         }
       } else {
@@ -163,6 +193,21 @@ export default Vue.extend({
 
     @media ($viewport-7) {
       padding: 32px 24px;
+    }
+  }
+
+  &__version {
+    position: fixed;
+    display: block;
+    left: 0;
+    bottom: 0;
+    padding: 10px;
+    width: $navWidth;
+    font-size: 0.7em;
+    color: #bec1c7;
+
+    &--center {
+      text-align: center;
     }
   }
 }

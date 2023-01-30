@@ -2,14 +2,18 @@ import axios from 'axios'
 import { assign, cloneDeep, isNil } from 'lodash'
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 import { ActionTree, GetterTree, MutationTree } from 'vuex'
+import {
+  EntityAudits,
+  HeseyaPaginatedResponseMeta,
+  Metadata,
+  MetadataUpdateDto,
+} from '@heseya/store-core'
 
 import { api } from '../api'
-import { stringifyQuery } from '@/utils/utils'
+import { stringifyQueryParams as stringifyQuery } from '@/utils/stringifyQuery'
 
 import { RootState } from '.'
-import { ResponseMeta } from '@/interfaces/Response'
 import { UUID } from '@/interfaces/UUID'
-import { AuditEntry } from '@/interfaces/AuditEntry'
 
 type QueryPayload = Record<string, any>
 
@@ -32,10 +36,10 @@ export enum StoreMutations {
 interface DefaultStore<Item extends BaseItem> {
   error: null | Error
   isLoading: boolean
-  meta: ResponseMeta
+  meta: HeseyaPaginatedResponseMeta
   data: Item[]
   queryParams: Record<string, any>
-  selected: Item
+  selected: Item | null
 }
 
 interface ExtendStore<State, Item extends BaseItem> {
@@ -61,7 +65,7 @@ interface CrudParams {
  * @param params - fixed Query params for requests in scope
  */
 export const createVuexCRUD =
-  <Item extends BaseItem, CreateItemDTO = Partial<Item>, UpdateItemDTO = Partial<Item>>() =>
+  <Item extends BaseItem, CreateItemDTO, UpdateItemDTO>() =>
   <State>(endpoint: string, extend: ExtendStore<State, Item>, queryParams: CrudParams = {}) => {
     const privateState = {
       fetchAbortController: null as null | AbortController,
@@ -71,9 +75,9 @@ export const createVuexCRUD =
       ({
         error: null as null | Error,
         isLoading: false,
-        meta: {} as ResponseMeta,
+        meta: {} as HeseyaPaginatedResponseMeta,
         data: [] as Item[],
-        selected: {} as Item,
+        selected: null as Item | null,
         queryParams: {},
         ...(extend?.state || {}),
       } as DefaultStore<Item> & State)
@@ -111,7 +115,7 @@ export const createVuexCRUD =
       [StoreMutations.SetLoading](state, isLoading: boolean) {
         state.isLoading = isLoading
       },
-      [StoreMutations.SetMeta](state, newMeta: ResponseMeta) {
+      [StoreMutations.SetMeta](state, newMeta: HeseyaPaginatedResponseMeta) {
         state.meta = newMeta || {}
       },
       [StoreMutations.SetQueryParams](state, newParams: Record<string, any>) {
@@ -125,22 +129,23 @@ export const createVuexCRUD =
       },
       [StoreMutations.EditData](
         state,
-        { key, value, item: editedItem }: { key: keyof Item; value: unknown; item: Item },
+        { key, value, item: editedItem }: { key: keyof Item; value: unknown; item: Partial<Item> },
       ) {
-        if (state.selected[key] === value) {
+        if (state.selected?.[key] === value) {
           // Edits selected item
-          state.selected = editedItem
+          // @ts-ignore
+          state.selected = { ...state.selected, ...editedItem }
         }
 
         const editedItemIndex = state.data.findIndex((item) => item[key] === value)
         if (editedItemIndex >= 0) {
           // Edits any item on the list
           const copy = cloneDeep(state.data)
-          copy[editedItemIndex] = editedItem
+          copy[editedItemIndex] = { ...copy[editedItemIndex], ...editedItem }
           state.data = copy
         } else {
           // appends new item
-          state.data = [...state.data, editedItem]
+          state.data = [...state.data, editedItem as Item]
         }
       },
       [StoreMutations.RemoveData](state, { key, value }: { key: keyof Item; value: unknown }) {
@@ -156,7 +161,7 @@ export const createVuexCRUD =
       { state: moduleState, getters: moduleGetters, mutations: moduleMutations },
       {
         clearData({ commit }) {
-          commit(StoreMutations.SetMeta, {} as ResponseMeta)
+          commit(StoreMutations.SetMeta, {} as HeseyaPaginatedResponseMeta)
           commit(StoreMutations.SetData, [])
         },
 
@@ -177,7 +182,7 @@ export const createVuexCRUD =
 
             const stringQuery = stringifyQuery(filteredQuery)
 
-            const { data } = await api.get<{ data: Item[]; meta: ResponseMeta }>(
+            const { data } = await api.get<{ data: Item[]; meta: HeseyaPaginatedResponseMeta }>(
               `/${endpoint}${stringQuery}`,
               { signal: privateState.fetchAbortController.signal },
             )
@@ -187,7 +192,7 @@ export const createVuexCRUD =
             commit(StoreMutations.SetMeta, data.meta)
             commit(StoreMutations.SetData, data.data)
             commit(StoreMutations.SetLoading, false)
-            return true
+            return data.data
           } catch (error: any) {
             commit(StoreMutations.SetLoading, false)
             // If request was canceled, do not report error
@@ -204,7 +209,7 @@ export const createVuexCRUD =
             // @ts-ignore type is correct, but TS is screaming
             commit(StoreMutations.SetSelected, data.data)
             commit(StoreMutations.SetLoading, false)
-            return true
+            return data.data
           } catch (error: any) {
             commit(StoreMutations.SetError, error)
             commit(StoreMutations.SetLoading, false)
@@ -328,18 +333,52 @@ export const createVuexCRUD =
         // Audits
         async fetchAudits({ commit }, id: UUID) {
           commit(StoreMutations.SetError, null)
-          commit(StoreMutations.SetLoading, true)
           try {
             const stringQuery = stringifyQuery(queryParams.get || {})
-            const { data } = await api.get<{ data: AuditEntry[] }>(
+            const { data } = await api.get<{ data: EntityAudits<Item>[] }>(
               `/audits/${endpoint}/id:${id}${stringQuery}`,
             )
             commit(StoreMutations.SetLoading, false)
             return data.data
           } catch (error: any) {
             commit(StoreMutations.SetError, error)
-            commit(StoreMutations.SetLoading, false)
             return []
+          }
+        },
+
+        // Metadata
+        async updateMetadata(
+          { commit },
+          {
+            id,
+            metadata,
+            public: isPublic,
+          }: { id: UUID; metadata: MetadataUpdateDto; public: boolean },
+        ) {
+          commit(StoreMutations.SetError, null)
+          commit(StoreMutations.SetLoading, true)
+          try {
+            const path = isPublic ? 'metadata' : 'metadata-private'
+            const { data } = await api.patch<{ data: Metadata }>(
+              `/${endpoint}/id:${id}/${path}`,
+              metadata,
+            )
+
+            // ? Typescript is complaining, that Item does not need to have metadata, but if this method is called, it does
+
+            // @ts-ignore
+            // commit(StoreMutations.EditData, {
+            //   key: 'id',
+            //   value: id,
+            //   item: { [isPublic ? 'metadata' : 'metadata_private']: Array.isArray(data.data) ? {} : data.data },
+            // })
+            commit(StoreMutations.SetLoading, false)
+            // ? When removing all metadata, empty response is an array instead of object
+            return Array.isArray(data.data) ? {} : data.data
+          } catch (error: any) {
+            commit(StoreMutations.SetError, error)
+            commit(StoreMutations.SetLoading, false)
+            return {}
           }
         },
 

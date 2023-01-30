@@ -1,23 +1,41 @@
 <template>
   <div class="remove-2fa">
-    <h3>Usunięcie weryfikacji dwuetapowej</h3>
+    <h3>{{ $t('title') }}</h3>
     <p>
-      Poniżej możesz usunąć weryfikację dwuetapową ze swojego konta. Będziesz mógł skonfigurować
-      weryfikację dwuetapową ponownie.
+      {{ $t('text') }}
     </p>
     <app-button type="danger" @click="isModalActive = true">
-      Dezaktywuj weryfikację dwuetapową
+      {{ $t('removeBtnText') }}
     </app-button>
 
     <password-confirm-modal
       v-model="isModalActive"
-      title="Wpisz swoje hasło, aby potwierdzić usunięcie weryfikacji dwuetapowej"
-      ok-text="Usuń weryfikację dwuetapową"
+      :title="$t('passwordConfirm')"
+      :ok-text="$t('removeBtnText')"
       ok-type="danger"
       @confirm="onConfirm"
     />
   </div>
 </template>
+
+<i18n lang="json">
+{
+  "pl": {
+    "title": "Usunięcie weryfikacji dwuetapowej",
+    "text": "Poniżej możesz usunąć weryfikację dwuetapową ze swojego konta. Będziesz mógł skonfigurować weryfikację dwuetapową ponownie.",
+    "removeBtnText": "Dezaktywuj weryfikację dwuetapową",
+    "passwordConfirm": "Wpisz swoje hasło, aby potwierdzić usunięcie weryfikacji dwuetapowej",
+    "successMessage": "Weryfikacja dwuetapowa została usunięta"
+  },
+  "en": {
+    "title": "Remove two-factor authentication",
+    "text": "Below you can remove two-factor authentication from your account. You can configure two-factor authentication again.",
+    "removeBtnText": "Deactivate two-factor authentication",
+    "passwordConfirm": "Enter your password to confirm removing two-factor authentication",
+    "successMessage": "Two-factor authentication has been removed"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
@@ -36,7 +54,7 @@ export default Vue.extend({
     async onConfirm(password: string) {
       const result = await removeTwoFactorAuth(password)
       if (result.success) {
-        this.$toast.success('Weryfikacja dwuetapowa została usunięta')
+        this.$toast.success(this.$t('successMessage') as string)
         this.isModalActive = false
         this.$emit('removed')
       } else {

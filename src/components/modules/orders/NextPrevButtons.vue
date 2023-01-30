@@ -2,8 +2,7 @@
   <div class="next-prev-buttons">
     <a-tooltip>
       <template #title>
-        Użyj <code>Shift + &#8594;</code> aby przejść do kolejnego lub
-        <code>Shift + &#8592;</code> do poprzedniego zamówienia.
+        <div v-html="$t('tooltip')" />
       </template>
 
       <Keypress
@@ -22,8 +21,8 @@
       <div class="next-prev-buttons__content">
         <icon-button
           :disabled="!prevOrder"
-          title="Poprzednie zamówienie"
-          aria-label="Poprzednie zamówienie"
+          :title="$t('prev')"
+          :aria-label="$t('prev')"
           @click="goToPrevOrder"
         >
           <template #icon>
@@ -32,8 +31,8 @@
         </icon-button>
         <icon-button
           :disabled="!nextOrder"
-          title="Następne zamówienie"
-          aria-label="Następne zamówienie"
+          :title="$t('next')"
+          :aria-label="$t('next')"
           @click="goToNextOrder"
         >
           <template #icon>
@@ -45,9 +44,24 @@
   </div>
 </template>
 
+<i18n lang="json">
+{
+  "pl": {
+    "next": "Następne zamówienie",
+    "prev": "Poprzednie zamówienie",
+    "tooltip": "Użyj <code>Shift + &#8594;</code> aby przejść do kolejnego lub <code>Shift + &#8592;</code> do poprzedniego zamówienia."
+  },
+  "en": {
+    "next": "Next order",
+    "prev": "Previous order",
+    "tooltip": "Use <code>Shift + &#8594;</code> to go to next or <code>Shift + &#8592;</code> to previous order."
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
-import { Order } from '@/interfaces/Order'
+import { Order } from '@heseya/store-core'
 
 export default Vue.extend({
   components: {
@@ -55,7 +69,7 @@ export default Vue.extend({
   },
   computed: {
     currentOrder(): Order {
-      return this.$accessor.orders.getSelected
+      return this.$accessor.orders.getSelected || ({} as any)
     },
     orders(): Order[] {
       return this.$accessor.orders.getData

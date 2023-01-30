@@ -1,21 +1,21 @@
 <template>
   <div class="narrower-page">
-    <top-nav :title="!isNew ? page.name : 'Nowa strona'">
+    <top-nav :title="!isNew ? page.name : $t('newTitle')">
       <audits-modal :id="page.id" model="pages" />
 
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Pages.Remove"
-        title="Czy na pewno chcesz usunąć tą stronę?"
-        ok-text="Usuń"
-        cancel-text="Anuluj"
+        :title="$t('deleteText')"
+        :ok-text="$t('common.delete')"
+        :cancel-text="$t('common.cancel')"
         @confirm="deletePage"
       >
         <icon-button type="danger">
           <template #icon>
             <i class="bx bx-trash"></i>
           </template>
-          Usuń
+          {{ $t('common.delete') }}
         </icon-button>
       </pop-confirm>
     </top-nav>
@@ -27,21 +27,21 @@
             <validated-input
               v-model="form.name"
               rules="required"
-              label="Nazwa"
+              :label="$t('common.form.name')"
               :disabled="!canModify"
               @input="editSlug"
             />
             <validated-input
               v-model="form.slug"
               rules="required|slug"
-              label="Link"
+              :label="$t('common.form.slug')"
               :disabled="!canModify"
             />
             <flex-input>
               <switch-input
                 v-model="form.public"
                 horizontal
-                label="Widoczność strony"
+                :label="$t('form.public')"
                 :disabled="!canModify"
               />
             </flex-input>
@@ -55,21 +55,69 @@
           />
 
           <br />
-          <small class="label">Treść</small>
-          <RichEditor v-if="!isLoading" v-model="form.content_html" :disabled="!canModify" />
+          <small class="label">{{ $t('form.content') }}</small>
+          <RichEditor v-model="form.content_html" :disabled="!canModify" />
 
           <br />
-          <app-button v-if="canModify" @click="handleSubmit(save)"> Zapisz </app-button>
+
+          <template v-if="!isNew">
+            <MetadataForm
+              ref="publicMeta"
+              :value="page.metadata"
+              :disabled="!canModify"
+              model="pages"
+            />
+            <MetadataForm
+              v-if="page.metadata_private"
+              ref="privateMeta"
+              :value="page.metadata_private"
+              :disabled="!canModify"
+              is-private
+              model="pages"
+            />
+          </template>
+
+          <br />
+          <app-button v-if="canModify" @click="handleSubmit(save)">
+            {{ $t('common.save') }}
+          </app-button>
         </card>
       </validation-observer>
     </div>
   </div>
 </template>
 
+<i18n lang="json">
+{
+  "pl": {
+    "newTitle": "Nowa strona",
+    "deleteText": "Czy na pewno chcesz usunąć tą stronę?",
+    "deletedMessage": "Strona została usunięty.",
+    "createdMessage": "Strona została utworzona.",
+    "updatedMessage": "Strona została zaktualizowana.",
+    "form": {
+      "public": "Widoczność strony",
+      "content": "Treść"
+    }
+  },
+  "en": {
+    "newTitle": "New page",
+    "deleteText": "Are you sure you want to delete this page?",
+    "deletedMessage": "Page has been deleted",
+    "createdMessage": "Page has been created",
+    "updatedMessage": "Page has been updated",
+    "form": {
+      "public": "Page visibility",
+      "content": "Content"
+    }
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
-import slugify from 'slugify'
 import { ValidationObserver } from 'vee-validate'
+import { Page, PageCreateDto } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
@@ -79,14 +127,19 @@ import RichEditor from '@/components/form/RichEditor.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import SeoForm from '@/components/modules/seo/Accordion.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
+import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
-import { Page, PageDto } from '@/interfaces/Page'
+import { generateSlug } from '@/utils/generateSlug'
+
 import { UUID } from '@/interfaces/UUID'
 
 export default Vue.extend({
-  metaInfo(): any {
-    return { title: this.page?.name || 'Nowa strona' }
+  metaInfo(this: any) {
+    const fallback = this.$t('newTitle') as string
+    return {
+      title: this.isNew ? fallback : this.page?.name || fallback,
+    }
   },
   components: {
     TopNav,
@@ -98,6 +151,7 @@ export default Vue.extend({
     SwitchInput,
     SeoForm,
     AuditsModal,
+    MetadataForm,
   },
   data: () => ({
     form: {
@@ -106,7 +160,7 @@ export default Vue.extend({
       content_html: '',
       public: true,
       seo: {},
-    } as PageDto,
+    } as PageCreateDto,
   }),
   computed: {
     id(): UUID {
@@ -116,7 +170,7 @@ export default Vue.extend({
       return this.id === 'create'
     },
     page(): Page {
-      return this.$accessor.pages.getSelected
+      return this.$accessor.pages.getSelected || ({} as any)
     },
     error(): any {
       return this.$accessor.pages.getError
@@ -150,7 +204,7 @@ export default Vue.extend({
   methods: {
     editSlug() {
       if (this.isNew) {
-        this.form.slug = slugify(this.form.name, { lower: true, remove: /[.]/g })
+        this.form.slug = generateSlug(this.form.name)
       }
     },
     async save() {
@@ -158,16 +212,19 @@ export default Vue.extend({
       if (this.isNew) {
         const page = await this.$accessor.pages.add(this.form)
         if (page && page.id) {
-          this.$toast.success('Strona została utworzona.')
+          this.$toast.success(this.$t('createdMessage') as string)
           this.$router.push(`/pages/${page.id}`)
         }
       } else {
+        // Metadata can be saved only after page is created
+        await this.saveMetadata(this.id)
+
         const success = await this.$accessor.pages.update({
           id: this.id,
           item: this.form,
         })
         if (success) {
-          this.$toast.success('Strona została zaktualizowana.')
+          this.$toast.success(this.$t('updatedMessage') as string)
         }
       }
       this.$accessor.stopLoading()
@@ -176,10 +233,17 @@ export default Vue.extend({
       this.$accessor.startLoading()
       const success = await this.$accessor.pages.remove(this.id)
       if (success) {
-        this.$toast.success('Strona została usunięta.')
+        this.$toast.success(this.$t('deletedMessage') as string)
         this.$router.push('/pages')
       }
       this.$accessor.stopLoading()
+    },
+
+    async saveMetadata(id: string) {
+      await Promise.all([
+        (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id),
+        (this.$refs.publicMeta as MetadataRef)?.saveMetadata(id),
+      ])
     },
   },
 })
@@ -189,13 +253,16 @@ export default Vue.extend({
 .page__info {
   width: 100%;
   display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 30px 30px 20px;
+  grid-auto-flow: row;
   row-gap: 20px;
   margin-top: 15px;
 
   input {
     width: 100%;
+  }
+
+  .app-input {
+    margin-bottom: 0;
   }
 }
 

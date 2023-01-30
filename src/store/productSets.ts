@@ -1,15 +1,13 @@
-import { ProductSet, ProductSetDTO } from '@/interfaces/ProductSet'
+import { ProductSet, ProductSetCreateDto, ProductSetUpdateDto } from '@heseya/store-core'
 import { createVuexCRUD, StoreMutations } from './generator'
-import { findInTree, removeFromTree, updateItemInTree } from '@/utils/tree'
 import { UUID } from '@/interfaces/UUID'
 import { reorderCollection } from '@/services/reorderCollection'
-import { cloneDeep } from 'lodash'
 
-const PARAM = { tree: 1 }
+const PARAM = { root: 1, tree: 0 }
 
 const reorderSets = reorderCollection('product-sets', 'product_sets')
 
-export const productSets = createVuexCRUD<ProductSet, ProductSetDTO, ProductSetDTO>()(
+export const productSets = createVuexCRUD<ProductSet, ProductSetCreateDto, ProductSetUpdateDto>()(
   'product-sets',
   {
     state: {},
@@ -18,47 +16,37 @@ export const productSets = createVuexCRUD<ProductSet, ProductSetDTO, ProductSetD
       [StoreMutations.AddData](state, newSet: ProductSet) {
         // Root level set
         if (!newSet.parent) {
-          state.data = [...state.data, newSet]
-          return
-        }
-
-        // Set in the tree
-        const parent = findInTree(state.data, newSet.parent.id)
-        if (parent) {
-          parent.children = [...parent.children, newSet]
+          state.data = [...state.data, { ...newSet, children_ids: [] }]
         }
       },
 
-      [StoreMutations.EditData](
-        state,
-        { key, value, item }: { key: keyof ProductSet; value: unknown; item: ProductSet },
-      ) {
-        if (state.selected[key] === value) {
+      [StoreMutations.EditData](state, { item }: { item: Partial<ProductSet> & { id: UUID } }) {
+        if (state.selected?.id === item.id) {
           // Edits selected item
-          state.selected = item
-          return
+          // @ts-ignore
+          state.selected = { ...state.selected, ...item }
         }
 
-        state.data = updateItemInTree(state.data, item)
+        // Root level set
+        if (!item.parent) {
+          state.data = state.data.map((state) => {
+            if (state.id === item.id) return { ...state, ...item }
+            return state
+          })
+        } else state.data = state.data.filter((state) => state.id !== item.id)
       },
 
       [StoreMutations.RemoveData](state, { value: id }: { value: UUID }) {
-        state.data = removeFromTree(state.data, id)
+        state.data = state.data.filter((state) => state.id !== id)
       },
     },
     actions: {
       async reorder(_u, productSets: UUID[]) {
         await reorderSets(productSets)
       },
-      async reorderChildren({ state, commit }, { parentId, ids }: { parentId: UUID; ids: UUID[] }) {
+      async reorderChildren({}, { parentId, ids }: { parentId: UUID; ids: UUID[] }) {
         const success = await reorderSets(ids, parentId)
         if (!success) return
-
-        const parent = cloneDeep(findInTree(state.data, parentId))
-        if (!parent) return
-        parent.children = ids.map((id) => parent.children.find((i) => i.id === id)!)
-
-        commit(StoreMutations.EditData, { key: 'id', value: parentId, item: parent })
       },
     },
   },

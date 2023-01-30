@@ -6,10 +6,17 @@
 
   &__label {
     font-size: 0.8em;
+    color: $gray-color-600;
+    margin-bottom: 4px;
   }
 
   &__error {
     color: $red-color-500;
     font-size: 0.7em;
+  }
+
+  &__input {
+    width: 100% !important;
+    border-color: $gray-color-300 !important;
   }
 }

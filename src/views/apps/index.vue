@@ -1,12 +1,12 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList title="Aplikacje" store-key="apps">
+    <PaginatedList :title="$t('title')" store-key="apps">
       <template #nav>
         <icon-button v-can="$p.Apps.Install" @click="openInstallModal()">
           <template #icon>
             <i class="bx bx-plus"></i>
           </template>
-          Dodaj aplikacje
+          {{ $t('add') }}
         </icon-button>
       </template>
 
@@ -44,9 +44,9 @@
 
                 <pop-confirm
                   v-can="$p.Apps.Remove"
-                  title="Czy na pewno chcesz odinstalować tę aplikację?"
-                  ok-text="Usuń"
-                  cancel-text="Anuluj"
+                  :title="$t('deleteText')"
+                  :ok-text="$t('deleteConfirm')"
+                  :cancel-text="$t('common.cancel')"
                   @confirm="uninstallApp(app)"
                 >
                   <icon-button size="small" type="danger">
@@ -63,7 +63,7 @@
     </PaginatedList>
 
     <validation-observer v-slot="{ handleSubmit, errors }">
-      <a-modal v-model="isInstallModalActive" width="550px" title="Dodaj aplikacje" footer="">
+      <a-modal v-model="isInstallModalActive" width="550px" :title="$t('add')" footer="">
         <add-app-form
           v-model="installForm"
           :is-valid-url="errors.url ? errors.url.length === 0 : true"
@@ -75,7 +75,7 @@
     <a-modal
       :visible="isConfigureModalActive"
       width="550px"
-      :title="`Konfiguracja aplikacji ${configuratedApp && configuratedApp.name}`"
+      :title="`${$t('editTitle')} ${configuratedApp && configuratedApp.name}`"
       footer=""
       @cancel="closeConfigurationModal"
     >
@@ -84,10 +84,36 @@
   </div>
 </template>
 
+<i18n lang="json">
+{
+  "pl": {
+    "title": "Aplikacje",
+    "add": "Dodaj aplikacje",
+    "editTitle": "Konfiguracja aplikacji",
+    "deleteText": "Czy na pewno chcesz odinstalować te aplikację?",
+    "deleteForceText": "Aplikacji nie udało się odinstalować, ponieważ nie odpowiada. Czy chcesz ją usunąć siłą?",
+    "deleteConfirm": "Odinstaluj",
+    "deleteMessage": "Aplikacja została odinstalowana",
+    "deleteFailed": "Aplikacja nie może być odinstalowana"
+  },
+  "en": {
+    "title": "Applications",
+    "add": "Add application",
+    "editTitle": "Application configuration",
+    "deleteText": "Are you sure you want to uninstall this application?",
+    "deleteForceText": "Application could not be uninstalled, because it does not respond. Do you want to delete it?",
+    "deleteConfirm": "Uninstall",
+    "deleteMessage": "Application has been uninstalled",
+    "deleteFailed": "Application could not be uninstalled"
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 import { cloneDeep } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
+import { App, AppCreateDto } from '@heseya/store-core'
 
 import ListItem from '@/components/layout/ListItem.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
@@ -96,9 +122,7 @@ import AddForm from '@/components/modules/apps/AddForm.vue'
 import ConfigureAppForm from '@/components/modules/apps/ConfigureAppForm.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 
-import { App, CreateAppDto } from '@/interfaces/App'
-
-const CLEAN_FORM: CreateAppDto = {
+const CLEAN_FORM: AppCreateDto = {
   url: '',
   name: '',
   licence_key: '',
@@ -107,7 +131,9 @@ const CLEAN_FORM: CreateAppDto = {
 }
 
 export default Vue.extend({
-  metaInfo: { title: 'Aplikacje' },
+  metaInfo(this: any) {
+    return { title: this.$t('title') as string }
+  },
   components: {
     ListItem,
     ValidationObserver,
@@ -172,20 +198,20 @@ export default Vue.extend({
       this.$accessor.stopLoading()
 
       if (success) {
-        this.$toast.success('Aplikacja została odinstalowana')
+        this.$accessor.menuItems.removeNotExistingApps()
+        this.$toast.success(this.$t('deleteMessage') as string)
         this.isConfigureModalActive = false
       } else {
         if (!force)
           this.$confirm({
-            title:
-              'Aplikacji nie udało się odinstalować, ponieważ nie odpowiada. Czy chcesz ją usunąć siłą?',
-            okText: 'Odinstaluj',
+            title: this.$t('deleteForceText') as string,
+            okText: this.$t('deleteConfirm') as string,
             okType: 'danger',
             onOk: () => {
               this.uninstallApp(app, true)
             },
           })
-        else this.$toast.error('Aplikacja nie może zostać odinstalowana')
+        else this.$toast.error(this.$t('deleteFailed') as string)
       }
     },
   },

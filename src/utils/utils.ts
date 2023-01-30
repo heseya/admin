@@ -1,6 +1,5 @@
-import { isArray } from 'lodash'
-import queryString from 'query-string'
-
+import { formatRelative } from 'date-fns'
+import { pl, enGB } from 'date-fns/locale'
 import { ALL_FILTER_VALUE } from '../consts/filters'
 import { DateInput } from './dates'
 
@@ -19,41 +18,35 @@ export const getMinutesDiff = (d1: DateInput, d2: DateInput) => {
   return Math.round(diff / 1000 / 60) || 0
 }
 
-export const getRelativeDate = (date: DateInput, lang = 'pl') => {
+export const getRelativeDate = (date: DateInput, lang = 'pl', pattern = 'dd.MM.yyyy, HH:mm') => {
   const today = new Date()
   const actionDate = new Date(date)
 
-  const diff = getDaysDiff(today, actionDate)
-  const minutesDiff = getMinutesDiff(today, actionDate)
+  const baseLocale = lang === 'pl' ? pl : enGB
+  const locale = {
+    ...baseLocale,
+    formatRelative: (token: any, ...args: any[]) =>
+      token === 'other' ? pattern : baseLocale.formatRelative!(token, ...args),
+  }
 
-  const rtf = new Intl.RelativeTimeFormat(lang, { numeric: 'auto' })
-
-  if (diff > -1 && minutesDiff < -59) return rtf.format(Math.round(minutesDiff / 60), 'hours')
-  if (diff > -1) return rtf.format(minutesDiff, 'minute')
-  if (diff > -30) return rtf.format(diff, 'day')
-  else if (diff > -356) return rtf.format(Math.floor(diff / 30), 'month')
-  else return rtf.format(Math.floor(diff / 365), 'year')
+  return formatRelative(actionDate, today, { locale })
 }
 
 export const formatFilters = (filters: Record<string, unknown>) => {
   return Object.fromEntries(
     Object.entries(filters).filter(([, v]) => {
-      if (isArray(v)) return v.filter((x) => x !== ALL_FILTER_VALUE).length > 0
-      return v !== ALL_FILTER_VALUE && v !== ''
+      if (Array.isArray(v)) return v.filter((x) => x !== ALL_FILTER_VALUE).length > 0
+      return v !== ALL_FILTER_VALUE && v !== '' && v !== 0
     }),
   )
 }
 
-export const formatApiNotification = ({ title, text }: { title: string; text?: string }) => {
-  return text
+export const formatApiNotification = (title: string, ...messages: string[]) => {
+  return messages
     ? `
   <span class="notification__title">${title}</span>
-  <span class="notification__text">${text}</span>
+
+  ${messages.map((msg) => `<span class="notification__text">${msg}</span>`).join('')}
   `
     : title
-}
-
-export const stringifyQuery = (payload: Record<string, any>) => {
-  const query = queryString.stringify(payload, { arrayFormat: 'bracket' })
-  return query ? `?${query}` : ''
 }

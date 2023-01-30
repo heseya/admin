@@ -1,12 +1,12 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList title="Tagi" store-key="tags">
+    <PaginatedList :title="$t('title')" store-key="tags">
       <template #nav>
         <icon-button v-can="$p.Tags.Add" @click="openModal()">
           <template #icon>
             <i class="bx bx-plus"></i>
           </template>
-          Dodaj tag
+          {{ $t('add') }}
         </icon-button>
       </template>
       <template #default="{ item: tag }">
@@ -23,36 +23,38 @@
       <a-modal
         v-model="isModalActive"
         width="550px"
-        :title="editedItem.id ? 'Edycja taga' : 'Nowy tag'"
+        :title="editedItem.id ? $t('editTitle') : $t('newTitle')"
       >
         <modal-form>
           <validated-input
             v-model="editedItem.name"
             :disabled="!canModify"
             rules="required"
-            label="Nazwa"
+            :label="$t('common.form.name')"
           />
 
           <validated-input
             :disabled="!canModify"
             rules="required"
             :value="`#${editedItem.color}`"
-            label="Kolor"
+            :label="$t('form.color')"
             type="color"
             @input="setColor"
           />
         </modal-form>
         <template #footer>
           <div class="row">
-            <app-button v-if="canModify" @click="handleSubmit(saveModal)"> Zapisz </app-button>
+            <app-button v-if="canModify" @click="handleSubmit(saveModal)">
+              {{ $t('common.save') }}
+            </app-button>
             <pop-confirm
               v-can="$p.Tags.Remove"
-              title="Czy na pewno chcesz usunąć ten tag?"
-              ok-text="Usuń"
-              cancel-text="Anuluj"
+              :title="$t('deleteText')"
+              :ok-text="$t('common.delete')"
+              :cancel-text="$t('common.cancel')"
               @confirm="deleteItem"
             >
-              <app-button v-if="editedItem.id" type="danger">Usuń</app-button>
+              <app-button v-if="editedItem.id" type="danger">{{ $t('common.delete') }}</app-button>
             </pop-confirm>
           </div>
         </template>
@@ -61,10 +63,36 @@
   </div>
 </template>
 
+<i18n lang="json">
+{
+  "pl": {
+    "title": "Tagi",
+    "add": "Dodaj tag",
+    "editTitle": "Edycja taga",
+    "newTitle": "Nowy tag",
+    "deleteText": "Czy na pewno chcesz usunąć ten tag?",
+    "form": {
+      "color": "Kolor"
+    }
+  },
+  "en": {
+    "title": "Tags",
+    "add": "Add tag",
+    "editTitle": "Edit tag",
+    "newTitle": "New tag",
+    "deleteText": "Are you sure you want to delete this tag?",
+    "form": {
+      "color": "Color"
+    }
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { clone } from 'lodash'
+import { Tag } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
@@ -73,7 +101,6 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import Avatar from '@/components/layout/Avatar.vue'
 
 import { UUID } from '@/interfaces/UUID'
-import { Tag } from '@/interfaces/Tag'
 
 const CLEAR_TAG: Tag = {
   id: '',
@@ -82,7 +109,9 @@ const CLEAR_TAG: Tag = {
 }
 
 export default Vue.extend({
-  metaInfo: { title: 'Tagi' },
+  metaInfo(this: any) {
+    return { title: this.$t('title') as string }
+  },
   components: {
     PaginatedList,
     ListItem,

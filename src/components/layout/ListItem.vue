@@ -3,6 +3,7 @@
     :is="component"
     :to="url"
     class="list-item"
+    type="button"
     :class="{ 'list-item--no-hover': noHover }"
     @click.stop="click"
   >
@@ -73,6 +74,7 @@ export default Vue.extend({
   text-align: left;
 
   &__content {
+    width: 100%;
     font-weight: 600;
   }
 
@@ -92,8 +94,12 @@ export default Vue.extend({
   }
 
   small {
-    display: block;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
     color: #aaaaaa;
+    word-break: break-word;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
 
     b {
       color: #666666;

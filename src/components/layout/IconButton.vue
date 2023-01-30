@@ -4,6 +4,7 @@
     :to="to"
     class="icon-button"
     :type="htmlType"
+    :data-cy="dataCy"
     :class="[
       `icon-button--${type}`,
       `icon-button--${size}`,
@@ -14,7 +15,7 @@
       },
     ]"
     :disabled="disabled"
-    @click="(e) => $emit('click', e)"
+    @click="onClick"
   >
     <div class="icon-button__text">
       <slot></slot>
@@ -52,15 +53,31 @@ export default Vue.extend({
     type: {
       type: String,
       default: 'primary',
-    } as Vue.PropOptions<'default' | 'primary' | 'danger' | 'transparent' | 'success' | 'black'>,
+    } as Vue.PropOptions<
+      | 'default'
+      | 'primary'
+      | 'danger'
+      | 'transparent'
+      | 'transparent-white'
+      | 'success'
+      | 'black'
+      | 'burgund'
+    >,
     size: {
       type: String,
       default: 'default',
-    } as Vue.PropOptions<'small' | 'default'>,
+    } as Vue.PropOptions<'small' | 'default' | 'big'>,
+    dataCy: { type: String, default: '' },
   },
   computed: {
     component(): string {
       return this.to ? 'router-link' : this.el || 'button'
+    },
+  },
+  methods: {
+    onClick(e: Event) {
+      if (this.htmlType !== 'submit' && !this.to) e.preventDefault()
+      this.$emit('click', e)
     },
   },
 })
@@ -75,6 +92,7 @@ export default Vue.extend({
 
   $small-icon-size: 24px;
   $default-icon-size: 29px;
+  $big-icon-size: 34px;
 
   all: unset;
   cursor: pointer;
@@ -106,6 +124,7 @@ export default Vue.extend({
     transition: 0.3s;
     background-color: $background-color-700;
     margin-left: $inner-margin;
+    flex-shrink: 0;
 
     img {
       object-fit: contain;
@@ -151,6 +170,15 @@ export default Vue.extend({
     }
   }
 
+  &--big {
+    font-size: 1.2rem;
+
+    #{$root}__icon {
+      width: $big-icon-size;
+      height: $big-icon-size;
+    }
+  }
+
   &--primary {
     color: $primary-color-500;
 
@@ -174,6 +202,19 @@ export default Vue.extend({
     &:hover {
       background-color: $background-color-600;
       color: $font-color;
+    }
+  }
+
+  &--transparent-white {
+    color: #fff !important;
+
+    #{$root}__icon {
+      background-color: #ffffff00;
+    }
+
+    &:hover {
+      background-color: $background-color-600;
+      color: $font-color !important;
     }
   }
 
@@ -212,6 +253,19 @@ export default Vue.extend({
 
     &:hover {
       background-color: $font-color;
+      color: #ffffff;
+    }
+  }
+
+  &--burgund {
+    color: #ffffff;
+
+    #{$root}__icon {
+      background-color: $primary-color-500;
+    }
+
+    &:hover {
+      background-color: $primary-color-500;
       color: #ffffff;
     }
   }

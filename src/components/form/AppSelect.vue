@@ -10,8 +10,16 @@
       :data-cy="dataCy || name"
       v-on="$listeners"
     >
-      <a-select-option v-if="addAll" value="_all" label="Wszystkie"> Wszystkie </a-select-option>
+      <a-select-option v-if="addAll" value="_all" :label="allText || $t('all')">
+        {{ allText || $t('all') }}
+      </a-select-option>
       <slot></slot>
+
+      <template #notFoundContent>
+        <slot name="notFoundContent">
+          <empty> {{ $t('notFoundContent') }} </empty>
+        </slot>
+      </template>
     </a-select>
     <span class="app-input__error">
       <slot name="error"> {{ error }} </slot>
@@ -19,12 +27,27 @@
   </div>
 </template>
 
+<i18n lang="json">
+{
+  "pl": {
+    "all": "Wszystkie",
+    "notFoundContent": "Brak wyników"
+  },
+  "en": {
+    "all": "All",
+    "notFoundContent": "No results found"
+  }
+}
+</i18n>
+
 <script lang="ts">
 /* eslint-disable vue/require-default-prop */
 import Vue from 'vue'
+import Empty from '../layout/Empty.vue'
 
 export default Vue.extend({
   name: 'AppSelect',
+  components: { Empty },
   props: {
     value: [String, Number, Array],
     label: String,
@@ -38,8 +61,10 @@ export default Vue.extend({
     loading: Boolean,
     disabled: Boolean,
     addAll: Boolean,
+    allText: String,
     showSearch: Boolean,
     labelInValue: Boolean,
+    filterOption: Boolean,
     tokenSeparators: Array,
     optionFilterProp: String,
     dataCy: String,

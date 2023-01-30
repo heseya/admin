@@ -1,15 +1,19 @@
 <template>
   <div class="gallery">
-    <draggable
-      v-model="images"
-      class="gallery__images"
-      :options="{ filter: '.undragabble' }"
+    <media-upload-input
       :disabled="disabled"
-    >
+      class="gallery__upload-btn"
+      :icon-path="require('@/assets/images/icons/plus-icon.svg')"
+      @upload="onImageUpload"
+    />
+
+    <span class="gallery__info-text"> {{ $t('infoText') }} </span>
+
+    <draggable v-model="images" class="gallery__images" :disabled="disabled">
       <div v-for="image in images" :key="image.url" class="gallery__img">
         <media-element :media="image" :size="350" />
         <div class="gallery__remove-img">
-          <icon-button v-if="!disabled" type="danger" @click="onImageDelete(image.id)">
+          <icon-button v-if="!disabled" type="danger" size="small" @click="onImageDelete(image.id)">
             <template #icon>
               <i class="bx bx-trash"></i>
             </template>
@@ -23,39 +27,39 @@
           @update="updateMedia"
         />
       </div>
-      <app-media-uploader
-        v-if="!disabled"
-        class="gallery__img gallery__add-btn undragabble"
-        :class="{ 'gallery__add-btn--drag': isDrag, 'gallery__add-btn--big': images.length === 0 }"
-        multiple
-        @dragChange="dragChange"
-        @upload="onImageUpload"
-        @error="onUploadError"
-      >
-        <img src="@/assets/images/icons/plus-icon.svg" />
-      </app-media-uploader>
     </draggable>
   </div>
 </template>
 
+<i18n lang="json">
+{
+  "pl": {
+    "infoText": "Przeciągaj elementy aby ustawić ich kolejność"
+  },
+  "en": {
+    "infoText": "Drag and drop elements to set their order"
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 import Draggable from 'vuedraggable'
+import { CdnMedia, CdnMediaType } from '@heseya/store-core'
 
-import MediaUploader from '@/components/modules/media/MediaUploader.vue'
-import { formatApiNotificationError } from '@/utils/errors'
 import { UUID } from '@/interfaces/UUID'
-import { CdnMedia, CdnMediaType } from '@/interfaces/Media'
 import { removeMedia } from '@/services/uploadMedia'
+
 import MediaEditForm from '@/components/modules/media/MediaEditForm.vue'
 import MediaElement from '@/components/MediaElement.vue'
+import MediaUploadInput from '../media/MediaUploadInput.vue'
 
 export default Vue.extend({
   components: {
-    appMediaUploader: MediaUploader,
     Draggable,
     MediaEditForm,
     MediaElement,
+    MediaUploadInput,
   },
   props: {
     value: {
@@ -66,7 +70,6 @@ export default Vue.extend({
   },
   data: () => ({
     mediaToDelete: [] as UUID[],
-    isDrag: false,
   }),
   computed: {
     CdnMediaType(): typeof CdnMediaType {
@@ -81,17 +84,17 @@ export default Vue.extend({
       },
     },
   },
+
   mounted() {
     window.addEventListener('beforeunload', this.removeTouchedFiles)
   },
+
   destroyed() {
     window.removeEventListener('beforeunload', this.removeTouchedFiles)
     this.removeTouchedFiles()
   },
+
   methods: {
-    dragChange(isDrag: boolean) {
-      this.isDrag = isDrag
-    },
     onImageDelete(deletedId: UUID) {
       this.images = this.images.filter(({ id }) => deletedId !== id)
 
@@ -103,9 +106,6 @@ export default Vue.extend({
     onImageUpload(file: CdnMedia) {
       this.images = [...this.images, file]
       this.mediaToDelete = [...this.mediaToDelete, file.id]
-    },
-    onUploadError(error: any) {
-      this.$toast.error(formatApiNotificationError(error))
     },
     clearMediaToDelete() {
       this.mediaToDelete = []
@@ -126,26 +126,34 @@ export default Vue.extend({
 
 <style lang="scss">
 .gallery {
-  &__images {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-gap: 10px;
+  padding-top: 12px;
 
-    *:first-child {
-      grid-column: 1/3;
-      grid-row: 1/3;
-    }
+  &__upload-btn {
   }
 
-  &__add-btn,
+  &__info-text {
+    display: block;
+    color: $gray-color-600;
+    text-align: center;
+    font-size: 0.8em;
+    letter-spacing: 0.55px;
+    margin: 16px 0 12px;
+  }
+
+  &__images {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 10px;
+  }
+
   &__img {
     position: relative;
     width: 100%;
     padding-top: 100%;
-    margin-bottom: 4px;
     background-color: #ffffff;
     box-shadow: $shadow;
-    border-radius: 7px;
+    border-radius: 4px;
+    cursor: move;
 
     .media-element {
       position: absolute;
@@ -155,31 +163,7 @@ export default Vue.extend({
       width: 100%;
       object-fit: cover;
       background-color: #ffffff;
-      border-radius: 7px;
-    }
-  }
-
-  &__add-btn {
-    &--big {
-      width: 50%;
-      padding-top: 50%;
-      margin-top: 0;
-    }
-
-    img {
-      position: absolute;
-      top: 40%;
-      left: 40%;
-      height: 20%;
-      width: 20%;
-      transition: 0.3s;
-    }
-
-    &:hover,
-    &--drag {
-      img {
-        transform: scale(1.5);
-      }
+      border-radius: 4px;
     }
   }
 
@@ -194,7 +178,7 @@ export default Vue.extend({
   }
 
   &__edit-img {
-    right: 24px;
+    right: 18px;
   }
 
   &__img:hover &__remove-img,

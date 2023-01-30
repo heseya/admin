@@ -1,6 +1,6 @@
 <template>
   <div class="permissions-manager">
-    <span class="permissions-manager__title">Uprawnienia roli</span>
+    <span class="permissions-manager__title">{{ $t('title') }}</span>
     <div v-for="{ section, permissions: groupPerms, isAssignable } in grouped" :key="section">
       <span class="permissions-manager__subtitle">
         <a-checkbox
@@ -9,7 +9,7 @@
           :indeterminate="hasSome(section) && !(hasAll(section) && isAssignable)"
           @change="() => changeAll(section)"
         >
-          {{ PERMISSIONS_GROUP_LABELS[section] || section.replace(/_/g, ' ') }}
+          {{ $te(`sections.${section}`) ? $t(`sections.${section}`) : section.replace(/_/g, ' ') }}
         </a-checkbox>
       </span>
 
@@ -23,27 +23,105 @@
         >
           {{ perm.display_name || perm.name }}
 
-          <a-tooltip v-if="perm.description">
-            <template #title> {{ perm.description }} </template>
-            <i class="bx bxs-info-circle"></i>
-          </a-tooltip>
+          <info-tooltip v-if="perm.description"> {{ perm.description }} </info-tooltip>
         </a-checkbox>
       </div>
     </div>
   </div>
 </template>
 
+<i18n lang="json">
+{
+  "pl": {
+    "title": "Uprawnienia roli",
+    "sections": {
+      "admin": "Administracja",
+      "analytics": "Statystyka",
+      "apps": "Zarządzanie aplikacjami",
+      "app": "Aplikacje zewnętrzne",
+      "audits": "Historia zmian",
+      "auth": "Autoryzacja użytkowników",
+      "banners": "Bannery",
+      "product_sets": "Kolekcje",
+      "consents": "Zgody",
+      "countries": "Kraje",
+      "shipping_methods": "Metody dostawy",
+      "deposits": "Depozyty",
+      "media": "Media",
+      "options": "Opcje",
+      "coupons": "Kody rabatowe",
+      "sales": "Promocje",
+      "items": "Przedmioty magazynowe",
+      "schemas": "Schematy",
+      "cart": "Koszyk",
+      "orders": "Zamówienia ",
+      "packages": "Szablony przesyłek",
+      "pages": "Strony",
+      "profile": "Profil użytkownika",
+      "payments": "Płatności",
+      "payment_methods": "Metody Płatności",
+      "products": "Produkty",
+      "settings": "Ustawienia zaawansowane",
+      "statuses": "Statusy zamówień",
+      "tags": "Tagi",
+      "users": "Użytkownicy",
+      "roles": "Role użytkowników",
+      "webhooks": "Webhooki",
+      "events": "Wydarzenia aktywujące Webhooki",
+      "seo": "SEO",
+      "attributes": "Cechy"
+    }
+  },
+  "en": {
+    "title": "Permissions manager",
+    "sections": {
+      "admin": "Administration",
+      "analytics": "Analytics",
+      "apps": "Apps management",
+      "app": "External apps",
+      "audits": "Audits",
+      "auth": "Auth",
+      "banners": "Banners",
+      "product_sets": "Product sets",
+      "consents": "Consents",
+      "countries": "Countries",
+      "shipping_methods": "Shipping methods",
+      "deposits": "Deposits",
+      "media": "Media",
+      "options": "Options",
+      "coupons": "Coupons",
+      "sales": "Sales",
+      "items": "Items",
+      "schemas": "Schemas",
+      "cart": "Cart",
+      "orders": "Orders",
+      "packages": "Packages",
+      "pages": "Pages",
+      "profile": "User profile",
+      "payments": "Payments",
+      "payment_methods": "Payment methods",
+      "products": "Products",
+      "settings": "Advanced settings",
+      "statuses": "Statuses",
+      "tags": "Tags",
+      "users": "Users",
+      "roles": "Roles",
+      "webhooks": "Webhooks",
+      "events": "Webhooks events",
+      "seo": "SEO",
+      "attributes": "Attributes"
+    }
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 import { groupBy } from 'lodash'
-
 import { Permission, PermissionObject } from '@/interfaces/Permissions'
-import { PERMISSIONS_GROUP_LABELS } from '@/consts/permissions'
-
-type SectionKey = keyof typeof PERMISSIONS_GROUP_LABELS
 
 interface GroupedPermissions {
-  section: SectionKey
+  section: string
   permissions: PermissionObject[]
   assignablePermissions: PermissionObject[]
   isAssignable: boolean
@@ -76,15 +154,12 @@ export default Vue.extend({
       const grouped = groupBy(this.permissions, (p) => p.name.split('.')[0])
       return Object.keys(grouped)
         .map((section) => ({
-          section: section as SectionKey,
+          section: section,
           permissions: grouped[section],
           assignablePermissions: grouped[section].filter((p) => p.assignable),
           isAssignable: grouped[section].some((p) => p.assignable),
         }))
         .sort((a, b) => (a.section > b.section ? 1 : -1))
-    },
-    PERMISSIONS_GROUP_LABELS(): typeof PERMISSIONS_GROUP_LABELS {
-      return PERMISSIONS_GROUP_LABELS
     },
   },
   created() {

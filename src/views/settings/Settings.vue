@@ -1,12 +1,12 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList title="Ustawienia zaawansowane" store-key="settings">
+    <PaginatedList :title="$t('title')" store-key="settings">
       <template #nav>
         <icon-button v-can="$p.Settings.Add" @click="openModal()">
           <template #icon>
             <i class="bx bx-plus"></i>
           </template>
-          Dodaj ustawienie
+          {{ $t('add') }}
         </icon-button>
       </template>
       <template #default="{ item: setting }">
@@ -21,13 +21,13 @@
       <a-modal
         v-model="isModalActive"
         width="550px"
-        :title="editedItem.id ? 'Edycja ustawienie' : 'Nowe ustawienie'"
+        :title="editedItem.id ? $t('editTitle') : $t('newTitle')"
       >
         <modal-form>
           <validated-input
             v-model="editedItem.name"
             rules="required|letters-only"
-            label="Klucz"
+            :label="$t('form.name')"
             :disabled="editedItem.permanent || !canModify"
           />
 
@@ -35,24 +35,26 @@
             v-model="editedItem.value"
             :disabled="!canModify"
             rules="required"
-            label="Wartość"
+            :label="$t('form.value')"
           />
 
           <SwitchInput
             v-model="editedItem.public"
             :disabled="!canModify"
-            label="Wartość publiczna"
+            :label="$t('form.public')"
             horizontal
           />
         </modal-form>
         <template #footer>
           <div class="row">
-            <app-button v-if="canModify" @click="handleSubmit(saveModal)"> Zapisz </app-button>
+            <app-button v-if="canModify" @click="handleSubmit(saveModal)">
+              {{ $t('common.save') }}
+            </app-button>
             <pop-confirm
               v-can="$p.Settings.Remove"
-              title="Czy na pewno chcesz usunąć to ustawienie?"
-              ok-text="Usuń"
-              cancel-text="Anuluj"
+              :title="$t('deleteText')"
+              :ok-text="$t('common.delete')"
+              :cancel-text="$t('common.cancel')"
               @confirm="deleteItem"
             >
               <app-button
@@ -61,7 +63,7 @@
                 type="danger"
                 :disabled="editedItem.permanent"
               >
-                Usuń
+                {{ $t('common.delete') }}
               </app-button>
             </pop-confirm>
           </div>
@@ -71,18 +73,46 @@
   </div>
 </template>
 
+<i18n lang="json">
+{
+  "pl": {
+    "title": "Ustawienia zaawansowane",
+    "add": "Dodaj ustawienie",
+    "editTitle": "Edycja ustawienia",
+    "newTitle": "Nowy ustawienie",
+    "deleteText": "Czy na pewno chcesz usunąć to ustawienie?",
+    "form": {
+      "name": "Klucz",
+      "value": "Wartość",
+      "public": "Wartość publiczna"
+    }
+  },
+  "en": {
+    "title": "Advanced settings",
+    "add": "Add setting",
+    "editTitle": "Edit setting",
+    "newTitle": "New setting",
+    "deleteText": "Are you sure you want to delete this setting?",
+    "form": {
+      "name": "Key",
+      "value": "Value",
+      "public": "Public value"
+    }
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 import clone from 'lodash/clone'
 import { ValidationObserver } from 'vee-validate'
+import { Setting } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-
-import { Setting } from '@/interfaces/Settings'
 
 const CLEAR_SETTING: Setting = {
   id: '',
@@ -93,7 +123,11 @@ const CLEAR_SETTING: Setting = {
 }
 
 export default Vue.extend({
-  metaInfo: { title: 'Ustawienia zaawansowane' },
+  metaInfo(this: any) {
+    return {
+      title: this.$t('title') as string,
+    }
+  },
   components: {
     PaginatedList,
     ListItem,
@@ -141,7 +175,7 @@ export default Vue.extend({
       } else {
         await this.$accessor.settings.add(this.editedItem)
       }
-      await this.$accessor.fetchEnv()
+      await this.$accessor.config.fetchSettings()
       this.$accessor.stopLoading()
       this.isModalActive = false
     },

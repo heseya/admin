@@ -12,7 +12,7 @@
         <template #icon>
           <i class="bx bx-left-arrow-alt"></i>
         </template>
-        Wróć do listy
+        {{ $t('back') }}
       </icon-button>
 
       <div v-else class="header__text">{{ storeName }}</div>
@@ -27,9 +27,9 @@
         <template #overlay>
           <a-menu>
             <a-menu-item>
-              <router-link to="/settings">Ustawienia</router-link>
+              <router-link to="/settings"> {{ $t('settings') }}</router-link>
             </a-menu-item>
-            <a-menu-item @click="logout">Wyloguj się </a-menu-item>
+            <a-menu-item @click="logout"> {{ $t('logout') }} </a-menu-item>
           </a-menu>
         </template>
       </a-dropdown>
@@ -37,23 +37,44 @@
   </header>
 </template>
 
+<i18n lang="json">
+{
+  "pl": {
+    "back": "Wróć do listy",
+    "settings": "Ustawienia",
+    "logout": "Wyloguj się"
+  },
+  "en": {
+    "back": "Return to list",
+    "settings": "Settings",
+    "logout": "Log out"
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 import last from 'lodash/last'
-
-import { User } from '@/interfaces/User'
+import { User } from '@heseya/store-core'
 
 export default Vue.extend({
   name: 'AppHeader',
+
   computed: {
     isHidden(): boolean {
       return !!this.$route.meta?.hiddenNav || false
     },
     storeName(): string {
-      return this.$accessor.env.store_name
+      return this.$accessor.config.env.store_name
     },
     returnUrl(): string | null {
-      return this.$route.meta?.returnUrl || null
+      const previousRoute: { path: string; fullPath: string } | null = JSON.parse(
+        window.sessionStorage.getItem('previousRoute') ?? 'null',
+      )
+      const returnUrl = this.$route.meta?.returnUrl || null
+      // If the previous route match the return url, then return previous full route path cause it's also includes the query params
+      // Otherwise simply return the return url
+      return previousRoute?.path === returnUrl ? previousRoute?.fullPath : returnUrl
     },
     user(): User | null {
       return this.$accessor.auth.user
@@ -62,6 +83,7 @@ export default Vue.extend({
       return last(this.user?.roles)?.name || ''
     },
   },
+
   methods: {
     async logout() {
       await this.$accessor.auth.logout()
@@ -86,9 +108,6 @@ export default Vue.extend({
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-  }
-
-  &__return-btn {
   }
 
   &--hidden {

@@ -1,6 +1,6 @@
 <template>
   <div class="pagination">
-    <p-button v-if="showFirstButton" :page="1" :current="page" @click="set(1)"> 1 </p-button>
+    <p-button v-if="showFirstButton" :page="1" :current="page" @click="set(1)"> {{ 1 }} </p-button>
     <div v-if="showFirstSpacer" class="pagination__space">...</div>
 
     <p-button v-for="i in showable" :key="i" :page="i" :current="page" @click="set(i)">
@@ -19,13 +19,24 @@
       shadow
       @click="next"
     >
-      Następna
+      {{ $t('nextPage') }}
       <template #icon>
         <i class="bx bxs-chevron-right"></i>
       </template>
     </app-button>
   </div>
 </template>
+
+<i18n lang="json">
+{
+  "pl": {
+    "nextPage": "Następna"
+  },
+  "en": {
+    "nextPage": "Next"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

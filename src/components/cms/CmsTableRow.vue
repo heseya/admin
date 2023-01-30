@@ -3,14 +3,30 @@
     :is="component"
     :to="to"
     class="cms-table-row"
-    :class="{ 'cms-table-row--no-hover': noHover }"
+    :class="{ 'cms-table-row--no-hover': noHover, 'cms-table-row--draggable': draggable }"
     @click.stop="click"
   >
-    <div v-for="{ key, label, value, rawValue } in values" :key="key" class="cms-table-row__col">
+    <icon-button class="cms-table-row__reorder reorder-handle" size="small" type="transparent">
+      <template #icon> <i class="bx bx-menu"></i> </template>
+    </icon-button>
+
+    <div
+      v-for="{ key, label, value, rawValue, wordBreak } in values"
+      :key="key"
+      class="cms-table-row__col"
+      :class="{ 'cms-table-row__col--break': wordBreak && wordBreak !== 'none' }"
+    >
       <span class="cms-table-row__col-label">{{ label }}</span>
-      <span class="cms-table-row__col-value">
+      <span
+        class="cms-table-row__col-value"
+        :class="{
+          'cms-table-row__col-value--break-all': wordBreak === 'break-all',
+          'cms-table-row__col-value--break-word': wordBreak === 'break-word',
+        }"
+      >
         <slot :name="key" v-bind="{ key, label, value, rawValue, item }">
-          {{ value }}
+          <BooleanTag v-if="typeof value === 'boolean'" small :value="value" />
+          <span v-else> {{ value }} </span>
         </slot>
       </span>
     </div>
@@ -20,7 +36,6 @@
 <script lang="ts">
 import Vue from 'vue'
 import get from 'lodash/get'
-
 import { TableHeader, TableValue } from '@/interfaces/CmsTable'
 
 export default Vue.extend({
@@ -34,6 +49,10 @@ export default Vue.extend({
       default: 'button',
     },
     noHover: {
+      type: Boolean,
+      default: false,
+    },
+    draggable: {
       type: Boolean,
       default: false,
     },
@@ -52,13 +71,14 @@ export default Vue.extend({
       return this.el
     },
     values(): TableValue[] {
-      return this.headers.map(({ key, label, render }) => {
+      return this.headers.map(({ key, label, render, wordBreak }) => {
         const rawValue = get(this.item, key)
         return {
           key,
           label,
-          value: render?.(rawValue) ?? rawValue,
+          value: render?.(rawValue, this.item) ?? rawValue,
           rawValue,
+          wordBreak: wordBreak ?? 'none',
         }
       })
     },
@@ -73,6 +93,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .cms-table-row {
+  $cms: &;
   border: none;
   @extend %card;
   box-shadow: none;
@@ -107,6 +128,25 @@ export default Vue.extend({
     background-color: $primary-color-100;
   }
 
+  &--draggable {
+    padding-left: 30px !important;
+    position: relative;
+  }
+
+  &--draggable &__reorder {
+    display: block;
+  }
+
+  &__reorder {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 8px;
+    cursor: move;
+    transform: translateY(-55%);
+    color: $gray-color-500;
+  }
+
   &--no-hover {
     cursor: default;
 
@@ -124,6 +164,10 @@ export default Vue.extend({
     @media ($viewport-11) {
       padding: 16px;
     }
+
+    &--break {
+      overflow: hidden;
+    }
   }
 
   &__col-label {
@@ -139,6 +183,14 @@ export default Vue.extend({
 
   &__col-value {
     color: $font-color;
+
+    &--break-all {
+      word-break: break-all;
+    }
+
+    &--break-word {
+      word-break: break-word;
+    }
   }
 }
 </style>

@@ -3,22 +3,35 @@
     <a-modal
       v-model="isActive"
       class="password-confirm-modal"
-      :ok-text="okText"
-      cancel-text="Anuluj"
-      :title="title"
+      :ok-text="okText || $t('common.continue')"
+      :cancel-text="$t('common.cancel')"
+      :title="title || $t('defaultText')"
       :ok-type="okType"
       @ok="handleSubmit(confirm)"
     >
       <validated-input
         v-model="password"
         icon-after
-        label="Hasło"
+        :label="$t('password')"
         type="password"
         rules="required"
       />
     </a-modal>
   </validation-observer>
 </template>
+
+<i18n lang="json">
+{
+  "pl": {
+    "defaultText": "Wpisz swoje hasło, aby potwierdzić operację.",
+    "password": "Hasło"
+  },
+  "en": {
+    "defaultText": "Enter your password to confirm the operation",
+    "password": "Password"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
@@ -35,11 +48,11 @@ export default Vue.extend({
     },
     title: {
       type: String,
-      default: 'Wpisz swoje hasło, aby potwierdzić operację',
+      default: null,
     },
     okText: {
       type: String,
-      default: 'Kontynuuj',
+      default: null,
     },
     okType: {
       type: String,

@@ -1,30 +1,62 @@
 <template>
   <div class="address-form">
-    <validated-input v-model="form.name" rules="required" name="name" label="Imię i nazwisko" />
-    <validated-input v-model="form.address" rules="required" name="address" label="Adres" />
+    <validated-input v-model="form.name" rules="required" name="name" :label="$t('name')" />
+    <validated-input
+      v-model="form.address"
+      rules="required"
+      name="address"
+      :label="$t('address')"
+    />
     <div class="address-form__row">
-      <validated-input v-model="form.zip" rules="required" name="address" label="Kod pocztowy" />
-      <validated-input v-model="form.city" rules="required" name="address" label="Miasto" />
+      <validated-input v-model="form.zip" rules="required" name="zip" :label="$t('zip')" />
+      <validated-input v-model="form.city" rules="required" name="city" :label="$t('city')" />
     </div>
     <ValidationProvider rules="required" tag="div" class="address-form__select">
-      <app-select v-model="form.country" label="Kraj" show-search option-filter-prop="label">
+      <app-select
+        v-model="form.country"
+        :label="$t('country')"
+        show-search
+        option-filter-prop="label"
+      >
         <a-select-option v-for="country in countries" :key="country.code" :label="country.name">
           {{ country.name }}
         </a-select-option>
       </app-select>
     </ValidationProvider>
-    <validated-input v-model="form.phone" rules="required" name="address" label="Telefon" />
-    <validated-input v-model="form.vat" name="address" label="NIP" />
+    <validated-input v-model="form.phone" rules="required" name="phone" :label="$t('phone')" />
+    <validated-input v-model="form.vat" name="vat" :label="$t('vat')" />
   </div>
 </template>
+
+<i18n lang="json">
+{
+  "pl": {
+    "name": "Imię i nazwisko",
+    "address": "Adres",
+    "zip": "Kod pocztowy",
+    "city": "Miasto",
+    "country": "Kraj",
+    "phone": "Telefon",
+    "vat": "NIP"
+  },
+  "en": {
+    "name": "Name",
+    "address": "Address",
+    "zip": "Zip code",
+    "city": "City",
+    "country": "Country",
+    "phone": "Phone",
+    "vat": "VAT ID"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationProvider } from 'vee-validate'
+import { Address, ShippingCountry } from '@heseya/store-core'
 
-import { Address } from '@/interfaces/Address'
-import { Country } from '@/interfaces/Country'
-import { api } from '@/api'
+import { sdk } from '@/api'
 
 export default Vue.extend({
   name: 'AddressForm',
@@ -38,7 +70,7 @@ export default Vue.extend({
     } as Vue.PropOptions<Address>,
   },
   data: () => ({
-    countries: [] as Country[],
+    countries: [] as ShippingCountry[],
   }),
   computed: {
     form: {
@@ -54,10 +86,7 @@ export default Vue.extend({
     },
   },
   async created() {
-    const {
-      data: { data: countries },
-    } = await api.get<{ data: Country[] }>('/countries')
-    this.countries = countries
+    this.countries = await sdk.ShippingMethods.getCountries()
   },
 })
 </script>

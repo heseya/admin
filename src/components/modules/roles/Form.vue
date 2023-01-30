@@ -1,12 +1,25 @@
 <template>
   <validation-observer v-slot="{ handleSubmit }">
     <card>
-      <validated-input v-model="form.name" rules="required" label="Nazwa" :disabled="disabled" />
-      <validated-input v-model="form.description" label="Opis" :disabled="disabled" />
+      <validated-input
+        v-model="form.name"
+        rules="required"
+        :label="$t('common.form.name')"
+        :disabled="disabled"
+      />
+      <validated-input
+        v-model="form.description"
+        :label="$t('common.form.description')"
+        :disabled="disabled"
+      />
       <br />
       <permissions-manager v-model="form.permissions" :disabled="disabled" />
       <br />
-      <app-button v-if="!disabled" @click="handleSubmit(submit)"> Zapisz </app-button>
+      <slot></slot>
+      <br />
+      <app-button v-if="!disabled" @click="handleSubmit(submit)">
+        {{ $t('common.save') }}
+      </app-button>
     </card>
   </validation-observer>
 </template>
@@ -14,11 +27,10 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
+import { RoleCreateDto } from '@heseya/store-core'
 
 import Card from '@/components/layout/Card.vue'
 import PermissionsManager from './PermissionsManager.vue'
-
-import { RoleDTO } from '@/interfaces/Role'
 
 export default Vue.extend({
   components: { ValidationObserver, Card, PermissionsManager },
@@ -26,7 +38,7 @@ export default Vue.extend({
     value: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<RoleDTO>,
+    } as Vue.PropOptions<RoleCreateDto>,
     disabled: {
       type: Boolean,
       default: false,
@@ -34,10 +46,10 @@ export default Vue.extend({
   },
   computed: {
     form: {
-      get(): RoleDTO {
+      get(): RoleCreateDto {
         return this.value
       },
-      set(v: RoleDTO) {
+      set(v: RoleCreateDto) {
         this.$emit('input', v)
       },
     },

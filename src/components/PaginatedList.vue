@@ -1,6 +1,12 @@
 <template>
   <div class="paginated-list" :class="{ 'paginated-list--table': !!table }">
-    <AppTopNav :title="title" :subtitle="subtitle">
+    <AppTopNav :subtitle="subtitle">
+      <template #title>
+        <slot name="title">{{ title }}</slot>
+      </template>
+
+      <XlsxDownloadButton v-if="xlsxFileConfig" :items="items" :xlsx-file-config="xlsxFileConfig" />
+
       <slot name="nav"></slot>
     </AppTopNav>
 
@@ -11,13 +17,16 @@
     <AppCard class="paginated-list__content">
       <Loading :active="isLoading"></Loading>
 
-      <AppEmpty v-if="!items.length || isLoading">{{ emptyText }}</AppEmpty>
+      <AppEmpty v-if="!items.length || isLoading">
+        {{ emptyText || $t('common.defaultEmpty') }}
+      </AppEmpty>
       <component
         :is="contentComponent"
         v-else
         v-model="items"
         :sort-filters="filters && filters.sort"
         v-bind="!!table ? { config: table, draggable } : {}"
+        handle=".reorder-handle"
         class="paginated-list__list"
         @sort="onSort"
       >
@@ -27,6 +36,7 @@
               v-if="table"
               :key="item.id"
               :item="item"
+              :draggable="draggable"
               :headers="table.headers"
               :to="table.rowUrlBuilder ? table.rowUrlBuilder(item) : null"
               @click="table.rowOnClick ? table.rowOnClick(item) : null"
@@ -46,6 +56,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import Draggable from 'vuedraggable'
+import { HeseyaPaginatedResponseMeta } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Empty from '@/components/layout/Empty.vue'
@@ -56,9 +67,10 @@ import CmsFilters from '@/components/cms/CmsFilters.vue'
 import CmsTable from './cms/CmsTable.vue'
 import CmsTableRow from './cms/CmsTableRow.vue'
 import Loading from './layout/Loading.vue'
+import XlsxDownloadButton from '@/components/XlsxDownloadButton.vue'
 
-import { ResponseMeta } from '@/interfaces/Response'
 import { TableConfig } from '@/interfaces/CmsTable'
+import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 import { GeneratedStoreModulesKeys } from '@/store'
 import { BaseItem } from '@/store/generator'
 
@@ -77,6 +89,7 @@ export default Vue.extend({
     Loading,
     CmsTable,
     CmsTableRow,
+    XlsxDownloadButton,
   },
   props: {
     title: {
@@ -97,7 +110,7 @@ export default Vue.extend({
     },
     emptyText: {
       type: String,
-      default: 'Nic nie znaleziono',
+      default: null,
     },
     filters: {
       type: Object,
@@ -111,6 +124,10 @@ export default Vue.extend({
       type: Object,
       default: () => ({}),
     } as Vue.PropOptions<Record<string, any>>,
+    xlsxFileConfig: {
+      type: Object,
+      default: null,
+    } as Vue.PropOptions<XlsxFileConfig>,
   },
   data: () => ({
     page: 1,
@@ -132,7 +149,7 @@ export default Vue.extend({
         this.isLoading = false
       },
     },
-    meta(): ResponseMeta {
+    meta(): HeseyaPaginatedResponseMeta {
       return this.$accessor[this.storeKey].getMeta
     },
     error(): any {
@@ -147,9 +164,9 @@ export default Vue.extend({
     '$route.query'({ page }) {
       this.page = Number(page) || 1
       if (this.meta.current_page !== page) {
-        this.getItems()
         window.scrollTo(0, 0)
       }
+      this.getItems()
     },
     error(error) {
       if (error) {
@@ -160,6 +177,8 @@ export default Vue.extend({
   beforeMount() {
     this.page = Number(this.$route.query.page) || 1
     this.itemsPerPage = +(localStorage.getItem(`${this.storeKey}_per_page`) || 24)
+  },
+  mounted() {
     this.getItems()
   },
   methods: {
@@ -208,6 +227,12 @@ export default Vue.extend({
 
   &__list-item {
     width: 100%;
+
+    @media ($viewport-11) {
+      &:not(:last-of-type) .cms-table-row {
+        border-bottom: solid 1px $background-color-700 !important;
+      }
+    }
 
     > * {
       display: block;

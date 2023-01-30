@@ -1,9 +1,10 @@
 <template>
   <div>
     <PaginatedList
-      title="Zamówienia"
+      :title="$t('title')"
       :filters="filters"
       :table="tableConfig"
+      :xlsx-file-config="fileConfig"
       store-key="orders"
       class="orders-list"
       @search="makeSearch"
@@ -29,15 +30,15 @@
 
             <a-tooltip v-if="item.summary_paid > item.summary">
               <template #title>
-                Nadpłacono
+                {{ $t('overpaid') }}
                 <b>{{ formatCurrency(item.summary_paid - item.summary) }}</b>
               </template>
               <span class="order-icon"> <i class="bx bxs-error"></i> </span>
             </a-tooltip>
           </template>
           <template #paid="{ rawValue }">
-            <span v-if="rawValue" class="order-tag success-text">Opłacone</span>
-            <span v-else class="order-tag danger-text">Nieopłacone</span>
+            <span v-if="rawValue" class="order-tag success-text">{{ $t('paid') }}</span>
+            <span v-else class="order-tag danger-text">{{ $t('notpaid') }}</span>
           </template>
           <template #status="{ rawValue: { name, color } }">
             <span class="order-tag" :style="{ color: `#${color}` }"> {{ name }} </span>
@@ -48,8 +49,44 @@
   </div>
 </template>
 
+<i18n lang="json">
+{
+  "pl": {
+    "title": "Zamówienia",
+    "overpaid": "Nadpłacono",
+    "paid": "Opłacone",
+    "notpaid": "Nieopłacone",
+    "form": {
+      "code": "Kod zamówienia",
+      "clientName": "Klient",
+      "summary": "Wartość",
+      "paid": "Płatność",
+      "status": "Status",
+      "shipping": "Przesyłka",
+      "date": "Data"
+    }
+  },
+  "en": {
+    "title": "Orders",
+    "overpaid": "Overpaid",
+    "paid": "Paid",
+    "notpaid": "Not paid",
+    "form": {
+      "code": "Order code",
+      "clientName": "Client",
+      "summary": "Value",
+      "paid": "Payment",
+      "status": "Status",
+      "shipping": "Shipping",
+      "date": "Date"
+    }
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
+import { Address, Order, OrderStatus, ShippingMethod } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
@@ -61,13 +98,16 @@ import OrderFilter, {
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 
 import { TableConfig } from '@/interfaces/CmsTable'
-import { Order } from '@/interfaces/Order'
+import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 
-import { formatFilters, getRelativeDate } from '@/utils/utils'
+import { formatFilters } from '@/utils/utils'
+import { formatDate } from '@/utils/dates'
 import { formatCurrency } from '@/utils/currency'
 
 export default Vue.extend({
-  metaInfo: { title: 'Zamówienia' },
+  metaInfo(this: any) {
+    return { title: this.$t('title') as string }
+  },
   components: {
     OrderFilter,
     PaginatedList,
@@ -81,22 +121,55 @@ export default Vue.extend({
       return {
         rowUrlBuilder: (order) => `/orders/${order.id}`,
         headers: [
-          { key: 'code', label: 'Kod zamówienia', sortable: true },
-          { key: 'delivery_address.name', label: 'Klient' },
+          { key: 'code', label: this.$t('form.code') as string, sortable: true },
+          { key: 'delivery_address.name', label: this.$t('form.clientName') as string },
           {
             key: 'summary',
-            label: 'Wartość',
+            label: this.$t('form.summary') as string,
             sortable: true,
             render: (v) => this.formatCurrency(v),
           },
-          { key: 'paid', label: 'Płatność', width: '0.8fr' },
-          { key: 'status', label: 'Status', width: '0.8fr' },
-          { key: 'shipping_method.name', label: 'Przesyłka' },
+          { key: 'paid', label: this.$t('form.paid') as string, width: '0.8fr' },
+          { key: 'status', label: this.$t('form.status') as string, width: '0.8fr' },
+          { key: 'shipping_method.name', label: this.$t('form.shipping') as string },
           {
             key: 'created_at',
-            label: 'Data',
+            label: this.$t('form.date') as string,
             sortable: true,
-            render: (v) => getRelativeDate(v),
+            render: (v) => formatDate(v),
+          },
+        ],
+      }
+    },
+    fileConfig(): XlsxFileConfig<Order> {
+      return {
+        name: this.$t('title') as string,
+        headers: [
+          { key: 'code', label: this.$t('form.code') as string },
+          {
+            key: 'delivery_address',
+            label: this.$t('form.clientName') as string,
+            format: (v: Address) => v.name,
+          },
+          { key: 'summary', label: this.$t('form.summary') as string },
+          {
+            key: 'paid',
+            label: this.$t('form.paid') as string,
+            format: (v: boolean) => (v ? this.$t('paid') : this.$t('notpaid')) as string,
+          },
+          {
+            key: 'status',
+            label: this.$t('form.status') as string,
+            format: (v: OrderStatus) => v.name,
+          },
+          {
+            key: 'shipping_method',
+            label: this.$t('form.shipping') as string,
+            format: (v: ShippingMethod) => v.name,
+          },
+          {
+            key: 'created_at',
+            label: this.$t('form.date') as string,
           },
         ],
       }
@@ -126,7 +199,7 @@ export default Vue.extend({
       this.makeSearch({ ...EMPTY_ORDER_FILTERS })
     },
     formatCurrency(value: number) {
-      return formatCurrency(value, this.$accessor.currency)
+      return formatCurrency(value, this.$accessor.config.currency)
     },
   },
 })

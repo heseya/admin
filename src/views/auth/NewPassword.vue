@@ -1,11 +1,11 @@
 <template>
-  <central-screen-form title="Nowe hasło">
+  <central-screen-form :title="$t('newPassword')">
     <ValidationObserver v-slot="{ handleSubmit }">
       <validated-input
         v-model="password"
         name="password"
         rules="required|password"
-        label="Nowe hasło"
+        :label="$t('newPassword')"
         type="password"
         @keydown.enter="handleSubmit(changePassword)"
       />
@@ -13,18 +13,37 @@
         v-model="repeatPassword"
         name="repeatPassword"
         rules="required|repeatPassword:@password"
-        label="Powtórz nowe hasło"
+        :label="$t('repeatPassword')"
         type="password"
         @keydown.enter="handleSubmit(changePassword)"
       />
       <br />
 
       <div class="central-screen-form__row">
-        <app-button type="primary" @click="handleSubmit(changePassword)"> Zmień hasło </app-button>
+        <app-button type="primary" @click="handleSubmit(changePassword)">
+          {{ $t('changePassword') }}
+        </app-button>
       </div>
     </ValidationObserver>
   </central-screen-form>
 </template>
+
+<i18n lang="json">
+{
+  "pl": {
+    "newPassword": "Nowe hasło",
+    "repeatPassword": "Powtórz nowe hasło",
+    "changePassword": "Zmień hasło",
+    "successMessage": "Hasło zostało zmienione."
+  },
+  "en": {
+    "newPassword": "New password",
+    "repeatPassword": "Repeat new password",
+    "changePassword": "Change password",
+    "successMessage": "Password has been changed."
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
@@ -33,10 +52,12 @@ import { ValidationObserver } from 'vee-validate'
 import CentralScreenForm from '@/components/form/CentralScreenForm.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
-import { api } from '@/api'
+import { sdk } from '@/api'
 
 export default Vue.extend({
-  metaInfo: { title: 'Nowe hasło' },
+  metaInfo(this: any) {
+    return { title: this.$t('newPassword') as string }
+  },
   components: {
     CentralScreenForm,
     ValidationObserver,
@@ -63,7 +84,8 @@ export default Vue.extend({
 
     try {
       if (!token || !email) throw new Error('Token or email does not exist')
-      await api.get(`/users/reset-password?token=${token}&email=${email}`)
+      // This verifies token & email before showing the set password form
+      await sdk.Auth.verifyResetPasswordToken(token as string, email as string)
     } catch (e: any) {
       this.$toast.error(formatApiNotificationError(e))
       this.$router.replace('/login')
@@ -71,16 +93,18 @@ export default Vue.extend({
   },
   methods: {
     async changePassword() {
+      const { token, email } = this.$route.query as Record<string, string>
+
       this.$accessor.startLoading()
       const isSuccess = await this.$accessor.auth.resetPassword({
-        email: this.$route.query.email as string,
-        token: this.$route.query.token as string,
+        email,
+        token,
         password: this.password,
       })
       this.$accessor.stopLoading()
 
       if (isSuccess) {
-        this.$toast.success('Hasło zostało zmienione')
+        this.$toast.success(this.$t('successMessage') as string)
         this.$router.push({ name: 'Login' })
       }
     },

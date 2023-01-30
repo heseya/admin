@@ -1,17 +1,19 @@
 import { cloneDeep } from 'lodash'
-import { Schema, SchemaOption, SchemaType } from '../interfaces/Schema'
+import { SchemaType, SchemaOptionDto, WarehouseItem, SchemaCreateDto } from '@heseya/store-core'
 
-export const CLEAR_OPTION: SchemaOption = {
-  id: '',
+export const CLEAR_OPTION: SchemaOptionDto & {
+  items: WarehouseItem[]
+  default: boolean
+} = {
   name: '',
   default: false,
   disabled: false,
+  available: false,
   price: 0,
   items: [],
 }
 
-export const CLEAR_FORM: Schema = {
-  id: '',
+export const CLEAR_FORM: SchemaCreateDto = {
   available: true,
   products: [],
   name: '',

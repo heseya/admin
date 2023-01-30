@@ -1,11 +1,16 @@
 <template>
   <div class="schema-selector">
-    <app-input v-model="query" :label="`Wyszukaj ${typeName}`"></app-input>
+    <app-input
+      ref="input"
+      v-model="query"
+      name="selector-search-input"
+      :label="`${$t('search')} ${typeName || $t('defaultTypeName')}`"
+    ></app-input>
 
     <div ref="content" class="schema-selector__content">
       <loading :active="isLoading" />
 
-      <empty v-if="query !== '' && list.length === 0">Nic nie znaleziono</empty>
+      <empty v-if="query !== '' && list.length === 0" />
 
       <list class="schema-selector__items">
         <list-item v-for="item in list" :key="item.id" class="schema-selector__item" no-hover>
@@ -14,7 +19,7 @@
           <template #action>
             <div class="flex">
               <app-button type="success" size="small" @click="onSelect(item)">
-                {{ addText }}
+                {{ addText || $t('defaultAddBtn') }}
               </app-button>
             </div>
           </template>
@@ -24,20 +29,34 @@
   </div>
 </template>
 
+<i18n lang="json">
+{
+  "pl": {
+    "search": "Wyszukaj",
+    "defaultTypeName": "schemat",
+    "defaultAddBtn": "Dodaj"
+  },
+  "en": {
+    "search": "Search",
+    "defaultTypeName": "schema",
+    "defaultAddBtn": "Add"
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 import debounce from 'lodash/debounce'
+import { Schema, Attribute, WarehouseItem } from '@heseya/store-core'
 
 import { api } from '../api'
 import { formatApiNotificationError } from '@/utils/errors'
-import { stringifyQuery } from '@/utils/utils'
+import { stringifyQueryParams } from '@/utils/stringifyQuery'
 
 import List from '@/components/layout/List.vue'
 import Empty from '@/components/layout/Empty.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 
-import { Schema } from '@/interfaces/Schema'
-import { SchemaTypeLabel } from '@/consts/schemaTypeLabels'
 import { UUID } from '@/interfaces/UUID'
 import Loading from './layout/Loading.vue'
 
@@ -61,16 +80,20 @@ export default Vue.extend({
     },
     typeName: {
       type: String,
-      default: 'schemat',
+      default: null,
     },
     addText: {
       type: String,
-      default: 'Dodaj',
+      default: null,
     },
     existing: {
       type: Array,
       default: () => [],
     } as Vue.PropOptions<Item[]>,
+    autofocus: {
+      type: Boolean,
+      default: true,
+    },
   },
   data: () => ({
     query: '',
@@ -87,8 +110,10 @@ export default Vue.extend({
       this.getItems(search)
     },
   },
+  mounted() {
+    if (this.autofocus) (this.$refs.input as any)?.focus()
+  },
   methods: {
-    // TODO: "this" typing is wrong
     getItems: debounce(async function (this: any, search: string) {
       if (search === '') {
         this.data = []
@@ -97,7 +122,7 @@ export default Vue.extend({
 
       this.isLoading = true
       try {
-        const query = stringifyQuery({ search })
+        const query = stringifyQueryParams({ search })
         const { data } = await api.get<{ data: Item[] }>(`/${this.type}${query}`)
         this.data = data.data
       } catch (error: any) {
@@ -108,14 +133,18 @@ export default Vue.extend({
     onSelect(item: Item) {
       this.$emit('select', item)
     },
-    // TODO: better typing
-    getSubText(item: any) {
+
+    getSubText(item: unknown) {
       if (this.type === 'schemas') {
         const schema = item as Schema
-        const schemaType = SchemaTypeLabel[schema.type]
+        const schemaType = this.$t(`schemaTypes.${schema.type}`)
         return schema.description ? `${schemaType} | ${schema.description}` : schemaType
       }
-      if (this.type === 'items') return `SKU: ${item.sku}`
+      if (this.type === 'items') return `SKU: ${(item as WarehouseItem).sku}`
+      if (this.type === 'attributes')
+        return `${this.$t('common.form.type')}: ${this.$t(
+          'attributeTypes.' + (item as Attribute).type,
+        )}`
       return ''
     },
   },

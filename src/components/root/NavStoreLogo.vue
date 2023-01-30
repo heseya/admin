@@ -12,19 +12,32 @@
   >
     <template v-if="!isLogoExist">
       <img src="@/assets/images/heseya.svg" alt="Heseya" class="nav-logo__logo" />
-      <span v-if="canModify" class="nav-logo__title">Dodaj swoje logo</span>
+      <span v-if="canModify" class="nav-logo__title">{{ $t('addLogo') }}</span>
     </template>
     <template v-else>
-      <img :src="storeLogoPath" :alt="storeName" class="nav-logo__logo" />
-      <span v-if="canModify" class="nav-logo__title">Zmień swoje logo</span>
+      <img :src="scaledLogoPath" :alt="storeName" class="nav-logo__logo" />
+      <span v-if="canModify" class="nav-logo__title">{{ $t('changeLogo') }}</span>
     </template>
   </media-uploader>
 </template>
 
+<i18n lang="json">
+{
+  "pl": {
+    "addLogo": "Dodaj swoje logo",
+    "changeLogo": "Zmień swoje logo"
+  },
+  "en": {
+    "addLogo": "Add your logo",
+    "changeLogo": "Change your logo"
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
+import { CdnMedia } from '@heseya/store-core'
 
-import { CdnMedia } from '@/interfaces/Media'
 import MediaUploader from '@/components/modules/media/MediaUploader.vue'
 
 const ENV_NAME = 'store_logo'
@@ -46,16 +59,19 @@ export default Vue.extend({
   }),
   computed: {
     storeName(): string {
-      return this.$accessor.env.store_name
+      return this.$accessor.config.env.store_name
     },
     envStoreLogo(): string {
-      return this.$accessor.env[ENV_NAME]
+      return this.$accessor.config.env[ENV_NAME]
     },
     canModify(): boolean {
       return this.$can(this.$p.Settings.Edit)
     },
     isLogoExist(): boolean {
       return !!this.storeLogoPath || !!this.envStoreLogo
+    },
+    scaledLogoPath(): string {
+      return this.storeLogoPath + `?w=${this.big ? '200' : '150'}`
     },
   },
   watch: {

@@ -8,6 +8,7 @@
       :is="component"
       v-bind="$props"
       :id="name"
+      ref="input"
       v-model="innerValue"
       class="app-input__input"
       :data-cy="dataCy"
@@ -29,6 +30,7 @@ export default Vue.extend({
     'value',
     'label',
     'placeholder',
+    'defaultValue',
     'name',
     'dataCy',
     'error',
@@ -42,6 +44,7 @@ export default Vue.extend({
     'rows',
     'loading',
     'addonBefore',
+    'addonAfter',
   ],
   computed: {
     innerValue: {
@@ -49,6 +52,7 @@ export default Vue.extend({
         return this.value
       },
       set(v: any) {
+        if (this.type === 'number') v = Number(v)
         this.$emit('input', v)
       },
     },
@@ -56,7 +60,15 @@ export default Vue.extend({
     component(): string {
       if (this.type === 'password') return 'a-input-password'
       if (this.type === 'textarea') return 'a-textarea'
+      if (this.type === 'number') return 'a-input-number'
       return 'a-input'
+    },
+  },
+  methods: {
+    focus() {
+      this.$nextTick(() => {
+        ;((this.$refs.input as Vue).$el as HTMLInputElement).focus()
+      })
     },
   },
 })

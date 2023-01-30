@@ -1,193 +1,182 @@
 <template>
-  <div :key="$route.params.id" class="narrower-page">
-    <top-nav :title="!isNew ? product.name : 'Nowy produkt'">
+  <div :key="$route.params.id">
+    <top-nav>
+      <template #title>
+        <template v-if="!isNew">
+          <span class="gray-text">{{ $t('title') }}</span> {{ product.name }}
+        </template>
+        <template v-else>
+          {{ $t('titleNew') }}
+        </template>
+      </template>
+
       <audits-modal :id="product.id" model="products" />
 
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Products.Remove"
-        title="Czy na pewno chcesz usunąć ten produkt?"
-        ok-text="Usuń"
-        cancel-text="Anuluj"
+        :title="$t('deleteConfirm')"
+        :ok-text="$t('common.delete')"
+        :cancel-text="$t('common.cancel')"
         @confirm="deleteProduct"
       >
         <icon-button type="danger" data-cy="delete-btn">
           <template #icon>
             <i class="bx bx-trash"></i>
           </template>
-          Usuń
+          {{ $t('common.delete') }}
         </icon-button>
       </pop-confirm>
     </top-nav>
 
-    <div class="product">
-      <gallery ref="gallery" v-model="form.gallery" :disabled="!canModify" />
-
-      <div>
-        <card>
-          <switch-input
-            v-model="form.public"
-            horizontal
+    <validation-observer v-slot="{ handleSubmit }">
+      <form class="product-page" @submit.stop.prevent="handleSubmit(saveProduct)">
+        <card class="product-page__main">
+          <h2 class="product-page__subtitle">{{ $t('baseFormTitle') }}</h2>
+          <product-basic-details
+            v-model="form"
+            :product="product"
             :disabled="!canModify"
-            label="Widoczność produktu"
+            :is-new="isNew"
+            :loading="isLoading"
           />
-          <template v-if="!product.visible && product.public">
-            <br />
-            <a-alert
-              message="Produkt wciąż jest ukryty"
-              description="Produkt jest niewidoczny ponieważ jego marka lub kategoria jest ukryta."
-              show-icon
-              type="warning"
+
+          <hr />
+
+          <product-description
+            v-model="form"
+            :product="product"
+            :disabled="!canModify"
+            :loading="isLoading"
+          />
+          <product-advanced-details v-model="form" :product="product" :disabled="!canModify" />
+
+          <hr />
+
+          <AttributesConfigurator v-model="form.attributes" :disabled="!canModify" />
+          <hr />
+          <SchemaConfigurator v-model="form.schemas" :disabled="!canModify" />
+          <hr />
+          <WarehouseItemsConfigurator v-model="form.items" :disabled="!canModify" />
+
+          <hr />
+
+          <SeoForm
+            v-model="form.seo"
+            class="product-page__seo-form"
+            :disabled="!canModify"
+            :current="!isNew ? { id, model: 'Product' } : null"
+          />
+          <template v-if="!isNew">
+            <MetadataForm
+              ref="publicMeta"
+              :value="product.metadata"
+              :disabled="!canModify"
+              model="products"
+            />
+            <MetadataForm
+              v-if="product.metadata_private"
+              ref="privateMeta"
+              :value="product.metadata_private"
+              :disabled="!canModify"
+              is-private
+              model="products"
             />
           </template>
+          <hr />
+          <div class="flex">
+            <app-button
+              v-if="canModify"
+              data-cy="submit-btn"
+              html-type="submit"
+              style="margin-right: 12px"
+            >
+              {{ $t('common.save') }}
+            </app-button>
+
+            <app-button
+              v-if="canModify && isNew"
+              data-cy="submit-and-next-btn"
+              @click.prevent="handleSubmit(submitAndGoNext)"
+            >
+              {{ $t('saveAndNext') }}
+            </app-button>
+          </div>
         </card>
-      </div>
 
-      <div class="product__schemas">
-        <card>
-          <SchemaConfigurator v-model="form.schemas" :disabled="!canModify" />
+        <card class="product-page__visibility">
+          <product-aside-details v-model="form" :product="product" :disabled="!canModify" />
         </card>
-      </div>
 
-      <div class="product__details">
-        <card>
-          <validation-observer v-slot="{ handleSubmit }">
-            <form class="product__info" @submit.prevent="handleSubmit(saveProduct)">
-              <div>
-                <br />
-                <validated-input
-                  v-model="form.name"
-                  rules="required"
-                  label="Nazwa"
-                  name="name"
-                  :disabled="!canModify"
-                  @input="editSlug"
-                />
-                <validated-input
-                  v-model="form.slug"
-                  rules="required|slug"
-                  label="Link"
-                  name="slug"
-                  :disabled="!canModify"
-                />
-                <validated-input
-                  v-model="form.price"
-                  rules="required|not-negative"
-                  type="number"
-                  step="0.01"
-                  label="Cena"
-                  name="price"
-                  :disabled="!canModify"
-                />
-              </div>
-
-              <div>
-                <br />
-                <validation-provider v-slot="{ errors }">
-                  <app-select
-                    v-model="form.sets"
-                    placeholder="Wybierz kolekcje"
-                    mode="multiple"
-                    name="sets"
-                    label="Kolekcje"
-                    option-filter-prop="label"
-                    :disabled="!canModify"
-                  >
-                    <a-select-option v-for="set in productSets" :key="set.id" :label="set.name">
-                      <i v-if="!set.public" class="bx bx-lock"></i>
-                      {{ set.name }}&nbsp;<small>(/{{ set.slug }})</small>
-                    </a-select-option>
-                    <template #message-danger>{{ errors[0] }}</template>
-                  </app-select>
-                </validation-provider>
-                <validated-input
-                  v-model="form.quantity_step"
-                  rules="required"
-                  type="number"
-                  max="999999"
-                  step="0.01"
-                  name="quantity_step"
-                  label="Format ilości"
-                  :disabled="!canModify"
-                />
-              </div>
-
-              <div class="wide">
-                <SeoForm
-                  v-model="form.seo"
-                  :disabled="!canModify"
-                  :current="!isNew ? { id, model: 'Product' } : null"
-                />
-              </div>
-
-              <div class="wide">
-                <tags-select v-model="form.tags" :disabled="!canModify" />
-              </div>
-
-              <div class="wide">
-                <small class="label">Opis</small>
-                <rich-editor
-                  v-if="!isLoading"
-                  v-model="form.description_html"
-                  :disabled="!canModify"
-                />
-                <br />
-                <small class="label">Krótki opis</small>
-                <Textarea
-                  v-if="!isLoading"
-                  v-model="form.description_short"
-                  :disabled="!canModify"
-                />
-                <br />
-                <br />
-                <div class="flex">
-                  <app-button
-                    v-if="canModify"
-                    data-cy="submit-btn"
-                    html-type="submit"
-                    style="margin-right: 12px"
-                  >
-                    Zapisz
-                  </app-button>
-                  <app-button
-                    v-if="canModify && isNew"
-                    data-cy="submit-and-next-btn"
-                    @click.prevent="handleSubmit(submitAndGoNext)"
-                  >
-                    Zapisz i dodaj następny
-                  </app-button>
-                </div>
-              </div>
-            </form>
-          </validation-observer>
+        <card class="product-page__gallery">
+          <h2 class="product-page__subtitle">{{ $t('galleryTitle') }}</h2>
+          <gallery ref="gallery" v-model="form.gallery" :disabled="!canModify" />
         </card>
-      </div>
-    </div>
+      </form>
+    </validation-observer>
   </div>
 </template>
 
+<i18n lang="json">
+{
+  "pl": {
+    "title": "Konfiguracja produktu:",
+    "titleNew": "Nowy produkt",
+    "baseFormTitle": "Informacje podstawowe",
+    "galleryTitle": "Zdjęcia i wideo produktu",
+    "deleteConfirm": "Czy na pewno chcesz usunąć ten produkt?",
+    "messages": {
+      "removed": "Produkt został usunięty.",
+      "created": "Produkt został utworzony.",
+      "updated": "Produkt został zaktualizowany."
+    },
+    "saveAndNext": "Zapisz i dodaj następny"
+  },
+  "en": {
+    "title": "Product configuration:",
+    "titleNew": "New product",
+    "baseFormTitle": "Basic information",
+    "galleryTitle": "Product gallery",
+    "deleteConfirm": "Are you sure you want to delete this product?",
+    "messages": {
+      "removed": "Product has been removed.",
+      "created": "Product has been created.",
+      "updated": "Product has been updated."
+    },
+    "saveAndNext": "Save and add next"
+  }
+}
+</i18n>
+
 <script lang="ts">
-import Vue from 'vue'
-import slugify from 'slugify'
-import { ValidationProvider, ValidationObserver } from 'vee-validate'
+import mixins from 'vue-typed-mixins'
+import { ValidationObserver } from 'vee-validate'
 import cloneDeep from 'lodash/cloneDeep'
+import { Product, ProductCreateDto } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Gallery from '@/components/modules/products/Gallery.vue'
 import Card from '@/components/layout/Card.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import RichEditor from '@/components/form/RichEditor.vue'
 import SchemaConfigurator from '@/components/modules/schemas/Configurator.vue'
-import TagsSelect from '@/components/TagsSelect.vue'
 import SeoForm from '@/components/modules/seo/Accordion.vue'
-import SwitchInput from '@/components/form/SwitchInput.vue'
+import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
-import Textarea from '@/components/form/Textarea.vue'
+import AttributesConfigurator from '@/components/modules/attributes/configurator/Configurator.vue'
+import WarehouseItemsConfigurator from '@/components/modules/products/WarehouseItemsConfigurator.vue'
+
+import ProductBasicDetails from '@/components/modules/products/view/ProductBasicDetails.vue'
+import ProductAdvancedDetails from '@/components/modules/products/view/ProductAdvancedDetails.vue'
+import ProductAsideDetails from '@/components/modules/products/view/ProductAsideDetails.vue'
+import ProductDescription from '@/components/modules/products/view/ProductDescription.vue'
+
+import preventLeavingPage from '@/mixins/preventLeavingPage'
 
 import { formatApiNotificationError } from '@/utils/errors'
+import { updateProductAttributeOptions } from '@/services/updateProductAttributeOptions'
+
 import { UUID } from '@/interfaces/UUID'
-import { Product, ProductDTO, ProductComponentForm } from '@/interfaces/Product'
-import { ProductSet } from '@/interfaces/ProductSet'
+import { ProductComponentForm } from '@/interfaces/Product'
 
 const EMPTY_FORM: ProductComponentForm = {
   id: '',
@@ -196,34 +185,42 @@ const EMPTY_FORM: ProductComponentForm = {
   price: 0,
   description_html: '',
   description_short: '',
-  digital: false,
+  vat_rate: 0,
+  google_product_category: null,
   public: true,
   sets: [],
   quantity_step: 1,
+  order: null,
   schemas: [],
   gallery: [],
   tags: [],
   seo: {},
+  attributes: [],
+  items: [],
 }
 
-export default Vue.extend({
-  metaInfo(): any {
-    return { title: this.product?.name || 'Nowy produkt' }
+export default mixins(preventLeavingPage).extend({
+  metaInfo(this: any): any {
+    return {
+      title: (!this.isNew && this.product?.name) || (this.$t('titleNew') as string),
+    }
   },
   components: {
     TopNav,
     Gallery,
     Card,
     PopConfirm,
-    ValidationProvider,
     ValidationObserver,
     SchemaConfigurator,
-    RichEditor,
-    TagsSelect,
-    SwitchInput,
     SeoForm,
     AuditsModal,
-    Textarea,
+    MetadataForm,
+    AttributesConfigurator,
+    WarehouseItemsConfigurator,
+    ProductBasicDetails,
+    ProductAdvancedDetails,
+    ProductDescription,
+    ProductAsideDetails,
   },
   data: () => ({
     form: cloneDeep(EMPTY_FORM),
@@ -239,14 +236,10 @@ export default Vue.extend({
       return this.id === 'create'
     },
     product(): Product {
-      return this.$accessor.products.getSelected
-    },
-    productSets(): ProductSet[] {
-      return this.$accessor.productSets.getData
+      return this.$accessor.products.getSelected || ({} as any)
     },
     error(): any {
-      // @ts-ignore // TODO: fix extended store getters typings
-      return this.$accessor.products.getError || this.$accessor.products.getDepositError
+      return this.$accessor.products.getError
     },
     canModify(): boolean {
       return this.$can(this.isNew ? this.$p.Products.Add : this.$p.Products.Edit)
@@ -268,16 +261,11 @@ export default Vue.extend({
       }
     },
     async '$route.params.id'() {
-      this.$accessor.startLoading()
       await this.fetch()
-      this.$accessor.stopLoading()
     },
   },
   async created() {
-    this.$accessor.startLoading()
-    this.$accessor.productSets.fetch({ tree: undefined })
     await this.fetch()
-    this.$accessor.stopLoading()
   },
   methods: {
     async fetch() {
@@ -285,35 +273,50 @@ export default Vue.extend({
       if (this.isNew) return
       this.$accessor.startLoading()
       await this.$accessor.products.get(this.$route.params.id)
+
+      // isFormPrefilled should be set to true after form was prefilled
+      this.isFormPrefilled = true
+
       this.$accessor.stopLoading()
-    },
-    editSlug() {
-      if (this.isNew) {
-        this.form.slug = slugify(this.form.name, { lower: true, remove: /[.]/g })
-      }
     },
     async deleteProduct() {
       this.$accessor.startLoading()
       const success = await this.$accessor.products.remove(this.id)
       if (success) {
-        this.$toast.success('Produkt został usunięty.')
+        this.$toast.success(this.$t('messages.removed') as string)
         this.$router.push('/products')
       }
       this.$accessor.stopLoading()
     },
+
     async saveProduct() {
-      const apiPayload: ProductDTO = {
+      this.$accessor.startLoading()
+
+      const attributes = await updateProductAttributeOptions(
+        this.form.attributes.filter((v) => v.selected_options),
+      )
+
+      const apiPayload: ProductCreateDto = {
         ...this.form,
+        order: this.form.order || 0,
         media: this.form.gallery.map(({ id }) => id),
         tags: this.form.tags.map(({ id }) => id),
         schemas: this.form.schemas.map(({ id }) => id),
+        attributes: attributes.reduce(
+          (acc, { id, selected_options: option }) => ({
+            ...acc,
+            [id]: option.map((v) => v.id) || undefined,
+          }),
+          {},
+        ),
       }
 
-      this.$accessor.startLoading()
-
       const successMessage = this.isNew
-        ? 'Produkt został utworzony'
-        : 'Produkt został zaktualizowany'
+        ? (this.$t('messages.created') as string)
+        : (this.$t('messages.updated') as string)
+
+      // Metadata can be saved only after product is created
+      if (!this.isNew) await this.saveMetadata(this.id)
 
       const item = this.isNew
         ? await this.$accessor.products.add(apiPayload)
@@ -326,11 +329,22 @@ export default Vue.extend({
       if (item) {
         this.$toast.success(successMessage)
 
+        // After form submitting isDirty should be reset
+        this.isDirty = false
+
         if (item.id !== this.product.id) {
           this.$router.push(`/products/${item.id}`)
         }
       }
     },
+
+    async saveMetadata(id: string) {
+      await Promise.all([
+        (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id),
+        (this.$refs.publicMeta as MetadataRef)?.saveMetadata(id),
+      ])
+    },
+
     async submitAndGoNext() {
       await this.saveProduct()
       this.$router.push('/products/create')
@@ -340,55 +354,43 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-.product {
-  &__info {
-    input {
-      width: 100%;
-    }
+.product-page {
+  display: grid;
+  grid-template-rows: auto;
+  grid-gap: 14px;
+  align-items: start;
+  grid-template-columns: 1fr;
+  grid-template-areas: 'visibility' 'gallery' 'main';
+
+  @media ($viewport-7) {
+    grid-template-columns: 2.6fr 1fr;
+    grid-template-areas: 'main visibility' 'main gallery' 'main .';
   }
 
-  &__details,
-  &__schemas {
-    grid-column: 1/-1;
+  &__main {
+    grid-area: main;
+  }
+  &__visibility {
+    grid-area: visibility;
+  }
+  &__gallery {
+    grid-area: gallery;
+  }
+
+  &__subtitle {
+    font-size: 1.1em;
+    margin: 0;
+    font-weight: 600;
+  }
+
+  &__seo-form .seo-form {
+    @media ($viewport-14) {
+      width: 75%;
+    }
   }
 
   .card {
-    margin: 0;
+    margin-bottom: 0;
   }
-}
-
-.content-tooltip {
-  footer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-}
-
-@media ($viewport-11) {
-  .product {
-    display: grid;
-    grid-template-columns: 4fr 2fr;
-    gap: 35px;
-
-    small {
-      color: #aaaaaa;
-    }
-
-    &__info {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-
-      .wide {
-        grid-column: 1/-1;
-      }
-    }
-  }
-}
-
-.quantity-input {
-  margin-top: 24px;
-  width: 100%;
 }
 </style>

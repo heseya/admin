@@ -2,21 +2,23 @@
   <div>
     <div class="mobile-nav" :class="{ 'mobile-nav--hidden': isHidden }">
       <menu-link
-        v-for="item in MENU_ITEMS"
+        v-for="item in menu"
         :key="item.to"
         v-can="item.can"
         :to="item.to"
         :exact="item.exact"
         :label="item.label"
-        :icon="item.icon"
+        :icon-class="item.iconClass"
+        :icon-path="item.iconPath"
+        :svg-icon-path="item.svgIconPath"
         root-class="mobile-nav"
       />
 
       <menu-link
         root-class="mobile-nav"
         class="mobile-nav__more-btn"
-        icon="icons/more-icon.svg"
-        label="Więcej"
+        svg-icon-path="icons/more-icon.svg"
+        :label="`nav.moreLink`"
         @click="isMenuVisible = true"
       />
     </div>
@@ -28,13 +30,14 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import MenuLink from './MenuLink.vue'
+import MenuLinkComponent from './MenuLink.vue'
 import MobileOverlay from './MobileOverlay.vue'
-import { MenuItem, MENU_ITEMS } from '@/consts/menuItems'
+
+import { MenuLink } from '@/consts/menuItems'
 
 export default Vue.extend({
   name: 'MobileNavigation',
-  components: { MobileOverlay, MenuLink },
+  components: { MobileOverlay, MenuLink: MenuLinkComponent },
   data: () => ({
     isMenuVisible: false,
   }),
@@ -42,8 +45,8 @@ export default Vue.extend({
     isHidden(): boolean {
       return !!this.$route.meta?.hiddenNav || false
     },
-    MENU_ITEMS(): MenuItem[] {
-      return MENU_ITEMS
+    menu(): MenuLink[] {
+      return this.$accessor.menuItems.getMenuLinks
     },
   },
 })
@@ -61,7 +64,7 @@ export default Vue.extend({
   background: #ffffff;
   border-top: solid 1px $primary-color-100;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
   justify-content: space-around;
   align-items: center;
   transition: 0.3s;
@@ -85,6 +88,7 @@ export default Vue.extend({
       color: #9ea5b4;
       width: 20px;
       height: 20px;
+      line-height: 25px;
       box-sizing: border-box;
     }
 
@@ -107,7 +111,7 @@ export default Vue.extend({
     grid-column: -2/-1;
     grid-row: 1/2;
 
-    @media (min-width: 770px) {
+    @media ($viewport-11) {
       display: none;
     }
   }

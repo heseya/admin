@@ -1,232 +1,105 @@
 <template>
-  <div class="narrower-page">
-    <top-nav :title="`Zamówienie ${order.code}`" :subtitle="`z dnia ${formattedDate}`">
+  <div>
+    <top-nav :title="$t('title')">
       <audits-modal :id="order.id" model="orders" />
       <a v-if="storefrontPaymentUrl" :href="`${storefrontPaymentUrl}${order.code}`" target="_blank">
         <icon-button>
           <template #icon>
             <i class="bx bxs-dollar-circle"></i>
           </template>
-          Przejdź do płatności
+          {{ $t('goToPayment') }}
         </icon-button>
       </a>
-      <pop-confirm
-        v-if="order.payable"
-        title="Czy na pewno chcesz ręcznie oznaczyć zamówienie jako opłacone? (Np. przelewem tradycyjnym lub gotówką)"
-        ok-text="Opłać"
-        ok-color="success"
-        cancel-text="Anuluj"
-        @confirm="payOffline"
-      >
-        <icon-button>
-          <template #icon>
-            <i class="bx bxs-diamond"></i>
-          </template>
-          Opłać zamówienie
-        </icon-button>
-      </pop-confirm>
 
       <next-prev-buttons />
     </top-nav>
 
-    <div class="order">
-      <div>
-        <card>
-          <div class="flex-column">
-            <h2 class="section-title">Koszyk</h2>
-            <app-cart-item
-              v-for="item in order.products"
-              :key="item.id"
-              :item="item"
-              :discount="order.discounts[0]"
-              :products-count="productsCount"
-            />
-            <div class="cart-item">
-              <img class="cart-item__cover" src="@/assets/images/icons/delivery-icon.svg" />
-              <div class="cart-item__content">
-                <span>Dostawa {{ order.shipping_method && order.shipping_method.name }}</span>
-              </div>
-              <span class="cart-item__price">{{ formatCurrency(order.shipping_price) }}</span>
-            </div>
-            <div class="cart-total">
-              <div v-for="discount in order.discounts" :key="discount.id">
-                Rabat {{ discount.code }}:
-                <b>
-                  -{{
-                    discount.type === 0
-                      ? `${discount.discount}%`
-                      : formatCurrency(discount.discount)
-                  }}
-                </b>
-              </div>
-              Łącznie: <b>{{ formatCurrency(order.summary) }}</b>
-            </div>
-          </div>
-        </card>
+    <main class="order-page">
+      <OrderSummary class="order-page__summary" :order="order" />
 
-        <card v-if="order.id">
-          <send-package
-            :order-id="order.id"
-            :shipping-method="order.shipping_method.name"
-            :shipping-number="order.shipping_number"
-            @created="onPackageCreated"
-          />
-        </card>
-      </div>
-
-      <div>
-        <card>
-          <template v-if="order.status">
-            <h2 class="section-title">Status</h2>
-            <app-select
-              v-model="status"
-              :loading="isLoading"
-              option-filter-prop="label"
-              :disabled="!$can($p.Orders.EditStatus)"
-            >
-              <a-select-option v-for="{ id, name } in statuses" :key="id" :label="name">
-                {{ name }}
-              </a-select-option>
-            </app-select>
+      <card class="order-page__status">
+        <a-tooltip v-bind="!order?.status?.cancel ? { visible: false } : undefined">
+          <template #title>
+            {{ $t('errors.CLIENT_ERROR.CLIENT_CHANGE_CANCELED_ORDER_STATUS') }}
           </template>
-          <br />
-          <h2 class="section-title">
-            <a-tooltip v-if="order.summary_paid > order.summary">
-              <template #title>
-                Zamówienie zostało nadpłacone o
-                <b>{{ formatCurrency(order.summary_paid - order.summary) }}</b
-                >!
-                <br />
-                <br />
-                Klient zapłacił {{ formatCurrency(order.summary_paid) }} zamiast
-                {{ formatCurrency(order.summary) }}
-              </template>
-              <span class="overpaid-icon"> <i class="bx bxs-error"></i> </span>
-            </a-tooltip>
-
-            Próby płatności
-          </h2>
-          <div v-for="payment in order.payments" :key="payment.id" class="payment-method">
-            <i v-if="payment.paid" class="bx bxs-check-circle payment-method__success"></i>
-            <i v-if="!payment.paid" class="bx bxs-x-circle payment-method__failed"></i>
-            <span class="payment-method__name">{{ payment.method }}</span>
-            <span class="payment-method__amount">({{ formatCurrency(payment.amount) }})</span>
-          </div>
-        </card>
-        <card class="comment">
-          <h2 class="section-title">Komentarz</h2>
-          <icon-button
-            v-can="$p.Orders.Edit"
-            size="small"
-            type="transparent"
-            class="comment__edit"
-            @click="editComment"
-          >
-            <template #icon>
-              <i class="bx bxs-pencil"></i>
-            </template>
-          </icon-button>
-          <span class="comment__content">
-            {{ order.comment || 'Brak komentarza do zamówienia' }}
-          </span>
-        </card>
-        <card>
-          <h2 class="section-title">E-mail</h2>
-          <div class="email">
-            <icon-button
-              v-can="$p.Orders.Edit"
-              size="small"
-              type="transparent"
-              class="email__edit"
-              @click="editEmail"
-            >
-              <template #icon>
-                <i class="bx bxs-pencil"></i>
-              </template>
-            </icon-button>
-            <a :href="`mailto:${order.email}`" class="email__name">{{ order.email }}</a>
-          </div>
-          <br />
-          <h2 class="section-title">Adres dostawy</h2>
-          <app-address :address="order.delivery_address" hide-remove @edit="editDeliveryAddress" />
-        </card>
-        <card>
-          <h2 class="section-title">Adres rozliczeniowy</h2>
-          <app-address
-            :address="order.invoice_address"
-            @edit="editInvoiceAddress"
-            @remove="removeInvoiceAddress"
-          />
-        </card>
-      </div>
-    </div>
-
-    <a-modal
-      v-model="isModalActive"
-      width="800px"
-      :footer="null"
-      :title="`Edytuj ${modalFormTitle}`"
-    >
-      <modal-form>
-        <partial-update-form v-model="form" @save="saveForm" />
-      </modal-form>
-    </a-modal>
+          <StatusInput :order="order" />
+        </a-tooltip>
+      </card>
+      <card class="order-page__cart">
+        <Cart :order="order" />
+      </card>
+      <card class="order-page__metadata">
+        <OrderMetadatas :order="order" />
+      </card>
+      <card class="order-page__address">
+        <CustomerDetails :order="order" />
+      </card>
+      <card class="order-page__shipping">
+        <send-package
+          v-if="order.id"
+          :order-id="order.id"
+          :shipping-method="order.shipping_method.name"
+          :shipping-number="order.shipping_number"
+          @created="onPackageCreated"
+        />
+      </card>
+      <card class="order-page__documents">
+        <order-documents v-if="order.id" :order-id="order.id" :documents="order.documents" />
+      </card>
+    </main>
   </div>
 </template>
 
+<i18n lang="json">
+{
+  "pl": {
+    "title": "Szczegóły zamówienia",
+    "goToPayment": "Przejdź do płatności"
+  },
+  "en": {
+    "title": "Order details",
+    "goToPayment": "Go to payment"
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
+import { Order } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
-import Address from '@/components/modules/orders/OrderAddress.vue'
-import CartItem from '@/components/layout/CartItem.vue'
-import ModalForm from '@/components/form/ModalForm.vue'
-import PartialUpdateForm from '@/components/modules/orders/PartialUpdateForm.vue'
-import PopConfirm from '@/components/layout/PopConfirm.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 import NextPrevButtons from '@/components/modules/orders/NextPrevButtons.vue'
 import SendPackage from '@/components/modules/orders/SendPackage.vue'
-
-import { Order, OrderStatus } from '@/interfaces/Order'
-import { getRelativeDate } from '@/utils/utils'
-import { formatDate } from '@/utils/dates'
+import OrderSummary from '@/components/modules/orders/Summary.vue'
+import StatusInput from '@/components/modules/orders/StatusInput.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
-import { formatCurrency } from '@/utils/currency'
-import { api } from '@/api'
-
-const DEFAULT_FORM = {
-  address: '',
-  city: '',
-  country: 'PL',
-  country_name: '',
-  name: '',
-  phone: '',
-  vat: '',
-  zip: '',
-}
+import CustomerDetails from '@/components/modules/orders/CustomerDetails.vue'
+import Cart from '@/components/modules/orders/Cart.vue'
+import OrderMetadatas from '@/components/modules/orders/OrderMetadatas.vue'
+import OrderDocuments from '@/components/modules/orders/documents/OrderDocumentsList.vue'
 
 export default Vue.extend({
-  metaInfo(): any {
-    return { title: `Zamówienie ${this.order?.code}` }
+  metaInfo(this: any): any {
+    return { title: `${this.$t('title')} ${this.order?.code || ''}` }
   },
   components: {
     TopNav,
     Card,
-    appAddress: Address,
-    appCartItem: CartItem,
-    ModalForm,
-    PartialUpdateForm,
-    PopConfirm,
     AuditsModal,
     NextPrevButtons,
     SendPackage,
+    OrderSummary,
+    StatusInput,
+    CustomerDetails,
+    Cart,
+    OrderMetadatas,
+    OrderDocuments,
   },
   data: () => ({
-    status: '',
     packageTemplateId: '',
-    isLoading: false,
     modalFormTitle: '',
     form: {},
     isModalActive: false,
@@ -236,32 +109,13 @@ export default Vue.extend({
       return this.$accessor.orders.getError
     },
     order(): Order {
-      return this.$accessor.orders.getSelected
-    },
-    productsCount(): number {
-      return this.order.products.reduce((sum, item) => sum + item.quantity, 0)
-    },
-    statuses(): OrderStatus[] {
-      return this.$accessor.statuses.getData
-    },
-    relativeOrderedDate(): string | null {
-      return this.order.created_at && getRelativeDate(this.order.created_at)
-    },
-    formattedDate(): string | null {
-      return this.order.created_at && formatDate(this.order.created_at)
+      return this.$accessor.orders.getSelected || ({} as any)
     },
     storefrontPaymentUrl(): string | undefined {
-      return this.$accessor.env.storefront_payment_url || undefined
+      return this.$accessor.config.env.storefront_payment_url || undefined
     },
   },
   watch: {
-    order(order: Order) {
-      this.status = order?.status?.id
-    },
-    status(status: OrderStatus, prevStatus: OrderStatus) {
-      if (!prevStatus) return
-      this.setStatus(status)
-    },
     error(error) {
       if (error) this.$toast.error(formatApiNotificationError(error))
     },
@@ -275,188 +129,62 @@ export default Vue.extend({
     this.$accessor.stopLoading()
   },
   methods: {
-    formatCurrency(amount: number) {
-      return formatCurrency(amount, this.$accessor.currency)
-    },
-    async setStatus(newStatus: OrderStatus) {
-      this.isLoading = true
-
-      // @ts-ignore // TODO: fix extended store actions typings
-      const success = await this.$accessor.orders.changeStatus({
-        orderId: this.order.id,
-        statusId: newStatus,
-      })
-
-      if (success) {
-        this.$toast.success('Status zamówienia został zmieniony')
-      }
-
-      this.isLoading = false
-    },
     onPackageCreated(shippingNumber: string) {
       this.order.shipping_number = shippingNumber
-    },
-    editComment() {
-      this.isModalActive = true
-      this.modalFormTitle = 'komentarz do zamówienia'
-      this.form = {
-        comment: this.order.comment,
-      }
-    },
-    editEmail() {
-      this.isModalActive = true
-      this.modalFormTitle = 'adres e-mail'
-      this.form = {
-        email: this.order.email,
-      }
-    },
-    editDeliveryAddress() {
-      this.isModalActive = true
-      this.modalFormTitle = 'adres dostawy'
-      this.form = {
-        delivery_address: {
-          ...this.order.delivery_address,
-        },
-      }
-    },
-    editInvoiceAddress() {
-      this.isModalActive = true
-      this.modalFormTitle = 'adres rozliczeniowy'
-      this.form = {
-        invoice_address: {
-          ...(this.order.invoice_address || DEFAULT_FORM),
-        },
-      }
-    },
-    removeInvoiceAddress() {
-      this.form = { invoice_address: null }
-      this.saveForm()
-    },
-    async saveForm() {
-      this.$accessor.startLoading()
-      await this.$accessor.orders.update({ id: this.order.id, item: this.form })
-      this.isModalActive = false
-      this.$toast.success('Zamówienie zostało zaktualizowane')
-      this.$accessor.stopLoading()
-    },
-
-    async payOffline() {
-      this.$accessor.startLoading()
-      try {
-        await api.post(`/orders/${this.order.code}/pay/offline`)
-        await this.$accessor.orders.get(this.$route.params.id)
-        this.$toast.success('Zamówienie zostało opłacone')
-      } catch {
-        this.$toast.error('Nie udało się opłacić zamówienia')
-      }
-
-      this.$accessor.stopLoading()
     },
   },
 })
 </script>
 
-<style lang="scss" scoped>
-.section-title {
-  font-weight: 600;
-  margin: 0;
-  font-size: 1.5em;
-  display: flex;
-  align-items: center;
-
-  .bx {
-    font-size: 0.9em;
-    margin-right: 4px;
-  }
-}
-
-.email {
-  display: flex;
-  flex-direction: column;
-  margin-top: 8px;
-  color: #444444;
-  position: relative;
-
-  &__edit {
-    position: absolute;
-    bottom: calc(100% + 4px);
-    right: 0;
-  }
-
-  &__name {
-    font-size: 1em;
-    margin-bottom: 3px;
-    color: #111111;
-  }
-}
-
-.comment {
-  position: relative;
-
-  &__content {
-    display: block;
-    margin-top: 10px;
-    font-size: 0.9em;
-  }
-
-  &__edit {
-    position: absolute;
-    top: 16px;
-    right: 20px;
-  }
-}
-
-.cart-total {
-  font-weight: 600;
-  font-size: 1.2em;
-  margin-top: auto;
-}
-
-.order {
+<style lang="scss">
+.order-page {
   display: grid;
-  grid-template-columns: 1fr 400px;
-  grid-gap: 32px;
+  grid-template-columns: 1fr;
+  grid-template-areas: 'summary' 'status' 'cart' 'address' 'documents' 'shipping' 'metadata';
+  grid-gap: 16px;
+  align-items: start;
+
+  @media ($viewport-10) {
+    grid-template-columns: 2fr 1fr;
+    grid-template-areas: 'summary status' 'cart address' 'cart shipping' 'cart documents' 'cart metadata' 'cart .';
+  }
+
+  .card {
+    margin-bottom: 0 !important;
+  }
 
   @media screen and (max-width: 780px) {
     grid-template-columns: 1fr;
   }
 
-  .overpaid-icon {
-    display: flex;
-    justify-content: center;
-    color: $red-color-500;
-    margin-right: 5px;
+  &__summary {
+    grid-area: summary;
+  }
+
+  &__status {
+    grid-area: status;
+  }
+
+  &__cart {
+    grid-area: cart;
+  }
+
+  &__address {
+    grid-area: address;
+  }
+
+  &__metadata {
+    grid-area: metadata;
+  }
+
+  &__documents {
+    grid-area: documents;
   }
 }
 
-.payment-method {
-  display: flex;
-  align-items: center;
-  margin: 3px 0;
-
-  &__name {
-    font-family: $primaryFont;
-    margin-left: 10px;
-    margin-right: 4px;
-    text-transform: capitalize;
-  }
-
-  &__amount {
-    font-size: 0.7em;
-    line-height: 1rem;
-  }
-
-  .bx {
-    font-size: 1.3em;
-    margin-top: 1px;
-  }
-
-  &__failed {
-    color: $red-color-400;
-  }
-
-  &__success {
-    color: $green-color-400;
-  }
+.order-title {
+  display: block;
+  font-size: 1em;
+  color: $gray-color-500;
 }
 </style>

@@ -2,74 +2,115 @@
   <a-modal width="900px" class="set-products" :visible="isOpen" @cancel="$emit('close')">
     <template #title>
       <div class="set-products__header">
-        <h4>Produkty w kolekcji {{ set && set.name }}</h4>
+        <h4>{{ $t('title') }} {{ set && set.name }}</h4>
         <icon-button v-can="$p.ProductSets.Edit" size="small" dark @click="isSelectorActive = true">
           <template #icon>
             <i class="bx bx-plus"></i>
           </template>
-          Dodaj produkt do kolekcji
+          {{ $t('addProduct') }}
         </icon-button>
       </div>
     </template>
 
     <div v-if="products.length" class="set-products__list">
-      <div v-for="product in products" :key="product.id" class="set-product-item">
-        <avatar color="#eee">
-          <img
-            v-if="product.cover"
-            :src="`${product.cover.url}?w=100&h=100`"
-            :style="{ objectFit }"
-          />
-          <i v-else class="product-list-item__img-icon bx bx-image"></i>
-        </avatar>
-        <div class="set-product-item__main">
-          <span class="set-product-item__name">{{ product.name }}</span>
-          <span class="set-product-item__price">{{ formatCurrency(product.price) }}</span>
+      <draggable
+        :value="products"
+        :disabled="!$can($p.ProductSets.Edit)"
+        :options="{ filter: '.undragabble' }"
+        :move="checkMove"
+        @change="reorderSetProducts"
+      >
+        <div
+          v-for="product in products"
+          :key="product.id"
+          class="set-product-item"
+          :class="{ undragabble: product.unsaved }"
+        >
+          <avatar color="#eee">
+            <img
+              v-if="product.cover"
+              :src="`${product.cover.url}?w=100&h=100`"
+              :style="{ objectFit }"
+            />
+            <i v-else class="product-list-item__img-icon bx bx-image"></i>
+          </avatar>
+          <div class="set-product-item__main">
+            <span class="set-product-item__name">{{ product.name }}</span>
+            <product-price tag="span" class="set-product-item__price" :product="product" />
+          </div>
+          <div class="set-product-item__actions undragabble">
+            <icon-button
+              v-can="$p.ProductSets.Edit"
+              size="small"
+              type="danger"
+              @click.stop="removeProduct(product.id)"
+            >
+              <template #icon>
+                <i class="bx bx-trash"></i>
+              </template>
+            </icon-button>
+          </div>
         </div>
-        <div class="set-product-item__actions">
-          <icon-button
-            v-can="$p.ProductSets.Edit"
-            size="small"
-            type="danger"
-            @click.stop="removeProduct(product.id)"
-          >
-            <template #icon>
-              <i class="bx bx-trash"></i>
-            </template>
-          </icon-button>
-        </div>
-      </div>
+      </draggable>
     </div>
 
-    <empty v-else>Ta kolekcja nie zawiera produktów</empty>
+    <empty v-else>{{ $t('empty') }}</empty>
 
     <template #footer>
-      <app-button type="success" @click="save">Zapisz</app-button>
+      <app-button type="success" @click="save">{{ $t('common.save') }}</app-button>
     </template>
 
-    <a-modal v-model="isSelectorActive" width="800px" title="Wybierz produkt" :footer="null">
-      <selector type-name="produkt" type="products" :existing="products" @select="addProduct" />
+    <a-modal v-model="isSelectorActive" width="800px" :title="$t('chooseProduct')" :footer="null">
+      <selector
+        v-if="isSelectorActive"
+        :type-name="$t('product')"
+        type="products"
+        :existing="products"
+        @select="addProduct"
+      />
     </a-modal>
   </a-modal>
 </template>
 
+<i18n lang="json">
+{
+  "pl": {
+    "title": "Produkty w kolekcji",
+    "addProduct": "Dodaj produkt do kolekcji",
+    "empty": "Ta kolekcja nie zawiera produktów",
+    "chooseProduct": "Wybierz produkt",
+    "successMessage": "Produkty zostały zapisane w kolekcji",
+    "product": "produkt"
+  },
+  "en": {
+    "title": "Products in collection",
+    "addProduct": "Add product to collection",
+    "empty": "This collection does not contain products",
+    "chooseProduct": "Choose product",
+    "successMessage": "Products saved in collection",
+    "product": "product"
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
+import Draggable from 'vuedraggable'
+import { ProductList, ProductSet } from '@heseya/store-core'
 
 import Selector from '@/components/Selector.vue'
 import Empty from '@/components/layout/Empty.vue'
 import Avatar from '@/components/layout/Avatar.vue'
+import ProductPrice from '@/components/modules/products/ProductPrice.vue'
 
-import { ProductSet } from '@/interfaces/ProductSet'
-import { Product } from '@/interfaces/Product'
 import { UUID } from '@/interfaces/UUID'
 
-import { api } from '@/api'
+import { sdk } from '@/api'
 import { formatCurrency } from '@/utils/currency'
 import { formatApiNotificationError } from '@/utils/errors'
 
 export default Vue.extend({
-  components: { Selector, Empty, Avatar },
+  components: { Draggable, Selector, Empty, Avatar, ProductPrice },
   props: {
     set: {
       type: Object,
@@ -82,11 +123,11 @@ export default Vue.extend({
   },
   data: () => ({
     isSelectorActive: false,
-    products: [] as Product[],
+    products: [] as (ProductList & { unsaved?: true })[],
   }),
   computed: {
     objectFit(): string {
-      return +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'
+      return +this.$accessor.config.env.dashboard_products_contain ? 'contain' : 'cover'
     },
   },
   watch: {
@@ -96,27 +137,61 @@ export default Vue.extend({
   },
   methods: {
     formatCurrency(amount: number) {
-      return formatCurrency(amount, this.$accessor.currency)
+      return formatCurrency(amount, this.$accessor.config.currency)
     },
-    addProduct(product: Product) {
-      this.products.push(product)
+    addProduct(product: ProductList) {
+      this.products.push({ ...product, unsaved: true })
     },
     removeProduct(productId: UUID) {
       this.products = this.products.filter((product) => product.id !== productId)
     },
 
+    checkMove(evt: any) {
+      const futureIndex = evt.draggedContext.futureIndex
+      const savedProductsLength = this.products.filter((product) => !product.unsaved).length
+      return futureIndex < savedProductsLength
+    },
+
     async fetchProducts() {
       if (!this.set) return
       this.$accessor.startLoading()
+
+      // TODO: this could be bad for performance, but it cannot be done any other way
       try {
-        const {
-          data: { data: products },
-        } = await api.get<{ data: Product[] }>(`/product-sets/id:${this.set.id}/products?limit=500`)
-        this.products = products
+        let page = 1
+        let lastPage = 1
+        this.products = []
+
+        do {
+          const { data: products, pagination } = await sdk.ProductSets.getProducts(this.set.id, {
+            limit: 100,
+            page,
+          })
+          this.products.push(...products)
+          page++
+          lastPage = pagination.lastPage
+        } while (page < lastPage)
       } catch (e: any) {
         this.$toast.error(formatApiNotificationError(e))
       }
       this.$accessor.stopLoading()
+    },
+
+    async reorderSetProducts({
+      moved,
+    }: {
+      moved: { element: ProductList; newIndex: number; oldIndex: number }
+    }) {
+      if (!this.set) return
+      try {
+        await sdk.ProductSets.reorderProducts(this.set.id, [
+          { id: moved.element.id, order: moved.newIndex },
+        ])
+        // Move element in local array to the new index
+        this.products.splice(moved.newIndex, 0, this.products.splice(moved.oldIndex, 1)[0])
+      } catch (e: any) {
+        this.$toast.error(formatApiNotificationError(e))
+      }
     },
 
     async save() {
@@ -124,8 +199,8 @@ export default Vue.extend({
       this.$accessor.startLoading()
       try {
         const products = this.products.map((p) => p.id)
-        await api.post(`/product-sets/id:${this.set.id}/products`, { products })
-        this.$toast.success('Produkty zostały zapisane w kolekcji')
+        await sdk.ProductSets.updateProducts(this.set.id, products)
+        this.$toast.success(this.$t('successMessage') as string)
         this.$emit('close')
       } catch (e: any) {
         this.$toast.error(formatApiNotificationError(e))
@@ -142,17 +217,26 @@ export default Vue.extend({
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-right: 24px;
+    flex-direction: column;
+
+    @media ($viewport-10) {
+      flex-direction: row;
+      padding-right: 24px;
+    }
 
     h4 {
       margin-bottom: 0;
+      margin-right: auto;
+    }
+
+    :deep(.icon-button) {
+      margin-left: auto;
     }
   }
 
   &__list {
     overflow: auto;
-    max-height: 50vh;
-    margin-bottom: 24px;
+    max-height: 60vh;
   }
 }
 
@@ -162,9 +246,16 @@ export default Vue.extend({
   padding: 4px;
   border-radius: 8px;
   transition: 0.3s;
+  cursor: move;
 
-  &:hover {
-    background-color: #f5f5f5;
+  @media (pointer: fine) {
+    &:hover {
+      background-color: #f5f5f5;
+    }
+  }
+
+  &.undragabble {
+    cursor: not-allowed;
   }
 
   &__main {
@@ -183,6 +274,8 @@ export default Vue.extend({
 
   &__actions {
     margin-left: auto;
+    position: relative;
+    z-index: 100;
   }
 }
 </style>

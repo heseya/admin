@@ -1,23 +1,33 @@
 <template>
   <div class="setup-2fa-app">
-    <h3>Aktywacja weryfikacji dwuetapowej przez aplikacje</h3>
+    <h3>{{ $t('title') }}</h3>
     <p>
-      Zeskanuj poniższy kod QR w aplikacji do weryfikacji dwuetapowej (Np. Google Authenticator).
-      Następnie potwierdź aktywację weryfikacji przez wpisanie kodu który wyświetli Ci się na
-      ekranie.
+      {{ $t('message') }}
     </p>
-    <img
-      v-if="qrCodeUrl"
-      :src="qrCodeUrl"
-      alt="Kod QR do aktywacji weryfikacji dwuetapowej"
-      class="setup-2fa-app__image"
-    />
+    <img v-if="qrCodeUrl" :src="qrCodeUrl" :alt="$t('imageAlt')" class="setup-2fa-app__image" />
     <div class="setup-2fa-app__secret-wrapper">
-      <small>Możesz też wpisać klucz ręcznie w aplikacji:</small>
+      <small>{{ $t('secretText') }}</small>
       <code class="setup-2fa-app__secret">{{ secret }}</code>
     </div>
   </div>
 </template>
+
+<i18n lang="json">
+{
+  "pl": {
+    "title": "Aktywacja weryfikacji dwuetapowej przez aplikacje",
+    "message": "Zeskanuj poniższy kod QR w aplikacji do weryfikacji dwuetapowej (Np. Google Authenticator). Następnie potwierdź aktywację weryfikacji przez wpisanie kodu który wyświetli Ci się na ekranie.",
+    "imageAlt": "Kod QR do aktywacji weryfikacji dwuetapowej",
+    "secretText": "Możesz też wpisać klucz ręcznie w aplikacji:"
+  },
+  "en": {
+    "title": "Activate two-factor authentication by apps",
+    "message": "Scan the QR code below in your app to activate two-factor authentication (e.g. Google Authenticator). Then enter the code that shows up on your screen.",
+    "imageAlt": "QR code to activate two-factor authentication",
+    "secretText": "You can also enter the secret manually in your app:"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

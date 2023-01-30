@@ -12,6 +12,17 @@
   </div>
 </template>
 
+<i18n lang="json">
+{
+  "pl": {
+    "allowedExtensions": "Obsługiwane są tylko pliki z rozszerzeniami:"
+  },
+  "en": {
+    "allowedExtensions": "Allowed extensions:"
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 
@@ -82,13 +93,11 @@ export default Vue.extend({
     },
     async upload(files: File[]) {
       if (files.some((f) => !this.isFileValid(f))) {
-        this.$toast.error(
-          `Obsługiwane są tylko pliki z rozszerzeniami: ${this.extensions.join(', ')}`,
-        )
+        this.$toast.error(`${this.$t('allowedExtensions')}: ${this.extensions.join(', ')}`)
         return
       }
 
-      this.$accessor.startLoading()
+      this.$emit('upload-start', files)
 
       files.forEach(async (rawFile) => {
         const { success, file, error } = await uploadMedia(rawFile)
@@ -98,8 +107,6 @@ export default Vue.extend({
           this.$emit('error', error)
         }
       })
-
-      this.$accessor.stopLoading()
     },
     isFileValid(file: File) {
       if (!file) return false
@@ -108,7 +115,7 @@ export default Vue.extend({
     },
     changeDrag(isDrag: boolean) {
       this.isDrag = isDrag
-      this.$emit('dragChange', isDrag)
+      this.$emit('drag-change', isDrag)
     },
   },
 })

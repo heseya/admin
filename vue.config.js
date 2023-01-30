@@ -3,7 +3,6 @@ module.exports = {
     loaderOptions: {
       sass: {
         prependData: `
-          @import "@/scss/_font.scss";
           @import "@/scss/01_abstracts/index.scss";
         `,
       },
@@ -19,6 +18,16 @@ module.exports = {
       },
     },
   },
+
+  configureWebpack: {
+    optimization: {
+      splitChunks: {
+        minSize: 10000,
+        maxSize: 250000,
+      },
+    },
+  },
+
   pwa: {
     name: 'Heseya',
     themeColor: '#8f022c',
@@ -47,11 +56,26 @@ module.exports = {
       ],
     },
 
+    // workboxOptions: {
+    // Probably file size should be reduced instead of increasing the limit
+    // maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
+    // },
+
     iconPaths: {
       appleTouchIcon: 'img/apple-touch-icon.png',
       // maskIcon: 'img/safari-pinned-tab.svg',
       maskIcon: null,
       msTileImage: 'img/mstile-150x150.svg',
+    },
+  },
+
+  pluginOptions: {
+    i18n: {
+      locale: 'pl',
+      fallbackLocale: 'pl',
+      localeDir: 'locales',
+      enableInSFC: true,
+      enableBridge: false,
     },
   },
 }

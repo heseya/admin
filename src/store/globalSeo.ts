@@ -1,9 +1,7 @@
-/* eslint-disable camelcase */
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
+import { SeoCheckModelType, SeoMetadata } from '@heseya/store-core'
 
-import { api } from '../api'
-
-import { SeoMetadata } from '@/interfaces/SeoMetadata'
+import { sdk } from '../api'
 import { UUID } from '@/interfaces/UUID'
 
 const state = () => ({
@@ -32,13 +30,11 @@ const actions = actionTree(
     async get({ commit }) {
       commit('SET_ERROR', null)
       try {
-        const {
-          data: { data },
-        } = await api.get<{ data: SeoMetadata }>('/seo')
+        const seo = await sdk.GlobalSeo.get()
 
-        commit('SET_SEO', data)
+        commit('SET_SEO', seo)
 
-        return data
+        return seo
       } catch (e: any) {
         commit('SET_ERROR', e)
         return false
@@ -47,13 +43,9 @@ const actions = actionTree(
     async update({ commit }, payload: SeoMetadata) {
       commit('SET_ERROR', null)
       try {
-        const {
-          data: { data },
-        } = await api.patch<{ data: SeoMetadata }>('/seo', payload)
-
-        commit('SET_SEO', data)
-
-        return data
+        const updatedSeo = await sdk.GlobalSeo.update(payload)
+        commit('SET_SEO', updatedSeo)
+        return updatedSeo
       } catch (e: any) {
         commit('SET_ERROR', e)
         return false
@@ -62,17 +54,13 @@ const actions = actionTree(
 
     async checkDuplicates(
       _c,
-      { keywords, excluded }: { keywords: string[]; excluded?: { id: UUID; model: string } },
+      {
+        keywords,
+        excluded,
+      }: { keywords: string[]; excluded?: { id: UUID; model: SeoCheckModelType } },
     ) {
-      type CheckResponse = { data: { duplicated: boolean; duplicates: [] } }
-
       try {
-        const response = await api.post<CheckResponse>('/seo/check', {
-          keywords,
-          excluded,
-        })
-
-        return response.data.data
+        return await sdk.GlobalSeo.check(keywords, excluded)
       } catch {
         return {
           duplicated: false,

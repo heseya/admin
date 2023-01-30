@@ -11,7 +11,12 @@
       @sort="(v) => $emit('sort', v)"
     />
 
-    <component :is="draggable ? 'Draggable' : 'div'" v-model="items" class="cms-table__content">
+    <component
+      :is="draggable ? 'Draggable' : 'div'"
+      v-model="items"
+      class="cms-table__content"
+      handle=".reorder-handle"
+    >
       <template v-if="shouldRenderList">
         <div v-for="item in items" :key="item.id" class="cms-table__item">
           <slot name="item" :item="item">
@@ -20,6 +25,7 @@
               :headers="config.headers"
               :to="config.rowUrlBuilder ? config.rowUrlBuilder(item) : null"
               :no-hover="noHover"
+              :draggable="draggable"
               :el="rowEl"
               @click="config.rowOnClick || (() => {})"
             />
@@ -63,7 +69,7 @@ export default Vue.extend({
     },
     rowEl: {
       type: String,
-      default: null,
+      default: undefined,
     },
     sortFilters: {
       type: String,
@@ -115,26 +121,6 @@ export default Vue.extend({
     @media ($viewport-11) {
       .cms-table-header {
         padding-left: 30px;
-      }
-
-      .cms-table-row {
-        padding-left: 30px !important;
-        position: relative;
-
-        &::before {
-          font-family: boxicons !important;
-          font-weight: 400;
-          content: '\ed61';
-          position: absolute;
-          left: 0px;
-          top: 50%;
-          font-size: 1.1em;
-          line-height: 1em;
-          padding: 6px 13px;
-          cursor: move;
-          transform: translateY(-50%);
-          color: lighten($gray-color-600, 20%);
-        }
       }
     }
   }

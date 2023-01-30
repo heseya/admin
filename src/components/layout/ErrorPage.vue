@@ -3,10 +3,21 @@
     <card class="error-page__content">
       <h1>{{ title }}</h1>
       <p>{{ description }}</p>
-      <app-button v-if="!hideReturn" to="/">Wróć na stronę główną</app-button>
+      <app-button v-if="!hideReturn" to="/"> {{ $t('returnBtn') }} </app-button>
     </card>
   </div>
 </template>
+
+<i18n lang="json">
+{
+  "pl": {
+    "returnBtn": "Wróć na stronę główną"
+  },
+  "en": {
+    "returnBtn": "Return to main page"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

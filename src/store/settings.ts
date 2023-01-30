@@ -1,7 +1,7 @@
+import { Setting, SettingCreateDto, SettingUpdateDto } from '@heseya/store-core'
 import { createVuexCRUD } from './generator'
-import { Setting } from '@/interfaces/Settings'
 
-export const settings = createVuexCRUD<Setting>()('settings', {
+export const settings = createVuexCRUD<Setting, SettingCreateDto, SettingUpdateDto>()('settings', {
   state: {},
   getters: {},
   mutations: {},

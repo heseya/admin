@@ -52,6 +52,7 @@
       "price": "Cena brutto",
       "tags": "Tagi",
       "public": "Widoczność",
+      "shippingDigital": "Wysyłka cyfrowa",
       "available": "Dostępny"
     }
   },
@@ -67,6 +68,7 @@
       "price": "Price (gross)",
       "tags": "Tags",
       "public": "Visibility",
+      "shippingDigital": "Digital shipping",
       "available": "Available"
     }
   }
@@ -138,6 +140,11 @@ export default Vue.extend({
             label: this.$t('form.available') as string,
             width: '0.4fr',
           },
+          {
+            key: 'shipping_digital',
+            label: this.$t('form.shippingDigital') as string,
+            width: '0.4fr',
+          },
           { key: 'action', label: '', width: '64px' },
         ],
       }
@@ -146,6 +153,7 @@ export default Vue.extend({
       return {
         name: this.$t('title') as string,
         headers: [
+          { key: 'id', label: 'ID' },
           { key: 'name', label: this.$t('common.form.name') as string },
           { key: 'price', label: this.$t('form.price') as string },
           {
@@ -156,6 +164,17 @@ export default Vue.extend({
           {
             key: 'public',
             label: this.$t('form.public') as string,
+            format: (v: boolean) => (v ? this.$t('common.yes') : this.$t('common.no')) as string,
+          },
+
+          {
+            key: 'available',
+            label: this.$t('form.available') as string,
+            format: (v: boolean) => (v ? this.$t('common.yes') : this.$t('common.no')) as string,
+          },
+          {
+            key: 'shipping_digital',
+            label: this.$t('form.shippingDigital') as string,
             format: (v: boolean) => (v ? this.$t('common.yes') : this.$t('common.no')) as string,
           },
         ],

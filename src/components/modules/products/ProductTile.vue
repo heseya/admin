@@ -1,7 +1,20 @@
 <template>
   <router-link class="product-box" :to="`/products/${product.id}`">
-    <tag v-if="!product.visible" small class="product-box__icon" type="error">
+    <tag
+      v-if="!product.visible"
+      small
+      class="product-box__icon product-box__icon--visible"
+      type="error"
+    >
       <i class="bx bx-low-vision"></i> {{ $t('common.hidden') }}
+    </tag>
+    <tag
+      v-if="product.shipping_digital"
+      small
+      class="product-box__icon product-box__icon--shipping-digital"
+      type="primary"
+    >
+      <i class="bx bx-signal-5"></i> {{ $t('shippingDigital') }}
     </tag>
     <div class="product-box__img">
       <media-element v-if="product.cover" :media="product.cover" :size="350" />
@@ -21,6 +34,17 @@
     </div>
   </router-link>
 </template>
+
+<i18n lang="json">
+{
+  "pl": {
+    "shippingDigital": "Dostawa cyfrowa"
+  },
+  "en": {
+    "shippingDigital": "Digital shipping"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
@@ -68,9 +92,17 @@ export default Vue.extend({
 
   &__icon {
     position: absolute !important;
-    top: -10px;
-    left: -10px;
     z-index: 1;
+
+    &--visible {
+      top: -10px;
+      left: -10px;
+    }
+
+    &--shipping-digital {
+      top: -10px;
+      right: -10px;
+    }
   }
 
   &__img {

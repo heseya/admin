@@ -33,7 +33,7 @@
             name="quantity"
             :label="$t('requiredQuantity')"
             type="number"
-            rules="required|not-negative"
+            rules="required|positive"
           />
         </div>
 

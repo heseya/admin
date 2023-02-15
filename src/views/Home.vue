@@ -154,7 +154,7 @@ type DateRange = { start: Date; end: Date }
 
 export default Vue.extend({
   metaInfo(this: any) {
-    return { title: this.$t('nav.settings') as string }
+    return { title: this.$t('nav.dashboard') as string }
   },
   components: {
     ListItem,

@@ -889,20 +889,6 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
-"@intlify/shared@^9.0.0":
-  version "9.1.10"
-  resolved "https://registry.yarnpkg.com/@intlify/shared/-/shared-9.1.10.tgz#9e2527276b43ae3f354c4015eb04f855d9d7a707"
-  integrity sha512-Om54xJeo1Vw+K1+wHYyXngE8cAbrxZHpWjYzMR9wCkqbhGtRV5VLhVc214Ze2YatPrWlS2WSMOWXR8JktX/IgA==
-
-"@intlify/vue-i18n-loader@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@intlify/vue-i18n-loader/-/vue-i18n-loader-1.1.0.tgz#eecc6460823676f533784b3641665c5a609eccf0"
-  integrity sha512-9LXiztMtYKTE8t/hRwwGUp+ofrwU0sxLQLzFEOZ38zvn0DonUIQmZUj1cfz5p1Lu8BllxKbCrn6HnsRJ+LYA6g==
-  dependencies:
-    "@intlify/shared" "^9.0.0"
-    js-yaml "^3.13.1"
-    json5 "^2.1.1"
-
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@istanbuljs/load-nyc-config/-/load-nyc-config-1.1.0.tgz#fd3db1d59ecf7cf121e80650bb86712f9b55eced"
@@ -1514,10 +1500,10 @@
     "@typescript-eslint/types" "5.30.6"
     eslint-visitor-keys "^3.3.0"
 
-"@vitejs/plugin-vue@^2.2.2":
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/@vitejs/plugin-vue/-/plugin-vue-2.2.2.tgz#df5d4464ad8cb97c9fb7407a1e5a3a34f716febb"
-  integrity sha512-3C0s45VOwIFEDU+2ownJOpb0zD5fnjXWaHVOLID2R1mYOlAx3doNBFnNbVjaZvpke/L7IdPJXjpyYpXZToDKig==
+"@vitejs/plugin-vue2@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@vitejs/plugin-vue2/-/plugin-vue2-2.2.0.tgz#7453207197d6ac2b7023cedc7133b142c604c356"
+  integrity sha512-1km7zEuZ/9QRPvzXSjikbTYGQPG86Mq1baktpC4sXqsXlb02HQKfi+fl8qVS703JM7cgm24Ga9j+RwKmvFn90A==
 
 "@vue/babel-helper-vue-jsx-merge-props@^1.2.1":
   version "1.2.1"
@@ -4527,13 +4513,6 @@ json5@^1.0.1:
   integrity sha512-aKS4WQjPenRxiQsC93MNfjx+nbF4PAdYzmd/1JIj8HYzqfbu86beTuNgXDzPknWk0n0uARlyewZo4s++ES36Ow==
   dependencies:
     minimist "^1.2.0"
-
-json5@^2.1.1:
-  version "2.2.0"
-  resolved "https://registry.npmjs.org/json5/-/json5-2.2.0.tgz"
-  integrity sha512-f+8cldu7X/y7RAJurMEJmdoKXGB/X550w2Nr3tTbezL6RwEE/iMcm+tZnXeoZtKuOq6ft8+CqzEkrIgx1fPoQA==
-  dependencies:
-    minimist "^1.2.5"
 
 json5@^2.2.1, json5@^2.2.2:
   version "2.2.3"

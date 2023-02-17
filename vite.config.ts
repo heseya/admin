@@ -1,12 +1,12 @@
 import { defineConfig } from 'vite'
 import path from 'path'
 
-import { createVuePlugin as vue } from 'vite-plugin-vue2'
+import createVuePlugin from '@vitejs/plugin-vue2'
 import { createI18nPlugin } from '@yfwz100/vite-plugin-vue2-i18n'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue(), createI18nPlugin()],
+  plugins: [createVuePlugin(), createI18nPlugin()],
 
   css: {
     preprocessorOptions: {

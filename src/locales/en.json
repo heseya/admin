@@ -18,8 +18,9 @@
     "false": "False",
     "edit": "Edit",
     "continue": "Continue",
-    "reset": "Reset",
+    "visible": "Visible",
     "hidden": "Hidden",
+    "reset": "Reset",
     "confirmLeave": "Do you really want to leave? You have unsaved changes!",
     "form": {
       "name": "Name",
@@ -45,6 +46,7 @@
     "consents": "Marketing consents",
     "webhooks": "Webhooks",
     "seo": "SEO settings",
+    "providers": "Manage oAuth login",
     "advanced": "Advanced settings",
     "b2b": "List of B2B Companies"
   },
@@ -58,6 +60,7 @@
     "tags": "Tags",
     "schemas": "Schemas",
     "statuses": "Order statuses",
+    "payment_methods": "Payment methods",
     "shipping_methods": "Shipping methods",
     "package_templates": "Package templates",
     "users": "Users",
@@ -84,6 +87,20 @@
     "multiply_schema": "Schema multiply",
     "date": "Date",
     "file": "File"
+  },
+
+  "shippingTypes": {
+    "none": "None",
+    "digital": "Digital",
+    "address": "Address",
+    "point": "Point",
+    "point-external": "External point"
+  },
+
+  "paymentStatus": {
+    "failed": "Failed",
+    "pending": "Pending",
+    "successful": "Successful"
   },
 
   "orderDocumentsTypes": {
@@ -121,6 +138,7 @@
     "dateBefore": "The end date must be before the start date",
     "priceRangesDuplicates": "Price ranges shall not contain duplicate thresholds",
     "schemaCheckbox": "A scheme cannot be both hidden and required",
+    "shippingPointsDuplicates": "Point of given name already exists",
     "timeBefore": "The end time must be before the start time",
     "couponCode": "The coupon code can only consist of letters, numbers, dashes and underscores (_)"
   },
@@ -251,11 +269,15 @@
       "CLIENT_APPS_NO_ACCESS": "Applications cannot access this endpoint.",
       "CLIENT_NO_ACCESS_TO_DOWNLOAD_DOCUMENT": "No access to download the document. Client has no permission or he is not the buyer.",
       "CLIENT_STATUS_USED": "Can't update or remove status that is currently used in order",
+      "CLIENT_PROVIDER_MERGE_TOKEN_EXPIRED": "The ability to link accounts has expired, go through the process again.",
+      "CLIENT_PROVIDER_MERGE_TOKEN_INVALID": "The token is invalid or inactive. Try to link accounts again.",
+      "CLIENT_PROVIDER_MERGE_TOKEN_MISMATCH": "Unable to link accounts because you logged into an account with a different email address, go through the process again.",
       "PRODUCT_IS_NOT_ON_WISHLIST": "Product is not on wishlist",
       "BAD_REQUEST": "400: Bad request",
       "UNAUTHORIZED": "401: Unauthorized",
       "FORBIDDEN": "403: Forbidden",
       "NOT_FOUND": "404: Page not found",
+      "NO_ADMIN_PERMISSIONS": "You don't have permissions to log in to the admin panel",
       "INTERNAL_SERVER_ERROR": "Internal server error"
     },
     "SERVER_ERROR": {

@@ -18,8 +18,9 @@
     "false": "Fałsz",
     "edit": "Edytuj",
     "continue": "Kontynuuj",
-    "reset": "Przywróć domyślne",
+    "visible": "Widoczny",
     "hidden": "Ukryty",
+    "reset": "Przywróć domyślne",
     "confirmLeave": "Czy na pewno chcesz wyjść? Masz niezapisane zmiany!",
     "form": {
       "name": "Nazwa",
@@ -45,6 +46,7 @@
     "consents": "Zgody marketingowe",
     "webhooks": "Webhooki",
     "seo": "Ustawienia SEO",
+    "providers": "Zarządzanie logowaniem przez oAuth",
     "advanced": "Zaawansowane",
     "b2b": "Lista firm B2B"
   },
@@ -58,6 +60,7 @@
     "tags": "Tagi",
     "schemas": "Schematy",
     "statuses": "Statusy zamówień",
+    "payment_methods": "Metody płatności",
     "shipping_methods": "Metody dostawy",
     "package_templates": "Szablony przesyłek",
     "users": "Użytkownicy",
@@ -84,6 +87,20 @@
     "multiply_schema": "Mnożenie schematów",
     "date": "Data",
     "file": "Plik"
+  },
+
+  "shippingTypes": {
+    "none": "Brak",
+    "digital": "Cyfrowa dostawa",
+    "address": "Adres",
+    "point": "Punkt",
+    "point-external": "Punkt zewnętrzny"
+  },
+
+  "paymentStatus": {
+    "failed": "Nieudana",
+    "pending": "W trakcie",
+    "successful": "Zakończona z sukcesem"
   },
 
   "orderDocumentsTypes": {
@@ -122,6 +139,7 @@
     "dateBefore": "Data zakończenia musi być przed datą startu",
     "priceRangesDuplicates": "Zakresy cen nie mogą zawierać zduplikowanych progów",
     "schemaCheckbox": "Schemat nie może być jednocześnie ukryty i wymagany",
+    "shippingPointsDuplicates": "Punkt o takiej nazwie już istnieje",
     "timeBefore": "Godzina zakończenia musi być przed godziną startu",
     "couponCode": "Kod kuponu może składać się tylko z małych liter, cyfr, myślników i podkreślników (_)"
   },
@@ -251,11 +269,15 @@
       "CLIENT_NO_ACCESS_TO_DOWNLOAD_DOCUMENT": "Brak dostępu do pobrania dokumentu. Klient nie ma uprawnień lub nie jest kupującym.",
       "CLIENT_STATUS_USED": "Nie można zaktualizować ani usunąć statusu, który jest aktualnie używany w zamówieniu.",
       "PRODUCT_IS_NOT_ON_WISHLIST": "Produkt nie znajduje się na liście życzeń.",
+      "CLIENT_PROVIDER_MERGE_TOKEN_EXPIRED": "Możliwość połączenia kont wygasła, przejdź ten proces jeszcze raz.",
+      "CLIENT_PROVIDER_MERGE_TOKEN_INVALID": "Nie można połączyć kont, ponieważ token jest nieprawidłowy.",
+      "CLIENT_PROVIDER_MERGE_TOKEN_MISMATCH": "Nie można połączyć kont, ponieważ zalogowałeś się na konto o innym adresie email, przejdź ten proces jeszcze raz.",
       "BAD_REQUEST": "400: Nieprawidłowe żądanie",
       "UNAUTHORIZED": "401: Brak autoryzacji",
       "FORBIDDEN": "403: Odmowa dostępu",
       "NOT_FOUND": "404: Strona nie została znaleziona",
       "UNPROCESSABLE_ENTITY": "422: Nieprocesowalna zawartość",
+      "NO_ADMIN_PERMISSIONS": "Nie masz uprawnień, by zalogować się do panelu administracyjnego",
       "INTERNAL_SERVER_ERROR": "Wewnętrzny błąd serwera"
     },
     "SERVER_ERROR": {

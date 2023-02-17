@@ -1,5 +1,6 @@
 export enum LoginState {
-  Success,
-  TwoFactorAuthRequired,
-  Error,
+  Success = 'success',
+  TwoFactorAuthRequired = 'two-factor-auth-required',
+  AccountMergeRequired = 'account-merge-required',
+  Error = 'error',
 }

@@ -76,7 +76,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Order, Payment } from '@heseya/store-core'
+import { Order, OrderPayment, PaymentStatus } from '@heseya/store-core'
 
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import InfoTooltip from '@/components/layout/InfoTooltip.vue'
@@ -94,8 +94,8 @@ export default Vue.extend({
     } as Vue.PropOptions<Order>,
   },
   computed: {
-    lastSuccessfullPayment(): Payment | undefined {
-      return this.order.payments?.find((payment) => payment.paid)
+    lastSuccessfullPayment(): OrderPayment | undefined {
+      return this.order.payments?.find((payment) => payment.status === PaymentStatus.Successful)
     },
     PAYMENT_METHODS(): Record<string, string> {
       return PAYMENT_METHODS
@@ -108,7 +108,7 @@ export default Vue.extend({
     async payOffline() {
       this.$accessor.startLoading()
       try {
-        await sdk.Orders.pay(this.order.code, 'offline', '/')
+        await sdk.Orders.markAsPaid(this.order.code)
         await this.$accessor.orders.get(this.$route.params.id)
         this.$toast.success(this.$t('offlinePayment.resultSuccess') as string)
       } catch {

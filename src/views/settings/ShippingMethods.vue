@@ -27,8 +27,8 @@
                       ? $t('list.allEnabled')
                       : $t('list.allDisabled')
                     : method.block_list
-                    ? $t('list.blackList')
-                    : $t('list.whiteList')
+                    ? $t('list.blockList')
+                    : $t('list.allowList')
                 }}
               </template>
             </CmsTableCellList>
@@ -44,7 +44,6 @@
         :title="editedItem.id ? $t('editTitle') : $t('newTitle')"
       >
         <ShippingMethodsForm v-model="editedItem" :countries="countries" :disabled="!canModify" />
-
         <template v-if="selectedItem">
           <hr />
           <MetadataForm
@@ -95,8 +94,8 @@
     "list": {
       "allEnabled": "Metoda dostepna w każdym kraju",
       "allDisabled": "Metoda niedostepna w żadnym kraju",
-      "whiteList": "Tylko wybrane kraje:",
-      "blackList": "Wszystkie kraje poza:"
+      "allowList": "Tylko wybrane kraje:",
+      "blockList": "Wszystkie kraje poza:"
     },
     "alerts": {
       "deleted": "Metoda dostawy została usunięta.",
@@ -120,8 +119,8 @@
     "list": {
       "allEnabled": "Shipping method available in all countries",
       "allDisabled": "Shipping method unavailable in any country",
-      "whiteList": "Only selected countries:",
-      "blackList": "All countries except:"
+      "allowList": "Only selected countries:",
+      "blockList": "All countries except:"
     },
     "alerts": {
       "deleted": "Shipping method has been deleted.",
@@ -142,12 +141,18 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
-import { ShippingMethod, ShippingMethodUpdateDto, ShippingCountry } from '@heseya/store-core'
+import omit from 'lodash/omit'
+import {
+  ShippingMethod,
+  ShippingType,
+  ShippingMethodUpdateDto,
+  ShippingCountry,
+} from '@heseya/store-core'
 import { sdk } from '../../api'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import ShippingMethodsForm from '@/components/modules/shippingMethods/Index.vue'
+import ShippingMethodsForm from '@/components/modules/shippingMethods/Form.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { UUID } from '@/interfaces/UUID'
@@ -198,6 +203,12 @@ export default Vue.extend({
             wordBreak: 'break-word',
           },
           {
+            key: 'shipping_type',
+            label: this.$t('common.form.type') as string,
+            width: '1fr',
+            render: (type: ShippingType) => this.$t(`shippingTypes.${type}`) as string,
+          },
+          {
             key: 'countries',
             label: this.$t('headers.availabilty') as string,
             width: '1.5fr',
@@ -241,11 +252,13 @@ export default Vue.extend({
             start,
             value: prices[0].value,
           })),
+          shipping_points: item.shipping_points?.map((point) => omit(point, 'id')),
         }
       } else {
         this.selectedItem = null
         this.editedItem = {
           name: '',
+          shipping_type: ShippingType.Digital,
           block_list: false,
           payment_methods: [],
           countries: [],
@@ -258,6 +271,7 @@ export default Vue.extend({
             },
           ],
           public: true,
+          shipping_points: [],
         }
       }
     },

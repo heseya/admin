@@ -33,6 +33,7 @@ import { languages } from './languages'
 import { attributes } from './attributes'
 import { media } from './media'
 import { menuItems } from './menuItems'
+import { providers } from './providers'
 
 Vue.use(Vuex)
 
@@ -90,6 +91,7 @@ const storeModules = {
   productSets,
   languages,
   attributes,
+  providers,
   media,
   menuItems,
 }

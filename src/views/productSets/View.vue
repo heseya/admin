@@ -3,10 +3,10 @@
     <top-nav>
       <template #title>
         <template v-if="!isNew">
-          <span class="gray-text">{{ $t('editTitle') }}</span> {{ productSet.name }}
+          <span class="gray-text">{{ $t('editTitle') }}&nbsp;</span>{{ productSet.name }}
         </template>
         <template v-else>
-          {{ $t('newTitle') }}
+          {{ $t('newTitle') }}&nbsp;
           <small v-if="parent" class="gray-text">
             ({{ $t('titleSubcollection') }}
             <router-link :to="`/collections/${parent.id}`">{{ parent.name }}</router-link

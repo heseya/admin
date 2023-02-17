@@ -108,6 +108,7 @@
     "items": {
       "users": "Users list",
       "roles": "User roles",
+      "payment_methods": "Payment methods",
       "consents": "Marketing consents",
       "seo": "SEO settings",
       "advanced": "Advanced settings",
@@ -135,6 +136,7 @@
       "users": "Lista użytkowników",
       "roles": "Role użytkowników",
       "consents": "Zgody marketingowe",
+      "payment_methods": "Metody płatności",
       "seo": "Ustawienia SEO",
       "advanced": "Ustawienia zaawansowane",
       "lang_preferences": "Preferencje językowe",

@@ -189,6 +189,15 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     id: nextId(),
     type: MenuItemType.Link,
+    to: '/settings/payment-methods',
+    iconClass: 'bx bxs-credit-card',
+    label: 'models.payment_methods',
+    can: PERMISSIONS_TREE.PaymentMethods.Show,
+    section: SettingsSection.Orders,
+  },
+  {
+    id: nextId(),
+    type: MenuItemType.Link,
     to: '/settings/shipping-methods',
     iconClass: 'bx bxs-truck',
     label: 'models.shipping_methods',
@@ -267,9 +276,17 @@ export const MENU_ITEMS: MenuItem[] = [
     label: 'nav.seo',
     section: SettingsSection.Other,
   },
-
   {
     id: nextId(),
+    type: MenuItemType.Link,
+    to: '/settings/providers',
+    iconClass: 'bx bxs-log-in',
+    label: 'nav.providers',
+    can: PERMISSIONS_TREE.Settings.Show,
+    section: SettingsSection.Other,
+  },
+  {
+    id: '27',
     type: MenuItemType.Link,
     to: '/settings/advanced',
     iconClass: 'bx bxs-cog',

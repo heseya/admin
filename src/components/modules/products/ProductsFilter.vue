@@ -39,6 +39,17 @@
     <boolean-select v-model="local.available" :label="$t('available')" @change="debouncedSearch" />
     <boolean-select v-model="local.public" :label="$t('public')" @change="debouncedSearch" />
     <boolean-select v-model="local.has_cover" :label="$t('has_cover')" @change="debouncedSearch" />
+    <boolean-select v-model="local.has_items" :label="$t('has_items')" @change="debouncedSearch" />
+    <boolean-select
+      v-model="local.has_schemas"
+      :label="$t('has_schemas')"
+      @change="debouncedSearch"
+    />
+    <boolean-select
+      v-model="local.shipping_digital"
+      :label="$t('shipping_digital')"
+      @change="debouncedSearch"
+    />
 
     <range-input
       :value="{ min: local['price.min'], max: local['price.max'] }"
@@ -82,6 +93,9 @@
     "public": "Widoczność",
     "available": "Dostępne",
     "has_cover": "Posiada okładkę",
+    "has_items": "Posiada produkty magazynowe",
+    "has_schemas": "Posiada schematy",
+    "shipping_digital": "Wysyłka cyfrowa",
     "price": "Cena"
   },
   "en": {
@@ -90,6 +104,9 @@
     "public": "Public",
     "available": "Available",
     "has_cover": "Has cover",
+    "has_items": "Has items",
+    "has_schemas": "Has schemas",
+    "shipping_digital": "Digital shipping",
     "price": "Price"
   }
 }
@@ -131,6 +148,9 @@ export const EMPTY_PRODUCT_FILTERS: ProductFilers = {
   available: ALL_FILTER_VALUE,
   public: ALL_FILTER_VALUE,
   has_cover: ALL_FILTER_VALUE,
+  has_items: ALL_FILTER_VALUE,
+  has_schemas: ALL_FILTER_VALUE,
+  shipping_digital: ALL_FILTER_VALUE,
   'price.min': undefined,
   'price.max': undefined,
   sort: undefined,

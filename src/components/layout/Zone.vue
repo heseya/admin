@@ -33,6 +33,11 @@ export default Vue.extend({
     --zone-border-color: var(--red-color-500);
   }
 
+  &--info {
+    --zone-text-color: var(--blue-color-500);
+    --zone-border-color: var(--blue-color-500);
+  }
+
   &__title {
     font-weight: 600;
     color: var(--zone-text-color);

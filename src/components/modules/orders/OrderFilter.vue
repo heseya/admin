@@ -28,7 +28,27 @@
       option-filter-prop="label"
       @change="debouncedSearch"
     >
-      <a-select-option v-for="method in shippingMethods" :key="method.id" :label="method.name">
+      <a-select-option
+        v-for="method in phisicalShippingMethods"
+        :key="method.id"
+        :label="method.name"
+      >
+        {{ method.name }}
+      </a-select-option>
+    </app-select>
+
+    <app-select
+      v-model="local.digital_shipping_method_id"
+      :label="$t('digitalShipping')"
+      add-all
+      option-filter-prop="label"
+      @change="debouncedSearch"
+    >
+      <a-select-option
+        v-for="method in digitalShippingMethods"
+        :key="method.id"
+        :label="method.name"
+      >
         {{ method.name }}
       </a-select-option>
     </app-select>
@@ -51,6 +71,7 @@
   "pl": {
     "status": "Status",
     "shipping": "Dostawa",
+    "digitalShipping": "Cyfrowa dostawa",
     "paymentStatus": "Status płatności",
     "paid": "Opłacone",
     "notpaid": "Nie opłacone"
@@ -58,6 +79,7 @@
   "en": {
     "status": "Status",
     "shipping": "Shipping",
+    "digitalShipping": "Digital shipping",
     "paymentStatus": "Payment status",
     "paid": "Paid",
     "notpaid": "Not paid"
@@ -69,7 +91,7 @@
 /* eslint-disable camelcase */
 import Vue from 'vue'
 import { debounce } from 'lodash'
-import { OrderStatus, ShippingMethod } from '@heseya/store-core'
+import { OrderStatus, ShippingMethod, ShippingType } from '@heseya/store-core'
 
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 
@@ -77,6 +99,7 @@ export type OrderFilersType = {
   search: string
   status_id: string
   shipping_method_id: string
+  digital_shipping_method_id: string
   paid: string
   sort?: string
 }
@@ -85,6 +108,7 @@ export const EMPTY_ORDER_FILTERS: OrderFilersType = {
   search: '',
   status_id: ALL_FILTER_VALUE,
   shipping_method_id: ALL_FILTER_VALUE,
+  digital_shipping_method_id: ALL_FILTER_VALUE,
   paid: ALL_FILTER_VALUE,
   sort: undefined,
 }
@@ -105,8 +129,15 @@ export default Vue.extend({
     statuses(): OrderStatus[] {
       return this.$accessor.statuses.getData
     },
-    shippingMethods(): ShippingMethod[] {
-      return this.$accessor.shippingMethods.getData
+    digitalShippingMethods(): ShippingMethod[] {
+      return this.$accessor.shippingMethods.getData.filter(
+        (m) => m.shipping_type === ShippingType.Digital,
+      )
+    },
+    phisicalShippingMethods(): ShippingMethod[] {
+      return this.$accessor.shippingMethods.getData.filter(
+        (m) => m.shipping_type !== ShippingType.Digital,
+      )
     },
   },
   watch: {
@@ -115,8 +146,8 @@ export default Vue.extend({
     },
   },
   created() {
-    this.$accessor.statuses.fetch()
-    this.$accessor.shippingMethods.fetch()
+    this.$accessor.statuses.fetch({ limit: 500 })
+    this.$accessor.shippingMethods.fetch({ limit: 500 })
   },
   mounted() {
     this.local = { ...this.local, ...this.filters }

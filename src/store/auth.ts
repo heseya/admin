@@ -1,6 +1,14 @@
 /* eslint-disable camelcase */
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
-import { User, UserProfileUpdateDto, PERMISSIONS_TREE, MetadataUpdateDto } from '@heseya/store-core'
+import {
+  User,
+  UserProfileUpdateDto,
+  AuthProviderKey,
+  PERMISSIONS_TREE,
+  MetadataUpdateDto,
+  HeseyaClientErrorCode,
+  formatApiError,
+} from '@heseya/store-core'
 import { sdk } from '../api'
 
 import { UUID } from '@/interfaces/UUID'
@@ -11,10 +19,15 @@ import { LoginState } from '@/enums/login'
 import { AxiosResponse } from 'axios'
 import { TwoFactorAuthMethod } from '@/enums/twoFactorAuth'
 
-interface ILoginRequest {
+interface PasswordLoginRequest {
   email: string
   password: string
   code?: string
+}
+
+interface ProviderLoginRequest {
+  provider: AuthProviderKey
+  returnUrl: string
 }
 
 const state = () => ({
@@ -81,13 +94,17 @@ const mutations = mutationTree(state, {
 const actions = actionTree(
   { state, getters, mutations },
   {
-    async login({ commit, dispatch }, { email, password, code }: ILoginRequest) {
+    async login({ commit, dispatch }, payload: PasswordLoginRequest | ProviderLoginRequest) {
       commit('SET_ERROR', null)
       try {
-        const { user, ...tokens } = await sdk.Auth.login(email, password, code)
+        const isPasswordLogin = 'password' in payload
+
+        const { user, ...tokens } = isPasswordLogin
+          ? await sdk.Auth.login(payload.email, payload.password, payload.code)
+          : await sdk.Auth.Providers.login(payload.provider, payload.returnUrl)
 
         if (!hasAccess(PERMISSIONS_TREE.Admin.Login)(user.permissions))
-          throw new Error('Nie masz uprawnień, by zalogować się do panelu administracyjnego')
+          throw new Error('errors.CLIENT_ERROR.NO_ADMIN_PERMISSIONS')
 
         commit('SET_USER', user)
         broadcastTokensUpdate(tokens)
@@ -108,6 +125,14 @@ const actions = actionTree(
           return {
             state: LoginState.TwoFactorAuthRequired,
             method: response.data.data.type as TwoFactorAuthMethod,
+          } as const
+        }
+
+        // Account Merge is required due to multiple accounts with the same email
+        if (formatApiError(e).key === HeseyaClientErrorCode.AlreadyHasAccount) {
+          return {
+            state: LoginState.AccountMergeRequired,
+            mergeToken: response.data?.error?.errors?.merge_token as string,
           } as const
         }
 

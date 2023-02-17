@@ -16,7 +16,7 @@ const getDefaultUiLanguage = () => {
 
 export default new VueI18n({
   locale:
-    process.env.VUE_APP_I18N_LOCALE ||
+    import.meta.env.VUE_APP_I18N_LOCALE ||
     window.localStorage.getItem(LOCALE_STORAGE_KEY) ||
     getDefaultUiLanguage(),
   fallbackLocale: (import.meta.env.VITE_I18N_FALLBACK_LOCALE as string) || 'pl', // TODO: change to 'en' when all translations are done

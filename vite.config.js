@@ -12,7 +12,6 @@ export default defineConfig({
     preprocessorOptions: {
       scss: {
         additionalData: `
-        @import "@/scss/_font.scss";
         @import "@/scss/01_abstracts/index.scss";
         `,
       },
@@ -33,7 +32,7 @@ export default defineConfig({
 
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      '@': path.resolve(__dirname, 'src'),
     },
   },
 })

@@ -30,6 +30,10 @@ export default defineConfig({
 
   assetsInclude: ['@/assets/**/*.*'],
 
+  build: {
+    chunkSizeWarningLimit: 250000,
+  },
+
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),

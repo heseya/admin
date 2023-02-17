@@ -14,7 +14,7 @@ export default defineConfig({
     // We've imported your old cypress plugins here.
     // You may want to clean this up later by importing these.
     setupNodeEvents(on, config) {
-      on('file:preprocessor', vitePreprocessor(path.resolve(__dirname, './vite.config.ts')))
+      on('file:preprocessor', vitePreprocessor(path.resolve(__dirname, './vite.config.js')))
       return require('./tests/e2e/plugins/index.ts').default(on, config)
     },
     specPattern: 'tests/e2e/specs/**/*.spec.ts',

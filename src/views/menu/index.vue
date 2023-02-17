@@ -23,7 +23,7 @@
                 <template #avatar>
                   <InlineSvg
                     v-if="item.svgIconPath"
-                    :src="require(`@/assets/images/${item.svgIconPath}`)"
+                    :src="`/img/icons/${item.svgIconPath}`"
                     class="menu-items__img-icon"
                   />
                   <img
@@ -59,7 +59,7 @@
                 <template #avatar>
                   <InlineSvg
                     v-if="item.svgIconPath"
-                    :src="require(`@/assets/images/${item.svgIconPath}`)"
+                    :src="`/img/icons/${item.svgIconPath}`"
                     class="menu-items__img-icon"
                   />
                   <img

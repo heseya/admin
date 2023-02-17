@@ -13,7 +13,7 @@
           <InlineSvg
             v-if="item.svgIconPath"
             class="nav-link-img"
-            :src="`@/assets/images/${item.svgIconPath}`"
+            :src="`/img/${item.svgIconPath}`"
           />
           <img v-else-if="item.iconPath" :src="item.iconPath" class="nav-link-img" />
           <i v-else :class="item.iconClass" class="nav-link-svg" />

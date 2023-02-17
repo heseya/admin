@@ -2,11 +2,7 @@
   <list-item :url="url" @click="$emit('click')">
     <template #avatar>
       <avatar>
-        <InlineSvg
-          v-if="svgIconPath"
-          class="nav-link-img"
-          :src="require(`@/assets/images/${svgIconPath}`)"
-        />
+        <InlineSvg v-if="svgIconPath" class="nav-link-img" :src="`/img/${svgIconPath}`" />
         <i v-else :class="iconClass"></i>
       </avatar>
     </template>

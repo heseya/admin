@@ -3,7 +3,7 @@
     <media-upload-input
       :disabled="disabled"
       class="gallery__upload-btn"
-      :icon-path="require('@/assets/images/icons/plus-icon.svg')"
+      icon-path="/img/icons/plus-icon.svg"
       @upload="onImageUpload"
     />
 
@@ -128,8 +128,8 @@ export default Vue.extend({
 .gallery {
   padding-top: 12px;
 
-  &__upload-btn {
-  }
+  // &__upload-btn {
+  // }
 
   &__info-text {
     display: block;

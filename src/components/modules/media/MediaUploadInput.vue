@@ -84,7 +84,7 @@ export default Vue.extend({
     },
     iconPath: {
       type: String,
-      default: () => require('@/assets/images/icons/file-add.svg'),
+      default: () => '/img/icons/file-add.svg',
     },
     fileName: {
       type: String,

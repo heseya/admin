@@ -61,8 +61,8 @@ export default Vue.extend({
   height: 60px;
   box-sizing: border-box;
   width: 100vw;
-  background: #ffffff;
-  border-top: solid 1px $primary-color-100;
+  background: var(--white-color);
+  border-top: solid 1px var(--primary-color-100);
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
   justify-content: space-around;
@@ -85,7 +85,7 @@ export default Vue.extend({
     border-radius: 8px;
 
     .nav-link-img {
-      color: #9ea5b4;
+      color: var(--gray-color-500);
       width: 20px;
       height: 20px;
       line-height: 25px;
@@ -93,10 +93,10 @@ export default Vue.extend({
     }
 
     &.router-link-active {
-      color: $primary-color-500;
+      color: var(--primary-color-500);
 
       .nav-link-img {
-        color: $primary-color-500;
+        color: var(--primary-color-500);
       }
     }
   }

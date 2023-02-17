@@ -30,6 +30,20 @@
             </span>
           </div>
         </div>
+
+        <div class="cart-item__row">
+          <tag v-if="item.shipping_digital" type="primary" small>{{ $t('shippingDigital') }}</tag>
+
+          <icon-button
+            v-if="item.urls.length || item.shipping_digital"
+            size="small"
+            reversed
+            @click="showProductUrls"
+          >
+            <template #icon><i class="bx bx-link"></i></template>
+            {{ $t('showProductUrls') }}
+          </icon-button>
+        </div>
       </div>
     </div>
 
@@ -43,7 +57,7 @@
       <span class="cart-item__value">
         {{ formatCurrency(item.price) }}
 
-        <info-tooltip v-if="item.discounts.length">
+        <info-tooltip v-if="item.discounts && item.discounts.length">
           <OrderDiscountSummary :discounts="item.discounts" />
         </info-tooltip>
       </span>
@@ -75,7 +89,9 @@
     },
     "productSets": "Kolekcje produktu",
     "priceTooltip": "Kwota po rabacie może być błędna, sprawdź czy nie brakuje części groszowej zanim zaczniesz wystawiać dokumenty księgowe.",
-    "beforeDiscount": "Przed rabatem"
+    "beforeDiscount": "Przed rabatem",
+    "shippingDigital": "Product z wysyłką cyfrową",
+    "showProductUrls": "Pokaż linki"
   },
   "en": {
     "header": {
@@ -87,7 +103,9 @@
     },
     "productSets": "Product sets",
     "priceTooltip": "The price may be incorrect, check if there is a penny left before you start issuing invoices.",
-    "beforeDiscount": "Before discount"
+    "beforeDiscount": "Before discount",
+    "shippingDigital": "Product with digital shipping",
+    "showProductUrls": "Show links"
   }
 }
 </i18n>
@@ -100,9 +118,17 @@ import { formatCurrency } from '@/utils/currency'
 import Field from '../Field.vue'
 import InfoTooltip from './InfoTooltip.vue'
 import OrderDiscountSummary from '../modules/orders/OrderDiscountSummary.vue'
+import IconButton from './IconButton.vue'
+
+import { FEATURE_FLAGS } from '@/consts/featureFlags'
 
 export default Vue.extend({
-  components: { Field, InfoTooltip, OrderDiscountSummary },
+  components: {
+    Field,
+    InfoTooltip,
+    OrderDiscountSummary,
+    IconButton,
+  },
   props: {
     item: {
       type: Object,
@@ -114,7 +140,7 @@ export default Vue.extend({
       return this.item?.product?.cover?.url || ''
     },
     objectFit(): string {
-      return +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'
+      return +this.$accessor.config.env[FEATURE_FLAGS.ProductContain] ? 'contain' : 'cover'
     },
     totalPrice(): number {
       return this.item.price * this.item.quantity
@@ -122,7 +148,10 @@ export default Vue.extend({
   },
   methods: {
     formatCurrency(amount: number) {
-      return formatCurrency(amount, this.$accessor.currency)
+      return formatCurrency(amount, this.$accessor.config.currency)
+    },
+    showProductUrls() {
+      this.$emit('show-urls')
     },
   },
 })
@@ -166,7 +195,7 @@ export default Vue.extend({
     height: 58px;
     object-fit: cover;
     border-radius: 4px;
-    background-color: #eeeeee;
+    background-color: var(--gray-color-300);
     text-indent: -10000px;
   }
 
@@ -174,8 +203,16 @@ export default Vue.extend({
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: flex-start;
     width: 100%;
     margin-left: 12px;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
   }
 
   &__title {
@@ -183,7 +220,7 @@ export default Vue.extend({
     // margin-bottom: 8px;
 
     .info-tooltip__icon {
-      color: $blue-color-400;
+      color: var(--blue-color-400);
     }
   }
 
@@ -203,7 +240,7 @@ export default Vue.extend({
   }
 
   &__schema-name {
-    color: $gray-color-500;
+    color: var(--gray-color-500);
   }
 
   &__value {
@@ -220,11 +257,11 @@ export default Vue.extend({
     .info-tooltip__icon {
       margin-left: 4px;
       font-size: 0.8em;
-      color: $primary-color-500;
+      color: var(--primary-color-500);
     }
   }
 
-  .order-field {
+  .field {
     padding: 3px;
 
     @media ($viewport-8) {
@@ -236,17 +273,17 @@ export default Vue.extend({
     }
   }
 
-  .order-field__label {
+  .field__label {
     display: block;
     width: 100%;
   }
 
   @media ($viewport-8) {
-    .order-field__label {
+    .field__label {
       display: none;
     }
 
-    .order-field:last-of-type &__value {
+    .field:last-of-type &__value {
       justify-content: flex-end;
       align-items: flex-end;
       text-align: right;

@@ -26,7 +26,7 @@
         <modal-form>
           <validated-input
             v-model="editedItem.name"
-            rules="required|letters-only"
+            rules="required"
             :label="$t('form.name')"
             :disabled="editedItem.permanent || !canModify"
           />
@@ -175,7 +175,7 @@ export default Vue.extend({
       } else {
         await this.$accessor.settings.add(this.editedItem)
       }
-      await this.$accessor.fetchEnv()
+      await this.$accessor.config.fetchSettings()
       this.$accessor.stopLoading()
       this.isModalActive = false
     },

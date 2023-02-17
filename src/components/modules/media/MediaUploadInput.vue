@@ -3,12 +3,13 @@
     <span class="media-upload-input-wrapper__label">{{ label }}</span>
     <media-uploader
       class="media-upload-input"
-      :class="{ 'media-upload-input--image': !!image }"
+      :class="{ 'media-upload-input--image': !!image, 'media-upload-input--drag': isDrag }"
       :disabled="disabled || !!image"
       @upload="(f) => $emit('upload', f)"
+      @drag-change="(v) => (isDrag = v)"
     >
       <template v-if="image">
-        <img :src="image.url" role="presentation" />
+        <media-element :media="image" class="media-upload-input__media" />
 
         <AppButton
           type="danger"
@@ -24,14 +25,16 @@
           :disabled="disabled"
           :media="image"
           placement="top"
-          @update="updateMedia"
+          @updated="updateMedia"
         />
       </template>
       <template v-else>
-        <span class="media-upload-input__title">{{ $t('dropOrChooseImage') }}</span>
-        <AppButton type="primary" @click.prevent>
-          <i class="bx bx-upload"></i> {{ $t('chooseImage') }}
-        </AppButton>
+        <div class="media-upload-input__circle">
+          <img :src="iconPath" :alt="$t('fileAdd')" class="media-upload-input__file-add" />
+        </div>
+        <span class="media-upload-input__title"
+          >{{ $t('dropOrChooseImage') }} <b>{{ fileName }}</b></span
+        >
       </template>
     </media-uploader>
   </div>
@@ -41,13 +44,17 @@
 {
   "pl": {
     "removeOrChangeImage": "Usuń lub zmień zdjęcie",
-    "dropOrChooseImage": "Upuść lub wybierz zdjęcie",
-    "chooseImage": "Wybierz zdjęcie"
+    "dropOrChooseImage": "Przeciągnij lub kliknij aby dodać",
+    "defaultFileName": "multimedia",
+    "chooseImage": "Wybierz zdjęcie",
+    "fileAdd": "Dodaj zdjęcie"
   },
   "en": {
     "removeOrChangeImage": "Remove or change image",
-    "dropOrChooseImage": "Drop or choose image",
-    "chooseImage": "Choose image"
+    "dropOrChooseImage": "Drop or choose image to add",
+    "defaultFileName": "media",
+    "chooseImage": "Choose image",
+    "fileAdd": "Add file"
   }
 }
 </i18n>
@@ -58,9 +65,10 @@ import { CdnMedia } from '@heseya/store-core'
 
 import MediaEditForm from '@/components/modules/media/MediaEditForm.vue'
 import MediaUploader from '@/components/modules/media/MediaUploader.vue'
+import MediaElement from '@/components/MediaElement.vue'
 
 export default Vue.extend({
-  components: { MediaUploader, MediaEditForm },
+  components: { MediaUploader, MediaEditForm, MediaElement },
   props: {
     image: {
       type: Object,
@@ -74,7 +82,20 @@ export default Vue.extend({
       type: String,
       default: '',
     },
+    iconPath: {
+      type: String,
+      default: () => require('@/assets/images/icons/file-add.svg'),
+    },
+    fileName: {
+      type: String,
+      default: function () {
+        return this.$t('defaultFileName')
+      },
+    },
   },
+  data: () => ({
+    isDrag: false,
+  }),
   methods: {
     updateMedia(media: CdnMedia) {
       this.$emit('upload', media)
@@ -86,6 +107,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .media-upload-input-wrapper {
   position: relative;
+  height: 100%;
 
   &__label {
     margin-bottom: 3px;
@@ -99,29 +121,38 @@ export default Vue.extend({
   align-items: center;
   flex-direction: column;
   padding: 16px;
-  border: 1px dashed #ddd;
+  border: 1px dashed var(--gray-color-300);
   position: relative;
+  background-color: var(--background-color-500);
+  border-radius: 4px;
+  height: 100%;
+  transition: 0.3s;
 
-  img {
+  &__media {
     display: block;
-    max-height: 240px;
-    min-height: 150px;
+    width: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    z-index: 1;
   }
 
   &--image {
-    background-color: #eee;
+    background-color: var(--gray-color-300);
     cursor: default;
   }
 
   &__title {
     display: block;
-    font-weight: 600;
-    margin-bottom: 12px;
+    margin: 12px 0;
+    color: var(--gray-color-400);
+    font-size: 11px;
+    text-align: center;
   }
 
   &__delete,
   &__edit-img {
     position: absolute;
+    z-index: 10;
     opacity: 0;
     visibility: hidden;
     transition: 0.3s;
@@ -131,6 +162,7 @@ export default Vue.extend({
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    text-align: center;
   }
 
   &__edit-img {
@@ -139,10 +171,36 @@ export default Vue.extend({
     transform: translateX(-50%);
   }
 
+  &__circle {
+    display: flex;
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    border: none;
+    background-color: var(--white-color);
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  &__file-add {
+    min-height: auto !important;
+    height: 24px;
+    width: 24px;
+    margin: auto;
+    transition: 0.3s;
+  }
+
+  &--drag &__delete,
   &:hover &__delete,
+  &--drag &__edit-img,
   &:hover &__edit-img {
     opacity: 1;
     visibility: visible;
+  }
+
+  &--drag &__circle,
+  &:hover &__circle {
+    transform: scale(1.1);
   }
 }
 

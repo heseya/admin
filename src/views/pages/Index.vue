@@ -1,6 +1,6 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList :title="$t('title')" store-key="pages" draggable>
+    <PaginatedList :title="$t('title')" store-key="pages" draggable :table="tableConfig">
       <template #nav>
         <icon-button v-can="$p.Pages.Add" to="/pages/create">
           <template #icon>
@@ -11,10 +11,17 @@
       </template>
 
       <template #default="{ item: page }">
-        <list-item :key="page.id" :url="`/pages/${page.id}`" :hidden="!page.public">
-          {{ page.name }}
-          <small>/{{ page.slug }}</small>
-        </list-item>
+        <cms-table-row
+          :key="page.id"
+          :item="page"
+          :headers="tableConfig.headers"
+          :to="`/pages/${page.id}`"
+          draggable
+        >
+          <template #slug="{ value }">
+            <code>{{ value }}</code>
+          </template>
+        </cms-table-row>
       </template>
     </PaginatedList>
   </div>
@@ -35,16 +42,29 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import ListItem from '@/components/layout/ListItem.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
+import { TableConfig } from '@/interfaces/CmsTable'
+import { Sale } from '@heseya/store-core'
+import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 
 export default Vue.extend({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },
   components: {
-    ListItem,
+    CmsTableRow,
     PaginatedList,
+  },
+  computed: {
+    tableConfig(): TableConfig<Sale> {
+      return {
+        headers: [
+          { key: 'name', label: this.$t('common.form.name') as string, width: '2fr' },
+          { key: 'slug', label: this.$t('common.form.slug') as string, width: '3fr' },
+          { key: 'public', label: this.$t('common.form.visibility') as string, width: '1fr' },
+        ],
+      }
+    },
   },
 })
 </script>

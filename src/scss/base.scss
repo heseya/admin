@@ -1,16 +1,17 @@
 @import './01_abstracts/index.scss';
 @import './02_components/index';
+@import './03_themes/index';
 
 body {
   font-family: $primaryFont, 'BlinkMacSystemFont', sans-serif !important;
-  background: $background-color-500 !important;
-  color: $font-color !important;
+  background: var(--background-color-500) !important;
+  color: var(--font-color) !important;
   margin: 0;
 }
 
 *::selection {
-  background-color: $primary-color-300 !important;
-  color: #fff !important;
+  background-color: var(--primary-color-300) !important;
+  color: var(--white-color) !important;
 }
 
 .uppercase {
@@ -19,18 +20,22 @@ body {
 }
 
 .danger-text {
-  color: $red-color-500;
+  color: var(--red-color-500);
 }
 
 .success-text {
-  color: $green-color-500;
+  color: var(--green-color-500);
+}
+
+.gray-text {
+  color: var(--gray-color-500);
 }
 
 hr {
   all: unset;
   display: block;
   height: 1px !important;
-  background-color: $background-color-700;
+  background-color: var(--background-color-700);
   width: 100%;
   margin: 12px 0;
 }
@@ -63,10 +68,9 @@ hr {
 
 .label {
   display: block;
-  margin-left: 5px;
-  margin-bottom: 3px;
-  color: #000000 !important;
-  font-size: 0.75rem;
+  font-size: 0.8em;
+  color: var(--gray-color-600);
+  margin-bottom: 2px;
   font-weight: 500;
 }
 
@@ -79,11 +83,11 @@ hr {
 }
 
 .multiselect__tag {
-  background: #000000;
+  background: var(--black-color);
 }
 
 .multiselect__tag-icon::after {
-  color: #ffffff;
+  color: var(--font-color);
 }
 
 .title {
@@ -121,8 +125,8 @@ hr {
 }
 
 code {
-  background-color: $background-color-700;
-  color: $font-color;
+  background-color: var(--background-color-700);
+  color: var(--font-color);
   padding: 2px 4px;
   border-radius: 3px;
 }
@@ -145,7 +149,7 @@ legend {
   margin-left: 0 !important;
 
   .ant-checkbox__title {
-    color: #000;
+    color: var(--black-color);
   }
   .ant-checkbox__description {
     margin-left: 26px;
@@ -154,15 +158,15 @@ legend {
   .ant-checkbox::after,
   &:hover .ant-checkbox-inner,
   &:focus-within .ant-checkbox-inner {
-    border-color: #000000 !important;
+    border-color: var(--black-color) !important;
   }
 
   .ant-checkbox-checked .ant-checkbox-inner {
-    border-color: #000000 !important;
-    background-color: #000000 !important;
+    border-color: var(--black-color) !important;
+    background-color: var(--black-color) !important;
   }
 
   .ant-checkbox-indeterminate .ant-checkbox-inner::after {
-    background-color: #000000 !important;
+    background-color: var(--black-color) !important;
   }
 }

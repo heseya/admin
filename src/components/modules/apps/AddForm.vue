@@ -203,7 +203,7 @@ export default Vue.extend({
             name,
             display_name: name,
             assignable: false,
-          } as PermissionObject),
+          } as PermissionEntry),
       )
     },
   },
@@ -216,7 +216,6 @@ export default Vue.extend({
     },
   },
   created() {
-    // @ts-ignore // TODO: fix extended store actions typings
     this.$accessor.roles.fetchPermissions()
   },
   methods: {
@@ -250,13 +249,13 @@ export default Vue.extend({
     },
 
     isPermUnauthenticated(perm: AppInternalPermission) {
-      return !!this.form.public_app_permissions.find((p) => p === perm.name) ?? false
+      return !!this.form.public_app_permissions?.find((p) => p === perm.name) ?? false
     },
     changeIsPermUnauthenticated(perm: AppInternalPermission, value: boolean) {
       if (value) {
-        this.form.public_app_permissions.push(perm.name)
+        this.form.public_app_permissions?.push(perm.name)
       } else {
-        this.form.public_app_permissions = this.form.public_app_permissions.filter(
+        this.form.public_app_permissions = this.form.public_app_permissions?.filter(
           (p) => p !== perm.name,
         )
       }
@@ -302,7 +301,7 @@ export default Vue.extend({
           width: 5px;
           height: 5px;
           margin-right: 8px;
-          background-color: $font-color;
+          background-color: var(--font-color);
         }
       }
     }

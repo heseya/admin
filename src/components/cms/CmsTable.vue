@@ -11,7 +11,12 @@
       @sort="(v) => $emit('sort', v)"
     />
 
-    <component :is="draggable ? 'Draggable' : 'div'" v-model="items" class="cms-table__content">
+    <component
+      :is="draggable ? 'Draggable' : 'div'"
+      v-model="items"
+      class="cms-table__content"
+      handle=".reorder-handle"
+    >
       <template v-if="shouldRenderList">
         <div v-for="item in items" :key="item.id" class="cms-table__item">
           <slot name="item" :item="item">
@@ -20,6 +25,7 @@
               :headers="config.headers"
               :to="config.rowUrlBuilder ? config.rowUrlBuilder(item) : null"
               :no-hover="noHover"
+              :draggable="draggable"
               :el="rowEl"
               @click="config.rowOnClick || (() => {})"
             />
@@ -36,7 +42,7 @@
 import Vue from 'vue'
 import Draggable from 'vuedraggable'
 
-import { BaseItem } from '@/store/generator'
+import { VuexBaseItem } from '@/interfaces/VuexGenerator'
 import { TableConfig } from '@/interfaces/CmsTable'
 
 import CmsTableHeader from '@/components/cms/CmsTableHeader.vue'
@@ -48,7 +54,7 @@ export default Vue.extend({
     value: {
       type: Array,
       required: true,
-    } as Vue.PropOptions<BaseItem[]>,
+    } as Vue.PropOptions<VuexBaseItem[]>,
     config: {
       type: Object,
       required: true,
@@ -72,10 +78,10 @@ export default Vue.extend({
   },
   computed: {
     items: {
-      get(): BaseItem[] {
+      get(): VuexBaseItem[] {
         return this.value
       },
-      async set(items: BaseItem[]) {
+      async set(items: VuexBaseItem[]) {
         this.$emit('input', items)
       },
     },
@@ -115,26 +121,6 @@ export default Vue.extend({
     @media ($viewport-11) {
       .cms-table-header {
         padding-left: 30px;
-      }
-
-      .cms-table-row {
-        padding-left: 30px !important;
-        position: relative;
-
-        &::before {
-          font-family: $boxiconsFont;
-          font-weight: 400;
-          content: '\eb5f';
-          position: absolute;
-          left: 0px;
-          top: 50%;
-          font-size: 1.1em;
-          line-height: 1em;
-          padding: 6px 13px;
-          cursor: move;
-          transform: translateY(-50%);
-          color: lighten($gray-color-600, 20%);
-        }
       }
     }
   }

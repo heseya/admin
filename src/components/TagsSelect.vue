@@ -118,7 +118,7 @@ export default Vue.extend({
     width: 16px;
     height: 16px;
     border-radius: 4px;
-    background-color: #000;
+    background-color: var(--black-color);
     margin-right: 4px;
   }
 }

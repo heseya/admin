@@ -20,6 +20,12 @@
       <span> {{ $t('table.shippingTime') }} </span>
       <span> {{ $t('table.quantity') }} </span>
     </div>
+
+    <div v-if="availability.length === 0" class="items-availability__row">
+      <span> - </span>
+      <span> - </span>
+    </div>
+
     <div
       v-for="{ shipping_time, shipping_date, quantity } in availability"
       :key="`${shipping_time}-${shipping_date}`"
@@ -42,7 +48,7 @@
       :visible="isDepositModalOpen"
       :default-time="defaultDepositDeliveryTime"
       :disabled="!$can($p.Deposits.Add)"
-      :item-id="item.id"
+      :item-id="item && item.id"
       @close="closeDepositModal"
     />
   </div>
@@ -81,11 +87,12 @@ import isNumber from 'lodash/isNumber'
 import { WarehouseItem } from '@heseya/store-core'
 
 import DepositFormModal from './DepositFormModal.vue'
+import { formatDate } from '@/utils/dates'
 
 export default Vue.extend({
   components: { DepositFormModal },
   props: {
-    item: { type: Object, default: null } as Vue.PropOptions<WarehouseItem>,
+    item: { type: Object, default: null } as Vue.PropOptions<WarehouseItem | null>,
   },
 
   data: () => ({
@@ -95,14 +102,14 @@ export default Vue.extend({
 
   computed: {
     availability(): WarehouseItem['availability'] {
-      return this.item.availability
+      return this.item?.availability || []
     },
   },
 
   methods: {
     formatShippingTime(time: number | string | null) {
       if (isNumber(time)) return this.$t('availabilityTime', { time })
-      if (time) return this.$t('availabilityDate', { date: time })
+      if (time) return this.$t('availabilityDate', { date: formatDate(time) })
       return '-'
     },
 

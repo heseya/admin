@@ -2,10 +2,18 @@
   <div>
     <app-input
       v-model="local.search"
-      class="span-2"
       type="search"
       :label="$t('common.search')"
       allow-clear
+      @input="debouncedSearch"
+    />
+
+    <autocomplete-input
+      v-model="local.roles"
+      prop-mode="id"
+      class="span-2"
+      model-url="roles"
+      :label="$t('roles')"
       @input="debouncedSearch"
     />
 
@@ -28,11 +36,13 @@
 {
   "pl": {
     "consents": "Zaakceptowane zgody",
-    "noFilter": "Brak filtrowania"
+    "noFilter": "Brak filtrowania",
+    "roles": "Role użytkownika"
   },
   "en": {
     "consents": "Accepted consents",
-    "noFilter": "No filter"
+    "noFilter": "No filter",
+    "roles": "User roles"
   }
 }
 </i18n>
@@ -43,15 +53,19 @@ import { debounce } from 'lodash'
 import cloneDeep from 'lodash/cloneDeep'
 
 import { ALL_FILTER_VALUE } from '@/consts/filters'
+import { UUID } from '@/interfaces/UUID'
+import AutocompleteInput from '@/components/AutocompleteInput.vue'
 
 export const EMPTY_USER_FILTERS = {
   search: '',
+  roles: [] as UUID[],
   consent_id: ALL_FILTER_VALUE,
 }
 
 type UserFilters = typeof EMPTY_USER_FILTERS
 
 export default Vue.extend({
+  components: { AutocompleteInput },
   props: {
     filters: {
       type: Object,

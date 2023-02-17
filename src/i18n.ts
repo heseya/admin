@@ -8,14 +8,17 @@ import pl from '@/locales/pl.json'
 
 Vue.use(VueI18n)
 
-const getDefaultLanguage = () => {
+const getDefaultUiLanguage = () => {
   const browserLang = window.navigator.language
   if (browserLang.includes('pl')) return 'pl'
   return 'en'
 }
 
 export default new VueI18n({
-  locale: window.localStorage.getItem(LOCALE_STORAGE_KEY) || getDefaultLanguage(),
+  locale:
+    process.env.VUE_APP_I18N_LOCALE ||
+    window.localStorage.getItem(LOCALE_STORAGE_KEY) ||
+    getDefaultUiLanguage(),
   fallbackLocale: (import.meta.env.VITE_I18N_FALLBACK_LOCALE as string) || 'pl', // TODO: change to 'en' when all translations are done
   messages: {
     pl,

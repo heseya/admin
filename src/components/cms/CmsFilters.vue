@@ -82,7 +82,7 @@ export default Vue.extend({
   methods: {
     onResize() {
       // @ts-ignore
-      if (this.$refs.filters.scrollHeight > this.$refs.filters.offsetHeight)
+      if (this.$refs.filters.scrollHeight > this.$refs.filters.offsetHeight + 5)
         this.isExpandable = true
       else this.isExpandable = false
     },
@@ -118,23 +118,22 @@ export default Vue.extend({
       display: none;
     }
 
-    & > ::v-deep *:first-child {
+    & > :deep(*:first-child) {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       grid-gap: 4px 10px;
       grid-auto-flow: dense;
     }
 
-    & ::v-deep {
-      .span-2 {
-        grid-column: span 2;
-      }
-      .span-3 {
-        grid-column: span 3;
-      }
-      .span-4 {
-        grid-column: span 4;
-      }
+    :deep(.span-2) {
+      grid-column: span 2;
+    }
+
+    :deep(.span-3) {
+      grid-column: span 3;
+    }
+    :deep(.span-4) {
+      grid-column: span 4;
     }
   }
 
@@ -144,7 +143,7 @@ export default Vue.extend({
     top: 102vh;
     width: 100%;
     height: 100%;
-    background-color: #ffffff;
+    background-color: var(--white-color);
     padding: 80px 32px 16px;
     z-index: $mobile-filters-z-index;
     transition: 0.3s;
@@ -161,7 +160,7 @@ export default Vue.extend({
       display: none !important;
     }
 
-    ::v-deep .app-input {
+    :deep(.app-input) {
       margin-bottom: 16px;
     }
   }
@@ -181,13 +180,13 @@ export default Vue.extend({
     display: flex;
     justify-content: center;
     align-items: center;
-    border-left: 1px solid $background-color-600;
+    border-left: 1px solid var(--background-color-600);
     padding: 4px;
     transition: 0.3s;
     font-size: 1.4em;
 
     &:hover {
-      background-color: $background-color-600;
+      background-color: var(--background-color-600);
     }
   }
 
@@ -212,8 +211,8 @@ export default Vue.extend({
     height: 37px;
     padding: 0;
     border-radius: 50%;
-    color: #979ea0;
-    background-color: $background-color-700;
+    color: var(--gray-color-500);
+    background-color: var(--background-color-700);
   }
 
   &--expanded &__content {

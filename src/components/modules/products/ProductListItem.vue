@@ -3,7 +3,7 @@
     class="product-list-item"
     :item="product"
     :headers="table.headers"
-    @click="onClick"
+    :to="`products/${product.id}`"
   >
     <template #cover>
       <avatar color="#eee">
@@ -17,19 +17,72 @@
     </template>
 
     <template #price>
-      <ProductPrice :product="product" />
+      <ProductPrice class="product-list-item__price" :product="product" />
     </template>
 
     <template #tags>
       <div class="product-list-item__tags">
-        <tag v-for="tag in product.tags" :key="tag.id" :color="`#${tag.color}`">
+        <tag v-for="tag in product.tags" :key="tag.id" small :color="`#${tag.color}`">
           {{ tag.name }}
         </tag>
         <span v-if="product.tags.length === 0">-</span>
       </div>
     </template>
+
+    <template #public>
+      <switch-input
+        :value="product.public"
+        class="product-list-item__visibility"
+        :loading="publicIsLoading"
+        @input="changeVisibility"
+        @click.native.stop
+      />
+    </template>
+
+    <template #action>
+      <a-dropdown v-can.any="[$p.ProductSets.ShowDetails, $p.ProductSets.Add]" :trigger="['click']">
+        <icon-button type="transparent" size="big" @click.stop>
+          <template #icon>
+            <i class="bx bx-dots-vertical-rounded"></i>
+          </template>
+        </icon-button>
+
+        <template #overlay>
+          <a-menu v-can.any="[$p.Products.Edit, $p.Products.Remove]">
+            <a-menu-item v-can="$p.Products.Edit" @click="$router.push(`products/${product.id}`)">
+              <i class="bx bx-edit"></i> &nbsp; {{ $t('common.edit') }}
+            </a-menu-item>
+            <a-menu-item v-can="$p.Products.Remove">
+              <pop-confirm
+                :ok-text="$t('common.delete')"
+                :cancel-text="$t('common.cancel')"
+                placement="bottom"
+                @confirm="deleteProduct"
+              >
+                <template #title>
+                  {{ $t('confirmDelete') }}: <b>{{ product.name }}</b>
+                  ?
+                </template>
+                <i class="bx bx-trash"></i> &nbsp; {{ $t('common.delete') }}
+              </pop-confirm>
+            </a-menu-item>
+          </a-menu>
+        </template>
+      </a-dropdown>
+    </template>
   </cms-table-row>
 </template>
+
+<i18n lang="json">
+{
+  "en": {
+    "confirmDelete": "Are you sure you want to delete product"
+  },
+  "pl": {
+    "confirmDelete": "Czy na pewno chcesz usunąć produkt"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
@@ -38,13 +91,15 @@ import { Product } from '@heseya/store-core'
 import Avatar from '@/components/layout/Avatar.vue'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 import MediaElement from '@/components/MediaElement.vue'
+import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ProductPrice from './ProductPrice.vue'
 
 import { formatCurrency } from '@/utils/currency'
 import { TableConfig } from '@/interfaces/CmsTable'
+import { FEATURE_FLAGS } from '@/consts/featureFlags'
 
 export default Vue.extend({
-  components: { Avatar, CmsTableRow, MediaElement, ProductPrice },
+  components: { Avatar, CmsTableRow, MediaElement, ProductPrice, PopConfirm },
   props: {
     product: {
       type: Object,
@@ -55,9 +110,10 @@ export default Vue.extend({
       required: true,
     } as Vue.PropOptions<TableConfig<Product>>,
   },
+  data: () => ({ publicIsLoading: false }),
   computed: {
     objectFit(): string {
-      return +this.$accessor.env.dashboard_products_contain ? 'contain' : 'cover'
+      return +this.$accessor.config.env[FEATURE_FLAGS.ProductContain] ? 'contain' : 'cover'
     },
   },
   mounted() {
@@ -65,20 +121,17 @@ export default Vue.extend({
   },
   methods: {
     formatCurrency(amount: number) {
-      return formatCurrency(amount, this.$accessor.currency)
+      return formatCurrency(amount, this.$accessor.config.currency)
     },
-    onClick() {
-      // @ts-ignore
-      if (window.copyIdMode === true) {
-        this.copyId()
-        return
-      }
-
-      this.$router.push(`products/${this.product.id}`)
+    async changeVisibility(isPublic: boolean) {
+      this.publicIsLoading = true
+      await this.$accessor.products.update({ id: this.product.id, item: { public: isPublic } })
+      this.publicIsLoading = false
     },
-    async copyId() {
-      await navigator.clipboard.writeText(this.product.id)
-      this.$toast.success('Skopiowano ID')
+    async deleteProduct() {
+      this.$accessor.startLoading()
+      await this.$accessor.products.remove(this.product.id)
+      this.$accessor.stopLoading()
     },
   },
 })
@@ -88,9 +141,9 @@ export default Vue.extend({
 .product-list-item {
   position: relative;
 
-  .cms-table-row__col:first-of-type {
-    padding-top: 6px;
-    padding-bottom: 6px;
+  .cms-table-row__col:first-of-type,
+  .cms-table-row__col:last-of-type {
+    padding: 6px;
   }
 
   &__icon {
@@ -109,7 +162,7 @@ export default Vue.extend({
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 2em;
-    color: #999999;
+    color: var(--gray-color-500);
 
     &::after {
       content: '';
@@ -128,6 +181,10 @@ export default Vue.extend({
     display: flex;
     justify-content: flex-start;
     flex-wrap: wrap;
+  }
+
+  &__visibility {
+    align-items: start;
   }
 }
 </style>

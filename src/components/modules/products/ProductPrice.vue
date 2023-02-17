@@ -47,7 +47,7 @@ export default Vue.extend({
   },
   methods: {
     formatCurrency(amount: number) {
-      return formatCurrency(amount, this.$accessor.currency)
+      return formatCurrency(amount, this.$accessor.config.currency)
     },
   },
 })
@@ -61,7 +61,7 @@ export default Vue.extend({
       position: relative;
       top: -0.5em;
       margin-left: 4px;
-      color: $red-color-400;
+      color: var(--red-color-400);
       text-decoration: line-through;
     }
   }

@@ -5,6 +5,7 @@
       store-key="items"
       :filters="filters"
       :table="tableConfig"
+      :xlsx-file-config="fileConfig"
       @search="makeSearch"
       @clear-filters="clearFilters"
     >
@@ -41,9 +42,9 @@
       "sku": "SKU",
       "quantity": "Ilość w magazynie",
       "unlimited": "Nieograniczona możliwość zakupu",
-      "availibility": "Dostępność",
-      "availibilityTime": "w {time} dni",
-      "availibilityDate": "od {date}"
+      "availability": "Dostępność",
+      "availabilityTime": "w {time} dni",
+      "availabilityDate": "od {date}"
     }
   },
   "en": {
@@ -56,9 +57,9 @@
       "sku": "SKU",
       "quantity": "Quantity in stock",
       "unlimited": "Unlimited purchase",
-      "availibility": "Availibility",
-      "availibilityTime": "in {time} days",
-      "availibilityDate": "from {date}"
+      "availability": "Availibility",
+      "availabilityTime": "in {time} days",
+      "availabilityDate": "from {date}"
     }
   }
 }
@@ -67,7 +68,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
-import { WarehouseItem } from '@heseya/store-core'
+import { WarehouseItem, WarehouseItemCreateDto } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ItemsFilter, {
@@ -77,11 +78,12 @@ import ItemsFilter, {
 import ItemModal from '@/components/modules/items/ItemModal.vue'
 
 import { UUID } from '@/interfaces/UUID'
-import { WarehouseItemCreateDto } from '@/interfaces/WarehouseItem'
 import { TableConfig } from '@/interfaces/CmsTable'
 
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 import { formatFilters } from '@/utils/utils'
+import { formatDate } from '@/utils/dates'
+import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 
 const EMPTY_FORM: WarehouseItemCreateDto = {
   name: '',
@@ -100,31 +102,28 @@ export default Vue.extend({
     ItemModal,
   },
   beforeRouteLeave(to, from, next) {
-    if (this.isModalActive) {
-      this.isModalActive = false
-      next(false)
-    } else {
-      next()
-    }
+    if (this.isModalActive) this.isModalActive = false
+    next()
   },
   data: () => ({
     filters: { ...EMPTY_ITEMS_FILTERS } as ItemsFilersType,
     isModalActive: false,
-    editedItem: { ...EMPTY_FORM } as WarehouseItemCreateDto & Partial<WarehouseItem>,
+    editedItem: { ...EMPTY_FORM } as Omit<
+      WarehouseItemCreateDto & Partial<WarehouseItem>,
+      'metadata' | 'metadata_private'
+    >,
     selectedItemId: null as null | UUID,
   }),
   computed: {
     depositsError(): Error | null {
-      // @ts-ignore // TODO: fix extended store getters typings
       return this.$accessor.items.getDepositError
     },
     canModify(): boolean {
       return this.$can(this.editedItem.id ? this.$p.Items.Edit : this.$p.Items.Add)
     },
     selectedItem(): null | WarehouseItem {
-      return this.selectedItemId
-        ? this.$accessor.items.getSelected ||
-            this.$accessor.items.getFromListById(this.selectedItemId)
+      return this.$accessor.items.getSelected?.id === this.selectedItemId
+        ? this.$accessor.items.getSelected
         : null
     },
     tableConfig(): TableConfig<WarehouseItem> {
@@ -140,25 +139,37 @@ export default Vue.extend({
             sortable: true,
           },
           {
-            key: 'availibility',
-            label: this.$t('table.availibility') as string,
+            key: 'availability',
+            label: this.$t('table.availability') as string,
             width: '0.6fr',
-            sortable: true,
-            render: (_v, item) => {
-              if (item.shipping_time)
-                return this.$t('table.availibilityTime', { time: item.shipping_time }) as string
-              if (item.shipping_date)
-                return this.$t('table.availibilityDate', { date: item.shipping_date }) as string
-              return '-'
-            },
+            sortable: false,
+            render: (_v, item) => this.formatAvailability(item),
           },
           {
             key: 'unlimited',
             label: this.$t('table.unlimited') as string,
             width: '0.6fr',
-            sortable: true,
+            sortable: false,
             render: (_v, item) =>
               !!item.unlimited_stock_shipping_time || !!item.unlimited_stock_shipping_date,
+          },
+        ],
+      }
+    },
+    fileConfig(): XlsxFileConfig<WarehouseItem> {
+      return {
+        name: this.$t('title') as string,
+        headers: [
+          { key: 'sku', label: this.$t('table.sku') as string },
+          { key: 'name', label: this.$t('common.form.name') as string },
+          {
+            key: 'quantity',
+            label: this.$t('table.quantity') as string,
+          },
+          {
+            key: 'availability',
+            label: this.$t('table.availability') as string,
+            format: (_v, item) => this.formatAvailability(item),
           },
         ],
       }
@@ -179,6 +190,16 @@ export default Vue.extend({
     this.filters.sort = (this.$route.query.sort as string) || ''
   },
   methods: {
+    formatAvailability(item: WarehouseItem) {
+      if (item.shipping_time)
+        return this.$t('table.availabilityTime', { time: item.shipping_time }) as string
+      if (item.shipping_date)
+        return this.$t('table.availabilityDate', {
+          date: formatDate(item.shipping_date),
+        }) as string
+      return '-'
+    },
+
     makeSearch(filters: ItemsFilersType) {
       this.filters = filters
 
@@ -196,11 +217,14 @@ export default Vue.extend({
       this.makeSearch({ ...EMPTY_ITEMS_FILTERS })
     },
 
-    openModal(id?: UUID) {
+    async openModal(id?: UUID) {
       if (!this.$verboseCan(this.$p.Items.ShowDetails)) return
       this.isModalActive = true
       if (id) {
-        this.editedItem = cloneDeep(this.$accessor.items.getFromListById(id))
+        const item = await this.$accessor.items.get(id)
+        if (!item) return
+
+        this.editedItem = cloneDeep(item)
         this.selectedItemId = id
       } else {
         this.editedItem = { ...EMPTY_FORM }

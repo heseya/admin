@@ -39,7 +39,7 @@ export default Vue.extend({
     value: {
       type: Array,
       required: true,
-    } as Vue.PropOptions<Attribute[]>,
+    } as Vue.PropOptions<Attribute[] | string[]>,
     disabled: { type: Boolean, default: false },
   },
   data: () => ({
@@ -47,10 +47,12 @@ export default Vue.extend({
   }),
   computed: {
     selectedAttributes: {
-      get(): Attribute[] {
-        return this.value
+      get(): string[] {
+        return this.value.map(
+          (attribute: Attribute | string) => (attribute as Attribute)?.id || (attribute as string),
+        )
       },
-      set(value: Attribute[]) {
+      set(value: string[]) {
         this.$emit('input', value)
       },
     },

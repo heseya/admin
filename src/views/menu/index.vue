@@ -121,14 +121,13 @@
 import Vue from 'vue'
 import InlineSvg from 'vue-inline-svg'
 import Draggable from 'vuedraggable'
-import { App } from '@heseya/store-core'
 
 import Card from '@/components/layout/Card.vue'
 import TopNav from '@/components/layout/TopNav.vue'
 
 import ListItem from '@/components/layout/ListItem.vue'
 
-import { MENU_AVAILABLE_ITEMS, MenuItem, MenuItemType, MenuLink } from '@/consts/menuItems'
+import { MENU_LINKS, MenuItem, MenuItemType, MenuLink } from '@/consts/menuItems'
 
 export default Vue.extend({
   metaInfo(this: any) {
@@ -152,8 +151,7 @@ export default Vue.extend({
       return this.$accessor.menuItems.activeItems
     },
     microfrontendItems(): MenuLink[] {
-      // @ts-ignore
-      return (this.$accessor.apps.getMicrofrontendsApps as App[]).map((app) => ({
+      return this.$accessor.apps.getMicrofrontendsApps.map((app) => ({
         id: app.id,
         type: MenuItemType.Link,
         exact: false,
@@ -165,9 +163,9 @@ export default Vue.extend({
       }))
     },
     availableItems(): MenuLink[] {
-      return [...MENU_AVAILABLE_ITEMS, ...this.microfrontendItems].filter(
-        (item) => !this.menu.find((activeItem) => activeItem.id === item.id),
-      )
+      return [...MENU_LINKS, ...this.microfrontendItems]
+        .filter((item) => !this.menu.find((activeItem) => activeItem.id === item.id))
+        .filter((link) => (typeof link.hidden === 'function' ? !link.hidden() : !link.hidden))
     },
   },
   created() {
@@ -184,7 +182,7 @@ export default Vue.extend({
       if (index === list.length || list[index].disabled) return false
     },
     saveMenu() {
-      this.$accessor.menuItems.setMenuItems(this.menu)
+      this.$accessor.menuItems.setMenuItems([...this.menu])
       this.$toast.success(this.$t('success') as string)
     },
     resetMenu() {

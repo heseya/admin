@@ -1,6 +1,7 @@
 import { ProductSet, ProductSetCreateDto, ProductSetUpdateDto } from '@heseya/store-core'
-import { createVuexCRUD, StoreMutations } from './generator'
+import { createVuexCRUD } from './generator'
 import { UUID } from '@/interfaces/UUID'
+import { DefaultVuexMutation } from '@/interfaces/VuexGenerator'
 import { reorderCollection } from '@/services/reorderCollection'
 
 const PARAM = { root: 1, tree: 0 }
@@ -13,14 +14,23 @@ export const productSets = createVuexCRUD<ProductSet, ProductSetCreateDto, Produ
     state: {},
     getters: {},
     mutations: {
-      [StoreMutations.AddData](state, newSet: ProductSet) {
+      [DefaultVuexMutation.AddData](state, newSet: ProductSet) {
         // Root level set
         if (!newSet.parent) {
           state.data = [...state.data, { ...newSet, children_ids: [] }]
         }
       },
 
-      [StoreMutations.EditData](state, { item }: { item: Partial<ProductSet> & { id: UUID } }) {
+      [DefaultVuexMutation.EditData](
+        state,
+        { item }: { item: Partial<ProductSet> & { id: UUID } },
+      ) {
+        if (state.selected?.id === item.id) {
+          // Edits selected item
+          // @ts-ignore
+          state.selected = { ...state.selected, ...item }
+        }
+
         // Root level set
         if (!item.parent) {
           state.data = state.data.map((state) => {
@@ -30,7 +40,7 @@ export const productSets = createVuexCRUD<ProductSet, ProductSetCreateDto, Produ
         } else state.data = state.data.filter((state) => state.id !== item.id)
       },
 
-      [StoreMutations.RemoveData](state, { value: id }: { value: UUID }) {
+      [DefaultVuexMutation.RemoveData](state, { value: id }: { value: UUID }) {
         state.data = state.data.filter((state) => state.id !== id)
       },
     },

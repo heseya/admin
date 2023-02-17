@@ -19,6 +19,8 @@
     <Loading :relative="false" :active="isLoading" />
 
     <SwUpdatePopup />
+    <OfflineBanner />
+    <floating-qr-scanner v-if="$accessor.auth.isLogged" />
   </div>
 </template>
 
@@ -44,6 +46,8 @@ import MobileNavigation from './components/root/MobileNavigation.vue'
 import AppHeader from './components/root/Header.vue'
 import Loading from './components/layout/Loading.vue'
 import SwUpdatePopup from './components/root/SwUpdatePopup.vue'
+import FloatingQrScanner from './components/modules/qrCode/FloatingScanner.vue'
+import OfflineBanner from './components/root/OfflineBanner.vue'
 
 import { onTokensSync } from './utils/authSync'
 import { getApiURL } from './utils/api'
@@ -61,6 +65,8 @@ export default Vue.extend({
     AppHeader,
     Loading,
     SwUpdatePopup,
+    OfflineBanner,
+    FloatingQrScanner,
   },
   computed: {
     isLoading(): boolean {
@@ -98,7 +104,7 @@ export default Vue.extend({
   },
   created() {
     initMicroApps()
-    this.$accessor.fetchEnv()
+    this.$accessor.config.fetchSettings()
     this.$accessor.menuItems.initMicrofrontendMenuItems()
 
     if (this.$accessor.auth.isLogged) this.$accessor.auth.fetchProfile()
@@ -162,7 +168,7 @@ export default Vue.extend({
     padding-left: $navWidth;
   }
   @media ($max-viewport-11) {
-    padding-bottom: 60px;
+    padding-bottom: 140px;
   }
 
   &--full-size {
@@ -201,7 +207,7 @@ export default Vue.extend({
     padding: 10px;
     width: $navWidth;
     font-size: 0.7em;
-    color: #bec1c7;
+    color: var(--gray-color-400);
 
     &--center {
       text-align: center;

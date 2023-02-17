@@ -2,7 +2,7 @@
   <tag v-if="value" :type="trueType" :small="small">
     <i :class="trueIcon"></i> {{ trueText || $t('common.yes') }}
   </tag>
-  <tag v-else :type="falseType">
+  <tag v-else :type="falseType" :small="small">
     <i :class="falseIcon"></i> {{ falseText || $t('common.no') }}
   </tag>
 </template>

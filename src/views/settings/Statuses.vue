@@ -1,6 +1,6 @@
 <template>
-  <div class="narrower-page">
-    <PaginatedList :title="$t('title')" store-key="statuses" draggable>
+  <div>
+    <PaginatedList :title="$t('title')" store-key="statuses" draggable :table="tableConfig">
       <template #nav>
         <icon-button v-can="$p.Statuses.Add" @click="openModal()">
           <template #icon>
@@ -10,13 +10,23 @@
         </icon-button>
       </template>
       <template #default="{ item: status }">
-        <list-item :key="status.id" @click="openModal(status.id)">
-          <template #avatar>
-            <avatar :color="`#${status.color}`" />
+        <cms-table-row
+          :key="status.id"
+          :item="status"
+          draggable
+          :headers="tableConfig.headers"
+          @click="openModal(status.id)"
+        >
+          <template #name>
+            <div class="status-name">
+              <avatar small :color="`#${status.color}`" />
+              <b class="status-name__name">{{ status.name }}</b>
+            </div>
           </template>
-          {{ status.name }}
-          <small>{{ status.description }}</small>
-        </list-item>
+          <template #description>
+            <small>{{ status.description }}</small>
+          </template>
+        </cms-table-row>
       </template>
     </PaginatedList>
 
@@ -94,7 +104,7 @@
               ref="privateMeta"
               :value="selectedItem.metadata_private"
               :disabled="!canModify"
-              is-private
+              type="private"
               model="statuses"
             />
           </template>
@@ -169,17 +179,18 @@
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { clone } from 'lodash'
-import { OrderStatus, OrderStatusUpdateDto } from '@heseya/store-core'
+import { Metadata, OrderStatus, OrderStatusUpdateDto } from '@heseya/store-core'
+
+import { UUID } from '@/interfaces/UUID'
+import { TableConfig } from '@/interfaces/CmsTable'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
-import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
-import Avatar from '@/components/layout/Avatar.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
-
-import { UUID } from '@/interfaces/UUID'
+import CmsTableRow from '@/components/cms/CmsTableRow.vue'
+import Avatar from '@/components/layout/Avatar.vue'
 
 const CLEAR_STATUS: OrderStatusUpdateDto = {
   name: '',
@@ -196,13 +207,13 @@ export default Vue.extend({
   },
   components: {
     PaginatedList,
-    ListItem,
     ModalForm,
     PopConfirm,
     ValidationObserver,
     SwitchInput,
-    Avatar,
     MetadataForm,
+    CmsTableRow,
+    Avatar,
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {
@@ -221,6 +232,25 @@ export default Vue.extend({
     canModify(): boolean {
       return this.$can(this.editedItem.id ? this.$p.Statuses.Edit : this.$p.Statuses.Add)
     },
+    tableConfig(): TableConfig<OrderStatus> {
+      return {
+        headers: [
+          { key: 'name', label: this.$t('common.form.name') as string },
+          { key: 'description', label: this.$t('common.form.description') as string },
+          {
+            key: 'cancel',
+            label: this.$t('form.cancel') as string,
+            width: '0.5fr',
+          },
+          { key: 'hidden', label: this.$t('form.hidden') as string, width: '0.5fr' },
+          {
+            key: 'no_notifications',
+            label: this.$t('form.noNotification') as string,
+            width: '0.5fr',
+          },
+        ],
+      }
+    },
   },
   methods: {
     setColor(color: string) {
@@ -234,42 +264,51 @@ export default Vue.extend({
         this.setColor(this.editedItem.color)
       } else {
         this.editedItem = clone(CLEAR_STATUS)
+        this.selectedItem = null
       }
     },
     async saveModal() {
       this.$accessor.startLoading()
       if (this.editedItem.id) {
         // Metadata can be saved only after status is created
-        await this.saveMetadata(this.editedItem.id)
+        const updatedMetadata = await this.saveMetadata(this.editedItem.id)
 
-        await this.$accessor.statuses.update({
+        this.$accessor.statuses.EDIT_DATA({
+          key: 'id',
+          value: this.editedItem.id,
+          item: updatedMetadata,
+        })
+
+        const updatedStatus = await this.$accessor.statuses.update({
           id: this.editedItem.id,
           item: this.editedItem,
         })
 
-        this.$toast.success(this.$t('alerts.updated') as string)
+        if (updatedStatus) this.$toast.success(this.$t('alerts.updated') as string)
       } else {
-        await this.$accessor.statuses.add(this.editedItem)
-
-        this.$toast.success(this.$t('alerts.created') as string)
+        const success = await this.$accessor.statuses.add(this.editedItem)
+        if (success) this.$toast.success(this.$t('alerts.created') as string)
       }
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
     async deleteItem() {
       this.$accessor.startLoading()
-      await this.$accessor.statuses.remove(this.editedItem.id!)
-
-      this.$toast.success(this.$t('alerts.deleted') as string)
+      const success = await this.$accessor.statuses.remove(this.editedItem.id!)
+      if (success) this.$toast.success(this.$t('alerts.deleted') as string)
       this.$accessor.stopLoading()
       this.isModalActive = false
     },
 
     async saveMetadata(id: string) {
-      await Promise.all([
-        (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id),
+      const [publicMetadata, privateMetadata] = await Promise.all([
         (this.$refs.publicMeta as MetadataRef)?.saveMetadata(id),
+        (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id),
       ])
+      const metadata: { metadata?: Metadata; metadata_private?: Metadata } = {}
+      if (publicMetadata) metadata.metadata = publicMetadata
+      if (privateMetadata) metadata.metadata_private = privateMetadata
+      return metadata
     },
   },
 })
@@ -278,5 +317,15 @@ export default Vue.extend({
 <style lang="scss">
 input[type='color'] {
   height: 30px !important;
+}
+
+.status-name {
+  display: flex;
+  align-items: center;
+
+  &__name {
+    display: block;
+    margin-left: 8px;
+  }
 }
 </style>

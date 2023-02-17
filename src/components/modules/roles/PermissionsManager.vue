@@ -9,7 +9,7 @@
           :indeterminate="hasSome(section) && !(hasAll(section) && isAssignable)"
           @change="() => changeAll(section)"
         >
-          {{ $t(`sections.${section}`) || section.replace(/_/g, ' ') }}
+          {{ $te(`sections.${section}`) ? $t(`sections.${section}`) : section.replace(/_/g, ' ') }}
         </a-checkbox>
       </span>
 
@@ -41,18 +41,23 @@
       "app": "Aplikacje zewnętrzne",
       "audits": "Historia zmian",
       "auth": "Autoryzacja użytkowników",
+      "banners": "Bannery",
       "product_sets": "Kolekcje",
       "consents": "Zgody",
       "countries": "Kraje",
       "shipping_methods": "Metody dostawy",
       "deposits": "Depozyty",
+      "media": "Media",
+      "options": "Opcje",
       "coupons": "Kody rabatowe",
+      "sales": "Promocje",
       "items": "Przedmioty magazynowe",
       "schemas": "Schematy",
       "cart": "Koszyk",
       "orders": "Zamówienia ",
       "packages": "Szablony przesyłek",
       "pages": "Strony",
+      "profile": "Profil użytkownika",
       "payments": "Płatności",
       "payment_methods": "Metody Płatności",
       "products": "Produkty",
@@ -76,18 +81,23 @@
       "app": "External apps",
       "audits": "Audits",
       "auth": "Auth",
+      "banners": "Banners",
       "product_sets": "Product sets",
       "consents": "Consents",
       "countries": "Countries",
       "shipping_methods": "Shipping methods",
       "deposits": "Deposits",
+      "media": "Media",
+      "options": "Options",
       "coupons": "Coupons",
+      "sales": "Sales",
       "items": "Items",
       "schemas": "Schemas",
       "cart": "Cart",
       "orders": "Orders",
       "packages": "Packages",
       "pages": "Pages",
+      "profile": "User profile",
       "payments": "Payments",
       "payment_methods": "Payment methods",
       "products": "Products",
@@ -153,7 +163,6 @@ export default Vue.extend({
     },
   },
   created() {
-    // @ts-ignore // TODO: fix extended store actions typings
     this.$accessor.roles.fetchPermissions()
   },
   methods: {
@@ -218,7 +227,7 @@ export default Vue.extend({
     font-weight: 600;
 
     > * {
-      color: $font-color;
+      color: var(--font-color);
     }
   }
 
@@ -232,7 +241,7 @@ export default Vue.extend({
     }
 
     i {
-      color: $primary-color-500;
+      color: var(--primary-color-500);
     }
   }
 }

@@ -43,7 +43,7 @@
               class="single-media__edit-img"
               :disabled="disabled"
               :media="image.media"
-              @update="(m) => updateMedia(m, i)"
+              @updated="(m) => updateMedia(m, i)"
             />
 
             <validated-input
@@ -56,7 +56,7 @@
         </div>
 
         <div class="item-wrapper">
-          <gallery-upload-button @upload="onImageUpload" />
+          <media-upload-input :disabled="disabled" @upload="onImageUpload" />
         </div>
       </div>
     </div>
@@ -101,12 +101,13 @@ import Vue from 'vue'
 import { BannerMedia, CdnMedia } from '@heseya/store-core'
 
 import { removeMedia } from '@/services/uploadMedia'
+
 import MediaElement from '@/components/MediaElement.vue'
-import GalleryUploadButton from '../products/GalleryUploadButton.vue'
 import MediaEditForm from '../media/MediaEditForm.vue'
+import MediaUploadInput from '../media/MediaUploadInput.vue'
 
 export default Vue.extend({
-  components: { MediaElement, GalleryUploadButton, MediaEditForm },
+  components: { MediaElement, MediaEditForm, MediaUploadInput },
   props: {
     value: {
       type: Object,
@@ -183,7 +184,8 @@ $item-size: 160px;
   border-radius: 16px;
 
   &:hover {
-    background-color: rgba($background-color-700, 0.4);
+    // background-color: rgba(var(--background-color-700), 0.4);
+    background-color: var(--background-color-500);
   }
 
   &__content {
@@ -215,7 +217,7 @@ $item-size: 160px;
     display: flex;
     justify-content: center;
     align-items: center;
-    color: $gray-color-500;
+    color: var(--gray-color-500);
   }
 
   &__buttons {
@@ -233,7 +235,7 @@ $item-size: 160px;
   width: 100%;
   padding-top: 100%;
   margin-bottom: 4px;
-  background-color: #ffffff;
+  background-color: var(--white-color);
   box-shadow: $shadow;
   border-radius: 7px;
 
@@ -244,8 +246,9 @@ $item-size: 160px;
     height: 100%;
     width: 100%;
     object-fit: cover;
-    background-color: #ffffff;
+    background-color: var(--white-color);
     border-radius: 7px;
+    overflow: hidden;
   }
 
   &__remove-img,
@@ -274,10 +277,10 @@ $item-size: 160px;
     left: 4px;
     bottom: 4px;
     width: calc(100% - 8px);
-    color: #fff;
-    text-shadow: 0px 0px 8px $font-color;
+    color: var(--white-color);
+    text-shadow: 0px 0px 8px var(--font-color);
 
-    ::v-deep .app-input {
+    :deep(.app-input) {
       margin-bottom: 0;
     }
   }

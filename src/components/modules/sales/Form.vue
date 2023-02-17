@@ -1,5 +1,15 @@
 <template>
   <div class="sale-configurator">
+    <div class="sale-configurator__status sale-status">
+      <span class="sale-status__title">
+        {{ $t('status.title') }}
+      </span>
+      <span class="sale-status__value" :class="{ 'sale-status__value--inactive': !form.active }">
+        {{ form.active ? $t('status.active') : $t('status.inactive') }}
+      </span>
+      <SwitchInput v-model="form.active" class="sale-status__input" name="active" />
+    </div>
+
     <div class="sale-configurator__fields">
       <validated-input
         v-model="form.name"
@@ -112,33 +122,51 @@
       </div>
 
       <template v-if="form.target_type === DiscountTargetType.Products">
+        <!-- Without key in following autocompletes, when switching target type, the products autocomplete is transformed into shipping one - just as the props would be changed, no new component is created -->
         <autocomplete-input
+          key="target_products"
           v-model="form.target_products"
-          :label="$t('form.target_products')"
+          :label="`${$t('form.target_products')} ${
+            form.target_is_allow_list ? $t('allowed') : $t('disallowed')
+          }`"
           model-url="products"
           :disabled="disabled"
           :rules="{ required: form.target_is_allow_list && form.target_sets.length === 0 }"
-          class="target-products"
-        />
+          class="sale-configurator__autocomplete"
+        >
+          <template #option="product">
+            {{ product.name }}&nbsp;<small>(/{{ product.slug }})</small>
+          </template>
+        </autocomplete-input>
 
         <autocomplete-input
+          key="target_sets"
           v-model="form.target_sets"
-          :label="$t('form.target_sets')"
+          :label="`${$t('form.target_sets')} ${
+            form.target_is_allow_list ? $t('allowed') : $t('disallowed')
+          }`"
           model-url="product-sets"
           :disabled="disabled"
           :rules="{ required: form.target_is_allow_list && form.target_products.length === 0 }"
-          class="target-sets"
-        />
+          class="sale-configurator__autocomplete"
+        >
+          <template #option="set">
+            {{ set.name }}&nbsp;<small>(/{{ set.slug }})</small>
+          </template>
+        </autocomplete-input>
       </template>
 
       <autocomplete-input
         v-if="form.target_type === DiscountTargetType.ShippingPrice"
+        key="target_shipping_methods"
         v-model="form.target_shipping_methods"
-        :label="$t('form.target_shipping_methods')"
+        :label="`${$t('form.target_shipping_methods')} ${
+          form.target_is_allow_list ? $t('allowed') : $t('disallowed')
+        }`"
         model-url="shipping-methods"
         :disabled="disabled"
         :rules="{ required: form.target_is_allow_list }"
-        class="target-shipping"
+        class="sale-configurator__autocomplete"
       />
     </div>
 
@@ -152,32 +180,60 @@
 {
   "pl": {
     "refers": "Dotyczy",
+    "allowed": "objęte promocją",
+    "disallowed": "wyłączone z promocji (obejmuje wszystkie pozostałe)",
+    "status": {
+      "title": "Status",
+      "active": "Aktywna",
+      "inactive": "Nieaktywna"
+    },
     "form": {
       "code": "Kod",
       "discount": "Wartość zniżki",
       "priority": "Priorytet",
       "priorityTooltip": "Określa który w kolei będzie dany rabat przy naliczaniu wszystkich rabatów (w kolejności od największego do najmniejszego). Przy czym priorytet brany jest pod uwagę dopiero, gdy dwa rabaty mają ten sam typ przeceny i typ celu przeceny.",
-      "type": "Typ przeceny",
-      "target_type": "Typ celu przeceny",
+      "type": "Rodzaj przeceny",
+      "target_type": "Promocja będzie oddziaływać na",
       "target_is_allow_list": "Czy lista dozwolonych",
       "target_products": "Produkty",
-      "target_sets": "Kolekcje",
+      "target_sets": "Kolekcje zawierające produkty",
       "target_shipping_methods": "Metody dostawy"
+    },
+
+    "discountTargetTypes": {
+      "order-value": "Całkowitą wartość zamówienia",
+      "products": "Wybrane produkty",
+      "shipping-price": "Cenę dostawy",
+      "cheapest-product": "Najtańszy produkt w koszyku"
     }
   },
   "en": {
     "refers": "Refers to",
+    "allowed": "allowed",
+    "disallowed": "disallowed (includes all others)",
+    "status": {
+      "title": "Status",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
     "form": {
       "code": "Code",
       "discount": "Discount value",
       "priority": "Priority",
       "priorityTooltip": "Defines which discount will be applied first (in order of priority). Only discounts with the same type and target type will be considered.",
       "type": "Discount type",
-      "target_type": "Discount target type",
+      "target_type": "The promotion will affect",
       "target_is_allow_list": "Is allow list",
       "target_products": "Products",
-      "target_sets": "Product sets",
+      "target_sets": "Collections containing products",
       "target_shipping_methods": "Shipping methods"
+    },
+
+    "discountTargetTypes": {
+      "order-value": "Order total value",
+      "products": "Selected products",
+      "shipping-price": "Shipping price",
+      "cheapest-product": "Cheapest product in cart"
     }
   }
 }
@@ -219,15 +275,15 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .sale-configurator {
-  ::v-deep .bxs-info-circle {
+  :deep(.bxs-info-circle) {
     font-size: 12px;
   }
 
-  ::v-deep .bx-plus {
+  :deep(.bx-plus) {
     font-size: 1.25rem;
   }
   .ant-switch-checked {
-    background-color: #10ce85;
+    background-color: var(--green-color-500);
   }
 
   &__fields {
@@ -272,14 +328,12 @@ export default Vue.extend({
       }
     }
 
-    .target-products,
-    .target-sets,
-    .target-shipping {
+    .sale-configurator__autocomplete {
       width: 100%;
       grid-column: 1/-1;
     }
 
-    ::v-deep .app-input {
+    :deep(.app-input) {
       margin-bottom: 0;
     }
 
@@ -347,6 +401,39 @@ export default Vue.extend({
         margin-right: 20px !important;
       }
     }
+  }
+}
+
+.sale-status {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--background-color-700);
+  margin-bottom: 8px;
+
+  &__title {
+    margin-right: 12px;
+    font-size: 1.1em;
+    font-weight: 500;
+  }
+
+  &__value {
+    color: var(--green-color-500);
+    text-transform: uppercase;
+    font-weight: 300;
+    font-size: 0.8em;
+    margin-right: 8px;
+    line-height: 0.8em;
+
+    &--inactive {
+      color: var(--red-color-500);
+    }
+  }
+
+  &__input {
+    margin-top: -4px;
   }
 }
 </style>

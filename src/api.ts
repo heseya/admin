@@ -5,6 +5,7 @@ import { accessor } from './store/index'
 import router from './router'
 import { getApiURL } from './utils/api'
 import { broadcastTokensUpdate } from './utils/authSync'
+import { createHeseyaApiService } from '@heseya/store-core'
 
 const CORE_API_URL = getApiURL()
 
@@ -51,7 +52,7 @@ export const createApiInstance = (baseURL: string, useAccessToken = true) => {
     }
 
     // Refreshing the token
-    const requestUrl = error.response?.config.url
+    const requestUrl = error.response?.config?.url
 
     if (error.response?.status === 401 && requestUrl !== REFRESH_URL && !originalRequest._retried) {
       // ? This wil prevent the second refresh if request fails twice
@@ -93,3 +94,4 @@ export const createApiInstance = (baseURL: string, useAccessToken = true) => {
 }
 
 export const api = createApiInstance(CORE_API_URL)
+export const sdk = createHeseyaApiService(api as any)

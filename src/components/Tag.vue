@@ -1,8 +1,9 @@
 <template>
   <div
     class="tag"
-    :class="{ 'tag--small': small, [`tag--${type}`]: true }"
+    :class="{ 'tag--small': small, [`tag--${type}`]: true, 'tag--text-dark': isTextDark }"
     :style="{ '--bg-color': color }"
+    v-on="$listeners"
   >
     <slot>{{ text }}</slot>
   </div>
@@ -29,6 +30,18 @@ export default Vue.extend({
       default: false,
     },
   },
+  computed: {
+    isTextDark(): boolean {
+      if (!this.color) return false
+      const [red, green, blue] = this.color // Hex color e.g. #ff0000
+        .replace('#', '')
+        .match(/.{1,2}/g)
+        ?.map((x) => parseInt(x, 16)) || [0, 0, 0]
+
+      // Formula from https://stackoverflow.com/a/3943023
+      return red * 0.299 + green * 0.587 + blue * 0.114 > 186
+    },
+  },
 })
 </script>
 
@@ -36,9 +49,9 @@ export default Vue.extend({
 .tag {
   margin-right: 3px;
   margin-top: 3px;
-  background-color: var(--bg-color, #000000);
+  background-color: var(--bg-color, var(--black-color));
   padding: 4px 12px;
-  color: #fff;
+  color: var(--white-color);
   font-size: 0.9em;
   border-radius: 16px;
   display: inline-flex;
@@ -46,9 +59,15 @@ export default Vue.extend({
   white-space: nowrap;
 
   > .bx {
+    display: block;
     border-radius: 50%;
-    background-color: var(--bg-color, #000000);
-    color: #fff !important;
+    background-color: var(--bg-color, var(--black-color));
+    color: var(--white-color) !important;
+    padding: 2px 1px 1px 1px;
+  }
+
+  &--text-dark {
+    color: var(--font-color);
   }
 
   &--small {
@@ -56,29 +75,38 @@ export default Vue.extend({
   }
 
   &--success {
-    background-color: $green-color-200;
-    color: $green-color-500;
+    background-color: var(--green-color-200);
+    color: var(--green-color-500);
 
     > .bx {
-      background-color: $green-color-500;
+      background-color: var(--green-color-500);
     }
   }
 
   &--error {
-    background-color: $red-color-200;
-    color: $red-color-500;
+    background-color: var(--red-color-200);
+    color: var(--red-color-500);
 
     > .bx {
-      background-color: $red-color-500;
+      background-color: var(--red-color-500);
     }
   }
 
   &--primary {
-    background-color: $primary-color-100;
-    color: $primary-color-500;
+    background-color: var(--primary-color-100);
+    color: var(--primary-color-500);
 
     > .bx {
-      background-color: $primary-color-500;
+      background-color: var(--primary-color-500);
+    }
+  }
+
+  &--gray {
+    background-color: $background-color-700;
+    color: $gray-color-600;
+
+    > .bx {
+      background-color: $gray-color-600;
     }
   }
 

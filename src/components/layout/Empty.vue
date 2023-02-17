@@ -1,9 +1,7 @@
 <template>
   <div class="empty" :class="{ 'empty--small': small }">
     <div class="empty__icon">
-      <slot name="icon">
-        <i class="bx bx-box"></i>
-      </slot>
+      <slot name="icon"> </slot>
     </div>
     <div class="empty__message">
       <slot> {{ $t('common.defaultEmpty') }} </slot>
@@ -21,32 +19,36 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-$color: lighten($font-color, 50%);
-
 .empty {
   max-width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  border: solid 1px var(--gray-color-300);
+  border-radius: 4px;
   padding: 16px 12px;
+  margin: 8px 0;
+  color: var(--gray-color-600);
+  text-align: center;
 
   &__icon {
     font-size: 3em;
     line-height: 1em;
-    color: $color;
+    color: inherit;
   }
 
   &__message {
     font-family: $primaryFont;
-    color: $color;
+    color: inherit;
     font-weight: 300;
-    font-style: italic;
-    font-size: 1em;
+    font-size: 0.9em;
+    letter-spacing: 0.55px;
+    max-width: 1000px;
   }
 
   &--small {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     flex-direction: row;
     padding: 8px;
   }

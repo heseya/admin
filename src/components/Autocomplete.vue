@@ -24,7 +24,7 @@
       </div>
     </div>
     <a-modal v-model="isModalActive" width="800px" :title="$t('chooseItem')" :footer="null">
-      <modal-form>
+      <modal-form v-if="isModalActive">
         <selector :type-name="$t('product')" type="items" :existing="value" @select="addItem" />
       </modal-form>
     </a-modal>
@@ -106,7 +106,7 @@ export default Vue.extend({
   &__items {
     display: flex;
     flex-wrap: wrap;
-    background-color: #ffffff;
+    background-color: var(--white-color);
     border: 1px solid #d9d9d9;
     border-radius: 4px;
     padding: 4px;
@@ -139,7 +139,7 @@ export default Vue.extend({
     }
 
     &:hover {
-      background-color: #eeeeee;
+      background-color: var(--gray-color-300);
     }
   }
 }

@@ -2,7 +2,7 @@
   <div class="condition-form">
     <div class="condition-form__header">
       <h3 class="condition-form__heading">{{ $t('condition', { number }) }}</h3>
-      <icon-button type="danger" size="small" @click="removeSelf()">
+      <icon-button :disabled="disabled" type="danger" size="small" @click="removeSelf()">
         {{ $t('remove') }}
         <template #icon>
           <i class="bx bx-trash"></i>
@@ -51,16 +51,16 @@
     "discountConditionTypes": {
       "order-value": "Order value",
       "user-in-role": "User belongs to role",
-      "user-in": "Group of users",
-      "product-in-set": "Product in set",
-      "product-in": "Group of products",
+      "user-in": "User from list",
+      "product-in-set": "Any product in the shopping cart belongs to the collection ",
+      "product-in": "Any product in the shopping cart belongs to the group",
       "date-between": "Date between",
       "time-between": "Time between",
       "max-uses": "Max uses",
       "max-uses-per-user": "Max uses per user",
-      "weekday-in": "Weekday",
-      "cart-length": "Cart size",
-      "coupons-count": "Coupons count"
+      "weekday-in": "Weekday in",
+      "cart-length": "Number of products in the cart",
+      "coupons-count": "Number of coupons in the cart"
     }
   },
   "pl": {
@@ -70,16 +70,16 @@
     "discountConditionTypes": {
       "order-value": "Wartość zamówienia",
       "user-in-role": "Użytkownik należący do roli",
-      "user-in": "Grupa użytkowników",
-      "product-in-set": "Produkt w kolekcji",
-      "product-in": "Grupa produktów",
+      "user-in": "Użytkownik z listy",
+      "product-in-set": "Dowolny produkt w koszyku należy do kolekcji",
+      "product-in": "Dowolny produkt w koszyku należy do grupy",
       "date-between": "Data pomiędzy",
       "time-between": "Godzina pomiędzy",
       "max-uses": "Maksymalna liczba użyć",
       "max-uses-per-user": "Maksymalna liczba użyć na użytkownika",
-      "weekday-in": "Dzień tygodnia",
-      "cart-length": "Wielkość koszyka",
-      "coupons-count": "Ilość kuponów"
+      "weekday-in": "Wybrane dni tygodnia",
+      "cart-length": "Ilość produktów w koszyku",
+      "coupons-count": "Ilość kuponów w koszyku"
     }
   }
 }
@@ -118,9 +118,6 @@ export default Vue.extend({
     number: { type: Number, required: true },
   },
   computed: {
-    DiscountConditionType(): typeof DiscountConditionType {
-      return DiscountConditionType
-    },
     conditionTypesOptions(): { value: string; label: string }[] {
       return Object.values(DiscountConditionType).map((key) => ({
         value: key,
@@ -204,13 +201,14 @@ export default Vue.extend({
 
 <style lang="scss">
 .condition-form {
-  border: solid 1px #d9dbe0;
+  border: solid 1px var(--gray-color-300);
   background-color: white;
   border-radius: 4px;
   padding: 8px;
 
-  &:hover {
-    background-color: $background-color-700;
+  &__heading {
+    font-size: 14px;
+    line-height: 17px;
   }
 
   &__heading {

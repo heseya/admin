@@ -5,7 +5,7 @@
       :loading="isLoading"
       option-filter-prop="label"
       :label="$t('statusLabel')"
-      :disabled="!$can($p.Orders.EditStatus)"
+      :disabled="!$can($p.Orders.EditStatus) || isOrderCanceled"
     >
       <a-select-option v-for="{ id, name, color } in statuses" :key="id" :label="name">
         <div class="order-status-input__option">
@@ -59,19 +59,20 @@ export default Vue.extend({
         this.updateOrderStatus(v)
       },
     },
+    isOrderCanceled(): boolean {
+      return this.order?.status?.cancel ?? false
+    },
   },
   methods: {
     async updateOrderStatus(newStatus: UUID) {
       this.isLoading = true
 
-      // @ts-ignore // TODO: fix extended store actions typings
       const success = await this.$accessor.orders.changeStatus({
         orderId: this.order.id,
         statusId: newStatus,
       })
 
       if (success) {
-        this.$emit('statusChanged', newStatus)
         this.$toast.success(this.$t('statusChangeSuccess') as string)
       }
 
@@ -92,7 +93,7 @@ export default Vue.extend({
     display: block;
     width: 12px;
     height: 12px;
-    background-color: $primary-color-500;
+    background-color: var(--primary-color-500);
     border-radius: 50%;
     margin-right: 8px;
   }

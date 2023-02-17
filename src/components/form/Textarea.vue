@@ -1,5 +1,8 @@
 <template>
-  <textarea v-model="formValue" class="textarea" />
+  <div class="textarea">
+    <label class="textarea__label">{{ label }}</label>
+    <textarea v-model="formValue" class="textarea__input" />
+  </div>
 </template>
 
 <script lang="ts">
@@ -8,6 +11,10 @@ import Vue from 'vue'
 export default Vue.extend({
   props: {
     value: {
+      type: String,
+      default: '',
+    },
+    label: {
       type: String,
       default: '',
     },
@@ -27,21 +34,30 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .textarea {
-  width: 100%;
-  background-color: #fff;
-  border: solid 1px #d9d9d9;
-  border-radius: 4px;
-  box-sizing: border-box;
-  padding: 7px 13px;
-  font-family: $primaryFont;
-  transition: 0.3s;
-  min-height: 100px;
-  height: 200px;
-  max-height: 400px;
-  resize: vertical;
+  &__label {
+    display: block;
+    font-size: 0.8em;
+    color: var(--gray-color-600);
+    margin-bottom: 2px;
+  }
 
-  &:focus {
-    outline: none;
+  &__input {
+    width: 100%;
+    background-color: var(--white-color);
+    border: solid 1px var(--gray-color-300);
+    border-radius: 4px;
+    box-sizing: border-box;
+    padding: 7px 13px;
+    font-family: $primaryFont;
+    transition: 0.3s;
+    min-height: 40px;
+    height: 60px;
+    max-height: 400px;
+    resize: vertical;
+
+    &:focus {
+      outline: none;
+    }
   }
 }
 </style>

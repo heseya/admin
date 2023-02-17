@@ -59,15 +59,22 @@ import { User } from '@heseya/store-core'
 
 export default Vue.extend({
   name: 'AppHeader',
+
   computed: {
     isHidden(): boolean {
       return !!this.$route.meta?.hiddenNav || false
     },
     storeName(): string {
-      return this.$accessor.env.store_name
+      return this.$accessor.config.env.store_name
     },
     returnUrl(): string | null {
-      return this.$route.meta?.returnUrl || null
+      const previousRoute: { path: string; fullPath: string } | null = JSON.parse(
+        window.sessionStorage.getItem('previousRoute') ?? 'null',
+      )
+      const returnUrl = this.$route.meta?.returnUrl || null
+      // If the previous route match the return url, then return previous full route path cause it's also includes the query params
+      // Otherwise simply return the return url
+      return previousRoute?.path === returnUrl ? previousRoute?.fullPath : returnUrl
     },
     user(): User | null {
       return this.$accessor.auth.user
@@ -76,6 +83,7 @@ export default Vue.extend({
       return last(this.user?.roles)?.name || ''
     },
   },
+
   methods: {
     async logout() {
       await this.$accessor.auth.logout()
@@ -102,15 +110,12 @@ export default Vue.extend({
     justify-content: space-between;
   }
 
-  &__return-btn {
-  }
-
   &--hidden {
     margin-top: -50px;
   }
 
   &__text {
-    color: $gray-color-500;
+    color: var(--gray-color-500);
     font-weight: 300;
     font-size: 0.9em;
   }
@@ -132,11 +137,11 @@ export default Vue.extend({
   align-items: center;
 
   &__role {
-    background-color: #ffffff;
+    background-color: var(--white-color);
     padding: 4px 8px;
     border-radius: 20px;
-    color: $primary-color-500;
-    border: solid 1px $background-color-600;
+    color: var(--primary-color-500);
+    border: solid 1px var(--background-color-600);
     font-size: 0.8em;
     margin-right: 4px;
   }
@@ -150,7 +155,7 @@ export default Vue.extend({
     transition: 0.3s;
 
     &:hover {
-      background-color: $primary-color-100;
+      background-color: var(--primary-color-100);
     }
   }
 }

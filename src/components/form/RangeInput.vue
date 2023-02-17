@@ -55,8 +55,8 @@ export default Vue.extend({
       min: number | string
       max: number | string
     }>,
-    min: { type: String, default: undefined },
-    max: { type: String, default: undefined },
+    min: { type: [String, Number], default: undefined },
+    max: { type: [String, Number], default: undefined },
   },
   methods: {
     updateValue(key: 'min' | 'max', value: string | number) {
@@ -75,6 +75,8 @@ export default Vue.extend({
 
   &__label {
     font-size: 0.8em;
+    color: $gray-color-600;
+    margin-bottom: 4px;
   }
 
   &__group {
@@ -99,7 +101,7 @@ export default Vue.extend({
     padding: 2px;
     pointer-events: none;
     border-left-width: 0;
-    background-color: #fff;
+    background-color: var(--white-color);
   }
 
   &__addon {
@@ -108,7 +110,7 @@ export default Vue.extend({
     font-size: 0.6em;
 
     &::placeholder {
-      color: $font-color !important;
+      color: var(--font-color) !important;
     }
   }
 }

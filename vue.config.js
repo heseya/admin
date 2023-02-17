@@ -1,4 +1,33 @@
 module.exports = {
+  css: {
+    loaderOptions: {
+      sass: {
+        prependData: `
+          @import "@/scss/01_abstracts/index.scss";
+        `,
+      },
+      less: {
+        javascriptEnabled: true,
+        modifyVars: {
+          'primary-color': '#8f022c',
+          'link-color': '#bd204f',
+          'success-color': '#27e29a',
+          'warning-color': '#faad14',
+          'error-color': '#ef4545',
+        },
+      },
+    },
+  },
+
+  configureWebpack: {
+    optimization: {
+      splitChunks: {
+        minSize: 10000,
+        maxSize: 250000,
+      },
+    },
+  },
+
   pwa: {
     name: 'Heseya',
     themeColor: '#8f022c',
@@ -26,6 +55,11 @@ module.exports = {
         },
       ],
     },
+
+    // workboxOptions: {
+    // Probably file size should be reduced instead of increasing the limit
+    // maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
+    // },
 
     iconPaths: {
       appleTouchIcon: 'img/apple-touch-icon.png',

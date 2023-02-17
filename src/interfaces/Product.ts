@@ -22,6 +22,7 @@ export interface ProductComponentForm
     | 'availability'
     | 'available'
     | 'quantity'
+    | 'shipping_digital'
     | 'shipping_time'
     | 'shipping_date'
     | 'sales'
@@ -31,5 +32,6 @@ export interface ProductComponentForm
   > {
   id?: UUID
   sets: UUID[]
+  shipping_digital: '0' | '1'
   seo?: SeoMetadataDto
 }

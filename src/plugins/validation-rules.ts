@@ -3,7 +3,7 @@ import { required, email } from 'vee-validate/dist/rules'
 import v from 'validator'
 import { isNaN, isNumber } from 'lodash'
 import { isBefore, isSameDay } from 'date-fns'
-import { ShippingMethodPriceRangeDto } from '@heseya/store-core'
+import { AddressDto, ShippingMethodPriceRangeDto } from '@heseya/store-core'
 
 import {
   METADATA_NAME_REGEX,
@@ -188,5 +188,13 @@ extend('block-if-error', {
   message: 'error',
   validate(isError) {
     return !isError
+  },
+})
+
+extend('shipping-points-duplicates', {
+  params: ['existingPoints'],
+  message: () => i18n.t('validation.shippingPointsDuplicates') as string,
+  validate: (newName, { existingPoints }: Record<string, any>) => {
+    return !existingPoints.some((point: AddressDto) => point.name === newName)
   },
 })

@@ -59,7 +59,7 @@ export default Vue.extend({
   height: 100vh;
   box-sizing: border-box;
   padding: 20vh 10%;
-  background-color: #ffffff;
+  background-color: var(--white-color);
   z-index: $mobile-nav-overlay-z-index;
   display: flex;
   flex-direction: column;
@@ -87,8 +87,8 @@ export default Vue.extend({
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #979ea0;
-    background-color: $background-color-700;
+    color: var(--gray-color-500);
+    background-color: var(--background-color-700);
   }
 
   &__link {
@@ -101,13 +101,13 @@ export default Vue.extend({
     margin-bottom: 12px;
     display: flex;
     align-items: center;
-    color: #000000;
+    color: var(--black-color);
     transition: background-color 0.3s;
 
     .nav-link-img {
       width: 16px;
       height: 16px;
-      color: #9ea5b4;
+      color: var(--gray-color-500);
       margin-right: 20px;
       box-sizing: border-box;
       transition: opacity 0.3s;
@@ -125,10 +125,10 @@ export default Vue.extend({
     }
 
     &.router-link-active {
-      color: $primary-color-500;
+      color: var(--primary-color-500);
 
       .nav-link-img {
-        color: $primary-color-500;
+        color: var(--primary-color-500);
       }
     }
   }

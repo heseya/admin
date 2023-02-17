@@ -4,23 +4,21 @@ import {
   WebhookEntryCreateDto,
   WebhookEntryUpdateDto,
   WebhookEventLog,
-  HeseyaPaginatedResponseMeta,
+  HeseyaPaginationMeta,
 } from '@heseya/store-core'
-import { api } from '@/api'
-import { stringifyQueryParams } from '@/utils/stringifyQuery'
-import { createVuexCRUD, StoreMutations } from './generator'
-
-const BASE_URL = 'webhooks'
+import { sdk } from '@/api'
+import { createVuexCRUD } from './generator'
+import { DefaultVuexMutation } from '@/interfaces/VuexGenerator'
 
 export const webhooks = createVuexCRUD<
   WebhookEntry,
   WebhookEntryCreateDto,
   WebhookEntryUpdateDto
->()(BASE_URL, {
+>()('webhooks', {
   state: {
     events: [] as WebHookEventObject[],
     logs: [] as WebhookEventLog[],
-    logsMeta: {} as HeseyaPaginatedResponseMeta,
+    logsMeta: {} as HeseyaPaginationMeta,
   },
   getters: {},
   mutations: {
@@ -30,40 +28,36 @@ export const webhooks = createVuexCRUD<
     SET_LOGS(state, events: WebhookEventLog[]) {
       state.logs = events
     },
-    SET_LOGS_META(state, meta: HeseyaPaginatedResponseMeta) {
+    SET_LOGS_META(state, meta: HeseyaPaginationMeta) {
       state.logsMeta = meta
     },
   },
   actions: {
     async fetchEvents({ commit }) {
-      commit(StoreMutations.SetLoading, true)
+      commit(DefaultVuexMutation.SetLoading, true)
       try {
-        const response = await api.get<{ data: WebHookEventObject[] }>(`/${BASE_URL}/events`)
-        commit('SET_EVENTS', response.data.data)
+        const events = await sdk.Webhooks.getEvents()
+        commit('SET_EVENTS', events.data)
 
-        commit(StoreMutations.SetError, null)
+        commit(DefaultVuexMutation.SetError, null)
       } catch (e: any) {
-        commit(StoreMutations.SetError, e)
+        commit(DefaultVuexMutation.SetError, e)
       }
-      commit(StoreMutations.SetLoading, false)
+      commit(DefaultVuexMutation.SetLoading, false)
     },
 
     async fetchLogs({ commit }, parameters: Record<string, any>) {
-      commit(StoreMutations.SetLoading, true)
+      commit(DefaultVuexMutation.SetLoading, true)
       try {
-        const params = stringifyQueryParams(parameters)
-        const response = await api.get<{
-          data: WebhookEventLog[]
-          meta: HeseyaPaginatedResponseMeta
-        }>(`/webhooks/logs${params}`)
-        commit('SET_LOGS', response.data.data)
-        commit('SET_LOGS_META', response.data.meta)
+        const { data, pagination } = await sdk.Webhooks.getLogs(parameters)
+        commit('SET_LOGS', data)
+        commit('SET_LOGS_META', pagination)
 
-        commit(StoreMutations.SetError, null)
+        commit(DefaultVuexMutation.SetError, null)
       } catch (e: any) {
-        commit(StoreMutations.SetError, e)
+        commit(DefaultVuexMutation.SetError, e)
       }
-      commit(StoreMutations.SetLoading, false)
+      commit(DefaultVuexMutation.SetLoading, false)
     },
   },
 })

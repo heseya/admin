@@ -25,7 +25,7 @@
     />
 
     <pop-confirm
-      v-if="order.payable"
+      v-if="!order.paid"
       :title="$t('offlinePayment.confirmText')"
       :ok-text="$t('offlinePayment.successText')"
       ok-color="success"
@@ -76,12 +76,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Order, Payment } from '@heseya/store-core'
+import { Order, OrderPayment, PaymentStatus } from '@heseya/store-core'
 
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import InfoTooltip from '@/components/layout/InfoTooltip.vue'
 
-import { api } from '@/api'
+import { sdk } from '@/api'
 import { formatCurrency } from '@/utils/currency'
 import { PAYMENT_METHODS } from '@/consts/paymentMethods'
 
@@ -94,8 +94,8 @@ export default Vue.extend({
     } as Vue.PropOptions<Order>,
   },
   computed: {
-    lastSuccessfullPayment(): Payment | undefined {
-      return this.order.payments?.find((payment) => payment.paid)
+    lastSuccessfullPayment(): OrderPayment | undefined {
+      return this.order.payments?.find((payment) => payment.status === PaymentStatus.Successful)
     },
     PAYMENT_METHODS(): Record<string, string> {
       return PAYMENT_METHODS
@@ -103,12 +103,12 @@ export default Vue.extend({
   },
   methods: {
     formatCurrency(amount: number) {
-      return formatCurrency(amount, this.$accessor.currency)
+      return formatCurrency(amount, this.$accessor.config.currency)
     },
     async payOffline() {
       this.$accessor.startLoading()
       try {
-        await api.post(`/orders/${this.order.code}/pay/offline`)
+        await sdk.Orders.markAsPaid(this.order.code)
         await this.$accessor.orders.get(this.$route.params.id)
         this.$toast.success(this.$t('offlinePayment.resultSuccess') as string)
       } catch {

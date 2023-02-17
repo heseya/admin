@@ -1,11 +1,12 @@
-import { BaseItem } from '@/store/generator'
+import { VuexBaseItem } from './VuexGenerator'
 
-export interface TableHeader<Item extends BaseItem = any> {
+export interface TableHeader<Item extends VuexBaseItem = any> {
   key: string
   label: string
   width?: string
   sortable?: boolean
-  render?: (keyValue: any, item: Item) => string | number | boolean
+  render?: (keyValue: any, item: Item) => string | number | boolean | string[]
+  wordBreak?: 'break-all' | 'break-word' | 'none'
 }
 
 export interface TableValue {
@@ -13,9 +14,10 @@ export interface TableValue {
   label: string
   value: any
   rawValue: any
+  wordBreak: 'break-all' | 'break-word' | 'none'
 }
 
-export interface TableConfig<Item extends BaseItem = BaseItem> {
+export interface TableConfig<Item extends VuexBaseItem = VuexBaseItem> {
   headers: TableHeader<Item>[]
   rowOnClick?: (item: Item) => void
   rowUrlBuilder?: (item: Item) => string

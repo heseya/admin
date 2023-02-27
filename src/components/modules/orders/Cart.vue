@@ -20,11 +20,25 @@
         {{ formatCurrency(order.cart_total_initial) }}
       </field>
       <field :label="$t('summary.shipping')" horizontal>
-        {{ formatCurrency(order.shipping_price_initial) }}
+        <div class="discount-summary">
+          <span class="discount-summary__total">
+            {{ formatCurrency(order.shipping_price) }}
+          </span>
+          <info-tooltip v-if="order.shipping_price !== order.shipping_price_initial">
+            <b>
+              {{ $t('summary.baseShipping') }}:
+              {{ formatCurrency(order.shipping_price_initial) }}
+            </b>
+            <OrderDiscountSummary
+              :discounts="order.discounts"
+              :types="[DiscountTargetType.ShippingPrice]"
+            />
+          </info-tooltip>
+        </div>
       </field>
       <field
-        v-if="order.discounts && order.discounts.length"
-        :label="$t('summary.coupons')"
+        v-if="order.discounts && totalDiscount > 0"
+        :label="$t('summary.discounts')"
         horizontal
       >
         <div class="discount-summary">
@@ -32,7 +46,14 @@
             {{ formatCurrency(-totalDiscount) }}
           </span>
           <info-tooltip>
-            <OrderDiscountSummary :discounts="order.discounts" />
+            <OrderDiscountSummary
+              :discounts="order.discounts"
+              :types="[
+                DiscountTargetType.CheapestProduct,
+                DiscountTargetType.OrderValue,
+                DiscountTargetType.Products,
+              ]"
+            />
           </info-tooltip>
         </div>
       </field>
@@ -71,8 +92,9 @@
     "orderNotPaid": "Not paid",
     "summary": {
       "cart": "Cart total",
+      "baseShipping": "Base shipping price",
       "shipping": "Shipping price",
-      "coupons": "Coupons",
+      "discounts": "Discounts",
       "total": "Total"
     }
   },
@@ -88,8 +110,9 @@
     "orderNotPaid": "Nie opłacono",
     "summary": {
       "cart": "Wartość koszyka",
+      "baseShipping": "Bazowa cena dostawy",
       "shipping": "Koszt przesyłki",
-      "coupons": "Rabaty",
+      "discounts": "Rabaty",
       "total": "Do zapłaty"
     }
   }
@@ -98,7 +121,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Order, OrderProduct } from '@heseya/store-core'
+import { Order, OrderProduct, DiscountTargetType } from '@heseya/store-core'
 
 import CartItem from '@/components/layout/CartItem.vue'
 import Field from '../../Field.vue'
@@ -120,10 +143,18 @@ export default Vue.extend({
     selectedProductId: null as string | null,
   }),
   computed: {
+    DiscountTargetType(): typeof DiscountTargetType {
+      return DiscountTargetType
+    },
+
     totalDiscount(): number {
-      return this.order.discounts
-        .map((d) => d.applied_discount)
-        .reduce((sum, discount) => sum + discount, 0)
+      return (
+        this.order.discounts
+          // Ignore shipping price discounts, they are already included in shipping price
+          ?.filter((d) => d.target_type !== DiscountTargetType.ShippingPrice)
+          .map((d) => d.applied_discount)
+          .reduce((sum, discount) => sum + discount, 0) || 0
+      )
     },
 
     selectedProduct(): OrderProduct | null {

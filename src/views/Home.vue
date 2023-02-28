@@ -150,6 +150,8 @@ import Card from '@/components/layout/Card.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import MonthlyIncomeChart from '@/components/modules/analytics/MonthlyIncomeChart.vue'
 
+const ORDER_LIMIT = 6
+
 type DateRange = { start: Date; end: Date }
 
 export default Vue.extend({
@@ -178,7 +180,7 @@ export default Vue.extend({
       return this.$accessor.config.env.store_name ?? 'Heseya Store'
     },
     orders(): Order[] {
-      return this.$accessor.orders.getData
+      return this.$accessor.orders.getData.filter((_o, i) => i < ORDER_LIMIT)
     },
     dates(): {
       week: DateRange
@@ -254,7 +256,7 @@ export default Vue.extend({
     async getOrders() {
       await this.$accessor.orders.fetch({
         page: 1,
-        limit: 6,
+        limit: ORDER_LIMIT,
       })
     },
   },

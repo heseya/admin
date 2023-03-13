@@ -25,6 +25,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+// @ts-ignore
 import { XlsxWorkbook, XlsxDownload, XlsxSheet } from 'vue-xlsx'
 
 import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'

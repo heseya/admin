@@ -313,14 +313,14 @@ export default Vue.extend({
       this.isSearching = true
       try {
         this.searchedPhrase = this.searchPhrase
-        const { data: res } = await api.get<{
-          data: ProductSet[]
-          meta: HeseyaPaginatedResponseMeta
-        }>(`/product-sets?parent_id=${parentId}&search=${search}`)
+        const { data, pagination } = await sdk.ProductSets.get({
+          parent_id: parentId,
+          search,
+        })
 
-        this.searchedChildren = res.data
-        this.totalSearchedResults = res.meta.total
-        this.searchedDisplayLimit = res.meta.per_page
+        this.searchedChildren = data
+        this.totalSearchedResults = pagination.total
+        this.searchedDisplayLimit = pagination.perPage
       } catch (e: any) {
         this.searchedPhrase = ''
         this.searchingError = true

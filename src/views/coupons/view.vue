@@ -109,6 +109,7 @@ const EMPTY_COUPON_FORM: CouponFormDto = {
   name: '',
   description: '',
   value: 0,
+  active: true,
   type: DiscountType.Percentage,
   priority: 0,
   condition_groups: [],

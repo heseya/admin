@@ -1149,9 +1149,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heseya/store-core@npm:4.0.0-rc.2":
-  version: 4.0.0-rc.2
-  resolution: "@heseya/store-core@npm:4.0.0-rc.2"
+"@heseya/store-core@npm:4.0.0-rc.3":
+  version: 4.0.0-rc.3
+  resolution: "@heseya/store-core@npm:4.0.0-rc.3"
   dependencies:
     "@types/flat": ^5.0.2
     array-to-tree: ^3.3.2
@@ -1161,7 +1161,7 @@ __metadata:
     md5: ^2.3.0
     query-string: ^7.1.1
     tslib: ^2.3.1
-  checksum: d44e8b386f6af0fb663ed94663915b62535d361057d5fca722db2b30616038755cb2643f183f8c881f9c5110f40e49a4d8c8fa17407e86418aebbc842aac5ad3
+  checksum: d8993743161b7000cccf407d5846354504f714100d726c984a15eda4c3a5669efb7bb574f9eb7cbfc4efb914621d3a92040af203f6f07a56e79b6465a80d4e19
   languageName: node
   linkType: hard
 
@@ -8142,7 +8142,7 @@ __metadata:
   resolution: "store-admin@workspace:."
   dependencies:
     "@cypress/vue": ^4.0.0
-    "@heseya/store-core": 4.0.0-rc.2
+    "@heseya/store-core": 4.0.0-rc.3
     "@sentry/tracing": ^7.6.0
     "@sentry/vue": ^7.6.0
     "@types/flat": ^5.0.2

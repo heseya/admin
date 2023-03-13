@@ -22,7 +22,8 @@
           :to="`/orders/${order.id}`"
         >
           <template #code="{ value, item }">
-            {{ value }}
+            <b>{{ value }}</b>
+
             <a-tooltip v-if="item.comment">
               <template #title> {{ item.comment }} </template>
               <span class="order-icon"> <i class="bx bxs-comment-detail"></i> </span>
@@ -156,7 +157,7 @@ export default Vue.extend({
             key: 'created_at',
             label: this.$t('form.date') as string,
             sortable: true,
-            render: (v) => formatDate(v),
+            render: (v) => formatDate(v) || '?',
           },
         ],
       }
@@ -257,10 +258,15 @@ export default Vue.extend({
 
   .order-email-btn {
     all: unset;
-    font-size: 0.8em;
+    font-size: 0.7em;
     cursor: pointer;
     color: var(--gray-color-600);
     transition: color 0.3s;
+    white-space: nowrap;
+
+    @media ($viewport-4) {
+      font-size: 0.8em;
+    }
 
     &:hover {
       color: var(--primary-color-500);

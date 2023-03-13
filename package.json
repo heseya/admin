@@ -10,9 +10,9 @@
     "serve": "vite preview",
     "test:unit": "jest ./src",
     "test:e2e": "start-server-and-test `VITE_APP_I18N_LOCALE=en yarn vite build && yarn vite preview --port 8000` 8000 `cypress run`",
-    "lint": "eslint --ext .js,.ts,.vue --ignore-path .gitignore src",
+    "lint": "eslint --ext .js,.ts,.vue ./src",
     "i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(js|vue)\" --locales \"./src/locales/**/*.json\"",
-    "lint:fix": "eslint --ext .js,.ts,.vue --ignore-path .gitignore --fix src",
+    "lint:fix": "eslint --ext .js,.ts,.vue --fix ./src",
     "test": "yarn test:unit && yarn test:e2e --headless"
   },
   "dependencies": {

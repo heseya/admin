@@ -1518,9 +1518,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heseya/store-core@npm:4.0.0-rc.2":
-  version: 4.0.0-rc.2
-  resolution: "@heseya/store-core@npm:4.0.0-rc.2"
+"@heseya/store-core@npm:4.0.0-rc.3":
+  version: 4.0.0-rc.3
+  resolution: "@heseya/store-core@npm:4.0.0-rc.3"
   dependencies:
     "@types/flat": ^5.0.2
     array-to-tree: ^3.3.2
@@ -1530,7 +1530,7 @@ __metadata:
     md5: ^2.3.0
     query-string: ^7.1.1
     tslib: ^2.3.1
-  checksum: d44e8b386f6af0fb663ed94663915b62535d361057d5fca722db2b30616038755cb2643f183f8c881f9c5110f40e49a4d8c8fa17407e86418aebbc842aac5ad3
+  checksum: d8993743161b7000cccf407d5846354504f714100d726c984a15eda4c3a5669efb7bb574f9eb7cbfc4efb914621d3a92040af203f6f07a56e79b6465a80d4e19
   languageName: node
   linkType: hard
 
@@ -4428,9 +4428,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001335, caniuse-lite@npm:^1.0.30001359":
-  version: 1.0.30001366
-  resolution: "caniuse-lite@npm:1.0.30001366"
-  checksum: eeb878e0be4090a4247dd3de5392ff1a864d086e5401790c7c81697918ce6ce3dac75956a21f9404b5ac770bfdabdb18619d0f920dc2295f3211ee893355f697
+  version: 1.0.30001465
+  resolution: "caniuse-lite@npm:1.0.30001465"
+  checksum: c991ecdfff378a22b268f9b1eb732d003c8ad89db3241a4cdec3b3ec3354aa966a44171cb806c90abe2e3f0573d67dc29a7dce2478b1f070b23747c392244c5d
   languageName: node
   linkType: hard
 
@@ -12210,7 +12210,7 @@ __metadata:
   resolution: "store-admin@workspace:."
   dependencies:
     "@cypress/vue": ^4.0.0
-    "@heseya/store-core": 4.0.0-rc.2
+    "@heseya/store-core": 4.0.0-rc.3
     "@intlify/vue-i18n-loader": ^1.1.0
     "@sentry/tracing": ^7.6.0
     "@sentry/vue": ^7.6.0

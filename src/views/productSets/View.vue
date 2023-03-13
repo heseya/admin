@@ -287,6 +287,7 @@ export default Vue.extend({
         this.form = cloneDeep({
           ...CLEAR_PRODUCT_SET_FORM,
           ...productSet,
+          seo: productSet.seo || undefined,
           attributes: productSet.attributes.map((a) => a.id),
           parent_id: productSet.parent?.id || null,
         })

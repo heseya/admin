@@ -33,7 +33,7 @@ export const getApiURL = () => {
     case '***REMOVED***':
       return '***REMOVED***'
     case 'admin-***REMOVED***.***REMOVED***':
-      return 'http://demo-***REMOVED***.***REMOVED***'
+      return 'https://demo-***REMOVED***.***REMOVED***'
 
     // Internal domains
     case '***REMOVED***':

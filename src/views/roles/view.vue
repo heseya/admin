@@ -76,6 +76,7 @@ const CLEAN_FORM: RoleCreateDto = {
   name: '',
   description: '',
   permissions: [],
+  is_registration_role: false,
 }
 
 export default Vue.extend({

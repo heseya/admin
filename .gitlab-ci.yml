@@ -45,4 +45,7 @@ test-e2e:
       - tests/e2e/screenshots/**/*.png
     expire_in: 1 day
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: always
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+      when: manual

@@ -3,10 +3,11 @@ import path from 'path'
 
 import createVuePlugin from '@vitejs/plugin-vue2'
 import { createI18nPlugin } from '@yfwz100/vite-plugin-vue2-i18n'
+import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [createVuePlugin(), createI18nPlugin()],
+  plugins: [createVuePlugin(), createI18nPlugin(), VitePWA()],
 
   css: {
     preprocessorOptions: {

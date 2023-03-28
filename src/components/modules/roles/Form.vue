@@ -12,6 +12,12 @@
         :label="$t('common.form.description')"
         :disabled="disabled"
       />
+      <switch-input v-model="form.is_registration_role" :disabled="disabled" horizontal>
+        <template #title>
+          {{ $t('form.isRegistrationRole') }}
+          <info-tooltip> {{ $t('form.isRegistrationRoleTooltip') }}</info-tooltip>
+        </template>
+      </switch-input>
       <br />
       <permissions-manager v-model="form.permissions" :disabled="disabled" />
       <br />
@@ -23,6 +29,17 @@
     </card>
   </validation-observer>
 </template>
+
+<i18n lang="json">
+{
+  "pl": {
+    "form": {
+      "isRegistrationRole": "Czy można zarejestrować się z tą rolą?",
+      "isRegistrationRoleTooltip": "Jeśli zaznaczone, użytkownicy po zarejestrowaniu będą mogli przypisać sobie tę rolę."
+    }
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'

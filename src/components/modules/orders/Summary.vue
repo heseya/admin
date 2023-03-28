@@ -227,7 +227,10 @@ export default Vue.extend({
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  white-space: nowrap;
+
+  @media ($viewport-5) {
+    white-space: nowrap;
+  }
 
   &__edit-btn {
     @media ($viewport-8) {

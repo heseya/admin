@@ -20,6 +20,8 @@ export const getApiURL = () => {
       return 'https://***REMOVED***.***REMOVED***'
     case '***REMOVED***-admin.stage.heseya.pl':
       return 'https://***REMOVED***-stage.***REMOVED***'
+    case '***REMOVED***-admin.stage.heseya.pl':
+      return 'https://demo-***REMOVED***.***REMOVED***'
 
     // Demo clients
     case '***REMOVED***':
@@ -30,6 +32,8 @@ export const getApiURL = () => {
       return '***REMOVED***'
     case '***REMOVED***':
       return '***REMOVED***'
+    case 'admin-***REMOVED***.***REMOVED***':
+      return 'https://demo-***REMOVED***.***REMOVED***'
 
     // Internal domains
     case '***REMOVED***':

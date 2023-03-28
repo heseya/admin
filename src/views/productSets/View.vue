@@ -47,6 +47,17 @@
               </div>
 
               <div class="collection-view__inputs">
+                <div class="collection-view__switches">
+                  <flex-input>
+                    <switch-input
+                      v-model="form.public"
+                      :disabled="!canModify"
+                      horizontal
+                      :label="$t('form.public')"
+                    />
+                  </flex-input>
+                </div>
+
                 <validated-input
                   v-model="form.name"
                   rules="required"
@@ -77,24 +88,6 @@
                       {{ $t('form.slugOverrideHelp') }}
                     </template>
                   </a-tooltip>
-                </div>
-                <div class="collection-view__switches">
-                  <flex-input>
-                    <switch-input
-                      v-model="form.public"
-                      :disabled="!canModify"
-                      horizontal
-                      :label="$t('form.public')"
-                    />
-                  </flex-input>
-                  <flex-input>
-                    <switch-input
-                      v-model="form.hide_on_index"
-                      :disabled="!canModify"
-                      horizontal
-                      :label="$t('form.hideOnIndex')"
-                    />
-                  </flex-input>
                 </div>
               </div>
             </div>
@@ -217,7 +210,6 @@ export const CLEAR_PRODUCT_SET_FORM: ProductSetUpdateDto & { cover: CdnMedia | n
   cover_id: undefined,
   slug_override: false,
   public: true,
-  hide_on_index: false,
   parent_id: null,
   children_ids: [],
   seo: {},
@@ -406,13 +398,14 @@ export default Vue.extend({
     @media ($viewport-7) {
       width: calc(100% - 200px);
       padding: 0.5em 1.5em;
+      padding-right: 0;
     }
   }
 
   &__switches {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     margin-top: 12px;
     padding: 0 10px;

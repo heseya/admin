@@ -9,11 +9,10 @@
     "build": "vite build",
     "serve": "vite preview",
     "test:unit": "jest ./src",
-    "test:e2e": "start-server-and-test `VITE_APP_I18N_LOCALE=en yarn vite build && yarn vite preview --port 8000` 8000 `cypress run`",
+    "test:e2e": "VITE_I18N_LOCALE=en yarn build && start-server-and-test 'yarn serve --port 8000' 8000 'yarn cypress run'",
+    "test": "yarn test:unit && yarn test:e2e",
     "lint": "eslint --ext .js,.ts,.vue ./src",
-    "i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(js|vue)\" --locales \"./src/locales/**/*.json\"",
-    "lint:fix": "eslint --ext .js,.ts,.vue --fix ./src",
-    "test": "yarn test:unit && yarn test:e2e --headless"
+    "lint:fix": "eslint --ext .js,.ts,.vue --fix ./src"
   },
   "dependencies": {
     "@heseya/store-core": "4.0.0-rc.5",

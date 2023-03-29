@@ -1,6 +1,6 @@
 {
   "name": "store-admin",
-  "version": "4.0.0-rc.2",
+  "version": "4.0.0",
   "private": true,
   "description": "Admin panel for Heseya Store API",
   "author": "Heseya",
@@ -15,7 +15,7 @@
     "test": "yarn test:unit && yarn test:e2e --headless"
   },
   "dependencies": {
-    "@heseya/store-core": "4.0.0-rc.5",
+    "@heseya/store-core": "4.0.0",
     "@sentry/tracing": "^7.6.0",
     "@sentry/vue": "^7.6.0",
     "ant-design-vue": "^1.7.8",

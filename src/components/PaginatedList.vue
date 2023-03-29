@@ -72,7 +72,7 @@ import XlsxDownloadButton from '@/components/XlsxDownloadButton.vue'
 import { TableConfig } from '@/interfaces/CmsTable'
 import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 import { GeneratedStoreModulesKeys } from '@/store'
-import { BaseItem } from '@/store/generator'
+import { VuexBaseItem } from '@/interfaces/VuexGenerator'
 
 import { formatFilters } from '@/utils/utils'
 import { formatApiNotificationError } from '@/utils/errors'
@@ -136,10 +136,10 @@ export default Vue.extend({
   }),
   computed: {
     items: {
-      get(): BaseItem[] {
+      get(): VuexBaseItem[] {
         return this.$accessor[this.storeKey].getData
       },
-      async set(items: BaseItem[]) {
+      async set(items: VuexBaseItem[]) {
         this.isLoading = true
         await this.$store.dispatch(
           `${this.storeKey}/reorder`,
@@ -181,6 +181,7 @@ export default Vue.extend({
   mounted() {
     this.getItems()
   },
+
   methods: {
     changePage(page: number) {
       if (this.page !== page) {
@@ -230,12 +231,12 @@ export default Vue.extend({
 
     @media ($viewport-11) {
       &:not(:last-of-type) .cms-table-row {
-        border-bottom: solid 1px $background-color-700 !important;
+        border-bottom: solid 1px var(--background-color-700) !important;
       }
     }
 
     > * {
-      display: block;
+      display: flex;
       width: 100% !important;
     }
   }

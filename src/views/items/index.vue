@@ -116,7 +116,6 @@ export default Vue.extend({
   }),
   computed: {
     depositsError(): Error | null {
-      // @ts-ignore // TODO: fix extended store getters typings
       return this.$accessor.items.getDepositError
     },
     canModify(): boolean {

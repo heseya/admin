@@ -46,7 +46,7 @@
               ref="privateMeta"
               :value="coupon.metadata_private"
               :disabled="!canModify"
-              is-private
+              type="private"
               model="coupons"
             />
           </template>
@@ -109,6 +109,7 @@ const EMPTY_COUPON_FORM: CouponFormDto = {
   name: '',
   description: '',
   value: 0,
+  active: true,
   type: DiscountType.Percentage,
   priority: 0,
   condition_groups: [],

@@ -216,7 +216,6 @@ export default Vue.extend({
     },
   },
   created() {
-    // @ts-ignore // TODO: fix extended store actions typings
     this.$accessor.roles.fetchPermissions()
   },
   methods: {
@@ -302,7 +301,7 @@ export default Vue.extend({
           width: 5px;
           height: 5px;
           margin-right: 8px;
-          background-color: $font-color;
+          background-color: var(--font-color);
         }
       }
     }

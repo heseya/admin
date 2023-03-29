@@ -87,11 +87,11 @@ export default Vue.extend({
     }
 
     &--colorized#{&}--enabled {
-      color: $green-color-500;
+      color: var(--green-color-500);
     }
 
     &--colorized#{&}--disabled {
-      color: $gray-color-600;
+      color: var(--gray-color-600);
     }
   }
 
@@ -111,29 +111,29 @@ export default Vue.extend({
   }
 
   .ant-switch {
-    background-color: $background-color-600;
+    background-color: var(--background-color-600);
 
     i {
       margin-top: 4px;
-      color: $font-color !important;
+      color: var(--font-color) !important;
     }
   }
   .ant-switch-checked {
-    background-color: $green-color-500;
+    background-color: var(--green-color-500);
 
     i {
-      color: #ffffff !important;
+      color: var(--white-color) !important;
     }
   }
 
   &--red {
     .ant-switch-checked {
-      background-color: $red-color-500;
+      background-color: var(--red-color-500);
     }
   }
 
   &__error {
-    color: $red-color-500;
+    color: var(--red-color-500);
   }
 }
 </style>

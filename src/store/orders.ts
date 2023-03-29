@@ -1,33 +1,16 @@
-import { createVuexCRUD, StoreMutations } from './generator'
+import { createVuexCRUD } from './generator'
+import { DefaultVuexMutation } from '@/interfaces/VuexGenerator'
 import { sdk } from '../api'
 import {
   Order,
   OrderCreateDto,
+  OrderProduct,
   OrderDocument,
   OrderDocumentCreateDto,
   OrderUpdateDto,
 } from '@heseya/store-core'
 import { UUID } from '@/interfaces/UUID'
-
-export type CreateOrderDocumentFunc = (payload: {
-  orderId: UUID
-  document: OrderDocumentCreateDto
-}) => Promise<OrderDocument | null>
-
-export type DownloadOrderDocumentFunc = (payload: {
-  orderId: UUID
-  documentId: UUID
-}) => Promise<Blob | null>
-
-export type SendOrderDocumentsFunc = (payload: {
-  orderId: UUID
-  documentIds: UUID[]
-}) => Promise<boolean>
-
-export type RemoveOrderDocumentFunc = (payload: {
-  orderId: UUID
-  documentId: UUID
-}) => Promise<boolean>
+import { cloneDeep } from 'lodash'
 
 export const orders = createVuexCRUD<Order, OrderCreateDto, OrderUpdateDto>()('orders', {
   state: {},
@@ -46,17 +29,28 @@ export const orders = createVuexCRUD<Order, OrderCreateDto, OrderUpdateDto>()('o
       if (state.selected?.id === orderId)
         state.selected.documents = state.selected.documents.filter((d) => d.id !== documentId)
     },
+    UPDATE_SELECTED_ORDER_PRODUCT(state, orderProduct: OrderProduct) {
+      if (state.selected) {
+        const clone = cloneDeep(state.selected)
+        const index = clone.products.findIndex((p) => p.id === orderProduct.id)
+
+        if (index !== -1) clone.products[index] = orderProduct
+        else clone.products.push(orderProduct)
+
+        state.selected = clone
+      }
+    },
   },
   actions: {
     async changeStatus({ commit }, { orderId, statusId }: { orderId: UUID; statusId: UUID }) {
-      commit(StoreMutations.SetError, null)
+      commit(DefaultVuexMutation.SetError, null)
       try {
         await sdk.Orders.updateStatus(orderId, { status_id: statusId })
         const order = await sdk.Orders.getOne(orderId)
-        commit(StoreMutations.SetSelected, order)
+        commit(DefaultVuexMutation.SetSelected, order)
         return true
       } catch (error: any) {
-        commit(StoreMutations.SetError, error)
+        commit(DefaultVuexMutation.SetError, error)
         return false
       }
     },
@@ -65,7 +59,7 @@ export const orders = createVuexCRUD<Order, OrderCreateDto, OrderUpdateDto>()('o
       { commit },
       { orderId, document }: { orderId: UUID; document: OrderDocumentCreateDto },
     ) {
-      commit(StoreMutations.SetError, null)
+      commit(DefaultVuexMutation.SetError, null)
       try {
         const orderDocument = await sdk.Orders.Documents.create(orderId, document)
 
@@ -73,7 +67,7 @@ export const orders = createVuexCRUD<Order, OrderCreateDto, OrderUpdateDto>()('o
 
         return orderDocument
       } catch (error: any) {
-        commit(StoreMutations.SetError, error)
+        commit(DefaultVuexMutation.SetError, error)
         return null
       }
     },
@@ -82,11 +76,11 @@ export const orders = createVuexCRUD<Order, OrderCreateDto, OrderUpdateDto>()('o
       { commit },
       { orderId, documentId }: { orderId: UUID; documentId: UUID },
     ) {
-      commit(StoreMutations.SetError, null)
+      commit(DefaultVuexMutation.SetError, null)
       try {
         return await sdk.Orders.Documents.download(orderId, documentId)
       } catch (e) {
-        commit(StoreMutations.SetError, e)
+        commit(DefaultVuexMutation.SetError, e)
         return null
       }
     },
@@ -95,13 +89,13 @@ export const orders = createVuexCRUD<Order, OrderCreateDto, OrderUpdateDto>()('o
       { commit },
       { orderId, documentId }: { orderId: UUID; documentId: UUID },
     ) {
-      commit(StoreMutations.SetError, null)
+      commit(DefaultVuexMutation.SetError, null)
       try {
         await sdk.Orders.Documents.delete(orderId, documentId)
         commit('REMOVE_ORDER_DOCUMENT', { orderId, documentId })
         return true
       } catch (error: any) {
-        commit(StoreMutations.SetError, error)
+        commit(DefaultVuexMutation.SetError, error)
         return false
       }
     },
@@ -110,12 +104,33 @@ export const orders = createVuexCRUD<Order, OrderCreateDto, OrderUpdateDto>()('o
       { commit },
       { orderId, documentIds }: { orderId: UUID; documentIds: UUID[] },
     ) {
-      commit(StoreMutations.SetError, null)
+      commit(DefaultVuexMutation.SetError, null)
       try {
         await sdk.Orders.Documents.send(orderId, documentIds)
         return true
       } catch (error: any) {
-        commit(StoreMutations.SetError, error)
+        commit(DefaultVuexMutation.SetError, error)
+        return false
+      }
+    },
+
+    async updateOrderProductUrls(
+      { commit },
+      {
+        orderId,
+        productId,
+        urls,
+      }: { orderId: UUID; productId: UUID; urls: Record<string, string | null> },
+    ) {
+      commit(DefaultVuexMutation.SetError, null)
+      try {
+        const orderProduct = await sdk.Orders.updateProduct(orderId, productId, {
+          urls,
+        })
+        commit('UPDATE_SELECTED_ORDER_PRODUCT', orderProduct)
+        return true
+      } catch (error: any) {
+        commit(DefaultVuexMutation.SetError, error)
         return false
       }
     },

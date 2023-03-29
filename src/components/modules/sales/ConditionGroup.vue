@@ -1,13 +1,13 @@
 <template>
   <div class="condition-group">
     <div class="condition-group__header">
-      <icon-button size="small" @click="addCondition()">
+      <icon-button :disabled="disabled" size="small" @click="addCondition()">
         <template #icon>
           <i class="bx bx-plus"></i>
         </template>
         {{ $t('addCondition') }}
       </icon-button>
-      <icon-button type="danger" size="small" @click="removeSelf()">
+      <icon-button :disabled="disabled" type="danger" size="small" @click="removeSelf()">
         <template #icon>
           <i class="bx bx-trash"></i>
         </template>
@@ -98,7 +98,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .condition-group {
-  background-color: #f7f7f8;
+  background-color: var(--background-color-500);
   border-radius: 4px;
   padding: 8px;
   transition: 0.3s;

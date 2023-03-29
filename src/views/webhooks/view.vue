@@ -170,11 +170,7 @@ export default Vue.extend({
   async created() {
     this.$accessor.startLoading()
 
-    await Promise.all([
-      // @ts-ignore TODO: fix extended store actions typings
-      this.$accessor.webhooks.fetchEvents(),
-      this.fetchLogs(),
-    ])
+    await Promise.all([this.$accessor.webhooks.fetchEvents(), this.fetchLogs()])
 
     if (!this.isNew) await this.$accessor.webhooks.get(this.id)
 
@@ -183,7 +179,6 @@ export default Vue.extend({
   methods: {
     async fetchLogs(page = 1) {
       this.areLogsLoading = true
-      // @ts-ignore TODO: fix extended store actions typings
       await this.$accessor.webhooks.fetchLogs({ web_hook_id: this.id, page })
       this.areLogsLoading = false
     },

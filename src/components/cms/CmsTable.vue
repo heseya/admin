@@ -42,7 +42,7 @@
 import Vue from 'vue'
 import Draggable from 'vuedraggable'
 
-import { BaseItem } from '@/store/generator'
+import { VuexBaseItem } from '@/interfaces/VuexGenerator'
 import { TableConfig } from '@/interfaces/CmsTable'
 
 import CmsTableHeader from '@/components/cms/CmsTableHeader.vue'
@@ -54,7 +54,7 @@ export default Vue.extend({
     value: {
       type: Array,
       required: true,
-    } as Vue.PropOptions<BaseItem[]>,
+    } as Vue.PropOptions<VuexBaseItem[]>,
     config: {
       type: Object,
       required: true,
@@ -78,10 +78,10 @@ export default Vue.extend({
   },
   computed: {
     items: {
-      get(): BaseItem[] {
+      get(): VuexBaseItem[] {
         return this.value
       },
-      async set(items: BaseItem[]) {
+      async set(items: VuexBaseItem[]) {
         this.$emit('input', items)
       },
     },

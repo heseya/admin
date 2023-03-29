@@ -97,7 +97,7 @@ export default Vue.extend({
   border: none;
   @extend %card;
   box-shadow: none;
-  background-color: #fff;
+  background-color: var(--white-color);
   display: grid;
   align-items: center;
   width: 100%;
@@ -112,7 +112,7 @@ export default Vue.extend({
   }
 
   @media ($viewport-11) {
-    background-color: #fff0;
+    background-color: $transparent;
     grid-template-columns: var(--table-cols);
     padding: 0 16px;
     border: none;
@@ -120,12 +120,12 @@ export default Vue.extend({
     margin-bottom: 0;
 
     &:not(:last-of-type) {
-      border-bottom: solid 1px $background-color-700;
+      border-bottom: solid 1px var(--background-color-700);
     }
   }
 
   &:hover {
-    background-color: $primary-color-100;
+    background-color: var(--primary-color-100);
   }
 
   &--draggable {
@@ -151,7 +151,7 @@ export default Vue.extend({
     cursor: default;
 
     &:hover {
-      background-color: #ffffff00;
+      background-color: $transparent;
     }
   }
 
@@ -172,7 +172,7 @@ export default Vue.extend({
 
   &__col-label {
     text-transform: uppercase;
-    color: $gray-color-600;
+    color: var(--gray-color-600);
     font-size: 0.8em;
     margin-bottom: 4px;
 
@@ -182,7 +182,7 @@ export default Vue.extend({
   }
 
   &__col-value {
-    color: $font-color;
+    color: var(--font-color);
 
     &--break-all {
       word-break: break-all;

@@ -114,8 +114,7 @@ export default Vue.extend({
       return DiscountConditionType
     },
     formId(): string {
-      // ? Unofficial Vue api
-      // @ts-ignore
+      // @ts-ignore // ? Unofficial Vue api
       return this._uid
     },
     form: {

@@ -121,7 +121,6 @@
 import Vue from 'vue'
 import InlineSvg from 'vue-inline-svg'
 import Draggable from 'vuedraggable'
-import { App } from '@heseya/store-core'
 
 import Card from '@/components/layout/Card.vue'
 import TopNav from '@/components/layout/TopNav.vue'
@@ -152,8 +151,7 @@ export default Vue.extend({
       return this.$accessor.menuItems.activeItems
     },
     microfrontendItems(): MenuLink[] {
-      // @ts-ignore
-      return (this.$accessor.apps.getMicrofrontendsApps as App[]).map((app) => ({
+      return this.$accessor.apps.getMicrofrontendsApps.map((app) => ({
         id: app.id,
         type: MenuItemType.Link,
         exact: false,
@@ -165,9 +163,9 @@ export default Vue.extend({
       }))
     },
     availableItems(): MenuLink[] {
-      return [...MENU_LINKS, ...this.microfrontendItems].filter(
-        (item) => !this.menu.find((activeItem) => activeItem.id === item.id),
-      )
+      return [...MENU_LINKS, ...this.microfrontendItems]
+        .filter((item) => !this.menu.find((activeItem) => activeItem.id === item.id))
+        .filter((link) => (typeof link.hidden === 'function' ? !link.hidden() : !link.hidden))
     },
   },
   created() {

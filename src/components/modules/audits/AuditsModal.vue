@@ -281,7 +281,7 @@ export default Vue.extend({
   }
 
   &__header-date {
-    color: $gray-color-500;
+    color: var(--gray-color-500);
     margin-left: auto;
     font-size: 0.8em;
 
@@ -305,7 +305,7 @@ export default Vue.extend({
   &__table &__tag {
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: $green-color-500;
+    color: var(--green-color-500);
     font-size: 0.8em;
     margin-left: auto;
 

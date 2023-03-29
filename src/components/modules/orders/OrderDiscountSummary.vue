@@ -51,10 +51,22 @@ export default Vue.extend({
       type: Array,
       required: true,
     } as Vue.PropOptions<OrderDiscount[]>,
+    types: {
+      type: Array,
+      default: () => [
+        DiscountTargetType.CheapestProduct,
+        DiscountTargetType.OrderValue,
+        DiscountTargetType.Products,
+        DiscountTargetType.ShippingPrice,
+      ],
+    } as Vue.PropOptions<DiscountTargetType[]>,
   },
   computed: {
+    selectedDiscounts(): OrderDiscount[] {
+      return this.discounts.filter((d) => this.types.includes(d.target_type))
+    },
     groupedDiscounts(): Record<DiscountTargetType, OrderDiscount[]> {
-      return groupBy(this.discounts, 'target_type') as unknown as Record<
+      return groupBy(this.selectedDiscounts, 'target_type') as unknown as Record<
         DiscountTargetType,
         OrderDiscount[]
       >
@@ -78,7 +90,7 @@ export default Vue.extend({
   }
 
   &__title {
-    color: $gray-color-500;
+    color: var(--gray-color-500);
     font-weight: 600;
     font-size: 0.8em;
   }

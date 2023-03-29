@@ -118,7 +118,7 @@
               ref="privateMeta"
               :value="item.metadata_private"
               :disabled="disabled"
-              is-private
+              type="private"
               model="items"
             />
           </template>

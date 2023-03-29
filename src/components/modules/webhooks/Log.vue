@@ -80,6 +80,7 @@
 
 <script lang="ts">
 import Vue, { PropOptions } from 'vue'
+// @ts-ignore
 import VueJsonPretty from 'vue-json-pretty'
 import { WebhookEventLog } from '@heseya/store-core'
 
@@ -157,25 +158,25 @@ export default Vue.extend({
     }
 
     &--100 {
-      background-color: #4fc3f7;
+      background-color: var(--blue-color-400);
     }
 
     &--200 {
-      background-color: #81c784;
+      background-color: var(--green-color-400);
     }
 
     &--300 {
-      background-color: #9575cd;
-      color: $primary-color-100;
+      background-color: var(--purple-color-400);
+      color: var(--primary-color-100);
     }
 
     &--400 {
-      background-color: #fff176;
+      background-color: var(--yellow-color-400);
     }
 
     &--500 {
-      background-color: #e57373;
-      color: $primary-color-100;
+      background-color: var(--red-color-500);
+      color: var(--primary-color-100);
     }
 
     &--no-info {
@@ -227,7 +228,7 @@ export default Vue.extend({
 
   &__data-value {
     display: block;
-    color: $font-color;
+    color: var(--font-color);
     background-color: rgba(0, 100, 220, 0.05);
     border-radius: 8px;
     padding: 6px 8px;
@@ -246,7 +247,7 @@ export default Vue.extend({
   }
 
   &__data-value-relative {
-    color: $gray-color-600;
+    color: var(--gray-color-600);
   }
 
   &__data-link {

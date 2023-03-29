@@ -1,5 +1,5 @@
 .ant-collapse {
-  background-color: #fff !important;
+  background-color: var(--white-color) !important;
 
   .ant-collapse-header {
     position: relative;
@@ -9,7 +9,7 @@
 
   .ant-collapse-item {
     margin-bottom: 8px;
-    background-color: #f6f6f7;
+    background-color: var(--gray-color-200);
     border-radius: 5px !important;
     border-bottom: none !important;
   }
@@ -18,9 +18,9 @@
     width: 22px;
     height: 22px;
     border-radius: 50%;
-    background-color: #979ea0;
+    background-color: var(--gray-color-500);
     font-size: 1.4em !important;
-    color: #fff !important;
+    color: var(--white-color) !important;
     display: flex !important;
     justify-content: center;
     align-items: center;
@@ -30,6 +30,10 @@
   }
 }
 
+.ant-collapse-borderless {
+  background-color: var(--background-color-600) !important;
+}
+
 .ant-modal {
   .ant-modal-content {
     border-radius: 7px !important;
@@ -37,7 +41,7 @@
     .ant-modal-close {
       width: 26px !important;
       height: 26px !important;
-      background-color: $primary-color-500;
+      background-color: var(--primary-color-500);
       font-size: 0.9em !important;
       border-radius: 50%;
       top: -12px !important;
@@ -53,7 +57,7 @@
       height: 100% !important;
       font-size: 0.9rem !important;
       line-height: 26px !important;
-      color: #fff !important;
+      color: var(--white-color) !important;
     }
   }
 }

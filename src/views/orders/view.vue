@@ -1,6 +1,8 @@
 <template>
   <div>
     <top-nav :title="$t('title')">
+      <QrCodeModalButton type="Order" :body="{ id: order.id }" />
+
       <audits-modal :id="order.id" model="orders" />
       <a v-if="storefrontPaymentUrl" :href="`${storefrontPaymentUrl}${order.code}`" target="_blank">
         <icon-button>
@@ -34,11 +36,9 @@
       <card class="order-page__address">
         <CustomerDetails :order="order" />
       </card>
-      <card class="order-page__shipping">
+      <card v-if="order.id && order.shipping_method" class="order-page__shipping">
         <send-package
-          v-if="order.id"
           :order-id="order.id"
-          :shipping-method="order.shipping_method.name"
           :shipping-number="order.shipping_number"
           @created="onPackageCreated"
         />
@@ -80,6 +80,7 @@ import CustomerDetails from '@/components/modules/orders/CustomerDetails.vue'
 import Cart from '@/components/modules/orders/Cart.vue'
 import OrderMetadatas from '@/components/modules/orders/OrderMetadatas.vue'
 import OrderDocuments from '@/components/modules/orders/documents/OrderDocumentsList.vue'
+import QrCodeModalButton from '@/components/modules/qrCode/CodeModalButton.vue'
 
 export default Vue.extend({
   metaInfo(this: any): any {
@@ -97,7 +98,9 @@ export default Vue.extend({
     Cart,
     OrderMetadatas,
     OrderDocuments,
+    QrCodeModalButton,
   },
+
   data: () => ({
     packageTemplateId: '',
     modalFormTitle: '',
@@ -185,6 +188,6 @@ export default Vue.extend({
 .order-title {
   display: block;
   font-size: 1em;
-  color: $gray-color-500;
+  color: var(--gray-color-500);
 }
 </style>

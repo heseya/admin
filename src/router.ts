@@ -6,6 +6,7 @@ import { Permission } from '@/interfaces/Permissions'
 import { PERMISSIONS_TREE as Permissions } from '@/consts/permissions'
 import { accessor } from './store'
 import { hasAccess } from './utils/hasAccess'
+import { FEATURE_FLAGS } from './consts/featureFlags'
 
 Vue.use(VueRouter)
 Vue.use(VueMeta)
@@ -22,6 +23,22 @@ const router = new VueRouter({
       meta: {
         hiddenNav: true,
         redirectIfLoggedIn: true,
+      },
+    },
+    {
+      path: '/oauth-login-return',
+      name: 'OAuthLoginReturn',
+      component: () => import('./views/auth/OAuthLoginReturn.vue'),
+      meta: {
+        hiddenNav: true,
+      },
+    },
+    {
+      path: '/merge-accounts',
+      name: 'MergeAccounts',
+      component: () => import('./views/auth/MergeAccounts.vue'),
+      meta: {
+        hiddenNav: true,
       },
     },
     {
@@ -212,6 +229,15 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/settings/media',
+      name: 'Media',
+      component: () => import('./views/settings/Media.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Media.Show],
+      },
+    },
+    {
       path: '/apps',
       name: 'Apps',
       component: () => import('./views/apps/index.vue'),
@@ -310,6 +336,15 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/settings/payment-methods',
+      name: 'Payment methods',
+      component: () => import('./views/settings/PaymentMethods.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.PaymentMethods.Show],
+      },
+    },
+    {
       path: '/settings/tags',
       name: 'Tags',
       component: () => import('./views/settings/Tags.vue'),
@@ -328,6 +363,15 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/settings/providers',
+      name: 'Providers',
+      component: () => import('./views/settings/Providers.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Auth.ProvidersManage],
+      },
+    },
+    {
       path: '/settings/advanced',
       name: 'PageSettings',
       component: () => import('./views/settings/Settings.vue'),
@@ -338,11 +382,21 @@ const router = new VueRouter({
     },
     {
       path: '/settings/users',
-      name: 'Users',
-      component: () => import('./views/settings/Users.vue'),
+      name: 'UsersList',
+      component: () => import('./views/users/index.vue'),
       meta: {
         requiresAuth: true,
         permissions: [Permissions.Users.Show],
+      },
+    },
+    {
+      path: '/settings/users/:id',
+      name: 'UserDetails',
+      component: () => import('./views/users/view.vue'),
+      meta: {
+        returnUrl: '/settings/users',
+        requiresAuth: true,
+        permissions: [Permissions.Users.ShowDetails],
       },
     },
     {
@@ -370,6 +424,27 @@ const router = new VueRouter({
         returnUrl: '/settings/roles',
         requiresAuth: true,
         permissions: [Permissions.Roles.ShowDetails],
+      },
+    },
+    {
+      path: '/b2b/companies',
+      name: 'CompaniesList',
+      component: () => import('./views/b2b/index.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Roles.Show],
+        disabled: () => accessor.config.env[FEATURE_FLAGS.B2B] !== '1',
+      },
+    },
+    {
+      path: '/b2b/companies/:id',
+      name: 'CompanyView',
+      component: () => import('./views/b2b/view.vue'),
+      meta: {
+        returnUrl: '/b2b/companies',
+        requiresAuth: true,
+        permissions: [Permissions.Roles.ShowDetails],
+        disabled: () => accessor.config.env[FEATURE_FLAGS.B2B] !== '1',
       },
     },
     {
@@ -470,6 +545,10 @@ router.beforeEach((to, from, next) => {
     accessor.auth.setPermissionsError(new Error('Not authorized'))
     if (!from.name) next('/403')
     return
+  }
+
+  if (typeof to.meta?.disabled === 'function' ? to.meta?.disabled?.() : to.meta?.disabled) {
+    return next('/404')
   }
 
   next()

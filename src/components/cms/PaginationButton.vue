@@ -31,18 +31,19 @@ export default Vue.extend({
   cursor: pointer;
   border-radius: 4px;
   padding: 8px;
-  background-color: $background-color-700;
-  color: $font-color;
+  background-color: var(--background-color-700);
+  color: var(--font-color);
   transition: 0.3s;
   margin-right: 4px;
 
   &:hover {
-    background-color: darken($background-color-700, 2);
+    // TODO: darken
+    background-color: var(--background-color-700);
   }
 
   &--active {
-    background-color: $font-color !important;
-    color: $background-color-700 !important;
+    background-color: var(--font-color) !important;
+    color: var(--background-color-700) !important;
     cursor: default;
   }
 }

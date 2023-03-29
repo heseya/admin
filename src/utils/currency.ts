@@ -1,4 +1,4 @@
-const formattersMap = new Map()
+const formattersMap = new Map<string, Intl.NumberFormat>()
 
 export const formatCurrency = (value: number, currency: string) => {
   const formatter =

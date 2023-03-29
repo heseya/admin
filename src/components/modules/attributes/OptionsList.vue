@@ -151,7 +151,6 @@ export default Vue.extend({
   methods: {
     async fetchOptions(page: number) {
       this.$accessor.startLoading()
-      // @ts-ignore // TODO: fix extended store actions typings
       await this.$accessor.attributes.getOptions({
         attributeId: this.attributeId,
         params: {
@@ -165,7 +164,6 @@ export default Vue.extend({
     async removeOption(option: AttributeOption) {
       this.$accessor.startLoading()
       try {
-        // @ts-ignore // TODO: fix extended store actions typings
         await this.$accessor.attributes.deleteOption({
           attributeId: this.attributeId,
           optionId: option.id,
@@ -208,7 +206,7 @@ export default Vue.extend({
     border-radius: 4px;
 
     &:hover {
-      background: $background-color-500;
+      background: var(--background-color-500);
     }
 
     > *:not(:last-child) {

@@ -6,7 +6,7 @@
 {
   "pl": {
     "income": "Przychód",
-    "orders": "Ilość transakcjji"
+    "orders": "Ilość transakcji"
   },
   "en": {
     "income": "Income",

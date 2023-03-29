@@ -8,18 +8,37 @@
       <span class="order-title">{{ $t('header.quantity') }}</span>
       <span class="order-title">{{ $t('header.total') }}</span>
     </div>
-    <CartItem v-for="item in order.products" :key="item.id" :item="item" />
+    <CartItem
+      v-for="item in order.products"
+      :key="item.id"
+      :item="item"
+      @show-urls="openProductUrls(item)"
+    />
     <hr />
     <div class="order-cart__summary">
       <field :label="$t('summary.cart')" horizontal>
         {{ formatCurrency(order.cart_total_initial) }}
       </field>
       <field :label="$t('summary.shipping')" horizontal>
-        {{ formatCurrency(order.shipping_price_initial) }}
+        <div class="discount-summary">
+          <span class="discount-summary__total">
+            {{ formatCurrency(order.shipping_price) }}
+          </span>
+          <info-tooltip v-if="order.shipping_price !== order.shipping_price_initial">
+            <b>
+              {{ $t('summary.baseShipping') }}:
+              {{ formatCurrency(order.shipping_price_initial) }}
+            </b>
+            <OrderDiscountSummary
+              :discounts="order.discounts"
+              :types="[DiscountTargetType.ShippingPrice]"
+            />
+          </info-tooltip>
+        </div>
       </field>
       <field
-        v-if="order.discounts && order.discounts.length"
-        :label="$t('summary.coupons')"
+        v-if="order.discounts && totalDiscount > 0"
+        :label="$t('summary.discounts')"
         horizontal
       >
         <div class="discount-summary">
@@ -27,7 +46,14 @@
             {{ formatCurrency(-totalDiscount) }}
           </span>
           <info-tooltip>
-            <OrderDiscountSummary :discounts="order.discounts" />
+            <OrderDiscountSummary
+              :discounts="order.discounts"
+              :types="[
+                DiscountTargetType.CheapestProduct,
+                DiscountTargetType.OrderValue,
+                DiscountTargetType.Products,
+              ]"
+            />
           </info-tooltip>
         </div>
       </field>
@@ -40,6 +66,15 @@
         :false-text="$t('orderNotPaid')"
       />
     </div>
+
+    <a-modal
+      :visible="isProductUrlsModalActive"
+      width="800px"
+      :footer="null"
+      @cancel="isProductUrlsModalActive = false"
+    >
+      <order-product-urls v-if="selectedProduct" :product="selectedProduct" :order-id="order.id" />
+    </a-modal>
   </div>
 </template>
 
@@ -57,8 +92,9 @@
     "orderNotPaid": "Not paid",
     "summary": {
       "cart": "Cart total",
+      "baseShipping": "Base shipping price",
       "shipping": "Shipping price",
-      "coupons": "Coupons",
+      "discounts": "Discounts",
       "total": "Total"
     }
   },
@@ -74,8 +110,9 @@
     "orderNotPaid": "Nie opłacono",
     "summary": {
       "cart": "Wartość koszyka",
+      "baseShipping": "Bazowa cena dostawy",
       "shipping": "Koszt przesyłki",
-      "coupons": "Rabaty",
+      "discounts": "Rabaty",
       "total": "Do zapłaty"
     }
   }
@@ -84,32 +121,53 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Order } from '@heseya/store-core'
+import { Order, OrderProduct, DiscountTargetType } from '@heseya/store-core'
 
 import CartItem from '@/components/layout/CartItem.vue'
 import Field from '../../Field.vue'
 import OrderDiscountSummary from './OrderDiscountSummary.vue'
+import OrderProductUrls from './OrderProductUrls.vue'
 
 import { formatCurrency } from '@/utils/currency'
 
 export default Vue.extend({
-  components: { CartItem, Field, OrderDiscountSummary },
+  components: { CartItem, Field, OrderDiscountSummary, OrderProductUrls },
   props: {
     order: {
       type: Object,
       required: true,
     } as Vue.PropOptions<Order>,
   },
+  data: () => ({
+    isProductUrlsModalActive: false,
+    selectedProductId: null as string | null,
+  }),
   computed: {
+    DiscountTargetType(): typeof DiscountTargetType {
+      return DiscountTargetType
+    },
+
     totalDiscount(): number {
-      return this.order.discounts
-        .map((d) => d.applied_discount)
-        .reduce((sum, discount) => sum + discount, 0)
+      return (
+        this.order.discounts
+          // Ignore shipping price discounts, they are already included in shipping price
+          ?.filter((d) => d.target_type !== DiscountTargetType.ShippingPrice)
+          .map((d) => d.applied_discount)
+          .reduce((sum, discount) => sum + discount, 0) || 0
+      )
+    },
+
+    selectedProduct(): OrderProduct | null {
+      return this.order.products?.find((p) => p.id === this.selectedProductId) || null
     },
   },
   methods: {
     formatCurrency(amount: number) {
       return formatCurrency(amount, this.$accessor.config.currency)
+    },
+    openProductUrls(item: OrderProduct) {
+      this.isProductUrlsModalActive = true
+      this.selectedProductId = item.id
     },
   },
 })
@@ -122,7 +180,7 @@ export default Vue.extend({
     flex-direction: column;
     align-items: flex-end;
 
-    :deep(.order-field) {
+    :deep(.field) {
       font-size: 1em;
     }
   }
@@ -131,7 +189,7 @@ export default Vue.extend({
     margin-top: 16px;
   }
 
-  &__summary-total :deep(.order-field__value) {
+  &__summary-total :deep(.field__value) {
     font-size: 1.4em;
     font-weight: 600;
   }
@@ -184,7 +242,7 @@ export default Vue.extend({
   }
 
   .bx {
-    color: $primary-color-500;
+    color: var(--primary-color-500);
     font-size: 0.8em;
   }
 }

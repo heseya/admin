@@ -109,6 +109,8 @@ import { sdk } from '@/api'
 import { formatCurrency } from '@/utils/currency'
 import { formatApiNotificationError } from '@/utils/errors'
 
+import { FEATURE_FLAGS } from '@/consts/featureFlags'
+
 export default Vue.extend({
   components: { Draggable, Selector, Empty, Avatar, ProductPrice },
   props: {
@@ -127,7 +129,7 @@ export default Vue.extend({
   }),
   computed: {
     objectFit(): string {
-      return +this.$accessor.config.env.dashboard_products_contain ? 'contain' : 'cover'
+      return +this.$accessor.config.env[FEATURE_FLAGS.ProductContain] ? 'contain' : 'cover'
     },
   },
   watch: {
@@ -250,14 +252,13 @@ export default Vue.extend({
 
   @media (pointer: fine) {
     &:hover {
-      background-color: #f5f5f5;
+      background-color: var(--background-color-500);
     }
   }
 
   &.undragabble {
     cursor: not-allowed;
   }
-
   &__main {
     margin-left: 8px;
   }

@@ -3,7 +3,7 @@
     <top-nav>
       <template #title>
         <template v-if="!isNew">
-          <span class="gray-text">{{ $t('title') }}</span> {{ product.name }}
+          <span class="gray-text">{{ $t('title') }}&nbsp;</span>{{ product.name }}
         </template>
         <template v-else>
           {{ $t('titleNew') }}
@@ -79,7 +79,7 @@
               ref="privateMeta"
               :value="product.metadata_private"
               :disabled="!canModify"
-              is-private
+              type="private"
               model="products"
             />
           </template>
@@ -120,7 +120,7 @@
 <i18n lang="json">
 {
   "pl": {
-    "title": "Konfiguracja produktu:",
+    "title": "Konfiguracja produktu",
     "titleNew": "Nowy produkt",
     "baseFormTitle": "Informacje podstawowe",
     "galleryTitle": "Zdjęcia i wideo produktu",
@@ -133,7 +133,7 @@
     "saveAndNext": "Zapisz i dodaj następny"
   },
   "en": {
-    "title": "Product configuration:",
+    "title": "Product configuration",
     "titleNew": "New product",
     "baseFormTitle": "Basic information",
     "galleryTitle": "Product gallery",
@@ -187,6 +187,8 @@ const EMPTY_FORM: ProductComponentForm = {
   description_short: '',
   vat_rate: 0,
   google_product_category: null,
+  shipping_digital: '0',
+  purchase_limit_per_user: 0,
   public: true,
   sets: [],
   quantity_step: 1,
@@ -251,6 +253,8 @@ export default mixins(preventLeavingPage).extend({
         this.form = {
           ...product,
           sets: product.sets?.map(({ id }) => id) || [],
+          shipping_digital: (+product.shipping_digital).toString() as '0' | '1',
+          purchase_limit_per_user: product.purchase_limit_per_user || 0,
           seo: product.seo || {},
         }
       }
@@ -302,6 +306,8 @@ export default mixins(preventLeavingPage).extend({
         media: this.form.gallery.map(({ id }) => id),
         tags: this.form.tags.map(({ id }) => id),
         schemas: this.form.schemas.map(({ id }) => id),
+        shipping_digital: Boolean(+this.form.shipping_digital),
+        purchase_limit_per_user: this.form.purchase_limit_per_user || null,
         attributes: attributes.reduce(
           (acc, { id, selected_options: option }) => ({
             ...acc,

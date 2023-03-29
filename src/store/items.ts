@@ -23,7 +23,7 @@ export const items = createVuexCRUD<
     },
   },
   mutations: {
-    PRODUCTS_SET_DEPOSITS_ERROR(state, error) {
+    PRODUCTS_SET_DEPOSITS_ERROR(state, error: Error | null) {
       state.depositError = error
     },
   },

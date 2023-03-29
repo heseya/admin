@@ -14,16 +14,16 @@
     <a-collapse-panel>
       <template #header>
         <span class="metadata-form-accordion__title">
-          {{ isPrivate ? $t('privateTitle') : $t('title') }}
+          {{ $t(`${type}.title`) }}
           <info-tooltip>
-            {{ isPrivate ? $t('privateTitleTooltip') : $t('titleTooltip') }}
+            {{ $t(`${type}.tooltip`) }}
           </info-tooltip>
         </span>
       </template>
       <MetadataForm
         ref="form"
         :original-metadata="value"
-        :is-private="isPrivate"
+        :type="type"
         :disabled="disabled"
         :model="model"
       />
@@ -34,16 +34,32 @@
 <i18n lang="json">
 {
   "pl": {
-    "title": "Metadane",
-    "titleTooltip": "Metadane pozwalają na rozszerzenie informacji o obiekcie. Mogą być używane przez integracje do innych systemów. Są publiczne, więc każdy kto ma dostęp do zasobu może je odczytać.",
-    "privateTitle": "Prywatne metadane",
-    "privateTitleTooltip": "Mechanizm analogiczny do metadanych, ale dostępne tylko dla użytkowników posiadających dodatkowe dedykowane uprawnienie. Tych informacji nie powinien widzieć zwykły użytkownik sklepu."
+    "default": {
+      "title": "Metadane",
+      "tooltip": "Metadane pozwalają na rozszerzenie informacji o obiekcie. Mogą być używane przez integracje do innych systemów. Są publiczne, więc każdy kto ma dostęp do zasobu może je odczytać."
+    },
+    "private": {
+      "title": "Prywatne metadane",
+      "tooltip": "Mechanizm analogiczny do metadanych, ale dostępne tylko dla użytkowników posiadających dodatkowe dedykowane uprawnienie. Tych informacji nie powinien widzieć zwykły użytkownik sklepu."
+    },
+    "personal": {
+      "title": "Metadane osobiste",
+      "tooltip": "Mechanizm analogiczny do metadanych, ale dostępne tylko dla użytkownika, który je utworzył. Tych informacji nie powinien widzieć inny użytkownik sklepu poza administracją."
+    }
   },
   "en": {
-    "title": "Metadata",
-    "titleTooltip": "Metadata allow to extend information about object. They can be used by integrations with other systems. They are public, so anyone who has access to the resource can read them.",
-    "privateTitle": "Private metadata",
-    "privateTitleTooltip": "Similar to metadata, but available only for users with additional dedicated permission. These information should not be seen by regular users of the store."
+    "default": {
+      "title": "Metadata",
+      "tooltip": "Metadata allows you to extend the information about the object. They can be used by integrations to other systems. They are public, so anyone who has access to the resource can read them."
+    },
+    "private": {
+      "title": "Private metadata",
+      "tooltip": "A mechanism similar to metadata, but available only to users with additional dedicated permission. These information should not be seen by a regular store user."
+    },
+    "personal": {
+      "title": "Personal metadata",
+      "tooltip": "A mechanism similar to metadata, but available only to the user who created them. These information should not be seen by other store users except for administration."
+    }
   }
 }
 </i18n>
@@ -70,11 +86,13 @@ export default Vue.extend({
     } as Vue.PropOptions<MetadataUpdateDto>,
     disabled: { type: Boolean, default: false },
     white: { type: Boolean, default: false },
-    isPrivate: { type: Boolean, default: false },
+    type: { type: String, default: 'default' } as Vue.PropOptions<
+      'default' | 'private' | 'personal'
+    >,
     model: {
       type: String,
       required: true,
-    } as Vue.PropOptions<GeneratedStoreModulesKeys>,
+    } as Vue.PropOptions<GeneratedStoreModulesKeys | 'auth'>,
   },
   methods: {
     saveMetadata(id: string) {
@@ -92,7 +110,7 @@ export default Vue.extend({
   }
 
   &--white .ant-collapse-item {
-    background-color: #fff;
+    background-color: var(--white-color);
   }
 }
 </style>

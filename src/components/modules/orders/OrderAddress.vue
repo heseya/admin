@@ -1,6 +1,13 @@
 <template>
   <div class="address">
-    <template v-if="address">
+    <template
+      v-if="
+        address &&
+        (orderShippingType === ShippingType.Address ||
+          orderShippingType === ShippingType.Point ||
+          billing)
+      "
+    >
       <span class="address__name">{{ address.name }}</span>
       <span class="address__field">{{ address.address }}</span>
       <span class="address__field"> {{ address.zip }} {{ address.city }} </span>
@@ -15,7 +22,19 @@
         <span class="address__subtitle">{{ $t('phone') }}:</span>
         <span class="address__field">{{ address.phone }}</span>
       </template>
+
+      <tag v-if="billing" :type="order.invoice_requested ? 'success' : 'gray'" small>
+        <i v-if="order.invoice_requested" class="bx bx-check"></i>
+        <i v-else class="bx bx-x"></i>
+        {{ order.invoice_requested ? $t('invoiceRequested') : $t('noInvoice') }}
+      </tag>
     </template>
+
+    <template v-else-if="orderShippingType === ShippingType.PointExternal">
+      <span class="address__subtitle">{{ $t('externalPoint') }}:</span>
+      <span class="address__name">{{ order.shipping_place }}</span>
+    </template>
+
     <template v-else>
       <small class="address__error">{{ $t('common.none') }}</small>
     </template>
@@ -26,26 +45,47 @@
 {
   "pl": {
     "phone": "Telefon",
-    "vat": "NIP"
+    "vat": "NIP",
+    "externalPoint": "Zewnętrzny punkt dostawy",
+    "invoiceRequested": "Faktura",
+    "noInvoice": "Brak faktury"
   },
   "en": {
     "phone": "Phone",
-    "vat": "VAT ID"
+    "vat": "VAT ID",
+    "externalPoint": "External Point",
+    "invoiceRequested": "Invoice",
+    "noInvoice": "No invoice"
   }
 }
 </i18n>
 
 <script lang="ts">
 import Vue from 'vue'
-import { Address } from '@heseya/store-core'
+import { Address, Order, ShippingType } from '@heseya/store-core'
 
 export default Vue.extend({
   name: 'OrderAddress',
   props: {
-    address: {
+    order: {
       type: Object,
-      default: () => null,
-    } as Vue.PropOptions<Address>,
+      required: true,
+    } as Vue.PropOptions<Order>,
+    billing: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  computed: {
+    address(): Address | undefined {
+      return this.billing ? this.order.billing_address : (this.order.shipping_place as Address)
+    },
+    orderShippingType(): ShippingType {
+      return this.order.shipping_method?.shipping_type || ShippingType.Address
+    },
+    ShippingType(): typeof ShippingType {
+      return ShippingType
+    },
   },
 })
 </script>
@@ -56,6 +96,7 @@ export default Vue.extend({
   display: flex;
   flex-direction: column;
   position: relative;
+  align-items: flex-start;
 
   &__field {
     display: block;
@@ -63,10 +104,9 @@ export default Vue.extend({
 
   &__subtitle {
     font-size: 0.8em;
-    color: $gray-color-500;
+    color: var(--gray-color-500);
     margin-top: 4px;
     margin-bottom: -4px;
-    height: 30px;
     display: flex;
     align-items: center;
   }

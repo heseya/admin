@@ -10,6 +10,7 @@
           </h2>
           <SettingsItem
             v-for="item in group"
+            v-show="!isLinkHidden(item)"
             :key="item.id"
             :v-can="item.can"
             :name="$t(item.label)"
@@ -107,6 +108,7 @@
     "items": {
       "users": "Users list",
       "roles": "User roles",
+      "payment_methods": "Payment methods",
       "consents": "Marketing consents",
       "seo": "SEO settings",
       "advanced": "Advanced settings",
@@ -134,6 +136,7 @@
       "users": "Lista użytkowników",
       "roles": "Role użytkowników",
       "consents": "Zgody marketingowe",
+      "payment_methods": "Metody płatności",
       "seo": "Ustawienia SEO",
       "advanced": "Ustawienia zaawansowane",
       "lang_preferences": "Preferencje językowe",
@@ -209,6 +212,9 @@ export default Vue.extend({
     async logout() {
       await this.$accessor.auth.logout()
       this.$router.push('/login')
+    },
+    isLinkHidden(link: MenuLink): boolean {
+      return typeof link.hidden === 'function' ? link.hidden() : !!link.hidden
     },
     groupPermissions(items: MenuLink[]) {
       return items.map((item) => item.can)

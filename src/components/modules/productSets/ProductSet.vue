@@ -145,6 +145,14 @@
       "delete": "Delete collection",
       "showProducts": "Show products in collection"
     },
+    "search": {
+      "placeholder": "Search (min. 3 letters)",
+      "found": "Found {positions} positions with phrase '{phrase}'",
+      "didNotFound": "Did not found positions for '{phrase}'",
+      "error": "An error occurred while downloading a data",
+      "display": "Positions displayed: {positions}",
+      "specify": "For more accurate results, please refine your query"
+    },
     "collection": "Collection",
     "deleteText": "Are you sure you want to delete this collection? All subcollections will be deleted as well!",
     "deleteSuccess": "Collection has been deleted",
@@ -211,6 +219,11 @@ export default Vue.extend({
     totalSearchedResults: null as null | number,
   }),
   computed: {
+    isSearchError(): boolean {
+      if (Number.isInteger(this.totalSearchedResults))
+        return !this.totalSearchedResults || this.searchingError
+      return false
+    },
     areMoreChildren(): boolean {
       return this.children.length < this.childrenQuantity
     },
@@ -257,7 +270,7 @@ export default Vue.extend({
     },
     async onDrop() {
       this.$accessor.startLoading()
-      // @ts-ignore // TODO: fix extended store actions typings
+
       await this.$accessor.productSets.reorderChildren({
         parentId: this.set.id,
         ids: this.children.map((i) => i.id),
@@ -296,6 +309,27 @@ export default Vue.extend({
       })
       return list
     },
+    async fetchBySearch(parentId: UUID, search: string) {
+      this.isSearching = true
+      try {
+        this.searchedPhrase = this.searchPhrase
+        const { data, pagination } = await sdk.ProductSets.get({
+          parent_id: parentId,
+          search,
+        })
+
+        this.searchedChildren = data
+        this.totalSearchedResults = pagination.total
+        this.searchedDisplayLimit = pagination.perPage
+      } catch (e: any) {
+        this.searchedPhrase = ''
+        this.searchingError = true
+        this.isSearching = false
+        this.totalSearchedResults = null
+        this.$toast.error(formatApiNotificationError(e))
+      }
+      this.isSearching = false
+    },
     async deleteCollection() {
       this.$accessor.startLoading()
       try {
@@ -325,11 +359,11 @@ export default Vue.extend({
   display: flex !important;
   padding: 6px 8px;
   padding-right: 0;
-  border-bottom: solid 1px $background-color-700;
+  border-bottom: solid 1px var(--background-color-700);
   transition: 0.3s;
 
   &--searched {
-    background-color: $green-color-200;
+    background-color: var(--green-color-200);
   }
 
   &__reorder {
@@ -346,7 +380,7 @@ export default Vue.extend({
 
   &.sortable-chosen,
   &:hover {
-    background-color: $background-color-500;
+    background-color: var(--background-color-500);
   }
 
   &__hidden-icon {
@@ -362,7 +396,7 @@ export default Vue.extend({
   }
 
   &__line {
-    background-color: #f7eff0;
+    background-color: var(--primary-color-100);
     border-radius: 20px;
     width: 4px;
     height: calc(100% - 30px);
@@ -385,7 +419,7 @@ export default Vue.extend({
 
     small {
       font-weight: 400;
-      color: $gray-color-500;
+      color: var(--gray-color-500);
       margin-left: 5px;
     }
   }
@@ -403,7 +437,7 @@ export default Vue.extend({
   &__public {
     border-radius: 25px;
     padding: 0.2em 1em;
-    color: $gray-color-500;
+    color: var(--gray-color-500);
     display: flex;
     font-size: 11px;
     align-items: center;
@@ -411,8 +445,8 @@ export default Vue.extend({
     margin: auto 0;
 
     &--visible {
-      background: #e6fbe6 0% 0% no-repeat padding-box;
-      color: #10d310;
+      background: var(--green-color-100) 0% 0% no-repeat padding-box;
+      color: var(--green-color-500);
     }
   }
 
@@ -446,6 +480,40 @@ export default Vue.extend({
 
   .handle {
     cursor: grab;
+  }
+}
+
+.search-results {
+  min-height: 53px;
+  position: relative;
+  padding: 16px;
+  text-align: center;
+  margin-bottom: 8px;
+
+  &--success {
+    background-color: $green-color-200;
+  }
+
+  &--error {
+    background-color: $red-color-400;
+    color: white;
+  }
+
+  &__description {
+    font-size: 13px;
+    text-align: left;
+  }
+
+  &__info {
+    display: block;
+
+    &--last {
+      margin-top: 8px;
+    }
+  }
+
+  p {
+    margin: 0;
   }
 }
 </style>

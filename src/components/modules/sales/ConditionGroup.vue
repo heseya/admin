@@ -7,7 +7,12 @@
         </template>
         {{ $t('addCondition') }}
       </icon-button>
-      <icon-button :disabled="disabled" type="danger" size="small" @click="removeSelf()">
+      <icon-button
+        :disabled="disabled || !deletable"
+        type="danger"
+        size="small"
+        @click="removeSelf()"
+      >
         <template #icon>
           <i class="bx bx-trash"></i>
         </template>
@@ -23,7 +28,7 @@
         :key="i"
         v-model="group.conditions[i]"
         :number="i + 1"
-        :disabled="disabled"
+        :disabled="disabled || condition.forced"
         @remove="removeCondition(i)"
       />
     </div>
@@ -56,28 +61,30 @@
 import Vue from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import { ValidationProvider } from 'vee-validate'
-import { DiscountConditionGroupDto, DiscountConditionType } from '@heseya/store-core'
+import { DiscountConditionType } from '@heseya/store-core'
 
 import Empty from '@/components/layout/Empty.vue'
 import ConditionForm from './ConditionForm.vue'
 
 import { EMPTY_ORDER_VALUE_FORM } from '@/consts/salesConditionsForms'
+import { InnerConditionGroup } from '@/interfaces/SalesAndCoupons'
 
 export default Vue.extend({
   components: { Empty, ConditionForm, ValidationProvider },
   props: {
-    value: { type: Object, required: true } as Vue.PropOptions<DiscountConditionGroupDto>,
+    value: { type: Object, required: true } as Vue.PropOptions<InnerConditionGroup>,
     disabled: { type: Boolean, default: false },
+    deletable: { type: Boolean, default: true },
   },
   computed: {
     DiscountConditionType(): typeof DiscountConditionType {
       return DiscountConditionType
     },
     group: {
-      get(): DiscountConditionGroupDto {
+      get(): InnerConditionGroup {
         return this.value
       },
-      set(v: DiscountConditionGroupDto) {
+      set(v: InnerConditionGroup) {
         this.$emit('input', v)
       },
     },

@@ -23,7 +23,7 @@
     <div class="sale-view__form">
       <validation-observer v-slot="{ handleSubmit }">
         <card>
-          <SaleForm v-model="form" :disabled="!canModify" />
+          <SaleForm v-model="form" :disabled="!canModify" :forced-condition="forcedCondition" />
           <hr />
 
           <template v-if="!isNew">
@@ -85,7 +85,7 @@ import Vue from 'vue'
 import { cloneDeep } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
 import {
-  DiscountConditionGroup,
+  DiscountCondition,
   DiscountConditionType,
   DiscountTargetType,
   DiscountType,
@@ -105,17 +105,11 @@ import { SaleFormDto } from '@/interfaces/SalesAndCoupons'
 import { formatApiNotificationError } from '@/utils/errors'
 import { mapSaleFormToSaleDto } from '@/utils/sales'
 
-const createB2BConditionGroup = (company: Role): DiscountConditionGroup & { forced: true } => ({
+const createB2BCondition = (company: Role): DiscountCondition => ({
   id: '',
-  conditions: [
-    {
-      id: '',
-      type: DiscountConditionType.UserInRole,
-      roles: [company],
-      is_allow_list: true,
-    },
-  ],
-  forced: true,
+  type: DiscountConditionType.UserInRole,
+  roles: [company],
+  is_allow_list: true,
 })
 
 const EMPTY_SALE_FORM: SaleFormDto = {
@@ -137,6 +131,7 @@ export default Vue.extend({
   components: { ValidationObserver, TopNav, Card, PopConfirm, SaleForm, MetadataForm },
   data: () => ({
     form: cloneDeep(EMPTY_SALE_FORM) as SaleFormDto,
+    b2bCompany: null as Role | null,
   }),
   computed: {
     id(): UUID {
@@ -152,45 +147,20 @@ export default Vue.extend({
       return this.$accessor.sales.getError
     },
     isLoading(): boolean {
-      return this.$accessor.sales.isLoading
+      return this.$accessor.sales.isLoading || this.$accessor.b2bCompanies.isLoading
     },
     canModify(): boolean {
       return this.$can(this.isNew ? this.$p.Sales.Add : this.$p.Sales.Edit)
     },
+
+    forcedCondition(): DiscountCondition | null {
+      if (!this.b2bCompany) return null
+      return createB2BCondition(this.b2bCompany)
+    },
   },
   watch: {
     sale(sale: Sale) {
-      if (!this.isNew) {
-        this.form = cloneDeep({ ...EMPTY_SALE_FORM, ...sale })
-
-        // Lock B2B condition group
-        if (sale.metadata.b2b_company) {
-          const b2bConditionIndex = sale.condition_groups.findIndex(
-            ({ conditions }) =>
-              conditions.length === 1 &&
-              conditions[0].type === DiscountConditionType.UserInRole &&
-              conditions[0].roles.length === 1 &&
-              conditions[0].roles[0].id === sale.metadata.b2b_company,
-          )
-          if (b2bConditionIndex < 0) {
-            this.appendB2BConditionGroup(sale.metadata.b2b_company as string)
-            return
-          }
-          const b2bCondition = cloneDeep({
-            ...sale.condition_groups[b2bConditionIndex],
-            forced: true,
-          })
-          const b2bSale = {
-            ...sale,
-            condition_groups: [
-              ...sale.condition_groups.slice(0, b2bConditionIndex),
-              b2bCondition,
-              ...sale.condition_groups.slice(b2bConditionIndex + 1),
-            ],
-          }
-          this.form = cloneDeep({ ...EMPTY_SALE_FORM, ...b2bSale })
-        }
-      }
+      if (!this.isNew) this.form = cloneDeep({ ...EMPTY_SALE_FORM, ...sale })
     },
     error(error) {
       if (error) {
@@ -205,17 +175,18 @@ export default Vue.extend({
       this.$accessor.stopLoading()
     }
 
-    // Append B2B condition group
-    if (this.isNew && this.$route.query.company) {
-      await this.appendB2BConditionGroup(this.$route.query.company as string)
+    // Ensure B2B condition group will be enforced
+    if (this.$route.query.company || (!this.isNew && this.sale?.metadata?.b2b_company)) {
+      await this.fetchB2BCompany(
+        (this.$route.query.company as string) || (this.sale?.metadata?.b2b_company as string),
+      )
     }
   },
 
   methods: {
-    async appendB2BConditionGroup(companyId: UUID) {
+    async fetchB2BCompany(companyId: UUID) {
       const company = await this.$accessor.b2bCompanies.get(companyId)
-      if (company && company.metadata.b2b_company)
-        this.form.condition_groups.push(createB2BConditionGroup(company))
+      if (company) this.b2bCompany = company
     },
 
     async save() {
@@ -268,10 +239,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-// .sale-view {
-//   &__form {
-//   }
-// }
 .sale-status {
   display: flex;
   align-items: center;

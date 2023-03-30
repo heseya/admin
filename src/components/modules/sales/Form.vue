@@ -172,7 +172,11 @@
 
     <hr />
 
-    <ConditionsConfigurator v-model="form.condition_groups" :disabled="disabled" />
+    <ConditionsConfigurator
+      v-model="form.condition_groups"
+      :disabled="disabled"
+      :forced-condition="forcedCondition"
+    />
   </div>
 </template>
 
@@ -242,7 +246,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationProvider } from 'vee-validate'
-import { DiscountTargetType, DiscountType, SaleCreateDto } from '@heseya/store-core'
+import {
+  DiscountCondition,
+  DiscountTargetType,
+  DiscountType,
+  SaleCreateDto,
+} from '@heseya/store-core'
 
 import FlexInput from '@/components/layout/FlexInput.vue'
 import AutocompleteInput from '../../AutocompleteInput.vue'
@@ -253,6 +262,7 @@ export default Vue.extend({
   props: {
     value: { type: Object, required: true } as Vue.PropOptions<SaleCreateDto>,
     disabled: { type: Boolean, default: false },
+    forcedCondition: { type: Object, default: null } as Vue.PropOptions<DiscountCondition | null>,
   },
   computed: {
     DiscountType(): typeof DiscountType {

@@ -6,6 +6,7 @@
   "author": "Heseya",
   "scripts": {
     "serve": "vue-cli-service serve",
+    "dev": "yarn serve",
     "build": "vue-cli-service build",
     "test:unit": "jest ./src",
     "test:e2e": "VUE_APP_I18N_LOCALE=en vue-cli-service test:e2e",

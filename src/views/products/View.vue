@@ -43,13 +43,12 @@
 
           <hr />
 
-          <product-description
-            v-model="form"
-            :product="product"
+          <ProductDescription
+            v-model="form.description_html"
             :disabled="!canModify"
             :loading="isLoading"
           />
-          <product-advanced-details v-model="form" :product="product" :disabled="!canModify" />
+          <ProductAdvancedDetails v-model="form" :product="product" :disabled="!canModify" />
 
           <hr />
 
@@ -199,6 +198,8 @@ const EMPTY_FORM: ProductComponentForm = {
   seo: {},
   attributes: [],
   items: [],
+  descriptions: [],
+  attachments: [],
 }
 
 export default mixins(preventLeavingPage).extend({
@@ -315,6 +316,7 @@ export default mixins(preventLeavingPage).extend({
           }),
           {},
         ),
+        descriptions: this.form.descriptions.map(({ id }) => id),
       }
 
       const successMessage = this.isNew

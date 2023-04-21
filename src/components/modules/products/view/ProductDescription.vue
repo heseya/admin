@@ -11,7 +11,7 @@
         <span class="seo-form-accordion__title">{{ $t('title') }}</span>
       </template>
 
-      <rich-editor v-if="!loading" v-model="form.description_html" :disabled="disabled" />
+      <rich-editor v-if="!loading" v-model="form" :disabled="disabled" />
     </a-collapse-panel>
   </a-collapse>
 </template>
@@ -29,9 +29,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Product } from '@heseya/store-core'
-
-import { ProductComponentForm } from '@/interfaces/Product'
 
 import RichEditor from '@/components/form/RichEditor.vue'
 
@@ -39,22 +36,18 @@ export default Vue.extend({
   components: { RichEditor },
   props: {
     value: {
-      type: Object,
-      required: true,
-    } as Vue.PropOptions<ProductComponentForm>,
-    product: {
-      type: Object,
-      default: () => ({} as Product),
-    } as Vue.PropOptions<Product>,
+      type: String,
+      default: '',
+    },
     disabled: { type: Boolean, default: false },
     loading: { type: Boolean, default: false },
   },
   computed: {
     form: {
-      get(): ProductComponentForm {
-        return this.value
+      get(): string {
+        return this.value || ''
       },
-      set(value: ProductComponentForm) {
+      set(value: string) {
         this.$emit('input', value)
       },
     },

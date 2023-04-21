@@ -152,8 +152,8 @@ export default Vue.extend({
   props: {
     value: {
       type: Object,
-      required: true,
-    } as Vue.PropOptions<SeoMeta>,
+      default: () => null,
+    } as Vue.PropOptions<SeoMeta | null>,
     disabled: {
       type: Boolean,
       default: false,
@@ -179,7 +179,7 @@ export default Vue.extend({
   computed: {
     form: {
       get(): SeoMeta {
-        return this.value
+        return this.value || {}
       },
       set(v: SeoMeta) {
         this.$emit('input', v)

@@ -114,7 +114,9 @@ const createB2BCondition = (company: Role): DiscountCondition => ({
 
 const EMPTY_SALE_FORM: SaleFormDto = {
   name: '',
+  slug: '',
   description: '',
+  description_html: '',
   value: 0,
   active: true,
   type: DiscountType.Percentage,
@@ -125,6 +127,7 @@ const EMPTY_SALE_FORM: SaleFormDto = {
   target_sets: [],
   target_shipping_methods: [],
   target_is_allow_list: true,
+  seo: {},
 }
 
 export default Vue.extend({

@@ -43,13 +43,12 @@
 
           <hr />
 
-          <product-description
-            v-model="form"
-            :product="product"
+          <DescriptionAccordion
+            v-model="form.description_html"
             :disabled="!canModify"
             :loading="isLoading"
           />
-          <product-advanced-details v-model="form" :product="product" :disabled="!canModify" />
+          <ProductAdvancedDetails v-model="form" :product="product" :disabled="!canModify" />
 
           <hr />
 
@@ -168,7 +167,7 @@ import WarehouseItemsConfigurator from '@/components/modules/products/WarehouseI
 import ProductBasicDetails from '@/components/modules/products/view/ProductBasicDetails.vue'
 import ProductAdvancedDetails from '@/components/modules/products/view/ProductAdvancedDetails.vue'
 import ProductAsideDetails from '@/components/modules/products/view/ProductAsideDetails.vue'
-import ProductDescription from '@/components/modules/products/view/ProductDescription.vue'
+import DescriptionAccordion from '@/components/DescriptionAccordion.vue'
 
 import preventLeavingPage from '@/mixins/preventLeavingPage'
 
@@ -199,6 +198,8 @@ const EMPTY_FORM: ProductComponentForm = {
   seo: {},
   attributes: [],
   items: [],
+  descriptions: [],
+  attachments: [],
 }
 
 export default mixins(preventLeavingPage).extend({
@@ -221,7 +222,7 @@ export default mixins(preventLeavingPage).extend({
     WarehouseItemsConfigurator,
     ProductBasicDetails,
     ProductAdvancedDetails,
-    ProductDescription,
+    DescriptionAccordion,
     ProductAsideDetails,
   },
   data: () => ({
@@ -315,6 +316,7 @@ export default mixins(preventLeavingPage).extend({
           }),
           {},
         ),
+        descriptions: this.form.descriptions.map(({ id }) => id),
       }
 
       const successMessage = this.isNew

@@ -107,7 +107,9 @@ import { mapCouponFormToCouponDto } from '@/utils/sales'
 const EMPTY_COUPON_FORM: CouponFormDto = {
   code: '',
   name: '',
+  slug: '',
   description: '',
+  description_html: '',
   value: 0,
   active: true,
   type: DiscountType.Percentage,
@@ -118,6 +120,7 @@ const EMPTY_COUPON_FORM: CouponFormDto = {
   target_sets: [],
   target_shipping_methods: [],
   target_is_allow_list: true,
+  seo: {},
 }
 
 export default Vue.extend({

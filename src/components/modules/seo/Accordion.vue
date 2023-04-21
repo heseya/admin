@@ -45,8 +45,8 @@ export default Vue.extend({
   props: {
     value: {
       type: Object,
-      required: true,
-    } as Vue.PropOptions<SeoMetadata>,
+      default: () => ({}),
+    } as Vue.PropOptions<SeoMetadata | null>,
     disabled: {
       type: Boolean,
       default: false,
@@ -63,7 +63,7 @@ export default Vue.extend({
   computed: {
     form: {
       get(): SeoMetadata {
-        return this.value
+        return this.value || {}
       },
       set(v: SeoMetadata) {
         this.$emit('input', v)

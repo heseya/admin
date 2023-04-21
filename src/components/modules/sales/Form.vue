@@ -20,6 +20,14 @@
       />
 
       <validated-input
+        v-model="form.slug"
+        class="sale-slug"
+        rules="required|url"
+        :disabled="disabled"
+        :label="$t('common.form.slug')"
+      />
+
+      <validated-input
         v-model="form.description"
         class="sale-desc"
         :disabled="disabled"
@@ -172,10 +180,23 @@
 
     <hr />
 
+    <DescriptionAccordion v-model="form.description_html" :disabled="disabled" />
+
+    <hr />
+
     <ConditionsConfigurator
       v-model="form.condition_groups"
       :disabled="disabled"
       :forced-condition="forcedCondition"
+    />
+
+    <hr />
+
+    <SeoForm
+      v-model="form.seo"
+      class="product-page__seo-form"
+      :disabled="disabled"
+      :current="form.id ? { id: form.id, model: 'Sale' } : null"
     />
   </div>
 </template>
@@ -254,13 +275,24 @@ import {
 } from '@heseya/store-core'
 
 import FlexInput from '@/components/layout/FlexInput.vue'
-import AutocompleteInput from '../../AutocompleteInput.vue'
+import SeoForm from '@/components/modules/seo/Accordion.vue'
+import DescriptionAccordion from '@/components/DescriptionAccordion.vue'
+import AutocompleteInput from '@/components/AutocompleteInput.vue'
 import ConditionsConfigurator from './ConditionsConfigurator.vue'
 
+type SaleForm = SaleCreateDto & { id?: string }
+
 export default Vue.extend({
-  components: { ValidationProvider, FlexInput, AutocompleteInput, ConditionsConfigurator },
+  components: {
+    ValidationProvider,
+    FlexInput,
+    AutocompleteInput,
+    ConditionsConfigurator,
+    DescriptionAccordion,
+    SeoForm,
+  },
   props: {
-    value: { type: Object, required: true } as Vue.PropOptions<SaleCreateDto>,
+    value: { type: Object, required: true } as Vue.PropOptions<SaleForm>,
     disabled: { type: Boolean, default: false },
     forcedCondition: { type: Object, default: null } as Vue.PropOptions<DiscountCondition | null>,
   },
@@ -272,10 +304,10 @@ export default Vue.extend({
       return DiscountTargetType
     },
     form: {
-      get(): SaleCreateDto {
+      get(): SaleForm {
         return this.value
       },
-      set(v: SaleCreateDto) {
+      set(v: SaleForm) {
         this.$emit('input', v)
       },
     },
@@ -302,6 +334,7 @@ export default Vue.extend({
 
     grid-template-areas:
       'name'
+      'slug'
       'desc'
       'type'
       'value'
@@ -313,6 +346,7 @@ export default Vue.extend({
       grid-template-columns: 2fr 1fr 1fr;
       grid-template-areas:
         'name name name'
+        'slug slug slug'
         'desc desc desc'
         'type value priority'
         'purpose purpose purpose'
@@ -323,7 +357,8 @@ export default Vue.extend({
       grid-template-columns: 35fr 15fr 25fr 25fr;
       gap: 12px;
       grid-template-areas:
-        'name desc desc desc'
+        'name slug slug slug'
+        'desc desc desc desc'
         'type type value priority'
         'purpose purpose switches switches';
     }
@@ -353,6 +388,10 @@ export default Vue.extend({
 
     .sale-desc {
       grid-area: desc;
+    }
+
+    .sale-slug {
+      grid-area: slug;
     }
 
     .sale-type {

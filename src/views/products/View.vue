@@ -43,7 +43,7 @@
 
           <hr />
 
-          <ProductDescription
+          <DescriptionAccordion
             v-model="form.description_html"
             :disabled="!canModify"
             :loading="isLoading"
@@ -167,7 +167,7 @@ import WarehouseItemsConfigurator from '@/components/modules/products/WarehouseI
 import ProductBasicDetails from '@/components/modules/products/view/ProductBasicDetails.vue'
 import ProductAdvancedDetails from '@/components/modules/products/view/ProductAdvancedDetails.vue'
 import ProductAsideDetails from '@/components/modules/products/view/ProductAsideDetails.vue'
-import ProductDescription from '@/components/modules/products/view/ProductDescription.vue'
+import DescriptionAccordion from '@/components/DescriptionAccordion.vue'
 
 import preventLeavingPage from '@/mixins/preventLeavingPage'
 
@@ -222,7 +222,7 @@ export default mixins(preventLeavingPage).extend({
     WarehouseItemsConfigurator,
     ProductBasicDetails,
     ProductAdvancedDetails,
-    ProductDescription,
+    DescriptionAccordion,
     ProductAsideDetails,
   },
   data: () => ({

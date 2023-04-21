@@ -180,7 +180,7 @@
 
     <hr />
 
-    <ProductDescription v-model="form.description_html" :disabled="disabled" />
+    <DescriptionAccordion v-model="form.description_html" :disabled="disabled" />
 
     <hr />
 
@@ -275,10 +275,10 @@ import {
 } from '@heseya/store-core'
 
 import FlexInput from '@/components/layout/FlexInput.vue'
-import AutocompleteInput from '../../AutocompleteInput.vue'
-import ConditionsConfigurator from './ConditionsConfigurator.vue'
-import ProductDescription from '../products/view/ProductDescription.vue'
 import SeoForm from '@/components/modules/seo/Accordion.vue'
+import DescriptionAccordion from '@/components/DescriptionAccordion.vue'
+import AutocompleteInput from '@/components/AutocompleteInput.vue'
+import ConditionsConfigurator from './ConditionsConfigurator.vue'
 
 type SaleForm = SaleCreateDto & { id?: string }
 
@@ -288,7 +288,7 @@ export default Vue.extend({
     FlexInput,
     AutocompleteInput,
     ConditionsConfigurator,
-    ProductDescription,
+    DescriptionAccordion,
     SeoForm,
   },
   props: {

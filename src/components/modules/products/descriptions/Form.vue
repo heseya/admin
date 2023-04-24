@@ -9,10 +9,10 @@
         :label="$t('common.form.name')"
         rules="required"
       />
-
+      <!--
       <br />
       <small class="label">{{ $t('contentLabel') }}</small>
-      <RichEditor v-model="form.content_html" :disabled="disabled" />
+      <RichEditor v-model="form.content_html" :disabled="disabled" /> -->
 
       <app-button class="attachment-form__btn" html-type="submit" type="primary">
         {{ $t('common.save') }}
@@ -41,15 +41,16 @@ import { formatApiNotificationError } from '@/utils/errors'
 import { generateSlug } from '@/utils/generateSlug'
 
 import Loading from '@/components/layout/Loading.vue'
-import RichEditor from '@/components/form/RichEditor.vue'
+
+// TODO: enable rich editor, now its crashing whole page
 
 const EMPTY_FORM = {
   name: '',
-  content_html: '',
+  content_html: '<div></div>',
 }
 
 export default Vue.extend({
-  components: { ValidationObserver, Loading, RichEditor },
+  components: { ValidationObserver, Loading },
   props: {
     pageId: {
       type: String,

@@ -38,6 +38,7 @@
         :footer="null"
       >
         <SimplePageForm
+          :key="selectedPageId"
           :page-id="selectedPageId"
           :slug-prefix="product.id"
           @created="onCreated"
@@ -123,8 +124,10 @@ export default Vue.extend({
       this.selectedPageId = 'new'
     },
     openEditModal(page: PageList) {
-      this.isModalOpen = true
-      this.selectedPageId = page.id
+      //   this.isModalOpen = true
+      //   this.selectedPageId = page.id
+      // TODO: temporary fix, because of bug in rich editor
+      window.open(`/pages/${page.id}`, '_blank')?.focus()
     },
 
     removePage(page: PageList) {

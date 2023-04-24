@@ -25,7 +25,7 @@
           :disabled="disabled"
           :delete-text="$t('deleteText')"
           @edit="openEditModal"
-          @delete="removeAttachment"
+          @remove="removeAttachment"
         >
           <a :href="attachment.media.url" target="_blank">
             {{ attachment.name }}

@@ -1109,10 +1109,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@heseya/store-core@5.0.0-dev.5":
-  version "5.0.0-dev.5"
-  resolved "https://registry.yarnpkg.com/@heseya/store-core/-/store-core-5.0.0-dev.5.tgz#f6bdc1cf24e0383b85e44cd3d4a4832d09cf2d8f"
-  integrity sha512-dN9P+GI1C6yAwH7nOwxYbrTsIopS38d2GtqWMh4fIAGFF2L5Y9kjsTLRNArVOSzVewozz2dI13+xFHaRoGar7g==
+"@heseya/store-core@5.0.0-dev.6":
+  version "5.0.0-dev.6"
+  resolved "https://registry.yarnpkg.com/@heseya/store-core/-/store-core-5.0.0-dev.6.tgz#d29a64df5836c5d5a7e1a8d483dc024e715470fd"
+  integrity sha512-Yu8cuW7iUwtajyJ0Pzi3aa3xBJDQZZY3MnQ5pDHVqV797w9tLfjq1m2Hp9dTwoPa7rJCn9tvgmiLMFDzfY5k2w==
   dependencies:
     "@types/flat" "^5.0.2"
     array-to-tree "^3.3.2"

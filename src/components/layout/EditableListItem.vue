@@ -68,7 +68,7 @@ export default Vue.extend({
       this.$emit('edit', this.item)
     },
     onRemove() {
-      this.$emit('remove', this.item.id)
+      this.$emit('remove', this.item)
     },
   },
 })

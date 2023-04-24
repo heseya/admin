@@ -173,7 +173,7 @@ import WarehouseItemsConfigurator from '@/components/modules/products/WarehouseI
 import ProductBasicDetails from '@/components/modules/products/view/ProductBasicDetails.vue'
 import ProductAdvancedDetails from '@/components/modules/products/view/ProductAdvancedDetails.vue'
 import ProductAsideDetails from '@/components/modules/products/view/ProductAsideDetails.vue'
-import ProductAdditionalDescriptions from '@/components/modules/products/view/AdditionalDescriptions.vue'
+import ProductAdditionalDescriptions from '@/components/modules/products/descriptions/List.vue'
 import ProductAttachments from '@/components/modules/products/attachments/List.vue'
 import DescriptionAccordion from '@/components/DescriptionAccordion.vue'
 

@@ -40,7 +40,7 @@
               <div class="collection-view__drag-area">
                 <media-upload-input
                   :disabled="!canModify"
-                  :image="form.cover"
+                  :media="form.cover"
                   :file-name="$t('collectionCover')"
                   @upload="changeMedia"
                 />

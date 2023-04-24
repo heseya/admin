@@ -61,7 +61,7 @@
     <media-upload-input
       :label="$t('form.og_image')"
       :disabled="disabled"
-      :image="form.og_image"
+      :media="form.og_image"
       @upload="changeMedia"
     />
   </modal-form>

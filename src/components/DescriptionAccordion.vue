@@ -1,19 +1,7 @@
 <template>
-  <a-collapse accordion :bordered="false" class="product-advanced-details">
-    <template #expandIcon="{ isActive }">
-      <div>
-        <i :class="`bx ${isActive ? 'bx-chevron-up' : 'bx-chevron-down'}`"></i>
-      </div>
-    </template>
-
-    <a-collapse-panel>
-      <template #header>
-        <span class="seo-form-accordion__title">{{ $t('title') }}</span>
-      </template>
-
-      <rich-editor v-if="!loading" v-model="form" :disabled="disabled" />
-    </a-collapse-panel>
-  </a-collapse>
+  <LayoutAccordion :title="$t('title')">
+    <rich-editor v-if="!loading" v-model="form" :disabled="disabled" />
+  </LayoutAccordion>
 </template>
 
 <i18n lang="json">
@@ -31,9 +19,10 @@
 import Vue from 'vue'
 
 import RichEditor from '@/components/form/RichEditor.vue'
+import LayoutAccordion from '@/components/layout/Accordion.vue'
 
 export default Vue.extend({
-  components: { RichEditor },
+  components: { RichEditor, LayoutAccordion },
   props: {
     value: {
       type: String,

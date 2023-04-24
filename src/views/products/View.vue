@@ -49,6 +49,7 @@
             :loading="isLoading"
           />
           <ProductAdvancedDetails v-model="form" :product="product" :disabled="!canModify" />
+          <ProductAttachments :product="product" :disabled="!canModify" />
 
           <hr />
 
@@ -167,6 +168,7 @@ import WarehouseItemsConfigurator from '@/components/modules/products/WarehouseI
 import ProductBasicDetails from '@/components/modules/products/view/ProductBasicDetails.vue'
 import ProductAdvancedDetails from '@/components/modules/products/view/ProductAdvancedDetails.vue'
 import ProductAsideDetails from '@/components/modules/products/view/ProductAsideDetails.vue'
+import ProductAttachments from '@/components/modules/products/attachments/List.vue'
 import DescriptionAccordion from '@/components/DescriptionAccordion.vue'
 
 import preventLeavingPage from '@/mixins/preventLeavingPage'
@@ -224,6 +226,7 @@ export default mixins(preventLeavingPage).extend({
     ProductAdvancedDetails,
     DescriptionAccordion,
     ProductAsideDetails,
+    ProductAttachments,
   },
   data: () => ({
     form: cloneDeep(EMPTY_FORM),

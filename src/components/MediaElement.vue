@@ -16,14 +16,15 @@
     loop
     muted
   />
-  <i
+  <div
     v-else-if="media.type === CdnMediaType.Document"
-    class="bx bxs-file-pdf media-element--document"
-  ></i>
-  <i
-    v-else-if="media.type === CdnMediaType.Other"
-    class="bx bx-question-mark media-element--other"
-  ></i>
+    class="media-element media-element--document"
+  >
+    <i class="bx bxs-file-pdf"></i>
+  </div>
+  <div v-else-if="media.type === CdnMediaType.Other" class="media-element media-element--other">
+    <i class="bx bxs-file-pdf"></i>
+  </div>
   <div v-else class="media-element media-element--unknown">{{ $t('unknownType') }}</div>
 </template>
 
@@ -79,8 +80,9 @@ export default Vue.extend({
   &--document,
   &--other {
     font-size: 2rem;
-    display: grid;
-    place-items: center;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
   }
 }
 </style>

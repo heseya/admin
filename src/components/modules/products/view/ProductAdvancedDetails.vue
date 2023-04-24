@@ -1,65 +1,53 @@
 <template>
-  <a-collapse accordion :bordered="false" class="product-advanced-details">
-    <template #expandIcon="{ isActive }">
-      <div>
-        <i :class="`bx ${isActive ? 'bx-chevron-up' : 'bx-chevron-down'}`"></i>
+  <LayoutAccordion class="product-advanced-details" :title="$t('title')">
+    <div class="product-advanced-details__form">
+      <google-category-select v-model="form.google_product_category" :disabled="disabled" />
+
+      <div class="product-advanced-details__row">
+        <boolean-select v-model="form.shipping_digital" :add-all="false" :disabled="disabled">
+          <template #label>
+            {{ $t('form.shippingDigital') }}
+            <info-tooltip>{{ $t('form.shippingDigitalTooltip') }}</info-tooltip>
+          </template>
+        </boolean-select>
+
+        <validated-input
+          v-model="form.purchase_limit_per_user"
+          type="number"
+          name="purchase_limit_per_user"
+          :disabled="disabled"
+        >
+          <template #label>
+            {{ $t('form.purchaseLimit') }}
+            <info-tooltip>{{ $t('form.purchaseLimitTooltip') }}</info-tooltip>
+          </template>
+        </validated-input>
       </div>
-    </template>
 
-    <a-collapse-panel>
-      <template #header>
-        <span class="seo-form-accordion__title">{{ $t('title') }}</span>
-      </template>
+      <div class="product-advanced-details__row">
+        <validated-input
+          v-model="form.quantity_step"
+          rules="required"
+          type="number"
+          step="0.01"
+          name="quantity_step"
+          :disabled="disabled"
+        >
+          <template #label>
+            {{ $t('form.quantityStep') }}
+            <info-tooltip>{{ $t('form.quantityStepTooltip') }}</info-tooltip>
+          </template>
+        </validated-input>
 
-      <div class="product-advanced-details__form">
-        <google-category-select v-model="form.google_product_category" :disabled="disabled" />
-
-        <div class="product-advanced-details__row">
-          <boolean-select v-model="form.shipping_digital" :add-all="false" :disabled="disabled">
-            <template #label>
-              {{ $t('form.shippingDigital') }}
-              <info-tooltip>{{ $t('form.shippingDigitalTooltip') }}</info-tooltip>
-            </template>
-          </boolean-select>
-
-          <validated-input
-            v-model="form.purchase_limit_per_user"
-            type="number"
-            name="purchase_limit_per_user"
-            :disabled="disabled"
-          >
-            <template #label>
-              {{ $t('form.purchaseLimit') }}
-              <info-tooltip>{{ $t('form.purchaseLimitTooltip') }}</info-tooltip>
-            </template>
-          </validated-input>
-        </div>
-
-        <div class="product-advanced-details__row">
-          <validated-input
-            v-model="form.quantity_step"
-            rules="required"
-            type="number"
-            step="0.01"
-            name="quantity_step"
-            :disabled="disabled"
-          >
-            <template #label>
-              {{ $t('form.quantityStep') }}
-              <info-tooltip>{{ $t('form.quantityStepTooltip') }}</info-tooltip>
-            </template>
-          </validated-input>
-
-          <validated-input v-model="form.order" type="number" name="order" :disabled="disabled">
-            <template #label>
-              {{ $t('form.order') }}
-              <info-tooltip>{{ $t('form.orderTooltip') }}</info-tooltip>
-            </template>
-          </validated-input>
-        </div>
+        <validated-input v-model="form.order" type="number" name="order" :disabled="disabled">
+          <template #label>
+            {{ $t('form.order') }}
+            <info-tooltip>{{ $t('form.orderTooltip') }}</info-tooltip>
+          </template>
+        </validated-input>
       </div>
-    </a-collapse-panel>
-  </a-collapse>
+    </div>
+  </LayoutAccordion>
 </template>
 
 <i18n lang="json">
@@ -103,9 +91,10 @@ import GoogleCategorySelect from '../GoogleCategorySelect.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
 import InfoTooltip from '@/components/layout/InfoTooltip.vue'
 import BooleanSelect from '@/components/form/BooleanSelect.vue'
+import LayoutAccordion from '@/components/layout/Accordion.vue'
 
 export default Vue.extend({
-  components: { GoogleCategorySelect, ValidatedInput, InfoTooltip, BooleanSelect },
+  components: { LayoutAccordion, GoogleCategorySelect, ValidatedInput, InfoTooltip, BooleanSelect },
   props: {
     value: {
       type: Object,

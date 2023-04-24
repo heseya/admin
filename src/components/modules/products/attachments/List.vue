@@ -13,37 +13,25 @@
         {{ $t('addTitle') }}
       </icon-button>
 
+      <Empty v-if="attachments.length === 0" class="additional-descriptions__empty">
+        {{ $t('emptyText') }}
+      </Empty>
+
       <div class="product-attachments__content">
-        <list-item v-for="attachment in attachments" :key="attachment.id" class="attachment">
+        <editable-list-item
+          v-for="attachment in attachments"
+          :key="attachment.id"
+          :item="attachment"
+          :disabled="disabled"
+          :delete-text="$t('deleteText')"
+          @edit="openEditModal"
+          @remove="removeAttachment"
+        >
           <a :href="attachment.media.url" target="_blank">
             {{ attachment.name }}
             <i class="bx bx-link-external"></i>
           </a>
-
-          <template #action>
-            <div class="attachment__actions">
-              <icon-button size="small" :disabled="disabled" @click="openEditModal(attachment)">
-                <template #icon>
-                  <i class="bx bx-edit"></i>
-                </template>
-              </icon-button>
-
-              <pop-confirm
-                :disabled="disabled"
-                :title="$t('deleteText')"
-                :ok-text="$t('common.delete')"
-                :cancel-text="$t('common.cancel')"
-                @confirm="removeAttachment(attachment)"
-              >
-                <icon-button size="small" type="danger" :disabled="disabled">
-                  <template #icon>
-                    <i class="bx bx-trash"></i>
-                  </template>
-                </icon-button>
-              </pop-confirm>
-            </div>
-          </template>
-        </list-item>
+        </editable-list-item>
       </div>
 
       <a-modal
@@ -73,7 +61,8 @@
     "deleteText": "Are you sure you want to delete this attachment?",
     "onDeletedText": "Attachment has been deleted",
     "onCreatedText": "Attachment has been created and added to product",
-    "onUpdatedText": "Attachment has been updated"
+    "onUpdatedText": "Attachment has been updated",
+    "emptyText": "No attachments added yet"
   },
   "pl": {
     "title": "Załączniki",
@@ -82,7 +71,8 @@
     "deleteText": "Czy na pewno chcesz usunąć ten załącznik?",
     "onDeletedText": "Załącznik został usunięty",
     "onCreatedText": "Załącznik został dodany do produktu",
-    "onUpdatedText": "Załącznik został zaktualizowany"
+    "onUpdatedText": "Załącznik został zaktualizowany",
+    "emptyText": "Brak załączników"
   }
 }
 </i18n>
@@ -104,8 +94,8 @@ import { formatApiNotificationError } from '@/utils/errors'
 
 import LayoutAccordion from '@/components/layout/Accordion.vue'
 import AttachmentForm from '@/components/modules/products/attachments/Form.vue'
-import ListItem from '@/components/layout/ListItem.vue'
-import PopConfirm from '@/components/layout/PopConfirm.vue'
+import EditableListItem from '@/components/layout/EditableListItem.vue'
+import Empty from '@/components/layout/Empty.vue'
 
 const EMPTY_ATTACHMENT: ProductAttachmentCreateDto = {
   name: '',
@@ -116,7 +106,7 @@ const EMPTY_ATTACHMENT: ProductAttachmentCreateDto = {
 }
 
 export default Vue.extend({
-  components: { LayoutAccordion, AttachmentForm, ListItem, PopConfirm },
+  components: { LayoutAccordion, AttachmentForm, EditableListItem, Empty },
   props: {
     product: {
       type: Object,
@@ -205,14 +195,6 @@ export default Vue.extend({
   &__btn {
     margin-left: auto;
     margin-bottom: 8px;
-  }
-}
-
-.attachment {
-  background-color: #fff;
-
-  &__actions {
-    display: flex;
   }
 }
 </style>

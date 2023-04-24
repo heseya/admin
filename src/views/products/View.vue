@@ -48,6 +48,11 @@
             :disabled="!canModify"
             :loading="isLoading"
           />
+          <ProductAdditionalDescriptions
+            v-model="form.descriptions"
+            :product="product"
+            :disabled="!canModify"
+          />
           <ProductAdvancedDetails v-model="form" :product="product" :disabled="!canModify" />
           <ProductAttachments :product="product" :disabled="!canModify" />
 
@@ -168,6 +173,7 @@ import WarehouseItemsConfigurator from '@/components/modules/products/WarehouseI
 import ProductBasicDetails from '@/components/modules/products/view/ProductBasicDetails.vue'
 import ProductAdvancedDetails from '@/components/modules/products/view/ProductAdvancedDetails.vue'
 import ProductAsideDetails from '@/components/modules/products/view/ProductAsideDetails.vue'
+import ProductAdditionalDescriptions from '@/components/modules/products/descriptions/List.vue'
 import ProductAttachments from '@/components/modules/products/attachments/List.vue'
 import DescriptionAccordion from '@/components/DescriptionAccordion.vue'
 
@@ -226,6 +232,7 @@ export default mixins(preventLeavingPage).extend({
     ProductAdvancedDetails,
     DescriptionAccordion,
     ProductAsideDetails,
+    ProductAdditionalDescriptions,
     ProductAttachments,
   },
   data: () => ({

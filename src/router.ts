@@ -117,7 +117,7 @@ const router = new VueRouter({
     {
       path: '/products',
       name: 'Products',
-      component: () => import('./views/products/index.vue'),
+      component: () => import('./views/products/Index.vue'),
       meta: {
         requiresAuth: true,
         permissions: [Permissions.Products.Show],
@@ -126,7 +126,7 @@ const router = new VueRouter({
     {
       path: '/products/:id',
       name: 'ProductsView',
-      component: () => import('./views/products/view.vue'),
+      component: () => import('./views/products/View.vue'),
       meta: {
         returnUrl: '/products',
         requiresAuth: true,

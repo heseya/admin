@@ -62,9 +62,11 @@ import {
   ProductAttachmentCreateDto,
   ProductAttachmentUpdateDto,
 } from '@heseya/store-core'
-import ValidationBlock from '@/components/form/ValidationBlock.vue'
+
 import { sdk } from '@/api'
 import { formatApiNotificationError } from '@/utils/errors'
+
+import ValidationBlock from '@/components/form/ValidationBlock.vue'
 
 type Form = ProductAttachmentCreateDto | (ProductAttachmentUpdateDto & { id: string })
 

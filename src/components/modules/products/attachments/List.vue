@@ -52,7 +52,6 @@
         :title="form && 'id' in form ? $t('editTitle') : $t('addTitle')"
         :footer="null"
       >
-        {{ form }}
         <AttachmentForm
           v-if="form"
           v-model="form"
@@ -100,12 +99,13 @@ import {
   ProductAttachmentUpdateDto,
 } from '@heseya/store-core'
 
+import { sdk } from '@/api'
+import { formatApiNotificationError } from '@/utils/errors'
+
 import LayoutAccordion from '@/components/layout/Accordion.vue'
 import AttachmentForm from '@/components/modules/products/attachments/Form.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import { sdk } from '@/api'
-import { formatApiNotificationError } from '@/utils/errors'
 
 const EMPTY_ATTACHMENT: ProductAttachmentCreateDto = {
   name: '',

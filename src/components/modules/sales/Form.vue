@@ -22,7 +22,7 @@
       <validated-input
         v-model="form.slug"
         class="sale-slug"
-        rules="required|url"
+        rules="required|slug"
         :disabled="disabled"
         :label="$t('common.form.slug')"
       />

@@ -31,7 +31,7 @@
           <small>/{{ set.slug }}</small>
 
           <template #action>
-            <icon-button size="small" :disabled="disabled">
+            <icon-button size="small" :disabled="disabled" @click="selectedSet = set">
               {{ $t('seeRelatedProducts') }}
               <template #icon>
                 <i class="bx bx-hive"></i>
@@ -63,6 +63,8 @@
           @select="onAdd"
         />
       </a-modal>
+
+      <SetProductsList :set="selectedSet" :is-open="!!selectedSet" @close="selectedSet = null" />
     </div>
   </LayoutAccordion>
 </template>
@@ -92,16 +94,17 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { PageList, Product, ProductSetList } from '@heseya/store-core'
+import { Product, ProductSetList } from '@heseya/store-core'
 
 import LayoutAccordion from '@/components/layout/Accordion.vue'
 
 import Empty from '@/components/layout/Empty.vue'
 import EditableListItem from '@/components/layout/EditableListItem.vue'
 import Selector from '@/components/Selector.vue'
+import SetProductsList from '../../productSets/SetProductsList.vue'
 
 export default Vue.extend({
-  components: { LayoutAccordion, Empty, EditableListItem, Selector },
+  components: { LayoutAccordion, Empty, EditableListItem, Selector, SetProductsList },
 
   props: {
     value: {
@@ -120,14 +123,15 @@ export default Vue.extend({
 
   data: () => ({
     isAddModalActive: false,
+    selectedSet: null as ProductSetList | null,
   }),
 
   computed: {
     relatedSets: {
-      get(): PageList[] {
+      get(): ProductSetList[] {
         return this.value
       },
-      set(value: PageList[]) {
+      set(value: ProductSetList[]) {
         this.$emit('input', value)
       },
     },

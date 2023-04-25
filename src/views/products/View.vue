@@ -59,7 +59,7 @@
             :product="product"
             :disabled="!canModify"
           />
-          <ProductAttachments :product="product" :disabled="!canModify" />
+          <ProductAttachments v-if="!isNew" :product="product" :disabled="!canModify" />
 
           <hr />
 

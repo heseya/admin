@@ -4,6 +4,8 @@
 
     <template #action>
       <div class="editable-list-item__actions">
+        <slot name="action"></slot>
+
         <icon-button size="small" :disabled="disabled" @click="onEdit">
           <template #icon>
             <i class="bx bx-edit"></i>
@@ -80,6 +82,7 @@ export default Vue.extend({
 
   &__actions {
     display: flex;
+    align-items: center;
   }
 }
 </style>

@@ -54,6 +54,11 @@
             :disabled="!canModify"
           />
           <ProductAdvancedDetails v-model="form" :product="product" :disabled="!canModify" />
+          <ProductRelatedSets
+            v-model="form.related_sets"
+            :product="product"
+            :disabled="!canModify"
+          />
           <ProductAttachments :product="product" :disabled="!canModify" />
 
           <hr />
@@ -175,6 +180,7 @@ import ProductAdvancedDetails from '@/components/modules/products/view/ProductAd
 import ProductAsideDetails from '@/components/modules/products/view/ProductAsideDetails.vue'
 import ProductAdditionalDescriptions from '@/components/modules/products/descriptions/List.vue'
 import ProductAttachments from '@/components/modules/products/attachments/List.vue'
+import ProductRelatedSets from '@/components/modules/products/related/List.vue'
 import DescriptionAccordion from '@/components/DescriptionAccordion.vue'
 
 import preventLeavingPage from '@/mixins/preventLeavingPage'
@@ -208,6 +214,7 @@ const EMPTY_FORM: ProductComponentForm = {
   items: [],
   descriptions: [],
   attachments: [],
+  related_sets: [],
 }
 
 export default mixins(preventLeavingPage).extend({
@@ -234,6 +241,7 @@ export default mixins(preventLeavingPage).extend({
     ProductAsideDetails,
     ProductAdditionalDescriptions,
     ProductAttachments,
+    ProductRelatedSets,
   },
   data: () => ({
     form: cloneDeep(EMPTY_FORM),
@@ -317,6 +325,7 @@ export default mixins(preventLeavingPage).extend({
         media: this.form.gallery.map(({ id }) => id),
         tags: this.form.tags.map(({ id }) => id),
         schemas: this.form.schemas.map(({ id }) => id),
+        related_sets: this.form.related_sets.map(({ id }) => id),
         shipping_digital: Boolean(+this.form.shipping_digital),
         purchase_limit_per_user: this.form.purchase_limit_per_user || null,
         attributes: attributes.reduce(

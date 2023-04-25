@@ -1109,7 +1109,7 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@heseya/store-core@5.0.0-dev.7":
+"@heseya/store-core@5.0.0-dev.8":
   version "5.0.0-dev.7"
   resolved "https://registry.yarnpkg.com/@heseya/store-core/-/store-core-5.0.0-dev.7.tgz#1d1aced410dc471841c5c71274be571158f909f2"
   integrity sha512-1XaAtjqeEKSL4kQguusazyY6AuIqOaMLlpXv/HTsYNZpLBvqNqRb1azSNaUdCcCNEj4z3Go6YcArcylmF+C7Bg==

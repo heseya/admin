@@ -22,7 +22,7 @@
       <validated-input
         v-model="form.slug"
         class="sale-slug"
-        rules="required|slug"
+        rules="slug"
         :disabled="disabled"
         :label="$t('common.form.slug')"
       />
@@ -52,7 +52,7 @@
         :disabled="disabled"
         :rules="{
           required: true,
-          positive: true,
+          'not-negative': true,
           'less-than': form.type === DiscountType.Percentage ? 100 : false,
         }"
         type="number"

@@ -16,21 +16,39 @@
       <!-- TODO: Edit type and visibility -->
 
       <template v-if="isNew">
-        <a-upload-dragger
-          name="file"
-          accept=".pdf,application/pdf"
-          :file-list="uploadedMedia ? [uploadedMedia] : []"
-          :before-upload="onBeforeUpload"
-          :remove="onRemove"
-          :multiple="false"
-        >
-          <p class="ant-upload-drag-icon">
-            <a-icon type="inbox" />
-          </p>
-          <p class="ant-upload-text">{{ $t('dropOrChooseFile') }}</p>
-        </a-upload-dragger>
+        <app-select v-model="mediaSource" :label="$t('mediaType.title')" option-filter-prop="label">
+          <a-select-option :value="CdnMediaSource.Silverbox" :label="CdnMediaSource.Silverbox">
+            {{ $t('mediaType.silverbox') }}
+          </a-select-option>
+          <a-select-option :value="CdnMediaSource.External" :label="CdnMediaSource.External">
+            {{ $t('mediaType.external') }}
+          </a-select-option>
+        </app-select>
 
-        <validation-block :message="$t('noFileError')" :block="!uploadedMedia" />
+        <validated-input
+          v-if="mediaSource === CdnMediaSource.External"
+          v-model="mediaExternalUrl"
+          name="url"
+          :label="$t('common.form.slug')"
+          rules="required|url"
+        />
+        <template v-if="mediaSource === CdnMediaSource.Silverbox">
+          <a-upload-dragger
+            name="file"
+            accept=".pdf,application/pdf"
+            :file-list="fileToUpload ? [fileToUpload] : []"
+            :before-upload="onBeforeUpload"
+            :remove="onRemove"
+            :multiple="false"
+          >
+            <p class="ant-upload-drag-icon">
+              <a-icon type="inbox" />
+            </p>
+            <p class="ant-upload-text">{{ $t('dropOrChooseFile') }}</p>
+          </a-upload-dragger>
+
+          <validation-block :message="$t('noFileError')" :block="!fileToUpload" />
+        </template>
       </template>
 
       <app-button class="attachment-form__btn" html-type="submit" type="primary">
@@ -44,11 +62,21 @@
 {
   "en": {
     "noFileError": "File is required",
-    "dropOrChooseFile": "Drop file here or click to choose"
+    "dropOrChooseFile": "Drop file here or click to choose",
+    "mediaType": {
+      "title": "Attachment type",
+      "silverbox": "Upload file",
+      "external": "External link"
+    }
   },
   "pl": {
     "noFileError": "Plik jest wymagany",
-    "dropOrChooseFile": "Upuść plik tutaj lub kliknij aby wybrać"
+    "dropOrChooseFile": "Upuść plik tutaj lub kliknij aby wybrać",
+    "mediaType": {
+      "title": "Typ załącznika",
+      "silverbox": "Przesłanie pliku",
+      "external": "Zewnętrzny link"
+    }
   }
 }
 </i18n>
@@ -57,10 +85,12 @@
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import {
+  CdnMediaSource,
   CdnMediaAttachmentType,
   CdnMediaAttachmentVisiblity,
   ProductAttachmentCreateDto,
   ProductAttachmentUpdateDto,
+  CdnMediaType,
 } from '@heseya/store-core'
 
 import { sdk } from '@/api'
@@ -88,7 +118,9 @@ export default Vue.extend({
   },
 
   data: () => ({
-    uploadedMedia: null as File | null,
+    mediaSource: CdnMediaSource.Silverbox,
+    mediaExternalUrl: '',
+    fileToUpload: null as File | null,
   }),
 
   computed: {
@@ -104,6 +136,10 @@ export default Vue.extend({
     isNew(): boolean {
       return isCreateForm(this.form)
     },
+
+    CdnMediaSource(): typeof CdnMediaSource {
+      return CdnMediaSource
+    },
   },
 
   methods: {
@@ -118,11 +154,19 @@ export default Vue.extend({
     async createAttachment() {
       try {
         // Validation should prevent this
-        if (!this.uploadedMedia) throw new Error('No file to upload')
+        if (!this.fileToUpload && !this.mediaExternalUrl) throw new Error('No file to upload')
 
-        const media = await sdk.Media.create({
-          file: this.uploadedMedia,
-        })
+        const media = await sdk.Media.create(
+          this.mediaSource === CdnMediaSource.Silverbox
+            ? {
+                file: this.fileToUpload!,
+              }
+            : {
+                source: CdnMediaSource.External,
+                type: CdnMediaType.Other,
+                url: this.mediaExternalUrl,
+              },
+        )
 
         const attachment = await sdk.Products.Attachments.create(this.productId, {
           name: this.form.name,
@@ -133,6 +177,11 @@ export default Vue.extend({
         })
 
         this.$emit('created', attachment)
+
+        // Reset form
+        this.mediaExternalUrl = ''
+        this.fileToUpload = null
+        this.mediaSource = CdnMediaSource.Silverbox
       } catch (e: any) {
         this.$toast.error(formatApiNotificationError(e))
       }
@@ -156,11 +205,11 @@ export default Vue.extend({
     },
 
     onBeforeUpload(media: File) {
-      this.uploadedMedia = media
+      this.fileToUpload = media
       return false
     },
     onRemove() {
-      this.uploadedMedia = null
+      this.fileToUpload = null
     },
   },
 })

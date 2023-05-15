@@ -128,7 +128,7 @@ import { ValidationObserver } from 'vee-validate'
 import { isNumber, isString } from 'lodash'
 
 import Loading from '@/components/layout/Loading.vue'
-import { formatDateTimeInput } from '@/utils/dates'
+import { formatDateTimeInput, formatISO } from '@/utils/dates'
 import { WarehouseDepositDto } from '@heseya/store-core'
 import BooleanSelect from '@/components/form/BooleanSelect.vue'
 
@@ -201,7 +201,10 @@ export default Vue.extend({
         id: this.itemId,
         deposit: {
           quantity: this.form.quantity,
-          [timeKey]: this.form[timeKey],
+          [timeKey]:
+            this.stockTimeType === StockTimeType.Time
+              ? this.form[timeKey]
+              : formatISO(this.form[timeKey]),
           from_unlimited: this.form.from_unlimited === '1',
         } as WarehouseDepositDto,
       })

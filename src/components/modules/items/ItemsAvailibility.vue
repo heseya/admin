@@ -7,7 +7,7 @@
         v-can="$p.Deposits.Add"
         size="small"
         data-cy="deposit-create-btn"
-        @click="openDepositModal(null)"
+        @click="openDepositModal(null, false)"
       >
         <template #icon>
           <i class="bx bx-plus"></i>
@@ -19,24 +19,35 @@
     <div class="items-availability__row items-availability__row--header">
       <span> {{ $t('table.shippingTime') }} </span>
       <span> {{ $t('table.quantity') }} </span>
+      <span>
+        {{ $t('table.from_unlimited') }} <info-tooltip :text="$t('table.from_unlimited_tooltip')" />
+      </span>
     </div>
 
     <div v-if="availability.length === 0" class="items-availability__row">
       <span> - </span>
       <span> - </span>
+      <span> - </span>
     </div>
 
     <div
-      v-for="{ shipping_time, shipping_date, quantity } in availability"
+      v-for="{ shipping_time, shipping_date, quantity, from_unlimited } in availability"
       :key="`${shipping_time}-${shipping_date}`"
       class="items-availability__row"
     >
-      <span> {{ formatShippingTime(shipping_date || shipping_time) }} </span>
+      <span :class="{ 'items-availability__row-value--past': isDateInPast(shipping_date) }">
+        {{ formatShippingTime(shipping_date || shipping_time) }}
+        <info-tooltip v-if="isDateInPast(shipping_date)" :text="$t('dateInPastTooltip')" />
+      </span>
       <span> {{ quantity }} </span>
+      <span> <BooleanTag small :value="from_unlimited" /> </span>
 
       <a-tooltip v-can="$p.Deposits.Add">
         <template #title> {{ $t('addDepositTime') }} </template>
-        <icon-button size="small" @click="openDepositModal(shipping_date || shipping_time)">
+        <icon-button
+          size="small"
+          @click="openDepositModal(shipping_date || shipping_time, from_unlimited)"
+        >
           <template #icon>
             <i class="bx bx-edit"></i>
           </template>
@@ -47,6 +58,7 @@
     <deposit-form-modal
       :visible="isDepositModalOpen"
       :default-time="defaultDepositDeliveryTime"
+      :default-from-unlimited="defaultFromUnlimited"
       :disabled="!$can($p.Deposits.Add)"
       :item-id="item && item.id"
       @close="closeDepositModal"
@@ -62,8 +74,11 @@
     "addDepositTime": "Zmodyfikuj ilość dla danej dostępności",
     "table": {
       "shippingTime": "Czas wysyłki",
-      "quantity": "Ilość w magazynie"
+      "quantity": "Ilość w magazynie",
+      "from_unlimited": "Z nieograniczonego stanu",
+      "from_unlimited_tooltip": "Ta zmiana dotyczy nieskończonych ilości i nie wpływa na obecną ilość produktów na magazynie"
     },
+    "dateInPastTooltip": "Data dostępności jest w przeszłości, nie wpływa na aktualną dostępność produktu ani na aktualną sumę produktów w magazynie",
     "availabilityTime": "w {time} dni",
     "availabilityDate": "od {date}"
   },
@@ -73,8 +88,11 @@
     "addDepositTime": "Edit quantity for this availability",
     "table": {
       "shippingTime": "Shipping time",
-      "quantity": "Quantity in stock"
+      "quantity": "Quantity in stock",
+      "from_unlimited": "From unlimited stock",
+      "from_unlimited_tooltip": "This change concerns unlimited quantities and does not affect the current quantity of products in stock"
     },
+    "dateInPastTooltip": "The availability date is in the past, it does not affect the current availability of the product or the current sum of products in stock",
     "availabilityTime": "in {time} days",
     "availabilityDate": "from {date}"
   }
@@ -98,6 +116,7 @@ export default Vue.extend({
   data: () => ({
     isDepositModalOpen: false,
     defaultDepositDeliveryTime: null as string | number | null,
+    defaultFromUnlimited: false,
   }),
 
   computed: {
@@ -113,8 +132,14 @@ export default Vue.extend({
       return '-'
     },
 
-    openDepositModal(time: string | number | null) {
+    isDateInPast(time: string | number | null) {
+      if (!time) return false
+      return new Date(time) < new Date()
+    },
+
+    openDepositModal(time: string | number | null, fromUnlimited: boolean) {
       this.defaultDepositDeliveryTime = time
+      this.defaultFromUnlimited = fromUnlimited
       this.isDepositModalOpen = true
     },
 
@@ -138,7 +163,7 @@ export default Vue.extend({
   &__row {
     display: grid;
     align-items: center;
-    grid-template-columns: 1fr 1fr 32px;
+    grid-template-columns: 1fr 1fr 1fr 32px;
     grid-gap: 8px;
     margin-bottom: 4px;
 
@@ -147,6 +172,10 @@ export default Vue.extend({
       text-transform: uppercase;
       font-size: 10px;
     }
+  }
+
+  &__row-value--past {
+    color: $gray-color-400;
   }
 }
 </style>

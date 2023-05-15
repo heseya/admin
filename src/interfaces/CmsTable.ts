@@ -3,6 +3,7 @@ import { VuexBaseItem } from './VuexGenerator'
 export interface TableHeader<Item extends VuexBaseItem = any> {
   key: string
   label: string
+  labelTooltip?: string
   width?: string
   sortable?: boolean
   render?: (keyValue: any, item: Item) => string | number | boolean | string[]

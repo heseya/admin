@@ -6,7 +6,7 @@
         <template #icon>
           <i class="bx bxs-download"></i>
         </template>
-        {{ $t('downloadXlSX') }}
+        {{ text || $t('downloadXlSX') }}
       </icon-button>
     </xlsx-download>
   </xlsx-workbook>
@@ -25,7 +25,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-// @ts-ignore
+// @ts-ignore types for vue-xlsx are not needed
 import { XlsxWorkbook, XlsxDownload, XlsxSheet } from 'vue-xlsx'
 
 import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
@@ -39,6 +39,10 @@ export default Vue.extend({
     XlsxDownload,
   },
   props: {
+    text: {
+      type: String,
+      default: null,
+    },
     items: {
       type: Array,
       default: null,

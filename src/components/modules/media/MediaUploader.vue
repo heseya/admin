@@ -8,7 +8,7 @@
     @dragenter.prevent="changeDrag(true)"
     @dragleave.prevent="changeDrag(false)"
   >
-    <slot />
+    <slot v-bind="{ drag: isDrag, loading: isLoading }" />
   </div>
 </template>
 
@@ -62,6 +62,7 @@ export default Vue.extend({
   },
   data: () => ({
     isDrag: false,
+    isLoading: false,
   }),
   methods: {
     selectFiles() {
@@ -97,6 +98,7 @@ export default Vue.extend({
         return
       }
 
+      this.isLoading = true
       this.$emit('upload-start', files)
 
       files.forEach(async (rawFile) => {
@@ -107,6 +109,7 @@ export default Vue.extend({
           this.$emit('error', error)
         }
       })
+      this.isLoading = false
     },
     isFileValid(file: File) {
       if (!file) return false

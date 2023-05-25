@@ -43,6 +43,6 @@ export const getApiURL = () => {
     case '***REMOVED***':
       return '***REMOVED***'
     default:
-      return (process.env.VUE_APP_API_URL as string) || '***REMOVED***'
+      return import.meta.env.VITE_API_URL || '***REMOVED***'
   }
 }

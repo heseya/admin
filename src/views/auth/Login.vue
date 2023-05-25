@@ -51,11 +51,11 @@ import { TwoFactorAuthMethod } from '@/enums/twoFactorAuth'
 import { LoginState } from '@/enums/login'
 import Zone from '@/components/layout/Zone.vue'
 
-const DEFAULT_CREDENTIALS = process.env.NODE_ENV === 'development'
+const SHOW_DEFAULT_CREDENTIALS = import.meta.env.DEV
 
 const CLEAR_LOGIN_FORM = {
-  email: DEFAULT_CREDENTIALS ? '***REMOVED***' : '',
-  password: DEFAULT_CREDENTIALS ? '***REMOVED***' : '',
+  email: SHOW_DEFAULT_CREDENTIALS ? '***REMOVED***' : '',
+  password: SHOW_DEFAULT_CREDENTIALS ? '***REMOVED***' : '',
 }
 
 export default Vue.extend({

@@ -1,34 +1,20 @@
 <template>
-  <a-collapse
-    accordion
-    :bordered="false"
-    class="metadata-form-accordion"
-    :class="{ 'metadata-form-accordion--white': white }"
-  >
-    <template #expandIcon="{ isActive }">
-      <div>
-        <i :class="`bx ${isActive ? 'bx-chevron-up' : 'bx-chevron-down'}`"></i>
-      </div>
+  <LayoutAccordion accordion :white="white">
+    <template #title>
+      {{ $t(`${type}.title`) }}
+      <info-tooltip>
+        {{ $t(`${type}.tooltip`) }}
+      </info-tooltip>
     </template>
 
-    <a-collapse-panel>
-      <template #header>
-        <span class="metadata-form-accordion__title">
-          {{ $t(`${type}.title`) }}
-          <info-tooltip>
-            {{ $t(`${type}.tooltip`) }}
-          </info-tooltip>
-        </span>
-      </template>
-      <MetadataForm
-        ref="form"
-        :original-metadata="value"
-        :type="type"
-        :disabled="disabled"
-        :model="model"
-      />
-    </a-collapse-panel>
-  </a-collapse>
+    <MetadataForm
+      ref="form"
+      :original-metadata="value"
+      :type="type"
+      :disabled="disabled"
+      :model="model"
+    />
+  </LayoutAccordion>
 </template>
 
 <i18n lang="json">
@@ -69,6 +55,7 @@ import Vue from 'vue'
 import { Metadata, MetadataUpdateDto } from '@heseya/store-core'
 
 import MetadataForm from './Form.vue'
+import LayoutAccordion from '@/components/layout/Accordion.vue'
 
 import { GeneratedStoreModulesKeys } from '@/store'
 
@@ -78,6 +65,7 @@ export type MetadataRef = Vue & { saveMetadata: SaveMetadataFunction }
 export default Vue.extend({
   components: {
     MetadataForm,
+    LayoutAccordion,
   },
   props: {
     value: {
@@ -102,15 +90,3 @@ export default Vue.extend({
   },
 })
 </script>
-
-<style lang="scss">
-.metadata-form-accordion {
-  &__title {
-    font-weight: 600;
-  }
-
-  &--white .ant-collapse-item {
-    background-color: var(--white-color);
-  }
-}
-</style>

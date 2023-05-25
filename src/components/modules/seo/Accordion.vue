@@ -1,23 +1,7 @@
 <template>
-  <a-collapse
-    accordion
-    :bordered="false"
-    class="seo-form-accordion"
-    :class="{ 'seo-form-accordion--white': white }"
-  >
-    <template #expandIcon="{ isActive }">
-      <div>
-        <i :class="`bx ${isActive ? 'bx-chevron-up' : 'bx-chevron-down'}`"></i>
-      </div>
-    </template>
-
-    <a-collapse-panel>
-      <template #header>
-        <span class="seo-form-accordion__title">{{ $t('title') }}</span>
-      </template>
-      <SeoForm v-model="form" :current="current" />
-    </a-collapse-panel>
-  </a-collapse>
+  <LayoutAccordion :title="$t('title')" :white="white">
+    <SeoForm v-model="form" :current="current" />
+  </LayoutAccordion>
 </template>
 
 <i18n lang="json">
@@ -36,17 +20,19 @@ import Vue from 'vue'
 import { SeoMetadata } from '@heseya/store-core'
 
 import SeoForm from './Form.vue'
+import LayoutAccordion from '@/components/layout/Accordion.vue'
 import { UUID } from '@/interfaces/UUID'
 
 export default Vue.extend({
   components: {
     SeoForm,
+    LayoutAccordion,
   },
   props: {
     value: {
       type: Object,
-      required: true,
-    } as Vue.PropOptions<SeoMetadata>,
+      default: () => ({}),
+    } as Vue.PropOptions<SeoMetadata | null>,
     disabled: {
       type: Boolean,
       default: false,
@@ -63,7 +49,7 @@ export default Vue.extend({
   computed: {
     form: {
       get(): SeoMetadata {
-        return this.value
+        return this.value || {}
       },
       set(v: SeoMetadata) {
         this.$emit('input', v)
@@ -72,15 +58,3 @@ export default Vue.extend({
   },
 })
 </script>
-
-<style lang="scss">
-.seo-form-accordion {
-  &__title {
-    font-weight: 600;
-  }
-
-  &--white .ant-collapse-item {
-    background-color: var(--white-color);
-  }
-}
-</style>

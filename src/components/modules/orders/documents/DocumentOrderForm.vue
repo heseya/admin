@@ -7,7 +7,7 @@
 
       <app-select v-model="form.type" name="filetype" :label="$t('fileType')">
         <a-select-option
-          v-for="type in Object.values(OrderDocumentType)"
+          v-for="type in Object.values(CdnMediaAttachmentType)"
           :key="type"
           :value="type"
           :label="$t(`orderDocumentsTypes.${type}`)"
@@ -85,13 +85,13 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
-import { OrderDocumentType } from '@heseya/store-core'
+import { CdnMediaAttachmentType } from '@heseya/store-core'
 
 import Loading from '@/components/layout/Loading.vue'
 
 const EMPTY_FORM = {
   name: '',
-  type: OrderDocumentType.Invoice,
+  type: CdnMediaAttachmentType.Invoice,
   file: null as File | null,
 }
 
@@ -108,8 +108,8 @@ export default Vue.extend({
     form: { ...EMPTY_FORM },
   }),
   computed: {
-    OrderDocumentType(): typeof OrderDocumentType {
-      return OrderDocumentType
+    CdnMediaAttachmentType(): typeof CdnMediaAttachmentType {
+      return CdnMediaAttachmentType
     },
   },
   methods: {

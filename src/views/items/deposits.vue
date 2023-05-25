@@ -37,7 +37,9 @@
     "table": {
       "sku": "SKU",
       "quantity": "Zmiana ilości",
-      "order": "Zamówienie"
+      "order": "Zamówienie",
+      "from_unlimited": "Z nieograniczonego stanu",
+      "from_unlimited_tooltip": "Ta zmiana dotyczy nieskończonych ilości i nie wpływa na obecną ilość produktów na magazynie"
     }
   },
   "en": {
@@ -45,7 +47,9 @@
     "table": {
       "sku": "SKU",
       "quantity": "Quantity change",
-      "order": "Order"
+      "order": "Order",
+      "from_unlimited": "From unlimited stock",
+      "from_unlimited_tooltip": "This change concerns unlimited quantities and does not affect the current quantity of products in stock"
     }
   }
 }
@@ -98,6 +102,11 @@ export default Vue.extend({
             key: 'created_at',
             label: this.$t('common.form.date') as string,
             render: (v) => formatDate(v) || '-',
+          },
+          {
+            key: 'from_unlimited',
+            label: this.$t('table.from_unlimited') as string,
+            labelTooltip: this.$t('table.from_unlimited_tooltip') as string,
           },
         ],
       }

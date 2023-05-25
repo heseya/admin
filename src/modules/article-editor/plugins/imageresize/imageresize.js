@@ -57,7 +57,6 @@ ArticleEditor.add('plugin', 'imageresize', {
             'border-radius': '8px',
             'font-size': '0',
             'border': '2px solid #fff',
-            'cursor': 'move',
             'cursor': 'ew-resize'
         });
 

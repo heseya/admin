@@ -3,13 +3,13 @@
     <span class="media-upload-input-wrapper__label">{{ label }}</span>
     <media-uploader
       class="media-upload-input"
-      :class="{ 'media-upload-input--image': !!image, 'media-upload-input--drag': isDrag }"
-      :disabled="disabled || !!image"
+      :class="{ 'media-upload-input--image': !!media, 'media-upload-input--drag': isDrag }"
+      :disabled="disabled || !!media"
       @upload="(f) => $emit('upload', f)"
       @drag-change="(v) => (isDrag = v)"
     >
-      <template v-if="image">
-        <media-element :media="image" class="media-upload-input__media" />
+      <template v-if="media">
+        <media-element :media="media" class="media-upload-input__media" />
 
         <AppButton
           type="danger"
@@ -23,7 +23,7 @@
         <media-edit-form
           class="media-upload-input__edit-img"
           :disabled="disabled"
-          :media="image"
+          :media="media"
           placement="top"
           @updated="updateMedia"
         />
@@ -43,17 +43,17 @@
 <i18n lang="json">
 {
   "pl": {
-    "removeOrChangeImage": "Usuń lub zmień zdjęcie",
+    "removeOrChangeImage": "Usuń lub zmień multimedia",
     "dropOrChooseImage": "Przeciągnij lub kliknij aby dodać",
     "defaultFileName": "multimedia",
-    "chooseImage": "Wybierz zdjęcie",
-    "fileAdd": "Dodaj zdjęcie"
+    "chooseImage": "Wybierz multimedia",
+    "fileAdd": "Dodaj multimedia"
   },
   "en": {
-    "removeOrChangeImage": "Remove or change image",
-    "dropOrChooseImage": "Drop or choose image to add",
+    "removeOrChangeImage": "Remove or change multimedia",
+    "dropOrChooseImage": "Drop or choose multimedia to add",
     "defaultFileName": "media",
-    "chooseImage": "Choose image",
+    "chooseImage": "Choose multimedia",
     "fileAdd": "Add file"
   }
 }
@@ -70,7 +70,7 @@ import MediaElement from '@/components/MediaElement.vue'
 export default Vue.extend({
   components: { MediaUploader, MediaEditForm, MediaElement },
   props: {
-    image: {
+    media: {
       type: Object,
       default: () => null,
     } as Vue.PropOptions<CdnMedia>,
@@ -126,6 +126,8 @@ export default Vue.extend({
   background-color: var(--background-color-500);
   border-radius: 4px;
   height: 100%;
+  min-height: 100px;
+  max-height: 100%;
   transition: 0.3s;
 
   &__media {
@@ -166,9 +168,8 @@ export default Vue.extend({
   }
 
   &__edit-img {
-    left: 50%;
-    bottom: 32px;
-    transform: translateX(-50%);
+    right: 16px;
+    top: 16px;
   }
 
   &__circle {

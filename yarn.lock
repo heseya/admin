@@ -1229,10 +1229,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@heseya/store-core@4.0.0-rc.5":
-  version "4.0.0-rc.5"
-  resolved "https://registry.yarnpkg.com/@heseya/store-core/-/store-core-4.0.0-rc.5.tgz#7051b3719b6f412f841c07321616c1264cca010c"
-  integrity sha512-YcU1WW3vMY9cB8179iYYpnn7q6bNoCv1dM+WQvK828S+7SV1knKMKzMvtSoAXZUwNYECwBiotWr62cjSq8jtXA==
+"@heseya/store-core@5.1.0-dev.4":
+  version "5.1.0-dev.4"
+  resolved "https://registry.yarnpkg.com/@heseya/store-core/-/store-core-5.1.0-dev.4.tgz#363f62d3e63ab2e4168b45fad4a174f8122bdb1c"
+  integrity sha512-92aktC87nr3AmofuFaK4BYZHLagbIWL9xuwhgCEkv5aZsIY5MiR7hQNntZ9XT1TBFPLD/WaR7ThFQtShH1xV5w==
   dependencies:
     "@types/flat" "^5.0.2"
     array-to-tree "^3.3.2"
@@ -3170,10 +3170,10 @@ boolbase@^1.0.0:
   resolved "https://registry.yarnpkg.com/boolbase/-/boolbase-1.0.0.tgz#68dff5fbe60c51eb37725ea9e3ed310dcc1e776e"
   integrity sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==
 
-bout@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/bout/-/bout-0.2.0.tgz#42a8e7fba7a33dc104f0a916e3cdfe9d9776eec8"
-  integrity sha512-YedZnY1pdg/5euKxD5pOtMiy2cmohER1S71CiJm81QVwE1k4MTy+giYNWrjoypIy187NGh1IJTQdwEm0Yx20KQ==
+bout@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/bout/-/bout-0.3.0.tgz#e95c00f819171f69c6e8f65abf4decca9c238e44"
+  integrity sha512-vZhTKP2D7tVylL5agN9+VW8/oY4ZzDqmU7B5zIJ28Hc2VglGo4Ub8yrc9Ohih8bZayMXCZKj+DhyptscVijNXA==
 
 boxicons@2.1.4:
   version "2.1.4"

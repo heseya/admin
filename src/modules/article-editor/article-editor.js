@@ -1,11 +1,11 @@
 /*
     Article Editor JS
-    Version 2.4.3
-    Updated: August 4, 2022
+    Version 2.4.5
+    Updated: January 19, 2023
 
     http://imperavi.com/article/
 
-    Copyright (c) 2009-2022, Imperavi Ltd.
+    Copyright (c) 2009-2023, Imperavi Ltd.
     License: http://imperavi.com/article/license/
 */
 if (typeof CodeMirror === 'undefined') { var CodeMirror; }
@@ -1109,7 +1109,7 @@ $ARX.ajax = Ajax;
 $ARX.instances = [];
 $ARX.namespace = 'article-editor';
 $ARX.prefix = 'arx';
-$ARX.version = '2.4.3';
+$ARX.version = '2.4.5';
 $ARX.settings = {};
 $ARX.lang = {};
 $ARX._mixins = {};
@@ -3358,7 +3358,7 @@ ArticleEditor.add('module', 'utils', {
 
     // mobile
     isMobile: function() {
-        return /(iPhone|iPad|iPod|Android)/.test(navigator.userAgent);
+        return ("ontouchstart" in document.documentElement);
     },
 
     // invisible chars
@@ -5209,7 +5209,10 @@ ArticleEditor.add('module', 'state', {
         this.passed = false;
         var state = this.redoStorage.pop();
 
-        this._addState(state);
+        this._addState({
+            html: state[0],
+            offset: state[1]
+        });
 
         var $parsed = this.app.parser.parse(state[0]);
         this.app.editor.getLayout().html($parsed.children());
@@ -9190,7 +9193,7 @@ ArticleEditor.add('module', 'editor', {
         return this.dom(this.getDocNode());
     },
     getDocNode: function() {
-        return this.$editor.get().contentWindow.document;
+        return (this.$editor === false) ? null : this.$editor.get().contentWindow.document;
     },
     getWin: function() {
         return this.dom(this.getWinNode());
@@ -9417,7 +9420,9 @@ ArticleEditor.add('module', 'editor', {
     },
     _buildCssLink: function(href) {
         var obj = (typeof href === 'object') ? href : { href: href };
-        var tstamp = (this.opts.editor.csscache) ? '' : '?' + new Date().getTime();
+        var isMark = href.search(/\?/g);
+        var mark = (isMark === -1) ? '?' : '&';
+        var tstamp = (this.opts.editor.csscache) ? '' : mark + new Date().getTime();
         obj.href = obj.href + tstamp;
 
         // link tag
@@ -9846,11 +9851,6 @@ ArticleEditor.add('module', 'parser', {
         // remove style & script tag
         html = this.app.content.removeTagsWithContent(html, ['script', 'style']);
 
-        // remove comments
-        if (this.opts.clean.comments) {
-            html = this.app.content.removeComments(html);
-        }
-
         // remove empty spans
         html = this.app.content.removeEmptySpans(html);
 
@@ -9869,6 +9869,11 @@ ArticleEditor.add('module', 'parser', {
 
         // restore comments
         html = this.app.content.restoreComments(html, storedComments);
+
+        // remove comments
+        if (this.opts.clean.comments) {
+            html = this.app.content.removeComments(html);
+        }
 
         // empty or paragraphize
         if (this.app.content.isEmptyHtml(html)) {
@@ -11662,7 +11667,6 @@ ArticleEditor.add('module', 'input', {
         }
         // editable
         else if (instance.isEditable()) {
-
             var type = instance.getType();
 
             // all block selected
@@ -11705,7 +11709,7 @@ ArticleEditor.add('module', 'input', {
                     }
                 }
                 else {
-                    if (type === 'card') {
+                    if (type === 'card' || type === 'cell') {
                         return;
                     }
                     else {
@@ -12080,7 +12084,9 @@ ArticleEditor.add('module', 'input', {
         var el;
         if (isChar && pointer === 'left') {
             el = sel.current;
+            var data = this.app.offset.get();
             this.dom(el).replaceWith(el.textContent.replace(/\uFEFF/g, ''));
+            this.app.offset.set(false, { start: data.start - 1, end: data.end - 1 });
         }
         else if (isChar && remove && sel.current && sel.current.nextSibling) {
             el = sel.current.nextSibling;

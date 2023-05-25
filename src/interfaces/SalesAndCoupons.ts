@@ -5,6 +5,7 @@ import {
   ShippingMethod,
   ProductSet,
   SaleUpdateDto,
+  DiscountCondition,
 } from '@heseya/store-core'
 
 /**
@@ -26,4 +27,11 @@ export interface SaleFormDto
  */
 export interface CouponFormDto extends SaleFormDto {
   code: string
+}
+
+/**
+ * Inner ConditionGroup interface to update a sale.
+ */
+export type InnerConditionGroup = Omit<DiscountConditionGroup, 'id' | 'conditions'> & {
+  conditions: Array<Omit<DiscountCondition, 'id'> & { forced?: boolean }>
 }

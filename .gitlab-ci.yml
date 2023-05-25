@@ -29,6 +29,22 @@ test-unit:
   rules:
     - if: $CI_COMMIT_BRANCH != "master"
   coverage: /All files\s*\|\s*([\d\.]+)/
+# test-e2e:
+#   image: cypress/browsers:node16.5.0-chrome97-ff96
+#   stage: test
+#   before_script:
+#     - yarn
+#     - yarn cypress install --force
+#   script:
+#     - yarn test:e2e --headless --record --key $CYPRESS_RECORD_KEY
+#   artifacts:
+#     when: always
+#     paths:
+#       - tests/e2e/videos/**/*.mp4
+#       - tests/e2e/screenshots/**/*.png
+#     expire_in: 1 day
+#   rules:
+#     - if: $CI_COMMIT_BRANCH == "develop"
 
 test-e2e:
   image: cypress/browsers:node16.5.0-chrome97-ff96

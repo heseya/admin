@@ -1,13 +1,14 @@
 <template>
   <div class="cms-table-header">
     <button
-      v-for="{ key, label, sortable } in headers"
+      v-for="{ key, label, sortable, labelTooltip } in headers"
       :key="key"
       class="cms-table-header__col"
       :class="{ 'cms-table-header__col--sortable': sortable }"
       @click="sortable && handleSort(key)"
     >
       {{ label }}
+      <info-tooltip v-if="labelTooltip" :text="labelTooltip" />
       <template v-if="sortable">
         <i v-if="!sortingObject[key]" class="bx bx-sort-alt-2"></i>
         <i v-else-if="sortingObject[key] === 'asc'" class="bx bx-up-arrow-alt"></i>
@@ -21,8 +22,10 @@
 import Vue from 'vue'
 
 import { TableHeader } from '@/interfaces/CmsTable'
+import InfoTooltip from '../layout/InfoTooltip.vue'
 
 export default Vue.extend({
+  components: { InfoTooltip },
   props: {
     headers: {
       type: Array,

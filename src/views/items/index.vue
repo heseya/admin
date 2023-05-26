@@ -42,9 +42,7 @@
       "sku": "SKU",
       "quantity": "Ilość w magazynie",
       "unlimited": "Nieograniczona możliwość zakupu",
-      "availability": "Dostępność",
-      "availabilityTime": "w {time} dni",
-      "availabilityDate": "od {date}"
+      "availability": "Dostępność"
     }
   },
   "en": {
@@ -57,9 +55,7 @@
       "sku": "SKU",
       "quantity": "Quantity in stock",
       "unlimited": "Unlimited purchase",
-      "availability": "Availibility",
-      "availabilityTime": "in {time} days",
-      "availabilityDate": "from {date}"
+      "availability": "Availibility"
     }
   }
 }
@@ -192,9 +188,9 @@ export default Vue.extend({
   methods: {
     formatAvailability(item: WarehouseItem) {
       if (item.shipping_time)
-        return this.$t('table.availabilityTime', { time: item.shipping_time }) as string
+        return this.$t('availability.time', { time: item.shipping_time }) as string
       if (item.shipping_date)
-        return this.$t('table.availabilityDate', {
+        return this.$t('availability.date', {
           date: formatDate(item.shipping_date),
         }) as string
       return '-'

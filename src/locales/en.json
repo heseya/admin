@@ -108,6 +108,11 @@
     "other": "Other"
   },
 
+  "availability": {
+    "time": "in {time} days",
+    "date": "from {date}"
+  },
+
   "discountTypes": {
     "percent": "Percentage discount",
     "amount": "Amount discount"

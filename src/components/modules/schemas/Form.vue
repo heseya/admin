@@ -250,6 +250,7 @@ import Vue from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import { SchemaType, Schema } from '@heseya/store-core'
+import isNil from 'lodash/isNil'
 
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import Zone from '@/components/layout/Zone.vue'
@@ -285,7 +286,7 @@ export default Vue.extend({
   data: () => ({
     // TODO: correct SchemaComponentDto
     form: cloneDeep(CLEAR_FORM) as any & { id?: string },
-    defaultOption: 0,
+    defaultOption: null as number | null,
     isUsedSchemaModalActive: false,
     usedSchemaName: '',
     SchemaType: SchemaType,
@@ -302,7 +303,8 @@ export default Vue.extend({
     },
   },
   watch: {
-    defaultOption(defaultOption: number) {
+    defaultOption(defaultOption: number | null) {
+      if (isNil(defaultOption)) return
       if (this.form.type === SchemaType.Select) {
         this.form.options = this.form.options.map((v: any) => ({ ...v, default: false }))
         this.form.options[defaultOption].default = true
@@ -330,7 +332,7 @@ export default Vue.extend({
   methods: {
     initSchemaForm(schema: Schema) {
       this.form = schema.type ? cloneDeep(schema) : cloneDeep(CLEAR_FORM)
-      this.defaultOption = Number(this.form.default)
+      this.defaultOption = isNil(this.form.default) ? null : Number(this.form.default)
     },
     isKindOfNumeric(type: SchemaType): boolean {
       return (

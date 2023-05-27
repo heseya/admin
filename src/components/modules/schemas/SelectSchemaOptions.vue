@@ -37,7 +37,12 @@
           <SwitchInput v-model="option.disabled" :disabled="disabled">
             <template #title>{{ $t('disabled') }}</template>
           </SwitchInput>
-          <a-radio :disabled="disabled" :value="i" class="radio-option-default">
+          <a-radio
+            :disabled="disabled"
+            :value="i"
+            class="radio-option-default"
+            @click="onRadioClick(i)"
+          >
             {{ $t('default') }}
           </a-radio>
           <icon-button
@@ -105,7 +110,7 @@ export default Vue.extend({
   props: {
     defaultOption: {
       type: [Number, String],
-      required: true,
+      default: null,
     },
     value: {
       type: Array,
@@ -124,7 +129,7 @@ export default Vue.extend({
     },
   },
   methods: {
-    setDefault(v: number) {
+    setDefault(v: number | null) {
       this.$emit('set-default', v)
     },
     addOption() {
@@ -132,6 +137,9 @@ export default Vue.extend({
     },
     removeOption(index: number) {
       this.options = this.options.filter((_, i) => i !== index)
+    },
+    onRadioClick(index: number) {
+      this.setDefault(this.defaultOption === index ? null : index)
     },
   },
 })

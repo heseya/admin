@@ -173,7 +173,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { ValidationProvider } from 'vee-validate'
 import {
   PaymentMethod,
@@ -208,11 +208,11 @@ export default defineComponent({
     value: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<ShippingMethodCreateDto>,
+    } as PropOptions<ShippingMethodCreateDto>,
     countries: {
       type: Array,
       required: true,
-    } as Vue.PropOptions<ShippingCountry[]>,
+    } as PropOptions<ShippingCountry[]>,
     disabled: {
       type: Boolean,
       required: true,

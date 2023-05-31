@@ -95,7 +95,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { WarehouseItem, ProductWarehouseItem } from '@heseya/store-core'
 
 import { UUID } from '@/interfaces/UUID'
@@ -112,7 +112,7 @@ export default defineComponent({
     value: {
       type: Array,
       required: true,
-    } as Vue.PropOptions<ProductWarehouseItem[]>,
+    } as PropOptions<ProductWarehouseItem[]>,
     disabled: { type: Boolean, default: false },
   },
   data: () => ({

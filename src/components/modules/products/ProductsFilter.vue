@@ -114,7 +114,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { defineComponent } from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import debounce from 'lodash/debounce'
 import cloneDeep from 'lodash/cloneDeep'
 import { Attribute, AttributeType } from '@heseya/store-core'
@@ -162,7 +162,7 @@ export default defineComponent({
     filters: {
       type: Object,
       default: () => cloneDeep(EMPTY_PRODUCT_FILTERS),
-    } as Vue.PropOptions<ProductFilers>,
+    } as PropOptions<ProductFilers>,
   },
   data: () => ({
     local: cloneDeep(EMPTY_PRODUCT_FILTERS),

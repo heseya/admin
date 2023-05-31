@@ -93,7 +93,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { Product, ProductSetList } from '@heseya/store-core'
 
 import LayoutAccordion from '@/components/layout/Accordion.vue'
@@ -110,11 +110,11 @@ export default defineComponent({
     value: {
       type: Array,
       required: true,
-    } as Vue.PropOptions<ProductSetList[]>,
+    } as PropOptions<ProductSetList[]>,
     product: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<Product>,
+    } as PropOptions<Product>,
     disabled: {
       type: Boolean,
       default: false,

@@ -246,7 +246,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import { SchemaType, Schema } from '@heseya/store-core'
@@ -276,11 +276,11 @@ export default defineComponent({
     schema: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<Schema>,
+    } as PropOptions<Schema>,
     currentProductSchemas: {
       type: Array,
       default: () => [],
-    } as Vue.PropOptions<Schema[]>,
+    } as PropOptions<Schema[]>,
     disabled: { type: Boolean, default: false },
   },
   data: () => ({

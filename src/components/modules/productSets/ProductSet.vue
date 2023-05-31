@@ -164,7 +164,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import Draggable from 'vuedraggable'
 import { cloneDeep } from 'lodash'
 import { ProductSet, ProductSetUpdateDto, ProductSetList } from '@heseya/store-core'
@@ -186,7 +186,7 @@ export default defineComponent({
     set: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<ProductSet>,
+    } as PropOptions<ProductSet>,
     searchable: {
       type: Boolean,
       required: false,

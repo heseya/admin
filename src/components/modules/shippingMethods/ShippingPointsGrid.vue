@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { AddressDto } from '@heseya/store-core'
 
 export default defineComponent({
@@ -43,7 +43,7 @@ export default defineComponent({
     shippingPoints: {
       type: Array,
       required: true,
-    } as Vue.PropOptions<AddressDto[]>,
+    } as PropOptions<AddressDto[]>,
   },
 })
 </script>

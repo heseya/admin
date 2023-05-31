@@ -62,7 +62,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { ShippingMethodPriceRangeDto } from '@heseya/store-core'
 
 export default defineComponent({
@@ -70,7 +70,7 @@ export default defineComponent({
     value: {
       type: Array,
       default: () => [{ start: 0, value: 0 }],
-    } as Vue.PropOptions<ShippingMethodPriceRangeDto[]>,
+    } as PropOptions<ShippingMethodPriceRangeDto[]>,
     error: {
       type: String,
       default: '',

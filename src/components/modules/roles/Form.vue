@@ -42,7 +42,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { RoleCreateDto } from '@heseya/store-core'
 
@@ -55,7 +55,7 @@ export default defineComponent({
     value: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<RoleCreateDto>,
+    } as PropOptions<RoleCreateDto>,
     disabled: {
       type: Boolean,
       default: false,

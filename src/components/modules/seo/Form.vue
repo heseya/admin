@@ -119,7 +119,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import {
   SeoMetadata,
   SeoMetadataDto,
@@ -153,7 +153,7 @@ export default defineComponent({
     value: {
       type: Object,
       default: () => null,
-    } as Vue.PropOptions<SeoMeta | null>,
+    } as PropOptions<SeoMeta | null>,
     disabled: {
       type: Boolean,
       default: false,
@@ -165,7 +165,7 @@ export default defineComponent({
     current: {
       type: Object,
       default: null,
-    } as Vue.PropOptions<{ id: UUID; model: SeoCheckModelType }>,
+    } as PropOptions<{ id: UUID; model: SeoCheckModelType }>,
   },
 
   data: () => ({

@@ -10,7 +10,7 @@
 
 <script lang="ts">
 // @ts-nocheck
-import { defineComponent } from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 export default defineComponent({
   props: {
     value: {
@@ -28,7 +28,7 @@ export default defineComponent({
     config: {
       default: {},
       type: Object,
-    } as Vue.PropOptions<object>,
+    } as PropOptions<object>,
   },
   data: () => ({
     article: null as any,

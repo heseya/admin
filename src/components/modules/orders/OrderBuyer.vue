@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { App, User } from '@heseya/store-core'
 
 export default defineComponent({
@@ -14,7 +14,7 @@ export default defineComponent({
     buyer: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<User | App>,
+    } as PropOptions<User | App>,
   },
 
   computed: {

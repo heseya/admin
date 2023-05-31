@@ -59,7 +59,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { OrderValueDiscountCondition } from '@heseya/store-core'
 
 import SwitchInput from '@/components/form/SwitchInput.vue'
@@ -67,7 +67,7 @@ import SwitchInput from '@/components/form/SwitchInput.vue'
 export default defineComponent({
   components: { SwitchInput },
   props: {
-    value: { type: Object, required: true } as Vue.PropOptions<OrderValueDiscountCondition>,
+    value: { type: Object, required: true } as PropOptions<OrderValueDiscountCondition>,
     disabled: { type: Boolean, default: false },
   },
   computed: {

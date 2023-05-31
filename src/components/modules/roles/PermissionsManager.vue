@@ -116,7 +116,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { groupBy } from 'lodash'
 import { Permission, PermissionObject } from '@/interfaces/Permissions'
 
@@ -132,7 +132,7 @@ export default defineComponent({
     value: {
       type: Array,
       required: true,
-    } as Vue.PropOptions<Permission[]>,
+    } as PropOptions<Permission[]>,
     disabled: {
       type: Boolean,
       default: false,

@@ -38,7 +38,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { Product } from '@heseya/store-core'
 
 import { ProductComponentForm } from '@/interfaces/Product'
@@ -48,11 +48,11 @@ export default defineComponent({
     value: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<ProductComponentForm>,
+    } as PropOptions<ProductComponentForm>,
     product: {
       type: Object,
       default: () => ({} as Product),
-    } as Vue.PropOptions<Product>,
+    } as PropOptions<Product>,
     disabled: { type: Boolean, default: false },
   },
   computed: {

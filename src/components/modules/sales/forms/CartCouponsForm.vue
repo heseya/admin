@@ -41,7 +41,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import {
   DiscountConditionType,
   CartLengthDiscountCondition,
@@ -52,8 +52,8 @@ type CartCouponsForm = CartLengthDiscountCondition | CouponsCountDiscountConditi
 
 export default defineComponent({
   props: {
-    value: { type: Object, required: true } as Vue.PropOptions<CartCouponsForm>,
-    type: { type: String, required: true } as Vue.PropOptions<
+    value: { type: Object, required: true } as PropOptions<CartCouponsForm>,
+    type: { type: String, required: true } as PropOptions<
       DiscountConditionType.CouponsCount | DiscountConditionType.CartLength
     >,
     disabled: { type: Boolean, default: false },

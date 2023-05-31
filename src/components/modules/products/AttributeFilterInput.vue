@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { Attribute, AttributeType } from '@heseya/store-core'
 
 import AutocompleteInput from '@/components/AutocompleteInput.vue'
@@ -36,7 +36,7 @@ import RangeInput from '@/components/form/RangeInput.vue'
 export default defineComponent({
   components: { AutocompleteInput, RangeInput },
   props: {
-    attribute: { type: Object, required: true } as Vue.PropOptions<Attribute>,
+    attribute: { type: Object, required: true } as PropOptions<Attribute>,
     value: { type: [String, Object, Array], default: undefined },
   },
   computed: {

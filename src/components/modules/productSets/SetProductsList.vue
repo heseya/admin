@@ -94,7 +94,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import Draggable from 'vuedraggable'
 import { ProductList, ProductSet } from '@heseya/store-core'
 
@@ -117,7 +117,7 @@ export default defineComponent({
     set: {
       type: Object,
       default: null,
-    } as Vue.PropOptions<ProductSet | null>,
+    } as PropOptions<ProductSet | null>,
     isOpen: {
       type: Boolean,
       default: false,

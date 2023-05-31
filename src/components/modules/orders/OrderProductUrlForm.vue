@@ -55,7 +55,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { OrderProductUrl } from '@heseya/store-core'
 
@@ -66,7 +66,7 @@ export default defineComponent({
     editedUrl: {
       type: Object,
       default: null,
-    } as Vue.PropOptions<OrderProductUrl | null>,
+    } as PropOptions<OrderProductUrl | null>,
     orderId: {
       type: String,
       required: true,

@@ -75,7 +75,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { PageList, Product } from '@heseya/store-core'
 
 import LayoutAccordion from '@/components/layout/Accordion.vue'
@@ -91,11 +91,11 @@ export default defineComponent({
     value: {
       type: Array,
       required: true,
-    } as Vue.PropOptions<PageList[]>,
+    } as PropOptions<PageList[]>,
     product: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<Product>,
+    } as PropOptions<Product>,
     disabled: {
       type: Boolean,
       default: false,

@@ -86,7 +86,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { Role, UserCreateDto, UserUpdateDto } from '@heseya/store-core'
 
 import ModalForm from '@/components/form/ModalForm.vue'
@@ -104,7 +104,7 @@ export default defineComponent({
     value: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<UserDTO>,
+    } as PropOptions<UserDTO>,
     disabled: {
       type: Boolean,
       default: false,

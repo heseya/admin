@@ -16,7 +16,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { SeoMetadata } from '@heseya/store-core'
 
 import SeoForm from './Form.vue'
@@ -32,7 +32,7 @@ export default defineComponent({
     value: {
       type: Object,
       default: () => ({}),
-    } as Vue.PropOptions<SeoMetadata | null>,
+    } as PropOptions<SeoMetadata | null>,
     disabled: {
       type: Boolean,
       default: false,
@@ -44,7 +44,7 @@ export default defineComponent({
     current: {
       type: Object,
       default: null,
-    } as Vue.PropOptions<{ id: UUID; model: string }>,
+    } as PropOptions<{ id: UUID; model: string }>,
   },
   computed: {
     form: {

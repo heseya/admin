@@ -110,7 +110,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import Draggable from 'vuedraggable'
 import { Schema } from '@heseya/store-core'
 
@@ -138,7 +138,7 @@ export default defineComponent({
     value: {
       type: Array,
       required: true,
-    } as Vue.PropOptions<Schema[]>,
+    } as PropOptions<Schema[]>,
     disabled: { type: Boolean, default: false },
   },
   data: () => ({

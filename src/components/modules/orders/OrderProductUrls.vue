@@ -124,7 +124,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { OrderProduct, OrderProductUrl } from '@heseya/store-core'
 
 import { sdk } from '@/api'
@@ -143,7 +143,7 @@ export default defineComponent({
     product: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<OrderProduct>,
+    } as PropOptions<OrderProduct>,
     orderId: {
       type: String,
       required: true,

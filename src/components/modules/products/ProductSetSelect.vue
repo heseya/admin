@@ -36,7 +36,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import debounce from 'lodash/debounce'
 import uniqBy from 'lodash/uniqBy'
 import { ProductSet, Product } from '@heseya/store-core'
@@ -47,8 +47,8 @@ import { formatApiNotificationError } from '@/utils/errors'
 export default defineComponent({
   props: {
     disabled: { type: Boolean, default: false },
-    value: { type: Array, required: true } as Vue.PropOptions<UUID[]>,
-    product: { type: Object, required: true } as Vue.PropOptions<Product>,
+    value: { type: Array, required: true } as PropOptions<UUID[]>,
+    product: { type: Object, required: true } as PropOptions<Product>,
   },
 
   data: () => ({

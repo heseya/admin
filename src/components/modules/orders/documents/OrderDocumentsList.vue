@@ -41,7 +41,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { OrderDocument } from '@heseya/store-core'
 
 import OrderDocumentComponent from './OrderDocument.vue'
@@ -62,11 +62,11 @@ export default defineComponent({
     orderId: {
       type: String,
       required: true,
-    } as Vue.PropOptions<UUID>,
+    } as PropOptions<UUID>,
     documents: {
       type: Array,
       default: () => [],
-    } as Vue.PropOptions<OrderDocument[]>,
+    } as PropOptions<OrderDocument[]>,
   },
   data: () => ({
     isUploadModalOpen: false,

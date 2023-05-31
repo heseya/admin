@@ -24,13 +24,13 @@
       </div>
 
       <span class="log__data-key">{{ $t('payload') }}:</span>
-      <LayoutAccordion v-if="data.payload" :title="($t('expand') as string)">
+      <LayoutAccordion v-if="data.payload" :title="$tc('expand')">
         <vue-json-pretty v-if="data.payload" :path="'res'" :data="JSON.parse(payloadResponse)" />
       </LayoutAccordion>
       <span v-else class="log__data-value"> - </span>
 
       <span class="log__data-key">{{ $t('response') }}:</span>
-      <LayoutAccordion v-if="data.payload" :title="($t('expand') as string)">
+      <LayoutAccordion v-if="data.payload" :title="$tc('expand')">
         <vue-json-pretty v-if="data.response" :path="'res'" :data="JSON.parse(logResponse)" />
       </LayoutAccordion>
       <span v-else class="log__data-value"> - </span>

@@ -1,4 +1,4 @@
-import { defineComponent } from 'vue'
+import Vue from 'vue'
 
 /*
     Article Vue Component
@@ -49,7 +49,8 @@ Vue.component('article-editor', {
       }
 
       // extend config
-      Vue.set(this.config, 'subscribe', subscribe)
+      this.config.subscribe = subscribe
+      // Vue.set(this.config, 'subscribe', subscribe)
 
       // call
       var app = ArticleEditor(this.$refs.article, this.config)

@@ -33,7 +33,7 @@ new Vue({
   router,
   store,
   i18n,
-  render: (h) => h(App),
+  render: (h: Function) => h(App),
 }).$mount('#app')
 
 disableScrollOnInput()

@@ -4,7 +4,7 @@
       <img src="/img/icons/close-icon.svg" :alt="$t('common.close')" />
     </button>
 
-    <menu-link
+    <MenuLink
       v-for="item in menu"
       :key="item.to"
       v-can="item.can"
@@ -15,7 +15,7 @@
       :icon-path="item.iconPath"
       :svg-icon-path="item.svgIconPath"
       root-class="mobile-nav-overlay"
-      @click.native="close"
+      @click="close"
     />
   </div>
 </template>

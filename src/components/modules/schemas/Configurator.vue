@@ -65,14 +65,7 @@
       <template #title>
         <h4 class="flex schema-selector-title">
           <span>{{ $t('chooseExisting') }}</span>
-          <icon-button
-            reversed
-            size="small"
-            @click="
-              isModalActive = false
-              isFormModalActive = true
-            "
-          >
+          <icon-button reversed size="small" @click="openFormModal">
             <template #icon> <i class="bx bx-plus"></i> </template> {{ $t('createNew') }}
           </icon-button>
         </h4>
@@ -164,6 +157,10 @@ export default defineComponent({
     },
   },
   methods: {
+    openFormModal() {
+      this.isModalActive = false
+      this.isFormModalActive = true
+    },
     editSchema(schema: Schema) {
       this.editedSchema = schema
       this.isFormModalActive = true

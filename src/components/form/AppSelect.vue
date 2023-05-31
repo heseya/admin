@@ -4,9 +4,9 @@
       <slot name="label"> {{ label }} </slot>
     </label>
     <a-select
+      v-bind="$props"
       v-model="innerValue"
       class="app-input__input"
-      v-bind="$props"
       :data-cy="dataCy || name"
       v-on="$listeners"
     >

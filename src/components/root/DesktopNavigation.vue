@@ -19,7 +19,11 @@
           <i v-else :class="item.iconClass" class="nav-link-svg" />
           <span class="nav__link-label">{{ $t(item.label) }}</span>
         </router-link>
-        <div v-else-if="item.type === MenuItemType.Spacer" :key="i" class="nav__spacer"></div>
+        <div
+          v-else-if="item.type === MenuItemType.Spacer"
+          :key="`${i}-space`"
+          class="nav__spacer"
+        ></div>
       </template>
     </div>
 

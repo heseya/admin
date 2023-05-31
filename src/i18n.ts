@@ -6,15 +6,15 @@ import { LOCALE_STORAGE_KEY } from './consts/i18n'
 import en from '@/locales/en.json'
 import pl from '@/locales/pl.json'
 
-Vue.use(VueI18n)
-
 const getDefaultUiLanguage = () => {
   const browserLang = window.navigator.language
   if (browserLang.includes('pl')) return 'pl'
   return 'en'
 }
 
-export default new VueI18n({
+Vue.use(VueI18n)
+
+const i18n = new VueI18n({
   locale:
     import.meta.env.VITE_I18N_LOCALE ||
     window.localStorage.getItem(LOCALE_STORAGE_KEY) ||
@@ -45,3 +45,5 @@ export default new VueI18n({
     },
   },
 })
+
+export default i18n

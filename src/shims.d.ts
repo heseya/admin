@@ -1,15 +1,17 @@
-import VueRouter, { Route } from 'vue-router'
-
 import { PermissionsTree } from '@/consts/permissions'
 import { hasUserAccess, alertIfNoAccess } from './plugins/permissions'
 import { AccessorType } from './store'
 
-declare module 'vue/types/vue' {
-  interface Vue {
-    $router: VueRouter
-    $route: Route
-    $accessor: AccessorType
+declare module 'vue' {
+  import { CompatVue } from '@vue/runtime-dom'
+  const Vue: CompatVue
+  export default Vue
+  export * from '@vue/runtime-dom'
+  const { configureCompat } = Vue
+  export { configureCompat }
 
+  interface ComponentCustomProperties {
+    $accessor: AccessorType
     $p: PermissionsTree
     $can: typeof hasUserAccess
     $verboseCan: typeof alertIfNoAccess

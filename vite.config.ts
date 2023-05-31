@@ -1,13 +1,25 @@
 import { defineConfig } from 'vite'
 import path from 'path'
 
-import createVuePlugin from '@vitejs/plugin-vue2'
+import createVuePlugin from '@vitejs/plugin-vue'
 import { createI18nPlugin } from '@yfwz100/vite-plugin-vue2-i18n'
 import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [createVuePlugin(), createI18nPlugin(), VitePWA()],
+  plugins: [
+    createI18nPlugin(),
+    createVuePlugin({
+      template: {
+        compilerOptions: {
+          compatConfig: {
+            MODE: 2,
+          },
+        },
+      },
+    }),
+    VitePWA(),
+  ],
 
   css: {
     preprocessorOptions: {
@@ -41,6 +53,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
+      vue: '@vue/compat',
     },
   },
 })

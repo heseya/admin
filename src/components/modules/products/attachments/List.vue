@@ -78,7 +78,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import {
   CdnMediaAttachmentType,
@@ -105,7 +105,7 @@ const EMPTY_ATTACHMENT: ProductAttachmentCreateDto = {
   media_id: '',
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: { LayoutAccordion, AttachmentForm, EditableListItem, Empty },
   props: {
     product: {

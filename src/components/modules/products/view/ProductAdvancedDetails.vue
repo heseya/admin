@@ -82,7 +82,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { Product } from '@heseya/store-core'
 
 import { ProductComponentForm } from '@/interfaces/Product'
@@ -93,7 +93,7 @@ import InfoTooltip from '@/components/layout/InfoTooltip.vue'
 import BooleanSelect from '@/components/form/BooleanSelect.vue'
 import LayoutAccordion from '@/components/layout/Accordion.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: { LayoutAccordion, GoogleCategorySelect, ValidatedInput, InfoTooltip, BooleanSelect },
   props: {
     value: {

@@ -47,11 +47,11 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import { ApiError, formatApiNotificationError } from '@/utils/errors'
 
-export default Vue.extend({
+export default defineComponent({
   components: { PopConfirm },
   props: {
     disabled: {

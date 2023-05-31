@@ -153,7 +153,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { Order, OrderProduct, DiscountTargetType } from '@heseya/store-core'
 
 import CartItem from '@/components/layout/CartItem.vue'
@@ -165,13 +165,13 @@ import { formatCurrency } from '@/utils/currency'
 import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 import XlsxDownloadButton from '@/components/XlsxDownloadButton.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: { CartItem, Field, OrderDiscountSummary, OrderProductUrls, XlsxDownloadButton },
   props: {
     order: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<Order>,
+    } as PropOptions<Order>,
   },
   data: () => ({
     isProductUrlsModalActive: false,

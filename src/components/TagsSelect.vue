@@ -36,18 +36,18 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { debounce, uniqBy } from 'lodash'
 import { Tag } from '@heseya/store-core'
 
 type AntSelectOption = { key: string; label: string }
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     value: {
       type: Array,
       required: true,
-    } as Vue.PropOptions<Tag[]>,
+    } as PropOptions<Tag[]>,
     disabled: {
       type: Boolean,
       default: false,

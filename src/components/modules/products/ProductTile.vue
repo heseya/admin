@@ -47,7 +47,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { Product } from '@heseya/store-core'
 
 import { formatCurrency } from '@/utils/currency'
@@ -57,7 +57,7 @@ import ProductPrice from './ProductPrice.vue'
 
 import { FEATURE_FLAGS } from '@/consts/featureFlags'
 
-export default Vue.extend({
+export default defineComponent({
   components: { MediaElement, ProductPrice },
   props: {
     product: {

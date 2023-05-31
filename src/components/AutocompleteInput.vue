@@ -53,7 +53,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import debounce from 'lodash/debounce'
 import uniqBy from 'lodash/uniqBy'
 import isEmpty from 'lodash/isEmpty'
@@ -72,16 +72,16 @@ interface BaseItem {
 
 type AntSelectOption = { key: string; label: string }
 
-export default Vue.extend({
+export default defineComponent({
   components: { Empty, ValidationProvider },
   props: {
     value: {
       type: [String, Object, Array],
       default: () => [],
-    } as Vue.PropOptions<UUID | BaseItem | UUID[] | BaseItem[]>,
+    } as PropOptions<UUID | BaseItem | UUID[] | BaseItem[]>,
     modelUrl: { type: String, required: true },
     disabled: { type: Boolean, default: false },
-    propMode: { type: String, default: undefined } as Vue.PropOptions<keyof BaseItem>,
+    propMode: { type: String, default: undefined } as PropOptions<keyof BaseItem>,
     label: { type: String, default: '' },
     limit: { type: [Number, String], default: 24 },
     placeholderModel: { type: String, default: '' },

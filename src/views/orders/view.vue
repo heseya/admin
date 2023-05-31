@@ -64,7 +64,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { Order } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
@@ -82,7 +82,7 @@ import OrderMetadatas from '@/components/modules/orders/OrderMetadatas.vue'
 import OrderDocuments from '@/components/modules/orders/documents/OrderDocumentsList.vue'
 import QrCodeModalButton from '@/components/modules/qrCode/CodeModalButton.vue'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any): any {
     return { title: `${this.$t('title')} ${this.order?.code || ''}` }
   },

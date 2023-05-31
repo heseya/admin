@@ -33,16 +33,16 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 
 import { formatFilters } from '@/utils/utils'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     filters: {
       type: Object,
       default: () => ({}),
-    } as Vue.PropOptions<Record<string, any>>,
+    } as PropOptions<Record<string, any>>,
   },
   computed: {
     filtersCount(): number {

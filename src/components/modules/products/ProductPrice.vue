@@ -21,12 +21,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { Product } from '@heseya/store-core'
 
 import { formatCurrency } from '@/utils/currency'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     product: {
       type: Object,

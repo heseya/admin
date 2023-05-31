@@ -94,7 +94,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import Draggable from 'vuedraggable'
 import { ProductList, ProductSet } from '@heseya/store-core'
 
@@ -111,7 +111,7 @@ import { formatApiNotificationError } from '@/utils/errors'
 
 import { FEATURE_FLAGS } from '@/consts/featureFlags'
 
-export default Vue.extend({
+export default defineComponent({
   components: { Draggable, Selector, Empty, Avatar, ProductPrice },
   props: {
     set: {

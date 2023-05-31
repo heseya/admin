@@ -47,7 +47,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { cloneDeep } from 'lodash'
 import { Schema } from '@heseya/store-core'
 
@@ -58,7 +58,7 @@ import SchemaForm from '@/components/modules/schemas/Form.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any): any {
     const fallback = this.$t('newTitle') as string
     return {

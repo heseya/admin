@@ -89,7 +89,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { debounce } from 'lodash'
 import { OrderStatus, ShippingMethod, ShippingType } from '@heseya/store-core'
 
@@ -113,7 +113,7 @@ export const EMPTY_ORDER_FILTERS: OrderFilersType = {
   sort: undefined,
 }
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     filters: {
       type: Object,

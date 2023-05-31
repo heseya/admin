@@ -14,10 +14,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import InlineSvg from 'vue-inline-svg'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     InlineSvg,
   },

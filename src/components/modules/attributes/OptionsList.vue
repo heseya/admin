@@ -88,7 +88,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { cloneDeep } from 'lodash'
 import {
   AttributeOption,
@@ -109,7 +109,7 @@ const EMPTY_FORM: AttributeOptionDto = {
   value_date: null,
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: { Empty, PopConfirm, OptionsEditForm, Pagination },
   props: {
     attributeId: {
@@ -119,7 +119,7 @@ export default Vue.extend({
     type: {
       type: String,
       required: true,
-    } as Vue.PropOptions<AttributeType>,
+    } as PropOptions<AttributeType>,
     disabled: {
       type: Boolean,
       default: false,

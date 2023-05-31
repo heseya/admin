@@ -48,7 +48,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 
 import IconButton from '@/components/layout/IconButton.vue'
 
@@ -66,7 +66,7 @@ enum ProgressStep {
   Finished,
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     SetupApp,
     SetupEmail,

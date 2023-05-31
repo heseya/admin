@@ -59,7 +59,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { cloneDeep } from 'lodash'
 import { Banner, BannerCreateDto } from '@heseya/store-core'
 
@@ -80,7 +80,7 @@ const CLEAN_FORM: Banner = {
   metadata_private: {},
 }
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any): any {
     const fallback = this.$t('newTitle') as string
     return {

@@ -89,7 +89,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { clone } from 'lodash'
 import { Tag } from '@heseya/store-core'
@@ -108,7 +108,7 @@ const CLEAR_TAG: Tag = {
   color: '000000',
 }
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },

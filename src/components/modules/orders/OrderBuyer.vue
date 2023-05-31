@@ -6,10 +6,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { App, User } from '@heseya/store-core'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     buyer: {
       type: Object,

@@ -30,12 +30,12 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 
 import { initAppTwoFactorAuth } from '@/services/twoFactorAuth'
 import { formatApiNotificationError } from '@/utils/errors'
 
-export default Vue.extend({
+export default defineComponent({
   data: () => ({
     qrCodeUrl: '',
     secret: '',

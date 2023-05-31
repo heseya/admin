@@ -60,7 +60,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { Attribute, ProductAttribute } from '@heseya/store-core'
 
 import Selector from '@/components/Selector.vue'
@@ -69,7 +69,7 @@ import AttributeForm from '@/components/modules/attributes/Form.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 
-export default Vue.extend({
+export default defineComponent({
   components: { Selector, ModalForm, AttributeForm },
   props: {
     value: {

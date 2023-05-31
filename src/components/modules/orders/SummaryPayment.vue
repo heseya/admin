@@ -75,7 +75,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { Order, OrderPayment, PaymentStatus } from '@heseya/store-core'
 
 import PopConfirm from '@/components/layout/PopConfirm.vue'
@@ -85,7 +85,7 @@ import { sdk } from '@/api'
 import { formatCurrency } from '@/utils/currency'
 import { PAYMENT_METHODS } from '@/consts/paymentMethods'
 
-export default Vue.extend({
+export default defineComponent({
   components: { PopConfirm, InfoTooltip },
   props: {
     order: {

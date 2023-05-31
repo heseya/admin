@@ -127,7 +127,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { Order } from '@heseya/store-core'
 
 import Card from '@/components/layout/Card.vue'
@@ -141,7 +141,7 @@ import { TableConfig } from '@/interfaces/CmsTable'
 import { PAYMENT_METHODS } from '@/consts/paymentMethods'
 import { formatCurrency } from '@/utils/currency'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     Card,
     OrderField,

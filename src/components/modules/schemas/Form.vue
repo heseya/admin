@@ -246,7 +246,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import { SchemaType, Schema } from '@heseya/store-core'
@@ -261,7 +261,7 @@ import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordi
 
 import { CLEAR_FORM, CLEAR_OPTION } from '@/consts/schemaConsts'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     ValidationProvider,
     ValidationObserver,

@@ -93,13 +93,13 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { PackagesTemplate } from '@heseya/store-core'
 import { createStandardPackage } from '@/services/createStandardPackage'
 
 import { formatApiNotificationError } from '@/utils/errors'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     shippingNumber: {
       type: String,

@@ -43,7 +43,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import Draggable from 'vuedraggable'
 import { CdnMedia, CdnMediaType } from '@heseya/store-core'
 
@@ -54,7 +54,7 @@ import MediaEditForm from '@/components/modules/media/MediaEditForm.vue'
 import MediaElement from '@/components/MediaElement.vue'
 import MediaUploadInput from '../media/MediaUploadInput.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     Draggable,
     MediaEditForm,

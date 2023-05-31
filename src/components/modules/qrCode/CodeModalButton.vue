@@ -29,14 +29,14 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 
 import { QrCodeObject } from '@/interfaces/QrCode'
 import { EXPERIMENTAL_FLAGS } from '@/consts/featureFlags'
 
 import CodeModal from './CodeModal.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: { CodeModal },
   props: {
     size: { type: Number, default: 250 },

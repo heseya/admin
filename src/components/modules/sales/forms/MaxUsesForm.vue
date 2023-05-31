@@ -27,14 +27,14 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 
 interface MaxUsesForm {
   // eslint-disable-next-line camelcase
   max_uses: number
 }
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     value: { type: Object, required: true } as Vue.PropOptions<MaxUsesForm>,
     disabled: { type: Boolean, default: false },

@@ -86,7 +86,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import { ValidationProvider } from 'vee-validate'
 import { DiscountConditionDto, DiscountConditionType } from '@heseya/store-core'
@@ -101,7 +101,7 @@ import EntitiesForm from './forms/EntitiesForm.vue'
 
 import * as SALES_FORMS from '@/consts/salesConditionsForms'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     ValidationProvider,
     OrderValueForm,

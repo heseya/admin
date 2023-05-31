@@ -57,7 +57,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import debounce from 'lodash/debounce'
 import { AttributeOption, AttributeType, ProductAttribute } from '@heseya/store-core'
 
@@ -66,21 +66,21 @@ import { UUID } from '@/interfaces/UUID'
 import { ApiError, formatApiNotificationError } from '@/utils/errors'
 import { uniqueArray } from '@/utils/uniqueArray'
 
-export default Vue.extend({
+export default defineComponent({
   components: { Empty },
   props: {
     value: {
       type: Array,
       default: () => [],
-    } as Vue.PropOptions<AttributeOption[]>,
+    } as PropOptions<AttributeOption[]>,
     attribute: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<ProductAttribute>,
+    } as PropOptions<ProductAttribute>,
     type: {
       type: String,
       required: true,
-    } as Vue.PropOptions<AttributeType>,
+    } as PropOptions<AttributeType>,
     disabled: { type: Boolean, default: false },
   },
   data: () => ({

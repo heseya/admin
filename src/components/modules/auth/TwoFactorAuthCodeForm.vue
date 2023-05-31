@@ -51,12 +51,12 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 
 import { TwoFactorAuthMethod } from '@/enums/twoFactorAuth'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     ValidationObserver,
   },
@@ -68,7 +68,7 @@ export default Vue.extend({
     method: {
       type: String,
       required: true,
-    } as Vue.PropOptions<TwoFactorAuthMethod>,
+    } as PropOptions<TwoFactorAuthMethod>,
   },
   computed: {
     code: {

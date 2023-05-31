@@ -206,7 +206,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { WarehouseItem, WarehouseItemCreateDto } from '@heseya/store-core'
 
@@ -225,11 +225,11 @@ enum UnlimitedStockType {
   Time = 'time',
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: { ValidationObserver, ModalForm, PopConfirm, MetadataForm, Field, ItemsAvailibility },
   props: {
-    item: { type: Object, default: null } as Vue.PropOptions<WarehouseItem | null>,
-    value: { type: Object, required: true } as Vue.PropOptions<Form>,
+    item: { type: Object, default: null } as PropOptions<WarehouseItem | null>,
+    value: { type: Object, required: true } as PropOptions<Form>,
     visible: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
   },

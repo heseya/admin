@@ -42,14 +42,14 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { RoleCreateDto } from '@heseya/store-core'
 
 import Card from '@/components/layout/Card.vue'
 import PermissionsManager from './PermissionsManager.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: { ValidationObserver, Card, PermissionsManager },
   props: {
     value: {

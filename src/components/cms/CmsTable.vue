@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import Draggable from 'vuedraggable'
 
 import { VuexBaseItem } from '@/interfaces/VuexGenerator'
@@ -48,17 +48,17 @@ import { TableConfig } from '@/interfaces/CmsTable'
 import CmsTableHeader from '@/components/cms/CmsTableHeader.vue'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: { CmsTableHeader, Draggable, CmsTableRow },
   props: {
     value: {
       type: Array,
       required: true,
-    } as Vue.PropOptions<VuexBaseItem[]>,
+    } as PropOptions<VuexBaseItem[]>,
     config: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<TableConfig>,
+    } as PropOptions<TableConfig>,
     draggable: {
       type: Boolean,
       default: false,

@@ -24,12 +24,12 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 
 import { getLastElement } from '@/utils/utils'
 import { uploadMedia } from '@/services/uploadMedia'
 
-export default Vue.extend({
+export default defineComponent({
   name: 'MediaUploader',
   props: {
     extensions: {
@@ -50,7 +50,7 @@ export default Vue.extend({
         // 'mov',
         // 'wmv',
       ],
-    } as Vue.PropOptions<string[]>,
+    } as PropOptions<string[]>,
     disabled: {
       type: Boolean,
       default: false,

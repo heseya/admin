@@ -54,7 +54,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import Draggable from 'vuedraggable'
 import { HeseyaPaginatedResponseMeta } from '@heseya/store-core'
 
@@ -77,7 +77,7 @@ import { VuexBaseItem } from '@/interfaces/VuexGenerator'
 import { formatFilters } from '@/utils/utils'
 import { formatApiNotificationError } from '@/utils/errors'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     Draggable,
     AppTopNav: TopNav,
@@ -103,7 +103,7 @@ export default Vue.extend({
     storeKey: {
       type: String,
       required: true,
-    } as Vue.PropOptions<GeneratedStoreModulesKeys>,
+    } as PropOptions<GeneratedStoreModulesKeys>,
     draggable: {
       type: Boolean,
       default: false,
@@ -115,19 +115,19 @@ export default Vue.extend({
     filters: {
       type: Object,
       default: () => ({}),
-    } as Vue.PropOptions<Record<string, any>>,
+    } as PropOptions<Record<string, any>>,
     table: {
       type: Object,
       default: null,
-    } as Vue.PropOptions<TableConfig>,
+    } as PropOptions<TableConfig>,
     params: {
       type: Object,
       default: () => ({}),
-    } as Vue.PropOptions<Record<string, any>>,
+    } as PropOptions<Record<string, any>>,
     xlsxFileConfig: {
       type: Object,
       default: null,
-    } as Vue.PropOptions<XlsxFileConfig>,
+    } as PropOptions<XlsxFileConfig>,
   },
   data: () => ({
     page: 1,

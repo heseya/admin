@@ -81,7 +81,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { cloneDeep } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
 import {
@@ -130,7 +130,7 @@ const EMPTY_SALE_FORM: SaleFormDto = {
   seo: {},
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: { ValidationObserver, TopNav, Card, PopConfirm, SaleForm, MetadataForm },
   data: () => ({
     form: cloneDeep(EMPTY_SALE_FORM) as SaleFormDto,

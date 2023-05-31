@@ -38,7 +38,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { first, isNull } from 'lodash'
 
 import CentralScreenForm from '@/components/form/CentralScreenForm.vue'
@@ -58,7 +58,7 @@ const CLEAR_LOGIN_FORM = {
   password: SHOW_DEFAULT_CREDENTIALS ? '***REMOVED***' : '',
 }
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('loginTitle') as string }
   },

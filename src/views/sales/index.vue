@@ -76,7 +76,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { debounce } from 'lodash'
 import { DiscountType, Sale } from '@heseya/store-core'
 
@@ -86,7 +86,7 @@ import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 import { TableConfig } from '@/interfaces/CmsTable'
 import { formatCurrency } from '@/utils/currency'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },

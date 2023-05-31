@@ -60,7 +60,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import MediaEditForm from '@/components/modules/media/MediaEditForm.vue'
@@ -70,7 +70,7 @@ import MediaElement from '@/components/MediaElement.vue'
 import { formatFilters } from '@/utils/utils'
 import { EMPTY_MEDIA_FILTERS, MediaFiltersType } from '@/components/modules/media/MediaFilter.vue'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },

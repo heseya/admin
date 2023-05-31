@@ -47,7 +47,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import isEqual from 'lodash/isEqual'
 import { DiscountCondition, DiscountConditionType } from '@heseya/store-core'
@@ -59,7 +59,7 @@ import { InnerConditionGroup } from '@/interfaces/SalesAndCoupons'
 
 import { EMPTY_ORDER_VALUE_FORM } from '@/consts/salesConditionsForms'
 
-export default Vue.extend({
+export default defineComponent({
   components: { Empty, ConditionGroup },
   props: {
     value: { type: Array, required: true } as Vue.PropOptions<InnerConditionGroup[]>,

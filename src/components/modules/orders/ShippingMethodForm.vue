@@ -77,7 +77,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { cloneDeep, isString } from 'lodash'
 import { Address, AddressDto, Order, ShippingMethod, ShippingType } from '@heseya/store-core'
@@ -92,7 +92,7 @@ interface ShippingMethodUpdate {
   shipping_place?: AddressDto | string
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: { AddressForm, ValidationObserver },
   props: {
     order: {

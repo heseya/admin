@@ -24,7 +24,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { cloneDeep, debounce } from 'lodash'
 
 export type WebhookFilersType = {
@@ -35,7 +35,7 @@ export const EMPTY_WEBHOOK_FILTERS: WebhookFilersType = {
   search: '',
 }
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     filters: {
       type: Object,

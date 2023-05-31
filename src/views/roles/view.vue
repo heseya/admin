@@ -60,7 +60,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { cloneDeep } from 'lodash'
 import { Role, RoleCreateDto } from '@heseya/store-core'
 
@@ -79,7 +79,7 @@ const CLEAN_FORM: RoleCreateDto = {
   is_registration_role: false,
 }
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any): any {
     const fallback = this.$t('newTitle') as string
     return {

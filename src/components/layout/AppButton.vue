@@ -26,9 +26,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
+
 import Loading from './Loading.vue'
-export default Vue.extend({
+
+export default defineComponent({
   components: { Loading },
   props: {
     disabled: {
@@ -58,11 +60,11 @@ export default Vue.extend({
     type: {
       type: String,
       default: 'default',
-    } as Vue.PropOptions<'default' | 'primary' | 'white' | 'success' | 'danger'>,
+    } as PropOptions<'default' | 'primary' | 'white' | 'success' | 'danger'>,
     size: {
       type: String,
       default: 'default',
-    } as Vue.PropOptions<'small' | 'default'>,
+    } as PropOptions<'small' | 'default'>,
   },
   computed: {
     component(): string {

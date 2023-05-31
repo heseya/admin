@@ -46,7 +46,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { cloneDeep } from 'lodash'
 import { AttributeOptionDto, AttributeType, ProductAttribute } from '@heseya/store-core'
 
@@ -56,20 +56,20 @@ const EMPTY_OPTION: AttributeOptionDto = {
   value_date: null,
 }
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     type: {
       type: String,
       required: true,
-    } as Vue.PropOptions<AttributeType.Number | AttributeType.Date>,
+    } as PropOptions<AttributeType.Number | AttributeType.Date>,
     value: {
       type: Array,
       default: () => [cloneDeep(EMPTY_OPTION)],
-    } as Vue.PropOptions<AttributeOptionDto[] | undefined[]>,
+    } as PropOptions<AttributeOptionDto[] | undefined[]>,
     attribute: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<ProductAttribute>,
+    } as PropOptions<ProductAttribute>,
     disabled: { type: Boolean, default: false },
   },
   data: () => ({

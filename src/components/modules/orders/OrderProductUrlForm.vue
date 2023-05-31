@@ -55,11 +55,11 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { OrderProductUrl } from '@heseya/store-core'
 
-export default Vue.extend({
+export default defineComponent({
   components: { ValidationObserver },
 
   props: {

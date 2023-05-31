@@ -60,20 +60,20 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { CdnMedia } from '@heseya/store-core'
 
 import MediaEditForm from '@/components/modules/media/MediaEditForm.vue'
 import MediaUploader from '@/components/modules/media/MediaUploader.vue'
 import MediaElement from '@/components/MediaElement.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: { MediaUploader, MediaEditForm, MediaElement },
   props: {
     media: {
       type: Object,
       default: () => null,
-    } as Vue.PropOptions<CdnMedia>,
+    } as PropOptions<CdnMedia>,
     disabled: {
       type: Boolean,
       default: false,

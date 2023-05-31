@@ -119,7 +119,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import {
   SeoMetadata,
   SeoMetadataDto,
@@ -144,7 +144,7 @@ export const CLEAR_SEO_FORM: SeoMeta = {
   no_index: false,
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     ModalForm,
     MediaUploadInput,

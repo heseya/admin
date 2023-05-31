@@ -116,7 +116,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { groupBy } from 'lodash'
 import { Permission, PermissionObject } from '@/interfaces/Permissions'
 
@@ -127,7 +127,7 @@ interface GroupedPermissions {
   isAssignable: boolean
 }
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     value: {
       type: Array,

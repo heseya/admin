@@ -176,7 +176,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { clone } from 'lodash'
 import { Metadata, OrderStatus, OrderStatusUpdateDto } from '@heseya/store-core'
@@ -201,7 +201,7 @@ const CLEAR_STATUS: OrderStatusUpdateDto = {
   no_notifications: false,
 }
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },

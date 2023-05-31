@@ -69,7 +69,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { Product, DiscountType } from '@heseya/store-core'
 
 import { ProductComponentForm } from '@/interfaces/Product'
@@ -77,7 +77,7 @@ import ProductVisibilitySwitch from './ProductVisibilitySwitch.vue'
 import ProductPrice from '../ProductPrice.vue'
 import { formatCurrency } from '@/utils/currency'
 
-export default Vue.extend({
+export default defineComponent({
   components: { ProductVisibilitySwitch, ProductPrice },
   props: {
     product: { type: Object, required: true } as Vue.PropOptions<Product>,

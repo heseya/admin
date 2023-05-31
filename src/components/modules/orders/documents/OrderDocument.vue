@@ -49,10 +49,10 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { OrderDocument } from '@heseya/store-core'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     orderId: {
       type: String,

@@ -103,7 +103,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { Address, Order, OrderUpdateDto, ShippingType } from '@heseya/store-core'
 
 import Field from '@/components/Field.vue'
@@ -116,13 +116,13 @@ import OrderBuyer from './OrderBuyer.vue'
 
 import { DEFAULT_ADDRESS_FORM } from '@/consts/addressConsts'
 
-export default Vue.extend({
+export default defineComponent({
   components: { Field, EditableOrderAddress, PartialUpdateForm, ModalForm, IconButton, OrderBuyer },
   props: {
     order: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<Order>,
+    } as PropOptions<Order>,
   },
   data: () => ({
     isEditModalActive: false,

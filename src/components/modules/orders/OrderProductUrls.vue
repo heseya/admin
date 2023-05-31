@@ -124,7 +124,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { OrderProduct, OrderProductUrl } from '@heseya/store-core'
 
 import { sdk } from '@/api'
@@ -137,7 +137,7 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import OrderProductUrlForm from './OrderProductUrlForm.vue'
 import Empty from '@/components/layout/Empty.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: { CmsTable, CmsTableRow, PopConfirm, OrderProductUrlForm, Empty },
   props: {
     product: {

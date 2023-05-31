@@ -87,7 +87,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { cloneDeep } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
 import { Coupon, DiscountTargetType, DiscountType, CouponUpdateDto } from '@heseya/store-core'
@@ -123,7 +123,7 @@ const EMPTY_COUPON_FORM: CouponFormDto = {
   seo: {},
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: { ValidationObserver, TopNav, Card, PopConfirm, SaleForm, MetadataForm },
   data: () => ({
     form: cloneDeep(EMPTY_COUPON_FORM) as CouponFormDto,

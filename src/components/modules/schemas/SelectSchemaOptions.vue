@@ -88,7 +88,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import Draggable from 'vuedraggable'
 import cloneDeep from 'lodash/cloneDeep'
 import { SchemaOptionDto } from '@heseya/store-core'
@@ -99,7 +99,7 @@ import SwitchInput from '@/components/form/SwitchInput.vue'
 
 import { CLEAR_OPTION } from '@/consts/schemaConsts'
 
-export default Vue.extend({
+export default defineComponent({
   name: 'SelectSchemaOptions',
   components: {
     Zone,

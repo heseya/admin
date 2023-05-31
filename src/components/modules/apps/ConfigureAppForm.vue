@@ -72,7 +72,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { AxiosError, AxiosInstance } from 'axios'
 import { App, AppConfigField } from '@heseya/store-core'
@@ -83,13 +83,13 @@ import { createApiInstance } from '@/api'
 import Loading from '@/components/layout/Loading.vue'
 import AppSelect from '@/components/form/AppSelect.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: { ValidationObserver, Loading, AppSelect },
   props: {
     app: {
       type: Object,
       default: null,
-    } as Vue.PropOptions<App | null>,
+    } as PropOptions<App | null>,
   },
   data: () => ({
     form: {} as Record<string, any>,

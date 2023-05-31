@@ -42,27 +42,27 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 
 import IconButton from './IconButton.vue'
 import ListItem from './ListItem.vue'
 import PopConfirm from './PopConfirm.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: { ListItem, IconButton, PopConfirm },
   props: {
     item: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<{ id: string }>,
+    } as PropOptions<{ id: string }>,
     disabled: {
       type: Boolean,
       default: false,
-    } as Vue.PropOptions<boolean>,
+    } as PropOptions<boolean>,
     deleteText: {
       type: String,
       default: '',
-    } as Vue.PropOptions<string>,
+    } as PropOptions<string>,
   },
 
   methods: {

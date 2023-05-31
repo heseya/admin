@@ -39,11 +39,11 @@
 </i18n>
 
 <script lang="ts">
-import Vue, { PropOptions } from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import CopyableTag from '../CopyableTag.vue'
 import Tag from '../Tag.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     CopyableTag,
     Tag,

@@ -78,13 +78,13 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { Order, Address, ShippingMethod, ShippingType } from '@heseya/store-core'
 
 import AddressForm from './AddressForm.vue'
 
-export default Vue.extend({
+export default defineComponent({
   name: 'PartialUpdateForm',
   components: { AddressForm, ValidationObserver },
   props: {

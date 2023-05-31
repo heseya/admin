@@ -96,17 +96,17 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import isNumber from 'lodash/isNumber'
 import { WarehouseItem } from '@heseya/store-core'
 
 import DepositFormModal from './DepositFormModal.vue'
 import { formatDate } from '@/utils/dates'
 
-export default Vue.extend({
+export default defineComponent({
   components: { DepositFormModal },
   props: {
-    item: { type: Object, default: null } as Vue.PropOptions<WarehouseItem | null>,
+    item: { type: Object, default: null } as PropOptions<WarehouseItem | null>,
   },
 
   data: () => ({

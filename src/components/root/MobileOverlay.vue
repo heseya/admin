@@ -21,12 +21,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 
 import MenuLinkComponent from './MenuLink.vue'
 import { MenuLink } from '@/consts/menuItems'
 
-export default Vue.extend({
+export default defineComponent({
   name: 'MobileOverlay',
   components: {
     MenuLink: MenuLinkComponent,

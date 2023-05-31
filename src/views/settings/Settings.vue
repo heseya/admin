@@ -120,7 +120,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import clone from 'lodash/clone'
 import { ValidationObserver } from 'vee-validate'
 import { CdnMedia, Setting } from '@heseya/store-core'
@@ -140,7 +140,7 @@ const CLEAR_SETTING: Setting = {
   public: true,
 }
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return {
       title: this.$t('title') as string,

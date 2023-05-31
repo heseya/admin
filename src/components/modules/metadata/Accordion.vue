@@ -51,7 +51,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { Metadata, MetadataUpdateDto } from '@heseya/store-core'
 
 import MetadataForm from './Form.vue'
@@ -62,7 +62,7 @@ import { GeneratedStoreModulesKeys } from '@/store'
 export type SaveMetadataFunction = (id: string) => Promise<Metadata | undefined>
 export type MetadataRef = Vue & { saveMetadata: SaveMetadataFunction }
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     MetadataForm,
     LayoutAccordion,
@@ -71,16 +71,14 @@ export default Vue.extend({
     value: {
       type: Object,
       default: () => ({}),
-    } as Vue.PropOptions<MetadataUpdateDto>,
+    } as PropOptions<MetadataUpdateDto>,
     disabled: { type: Boolean, default: false },
     white: { type: Boolean, default: false },
-    type: { type: String, default: 'default' } as Vue.PropOptions<
-      'default' | 'private' | 'personal'
-    >,
+    type: { type: String, default: 'default' } as PropOptions<'default' | 'private' | 'personal'>,
     model: {
       type: String,
       required: true,
-    } as Vue.PropOptions<GeneratedStoreModulesKeys | 'auth'>,
+    } as PropOptions<GeneratedStoreModulesKeys | 'auth'>,
   },
   methods: {
     saveMetadata(id: string) {

@@ -40,7 +40,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { ProductSet, ProductSetUpdateDto } from '@heseya/store-core'
 
 import AutocompleteInput from '../../AutocompleteInput.vue'
@@ -48,7 +48,7 @@ import AutocompleteInput from '../../AutocompleteInput.vue'
 import { formatApiNotificationError } from '@/utils/errors'
 import { UUID } from '@/interfaces/UUID'
 
-export default Vue.extend({
+export default defineComponent({
   components: { AutocompleteInput },
   props: {
     set: {

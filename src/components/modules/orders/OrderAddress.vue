@@ -61,10 +61,10 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { Address, Order, ShippingType } from '@heseya/store-core'
 
-export default Vue.extend({
+export default defineComponent({
   name: 'OrderAddress',
   props: {
     order: {

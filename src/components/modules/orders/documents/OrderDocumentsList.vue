@@ -41,7 +41,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { OrderDocument } from '@heseya/store-core'
 
 import OrderDocumentComponent from './OrderDocument.vue'
@@ -51,7 +51,7 @@ import ModalForm from '@/components/form/ModalForm.vue'
 
 import { UUID } from '@/interfaces/UUID'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     OrderDocument: OrderDocumentComponent,
     Empty,

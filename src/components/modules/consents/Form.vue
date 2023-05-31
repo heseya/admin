@@ -26,14 +26,14 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { Consent } from '@heseya/store-core'
 
 import Card from '@/components/layout/Card.vue'
 import RichEditor from '@/components/form/RichEditor.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     ValidationObserver,
     Card,
@@ -43,7 +43,7 @@ export default Vue.extend({
     value: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<Consent>,
+    } as PropOptions<Consent>,
     disabled: {
       type: Boolean,
       default: false,

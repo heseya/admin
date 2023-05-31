@@ -114,7 +114,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import debounce from 'lodash/debounce'
 import cloneDeep from 'lodash/cloneDeep'
 import { Attribute, AttributeType } from '@heseya/store-core'
@@ -156,7 +156,7 @@ export const EMPTY_PRODUCT_FILTERS: ProductFilers = {
   sort: undefined,
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: { BooleanSelect, AttributeFilterInput, RangeInput, AutocompleteInput },
   props: {
     filters: {

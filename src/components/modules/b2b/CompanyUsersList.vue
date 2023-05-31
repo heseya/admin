@@ -83,7 +83,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { Role, UserList } from '@heseya/store-core'
 
 import Card from '@/components/layout/Card.vue'
@@ -95,13 +95,13 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import Selector from '@/components/Selector.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: { TopNav, Card, IconButton, Loading, Empty, PopConfirm, ModalForm, Selector },
   props: {
     company: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<Role>,
+    } as PropOptions<Role>,
   },
 
   data: () => ({

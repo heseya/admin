@@ -152,7 +152,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { groupBy, Dictionary } from 'lodash'
 import { User } from '@heseya/store-core'
 
@@ -166,7 +166,7 @@ import LangPreferencesForm from '@/components/modules/settings/LangPreferences.v
 
 import { SettingsSection, SETTINGS_LINKS, MenuLink } from '@/consts/menuItems'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return {
       title: this.$t('nav.settings') as string,

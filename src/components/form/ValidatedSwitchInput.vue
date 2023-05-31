@@ -11,10 +11,10 @@
 
 <script lang="ts">
 /* eslint-disable vue/require-prop-types */
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { ValidationProvider } from 'vee-validate'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     ValidationProvider,
   },

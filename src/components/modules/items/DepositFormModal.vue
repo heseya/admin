@@ -123,7 +123,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { isNumber, isString } from 'lodash'
 
@@ -151,7 +151,7 @@ enum StockTimeType {
   Date = 'date',
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: { ValidationObserver, Loading, BooleanSelect },
   props: {
     defaultTime: { type: [Number, String], default: null },

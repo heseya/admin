@@ -5,11 +5,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 
 import { QrCodeObject, QrCodePayload } from '@/interfaces/QrCode'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     visible: { type: Boolean, default: false },
     size: { type: Number, default: 250 },

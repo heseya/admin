@@ -85,7 +85,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { Product } from '@heseya/store-core'
 
 import Avatar from '@/components/layout/Avatar.vue'
@@ -98,7 +98,7 @@ import { formatCurrency } from '@/utils/currency'
 import { TableConfig } from '@/interfaces/CmsTable'
 import { FEATURE_FLAGS } from '@/consts/featureFlags'
 
-export default Vue.extend({
+export default defineComponent({
   components: { Avatar, CmsTableRow, MediaElement, ProductPrice, PopConfirm },
   props: {
     product: {

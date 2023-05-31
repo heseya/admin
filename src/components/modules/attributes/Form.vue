@@ -93,7 +93,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import { ValidationObserver } from 'vee-validate'
 import { generateSlug } from '@/utils/generateSlug'
@@ -117,7 +117,7 @@ const CLEAR_FORM: AttributeCreateDto = {
   global: false,
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     ValidationObserver,
     OptionsList,
@@ -126,7 +126,7 @@ export default Vue.extend({
     attribute: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<Attribute>,
+    } as PropOptions<Attribute>,
     disabled: { type: Boolean, default: false },
   },
   data: () => ({

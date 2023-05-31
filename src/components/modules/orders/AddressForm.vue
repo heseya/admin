@@ -52,13 +52,13 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { ValidationProvider } from 'vee-validate'
 import { Address, ShippingCountry } from '@heseya/store-core'
 
 import { sdk } from '@/api'
 
-export default Vue.extend({
+export default defineComponent({
   name: 'AddressForm',
   components: {
     ValidationProvider,
@@ -67,7 +67,7 @@ export default Vue.extend({
     value: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<Address>,
+    } as PropOptions<Address>,
   },
   data: () => ({
     countries: [] as ShippingCountry[],

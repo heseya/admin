@@ -27,13 +27,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { Attribute, AttributeType } from '@heseya/store-core'
 
 import AutocompleteInput from '@/components/AutocompleteInput.vue'
 import RangeInput from '@/components/form/RangeInput.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: { AutocompleteInput, RangeInput },
   props: {
     attribute: { type: Object, required: true } as Vue.PropOptions<Attribute>,

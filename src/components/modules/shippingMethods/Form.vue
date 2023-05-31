@@ -173,7 +173,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { ValidationProvider } from 'vee-validate'
 import {
   PaymentMethod,
@@ -193,7 +193,7 @@ import ShippingPointsGrid from './ShippingPointsGrid.vue'
 
 import { DEFAULT_ADDRESS_FORM } from '@/consts/addressConsts'
 
-export default Vue.extend({
+export default defineComponent({
   name: 'ShippingMethodsForm',
   components: {
     ModalForm,

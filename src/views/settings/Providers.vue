@@ -66,7 +66,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import capitalize from 'lodash/capitalize'
 import { AuthProvider, AuthProviderKey } from '@heseya/store-core'
@@ -78,7 +78,7 @@ import ModalForm from '@/components/form/ModalForm.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },

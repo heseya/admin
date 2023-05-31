@@ -36,7 +36,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import debounce from 'lodash/debounce'
 import uniqBy from 'lodash/uniqBy'
 import { ProductSet, Product } from '@heseya/store-core'
@@ -44,7 +44,7 @@ import { ProductSet, Product } from '@heseya/store-core'
 import { UUID } from '@/interfaces/UUID'
 import { formatApiNotificationError } from '@/utils/errors'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     disabled: { type: Boolean, default: false },
     value: { type: Array, required: true } as Vue.PropOptions<UUID[]>,

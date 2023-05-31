@@ -44,7 +44,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import debounce from 'lodash/debounce'
 import { CdnMediaType } from '@heseya/store-core'
 
@@ -61,7 +61,7 @@ export const EMPTY_MEDIA_FILTERS: MediaFiltersType = {
   has_relationships: ALL_FILTER_VALUE,
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     BooleanSelect,
   },
@@ -70,7 +70,7 @@ export default Vue.extend({
     filters: {
       type: Object,
       default: () => ({ ...EMPTY_MEDIA_FILTERS }),
-    } as Vue.PropOptions<MediaFiltersType>,
+    } as PropOptions<MediaFiltersType>,
   },
 
   data: () => ({

@@ -42,16 +42,16 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
-export default Vue.extend({
+import { defineComponent, PropOptions } from 'vue'
+export default defineComponent({
   props: {
-    type: { type: String, default: 'number' } as Vue.PropOptions<'number' | 'date'>,
+    type: { type: String, default: 'number' } as PropOptions<'number' | 'date'>,
     label: { type: String, default: '' },
     addonAfter: { type: String, default: '' },
     value: {
       type: Object,
       default: () => ({ min: '', max: '' }),
-    } as Vue.PropOptions<{
+    } as PropOptions<{
       min: number | string
       max: number | string
     }>,

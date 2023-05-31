@@ -5,14 +5,14 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import QrScanner from 'qr-scanner'
 import { QrCodePayload } from '@/interfaces/QrCode'
 
 const validateQrCode = (object: any): object is QrCodePayload =>
   object?.v === 1 && typeof object.typ === 'string' && typeof object.body === 'object'
 
-export default Vue.extend({
+export default defineComponent({
   data: () => ({
     scanner: null as null | QrScanner,
   }),

@@ -181,7 +181,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { cloneDeep } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
 import { ProductSetUpdateDto, CdnMedia, Metadata, ProductSet } from '@heseya/store-core'
@@ -224,7 +224,7 @@ type CombinedSetDto = ProductSetUpdateDto & {
   metadata_private?: Metadata
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     ValidationObserver,
     TopNav,

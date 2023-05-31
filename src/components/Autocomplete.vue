@@ -45,7 +45,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import Selector from '@/components/Selector.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import { UUID } from '@/interfaces/UUID'
@@ -55,7 +55,7 @@ interface AutocompleteItem {
   name: string
 }
 
-export default Vue.extend({
+export default defineComponent({
   name: 'Autocomplete',
   components: { Selector, ModalForm },
   props: {
@@ -70,7 +70,7 @@ export default Vue.extend({
     value: {
       type: Array,
       default: null,
-    } as Vue.PropOptions<AutocompleteItem[]>,
+    } as PropOptions<AutocompleteItem[]>,
     disabled: { type: Boolean, default: false },
   },
   data: () => ({

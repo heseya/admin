@@ -73,7 +73,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { cloneDeep } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
 import { User, UserProfileUpdateDto } from '@heseya/store-core'
@@ -93,7 +93,7 @@ const UPDATE_USER_FORM: UserProfileUpdateDto = {
   },
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     ValidationObserver,
     MetadataForm,

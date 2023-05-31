@@ -93,7 +93,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { CdnMedia } from '@heseya/store-core'
 import { ValidationObserver } from 'vee-validate'
 import { generateSlug } from '@/utils/generateSlug'
@@ -103,12 +103,12 @@ const EMPTY_FORM = {
   slug: '',
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: { ValidationObserver },
   props: {
     disabled: { type: Boolean, default: false },
     placement: { type: String, default: 'bottomRight' },
-    media: { type: Object, required: true } as Vue.PropOptions<CdnMedia>,
+    media: { type: Object, required: true } as PropOptions<CdnMedia>,
     allowDeletion: { type: Boolean, required: false, default: false },
   },
   data: () => ({

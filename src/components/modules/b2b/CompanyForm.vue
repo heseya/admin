@@ -63,7 +63,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { Role, RoleCreateDto } from '@heseya/store-core'
 import { cloneDeep } from 'lodash'
@@ -80,13 +80,13 @@ const CLEAR_FORM: RoleCreateDto = {
   },
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: { ValidationObserver, ModalForm, AppTextarea },
   props: {
     initialValue: {
       type: Object,
       default: () => null,
-    } as Vue.PropOptions<Partial<Role> | null>,
+    } as PropOptions<Partial<Role> | null>,
     visible: { type: Boolean, default: false },
   },
 

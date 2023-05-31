@@ -14,12 +14,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import InlineSvg from 'vue-inline-svg'
 import ListItem from '@/components/layout/ListItem.vue'
 import Avatar from '@/components/layout/Avatar.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: { ListItem, Avatar, InlineSvg },
   props: {
     name: {

@@ -48,7 +48,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { debounce } from 'lodash'
 import cloneDeep from 'lodash/cloneDeep'
 
@@ -64,7 +64,7 @@ export const EMPTY_USER_FILTERS = {
 
 type UserFilters = typeof EMPTY_USER_FILTERS
 
-export default Vue.extend({
+export default defineComponent({
   components: { AutocompleteInput },
   props: {
     filters: {

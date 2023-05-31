@@ -47,7 +47,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 
 interface ILoginForm {
@@ -55,7 +55,7 @@ interface ILoginForm {
   password: string
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     ValidationObserver,
   },
@@ -63,7 +63,7 @@ export default Vue.extend({
     value: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<ILoginForm>,
+    } as PropOptions<ILoginForm>,
   },
   computed: {
     form: {

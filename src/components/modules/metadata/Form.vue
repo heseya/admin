@@ -122,7 +122,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { ValidationProvider } from 'vee-validate'
 import { cloneDeep, isEqual } from 'lodash'
 import { MetadataUpdateDto } from '@heseya/store-core'
@@ -145,21 +145,19 @@ interface MetadataObject {
   value: string | number | boolean | null | undefined
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: { ModalForm, Empty, ValidationProvider },
   props: {
     originalMetadata: {
       type: Object,
       default: () => ({}),
-    } as Vue.PropOptions<MetadataUpdateDto>,
+    } as PropOptions<MetadataUpdateDto>,
     disabled: { type: Boolean, default: false },
-    type: { type: String, default: 'default' } as Vue.PropOptions<
-      'default' | 'private' | 'personal'
-    >,
+    type: { type: String, default: 'default' } as PropOptions<'default' | 'private' | 'personal'>,
     model: {
       type: String,
       required: true,
-    } as Vue.PropOptions<GeneratedStoreModulesKeys | 'auth'>,
+    } as PropOptions<GeneratedStoreModulesKeys | 'auth'>,
   },
 
   data: () => ({

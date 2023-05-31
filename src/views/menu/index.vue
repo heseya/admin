@@ -118,7 +118,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import InlineSvg from 'vue-inline-svg'
 import Draggable from 'vuedraggable'
 
@@ -129,7 +129,7 @@ import ListItem from '@/components/layout/ListItem.vue'
 
 import { MENU_LINKS, MenuItem, MenuItemType, MenuLink } from '@/consts/menuItems'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },

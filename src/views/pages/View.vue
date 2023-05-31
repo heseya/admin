@@ -115,7 +115,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { Page, PageCreateDto } from '@heseya/store-core'
 
@@ -134,7 +134,7 @@ import { generateSlug } from '@/utils/generateSlug'
 
 import { UUID } from '@/interfaces/UUID'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     const fallback = this.$t('newTitle') as string
     return {

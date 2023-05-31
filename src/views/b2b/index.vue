@@ -54,7 +54,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { Role } from '@heseya/store-core'
 import { debounce } from 'lodash'
 
@@ -62,7 +62,7 @@ import PaginatedList from '@/components/PaginatedList.vue'
 import { TableConfig } from '@/interfaces/CmsTable'
 import CompanyForm from '@/components/modules/b2b/CompanyForm.vue'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },

@@ -40,19 +40,19 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { CdnMedia, CdnMediaType } from '@heseya/store-core'
 
 import PictureElement from './PictureElement.vue'
 import { FEATURE_FLAGS } from '@/consts/featureFlags'
 
-export default Vue.extend({
+export default defineComponent({
   components: { PictureElement },
   props: {
     media: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<CdnMedia>,
+    } as PropOptions<CdnMedia>,
     size: {
       type: Number,
       default: 350,

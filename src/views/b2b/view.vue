@@ -60,7 +60,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
@@ -73,7 +73,7 @@ import CompanyForm from '@/components/modules/b2b/CompanyForm.vue'
 
 import { Role } from '@heseya/store-core'
 
-export default Vue.extend({
+export default defineComponent({
   components: { TopNav, PopConfirm, Card, Field, CompanyUsersList, CompanyPromoList, CompanyForm },
 
   data: () => ({

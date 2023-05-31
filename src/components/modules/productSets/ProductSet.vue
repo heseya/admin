@@ -164,7 +164,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import Draggable from 'vuedraggable'
 import { cloneDeep } from 'lodash'
 import { ProductSet, ProductSetUpdateDto, ProductSetList } from '@heseya/store-core'
@@ -179,7 +179,7 @@ import { CLEAR_PRODUCT_SET_FORM } from '@/views/productSets/View.vue'
 import { UUID } from '@/interfaces/UUID'
 import { formatApiNotificationError } from '@/utils/errors'
 
-export default Vue.extend({
+export default defineComponent({
   name: 'ProductSet',
   components: { Draggable, PopConfirm, SetProductsList, ChangeParentForm, Loading },
   props: {

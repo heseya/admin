@@ -34,18 +34,18 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 
 import Card from '@/components/layout/Card.vue'
 import CmsFiltersHeader from '@/components/cms/CmsFiltersHeader.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: { Card, CmsFiltersHeader },
   props: {
     filters: {
       type: Object,
       default: () => ({}),
-    } as Vue.PropOptions<Record<string, any>>,
+    } as PropOptions<Record<string, any>>,
   },
   data: () => ({
     isExpanded: false,

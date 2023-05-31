@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import i18n from '@/i18n'
 
 /**
@@ -7,7 +7,7 @@ import i18n from '@/i18n'
  * 3. The 'form' is deeply watched
  * 4. After form submitting isDirty should be reset
  *  */
-export default Vue.extend({
+export default defineComponent({
   beforeRouteLeave(to, from, next) {
     if (this.confirmStayInDirtyForm()) {
       next(false)

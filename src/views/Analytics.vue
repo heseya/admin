@@ -17,8 +17,8 @@
 
 <script lang="ts">
 import TopNav from '@/components/layout/TopNav.vue'
-import Vue from 'vue'
-export default Vue.extend({
+import { defineComponent } from 'vue'
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },

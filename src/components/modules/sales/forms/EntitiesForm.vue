@@ -87,7 +87,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { DiscountConditionType, Role, User, ProductSet, Product } from '@heseya/store-core'
 
 import SwitchInput from '@/components/form/SwitchInput.vue'
@@ -102,7 +102,7 @@ type EntitiesForm = {
   is_allow_list: boolean
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: { SwitchInput, AutocompleteInput },
   props: {
     value: { type: Object, required: true } as Vue.PropOptions<EntitiesForm>,

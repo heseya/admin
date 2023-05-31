@@ -139,7 +139,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import omit from 'lodash/omit'
 import {
@@ -160,7 +160,7 @@ import { TableConfig } from '@/interfaces/CmsTable'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 import CmsTableCellList from '@/components/cms/CmsTableCellList.vue'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },

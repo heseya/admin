@@ -93,7 +93,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { Product, ProductSetList } from '@heseya/store-core'
 
 import LayoutAccordion from '@/components/layout/Accordion.vue'
@@ -103,7 +103,7 @@ import EditableListItem from '@/components/layout/EditableListItem.vue'
 import Selector from '@/components/Selector.vue'
 import SetProductsList from '../../productSets/SetProductsList.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: { LayoutAccordion, Empty, EditableListItem, Selector, SetProductsList },
 
   props: {

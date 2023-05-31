@@ -37,14 +37,14 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { Banner } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 
 import { TableConfig } from '@/interfaces/CmsTable'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },

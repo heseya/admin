@@ -82,7 +82,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import {
   CdnMediaSource,
@@ -104,7 +104,7 @@ const isCreateForm = (form: Form): form is ProductAttachmentCreateDto => {
   return !('id' in form)
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: { ValidationObserver, ValidationBlock },
   props: {
     productId: {

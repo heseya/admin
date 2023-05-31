@@ -156,7 +156,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import axios from 'axios'
 import { debounce } from 'lodash'
 import {
@@ -168,13 +168,13 @@ import {
 
 import LoadingIndicator from '@/components/layout/LoadingIndicator.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: { LoadingIndicator },
   props: {
     value: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<AppCreateDto>,
+    } as PropOptions<AppCreateDto>,
     isValidUrl: {
       type: Boolean,
       default: false,

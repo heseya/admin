@@ -76,7 +76,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { cloneDeep } from 'lodash'
 import { Product, Tag } from '@heseya/store-core'
 
@@ -95,7 +95,7 @@ import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 
 const LOCAL_STORAGE_KEY = 'products-list-view'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },

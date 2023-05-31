@@ -24,7 +24,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 // @ts-ignore types for vue-xlsx are not needed
 import { XlsxWorkbook, XlsxDownload, XlsxSheet } from 'vue-xlsx'
 
@@ -32,7 +32,7 @@ import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 import { VuexBaseItem } from '@/interfaces/VuexGenerator'
 import { formatDateTimeInput } from '@/utils/dates'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     XlsxWorkbook,
     XlsxSheet,
@@ -46,11 +46,11 @@ export default Vue.extend({
     items: {
       type: Array,
       default: null,
-    } as Vue.PropOptions<VuexBaseItem[]>,
+    } as PropOptions<VuexBaseItem[]>,
     xlsxFileConfig: {
       type: Object,
       default: null,
-    } as Vue.PropOptions<XlsxFileConfig>,
+    } as PropOptions<XlsxFileConfig>,
   },
   computed: {
     fileContent(): Record<string, any>[] {

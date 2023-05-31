@@ -60,10 +60,10 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { Order } from '@heseya/store-core'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     Keypress: () => import('vue-keypress'),
   },

@@ -68,7 +68,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { DiscountType, Role, Sale } from '@heseya/store-core'
 
 import Card from '@/components/layout/Card.vue'
@@ -81,13 +81,13 @@ import { formatCurrency } from '@/utils/currency'
 import Empty from '@/components/layout/Empty.vue'
 import Pagination from '@/components/cms/Pagination.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: { TopNav, Card, IconButton, Loading, Field, Empty, Pagination },
   props: {
     company: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<Role>,
+    } as PropOptions<Role>,
   },
 
   data: () => ({

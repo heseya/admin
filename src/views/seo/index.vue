@@ -32,7 +32,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { SeoMetadata, SeoMetadataDto } from '@heseya/store-core'
 
 import Card from '@/components/layout/Card.vue'
@@ -41,7 +41,7 @@ import SeoForm from '@/components/modules/seo/Form.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 
-export default Vue.extend({
+export default defineComponent({
   components: { Card, TopNav, SeoForm },
   metaInfo(this: any) {
     return { title: this.$t('title') as string }

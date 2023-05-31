@@ -34,10 +34,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { AddressDto } from '@heseya/store-core'
 
-export default Vue.extend({
+export default defineComponent({
   name: 'AddressForm',
   props: {
     shippingPoints: {

@@ -86,7 +86,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { Role, UserCreateDto, UserUpdateDto } from '@heseya/store-core'
 
 import ModalForm from '@/components/form/ModalForm.vue'
@@ -95,7 +95,7 @@ import Disable2FA from './Disable2FA.vue'
 // eslint-disable-next-line camelcase
 type UserDTO = UserCreateDto | (UserUpdateDto & { is_tfa_active: boolean })
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     ModalForm,
     Disable2FA,

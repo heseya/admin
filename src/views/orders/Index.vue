@@ -99,7 +99,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { Order, OrderStatus, ShippingMethod } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
@@ -118,7 +118,7 @@ import { formatFilters } from '@/utils/utils'
 import { formatDate } from '@/utils/dates'
 import { formatCurrency } from '@/utils/currency'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },

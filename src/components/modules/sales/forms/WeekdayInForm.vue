@@ -49,10 +49,10 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { WeekdayInDiscountCondition } from '@heseya/store-core'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     value: { type: Object, required: true } as Vue.PropOptions<WeekdayInDiscountCondition>,
     disabled: { type: Boolean, default: false },

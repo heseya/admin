@@ -25,7 +25,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { debounce } from 'lodash'
 import cloneDeep from 'lodash/cloneDeep'
 
@@ -44,7 +44,7 @@ export const EMPTY_PRODUCT_SET_FILTERS: ProductSetFilters = {
   public: ALL_FILTER_VALUE,
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: { BooleanSelect },
   props: {
     filters: {

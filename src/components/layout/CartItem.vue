@@ -111,7 +111,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { OrderProduct } from '@heseya/store-core'
 
 import { formatCurrency } from '@/utils/currency'
@@ -122,7 +122,7 @@ import IconButton from './IconButton.vue'
 
 import { FEATURE_FLAGS } from '@/consts/featureFlags'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     Field,
     InfoTooltip,
@@ -133,7 +133,7 @@ export default Vue.extend({
     item: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<OrderProduct>,
+    } as PropOptions<OrderProduct>,
   },
   computed: {
     coverUrl(): string {

@@ -47,7 +47,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { Attribute } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
@@ -57,7 +57,7 @@ import AttributeForm from '@/components/modules/attributes/Form.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.attribute?.name || (this.$t('newTitle') as string) }
   },

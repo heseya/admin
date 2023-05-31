@@ -70,7 +70,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { PaymentMethod } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
@@ -80,7 +80,7 @@ import Field from '@/components/Field.vue'
 
 import { UUID } from '@/interfaces/UUID'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     PaginatedList,
     ListItem,

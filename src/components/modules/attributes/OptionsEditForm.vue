@@ -68,17 +68,17 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { AttributeType, AttributeOptionDto } from '@heseya/store-core'
 
 import { formatApiNotificationError } from '@/utils/errors'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     value: {
       type: Object,
       default: null,
-    } as Vue.PropOptions<AttributeOptionDto | null>,
+    } as PropOptions<AttributeOptionDto | null>,
     attributeId: {
       type: String,
       required: true,
@@ -86,7 +86,7 @@ export default Vue.extend({
     type: {
       type: String,
       required: true,
-    } as Vue.PropOptions<AttributeType>,
+    } as PropOptions<AttributeType>,
     disabled: {
       type: Boolean,
       default: false,

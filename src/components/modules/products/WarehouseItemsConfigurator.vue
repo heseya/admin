@@ -95,7 +95,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { WarehouseItem, ProductWarehouseItem } from '@heseya/store-core'
 
 import { UUID } from '@/interfaces/UUID'
@@ -106,7 +106,7 @@ import Selector from '@/components/Selector.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: { Empty, List, Selector, ListItem, ModalForm },
   props: {
     value: {

@@ -42,10 +42,10 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { DateBetweenDiscountCondition } from '@heseya/store-core'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     value: { type: Object, required: true } as Vue.PropOptions<DateBetweenDiscountCondition>,
     disabled: { type: Boolean, default: false },

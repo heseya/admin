@@ -62,7 +62,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import { WarehouseItem, WarehouseItemCreateDto } from '@heseya/store-core'
 
@@ -88,7 +88,7 @@ const EMPTY_FORM: WarehouseItemCreateDto = {
   unlimited_stock_shipping_date: null,
 }
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },

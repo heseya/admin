@@ -83,35 +83,35 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropOptions } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { AddressDto, ShippingCountry } from '@heseya/store-core'
 import { DEFAULT_ADDRESS_FORM } from '@/consts/addressConsts'
 
-export default Vue.extend({
+export default defineComponent({
   name: 'AddressForm',
   components: { ValidationObserver },
   props: {
     value: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<AddressDto>,
+    } as PropOptions<AddressDto>,
     countries: {
       type: Array,
       required: true,
-    } as Vue.PropOptions<ShippingCountry[]>,
+    } as PropOptions<ShippingCountry[]>,
     shippingPoints: {
       type: Array,
       required: true,
-    } as Vue.PropOptions<AddressDto[]>,
+    } as PropOptions<AddressDto[]>,
     editMode: {
       type: Boolean,
       required: true,
-    } as Vue.PropOptions<boolean>,
+    },
     oldName: {
       type: String,
       default: '',
-    } as Vue.PropOptions<String>,
+    },
   },
   computed: {
     form: {

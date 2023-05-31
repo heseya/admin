@@ -40,7 +40,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { ProductSet, ProductSetUpdateDto } from '@heseya/store-core'
 
 import AutocompleteInput from '../../AutocompleteInput.vue'
@@ -52,9 +52,9 @@ export default defineComponent({
   components: { AutocompleteInput },
   props: {
     set: {
-      type: Object,
+      type: Object as PropType<ProductSetUpdateDto & { id?: UUID }>,
       required: true,
-    } as PropOptions<ProductSetUpdateDto & { id?: UUID }>,
+    },
     isOpen: {
       type: Boolean,
       default: false,

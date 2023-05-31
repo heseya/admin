@@ -88,7 +88,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { cloneDeep } from 'lodash'
 import {
   AttributeOption,
@@ -117,9 +117,9 @@ export default defineComponent({
       required: true,
     },
     type: {
-      type: String,
+      type: String as PropType<AttributeType>,
       required: true,
-    } as PropOptions<AttributeType>,
+    },
     disabled: {
       type: Boolean,
       default: false,

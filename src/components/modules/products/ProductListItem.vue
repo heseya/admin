@@ -85,7 +85,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { Product } from '@heseya/store-core'
 
 import Avatar from '@/components/layout/Avatar.vue'
@@ -102,13 +102,13 @@ export default defineComponent({
   components: { Avatar, CmsTableRow, MediaElement, ProductPrice, PopConfirm },
   props: {
     product: {
-      type: Object,
+      type: Object as PropType<Product>,
       required: true,
-    } as PropOptions<Product>,
+    },
     table: {
-      type: Object,
+      type: Object as PropType<TableConfig<Product>>,
       required: true,
-    } as PropOptions<TableConfig<Product>>,
+    },
   },
   data: () => ({ publicIsLoading: false }),
   computed: {

@@ -69,7 +69,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { Product, DiscountType } from '@heseya/store-core'
 
 import { ProductComponentForm } from '@/interfaces/Product'
@@ -80,12 +80,12 @@ import { formatCurrency } from '@/utils/currency'
 export default defineComponent({
   components: { ProductVisibilitySwitch, ProductPrice },
   props: {
-    product: { type: Object, required: true } as PropOptions<Product>,
-    disabled: { type: Boolean, default: false } as PropOptions<boolean>,
+    product: { type: Object as PropType<Product>, required: true },
+    disabled: { type: Boolean, default: false },
     value: {
-      type: Object,
+      type: Object as PropType<ProductComponentForm>,
       required: true,
-    } as PropOptions<ProductComponentForm>,
+    },
   },
 
   computed: {

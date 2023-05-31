@@ -73,7 +73,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { cloneDeep } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
 import { User, UserProfileUpdateDto } from '@heseya/store-core'
@@ -100,9 +100,9 @@ export default defineComponent({
   },
   props: {
     user: {
-      type: Object,
+      type: Object as PropType<User>,
       required: true,
-    } as PropOptions<User>,
+    },
   },
   data: () => ({
     form: {} as UserProfileUpdateDto,

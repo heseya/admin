@@ -47,7 +47,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 
 interface ILoginForm {
@@ -61,9 +61,9 @@ export default defineComponent({
   },
   props: {
     value: {
-      type: Object,
+      type: Object as PropType<ILoginForm>,
       required: true,
-    } as PropOptions<ILoginForm>,
+    },
   },
   computed: {
     form: {

@@ -127,7 +127,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { Order } from '@heseya/store-core'
 
 import Card from '@/components/layout/Card.vue'
@@ -151,9 +151,9 @@ export default defineComponent({
   },
   props: {
     order: {
-      type: Object,
+      type: Object as PropType<Order>,
       required: true,
-    } as PropOptions<Order>,
+    },
   },
   data: () => ({
     viewportWidth: window.innerWidth,

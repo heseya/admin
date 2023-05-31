@@ -87,7 +87,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { DiscountConditionType, Role, User, ProductSet, Product } from '@heseya/store-core'
 
 import SwitchInput from '@/components/form/SwitchInput.vue'
@@ -105,8 +105,8 @@ type EntitiesForm = {
 export default defineComponent({
   components: { SwitchInput, AutocompleteInput },
   props: {
-    value: { type: Object, required: true } as PropOptions<EntitiesForm>,
-    type: { type: String, required: true } as PropOptions<DiscountConditionType>,
+    value: { type: Object as PropType<EntitiesForm>, required: true },
+    type: { type: String as PropType<DiscountConditionType>, required: true },
     disabled: { type: Boolean, default: false },
   },
   computed: {

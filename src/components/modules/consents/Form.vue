@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { Consent } from '@heseya/store-core'
 
@@ -41,9 +41,9 @@ export default defineComponent({
   },
   props: {
     value: {
-      type: Object,
+      type: Object as PropType<Consent>,
       required: true,
-    } as PropOptions<Consent>,
+    },
     disabled: {
       type: Boolean,
       default: false,

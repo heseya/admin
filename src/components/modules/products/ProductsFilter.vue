@@ -114,7 +114,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import debounce from 'lodash/debounce'
 import cloneDeep from 'lodash/cloneDeep'
 import { Attribute, AttributeType } from '@heseya/store-core'
@@ -160,9 +160,9 @@ export default defineComponent({
   components: { BooleanSelect, AttributeFilterInput, RangeInput, AutocompleteInput },
   props: {
     filters: {
-      type: Object,
+      type: Object as PropType<ProductFilers>,
       default: () => cloneDeep(EMPTY_PRODUCT_FILTERS),
-    } as PropOptions<ProductFilers>,
+    },
   },
   data: () => ({
     local: cloneDeep(EMPTY_PRODUCT_FILTERS),

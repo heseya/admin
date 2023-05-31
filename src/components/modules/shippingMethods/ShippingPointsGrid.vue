@@ -34,16 +34,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { AddressDto } from '@heseya/store-core'
 
 export default defineComponent({
   name: 'AddressForm',
   props: {
     shippingPoints: {
-      type: Array,
+      type: Array as PropType<AddressDto[]>,
       required: true,
-    } as PropOptions<AddressDto[]>,
+    },
   },
 })
 </script>

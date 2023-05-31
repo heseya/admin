@@ -25,7 +25,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { debounce } from 'lodash'
 import cloneDeep from 'lodash/cloneDeep'
 
@@ -48,9 +48,9 @@ export default defineComponent({
   components: { BooleanSelect },
   props: {
     filters: {
-      type: Object,
+      type: Object as PropType<ProductSetFilters>,
       default: () => ({ ...EMPTY_PRODUCT_SET_FILTERS }),
-    } as PropOptions<ProductSetFilters>,
+    },
   },
 
   data: () => ({

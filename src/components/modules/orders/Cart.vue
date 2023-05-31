@@ -153,7 +153,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { Order, OrderProduct, DiscountTargetType } from '@heseya/store-core'
 
 import CartItem from '@/components/layout/CartItem.vue'
@@ -169,9 +169,9 @@ export default defineComponent({
   components: { CartItem, Field, OrderDiscountSummary, OrderProductUrls, XlsxDownloadButton },
   props: {
     order: {
-      type: Object,
+      type: Object as PropType<Order>,
       required: true,
-    } as PropOptions<Order>,
+    },
   },
   data: () => ({
     isProductUrlsModalActive: false,

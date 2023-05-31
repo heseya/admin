@@ -44,12 +44,12 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { TimeBetweenDiscountCondition } from '@heseya/store-core'
 
 export default defineComponent({
   props: {
-    value: { type: Object, required: true } as PropOptions<TimeBetweenDiscountCondition>,
+    value: { type: Object as PropType<TimeBetweenDiscountCondition>, required: true },
     disabled: { type: Boolean, default: false },
   },
   computed: {

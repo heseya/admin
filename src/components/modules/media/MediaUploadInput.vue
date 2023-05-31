@@ -60,7 +60,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { CdnMedia } from '@heseya/store-core'
 
 import MediaEditForm from '@/components/modules/media/MediaEditForm.vue'
@@ -71,9 +71,9 @@ export default defineComponent({
   components: { MediaUploader, MediaEditForm, MediaElement },
   props: {
     media: {
-      type: Object,
+      type: Object as PropType<CdnMedia>,
       default: () => null,
-    } as PropOptions<CdnMedia>,
+    },
     disabled: {
       type: Boolean,
       default: false,

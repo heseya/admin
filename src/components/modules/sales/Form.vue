@@ -265,7 +265,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { ValidationProvider } from 'vee-validate'
 import {
   DiscountCondition,
@@ -292,9 +292,9 @@ export default defineComponent({
     SeoForm,
   },
   props: {
-    value: { type: Object, required: true } as PropOptions<SaleForm>,
+    value: { type: Object as PropType<SaleForm>, required: true },
     disabled: { type: Boolean, default: false },
-    forcedCondition: { type: Object, default: null } as PropOptions<DiscountCondition | null>,
+    forcedCondition: { type: Object as PropType<DiscountCondition | null>, default: null },
   },
   computed: {
     DiscountType(): typeof DiscountType {

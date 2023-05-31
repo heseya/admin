@@ -69,7 +69,7 @@
       <modal-form>
         <partial-update-form
           v-model="form"
-          :shipping-method="order.shipping_method"
+          :shipping-method="order.shipping_method || undefined"
           @save="saveForm"
         />
       </modal-form>
@@ -103,7 +103,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { Address, Order, OrderUpdateDto, ShippingType } from '@heseya/store-core'
 
 import Field from '@/components/Field.vue'
@@ -120,9 +120,9 @@ export default defineComponent({
   components: { Field, EditableOrderAddress, PartialUpdateForm, ModalForm, IconButton, OrderBuyer },
   props: {
     order: {
-      type: Object,
+      type: Object as PropType<Order>,
       required: true,
-    } as PropOptions<Order>,
+    },
   },
   data: () => ({
     isEditModalActive: false,

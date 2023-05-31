@@ -93,7 +93,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import { ValidationObserver } from 'vee-validate'
 import { generateSlug } from '@/utils/generateSlug'
@@ -124,9 +124,9 @@ export default defineComponent({
   },
   props: {
     attribute: {
-      type: Object,
+      type: Object as PropType<Attribute>,
       required: true,
-    } as PropOptions<Attribute>,
+    },
     disabled: { type: Boolean, default: false },
   },
   data: () => ({

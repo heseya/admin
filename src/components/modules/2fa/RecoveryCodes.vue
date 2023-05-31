@@ -19,14 +19,14 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 export default defineComponent({
   props: {
     codes: {
-      type: Array,
+      type: Array as PropType<string[]>,
       default: () => [],
-    } as PropOptions<string[]>,
+    },
   },
   mounted() {
     navigator.permissions.query({ name: 'clipboard-write' as PermissionName })

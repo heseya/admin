@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import Loading from './Loading.vue'
 
@@ -58,13 +58,13 @@ export default defineComponent({
       default: null,
     },
     type: {
-      type: String,
+      type: String as PropType<'default' | 'primary' | 'white' | 'success' | 'danger'>,
       default: 'default',
-    } as PropOptions<'default' | 'primary' | 'white' | 'success' | 'danger'>,
+    },
     size: {
-      type: String,
+      type: String as PropType<'small' | 'default'>,
       default: 'default',
-    } as PropOptions<'small' | 'default'>,
+    },
   },
   computed: {
     component(): string {

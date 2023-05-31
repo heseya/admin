@@ -94,7 +94,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import Draggable from 'vuedraggable'
 import { ProductList, ProductSet } from '@heseya/store-core'
 
@@ -115,9 +115,9 @@ export default defineComponent({
   components: { Draggable, Selector, Empty, Avatar, ProductPrice },
   props: {
     set: {
-      type: Object,
+      type: Object as PropType<ProductSet | null>,
       default: null,
-    } as PropOptions<ProductSet | null>,
+    },
     isOpen: {
       type: Boolean,
       default: false,

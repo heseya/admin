@@ -78,7 +78,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import {
   CdnMediaAttachmentType,
@@ -109,9 +109,9 @@ export default defineComponent({
   components: { LayoutAccordion, AttachmentForm, EditableListItem, Empty },
   props: {
     product: {
-      type: Object,
+      type: Object as PropType<Product>,
       required: true,
-    } as PropOptions<Product>,
+    },
     disabled: {
       type: Boolean,
       default: false,

@@ -24,7 +24,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 // @ts-ignore types for vue-xlsx are not needed
 import { XlsxWorkbook, XlsxDownload, XlsxSheet } from 'vue-xlsx'
 
@@ -44,13 +44,13 @@ export default defineComponent({
       default: null,
     },
     items: {
-      type: Array,
+      type: Array as PropType<VuexBaseItem[]>,
       default: null,
-    } as PropOptions<VuexBaseItem[]>,
+    },
     xlsxFileConfig: {
-      type: Object,
+      type: Object as PropType<XlsxFileConfig>,
       default: null,
-    } as PropOptions<XlsxFileConfig>,
+    },
   },
   computed: {
     fileContent(): Record<string, any>[] {

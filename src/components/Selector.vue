@@ -45,7 +45,7 @@
 </i18n>
 
 <script lang="ts">
-import { PropOptions, defineComponent } from 'vue'
+import { PropType, defineComponent } from 'vue'
 import debounce from 'lodash/debounce'
 import { Schema, Attribute, WarehouseItem } from '@heseya/store-core'
 
@@ -87,9 +87,9 @@ export default defineComponent({
       default: null,
     },
     existing: {
-      type: Array,
+      type: Array as PropType<Item[]>,
       default: () => [],
-    } as PropOptions<Item[]>,
+    },
     autofocus: {
       type: Boolean,
       default: true,

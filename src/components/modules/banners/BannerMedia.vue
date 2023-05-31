@@ -97,7 +97,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { BannerMedia, CdnMedia } from '@heseya/store-core'
 
 import { removeMedia } from '@/services/uploadMedia'
@@ -110,9 +110,9 @@ export default defineComponent({
   components: { MediaElement, MediaEditForm, MediaUploadInput },
   props: {
     value: {
-      type: Object,
+      type: Object as PropType<BannerMedia>,
       required: true,
-    } as PropOptions<BannerMedia>,
+    },
     disabled: {
       type: Boolean,
       default: false,

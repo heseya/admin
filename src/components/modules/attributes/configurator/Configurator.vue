@@ -87,7 +87,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { AttributeType, Attribute, ProductAttribute } from '@heseya/store-core'
 
 import Empty from '@/components/layout/Empty.vue'
@@ -111,9 +111,9 @@ export default defineComponent({
   },
   props: {
     value: {
-      type: Array,
+      type: Array as PropType<ProductAttribute[]>,
       required: true,
-    } as PropOptions<ProductAttribute[]>,
+    },
     disabled: { type: Boolean, default: false },
   },
   data: () => ({

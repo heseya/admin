@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 export default defineComponent({
   props: {
@@ -52,22 +52,22 @@ export default defineComponent({
       default: null,
     },
     type: {
-      type: String,
+      type: String as PropType<
+        | 'default'
+        | 'primary'
+        | 'danger'
+        | 'transparent'
+        | 'transparent-white'
+        | 'success'
+        | 'black'
+        | 'burgund'
+      >,
       default: 'primary',
-    } as PropOptions<
-      | 'default'
-      | 'primary'
-      | 'danger'
-      | 'transparent'
-      | 'transparent-white'
-      | 'success'
-      | 'black'
-      | 'burgund'
-    >,
+    },
     size: {
-      type: String,
+      type: String as PropType<'small' | 'default' | 'big'>,
       default: 'default',
-    } as PropOptions<'small' | 'default' | 'big'>,
+    },
     dataCy: { type: String, default: '' },
   },
   computed: {

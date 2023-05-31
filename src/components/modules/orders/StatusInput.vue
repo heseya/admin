@@ -32,7 +32,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { Order, OrderStatus } from '@heseya/store-core'
 
 import { UUID } from '@/interfaces/UUID'
@@ -40,9 +40,9 @@ import { UUID } from '@/interfaces/UUID'
 export default defineComponent({
   props: {
     order: {
-      type: Object,
+      type: Object as PropType<Order>,
       required: true,
-    } as PropOptions<Order>,
+    },
   },
   data: () => ({
     isLoading: false,

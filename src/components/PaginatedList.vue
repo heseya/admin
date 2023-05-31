@@ -38,7 +38,7 @@
               :item="item"
               :draggable="draggable"
               :headers="table.headers"
-              :to="table.rowUrlBuilder ? table.rowUrlBuilder(item) : null"
+              :to="table.rowUrlBuilder ? table.rowUrlBuilder(item) : undefined"
               @click="table.rowOnClick ? table.rowOnClick(item) : null"
             />
           </slot>
@@ -54,7 +54,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import Draggable from 'vuedraggable'
 import { HeseyaPaginatedResponseMeta } from '@heseya/store-core'
 
@@ -101,9 +101,9 @@ export default defineComponent({
       default: '',
     },
     storeKey: {
-      type: String,
+      type: String as PropType<GeneratedStoreModulesKeys>,
       required: true,
-    } as PropOptions<GeneratedStoreModulesKeys>,
+    },
     draggable: {
       type: Boolean,
       default: false,
@@ -113,21 +113,21 @@ export default defineComponent({
       default: null,
     },
     filters: {
-      type: Object,
+      type: Object as PropType<Record<string, any>>,
       default: () => ({}),
-    } as PropOptions<Record<string, any>>,
+    },
     table: {
-      type: Object,
+      type: Object as PropType<TableConfig>,
       default: null,
-    } as PropOptions<TableConfig>,
+    },
     params: {
-      type: Object,
+      type: Object as PropType<Record<string, any>>,
       default: () => ({}),
-    } as PropOptions<Record<string, any>>,
+    },
     xlsxFileConfig: {
-      type: Object,
+      type: Object as PropType<XlsxFileConfig>,
       default: null,
-    } as PropOptions<XlsxFileConfig>,
+    },
   },
   data: () => ({
     page: 1,

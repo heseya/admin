@@ -47,7 +47,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { Product } from '@heseya/store-core'
 
 import { formatCurrency } from '@/utils/currency'
@@ -61,9 +61,9 @@ export default defineComponent({
   components: { MediaElement, ProductPrice },
   props: {
     product: {
-      type: Object,
+      type: Object as PropType<Product>,
       required: true,
-    } as PropOptions<Product>,
+    },
   },
   computed: {
     objectFit(): string {

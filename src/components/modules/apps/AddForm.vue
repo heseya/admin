@@ -156,7 +156,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import axios from 'axios'
 import { debounce } from 'lodash'
 import {
@@ -172,9 +172,9 @@ export default defineComponent({
   components: { LoadingIndicator },
   props: {
     value: {
-      type: Object,
+      type: Object as PropType<AppCreateDto>,
       required: true,
-    } as PropOptions<AppCreateDto>,
+    },
     isValidUrl: {
       type: Boolean,
       default: false,

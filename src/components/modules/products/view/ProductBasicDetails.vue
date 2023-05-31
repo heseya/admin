@@ -72,7 +72,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { Product } from '@heseya/store-core'
 
 import { ProductComponentForm } from '@/interfaces/Product'
@@ -86,13 +86,13 @@ export default defineComponent({
   components: { ProductSetSelect, AppTextarea: Textarea, TagsSelect },
   props: {
     value: {
-      type: Object,
+      type: Object as PropType<ProductComponentForm>,
       required: true,
-    } as PropOptions<ProductComponentForm>,
+    },
     product: {
-      type: Object,
+      type: Object as PropType<Product>,
       default: () => ({} as Product),
-    } as PropOptions<Product>,
+    },
     disabled: { type: Boolean, default: false },
     loading: { type: Boolean, default: false },
     isNew: { type: Boolean, default: false },

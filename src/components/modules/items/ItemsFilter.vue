@@ -46,7 +46,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { debounce } from 'lodash'
 
 import { ALL_FILTER_VALUE } from '@/consts/filters'
@@ -67,9 +67,9 @@ export const EMPTY_ITEMS_FILTERS: ItemsFilersType = {
 export default defineComponent({
   props: {
     filters: {
-      type: Object,
+      type: Object as PropType<ItemsFilersType>,
       default: () => ({ ...EMPTY_ITEMS_FILTERS }),
-    } as PropOptions<ItemsFilersType>,
+    },
   },
   data: () => ({
     local: {

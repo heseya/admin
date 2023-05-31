@@ -18,7 +18,9 @@
             <template #icon> <i class="bx bx-edit-alt"></i> </template>
           </icon-button>
 
-          <field class="sale-item__name" :label="$t('field.name')">{{ sale.name }}</field>
+          <field class="sale-item__name" :label="$t('field.name')">
+            {{ sale.name }}
+          </field>
           <field :label="$t('field.target_type')">
             {{ $t(`discountTargetTypes.${sale.target_type}`) }}
           </field>
@@ -68,7 +70,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { DiscountType, Role, Sale } from '@heseya/store-core'
 
 import Card from '@/components/layout/Card.vue'
@@ -85,9 +87,9 @@ export default defineComponent({
   components: { TopNav, Card, IconButton, Loading, Field, Empty, Pagination },
   props: {
     company: {
-      type: Object,
+      type: Object as PropType<Role>,
       required: true,
-    } as PropOptions<Role>,
+    },
   },
 
   data: () => ({

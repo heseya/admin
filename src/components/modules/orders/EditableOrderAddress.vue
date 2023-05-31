@@ -31,7 +31,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { Address, Order } from '@heseya/store-core'
 
 import OrderAddress from './OrderAddress.vue'
@@ -46,9 +46,9 @@ export default defineComponent({
       default: null,
     },
     address: {
-      type: Object,
+      type: Object as PropType<Address>,
       default: () => null,
-    } as PropOptions<Address>,
+    },
     hideEdit: {
       type: Boolean,
       default: false,
@@ -58,9 +58,9 @@ export default defineComponent({
       default: false,
     },
     order: {
-      type: Object,
+      type: Object as PropType<Order>,
       default: () => {},
-    } as PropOptions<Order>,
+    },
   },
   methods: {
     edit() {

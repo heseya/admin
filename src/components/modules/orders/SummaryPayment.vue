@@ -75,7 +75,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { Order, OrderPayment, PaymentStatus } from '@heseya/store-core'
 
 import PopConfirm from '@/components/layout/PopConfirm.vue'
@@ -89,9 +89,9 @@ export default defineComponent({
   components: { PopConfirm, InfoTooltip },
   props: {
     order: {
-      type: Object,
+      type: Object as PropType<Order>,
       required: true,
-    } as PropOptions<Order>,
+    },
   },
   computed: {
     lastSuccessfullPayment(): OrderPayment | undefined {

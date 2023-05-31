@@ -44,7 +44,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import debounce from 'lodash/debounce'
 import { CdnMediaType } from '@heseya/store-core'
 
@@ -68,9 +68,9 @@ export default defineComponent({
 
   props: {
     filters: {
-      type: Object,
+      type: Object as PropType<MediaFiltersType>,
       default: () => ({ ...EMPTY_MEDIA_FILTERS }),
-    } as PropOptions<MediaFiltersType>,
+    },
   },
 
   data: () => ({

@@ -53,7 +53,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import debounce from 'lodash/debounce'
 import uniqBy from 'lodash/uniqBy'
 import isEmpty from 'lodash/isEmpty'
@@ -76,12 +76,15 @@ export default defineComponent({
   components: { Empty, ValidationProvider },
   props: {
     value: {
-      type: [String, Object, Array],
+      type: [String, Object, Array] as PropType<UUID | BaseItem | UUID[] | BaseItem[]>,
       default: () => [],
-    } as PropOptions<UUID | BaseItem | UUID[] | BaseItem[]>,
+    },
     modelUrl: { type: String, required: true },
     disabled: { type: Boolean, default: false },
-    propMode: { type: String, default: undefined } as PropOptions<keyof BaseItem>,
+    propMode: {
+      type: String as PropType<keyof BaseItem>,
+      default: undefined,
+    },
     label: { type: String, default: '' },
     limit: { type: [Number, String], default: 24 },
     placeholderModel: { type: String, default: '' },

@@ -82,7 +82,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import {
   CdnMediaSource,
@@ -112,9 +112,9 @@ export default defineComponent({
       required: true,
     },
     value: {
-      type: Object,
+      type: Object as PropType<Form>,
       required: true,
-    } as PropOptions<Form>,
+    },
   },
 
   data: () => ({

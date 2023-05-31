@@ -52,7 +52,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { ValidationProvider } from 'vee-validate'
 import { Address, ShippingCountry } from '@heseya/store-core'
 
@@ -65,9 +65,9 @@ export default defineComponent({
   },
   props: {
     value: {
-      type: Object,
+      type: Object as PropType<Address>,
       required: true,
-    } as PropOptions<Address>,
+    },
   },
   data: () => ({
     countries: [] as ShippingCountry[],

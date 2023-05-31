@@ -96,7 +96,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import isNumber from 'lodash/isNumber'
 import { WarehouseItem } from '@heseya/store-core'
 
@@ -106,7 +106,7 @@ import { formatDate } from '@/utils/dates'
 export default defineComponent({
   components: { DepositFormModal },
   props: {
-    item: { type: Object, default: null } as PropOptions<WarehouseItem | null>,
+    item: { type: Object as PropType<WarehouseItem | null>, default: null },
   },
 
   data: () => ({

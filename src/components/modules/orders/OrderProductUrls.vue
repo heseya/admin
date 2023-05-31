@@ -124,7 +124,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { OrderProduct, OrderProductUrl } from '@heseya/store-core'
 
 import { sdk } from '@/api'
@@ -141,9 +141,9 @@ export default defineComponent({
   components: { CmsTable, CmsTableRow, PopConfirm, OrderProductUrlForm, Empty },
   props: {
     product: {
-      type: Object,
+      type: Object as PropType<OrderProduct>,
       required: true,
-    } as PropOptions<OrderProduct>,
+    },
     orderId: {
       type: String,
       required: true,

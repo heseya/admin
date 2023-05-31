@@ -27,7 +27,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 interface MaxUsesForm {
   // eslint-disable-next-line camelcase
@@ -36,7 +36,7 @@ interface MaxUsesForm {
 
 export default defineComponent({
   props: {
-    value: { type: Object, required: true } as PropOptions<MaxUsesForm>,
+    value: { type: Object as PropType<MaxUsesForm>, required: true },
     disabled: { type: Boolean, default: false },
   },
   computed: {

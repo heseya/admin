@@ -93,7 +93,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { CdnMedia } from '@heseya/store-core'
 import { ValidationObserver } from 'vee-validate'
 import { generateSlug } from '@/utils/generateSlug'
@@ -108,7 +108,7 @@ export default defineComponent({
   props: {
     disabled: { type: Boolean, default: false },
     placement: { type: String, default: 'bottomRight' },
-    media: { type: Object, required: true } as PropOptions<CdnMedia>,
+    media: { type: Object as PropType<CdnMedia>, required: true },
     allowDeletion: { type: Boolean, required: false, default: false },
   },
   data: () => ({

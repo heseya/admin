@@ -111,7 +111,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { OrderProduct } from '@heseya/store-core'
 
 import { formatCurrency } from '@/utils/currency'
@@ -131,9 +131,9 @@ export default defineComponent({
   },
   props: {
     item: {
-      type: Object,
+      type: Object as PropType<OrderProduct>,
       required: true,
-    } as PropOptions<OrderProduct>,
+    },
   },
   computed: {
     coverUrl(): string {

@@ -143,7 +143,7 @@
 
     <br />
 
-    <Zone :title="$t('advancedOptions')" type="danger">
+    <Zone :title="$t('advancedOptions').toString()" type="danger">
       <validated-input
         v-model="form.pattern"
         :disabled="disabled"

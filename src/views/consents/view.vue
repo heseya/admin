@@ -1,12 +1,12 @@
 <template>
   <div class="narrower-page">
-    <top-nav :title="!isNew ? $t('editTitle') : $t('newTitle')">
+    <top-nav :title="!isNew ? $t('editTitle').toString() : $t('newTitle').toString()">
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Consents.Remove"
-        :title="$t('deleteText')"
-        :ok-text="$t('common.delete')"
-        :cancel-text="$t('common.cancel')"
+        :title="$t('deleteText').toString()"
+        :ok-text="$t('common.delete').toString()"
+        :cancel-text="$t('common.cancel').toString()"
         @confirm="deleteConsent"
       >
         <icon-button type="danger">

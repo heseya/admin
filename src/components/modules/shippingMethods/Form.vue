@@ -6,7 +6,7 @@
           v-model="form.shipping_type"
           :disabled="disabled"
           option-filter-prop="label"
-          :label="$t('form.shippingType')"
+          :label="$t('form.shippingType').toString()"
         >
           <a-select-option
             v-for="type in Object.values(ShippingType)"
@@ -173,7 +173,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { ValidationProvider } from 'vee-validate'
 import {
   PaymentMethod,
@@ -206,13 +206,13 @@ export default defineComponent({
   },
   props: {
     value: {
-      type: Object,
+      type: Object as PropType<ShippingMethodCreateDto>,
       required: true,
-    } as PropOptions<ShippingMethodCreateDto>,
+    },
     countries: {
-      type: Array,
+      type: Array as PropType<ShippingCountry[]>,
       required: true,
-    } as PropOptions<ShippingCountry[]>,
+    },
     disabled: {
       type: Boolean,
       required: true,

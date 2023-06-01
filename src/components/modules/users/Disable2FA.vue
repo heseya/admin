@@ -17,7 +17,7 @@
     <pop-confirm
       v-if="!isLoggedUser && is2faEnabled"
       v-can="$p.Users.TfaRemove"
-      :title="$t('disableText')"
+      :title="$t('disableText').toString()"
       @confirm="disable2FA"
     >
       <app-button :disabled="disabled" size="small" type="danger" class="disable-2fa__disable-btn">

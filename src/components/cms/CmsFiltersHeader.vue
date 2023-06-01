@@ -12,7 +12,7 @@
       @click="$emit('clear-filters')"
     >
       <template #icon>
-        <img src="/img/icons/close-icon.svg" :alt="$t('common.close')" />
+        <img src="/img/icons/close-icon.svg" :alt="$t('common.close').toString()" />
       </template>
       {{ $t('clearFilters') }}
     </icon-button>
@@ -33,16 +33,16 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import { formatFilters } from '@/utils/utils'
 
 export default defineComponent({
   props: {
     filters: {
-      type: Object,
+      type: Object as PropType<Record<string, any>>,
       default: () => ({}),
-    } as PropOptions<Record<string, any>>,
+    },
   },
   computed: {
     filtersCount(): number {

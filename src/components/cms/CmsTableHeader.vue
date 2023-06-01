@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import { TableHeader } from '@/interfaces/CmsTable'
 import InfoTooltip from '../layout/InfoTooltip.vue'
@@ -28,9 +28,9 @@ export default defineComponent({
   components: { InfoTooltip },
   props: {
     headers: {
-      type: Array,
+      type: Array as PropType<TableHeader[]>,
       required: true,
-    } as PropOptions<TableHeader[]>,
+    },
     sortFilters: {
       type: String,
       default: '',

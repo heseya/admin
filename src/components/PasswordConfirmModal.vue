@@ -3,16 +3,16 @@
     <a-modal
       v-model="isActive"
       class="password-confirm-modal"
-      :ok-text="okText || $t('common.continue')"
-      :cancel-text="$t('common.cancel')"
-      :title="title || $t('defaultText')"
+      :ok-text="okText || $t('common.continue').toString()"
+      :cancel-text="$t('common.cancel').toString()"
+      :title="title || $t('defaultText').toString()"
       :ok-type="okType"
       @ok="handleSubmit(confirm)"
     >
       <validated-input
         v-model="password"
         icon-after
-        :label="$t('password')"
+        :label="$t('password').toString()"
         type="password"
         rules="required"
       />

@@ -133,7 +133,7 @@
         <modal-form v-if="isUsedSchemaModalActive">
           <selector
             type="schemas"
-            :add-text="$t('choose')"
+            :add-text="$t('choose').toString()"
             :existing="[form]"
             @select="selectUsedSchema"
           />
@@ -143,7 +143,7 @@
 
     <br />
 
-    <Zone :title="$t('advancedOptions')" type="danger">
+    <Zone :title="$t('advancedOptions').toString()" type="danger">
       <validated-input
         v-model="form.pattern"
         :disabled="disabled"
@@ -246,7 +246,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import { SchemaType, Schema } from '@heseya/store-core'
@@ -274,13 +274,13 @@ export default defineComponent({
   },
   props: {
     schema: {
-      type: Object,
+      type: Object as PropType<Schema>,
       required: true,
-    } as PropOptions<Schema>,
+    },
     currentProductSchemas: {
-      type: Array,
+      type: Array as PropType<Schema[]>,
       default: () => [],
-    } as PropOptions<Schema[]>,
+    },
     disabled: { type: Boolean, default: false },
   },
   data: () => ({

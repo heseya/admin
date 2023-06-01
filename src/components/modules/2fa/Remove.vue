@@ -10,8 +10,8 @@
 
     <password-confirm-modal
       v-model="isModalActive"
-      :title="$t('passwordConfirm')"
-      :ok-text="$t('removeBtnText')"
+      :title="$t('passwordConfirm').toString()"
+      :ok-text="$t('removeBtnText').toString()"
       ok-type="danger"
       @confirm="onConfirm"
     />

@@ -4,12 +4,16 @@
       v-model="local.search"
       class="span-2"
       type="search"
-      :label="$t('common.search')"
+      :label="$t('common.search').toString()"
       allow-clear
       @input="debouncedSearch"
     />
 
-    <boolean-select v-model="local.public" :label="$t('public')" @change="debouncedSearch" />
+    <boolean-select
+      v-model="local.public"
+      :label="$t('public').toString()"
+      @change="debouncedSearch"
+    />
   </div>
 </template>
 
@@ -25,7 +29,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { debounce } from 'lodash'
 import cloneDeep from 'lodash/cloneDeep'
 
@@ -48,9 +52,9 @@ export default defineComponent({
   components: { BooleanSelect },
   props: {
     filters: {
-      type: Object,
+      type: Object as PropType<ProductSetFilters>,
       default: () => ({ ...EMPTY_PRODUCT_SET_FILTERS }),
-    } as PropOptions<ProductSetFilters>,
+    },
   },
 
   data: () => ({

@@ -7,7 +7,7 @@
         v-if="error"
         type="error"
         show-icon
-        :message="$t('fetchFailed')"
+        :message="$t('fetchFailed').toString()"
         :description="error.message"
       />
 
@@ -72,7 +72,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { AxiosError, AxiosInstance } from 'axios'
 import { App, AppConfigField } from '@heseya/store-core'
@@ -87,9 +87,9 @@ export default defineComponent({
   components: { ValidationObserver, Loading, AppSelect },
   props: {
     app: {
-      type: Object,
+      type: Object as PropType<App | null>,
       default: null,
-    } as PropOptions<App | null>,
+    },
   },
   data: () => ({
     form: {} as Record<string, any>,

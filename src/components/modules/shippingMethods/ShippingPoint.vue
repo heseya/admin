@@ -51,7 +51,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "name": "Nazwa",
@@ -61,7 +61,7 @@
     "country": "Kraj",
     "phone": "Telefon",
     "vat": "NIP",
-    "addPoint":"Dodaj",
+    "addPoint": "Dodaj",
     "editPoint": "Edytuj",
     "successMessageAdded": "Dodano nowy punkt dostawy",
     "successMessageEdited": "Edytowano punkt dostawy"
@@ -74,7 +74,7 @@
     "country": "Country",
     "phone": "Phone",
     "vat": "VAT",
-    "addPoint":"Add",
+    "addPoint": "Add",
     "editPoint": "Edit",
     "successMessageAdded": "Added new shipping point",
     "successMessageEdited": "Edited shipping point"
@@ -83,7 +83,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { AddressDto, ShippingCountry } from '@heseya/store-core'
 import { DEFAULT_ADDRESS_FORM } from '@/consts/addressConsts'
@@ -93,17 +93,17 @@ export default defineComponent({
   components: { ValidationObserver },
   props: {
     value: {
-      type: Object,
+      type: Object as PropType<AddressDto>,
       required: true,
-    } as PropOptions<AddressDto>,
+    },
     countries: {
-      type: Array,
+      type: Array as PropType<ShippingCountry[]>,
       required: true,
-    } as PropOptions<ShippingCountry[]>,
+    },
     shippingPoints: {
-      type: Array,
+      type: Array as PropType<AddressDto[]>,
       required: true,
-    } as PropOptions<AddressDto[]>,
+    },
     editMode: {
       type: Boolean,
       required: true,

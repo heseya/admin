@@ -6,15 +6,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { App, User } from '@heseya/store-core'
 
 export default defineComponent({
   props: {
     buyer: {
-      type: Object,
+      type: Object as PropType<User | App>,
       required: true,
-    } as PropOptions<User | App>,
+    },
   },
 
   computed: {

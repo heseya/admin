@@ -6,7 +6,7 @@
       <validated-input
         v-model="form.name"
         name="name"
-        :label="$t('common.form.name')"
+        :label="$t('common.form.name').toString()"
         rules="required"
       />
       <!--

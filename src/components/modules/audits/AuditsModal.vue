@@ -144,7 +144,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { capitalize } from 'lodash'
 import { EntityAudits } from '@heseya/store-core'
 
@@ -168,13 +168,13 @@ export default defineComponent({
   components: { CmsTable, Empty, Loading, AuditFormatter, CmsTableRow },
   props: {
     model: {
-      type: String,
+      type: String as PropType<GeneratedStoreModulesKeys>,
       required: true,
-    } as PropOptions<GeneratedStoreModulesKeys>,
+    },
     id: {
-      type: String,
+      type: String as PropType<UUID>,
       default: null,
-    } as PropOptions<UUID>,
+    },
   },
   data: () => ({
     isModalOpen: false,

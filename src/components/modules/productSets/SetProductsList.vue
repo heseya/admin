@@ -60,10 +60,15 @@
       <app-button type="success" @click="save">{{ $t('common.save') }}</app-button>
     </template>
 
-    <a-modal v-model="isSelectorActive" width="800px" :title="$t('chooseProduct')" :footer="null">
+    <a-modal
+      v-model="isSelectorActive"
+      width="800px"
+      :title="$t('chooseProduct').toString()"
+      :footer="null"
+    >
       <selector
         v-if="isSelectorActive"
-        :type-name="$t('product')"
+        :type-name="$t('product').toString()"
         type="products"
         :existing="products"
         @select="addProduct"
@@ -94,7 +99,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import Draggable from 'vuedraggable'
 import { ProductList, ProductSet } from '@heseya/store-core'
 
@@ -115,9 +120,9 @@ export default defineComponent({
   components: { Draggable, Selector, Empty, Avatar, ProductPrice },
   props: {
     set: {
-      type: Object,
+      type: Object as PropType<ProductSet | null>,
       default: null,
-    } as PropOptions<ProductSet | null>,
+    },
     isOpen: {
       type: Boolean,
       default: false,

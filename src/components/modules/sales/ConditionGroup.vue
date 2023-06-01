@@ -58,7 +58,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import { ValidationProvider } from 'vee-validate'
 import { DiscountConditionType } from '@heseya/store-core'
@@ -72,7 +72,7 @@ import { InnerConditionGroup } from '@/interfaces/SalesAndCoupons'
 export default defineComponent({
   components: { Empty, ConditionForm, ValidationProvider },
   props: {
-    value: { type: Object, required: true } as PropOptions<InnerConditionGroup>,
+    value: { type: Object as PropType<InnerConditionGroup>, required: true },
     disabled: { type: Boolean, default: false },
     deletable: { type: Boolean, default: true },
   },

@@ -1,6 +1,6 @@
 <template>
   <card class="company-users">
-    <top-nav tag="h2" :title="$t('title')" class="company-users__nav">
+    <top-nav tag="h2" :title="$t('title').toString()" class="company-users__nav">
       <icon-button size="small" type="primary" @click="isAddUserModalActive = true">
         <template #icon> <i class="bx bx-plus"></i> </template>
         {{ $t('add') }}
@@ -33,8 +33,8 @@
               </a-menu-item>
               <a-menu-item>
                 <pop-confirm
-                  :ok-text="$t('common.delete')"
-                  :cancel-text="$t('common.cancel')"
+                  :ok-text="$t('common.delete').toString()"
+                  :cancel-text="$t('common.cancel').toString()"
                   placement="bottom"
                   @confirm="removeUserFromCompany(user)"
                 >
@@ -51,7 +51,7 @@
     <a-modal v-model="isAddUserModalActive" width="800px" :title="$t('addTitle')" :footer="null">
       <modal-form v-if="isAddUserModalActive">
         <selector
-          :type-name="$t('searchName')"
+          :type-name="$t('searchName').toString()"
           type="users"
           :existing="users"
           @select="addUserToCompany"
@@ -83,7 +83,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { Role, UserList } from '@heseya/store-core'
 
 import Card from '@/components/layout/Card.vue'
@@ -99,9 +99,9 @@ export default defineComponent({
   components: { TopNav, Card, IconButton, Loading, Empty, PopConfirm, ModalForm, Selector },
   props: {
     company: {
-      type: Object,
+      type: Object as PropType<Role>,
       required: true,
-    } as PropOptions<Role>,
+    },
   },
 
   data: () => ({

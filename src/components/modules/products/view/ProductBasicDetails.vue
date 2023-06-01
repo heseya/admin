@@ -3,7 +3,7 @@
     <validated-input
       v-model="form.name"
       rules="required"
-      :label="$t('common.form.name')"
+      :label="$t('common.form.name').toString()"
       name="name"
       :disabled="disabled"
       @input="editSlug"
@@ -14,7 +14,7 @@
     <validated-input
       v-model="form.slug"
       rules="required|slug"
-      :label="$t('common.form.slug')"
+      :label="$t('common.form.slug').toString()"
       name="slug"
       :disabled="disabled"
     />
@@ -25,7 +25,7 @@
         rules="required|not-negative"
         type="number"
         step="0.01"
-        :label="$t('form.price')"
+        :label="$t('form.price').toString()"
         name="price"
         :disabled="disabled"
       />
@@ -34,7 +34,7 @@
         v-model="form.vat_rate"
         rules="not-negative|less-than:100"
         type="number"
-        :label="$t('form.vatRate')"
+        :label="$t('form.vatRate').toString()"
         name="vat_rate"
         :min="0"
         :disabled="disabled"
@@ -46,7 +46,7 @@
     <app-textarea
       v-if="!loading"
       v-model="form.description_short"
-      :label="$t('form.shortDescription')"
+      :label="$t('form.shortDescription').toString()"
       :disabled="disabled"
     />
   </div>
@@ -72,7 +72,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { Product } from '@heseya/store-core'
 
 import { ProductComponentForm } from '@/interfaces/Product'
@@ -86,13 +86,13 @@ export default defineComponent({
   components: { ProductSetSelect, AppTextarea: Textarea, TagsSelect },
   props: {
     value: {
-      type: Object,
+      type: Object as PropType<ProductComponentForm>,
       required: true,
-    } as PropOptions<ProductComponentForm>,
+    },
     product: {
-      type: Object,
+      type: Object as PropType<Product>,
       default: () => ({} as Product),
-    } as PropOptions<Product>,
+    },
     disabled: { type: Boolean, default: false },
     loading: { type: Boolean, default: false },
     isNew: { type: Boolean, default: false },

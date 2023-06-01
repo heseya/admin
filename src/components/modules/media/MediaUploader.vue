@@ -24,7 +24,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import { getLastElement } from '@/utils/utils'
 import { uploadMedia } from '@/services/uploadMedia'
@@ -33,7 +33,7 @@ export default defineComponent({
   name: 'MediaUploader',
   props: {
     extensions: {
-      type: Array,
+      type: Array as PropType<string[]>,
       default: () => [
         // disabled frontend validation
         // 'jpg',
@@ -50,7 +50,7 @@ export default defineComponent({
         // 'mov',
         // 'wmv',
       ],
-    } as PropOptions<string[]>,
+    },
     disabled: {
       type: Boolean,
       default: false,

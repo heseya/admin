@@ -43,7 +43,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import Draggable from 'vuedraggable'
 import { CdnMedia, CdnMediaType } from '@heseya/store-core'
 
@@ -63,9 +63,9 @@ export default defineComponent({
   },
   props: {
     value: {
-      type: Array,
+      type: Array as PropType<CdnMedia[]>,
       default: () => [],
-    } as PropOptions<CdnMedia[]>,
+    },
     disabled: { type: Boolean, default: false },
   },
   data: () => ({

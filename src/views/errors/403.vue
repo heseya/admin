@@ -1,5 +1,5 @@
 <template>
-  <error-page :title="$t('title')" :description="$t('description')" />
+  <error-page :title="$t('title').toString()" :description="$t('description').toString()" />
 </template>
 
 <i18n lang="json">

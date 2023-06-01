@@ -59,7 +59,7 @@
     </app-select>
 
     <media-upload-input
-      :label="$t('form.og_image')"
+      :label="$t('form.og_image').toString()"
       :disabled="disabled"
       :media="form.og_image"
       @upload="changeMedia"
@@ -119,7 +119,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import {
   SeoMetadata,
   SeoMetadataDto,
@@ -151,9 +151,9 @@ export default defineComponent({
   },
   props: {
     value: {
-      type: Object,
+      type: Object as PropType<SeoMeta | null>,
       default: () => null,
-    } as PropOptions<SeoMeta | null>,
+    },
     disabled: {
       type: Boolean,
       default: false,
@@ -163,9 +163,9 @@ export default defineComponent({
       default: false,
     },
     current: {
-      type: Object,
+      type: Object as PropType<{ id: UUID; model: SeoCheckModelType }>,
       default: null,
-    } as PropOptions<{ id: UUID; model: SeoCheckModelType }>,
+    },
   },
 
   data: () => ({

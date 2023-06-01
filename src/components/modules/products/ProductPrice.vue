@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { Product } from '@heseya/store-core'
 
 import { formatCurrency } from '@/utils/currency'
@@ -29,9 +29,9 @@ import { formatCurrency } from '@/utils/currency'
 export default defineComponent({
   props: {
     product: {
-      type: Object,
+      type: Object as PropType<Product>,
       required: true,
-    } as PropOptions<Product>,
+    },
     tag: {
       type: String,
       default: 'span',

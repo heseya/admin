@@ -16,9 +16,21 @@ lint:
   before_script:
     - yarn
   script:
-    - yarn lint
+    - yarn lint:eslint
   rules:
     - if: $CI_COMMIT_BRANCH != "master"
+
+vue-tsc:
+  image: node:16-alpine
+  stage: test
+  before_script:
+    - yarn install
+  rules:
+    - if: $CI_COMMIT_BRANCH != "master"
+  script:
+    - yarn lint:vue
+  # Hopefully only for some time, until we have fixed all the errors
+  allow_failure: true
 
 test-unit:
   stage: test

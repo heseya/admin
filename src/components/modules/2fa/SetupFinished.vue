@@ -26,7 +26,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import RecoveryCodes from './RecoveryCodes.vue'
 
@@ -34,9 +34,9 @@ export default defineComponent({
   components: { RecoveryCodes },
   props: {
     recoveryCodes: {
-      type: Array,
+      type: Array as PropType<string[]>,
       required: true,
-    } as PropOptions<string[]>,
+    },
   },
 })
 </script>

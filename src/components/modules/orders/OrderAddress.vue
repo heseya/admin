@@ -61,16 +61,16 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { Address, Order, ShippingType } from '@heseya/store-core'
 
 export default defineComponent({
   name: 'OrderAddress',
   props: {
     order: {
-      type: Object,
+      type: Object as PropType<Order>,
       required: true,
-    } as PropOptions<Order>,
+    },
     billing: {
       type: Boolean,
       default: false,

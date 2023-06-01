@@ -23,9 +23,19 @@
         </div>
       </div>
     </div>
-    <a-modal v-model="isModalActive" width="800px" :title="$t('chooseItem')" :footer="null">
+    <a-modal
+      v-model="isModalActive"
+      width="800px"
+      :title="$t('chooseItem').toString()"
+      :footer="null"
+    >
       <modal-form v-if="isModalActive">
-        <selector :type-name="$t('product')" type="items" :existing="value" @select="addItem" />
+        <selector
+          :type-name="$t('product').toString()"
+          type="items"
+          :existing="value"
+          @select="addItem"
+        />
       </modal-form>
     </a-modal>
   </div>
@@ -45,7 +55,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import Selector from '@/components/Selector.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import { UUID } from '@/interfaces/UUID'
@@ -68,9 +78,9 @@ export default defineComponent({
       default: '',
     },
     value: {
-      type: Array,
+      type: Array as PropType<AutocompleteItem[]>,
       default: null,
-    } as PropOptions<AutocompleteItem[]>,
+    },
     disabled: { type: Boolean, default: false },
   },
   data: () => ({
@@ -79,7 +89,7 @@ export default defineComponent({
   computed: {
     compValue: {
       get(): AutocompleteItem[] {
-        return this.value
+        return this.value || []
       },
       set(v: AutocompleteItem[]) {
         this.$emit('input', v)

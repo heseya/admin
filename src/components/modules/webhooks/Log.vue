@@ -24,13 +24,13 @@
       </div>
 
       <span class="log__data-key">{{ $t('payload') }}:</span>
-      <LayoutAccordion v-if="data.payload" :title="$t('expand')">
+      <LayoutAccordion v-if="data.payload" :title="$tc('expand')">
         <vue-json-pretty v-if="data.payload" :path="'res'" :data="JSON.parse(payloadResponse)" />
       </LayoutAccordion>
       <span v-else class="log__data-value"> - </span>
 
       <span class="log__data-key">{{ $t('response') }}:</span>
-      <LayoutAccordion v-if="data.payload" :title="$t('expand')">
+      <LayoutAccordion v-if="data.payload" :title="$tc('expand')">
         <vue-json-pretty v-if="data.response" :path="'res'" :data="JSON.parse(logResponse)" />
       </LayoutAccordion>
       <span v-else class="log__data-value"> - </span>
@@ -58,7 +58,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 // @ts-ignore
 import VueJsonPretty from 'vue-json-pretty'
 import { WebhookEventLog } from '@heseya/store-core'
@@ -76,7 +76,7 @@ export default defineComponent({
   },
 
   props: {
-    data: { type: Object, required: true } as PropOptions<WebhookEventLog>,
+    data: { type: Object as PropType<WebhookEventLog>, required: true },
   },
 
   computed: {

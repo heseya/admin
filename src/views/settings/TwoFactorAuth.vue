@@ -1,10 +1,10 @@
 <template>
   <div class="narrower-page">
-    <top-nav :title="$t('title')">
+    <top-nav :title="$t('title').toString()">
       <BooleanTag
         :value="user && user.is_tfa_active"
-        :true-text="$t('common.active')"
-        :false-text="$t('common.inactive')"
+        :true-text="$t('common.active').toString()"
+        :false-text="$t('common.inactive').toString()"
       />
     </top-nav>
 

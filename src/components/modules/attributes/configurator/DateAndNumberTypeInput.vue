@@ -13,16 +13,16 @@
         v-model="selectedOption[0].name"
         class="number-input__input"
         name="name"
-        :label="$t('displayName')"
-        :placeholder="$t('namePlaceholder')"
+        :label="$t('displayName').toString()"
+        :placeholder="$t('namePlaceholder').toString()"
       />
       <app-input
         v-model="selectedOption[0].value_number"
         class="number-input__input"
         type="number"
         name="value_number"
-        :label="$t('value')"
-        :placeholder="$t('valuePlaceholder')"
+        :label="$t('value').toString()"
+        :placeholder="$t('valuePlaceholder').toString()"
       />
     </div>
   </div>
@@ -46,7 +46,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { cloneDeep } from 'lodash'
 import { AttributeOptionDto, AttributeType, ProductAttribute } from '@heseya/store-core'
 
@@ -59,17 +59,17 @@ const EMPTY_OPTION: AttributeOptionDto = {
 export default defineComponent({
   props: {
     type: {
-      type: String,
+      type: String as PropType<AttributeType.Number | AttributeType.Date>,
       required: true,
-    } as PropOptions<AttributeType.Number | AttributeType.Date>,
+    },
     value: {
-      type: Array,
+      type: Array as PropType<AttributeOptionDto[] | undefined[]>,
       default: () => [cloneDeep(EMPTY_OPTION)],
-    } as PropOptions<AttributeOptionDto[] | undefined[]>,
+    },
     attribute: {
-      type: Object,
+      type: Object as PropType<ProductAttribute>,
       required: true,
-    } as PropOptions<ProductAttribute>,
+    },
     disabled: { type: Boolean, default: false },
   },
   data: () => ({

@@ -9,14 +9,14 @@
           name="name"
           type="input"
           rules="required"
-          :label="$t('common.form.name')"
+          :label="$t('common.form.name').toString()"
         />
 
         <AppTextarea
           v-model="form.description"
           name="description"
           rules="required"
-          :label="$t('form.description')"
+          :label="$t('form.description').toString()"
         />
       </modal-form>
       <template #footer>
@@ -63,7 +63,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { Role, RoleCreateDto } from '@heseya/store-core'
 import { cloneDeep } from 'lodash'
@@ -84,9 +84,9 @@ export default defineComponent({
   components: { ValidationObserver, ModalForm, AppTextarea },
   props: {
     initialValue: {
-      type: Object,
+      type: Object as PropType<Partial<Role> | null>,
       default: () => null,
-    } as PropOptions<Partial<Role> | null>,
+    },
     visible: { type: Boolean, default: false },
   },
 

@@ -39,7 +39,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import Draggable from 'vuedraggable'
 import { BannerMedia } from '@heseya/store-core'
 
@@ -50,9 +50,9 @@ export default defineComponent({
   components: { Draggable, Empty, BannerMediaComponent },
   props: {
     value: {
-      type: Array,
+      type: Array as PropType<BannerMedia[]>,
       required: true,
-    } as PropOptions<BannerMedia[]>,
+    },
     disabled: {
       type: Boolean,
       default: false,

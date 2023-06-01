@@ -20,7 +20,8 @@
       <span> {{ $t('table.shippingTime') }} </span>
       <span> {{ $t('table.quantity') }} </span>
       <span>
-        {{ $t('table.from_unlimited') }} <info-tooltip :text="$t('table.from_unlimited_tooltip')" />
+        {{ $t('table.from_unlimited') }}
+        <info-tooltip :text="$t('table.from_unlimited_tooltip').toString()" />
       </span>
     </div>
 
@@ -37,7 +38,10 @@
     >
       <span :class="{ 'items-availability__row-value--past': isDateInPast(shipping_date) }">
         {{ formatShippingTime(shipping_date || shipping_time) }}
-        <info-tooltip v-if="isDateInPast(shipping_date)" :text="$t('dateInPastTooltip')" />
+        <info-tooltip
+          v-if="isDateInPast(shipping_date)"
+          :text="$t('dateInPastTooltip').toString()"
+        />
       </span>
       <span> {{ quantity }} </span>
       <span> <BooleanTag small :value="from_unlimited" /> </span>
@@ -96,7 +100,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import isNumber from 'lodash/isNumber'
 import { WarehouseItem } from '@heseya/store-core'
 
@@ -106,7 +110,7 @@ import { formatDate } from '@/utils/dates'
 export default defineComponent({
   components: { DepositFormModal },
   props: {
-    item: { type: Object, default: null } as PropOptions<WarehouseItem | null>,
+    item: { type: Object as PropType<WarehouseItem | null>, default: null },
   },
 
   data: () => ({

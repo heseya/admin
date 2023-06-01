@@ -86,7 +86,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import { ValidationProvider } from 'vee-validate'
 import { DiscountConditionDto, DiscountConditionType } from '@heseya/store-core'
@@ -113,7 +113,7 @@ export default defineComponent({
     EntitiesForm,
   },
   props: {
-    value: { type: Object, required: true } as PropOptions<DiscountConditionDto>,
+    value: { type: Object as PropType<DiscountConditionDto>, required: true },
     disabled: { type: Boolean, default: false },
     number: { type: Number, required: true },
   },

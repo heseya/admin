@@ -6,7 +6,7 @@
     :width="size"
     :height="size"
     :object-fit="objectFit"
-    :alt="media.alt"
+    :alt="media.alt || ''"
   />
   <video
     v-else-if="media.type === CdnMediaType.Video"
@@ -40,7 +40,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { CdnMedia, CdnMediaType } from '@heseya/store-core'
 
 import PictureElement from './PictureElement.vue'
@@ -50,9 +50,9 @@ export default defineComponent({
   components: { PictureElement },
   props: {
     media: {
-      type: Object,
+      type: Object as PropType<CdnMedia>,
       required: true,
-    } as PropOptions<CdnMedia>,
+    },
     size: {
       type: Number,
       default: 350,

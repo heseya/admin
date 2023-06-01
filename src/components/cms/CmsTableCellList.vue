@@ -39,7 +39,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import CopyableTag from '../CopyableTag.vue'
 import Tag from '../Tag.vue'
 
@@ -56,9 +56,9 @@ export default defineComponent({
       default: '',
     },
     items: {
-      type: Array,
+      type: Array as PropType<string[]>,
       required: true,
-    } as PropOptions<string[]>,
+    },
     numberOfVisbibleItems: {
       type: Number,
       required: false,

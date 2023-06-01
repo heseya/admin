@@ -1,5 +1,5 @@
 <template>
-  <central-screen-form :title="$t('title')">
+  <central-screen-form :title="$t('title').toString()">
     <template v-if="!isSuccess">
       <ValidationObserver v-slot="{ handleSubmit }">
         <validated-input

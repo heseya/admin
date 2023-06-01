@@ -33,9 +33,9 @@
               </icon-button>
 
               <pop-confirm
-                :title="$t('delete.confirmText')"
-                :ok-text="$t('common.delete')"
-                :cancel-text="$t('common.cancel')"
+                :title="$t('delete.confirmText').toString()"
+                :ok-text="$t('common.delete').toString()"
+                :cancel-text="$t('common.cancel').toString()"
                 @confirm="removeUrl(url)"
               >
                 <icon-button size="small" type="danger">
@@ -52,10 +52,10 @@
 
     <pop-confirm
       v-if="product.urls.length"
-      :title="$t('send.confirmText')"
-      :ok-text="$t('send.btn')"
+      :title="$t('send.confirmText').toString()"
+      :ok-text="$t('send.btn').toString()"
       ok-color="primary"
-      :cancel-text="$t('common.cancel')"
+      :cancel-text="$t('common.cancel').toString()"
       @confirm="sendProductViaMail"
     >
       <AppButton :loading="isLoading" class="order-product-urls__btn" type="primary">
@@ -124,7 +124,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { OrderProduct, OrderProductUrl } from '@heseya/store-core'
 
 import { sdk } from '@/api'
@@ -141,9 +141,9 @@ export default defineComponent({
   components: { CmsTable, CmsTableRow, PopConfirm, OrderProductUrlForm, Empty },
   props: {
     product: {
-      type: Object,
+      type: Object as PropType<OrderProduct>,
       required: true,
-    } as PropOptions<OrderProduct>,
+    },
     orderId: {
       type: String,
       required: true,

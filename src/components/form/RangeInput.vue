@@ -10,8 +10,8 @@
         :min="min"
         :max="max"
         class="range-input__input range-input__input--min"
-        :placeholder="$t('min')"
-        @input="(e) => updateValue('min', e.target.value)"
+        :placeholder="$t('min').toString()"
+        @input="(e) => updateValue('min', e.target?.value)"
       />
       <a-input class="range-input__separator" placeholder="-" disabled />
       <a-input
@@ -20,8 +20,8 @@
         :min="min"
         :max="max"
         class="range-input__input range-input__input--max"
-        :placeholder="$t('max')"
-        @input="(e) => updateValue('max', e.target.value)"
+        :placeholder="$t('max').toString()"
+        @input="(e) => updateValue('max', e.target?.value)"
       />
       <a-input v-if="addonAfter" class="range-input__addon" :placeholder="addonAfter" disabled />
     </a-input-group>
@@ -42,19 +42,19 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 export default defineComponent({
   props: {
-    type: { type: String, default: 'number' } as PropOptions<'number' | 'date'>,
+    type: { type: String as PropType<'number' | 'date'>, default: 'number' },
     label: { type: String, default: '' },
     addonAfter: { type: String, default: '' },
     value: {
-      type: Object,
+      type: Object as PropType<{
+        min: number | string
+        max: number | string
+      }>,
       default: () => ({ min: '', max: '' }),
-    } as PropOptions<{
-      min: number | string
-      max: number | string
-    }>,
+    },
     min: { type: [String, Number], default: undefined },
     max: { type: [String, Number], default: undefined },
   },

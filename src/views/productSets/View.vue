@@ -18,9 +18,9 @@
       <pop-confirm
         v-if="!isNew"
         v-can="$p.ProductSets.Remove"
-        :title="$t('deleteText')"
-        :ok-text="$t('common.delete')"
-        :cancel-text="$t('common.cancel')"
+        :title="$t('deleteText').toString()"
+        :ok-text="$t('common.delete').toString()"
+        :cancel-text="$t('common.cancel').toString()"
         @confirm="deleteItem"
       >
         <icon-button type="danger">
@@ -41,7 +41,7 @@
                 <media-upload-input
                   :disabled="!canModify"
                   :media="form.cover"
-                  :file-name="$t('collectionCover')"
+                  :file-name="$t('collectionCover').toString()"
                   @upload="changeMedia"
                 />
               </div>

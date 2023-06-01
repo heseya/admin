@@ -16,7 +16,7 @@
         class="sale-name"
         :disabled="disabled"
         rules="required"
-        :label="$t('common.form.name')"
+        :label="$t('common.form.name').toString()"
       />
 
       <validated-input
@@ -24,14 +24,14 @@
         class="sale-slug"
         rules="slug"
         :disabled="disabled"
-        :label="$t('common.form.slug')"
+        :label="$t('common.form.slug').toString()"
       />
 
       <validated-input
         v-model="form.description"
         class="sale-desc"
         :disabled="disabled"
-        :label="$t('common.form.description')"
+        :label="$t('common.form.description').toString()"
       />
 
       <ValidationProvider v-slot="{ errors }" rules="required" class="sale-type">
@@ -265,7 +265,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { ValidationProvider } from 'vee-validate'
 import {
   DiscountCondition,
@@ -292,9 +292,9 @@ export default defineComponent({
     SeoForm,
   },
   props: {
-    value: { type: Object, required: true } as PropOptions<SaleForm>,
+    value: { type: Object as PropType<SaleForm>, required: true },
     disabled: { type: Boolean, default: false },
-    forcedCondition: { type: Object, default: null } as PropOptions<DiscountCondition | null>,
+    forcedCondition: { type: Object as PropType<DiscountCondition | null>, default: null },
   },
   computed: {
     DiscountType(): typeof DiscountType {

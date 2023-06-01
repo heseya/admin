@@ -13,7 +13,7 @@
 
     <password-confirm-modal
       v-model="isModalActive"
-      :title="$t('confirmPassword')"
+      :title="$t('confirmPassword').toString()"
       @confirm="onConfirm"
     />
   </div>

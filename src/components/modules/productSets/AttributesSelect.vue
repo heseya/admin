@@ -30,16 +30,16 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import debounce from 'lodash/debounce'
 import { Attribute } from '@heseya/store-core'
 
 export default defineComponent({
   props: {
     value: {
-      type: Array,
+      type: Array as PropType<Attribute[] | string[]>,
       required: true,
-    } as PropOptions<Attribute[] | string[]>,
+    },
     disabled: { type: Boolean, default: false },
   },
   data: () => ({

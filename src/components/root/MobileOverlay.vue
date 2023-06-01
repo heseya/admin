@@ -1,7 +1,7 @@
 <template>
   <div class="mobile-nav-overlay" :class="{ 'mobile-nav-overlay--visible': isVisible }">
     <button class="mobile-nav-overlay__close" @click="close">
-      <img src="/img/icons/close-icon.svg" :alt="$t('common.close')" />
+      <img src="/img/icons/close-icon.svg" :alt="$t('common.close').toString()" />
     </button>
 
     <MenuLink

@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import get from 'lodash/get'
 import { TableHeader, TableValue } from '@/interfaces/CmsTable'
 
@@ -57,13 +57,13 @@ export default defineComponent({
       default: false,
     },
     item: {
-      type: Object,
+      type: Object as PropType<Record<string, any>>,
       required: true,
-    } as PropOptions<Record<string, any>>,
+    },
     headers: {
-      type: Array,
+      type: Array as PropType<TableHeader[]>,
       required: true,
-    } as PropOptions<TableHeader[]>,
+    },
   },
   computed: {
     component(): any {

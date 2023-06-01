@@ -15,7 +15,7 @@
         :class="{ 'cms-filters__mobile-wrapper--open': isModalOpen }"
       >
         <button class="cms-filters__close-btn" @click="isModalOpen = false">
-          <img src="/img/icons/close-icon.svg" :alt="$t('common.close')" />
+          <img src="/img/icons/close-icon.svg" :alt="$t('common.close').toString()" />
         </button>
         <cms-filters-header :filters="filters" @clear-filters="$emit('clear-filters')" />
         <div class="cms-filters__mobile-content">
@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import Card from '@/components/layout/Card.vue'
 import CmsFiltersHeader from '@/components/cms/CmsFiltersHeader.vue'
@@ -43,9 +43,9 @@ export default defineComponent({
   components: { Card, CmsFiltersHeader },
   props: {
     filters: {
-      type: Object,
+      type: Object as PropType<Record<string, any>>,
       default: () => ({}),
-    } as PropOptions<Record<string, any>>,
+    },
   },
   data: () => ({
     isExpanded: false,

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <top-nav :title="$t('title')"></top-nav>
+    <top-nav :title="$t('title').toString()"></top-nav>
   </div>
 </template>
 

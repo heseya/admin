@@ -31,7 +31,7 @@
       <modal-form v-if="isSelectorModalActive">
         <Selector
           type="attributes"
-          :type-name="$t('typeName')"
+          :type-name="$t('typeName').toString()"
           :existing="existing"
           @select="addAttribute"
         />
@@ -60,7 +60,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { PropType, defineComponent } from 'vue'
 import { Attribute, ProductAttribute } from '@heseya/store-core'
 
 import Selector from '@/components/Selector.vue'
@@ -77,7 +77,7 @@ export default defineComponent({
       default: false,
     },
     existing: {
-      type: Array,
+      type: Array as PropType<{ id: string; name: string }[]>,
       default: () => [],
     },
     disabled: { type: Boolean, default: false },

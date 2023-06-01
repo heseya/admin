@@ -4,14 +4,14 @@
       v-model="local.search"
       class="span-2"
       type="search"
-      :label="$t('common.search')"
+      :label="$t('common.search').toString()"
       allow-clear
       @input="debouncedSearch"
     />
 
     <app-select
       v-model="local.status_id"
-      :label="$t('status')"
+      :label="$t('status').toString()"
       add-all
       option-filter-prop="label"
       @change="debouncedSearch"
@@ -23,7 +23,7 @@
 
     <app-select
       v-model="local.shipping_method_id"
-      :label="$t('shipping')"
+      :label="$t('shipping').toString()"
       add-all
       option-filter-prop="label"
       @change="debouncedSearch"
@@ -39,7 +39,7 @@
 
     <app-select
       v-model="local.digital_shipping_method_id"
-      :label="$t('digitalShipping')"
+      :label="$t('digitalShipping').toString()"
       add-all
       option-filter-prop="label"
       @change="debouncedSearch"
@@ -55,7 +55,7 @@
 
     <app-select
       v-model="local.paid"
-      :label="$t('paymentStatus')"
+      :label="$t('paymentStatus').toString()"
       add-all
       option-filter-prop="label"
       @change="debouncedSearch"
@@ -89,7 +89,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { debounce } from 'lodash'
 import { OrderStatus, ShippingMethod, ShippingType } from '@heseya/store-core'
 
@@ -116,9 +116,9 @@ export const EMPTY_ORDER_FILTERS: OrderFilersType = {
 export default defineComponent({
   props: {
     filters: {
-      type: Object,
+      type: Object as PropType<OrderFilersType>,
       default: () => ({ ...EMPTY_ORDER_FILTERS }),
-    } as PropOptions<OrderFilersType>,
+    },
   },
   data: () => ({
     local: {

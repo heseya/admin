@@ -7,7 +7,7 @@
         type="number"
         :rules="`not-negative|less-than:@${formId}.max_value`"
         :disabled="disabled"
-        :label="$t('form.min_value')"
+        :label="$t('form.min_value').toString()"
       />
       <validated-input
         v-model="form.max_value"
@@ -15,7 +15,7 @@
         rules="not-negative"
         type="number"
         :disabled="disabled"
-        :label="$t('form.max_value')"
+        :label="$t('form.max_value').toString()"
       />
     </div>
 
@@ -59,7 +59,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { OrderValueDiscountCondition } from '@heseya/store-core'
 
 import SwitchInput from '@/components/form/SwitchInput.vue'
@@ -67,7 +67,7 @@ import SwitchInput from '@/components/form/SwitchInput.vue'
 export default defineComponent({
   components: { SwitchInput },
   props: {
-    value: { type: Object, required: true } as PropOptions<OrderValueDiscountCondition>,
+    value: { type: Object as PropType<OrderValueDiscountCondition>, required: true },
     disabled: { type: Boolean, default: false },
   },
   computed: {

@@ -1,6 +1,6 @@
 <template>
   <div :key="webhook.id" class="narrower-page">
-    <top-nav :title="!isNew ? webhook.name : $t('newTitle')">
+    <top-nav :title="!isNew ? webhook.name : $t('newTitle').toString()">
       <icon-button v-if="!isNew" @click="toggleEventsModal">
         <template #icon>
           <i class="bx bx-list-ul"></i>
@@ -11,9 +11,9 @@
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Webhooks.Remove"
-        :title="$t('deleteText')"
-        :ok-text="$t('common.delete')"
-        :cancel-text="$t('common.cancel')"
+        :title="$t('deleteText').toString()"
+        :ok-text="$t('common.delete').toString()"
+        :cancel-text="$t('common.cancel').toString()"
         @confirm="deleteWebhook"
       >
         <icon-button type="danger">

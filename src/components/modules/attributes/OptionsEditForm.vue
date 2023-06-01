@@ -23,7 +23,7 @@
         disabled
         type="number"
         name="value_number"
-        :label="$t('form.value_number')"
+        :label="$t('form.value_number').toString()"
       />
 
       <validated-input
@@ -32,7 +32,7 @@
         disabled
         type="date"
         name="value_date"
-        :label="$t('form.value_date')"
+        :label="$t('form.value_date').toString()"
       />
 
       <app-button @click="saveModalForm">
@@ -68,7 +68,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { AttributeType, AttributeOptionDto } from '@heseya/store-core'
 
 import { formatApiNotificationError } from '@/utils/errors'
@@ -76,17 +76,17 @@ import { formatApiNotificationError } from '@/utils/errors'
 export default defineComponent({
   props: {
     value: {
-      type: Object,
+      type: Object as PropType<AttributeOptionDto | null>,
       default: null,
-    } as PropOptions<AttributeOptionDto | null>,
+    },
     attributeId: {
       type: String,
       required: true,
     },
     type: {
-      type: String,
+      type: String as PropType<AttributeType>,
       required: true,
-    } as PropOptions<AttributeType>,
+    },
     disabled: {
       type: Boolean,
       default: false,

@@ -1,5 +1,5 @@
 <template>
-  <LayoutAccordion :title="$t('title')">
+  <LayoutAccordion :title="$t('title').toString()">
     <div class="additional-descriptions">
       <icon-button
         class="additional-descriptions__btn"
@@ -23,7 +23,7 @@
           :key="page.id"
           :item="page"
           :disabled="disabled"
-          :delete-text="$t('deleteText')"
+          :delete-text="$t('deleteText').toString()"
           @edit="openEditModal"
           @remove="removePage"
         >
@@ -75,7 +75,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { PageList, Product } from '@heseya/store-core'
 
 import LayoutAccordion from '@/components/layout/Accordion.vue'
@@ -89,13 +89,13 @@ export default defineComponent({
 
   props: {
     value: {
-      type: Array,
+      type: Array as PropType<PageList[]>,
       required: true,
-    } as PropOptions<PageList[]>,
+    },
     product: {
-      type: Object,
+      type: Object as PropType<Product>,
       required: true,
-    } as PropOptions<Product>,
+    },
     disabled: {
       type: Boolean,
       default: false,

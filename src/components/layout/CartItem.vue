@@ -47,13 +47,13 @@
       </div>
     </div>
 
-    <field :label="$t('header.perItem')">
+    <field :label="$t('header.perItem').toString()">
       <span class="cart-item__value">
         {{ formatCurrency(item.price_initial) }}
       </span>
     </field>
 
-    <field :label="$t('header.discounted')">
+    <field :label="$t('header.discounted').toString()">
       <span class="cart-item__value">
         {{ formatCurrency(item.price) }}
 
@@ -63,13 +63,13 @@
       </span>
     </field>
 
-    <field :label="$t('header.quantity')">
+    <field :label="$t('header.quantity').toString()">
       <span class="cart-item__value">
         {{ item.quantity }}
       </span>
     </field>
 
-    <field :label="$t('header.total')">
+    <field :label="$t('header.total').toString()">
       <span class="cart-item__value">
         {{ formatCurrency(totalPrice) }}
       </span>
@@ -111,7 +111,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { OrderProduct } from '@heseya/store-core'
 
 import { formatCurrency } from '@/utils/currency'
@@ -131,9 +131,9 @@ export default defineComponent({
   },
   props: {
     item: {
-      type: Object,
+      type: Object as PropType<OrderProduct>,
       required: true,
-    } as PropOptions<OrderProduct>,
+    },
   },
   computed: {
     coverUrl(): string {

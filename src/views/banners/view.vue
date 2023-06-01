@@ -1,12 +1,12 @@
 <template>
   <div>
-    <top-nav :title="!isNew ? banner.name : $t('newTitle')">
+    <top-nav :title="!isNew ? banner.name : $t('newTitle').toString()">
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Banners.Remove"
-        :title="$t('deleteText')"
-        :ok-text="$t('common.delete')"
-        :cancel-text="$t('common.cancel')"
+        :title="$t('deleteText').toString()"
+        :ok-text="$t('common.delete').toString()"
+        :cancel-text="$t('common.cancel').toString()"
         @confirm="deleteBanner"
       >
         <icon-button type="danger">

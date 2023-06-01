@@ -16,7 +16,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { AnalyticsPaymentsSummary } from '@heseya/store-core'
 
 import sub from 'date-fns/sub'
@@ -30,9 +30,9 @@ export default defineComponent({
   components: { Bar },
   props: {
     data: {
-      type: Object,
+      type: Object as PropType<AnalyticsPaymentsSummary>,
       required: true,
-    } as PropOptions<AnalyticsPaymentsSummary>,
+    },
   },
   computed: {
     options(): ChartJS.ChartOptions {

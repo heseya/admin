@@ -6,7 +6,7 @@
       type="number"
       :rules="`not-negative|less-than:@${formId}.max_value`"
       :disabled="disabled"
-      :label="$t(`form.min_${formType}_value`)"
+      :label="$t(`form.min_${formType}_value`).toString()"
     />
     <validated-input
       v-model="form.max_value"
@@ -14,7 +14,7 @@
       rules="not-negative"
       type="number"
       :disabled="disabled"
-      :label="$t(`form.max_${formType}_value`)"
+      :label="$t(`form.max_${formType}_value`).toString()"
     />
   </div>
 </template>
@@ -41,7 +41,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import {
   DiscountConditionType,
   CartLengthDiscountCondition,
@@ -52,10 +52,13 @@ type CartCouponsForm = CartLengthDiscountCondition | CouponsCountDiscountConditi
 
 export default defineComponent({
   props: {
-    value: { type: Object, required: true } as PropOptions<CartCouponsForm>,
-    type: { type: String, required: true } as PropOptions<
-      DiscountConditionType.CouponsCount | DiscountConditionType.CartLength
-    >,
+    value: { type: Object as PropType<CartCouponsForm>, required: true },
+    type: {
+      type: String as PropType<
+        DiscountConditionType.CouponsCount | DiscountConditionType.CartLength
+      >,
+      required: true,
+    },
     disabled: { type: Boolean, default: false },
   },
   computed: {

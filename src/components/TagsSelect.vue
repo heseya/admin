@@ -2,7 +2,7 @@
   <div class="tags">
     <app-select
       :value="tagsValue"
-      :label="$t('tags')"
+      :label="$t('tags').toString()"
       class="tags__select"
       mode="tags"
       option-filter-prop="label"

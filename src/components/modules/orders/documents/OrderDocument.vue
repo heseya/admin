@@ -4,7 +4,7 @@
     <div class="order-document__type">{{ $t(`orderDocumentsTypes.${document.type}`) }}</div>
 
     <a-dropdown :trigger="['click']" class="order-document__menu">
-      <button class="order-document__btn" :aria-label="$t('openMenu')">
+      <button class="order-document__btn" :aria-label="$t('openMenu').toString()">
         <i class="bx bx-dots-vertical-rounded"></i>
       </button>
 
@@ -49,7 +49,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { OrderDocument } from '@heseya/store-core'
 
 export default defineComponent({
@@ -59,9 +59,9 @@ export default defineComponent({
       required: true,
     },
     document: {
-      type: Object,
+      type: Object as PropType<OrderDocument>,
       required: true,
-    } as PropOptions<OrderDocument>,
+    },
   },
   methods: {
     async download() {

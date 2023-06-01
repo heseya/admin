@@ -1,5 +1,5 @@
 <template>
-  <LayoutAccordion :title="$t('title')">
+  <LayoutAccordion :title="$t('title').toString()">
     <div class="related-sets">
       <icon-button
         class="related-sets__btn"
@@ -23,7 +23,7 @@
           :key="set.id"
           :item="set"
           :disabled="disabled"
-          :delete-text="$t('deleteText')"
+          :delete-text="$t('deleteText').toString()"
           @edit="editCollection"
           @remove="onRemove"
         >
@@ -57,7 +57,7 @@
 
         <selector
           v-if="isAddModalActive"
-          :type-name="$t('selectorTitle')"
+          :type-name="$t('selectorTitle').toString()"
           type="product-sets"
           :existing="relatedSets"
           @select="onAdd"
@@ -93,7 +93,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { Product, ProductSetList } from '@heseya/store-core'
 
 import LayoutAccordion from '@/components/layout/Accordion.vue'
@@ -108,13 +108,13 @@ export default defineComponent({
 
   props: {
     value: {
-      type: Array,
+      type: Array as PropType<ProductSetList[]>,
       required: true,
-    } as PropOptions<ProductSetList[]>,
+    },
     product: {
-      type: Object,
+      type: Object as PropType<Product>,
       required: true,
-    } as PropOptions<Product>,
+    },
     disabled: {
       type: Boolean,
       default: false,

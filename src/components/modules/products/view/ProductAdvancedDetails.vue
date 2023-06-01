@@ -1,5 +1,5 @@
 <template>
-  <LayoutAccordion class="product-advanced-details" :title="$t('title')">
+  <LayoutAccordion class="product-advanced-details" :title="$t('title').toString()">
     <div class="product-advanced-details__form">
       <google-category-select v-model="form.google_product_category" :disabled="disabled" />
 
@@ -82,7 +82,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { Product } from '@heseya/store-core'
 
 import { ProductComponentForm } from '@/interfaces/Product'
@@ -93,17 +93,17 @@ import InfoTooltip from '@/components/layout/InfoTooltip.vue'
 import BooleanSelect from '@/components/form/BooleanSelect.vue'
 import LayoutAccordion from '@/components/layout/Accordion.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: { LayoutAccordion, GoogleCategorySelect, ValidatedInput, InfoTooltip, BooleanSelect },
   props: {
     value: {
-      type: Object,
+      type: Object as PropType<ProductComponentForm>,
       required: true,
-    } as Vue.PropOptions<ProductComponentForm>,
+    },
     product: {
-      type: Object,
+      type: Object as PropType<Product>,
       default: () => ({} as Product),
-    } as Vue.PropOptions<Product>,
+    },
     disabled: { type: Boolean, default: false },
   },
   computed: {

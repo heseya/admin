@@ -45,7 +45,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { PropType, defineComponent } from 'vue'
 import debounce from 'lodash/debounce'
 import { Schema, Attribute, WarehouseItem } from '@heseya/store-core'
 
@@ -65,7 +65,7 @@ interface Item {
   name: string
 }
 
-export default Vue.extend({
+export default defineComponent({
   name: 'Selector',
   components: {
     List,
@@ -87,9 +87,9 @@ export default Vue.extend({
       default: null,
     },
     existing: {
-      type: Array,
+      type: Array as PropType<Item[]>,
       default: () => [],
-    } as Vue.PropOptions<Item[]>,
+    },
     autofocus: {
       type: Boolean,
       default: true,

@@ -10,8 +10,8 @@
 
     <password-confirm-modal
       v-model="isModalActive"
-      :title="$t('passwordConfirm')"
-      :ok-text="$t('removeBtnText')"
+      :title="$t('passwordConfirm').toString()"
+      :ok-text="$t('removeBtnText').toString()"
       ok-type="danger"
       @confirm="onConfirm"
     />
@@ -38,14 +38,14 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 
 import AppButton from '@/components/layout/AppButton.vue'
 import PasswordConfirmModal from '../../PasswordConfirmModal.vue'
 import { removeTwoFactorAuth } from '@/services/twoFactorAuth'
 import { formatApiNotificationError } from '@/utils/errors'
 
-export default Vue.extend({
+export default defineComponent({
   components: { AppButton, PasswordConfirmModal },
   data: () => ({
     isModalActive: false,

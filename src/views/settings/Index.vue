@@ -1,6 +1,6 @@
 <template>
   <div class="settings-page narrower-page">
-    <top-nav :title="$t('nav.settings')" />
+    <top-nav :title="$t('nav.settings').toString()" />
 
     <card>
       <list>
@@ -13,7 +13,7 @@
             v-show="!isLinkHidden(item)"
             :key="item.id"
             :v-can="item.can"
-            :name="$t(item.label)"
+            :name="$t(item.label).toString()"
             :url="item.to"
             :icon-class="item.iconClass"
             :svg-icon-path="item.svgIconPath"
@@ -22,23 +22,27 @@
 
         <h2 class="section-title">{{ $t('sections.account') }}</h2>
         <SettingsItem
-          :name="$t('items.user_account')"
+          :name="$t('items.user_account').toString()"
           icon-class="bx bxs-bell"
           @click="isUserAccountModal = true"
         />
-        <SettingsItem :name="$t('items.menu')" icon-class="bx bx-menu" url="/settings/menu" />
         <SettingsItem
-          :name="$t('items.lang_preferences')"
+          :name="$t('items.menu').toString()"
+          icon-class="bx bx-menu"
+          url="/settings/menu"
+        />
+        <SettingsItem
+          :name="$t('items.lang_preferences').toString()"
           icon-class="bx bxs-user-detail"
           @click="isLangPreferencesModal = true"
         />
         <SettingsItem
-          :name="$t('items.change_password')"
+          :name="$t('items.change_password').toString()"
           icon-class="bx bxs-lock"
           @click="isChangePasswordModal = true"
         />
         <SettingsItem
-          :name="$t('items.2fa')"
+          :name="$t('items.2fa').toString()"
           icon-class="bx bx-mobile-vibration"
           url="/settings/two-factor-authentication"
         >
@@ -57,7 +61,7 @@
           url="/settings/login-history"
         /> -->
         <SettingsItem
-          :name="$t('items.logout')"
+          :name="$t('items.logout').toString()"
           icon-class="bx bx-log-out-circle"
           @click="logout"
         />
@@ -152,7 +156,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { groupBy, Dictionary } from 'lodash'
 import { User } from '@heseya/store-core'
 
@@ -166,7 +170,7 @@ import LangPreferencesForm from '@/components/modules/settings/LangPreferences.v
 
 import { SettingsSection, SETTINGS_LINKS, MenuLink } from '@/consts/menuItems'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return {
       title: this.$t('nav.settings') as string,

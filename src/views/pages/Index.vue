@@ -1,6 +1,6 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList :title="$t('title')" store-key="pages" draggable :table="tableConfig">
+    <PaginatedList :title="$t('title').toString()" store-key="pages" draggable :table="tableConfig">
       <template #nav>
         <icon-button v-can="$p.Pages.Add" to="/pages/create">
           <template #icon>
@@ -41,13 +41,13 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 import { TableConfig } from '@/interfaces/CmsTable'
 import { Sale } from '@heseya/store-core'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },

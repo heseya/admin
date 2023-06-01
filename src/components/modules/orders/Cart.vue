@@ -21,14 +21,14 @@
       class="order-cart__export-btn"
       :items="order.products"
       :xlsx-file-config="xlsxFileConfig"
-      :text="$t('export.btn')"
+      :text="$t('export.btn').toString()"
     />
 
     <div class="order-cart__summary">
-      <field :label="$t('summary.cart')" horizontal>
+      <field :label="$t('summary.cart').toString()" horizontal>
         {{ formatCurrency(order.cart_total_initial) }}
       </field>
-      <field :label="$t('summary.shipping')" horizontal>
+      <field :label="$t('summary.shipping').toString()" horizontal>
         <div class="discount-summary">
           <span class="discount-summary__total">
             {{ formatCurrency(order.shipping_price) }}
@@ -47,7 +47,7 @@
       </field>
       <field
         v-if="order.discounts && totalDiscount > 0"
-        :label="$t('summary.discounts')"
+        :label="$t('summary.discounts').toString()"
         horizontal
       >
         <div class="discount-summary">
@@ -66,13 +66,13 @@
           </info-tooltip>
         </div>
       </field>
-      <field class="order-cart__summary-total" :label="$t('summary.total')" horizontal>
+      <field class="order-cart__summary-total" :label="$t('summary.total').toString()" horizontal>
         {{ formatCurrency(order.summary) }}
       </field>
       <boolean-tag
         :value="order.paid"
-        :true-text="$t('orderPaid')"
-        :false-text="$t('orderNotPaid')"
+        :true-text="$t('orderPaid').toString()"
+        :false-text="$t('orderNotPaid').toString()"
       />
     </div>
 
@@ -153,7 +153,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { Order, OrderProduct, DiscountTargetType } from '@heseya/store-core'
 
 import CartItem from '@/components/layout/CartItem.vue'
@@ -165,13 +165,13 @@ import { formatCurrency } from '@/utils/currency'
 import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 import XlsxDownloadButton from '@/components/XlsxDownloadButton.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: { CartItem, Field, OrderDiscountSummary, OrderProductUrls, XlsxDownloadButton },
   props: {
     order: {
-      type: Object,
+      type: Object as PropType<Order>,
       required: true,
-    } as Vue.PropOptions<Order>,
+    },
   },
   data: () => ({
     isProductUrlsModalActive: false,

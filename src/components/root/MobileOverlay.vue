@@ -1,7 +1,7 @@
 <template>
   <div class="mobile-nav-overlay" :class="{ 'mobile-nav-overlay--visible': isVisible }">
     <button class="mobile-nav-overlay__close" @click="close">
-      <img src="/img/icons/close-icon.svg" :alt="$t('common.close')" />
+      <img src="/img/icons/close-icon.svg" :alt="$t('common.close').toString()" />
     </button>
 
     <menu-link
@@ -21,12 +21,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 
 import MenuLinkComponent from './MenuLink.vue'
 import { MenuLink } from '@/consts/menuItems'
 
-export default Vue.extend({
+export default defineComponent({
   name: 'MobileOverlay',
   components: {
     MenuLink: MenuLinkComponent,

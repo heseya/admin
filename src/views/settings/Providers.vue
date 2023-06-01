@@ -1,6 +1,6 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList :title="$t('title')" store-key="providers">
+    <PaginatedList :title="$t('title').toString()" store-key="providers">
       <template #nav> </template>
       <template #default="{ item: provider }">
         <list-item :key="provider.key" @click="openModal(provider.key)">
@@ -48,7 +48,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Logowanie przez social media",
@@ -66,7 +66,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import capitalize from 'lodash/capitalize'
 import { AuthProvider, AuthProviderKey } from '@heseya/store-core'
@@ -78,7 +78,7 @@ import ModalForm from '@/components/form/ModalForm.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },

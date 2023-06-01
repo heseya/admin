@@ -83,7 +83,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { CdnMediaAttachmentType } from '@heseya/store-core'
 
@@ -95,7 +95,7 @@ const EMPTY_FORM = {
   file: null as File | null,
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: { ValidationObserver, ValidationProvider, Loading },
   props: {
     orderId: {

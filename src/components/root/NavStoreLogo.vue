@@ -35,14 +35,14 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { CdnMedia } from '@heseya/store-core'
 
 import MediaUploader from '@/components/modules/media/MediaUploader.vue'
 
 const ENV_NAME = 'store_logo'
 
-export default Vue.extend({
+export default defineComponent({
   components: { MediaUploader },
   props: {
     disabled: {

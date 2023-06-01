@@ -14,9 +14,9 @@
 
         <pop-confirm
           :disabled="disabled"
-          :title="deleteText || $t('deleteText')"
-          :ok-text="$t('common.delete')"
-          :cancel-text="$t('common.cancel')"
+          :ok-text="$t('common.delete').toString()"
+          :cancel-text="$t('common.cancel').toString()"
+          :title="deleteText || $t('deleteText').toString()"
           @confirm="onRemove"
         >
           <icon-button size="small" type="danger" :disabled="disabled">
@@ -42,27 +42,27 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import IconButton from './IconButton.vue'
 import ListItem from './ListItem.vue'
 import PopConfirm from './PopConfirm.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: { ListItem, IconButton, PopConfirm },
   props: {
     item: {
-      type: Object,
+      type: Object as PropType<{ id: string }>,
       required: true,
-    } as Vue.PropOptions<{ id: string }>,
+    },
     disabled: {
       type: Boolean,
       default: false,
-    } as Vue.PropOptions<boolean>,
+    },
     deleteText: {
       type: String,
       default: '',
-    } as Vue.PropOptions<string>,
+    },
   },
 
   methods: {

@@ -10,18 +10,18 @@
       <slot name="label"> {{ label }} </slot>
     </template>
 
-    <a-select-option :value="trueValue" :label="trueText || $t('common.yes')">
+    <a-select-option :value="trueValue" :label="trueText || $t('common.yes').toString()">
       {{ trueText || $t('common.yes') }}
     </a-select-option>
-    <a-select-option :value="falseValue" :label="$t('common.no')">
+    <a-select-option :value="falseValue" :label="$t('common.no').toString()">
       {{ falseText || $t('common.no') }}
     </a-select-option>
   </app-select>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-export default Vue.extend({
+import { defineComponent } from 'vue'
+export default defineComponent({
   props: {
     value: { type: String, default: null },
     label: { type: String, default: null },

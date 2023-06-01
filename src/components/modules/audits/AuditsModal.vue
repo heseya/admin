@@ -144,7 +144,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { capitalize } from 'lodash'
 import { EntityAudits } from '@heseya/store-core'
 
@@ -164,17 +164,17 @@ import { TableConfig } from '@/interfaces/CmsTable'
 const transformKey = (key: string): string =>
   capitalize(key.split('_id').join('').split('_').join(' '))
 
-export default Vue.extend({
+export default defineComponent({
   components: { CmsTable, Empty, Loading, AuditFormatter, CmsTableRow },
   props: {
     model: {
-      type: String,
+      type: String as PropType<GeneratedStoreModulesKeys>,
       required: true,
-    } as Vue.PropOptions<GeneratedStoreModulesKeys>,
+    },
     id: {
-      type: String,
+      type: String as PropType<UUID>,
       default: null,
-    } as Vue.PropOptions<UUID>,
+    },
   },
   data: () => ({
     isModalOpen: false,

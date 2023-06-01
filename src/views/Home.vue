@@ -130,7 +130,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import sub from 'date-fns/sub'
 import startOfMonth from 'date-fns/startOfMonth'
 import endOfMonth from 'date-fns/endOfMonth'
@@ -154,7 +154,7 @@ const ORDER_LIMIT = 6
 
 type DateRange = { start: Date; end: Date }
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('nav.dashboard') as string }
   },

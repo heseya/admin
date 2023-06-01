@@ -15,7 +15,12 @@
 
     <empty v-else>{{ $t('empty') }}</empty>
 
-    <a-modal v-model="isUploadModalOpen" width="600px" :title="$t('modalTitle')" :footer="null">
+    <a-modal
+      v-model="isUploadModalOpen"
+      width="600px"
+      :title="$t('modalTitle').toString()"
+      :footer="null"
+    >
       <modal-form>
         <DocumentOrderForm :order-id="orderId" @close="isUploadModalOpen = false" />
       </modal-form>
@@ -41,7 +46,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { OrderDocument } from '@heseya/store-core'
 
 import OrderDocumentComponent from './OrderDocument.vue'
@@ -51,7 +56,7 @@ import ModalForm from '@/components/form/ModalForm.vue'
 
 import { UUID } from '@/interfaces/UUID'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     OrderDocument: OrderDocumentComponent,
     Empty,
@@ -60,13 +65,13 @@ export default Vue.extend({
   },
   props: {
     orderId: {
-      type: String,
+      type: String as PropType<UUID>,
       required: true,
-    } as Vue.PropOptions<UUID>,
+    },
     documents: {
-      type: Array,
+      type: Array as PropType<OrderDocument[]>,
       default: () => [],
-    } as Vue.PropOptions<OrderDocument[]>,
+    },
   },
   data: () => ({
     isUploadModalOpen: false,

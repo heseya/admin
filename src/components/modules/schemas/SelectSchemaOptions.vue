@@ -32,7 +32,7 @@
             :disabled="disabled"
             class="input"
             type="products"
-            :label="$t('form.items')"
+            :label="$t('form.items').toString()"
           />
           <SwitchInput v-model="option.disabled" :disabled="disabled">
             <template #title>{{ $t('disabled') }}</template>
@@ -88,7 +88,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import Draggable from 'vuedraggable'
 import cloneDeep from 'lodash/cloneDeep'
 import { SchemaOptionDto } from '@heseya/store-core'
@@ -99,7 +99,7 @@ import SwitchInput from '@/components/form/SwitchInput.vue'
 
 import { CLEAR_OPTION } from '@/consts/schemaConsts'
 
-export default Vue.extend({
+export default defineComponent({
   name: 'SelectSchemaOptions',
   components: {
     Zone,
@@ -113,9 +113,9 @@ export default Vue.extend({
       default: null,
     },
     value: {
-      type: Array,
+      type: Array as PropType<SchemaOptionDto[]>,
       required: true,
-    } as Vue.PropOptions<SchemaOptionDto[]>,
+    },
     disabled: { type: Boolean, default: false },
   },
   computed: {

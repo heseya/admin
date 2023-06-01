@@ -53,11 +53,11 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import last from 'lodash/last'
 import { User } from '@heseya/store-core'
 
-export default Vue.extend({
+export default defineComponent({
   name: 'AppHeader',
 
   computed: {

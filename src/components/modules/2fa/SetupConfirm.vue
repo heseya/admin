@@ -5,7 +5,7 @@
         v-model="confirmCode"
         rules="required"
         name="confirm_code"
-        :label="$t('confirmCode')"
+        :label="$t('confirmCode').toString()"
       />
       <app-button type="primary" html-type="submit"> {{ $t('activate2fa') }} </app-button>
     </form>
@@ -26,7 +26,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
@@ -34,7 +34,7 @@ import ValidatedInput from '@/components/form/ValidatedInput.vue'
 import { confirmTwoFactorAuth } from '@/services/twoFactorAuth'
 import { formatApiNotificationError } from '@/utils/errors'
 
-export default Vue.extend({
+export default defineComponent({
   components: { ValidatedInput, ValidationObserver },
   data: () => ({
     confirmCode: '',

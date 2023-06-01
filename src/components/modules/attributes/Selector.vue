@@ -31,7 +31,7 @@
       <modal-form v-if="isSelectorModalActive">
         <Selector
           type="attributes"
-          :type-name="$t('typeName')"
+          :type-name="$t('typeName').toString()"
           :existing="existing"
           @select="addAttribute"
         />
@@ -60,7 +60,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { PropType, defineComponent } from 'vue'
 import { Attribute, ProductAttribute } from '@heseya/store-core'
 
 import Selector from '@/components/Selector.vue'
@@ -69,7 +69,7 @@ import AttributeForm from '@/components/modules/attributes/Form.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 
-export default Vue.extend({
+export default defineComponent({
   components: { Selector, ModalForm, AttributeForm },
   props: {
     value: {
@@ -77,7 +77,7 @@ export default Vue.extend({
       default: false,
     },
     existing: {
-      type: Array,
+      type: Array as PropType<{ id: string; name: string }[]>,
       default: () => [],
     },
     disabled: { type: Boolean, default: false },

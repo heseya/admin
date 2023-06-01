@@ -10,9 +10,9 @@
 
       <pop-confirm
         v-can="$p.Roles.Remove"
-        :title="$t('deleteText')"
-        :ok-text="$t('common.delete')"
-        :cancel-text="$t('common.cancel')"
+        :title="$t('deleteText').toString()"
+        :ok-text="$t('common.delete').toString()"
+        :cancel-text="$t('common.cancel').toString()"
         @confirm="deleteCompany"
       >
         <icon-button type="danger">
@@ -60,7 +60,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
@@ -73,7 +73,7 @@ import CompanyForm from '@/components/modules/b2b/CompanyForm.vue'
 
 import { Role } from '@heseya/store-core'
 
-export default Vue.extend({
+export default defineComponent({
   components: { TopNav, PopConfirm, Card, Field, CompanyUsersList, CompanyPromoList, CompanyForm },
 
   data: () => ({

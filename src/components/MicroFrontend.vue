@@ -3,10 +3,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { findAppByHost, installApp, uninstallApp } from 'bout'
 
-export default Vue.extend({
+export default defineComponent({
   name: 'MicroFrontend',
   props: {
     appKey: {

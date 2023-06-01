@@ -1,5 +1,5 @@
 <template>
-  <LayoutAccordion :title="$t('title')">
+  <LayoutAccordion :title="$t('title').toString()">
     <rich-editor v-if="!loading" v-model="form" :disabled="disabled" />
   </LayoutAccordion>
 </template>
@@ -16,12 +16,12 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 
 import RichEditor from '@/components/form/RichEditor.vue'
 import LayoutAccordion from '@/components/layout/Accordion.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: { RichEditor, LayoutAccordion },
   props: {
     value: {

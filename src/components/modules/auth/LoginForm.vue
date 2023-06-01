@@ -6,14 +6,14 @@
         rules="required|email"
         name="email"
         data-cy="email"
-        :label="$t('email')"
+        :label="$t('email').toString()"
         type="email"
       />
 
       <validated-input
         v-model="form.password"
         rules="required"
-        :label="$t('password')"
+        :label="$t('password').toString()"
         name="password"
         data-cy="password"
         type="password"
@@ -47,7 +47,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 
 interface ILoginForm {
@@ -55,15 +55,15 @@ interface ILoginForm {
   password: string
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     ValidationObserver,
   },
   props: {
     value: {
-      type: Object,
+      type: Object as PropType<ILoginForm>,
       required: true,
-    } as Vue.PropOptions<ILoginForm>,
+    },
   },
   computed: {
     form: {

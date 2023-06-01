@@ -7,7 +7,7 @@
         type="date"
         :rules="`required|date-same-or-before:@${formId}.end_at`"
         :disabled="disabled"
-        :label="$t('form.start_at')"
+        :label="$t('form.start_at').toString()"
       />
       <validated-input
         v-model="form.end_at"
@@ -15,7 +15,7 @@
         rules="required"
         type="date"
         :disabled="disabled"
-        :label="$t('form.end_at')"
+        :label="$t('form.end_at').toString()"
       />
     </div>
     <small>{{ $t('info') }}</small>
@@ -42,12 +42,12 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { DateBetweenDiscountCondition } from '@heseya/store-core'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
-    value: { type: Object, required: true } as Vue.PropOptions<DateBetweenDiscountCondition>,
+    value: { type: Object as PropType<DateBetweenDiscountCondition>, required: true },
     disabled: { type: Boolean, default: false },
   },
   computed: {

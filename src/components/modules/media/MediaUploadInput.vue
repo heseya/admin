@@ -30,7 +30,11 @@
       </template>
       <template v-else>
         <div class="media-upload-input__circle">
-          <img :src="iconPath" :alt="$t('fileAdd')" class="media-upload-input__file-add" />
+          <img
+            :src="iconPath"
+            :alt="$t('fileAdd').toString()"
+            class="media-upload-input__file-add"
+          />
         </div>
         <span class="media-upload-input__title"
           >{{ $t('dropOrChooseImage') }} <b>{{ fileName }}</b></span
@@ -60,20 +64,20 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { CdnMedia } from '@heseya/store-core'
 
 import MediaEditForm from '@/components/modules/media/MediaEditForm.vue'
 import MediaUploader from '@/components/modules/media/MediaUploader.vue'
 import MediaElement from '@/components/MediaElement.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: { MediaUploader, MediaEditForm, MediaElement },
   props: {
     media: {
-      type: Object,
+      type: Object as PropType<CdnMedia>,
       default: () => null,
-    } as Vue.PropOptions<CdnMedia>,
+    },
     disabled: {
       type: Boolean,
       default: false,

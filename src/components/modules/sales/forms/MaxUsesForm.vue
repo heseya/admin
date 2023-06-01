@@ -6,7 +6,7 @@
       type="number"
       rules="positive"
       :disabled="disabled"
-      :label="$t('form.max_uses')"
+      :label="$t('form.max_uses').toString()"
     />
   </div>
 </template>
@@ -27,16 +27,16 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 interface MaxUsesForm {
   // eslint-disable-next-line camelcase
   max_uses: number
 }
 
-export default Vue.extend({
+export default defineComponent({
   props: {
-    value: { type: Object, required: true } as Vue.PropOptions<MaxUsesForm>,
+    value: { type: Object as PropType<MaxUsesForm>, required: true },
     disabled: { type: Boolean, default: false },
   },
   computed: {

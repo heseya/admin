@@ -1,5 +1,5 @@
 <template>
-  <LayoutAccordion :title="$t('title')" :white="white">
+  <LayoutAccordion :title="$t('title').toString()" :white="white">
     <SeoForm v-model="form" :current="current" />
   </LayoutAccordion>
 </template>
@@ -16,23 +16,23 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { SeoMetadata } from '@heseya/store-core'
 
 import SeoForm from './Form.vue'
 import LayoutAccordion from '@/components/layout/Accordion.vue'
 import { UUID } from '@/interfaces/UUID'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     SeoForm,
     LayoutAccordion,
   },
   props: {
     value: {
-      type: Object,
+      type: Object as PropType<SeoMetadata | null>,
       default: () => ({}),
-    } as Vue.PropOptions<SeoMetadata | null>,
+    },
     disabled: {
       type: Boolean,
       default: false,
@@ -42,9 +42,9 @@ export default Vue.extend({
       default: false,
     },
     current: {
-      type: Object,
+      type: Object as PropType<{ id: UUID; model: string }>,
       default: null,
-    } as Vue.PropOptions<{ id: UUID; model: string }>,
+    },
   },
   computed: {
     form: {

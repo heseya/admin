@@ -31,13 +31,13 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { Address, Order } from '@heseya/store-core'
 
 import OrderAddress from './OrderAddress.vue'
 import Field from '../../Field.vue'
 
-export default Vue.extend({
+export default defineComponent({
   name: 'EditableOrderAddress',
   components: { OrderAddress, Field },
   props: {
@@ -46,9 +46,9 @@ export default Vue.extend({
       default: null,
     },
     address: {
-      type: Object,
+      type: Object as PropType<Address>,
       default: () => null,
-    } as Vue.PropOptions<Address>,
+    },
     hideEdit: {
       type: Boolean,
       default: false,
@@ -58,9 +58,9 @@ export default Vue.extend({
       default: false,
     },
     order: {
-      type: Object,
+      type: Object as PropType<Order>,
       default: () => {},
-    } as Vue.PropOptions<Order>,
+    },
   },
   methods: {
     edit() {

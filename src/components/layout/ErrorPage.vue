@@ -20,10 +20,10 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import Card from '@/components/layout/Card.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     Card,
   },

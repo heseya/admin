@@ -13,7 +13,7 @@
 
     <password-confirm-modal
       v-model="isModalActive"
-      :title="$t('confirmPassword')"
+      :title="$t('confirmPassword').toString()"
       @confirm="onConfirm"
     />
   </div>
@@ -43,7 +43,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 
 import AppButton from '@/components/layout/AppButton.vue'
 import PasswordConfirmModal from '../../PasswordConfirmModal.vue'
@@ -52,7 +52,7 @@ import RecoveryCodes from './RecoveryCodes.vue'
 import { generateRecoveryCodes } from '@/services/twoFactorAuth'
 import { formatApiNotificationError } from '@/utils/errors'
 
-export default Vue.extend({
+export default defineComponent({
   components: { AppButton, PasswordConfirmModal, RecoveryCodes },
   data: () => ({
     isModalActive: false,

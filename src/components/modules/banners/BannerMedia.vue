@@ -1,6 +1,6 @@
 <template>
   <div class="responsive-media">
-    <div class="responsive-media__drag" :title="$t('dragTitle')">
+    <div class="responsive-media__drag" :title="$t('dragTitle').toString()">
       <i class="bx bx-grid-vertical"></i>
     </div>
 
@@ -8,13 +8,13 @@
       <div class="responsive-media__inputs">
         <validated-input
           v-model="bannerMedia.title"
-          :label="$t('form.title')"
+          :label="$t('form.title').toString()"
           :disabled="disabled"
           rules="required"
         />
         <validated-input
           v-model="bannerMedia.subtitle"
-          :label="$t('form.subtitle')"
+          :label="$t('form.subtitle').toString()"
           :disabled="disabled"
           rules="required"
         />
@@ -50,7 +50,7 @@
               v-model="image.min_screen_width"
               class="single-media__input"
               type="number"
-              :label="$t('minWidth')"
+              :label="$t('minWidth').toString()"
             />
           </div>
         </div>
@@ -97,7 +97,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { BannerMedia, CdnMedia } from '@heseya/store-core'
 
 import { removeMedia } from '@/services/uploadMedia'
@@ -106,13 +106,13 @@ import MediaElement from '@/components/MediaElement.vue'
 import MediaEditForm from '../media/MediaEditForm.vue'
 import MediaUploadInput from '../media/MediaUploadInput.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: { MediaElement, MediaEditForm, MediaUploadInput },
   props: {
     value: {
-      type: Object,
+      type: Object as PropType<BannerMedia>,
       required: true,
-    } as Vue.PropOptions<BannerMedia>,
+    },
     disabled: {
       type: Boolean,
       default: false,

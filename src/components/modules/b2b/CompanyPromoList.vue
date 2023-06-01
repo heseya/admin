@@ -1,6 +1,6 @@
 <template>
   <card class="company-promos">
-    <top-nav class="company-promos__nav" tag="h2" :title="$t('title')">
+    <top-nav class="company-promos__nav" tag="h2" :title="$t('title').toString()">
       <icon-button size="small" type="primary" :to="`/sales/create?company=${company.id}`">
         <template #icon> <i class="bx bx-plus"></i> </template>
         {{ $t('add') }}
@@ -18,16 +18,18 @@
             <template #icon> <i class="bx bx-edit-alt"></i> </template>
           </icon-button>
 
-          <field class="sale-item__name" :label="$t('field.name')">{{ sale.name }}</field>
-          <field :label="$t('field.target_type')">
+          <field class="sale-item__name" :label="$t('field.name').toString()">
+            {{ sale.name }}
+          </field>
+          <field :label="$t('field.target_type').toString()">
             {{ $t(`discountTargetTypes.${sale.target_type}`) }}
           </field>
-          <field :label="$t('field.value')">
+          <field :label="$t('field.value').toString()">
             -{{
               sale.type === DiscountType.Percentage ? `${sale.value}%` : formatCurrency(sale.value)
             }}
           </field>
-          <field :label="$t('field.uses')">{{ sale.uses }} </field>
+          <field :label="$t('field.uses').toString()">{{ sale.uses }} </field>
         </div>
       </div>
       <pagination
@@ -68,7 +70,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { DiscountType, Role, Sale } from '@heseya/store-core'
 
 import Card from '@/components/layout/Card.vue'
@@ -81,13 +83,13 @@ import { formatCurrency } from '@/utils/currency'
 import Empty from '@/components/layout/Empty.vue'
 import Pagination from '@/components/cms/Pagination.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: { TopNav, Card, IconButton, Loading, Field, Empty, Pagination },
   props: {
     company: {
-      type: Object,
+      type: Object as PropType<Role>,
       required: true,
-    } as Vue.PropOptions<Role>,
+    },
   },
 
   data: () => ({

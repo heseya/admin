@@ -20,7 +20,7 @@
         rules="required"
         name="code"
         data-cy="code"
-        :label="$t('code')"
+        :label="$t('code').toString()"
         class="tfa-code-form__input"
       />
 
@@ -51,12 +51,12 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 
 import { TwoFactorAuthMethod } from '@/enums/twoFactorAuth'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     ValidationObserver,
   },
@@ -66,9 +66,9 @@ export default Vue.extend({
       required: true,
     },
     method: {
-      type: String,
+      type: String as PropType<TwoFactorAuthMethod>,
       required: true,
-    } as Vue.PropOptions<TwoFactorAuthMethod>,
+    },
   },
   computed: {
     code: {

@@ -1,11 +1,11 @@
 <template>
   <div class="lang-switch">
-    <app-select v-model="$root.$i18n.locale" :label="$t('name')">
+    <app-select v-model="$root.$i18n.locale" :label="$t('name').toString()">
       <a-select-option
         v-for="lang in $i18n.availableLocales"
         :key="lang"
         :value="lang"
-        :label="$t(lang)"
+        :label="$t(lang).toString()"
       >
         {{ $t(lang) }}
       </a-select-option>

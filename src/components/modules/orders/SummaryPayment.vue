@@ -26,10 +26,10 @@
 
     <pop-confirm
       v-if="!order.paid"
-      :title="$t('offlinePayment.confirmText')"
-      :ok-text="$t('offlinePayment.successText')"
+      :title="$t('offlinePayment.confirmText').toString()"
+      :ok-text="$t('offlinePayment.successText').toString()"
       ok-color="success"
-      :cancel-text="$t('common.cancel')"
+      :cancel-text="$t('common.cancel').toString()"
       @confirm="payOffline"
     >
       <icon-button size="small" reversed>

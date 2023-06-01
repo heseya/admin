@@ -8,13 +8,13 @@
         name="name"
         rules="required"
         :disabled="!isNew"
-        :label="$t('common.form.name')"
+        :label="$t('common.form.name').toString()"
       />
       <validated-input
         v-model="form.url"
         name="url"
         rules="required|url"
-        :label="$t('common.form.slug')"
+        :label="$t('common.form.slug').toString()"
       />
 
       <br />

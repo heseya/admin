@@ -16,7 +16,11 @@
       <!-- TODO: Edit type and visibility -->
 
       <template v-if="isNew">
-        <app-select v-model="mediaSource" :label="$t('mediaType.title')" option-filter-prop="label">
+        <app-select
+          v-model="mediaSource"
+          :label="$t('mediaType.title').toString()"
+          option-filter-prop="label"
+        >
           <a-select-option :value="CdnMediaSource.Silverbox" :label="CdnMediaSource.Silverbox">
             {{ $t('mediaType.silverbox') }}
           </a-select-option>
@@ -47,7 +51,7 @@
             <p class="ant-upload-text">{{ $t('dropOrChooseFile') }}</p>
           </a-upload-dragger>
 
-          <validation-block :message="$t('noFileError')" :block="!fileToUpload" />
+          <validation-block :message="$t('noFileError').toString()" :block="!fileToUpload" />
         </template>
       </template>
 

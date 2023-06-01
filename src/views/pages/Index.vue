@@ -1,6 +1,6 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList :title="$t('title')" store-key="pages" draggable :table="tableConfig">
+    <PaginatedList :title="$t('title').toString()" store-key="pages" draggable :table="tableConfig">
       <template #nav>
         <icon-button v-can="$p.Pages.Add" to="/pages/create">
           <template #icon>

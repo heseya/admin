@@ -6,14 +6,14 @@
         rules="required|email"
         name="email"
         data-cy="email"
-        :label="$t('email')"
+        :label="$t('email').toString()"
         type="email"
       />
 
       <validated-input
         v-model="form.password"
         rules="required"
-        :label="$t('password')"
+        :label="$t('password').toString()"
         name="password"
         data-cy="password"
         type="password"

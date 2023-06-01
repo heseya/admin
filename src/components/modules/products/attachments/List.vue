@@ -1,5 +1,5 @@
 <template>
-  <LayoutAccordion :title="$t('title')">
+  <LayoutAccordion :title="$t('title').toString()">
     <div class="product-attachments">
       <icon-button
         class="product-attachments__btn"
@@ -23,7 +23,7 @@
           :key="attachment.id"
           :item="attachment"
           :disabled="disabled"
-          :delete-text="$t('deleteText')"
+          :delete-text="$t('deleteText').toString()"
           @edit="openEditModal"
           @remove="removeAttachment"
         >

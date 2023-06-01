@@ -1,10 +1,10 @@
 <template>
   <div class="order-customer-details">
-    <field v-if="order.buyer" :label="$t('userSection')">
+    <field v-if="order.buyer" :label="$t('userSection').toString()">
       <order-buyer :buyer="order.buyer" />
     </field>
 
-    <field :label="$t('emailSection')">
+    <field :label="$t('emailSection').toString()">
       <template #labelSuffix>
         <icon-button
           v-can="$p.Orders.Edit"
@@ -24,14 +24,14 @@
 
     <div class="order-customer-details__addresses">
       <EditableOrderAddress
-        :title="$t('deliveryAddressSection')"
+        :title="$t('deliveryAddressSection').toString()"
         :order="order"
         :hide-edit="order.shipping_place === null"
         @edit="editShippingAddress"
       />
 
       <EditableOrderAddress
-        :title="$t('invoiceAddressSection')"
+        :title="$t('invoiceAddressSection').toString()"
         :order="order"
         billing
         @edit="editBillingAddress"
@@ -39,7 +39,7 @@
     </div>
 
     <field
-      :label="$t('commentSection')"
+      :label="$t('commentSection').toString()"
       class="comment-field"
       :class="{ 'comment-field--filled': !!order.comment }"
     >

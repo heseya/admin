@@ -1,7 +1,7 @@
 <template>
   <div class="products-container" :class="{ 'products-container--grid-view': !listView }">
     <PaginatedList
-      :title="$t('title')"
+      :title="$t('title').toString()"
       :filters="filters"
       store-key="products"
       :table="listView ? tableConfig : undefined"

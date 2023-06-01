@@ -54,8 +54,8 @@
             </a-menu-item>
             <a-menu-item v-can="$p.Products.Remove">
               <pop-confirm
-                :ok-text="$t('common.delete')"
-                :cancel-text="$t('common.cancel')"
+                :ok-text="$t('common.delete').toString()"
+                :cancel-text="$t('common.cancel').toString()"
                 placement="bottom"
                 @confirm="deleteProduct"
               >

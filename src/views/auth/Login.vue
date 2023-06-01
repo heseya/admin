@@ -4,7 +4,7 @@
       v-if="isMergingAccounts"
       :style="{ marginBottom: '24px' }"
       type="info"
-      :title="$t('mergeAccountsInfo')"
+      :title="$t('mergeAccountsInfo').toString()"
     />
 
     <login-form v-if="!isTwoFactorAuth" v-model="form" @submit="login" />

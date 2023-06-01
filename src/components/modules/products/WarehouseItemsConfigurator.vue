@@ -31,7 +31,7 @@
             v-model="item.required_quantity"
             class="configurator-item__input"
             name="quantity"
-            :label="$t('requiredQuantity')"
+            :label="$t('requiredQuantity').toString()"
             type="number"
             rules="required|positive"
           />
@@ -59,7 +59,12 @@
         <h4>{{ $t('chooseExisting') }}</h4>
       </template>
       <modal-form v-if="isModalActive">
-        <Selector type="items" :type-name="$t('typeName')" :existing="value" @select="addItem" />
+        <Selector
+          type="items"
+          :type-name="$t('typeName').toString()"
+          :existing="value"
+          @select="addItem"
+        />
       </modal-form>
     </a-modal>
   </div>

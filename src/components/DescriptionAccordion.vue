@@ -1,5 +1,5 @@
 <template>
-  <LayoutAccordion :title="$t('title')">
+  <LayoutAccordion :title="$t('title').toString()">
     <rich-editor v-if="!loading" v-model="form" :disabled="disabled" />
   </LayoutAccordion>
 </template>

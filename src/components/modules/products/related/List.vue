@@ -1,5 +1,5 @@
 <template>
-  <LayoutAccordion :title="$t('title')">
+  <LayoutAccordion :title="$t('title').toString()">
     <div class="related-sets">
       <icon-button
         class="related-sets__btn"
@@ -23,7 +23,7 @@
           :key="set.id"
           :item="set"
           :disabled="disabled"
-          :delete-text="$t('deleteText')"
+          :delete-text="$t('deleteText').toString()"
           @edit="editCollection"
           @remove="onRemove"
         >
@@ -57,7 +57,7 @@
 
         <selector
           v-if="isAddModalActive"
-          :type-name="$t('selectorTitle')"
+          :type-name="$t('selectorTitle').toString()"
           type="product-sets"
           :existing="relatedSets"
           @select="onAdd"

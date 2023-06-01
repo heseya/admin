@@ -7,12 +7,12 @@
     <div class="product-aside-details__row">
       <h2 class="product-page__subtitle">
         {{ $t('availability.title') }}
-        <info-tooltip :text="$t('availability.tooltip')" />
+        <info-tooltip :text="$t('availability.tooltip').toString()" />
       </h2>
       <boolean-tag
         :value="product.available"
-        :true-text="$t('availability.available')"
-        :false-text="$t('availability.unavailable')"
+        :true-text="$t('availability.available').toString()"
+        :false-text="$t('availability.unavailable').toString()"
       />
     </div>
     <div class="product-aside-details__row">

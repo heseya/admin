@@ -4,14 +4,14 @@
       v-model="local.search"
       class="span-2"
       type="search"
-      :label="$t('common.search')"
+      :label="$t('common.search').toString()"
       allow-clear
       @input="debouncedSearch"
     />
 
     <app-select
       v-model="local.status_id"
-      :label="$t('status')"
+      :label="$t('status').toString()"
       add-all
       option-filter-prop="label"
       @change="debouncedSearch"
@@ -23,7 +23,7 @@
 
     <app-select
       v-model="local.shipping_method_id"
-      :label="$t('shipping')"
+      :label="$t('shipping').toString()"
       add-all
       option-filter-prop="label"
       @change="debouncedSearch"
@@ -39,7 +39,7 @@
 
     <app-select
       v-model="local.digital_shipping_method_id"
-      :label="$t('digitalShipping')"
+      :label="$t('digitalShipping').toString()"
       add-all
       option-filter-prop="label"
       @change="debouncedSearch"
@@ -55,7 +55,7 @@
 
     <app-select
       v-model="local.paid"
-      :label="$t('paymentStatus')"
+      :label="$t('paymentStatus').toString()"
       add-all
       option-filter-prop="label"
       @change="debouncedSearch"

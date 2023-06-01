@@ -4,22 +4,22 @@
       v-model="local.search"
       class="span-2"
       type="search"
-      :label="$t('common.search')"
+      :label="$t('common.search').toString()"
       allow-clear
       @input="debouncedSearch"
     />
 
     <app-select
       v-model="local.sold_out"
-      :label="$t('soldout.label')"
+      :label="$t('soldout.label').toString()"
       add-all
       option-filter-prop="label"
       @change="debouncedSearch"
     >
-      <a-select-option :value="'1'" :label="$t('soldout.sold')">
+      <a-select-option :value="'1'" :label="$t('soldout.sold').toString()">
         {{ $t('soldout.sold') }}
       </a-select-option>
-      <a-select-option :value="'0'" lab:label="$t('soldout.available')">
+      <a-select-option :value="'0'" :label="$t('soldout.available').toString()">
         {{ $t('soldout.available') }}
       </a-select-option>
     </app-select>

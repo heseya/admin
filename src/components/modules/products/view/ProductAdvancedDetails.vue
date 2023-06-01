@@ -1,5 +1,5 @@
 <template>
-  <LayoutAccordion class="product-advanced-details" :title="$t('title')">
+  <LayoutAccordion class="product-advanced-details" :title="$t('title').toString()">
     <div class="product-advanced-details__form">
       <google-category-select v-model="form.google_product_category" :disabled="disabled" />
 

@@ -1,13 +1,13 @@
 <template>
   <div class="narrower-page">
-    <top-nav :title="!isNew ? role.name : $t('newTitle')">
+    <top-nav :title="!isNew ? role.name : $t('newTitle').toString()">
       <audits-modal :id="role.id" model="roles" />
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Roles.Remove"
-        :title="$t('deleteText')"
-        :ok-text="$t('common.delete')"
-        :cancel-text="$t('common.cancel')"
+        :title="$t('deleteText').toString()"
+        :ok-text="$t('common.delete').toString()"
+        :cancel-text="$t('common.cancel').toString()"
         @confirm="deleteRole"
       >
         <icon-button type="danger">

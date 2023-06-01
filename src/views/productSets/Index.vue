@@ -1,7 +1,7 @@
 <template>
   <div class="narrower-page">
     <PaginatedList
-      :title="$t('title')"
+      :title="$t('title').toString()"
       store-key="productSets"
       :filters="filters"
       draggable

@@ -4,7 +4,7 @@
       <validated-input
         v-model="form.name"
         name="name"
-        :label="$t('username')"
+        :label="$t('username').toString()"
         type="text"
         rules="required"
       />
@@ -12,7 +12,7 @@
       <validated-input
         v-model="form.birthday_date"
         name="birthday_date"
-        :label="$t('birthday')"
+        :label="$t('birthday').toString()"
         type="date"
         rules=""
       />

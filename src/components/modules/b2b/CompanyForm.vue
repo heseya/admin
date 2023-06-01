@@ -9,14 +9,14 @@
           name="name"
           type="input"
           rules="required"
-          :label="$t('common.form.name')"
+          :label="$t('common.form.name').toString()"
         />
 
         <AppTextarea
           v-model="form.description"
           name="description"
           rules="required"
-          :label="$t('form.description')"
+          :label="$t('form.description').toString()"
         />
       </modal-form>
       <template #footer>

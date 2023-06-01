@@ -6,7 +6,7 @@
       type="number"
       rules="positive"
       :disabled="disabled"
-      :label="$t('form.max_uses')"
+      :label="$t('form.max_uses').toString()"
     />
   </div>
 </template>

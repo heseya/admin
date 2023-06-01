@@ -6,7 +6,7 @@
           v-if="key === 'email'"
           v-model="form[key]"
           name="email"
-          :label="$t('email')"
+          :label="$t('email').toString()"
           rules="required|email"
         />
 
@@ -14,14 +14,14 @@
           v-else-if="key === 'comment'"
           v-model="form[key]"
           name="comment"
-          :label="$t('comment')"
+          :label="$t('comment').toString()"
         />
 
         <app-select
           v-else-if="key === 'shipping_place' && orderShippingType === ShippingType.Point"
           v-model="form.shipping_place"
           option-filter-prop="label"
-          :label="$t('choosePoint')"
+          :label="$t('choosePoint').toString()"
         >
           <a-select-option v-for="point in shippingPoints" :key="point.id" :label="point.name">
             {{ point.name }}
@@ -47,7 +47,7 @@
         <switch-input
           v-else-if="key === 'invoice_requested'"
           v-model="form.invoice_requested"
-          :label="$t('invoiceRequested')"
+          :label="$t('invoiceRequested').toString()"
           horizontal
         />
       </div>

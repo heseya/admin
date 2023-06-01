@@ -7,7 +7,7 @@
         type="date"
         :rules="`required|date-same-or-before:@${formId}.end_at`"
         :disabled="disabled"
-        :label="$t('form.start_at')"
+        :label="$t('form.start_at').toString()"
       />
       <validated-input
         v-model="form.end_at"
@@ -15,7 +15,7 @@
         rules="required"
         type="date"
         :disabled="disabled"
-        :label="$t('form.end_at')"
+        :label="$t('form.end_at').toString()"
       />
     </div>
     <small>{{ $t('info') }}</small>

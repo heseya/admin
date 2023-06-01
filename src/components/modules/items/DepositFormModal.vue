@@ -1,6 +1,6 @@
 <template>
   <validation-observer v-slot="{ handleSubmit }">
-    <a-modal :visible="visible" :title="$t('title')" @cancel="close">
+    <a-modal :visible="visible" :title="$t('title').toString()" @cancel="close">
       <div class="deposit-form">
         <loading :active="isLoading" />
 
@@ -10,7 +10,7 @@
           :disabled="disabled"
           rules="required|non-zero"
           type="number"
-          :label="$t('form.quantity')"
+          :label="$t('form.quantity').toString()"
         />
 
         <boolean-select v-model="form.from_unlimited" :add-all="false">
@@ -22,16 +22,16 @@
           </template>
         </boolean-select>
 
-        <app-select v-model="stockTimeType" :label="$t('stockTimeType.label')">
+        <app-select v-model="stockTimeType" :label="$t('stockTimeType.label').toString()">
           <a-select-option
             :value="StockTimeType.Time"
-            :label="$t(`stockTimeType.${StockTimeType.Time}`)"
+            :label="$t(`stockTimeType.${StockTimeType.Time}`).toString()"
           >
             {{ $t(`stockTimeType.${StockTimeType.Time}`) }}
           </a-select-option>
           <a-select-option
             :value="StockTimeType.Date"
-            :label="$t(`stockTimeType.${StockTimeType.Date}`)"
+            :label="$t(`stockTimeType.${StockTimeType.Date}`).toString()"
           >
             {{ $t(`stockTimeType.${StockTimeType.Date}`) }}
           </a-select-option>

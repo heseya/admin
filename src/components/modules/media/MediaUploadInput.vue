@@ -30,7 +30,11 @@
       </template>
       <template v-else>
         <div class="media-upload-input__circle">
-          <img :src="iconPath" :alt="$t('fileAdd')" class="media-upload-input__file-add" />
+          <img
+            :src="iconPath"
+            :alt="$t('fileAdd').toString()"
+            class="media-upload-input__file-add"
+          />
         </div>
         <span class="media-upload-input__title"
           >{{ $t('dropOrChooseImage') }} <b>{{ fileName }}</b></span

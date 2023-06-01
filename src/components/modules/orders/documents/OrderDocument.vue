@@ -4,7 +4,7 @@
     <div class="order-document__type">{{ $t(`orderDocumentsTypes.${document.type}`) }}</div>
 
     <a-dropdown :trigger="['click']" class="order-document__menu">
-      <button class="order-document__btn" :aria-label="$t('openMenu')">
+      <button class="order-document__btn" :aria-label="$t('openMenu').toString()">
         <i class="bx bx-dots-vertical-rounded"></i>
       </button>
 

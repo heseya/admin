@@ -15,9 +15,9 @@
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Products.Remove"
-        :title="$t('deleteConfirm')"
-        :ok-text="$t('common.delete')"
-        :cancel-text="$t('common.cancel')"
+        :title="$t('deleteConfirm').toString()"
+        :ok-text="$t('common.delete').toString()"
+        :cancel-text="$t('common.cancel').toString()"
         @confirm="deleteProduct"
       >
         <icon-button type="danger" data-cy="delete-btn">

@@ -5,16 +5,20 @@
         <validated-input
           v-model="form.name"
           rules="required"
-          :label="$t('common.form.name')"
+          :label="$t('common.form.name').toString()"
           :disabled="disabled"
         />
-        <label class="app-input__label" :name="$t('common.form.description')">{{
-          $t('common.form.description')
-        }}</label>
+        <label class="app-input__label" :name="$t('common.form.description').toString()">
+          {{ $t('common.form.description') }}
+        </label>
         <rich-editor v-model="form.description_html" :disabled="disabled" />
         <br />
         <div class="switches">
-          <switch-input v-model="form.required" :label="$t('common.form.required')" horizontal />
+          <switch-input
+            v-model="form.required"
+            :label="$t('common.form.required').toString()"
+            horizontal
+          />
         </div>
         <br />
         <app-button v-if="!disabled" html-type="submit">

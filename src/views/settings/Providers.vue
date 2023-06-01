@@ -1,6 +1,6 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList :title="$t('title')" store-key="providers">
+    <PaginatedList :title="$t('title').toString()" store-key="providers">
       <template #nav> </template>
       <template #default="{ item: provider }">
         <list-item :key="provider.key" @click="openModal(provider.key)">
@@ -48,7 +48,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Logowanie przez social media",

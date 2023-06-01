@@ -1,6 +1,6 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList :title="$t('title')" store-key="apps">
+    <PaginatedList :title="$t('title').toString()" store-key="apps">
       <template #nav>
         <icon-button v-can="$p.Apps.Install" @click="openInstallModal()">
           <template #icon>
@@ -44,9 +44,9 @@
 
                 <pop-confirm
                   v-can="$p.Apps.Remove"
-                  :title="$t('deleteText')"
-                  :ok-text="$t('deleteConfirm')"
-                  :cancel-text="$t('common.cancel')"
+                  :title="$t('deleteText').toString()"
+                  :ok-text="$t('deleteConfirm').toString()"
+                  :cancel-text="$t('common.cancel').toString()"
                   @confirm="uninstallApp(app)"
                 >
                   <icon-button size="small" type="danger">

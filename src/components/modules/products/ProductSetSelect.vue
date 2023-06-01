@@ -1,10 +1,10 @@
 <template>
   <validated-select
     v-model="innerValue"
-    :placeholder="$t('form.setsPlaceholder')"
+    :placeholder="$t('form.setsPlaceholder').toString()"
     mode="multiple"
     name="sets"
-    :label="$t('form.sets')"
+    :label="$t('form.sets').toString()"
     option-filter-prop="label"
     :disabled="disabled"
     allow-search

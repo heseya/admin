@@ -12,7 +12,7 @@
     >
       <validated-input
         v-model="meta.key"
-        :label="$t('form.key')"
+        :label="$t('form.key').toString()"
         name="key"
         :disabled="isDeleted(meta) || meta.wasSaved"
         rules="required|metadata-name"
@@ -20,7 +20,7 @@
 
       <app-select
         :value="meta.type"
-        :label="$t('form.type')"
+        :label="$t('form.type').toString()"
         :disabled="isDeleted(meta)"
         @input="(t) => changeMetaType(meta, t)"
       >
@@ -38,14 +38,14 @@
       <app-select
         v-if="meta.type === MetadataType.Boolean"
         :value="meta.value ? 1 : 0"
-        :label="$t('form.value')"
+        :label="$t('form.value').toString()"
         :disabled="isDeleted(meta)"
         @input="(v) => (meta.value = !!v)"
       >
-        <a-select-option :value="1" :label="$t('common.true')">
+        <a-select-option :value="1" :label="$t('common.true').toString()">
           {{ $t('common.true') }}
         </a-select-option>
-        <a-select-option :value="0" :label="$t('common.false')">
+        <a-select-option :value="0" :label="$t('common.false').toString()">
           {{ $t('common.false') }}
         </a-select-option>
       </app-select>

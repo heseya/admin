@@ -13,16 +13,16 @@
         v-model="selectedOption[0].name"
         class="number-input__input"
         name="name"
-        :label="$t('displayName')"
-        :placeholder="$t('namePlaceholder')"
+        :label="$t('displayName').toString()"
+        :placeholder="$t('namePlaceholder').toString()"
       />
       <app-input
         v-model="selectedOption[0].value_number"
         class="number-input__input"
         type="number"
         name="value_number"
-        :label="$t('value')"
-        :placeholder="$t('valuePlaceholder')"
+        :label="$t('value').toString()"
+        :placeholder="$t('valuePlaceholder').toString()"
       />
     </div>
   </div>

@@ -7,7 +7,7 @@
         type="number"
         :rules="`not-negative|less-than:@${formId}.max_value`"
         :disabled="disabled"
-        :label="$t('form.min_value')"
+        :label="$t('form.min_value').toString()"
       />
       <validated-input
         v-model="form.max_value"
@@ -15,7 +15,7 @@
         rules="not-negative"
         type="number"
         :disabled="disabled"
-        :label="$t('form.max_value')"
+        :label="$t('form.max_value').toString()"
       />
     </div>
 

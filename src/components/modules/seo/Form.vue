@@ -59,7 +59,7 @@
     </app-select>
 
     <media-upload-input
-      :label="$t('form.og_image')"
+      :label="$t('form.og_image').toString()"
       :disabled="disabled"
       :media="form.og_image"
       @upload="changeMedia"

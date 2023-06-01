@@ -2,7 +2,7 @@
   <div class="media-filter">
     <app-select
       v-model="local.type"
-      :label="$t('mediaType')"
+      :label="$t('mediaType').toString()"
       add-all
       option-filter-prop="label"
       @change="debouncedSearch"
@@ -23,7 +23,7 @@
 
     <boolean-select
       v-model="local.has_relationships"
-      :label="$t('hasRelationships')"
+      :label="$t('hasRelationships').toString()"
       @change="debouncedSearch"
     />
   </div>

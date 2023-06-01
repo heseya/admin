@@ -1,7 +1,7 @@
 <template>
   <div class="narrower-page">
     <PaginatedList
-      :title="$t('title')"
+      :title="$t('title').toString()"
       :filters="filters"
       store-key="schemas"
       @clear-filters="clearFilters"
@@ -21,7 +21,7 @@
             v-model="filters.search"
             class="span-2"
             type="search"
-            :label="$t('common.search')"
+            :label="$t('common.search').toString()"
             allow-clear
             @input="debouncedSearch"
           />

@@ -1,12 +1,12 @@
 <template>
   <div :key="attribute.id" class="narrower-page">
-    <top-nav :title="!isNew ? attribute.name : $t('newTitle')">
+    <top-nav :title="!isNew ? attribute.name : $t('newTitle').toString()">
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Attributes.Remove"
-        :title="$t('deleteText')"
-        :ok-text="$t('common.delete')"
-        :cancel-text="$t('common.cancel')"
+        :title="$t('deleteText').toString()"
+        :ok-text="$t('common.delete').toString()"
+        :cancel-text="$t('common.cancel').toString()"
         @confirm="deleteAttribute"
       >
         <icon-button type="danger" data-cy="delete-btn">

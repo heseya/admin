@@ -74,8 +74,8 @@
                 <a-menu-item v-can="$p.ProductSets.Remove">
                   <pop-confirm
                     :title="`${$t('collection')}: ${set.name}. ${$t('deleteText')}`"
-                    :ok-text="$t('common.delete')"
-                    :cancel-text="$t('common.cancel')"
+                    :ok-text="$t('common.delete').toString()"
+                    :cancel-text="$t('common.cancel').toString()"
                     placement="bottom"
                     @confirm="deleteCollection"
                   >

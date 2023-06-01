@@ -15,7 +15,12 @@
 
     <empty v-else>{{ $t('empty') }}</empty>
 
-    <a-modal v-model="isUploadModalOpen" width="600px" :title="$t('modalTitle')" :footer="null">
+    <a-modal
+      v-model="isUploadModalOpen"
+      width="600px"
+      :title="$t('modalTitle').toString()"
+      :footer="null"
+    >
       <modal-form>
         <DocumentOrderForm :order-id="orderId" @close="isUploadModalOpen = false" />
       </modal-form>

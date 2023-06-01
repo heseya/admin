@@ -1,6 +1,8 @@
 <template>
   <div class="narrower-page">
-    <top-nav :title="isNewUser(editedUser) ? $t('newTitle') : $t('editTitle')">
+    <top-nav
+      :title="isNewUser(editedUser) ? $t('newTitle').toString() : $t('editTitle').toString()"
+    >
       <icon-button v-if="selectedUser" @click="resetPassword">
         <template #icon>
           <i class="bx bxs-shield-plus"></i>
@@ -48,9 +50,9 @@
             </app-button>
             <pop-confirm
               v-can="$p.Users.Remove"
-              :title="$t('deleteText')"
-              :ok-text="$t('common.delete')"
-              :cancel-text="$t('common.cancel')"
+              :title="$t('deleteText').toString()"
+              :ok-text="$t('common.delete').toString()"
+              :cancel-text="$t('common.cancel').toString()"
               @confirm="deleteItem"
             >
               <app-button

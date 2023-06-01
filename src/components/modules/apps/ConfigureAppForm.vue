@@ -7,7 +7,7 @@
         v-if="error"
         type="error"
         show-icon
-        :message="$t('fetchFailed')"
+        :message="$t('fetchFailed').toString()"
         :description="error.message"
       />
 

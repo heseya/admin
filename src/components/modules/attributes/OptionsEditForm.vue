@@ -23,7 +23,7 @@
         disabled
         type="number"
         name="value_number"
-        :label="$t('form.value_number')"
+        :label="$t('form.value_number').toString()"
       />
 
       <validated-input
@@ -32,7 +32,7 @@
         disabled
         type="date"
         name="value_date"
-        :label="$t('form.value_date')"
+        :label="$t('form.value_date').toString()"
       />
 
       <app-button @click="saveModalForm">

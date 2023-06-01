@@ -28,7 +28,7 @@
             :disabled="disabled"
             type="input"
             rules="required"
-            :label="$t('common.form.name')"
+            :label="$t('common.form.name').toString()"
           />
 
           <validated-input
@@ -36,30 +36,30 @@
             name="sku"
             :disabled="disabled"
             rules="required"
-            :label="$t('form.sku')"
+            :label="$t('form.sku').toString()"
           />
 
           <div class="warehouse-item-modal__row">
             <app-select
               :value="unlimitedStockType"
-              :label="$t('unlimitedStockType.label')"
+              :label="$t('unlimitedStockType.label').toString()"
               @input="changeUnlimitedStockType"
             >
               <a-select-option
                 :value="UnlimitedStockType.None"
-                :label="$t(`unlimitedStockType.${UnlimitedStockType.None}`)"
+                :label="$t(`unlimitedStockType.${UnlimitedStockType.None}`).toString()"
               >
                 {{ $t(`unlimitedStockType.${UnlimitedStockType.None}`) }}
               </a-select-option>
               <a-select-option
                 :value="UnlimitedStockType.Time"
-                :label="$t(`unlimitedStockType.${UnlimitedStockType.Time}`)"
+                :label="$t(`unlimitedStockType.${UnlimitedStockType.Time}`).toString()"
               >
                 {{ $t(`unlimitedStockType.${UnlimitedStockType.Time}`) }}
               </a-select-option>
               <a-select-option
                 :value="UnlimitedStockType.Date"
-                :label="$t(`unlimitedStockType.${UnlimitedStockType.Date}`)"
+                :label="$t(`unlimitedStockType.${UnlimitedStockType.Date}`).toString()"
               >
                 {{ $t(`unlimitedStockType.${UnlimitedStockType.Date}`) }}
               </a-select-option>
@@ -96,7 +96,7 @@
             </validated-input>
           </div>
 
-          <field v-if="item" :label="$t('form.quantity')" data-cy="total-quantity">
+          <field v-if="item" :label="$t('form.quantity').toString()" data-cy="total-quantity">
             {{ item.quantity }}
           </field>
 
@@ -134,9 +134,9 @@
             </app-button>
             <pop-confirm
               v-can="$p.Items.Remove"
-              :title="$t('deleteText')"
-              :ok-text="$t('common.delete')"
-              :cancel-text="$t('common.cancel')"
+              :title="$t('deleteText').toString()"
+              :ok-text="$t('common.delete').toString()"
+              :cancel-text="$t('common.cancel').toString()"
               @confirm="deleteWarehouseItem"
             >
               <app-button v-if="form.id" data-cy="delete-btn" type="danger">{{

@@ -1,7 +1,7 @@
 <template>
   <div>
     <PaginatedList
-      :title="$t('title')"
+      :title="$t('title').toString()"
       :filters="filters"
       :table="tableConfig"
       store-key="attributes"

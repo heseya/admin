@@ -8,7 +8,7 @@
         :rules="`required|time-same-or-before:@${formId}.end_at`"
         :disabled="disabled"
         step="2"
-        :label="$t('form.start_at')"
+        :label="$t('form.start_at').toString()"
       />
       <validated-input
         v-model="form.end_at"
@@ -17,7 +17,7 @@
         type="time"
         step="2"
         :disabled="disabled"
-        :label="$t('form.end_at')"
+        :label="$t('form.end_at').toString()"
       />
     </div>
     <small>{{ $t('info') }}</small>

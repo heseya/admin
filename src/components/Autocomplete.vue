@@ -23,9 +23,19 @@
         </div>
       </div>
     </div>
-    <a-modal v-model="isModalActive" width="800px" :title="$t('chooseItem')" :footer="null">
+    <a-modal
+      v-model="isModalActive"
+      width="800px"
+      :title="$t('chooseItem').toString()"
+      :footer="null"
+    >
       <modal-form v-if="isModalActive">
-        <selector :type-name="$t('product')" type="items" :existing="value" @select="addItem" />
+        <selector
+          :type-name="$t('product').toString()"
+          type="items"
+          :existing="value"
+          @select="addItem"
+        />
       </modal-form>
     </a-modal>
   </div>

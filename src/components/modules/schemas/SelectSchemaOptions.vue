@@ -32,7 +32,7 @@
             :disabled="disabled"
             class="input"
             type="products"
-            :label="$t('form.items')"
+            :label="$t('form.items').toString()"
           />
           <SwitchInput v-model="option.disabled" :disabled="disabled">
             <template #title>{{ $t('disabled') }}</template>

@@ -1,5 +1,5 @@
 <template>
-  <LayoutAccordion :title="$t('title')">
+  <LayoutAccordion :title="$t('title').toString()">
     <div class="additional-descriptions">
       <icon-button
         class="additional-descriptions__btn"
@@ -23,7 +23,7 @@
           :key="page.id"
           :item="page"
           :disabled="disabled"
-          :delete-text="$t('deleteText')"
+          :delete-text="$t('deleteText').toString()"
           @edit="openEditModal"
           @remove="removePage"
         >

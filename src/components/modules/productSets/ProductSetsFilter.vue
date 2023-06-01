@@ -4,12 +4,16 @@
       v-model="local.search"
       class="span-2"
       type="search"
-      :label="$t('common.search')"
+      :label="$t('common.search').toString()"
       allow-clear
       @input="debouncedSearch"
     />
 
-    <boolean-select v-model="local.public" :label="$t('public')" @change="debouncedSearch" />
+    <boolean-select
+      v-model="local.public"
+      :label="$t('public').toString()"
+      @change="debouncedSearch"
+    />
   </div>
 </template>
 

@@ -5,8 +5,8 @@
       <div class="send-package__selects">
         <app-select
           v-model="packageTemplateId"
-          :label="$t('sendPackage.template')"
-          :placeholder="$t('sendPackage.templatePlaceholder')"
+          :label="$t('sendPackage.template').toString()"
+          :placeholder="$t('sendPackage.templatePlaceholder').toString()"
           option-filter-prop="label"
         >
           <a-select-option

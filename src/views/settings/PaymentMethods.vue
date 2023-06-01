@@ -1,6 +1,6 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList :title="$t('title')" store-key="paymentMethods">
+    <PaginatedList :title="$t('title').toString()" store-key="paymentMethods">
       <template #default="{ item: paymentMethod }">
         <list-item :key="paymentMethod.id" @click="openModal(paymentMethod.id)">
           <template #avatar>
@@ -29,18 +29,18 @@
       @cancel="selectedMethod = null"
     >
       <div class="payment-method-details">
-        <field :label="$t('method.icon')">
+        <field :label="$t('method.icon').toString()">
           <avatar color="#eee" class="payment-method-details__icon">
             <img v-if="selectedMethod.icon" :src="selectedMethod.icon" />
             <i v-else class="bx bx-image"></i>
           </avatar>
         </field>
 
-        <field :label="$t('common.form.name')">
+        <field :label="$t('common.form.name').toString()">
           <span>{{ selectedMethod.name }}</span>
         </field>
 
-        <field :label="$t('method.public')">
+        <field :label="$t('method.public').toString()">
           <boolean-tag :value="selectedMethod.public" class="payment-method-details__public" />
         </field>
       </div>

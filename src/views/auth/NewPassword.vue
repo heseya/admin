@@ -1,5 +1,5 @@
 <template>
-  <central-screen-form :title="$t('newPassword')">
+  <central-screen-form :title="$t('newPassword').toString()">
     <ValidationObserver v-slot="{ handleSubmit }">
       <validated-input
         v-model="password"

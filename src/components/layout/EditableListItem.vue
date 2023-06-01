@@ -14,9 +14,9 @@
 
         <pop-confirm
           :disabled="disabled"
-          :ok-text="$t('common.delete')"
-          :cancel-text="$t('common.cancel')"
-          :title="deleteText || $t('deleteText')"
+          :ok-text="$t('common.delete').toString()"
+          :cancel-text="$t('common.cancel').toString()"
+          :title="deleteText || $t('deleteText').toString()"
           @confirm="onRemove"
         >
           <icon-button size="small" type="danger" :disabled="disabled">

@@ -6,7 +6,7 @@
           v-model="form.shipping_type"
           :disabled="disabled"
           option-filter-prop="label"
-          :label="$t('form.shippingType')"
+          :label="$t('form.shippingType').toString()"
         >
           <a-select-option
             v-for="type in Object.values(ShippingType)"

@@ -4,7 +4,12 @@
     <p>
       {{ $t('message') }}
     </p>
-    <img v-if="qrCodeUrl" :src="qrCodeUrl" :alt="$t('imageAlt')" class="setup-2fa-app__image" />
+    <img
+      v-if="qrCodeUrl"
+      :src="qrCodeUrl"
+      :alt="$t('imageAlt').toString()"
+      class="setup-2fa-app__image"
+    />
     <div class="setup-2fa-app__secret-wrapper">
       <small>{{ $t('secretText') }}</small>
       <code class="setup-2fa-app__secret">{{ secret }}</code>

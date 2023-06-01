@@ -3,7 +3,7 @@
     <validated-input
       v-model="form.url"
       rules="required|url"
-      :label="$t('form.url')"
+      :label="$t('form.url').toString()"
       :loading="isLoading"
     />
 
@@ -15,8 +15,8 @@
       v-else-if="isError && form.url"
       type="error"
       show-icon
-      :message="$t('error.no_app')"
-      :description="$t('error.no_app_description')"
+      :message="$t('error.no_app').toString()"
+      :description="$t('error.no_app_description').toString()"
     />
 
     <template v-else-if="appInfo && form.url">
@@ -53,7 +53,7 @@
         v-if="appInfo.licence_required"
         v-model="form.licence_key"
         rules="required"
-        :label="$t('form.licence_key')"
+        :label="$t('form.licence_key').toString()"
       />
 
       <div class="field">

@@ -1,14 +1,14 @@
 <template>
   <div class="coupon-view narrower-page">
-    <top-nav :title="!isNew ? coupon.name : $t('newTitle')">
+    <top-nav :title="!isNew ? coupon.name : $t('newTitle').toString()">
       <!-- <audits-modal :id="coupon.id" model="coupons" /> -->
 
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Coupons.Remove"
-        :title="$t('deleteText')"
-        :ok-text="$t('common.delete')"
-        :cancel-text="$t('common.cancel')"
+        :title="$t('deleteText').toString()"
+        :ok-text="$t('common.delete').toString()"
+        :cancel-text="$t('common.cancel').toString()"
         @confirm="deleteCoupon"
       >
         <icon-button type="danger">

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <top-nav :title="$t('title')">
+    <top-nav :title="$t('title').toString()">
       <QrCodeModalButton type="Order" :body="{ id: order.id }" />
 
       <audits-modal :id="order.id" model="orders" />

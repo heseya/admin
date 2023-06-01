@@ -1,6 +1,6 @@
 <template>
   <div class="narrower-page">
-    <top-nav :title="$t('title')" />
+    <top-nav :title="$t('title').toString()" />
     <card>
       <a-alert type="info" show-icon>
         <template #message>

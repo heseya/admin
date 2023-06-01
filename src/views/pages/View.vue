@@ -1,14 +1,14 @@
 <template>
   <div class="narrower-page">
-    <top-nav :title="!isNew ? page.name : $t('newTitle')">
+    <top-nav :title="!isNew ? page.name : $t('newTitle').toString()">
       <audits-modal :id="page.id" model="pages" />
 
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Pages.Remove"
-        :title="$t('deleteText')"
-        :ok-text="$t('common.delete')"
-        :cancel-text="$t('common.cancel')"
+        :title="$t('deleteText').toString()"
+        :ok-text="$t('common.delete').toString()"
+        :cancel-text="$t('common.cancel').toString()"
         @confirm="deletePage"
       >
         <icon-button type="danger">
@@ -41,7 +41,7 @@
               <switch-input
                 v-model="form.public"
                 horizontal
-                :label="$t('form.public')"
+                :label="$t('form.public').toString()"
                 :disabled="!canModify"
               />
             </flex-input>

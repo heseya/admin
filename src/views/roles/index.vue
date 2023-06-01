@@ -1,6 +1,6 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList :title="$t('title')" store-key="roles" :table="tableConfig">
+    <PaginatedList :title="$t('title').toString()" store-key="roles" :table="tableConfig">
       <template #nav>
         <icon-button v-can="$p.Roles.Add" to="/settings/roles/create">
           <template #icon>

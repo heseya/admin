@@ -1,6 +1,6 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList :title="$t('title')" store-key="banners" :table="tableConfig">
+    <PaginatedList :title="$t('title').toString()" store-key="banners" :table="tableConfig">
       <template #nav>
         <icon-button v-can="$p.Banners.Add" to="/settings/banners/create">
           <template #icon>

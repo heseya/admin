@@ -1,6 +1,6 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList :title="$t('title')" store-key="settings">
+    <PaginatedList :title="$t('title').toString()" store-key="settings">
       <template #nav>
         <icon-button v-can="$p.Settings.Add" @click="openModal()">
           <template #icon>
@@ -54,7 +54,7 @@
           <SwitchInput
             v-model="editedItem.public"
             :disabled="!canModify"
-            :label="$t('form.public')"
+            :label="$t('form.public').toString()"
             horizontal
           />
         </modal-form>
@@ -65,9 +65,9 @@
             </app-button>
             <pop-confirm
               v-can="$p.Settings.Remove"
-              :title="$t('deleteText')"
-              :ok-text="$t('common.delete')"
-              :cancel-text="$t('common.cancel')"
+              :title="$t('deleteText').toString()"
+              :ok-text="$t('common.delete').toString()"
+              :cancel-text="$t('common.cancel').toString()"
               @confirm="deleteItem"
             >
               <app-button

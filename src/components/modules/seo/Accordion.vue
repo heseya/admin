@@ -1,5 +1,5 @@
 <template>
-  <LayoutAccordion :title="$t('title')" :white="white">
+  <LayoutAccordion :title="$t('title').toString()" :white="white">
     <SeoForm v-model="form" :current="current" />
   </LayoutAccordion>
 </template>

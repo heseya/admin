@@ -1,6 +1,6 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList :title="$t('title')" store-key="consents">
+    <PaginatedList :title="$t('title').toString()" store-key="consents">
       <template #nav>
         <icon-button v-can="$p.Consents.Add" to="/settings/consents/create">
           <template #icon>

@@ -5,7 +5,7 @@
         v-model="confirmCode"
         rules="required"
         name="confirm_code"
-        :label="$t('confirmCode')"
+        :label="$t('confirmCode').toString()"
       />
       <app-button type="primary" html-type="submit"> {{ $t('activate2fa') }} </app-button>
     </form>

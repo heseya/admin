@@ -133,7 +133,7 @@
         <modal-form v-if="isUsedSchemaModalActive">
           <selector
             type="schemas"
-            :add-text="$t('choose')"
+            :add-text="$t('choose').toString()"
             :existing="[form]"
             @select="selectUsedSchema"
           />

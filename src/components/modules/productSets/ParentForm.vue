@@ -8,7 +8,7 @@
     <div>
       <autocomplete-input
         v-model="selectedParent"
-        :label="$t('title')"
+        :label="$t('title').toString()"
         mode="default"
         model-url="product-sets"
         limit="48"

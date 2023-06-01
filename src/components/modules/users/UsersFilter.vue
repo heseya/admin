@@ -13,7 +13,7 @@
       prop-mode="id"
       class="span-2"
       model-url="roles"
-      :label="$t('roles')"
+      :label="$t('roles').toString()"
       @input="debouncedSearch"
     />
 

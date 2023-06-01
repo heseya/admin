@@ -5,7 +5,7 @@
         <validated-input
           v-model="form.name"
           rules="required"
-          :label="$t('common.form.name')"
+          :label="$t('common.form.name').toString()"
           :disabled="disabled"
           @input="editSlug"
         />

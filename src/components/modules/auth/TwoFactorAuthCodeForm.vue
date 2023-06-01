@@ -20,7 +20,7 @@
         rules="required"
         name="code"
         data-cy="code"
-        :label="$t('code')"
+        :label="$t('code').toString()"
         class="tfa-code-form__input"
       />
 

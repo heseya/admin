@@ -33,9 +33,9 @@
               </icon-button>
 
               <pop-confirm
-                :title="$t('delete.confirmText')"
-                :ok-text="$t('common.delete')"
-                :cancel-text="$t('common.cancel')"
+                :title="$t('delete.confirmText').toString()"
+                :ok-text="$t('common.delete').toString()"
+                :cancel-text="$t('common.cancel').toString()"
                 @confirm="removeUrl(url)"
               >
                 <icon-button size="small" type="danger">
@@ -52,10 +52,10 @@
 
     <pop-confirm
       v-if="product.urls.length"
-      :title="$t('send.confirmText')"
-      :ok-text="$t('send.btn')"
+      :title="$t('send.confirmText').toString()"
+      :ok-text="$t('send.btn').toString()"
       ok-color="primary"
-      :cancel-text="$t('common.cancel')"
+      :cancel-text="$t('common.cancel').toString()"
       @confirm="sendProductViaMail"
     >
       <AppButton :loading="isLoading" class="order-product-urls__btn" type="primary">

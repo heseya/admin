@@ -9,7 +9,7 @@
       show-search
       allow-clear
       :loading="isLoading"
-      :placeholder="$t('placeholder')"
+      :placeholder="$t('placeholder').toString()"
       @search="onSearch"
       @input-keydown="onInputKeydown"
       @change="setValue"

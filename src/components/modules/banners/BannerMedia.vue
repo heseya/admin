@@ -10,16 +10,14 @@
           v-model="bannerMedia.title"
           :label="$t('form.title').toString()"
           :disabled="disabled"
-          rules="required"
         />
         <validated-input
           v-model="bannerMedia.subtitle"
           :label="$t('form.subtitle').toString()"
           :disabled="disabled"
-          rules="required"
         />
 
-        <validated-input v-model="bannerMedia.url" :disabled="disabled" rules="required">
+        <validated-input v-model="bannerMedia.url" :disabled="disabled">
           <template #label>
             {{ $t('form.url') }}
             <info-tooltip> {{ $t('form.urlTooltip') }}</info-tooltip>

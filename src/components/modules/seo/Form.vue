@@ -36,7 +36,7 @@
       :label="$t('form.keywords')"
       :disabled="disabled"
       mode="tags"
-      @input="(v) => (form.keywords = v)"
+      @input="setKeywords"
     />
 
     <a-alert v-if="duplicatedKeywordsItem" type="warning" show-icon style="margin-bottom: 1rem">
@@ -57,6 +57,8 @@
         >)
       </a-select-option>
     </app-select>
+
+    <tags-editor v-model="form.header_tags" :disabled="disabled" />
 
     <media-upload-input
       :label="$t('form.og_image').toString()"
@@ -130,6 +132,8 @@ import {
 
 import ModalForm from '@/components/form/ModalForm.vue'
 import MediaUploadInput from '@/components/modules/media/MediaUploadInput.vue'
+import TagsEditor from './TagsEditor.vue'
+
 import { UUID } from '@/interfaces/UUID'
 
 type SeoMeta = SeoMetadata & SeoMetadataDto
@@ -147,6 +151,7 @@ export const CLEAR_SEO_FORM: SeoMeta = {
 export default defineComponent({
   components: {
     ModalForm,
+    TagsEditor,
     MediaUploadInput,
   },
   props: {
@@ -202,7 +207,7 @@ export default defineComponent({
   watch: {
     'form.keywords': {
       handler(keywords: string[]) {
-        if (keywords.length) {
+        if (keywords?.length) {
           this.checkDuplicates(keywords)
         } else {
           this.duplicatedKeywordsItem = null
@@ -228,6 +233,10 @@ export default defineComponent({
     changeMedia(media: CdnMedia | undefined) {
       this.form.og_image = media
       this.form.og_image_id = media?.id || null
+    },
+
+    setKeywords(keywords: string[]) {
+      this.form.keywords = keywords
     },
 
     async checkDuplicates(keywords: string[]) {

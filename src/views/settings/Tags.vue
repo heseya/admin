@@ -1,6 +1,6 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList :title="$t('title')" store-key="tags">
+    <PaginatedList :title="$t('title').toString()" store-key="tags">
       <template #nav>
         <icon-button v-can="$p.Tags.Add" @click="openModal()">
           <template #icon>
@@ -49,9 +49,9 @@
             </app-button>
             <pop-confirm
               v-can="$p.Tags.Remove"
-              :title="$t('deleteText')"
-              :ok-text="$t('common.delete')"
-              :cancel-text="$t('common.cancel')"
+              :title="$t('deleteText').toString()"
+              :ok-text="$t('common.delete').toString()"
+              :cancel-text="$t('common.cancel').toString()"
               @confirm="deleteItem"
             >
               <app-button v-if="editedItem.id" type="danger">{{ $t('common.delete') }}</app-button>
@@ -89,7 +89,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { clone } from 'lodash'
 import { Tag } from '@heseya/store-core'
@@ -108,7 +108,7 @@ const CLEAR_TAG: Tag = {
   color: '000000',
 }
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },

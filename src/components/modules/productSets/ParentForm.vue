@@ -8,7 +8,7 @@
     <div>
       <autocomplete-input
         v-model="selectedParent"
-        :label="$t('title')"
+        :label="$t('title').toString()"
         mode="default"
         model-url="product-sets"
         limit="48"
@@ -40,7 +40,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { ProductSet, ProductSetUpdateDto } from '@heseya/store-core'
 
 import AutocompleteInput from '../../AutocompleteInput.vue'
@@ -48,13 +48,13 @@ import AutocompleteInput from '../../AutocompleteInput.vue'
 import { formatApiNotificationError } from '@/utils/errors'
 import { UUID } from '@/interfaces/UUID'
 
-export default Vue.extend({
+export default defineComponent({
   components: { AutocompleteInput },
   props: {
     set: {
-      type: Object,
+      type: Object as PropType<ProductSetUpdateDto & { id?: UUID }>,
       required: true,
-    } as Vue.PropOptions<ProductSetUpdateDto & { id?: UUID }>,
+    },
     isOpen: {
       type: Boolean,
       default: false,

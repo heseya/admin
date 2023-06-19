@@ -39,20 +39,20 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import Draggable from 'vuedraggable'
 import { BannerMedia } from '@heseya/store-core'
 
 import Empty from '@/components/layout/Empty.vue'
 import BannerMediaComponent from './BannerMedia.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: { Draggable, Empty, BannerMediaComponent },
   props: {
     value: {
-      type: Array,
+      type: Array as PropType<BannerMedia[]>,
       required: true,
-    } as Vue.PropOptions<BannerMedia[]>,
+    },
     disabled: {
       type: Boolean,
       default: false,

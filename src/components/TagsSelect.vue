@@ -2,7 +2,7 @@
   <div class="tags">
     <app-select
       :value="tagsValue"
-      :label="$t('tags')"
+      :label="$t('tags').toString()"
       class="tags__select"
       mode="tags"
       option-filter-prop="label"
@@ -36,18 +36,18 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { debounce, uniqBy } from 'lodash'
 import { Tag } from '@heseya/store-core'
 
 type AntSelectOption = { key: string; label: string }
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     value: {
-      type: Array,
+      type: Array as PropType<Tag[]>,
       required: true,
-    } as Vue.PropOptions<Tag[]>,
+    },
     disabled: {
       type: Boolean,
       default: false,

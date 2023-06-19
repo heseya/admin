@@ -1,12 +1,12 @@
 <template>
   <div>
-    <top-nav :title="!isNew ? banner.name : $t('newTitle')">
+    <top-nav :title="!isNew ? banner.name : $t('newTitle').toString()">
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Banners.Remove"
-        :title="$t('deleteText')"
-        :ok-text="$t('common.delete')"
-        :cancel-text="$t('common.cancel')"
+        :title="$t('deleteText').toString()"
+        :ok-text="$t('common.delete').toString()"
+        :cancel-text="$t('common.cancel').toString()"
         @confirm="deleteBanner"
       >
         <icon-button type="danger">
@@ -59,7 +59,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { cloneDeep } from 'lodash'
 import { Banner, BannerCreateDto } from '@heseya/store-core'
 
@@ -80,7 +80,7 @@ const CLEAN_FORM: Banner = {
   metadata_private: {},
 }
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any): any {
     const fallback = this.$t('newTitle') as string
     return {

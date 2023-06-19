@@ -1,14 +1,14 @@
 <template>
   <div class="sale-view narrower-page">
-    <top-nav :title="isNew ? $t('newTitle') : $t('edit')">
+    <top-nav :title="isNew ? $t('newTitle').toString() : $t('edit').toString()">
       <!-- <audits-modal :id="sale.id" model="sales" /> -->
 
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Sales.Remove"
-        :title="$t('deleteText')"
-        :ok-text="$t('common.delete')"
-        :cancel-text="$t('common.cancel')"
+        :title="$t('deleteText').toString()"
+        :ok-text="$t('common.delete').toString()"
+        :cancel-text="$t('common.cancel').toString()"
         @confirm="deleteSale"
       >
         <icon-button type="danger">
@@ -81,7 +81,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { cloneDeep } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
 import {
@@ -114,7 +114,9 @@ const createB2BCondition = (company: Role): DiscountCondition => ({
 
 const EMPTY_SALE_FORM: SaleFormDto = {
   name: '',
+  slug: '',
   description: '',
+  description_html: '',
   value: 0,
   active: true,
   type: DiscountType.Percentage,
@@ -125,9 +127,10 @@ const EMPTY_SALE_FORM: SaleFormDto = {
   target_sets: [],
   target_shipping_methods: [],
   target_is_allow_list: true,
+  seo: {},
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: { ValidationObserver, TopNav, Card, PopConfirm, SaleForm, MetadataForm },
   data: () => ({
     form: cloneDeep(EMPTY_SALE_FORM) as SaleFormDto,

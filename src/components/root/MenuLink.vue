@@ -6,11 +6,7 @@
     :exact="exact"
     @click="$emit('click')"
   >
-    <InlineSvg
-      v-if="svgIconPath"
-      class="nav-link-img"
-      :src="require(`@/assets/images/${svgIconPath}`)"
-    />
+    <InlineSvg v-if="svgIconPath" class="nav-link-img" :src="`/img/${svgIconPath}`" />
     <img v-else-if="iconPath" :src="iconPath" class="nav-link-img" />
     <i v-else :class="iconClass" class="nav-link-img nav-link-svg" />
     <span :class="`${rootClass}__link-label`">{{ $t(label) }}</span>
@@ -18,10 +14,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import InlineSvg from 'vue-inline-svg'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     InlineSvg,
   },

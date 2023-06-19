@@ -42,10 +42,10 @@
 
 <script lang="ts">
 /* eslint-disable vue/require-default-prop */
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import Empty from '../layout/Empty.vue'
 
-export default Vue.extend({
+export default defineComponent({
   name: 'AppSelect',
   components: { Empty },
   props: {

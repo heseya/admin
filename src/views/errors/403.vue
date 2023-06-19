@@ -1,5 +1,5 @@
 <template>
-  <error-page :title="$t('title')" :description="$t('description')" />
+  <error-page :title="$t('title').toString()" :description="$t('description').toString()" />
 </template>
 
 <i18n lang="json">
@@ -16,10 +16,10 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import ErrorPage from '@/components/layout/ErrorPage.vue'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },

@@ -1,34 +1,20 @@
 <template>
-  <a-collapse
-    accordion
-    :bordered="false"
-    class="metadata-form-accordion"
-    :class="{ 'metadata-form-accordion--white': white }"
-  >
-    <template #expandIcon="{ isActive }">
-      <div>
-        <i :class="`bx ${isActive ? 'bx-chevron-up' : 'bx-chevron-down'}`"></i>
-      </div>
+  <LayoutAccordion accordion :white="white">
+    <template #title>
+      {{ $t(`${type}.title`) }}
+      <info-tooltip>
+        {{ $t(`${type}.tooltip`) }}
+      </info-tooltip>
     </template>
 
-    <a-collapse-panel>
-      <template #header>
-        <span class="metadata-form-accordion__title">
-          {{ $t(`${type}.title`) }}
-          <info-tooltip>
-            {{ $t(`${type}.tooltip`) }}
-          </info-tooltip>
-        </span>
-      </template>
-      <MetadataForm
-        ref="form"
-        :original-metadata="value"
-        :type="type"
-        :disabled="disabled"
-        :model="model"
-      />
-    </a-collapse-panel>
-  </a-collapse>
+    <MetadataForm
+      ref="form"
+      :original-metadata="value"
+      :type="type"
+      :disabled="disabled"
+      :model="model"
+    />
+  </LayoutAccordion>
 </template>
 
 <i18n lang="json">
@@ -65,34 +51,34 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { Metadata, MetadataUpdateDto } from '@heseya/store-core'
 
 import MetadataForm from './Form.vue'
+import LayoutAccordion from '@/components/layout/Accordion.vue'
 
 import { GeneratedStoreModulesKeys } from '@/store'
 
 export type SaveMetadataFunction = (id: string) => Promise<Metadata | undefined>
 export type MetadataRef = Vue & { saveMetadata: SaveMetadataFunction }
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     MetadataForm,
+    LayoutAccordion,
   },
   props: {
     value: {
-      type: Object,
+      type: Object as PropType<MetadataUpdateDto>,
       default: () => ({}),
-    } as Vue.PropOptions<MetadataUpdateDto>,
+    },
     disabled: { type: Boolean, default: false },
     white: { type: Boolean, default: false },
-    type: { type: String, default: 'default' } as Vue.PropOptions<
-      'default' | 'private' | 'personal'
-    >,
+    type: { type: String as PropType<'default' | 'private' | 'personal'>, default: 'default' },
     model: {
-      type: String,
+      type: String as PropType<GeneratedStoreModulesKeys | 'auth'>,
       required: true,
-    } as Vue.PropOptions<GeneratedStoreModulesKeys | 'auth'>,
+    },
   },
   methods: {
     saveMetadata(id: string) {
@@ -102,15 +88,3 @@ export default Vue.extend({
   },
 })
 </script>
-
-<style lang="scss">
-.metadata-form-accordion {
-  &__title {
-    font-weight: 600;
-  }
-
-  &--white .ant-collapse-item {
-    background-color: var(--white-color);
-  }
-}
-</style>

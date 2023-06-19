@@ -1,12 +1,12 @@
 <template>
   <div :key="attribute.id" class="narrower-page">
-    <top-nav :title="!isNew ? attribute.name : $t('newTitle')">
+    <top-nav :title="!isNew ? attribute.name : $t('newTitle').toString()">
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Attributes.Remove"
-        :title="$t('deleteText')"
-        :ok-text="$t('common.delete')"
-        :cancel-text="$t('common.cancel')"
+        :title="$t('deleteText').toString()"
+        :ok-text="$t('common.delete').toString()"
+        :cancel-text="$t('common.cancel').toString()"
         @confirm="deleteAttribute"
       >
         <icon-button type="danger" data-cy="delete-btn">
@@ -47,7 +47,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { Attribute } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
@@ -57,7 +57,7 @@ import AttributeForm from '@/components/modules/attributes/Form.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.attribute?.name || (this.$t('newTitle') as string) }
   },

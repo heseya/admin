@@ -1,6 +1,6 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList :title="$t('title')" store-key="settings">
+    <PaginatedList :title="$t('title').toString()" store-key="settings">
       <template #nav>
         <icon-button v-can="$p.Settings.Add" @click="openModal()">
           <template #icon>
@@ -31,17 +31,30 @@
             :disabled="editedItem.permanent || !canModify"
           />
 
-          <validated-input
-            v-model="editedItem.value"
-            :disabled="!canModify"
-            rules="required"
-            :label="$t('form.value')"
-          />
+          <div class="settings-upload-value">
+            <validated-input
+              v-model="editedItem.value"
+              :disabled="!canModify"
+              rules="required"
+              :label="$t('form.value')"
+            />
+            <media-uploader v-slot="{ drag, loading }" @upload="handleUpload">
+              <button
+                class="settings-upload-value__btn"
+                :class="{
+                  'settings-upload-value__btn--drag': drag,
+                  'settings-upload-value__btn--loading': loading,
+                }"
+              >
+                {{ drag ? $t('form.mediaDrag') : $t('form.media') }}
+              </button>
+            </media-uploader>
+          </div>
 
           <SwitchInput
             v-model="editedItem.public"
             :disabled="!canModify"
-            :label="$t('form.public')"
+            :label="$t('form.public').toString()"
             horizontal
           />
         </modal-form>
@@ -52,9 +65,9 @@
             </app-button>
             <pop-confirm
               v-can="$p.Settings.Remove"
-              :title="$t('deleteText')"
-              :ok-text="$t('common.delete')"
-              :cancel-text="$t('common.cancel')"
+              :title="$t('deleteText').toString()"
+              :ok-text="$t('common.delete').toString()"
+              :cancel-text="$t('common.cancel').toString()"
               @confirm="deleteItem"
             >
               <app-button
@@ -79,12 +92,14 @@
     "title": "Ustawienia zaawansowane",
     "add": "Dodaj ustawienie",
     "editTitle": "Edycja ustawienia",
-    "newTitle": "Nowy ustawienie",
+    "newTitle": "Nowe ustawienie",
     "deleteText": "Czy na pewno chcesz usunąć to ustawienie?",
     "form": {
       "name": "Klucz",
       "value": "Wartość",
-      "public": "Wartość publiczna"
+      "public": "Wartość publiczna",
+      "media": "Prześlij media",
+      "mediaDrag": "Upuść plik"
     }
   },
   "en": {
@@ -96,23 +111,26 @@
     "form": {
       "name": "Key",
       "value": "Value",
-      "public": "Public value"
+      "public": "Public value",
+      "media": "Upload media",
+      "mediaDrag": "Drop file"
     }
   }
 }
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import clone from 'lodash/clone'
 import { ValidationObserver } from 'vee-validate'
-import { Setting } from '@heseya/store-core'
+import { CdnMedia, Setting } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
+import MediaUploader from '@/components/modules/media/MediaUploader.vue'
 
 const CLEAR_SETTING: Setting = {
   id: '',
@@ -122,7 +140,7 @@ const CLEAR_SETTING: Setting = {
   public: true,
 }
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return {
       title: this.$t('title') as string,
@@ -135,6 +153,7 @@ export default Vue.extend({
     PopConfirm,
     ValidationObserver,
     SwitchInput,
+    MediaUploader,
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {
@@ -164,6 +183,9 @@ export default Vue.extend({
         this.editedItem = clone(CLEAR_SETTING)
       }
     },
+    handleUpload(file: CdnMedia) {
+      this.editedItem.value = file.url
+    },
     async saveModal() {
       this.$accessor.startLoading()
       if (this.editedItem.id) {
@@ -188,3 +210,27 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.settings-upload-value {
+  display: flex;
+  align-items: flex-end;
+
+  &__btn {
+    background-color: $background-color-700;
+    border: solid 1px #d9d9d9;
+    height: 32px;
+    margin-bottom: 8px;
+    font-size: 10px;
+    border-radius: 4px;
+    margin-left: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+
+    &:hover,
+    &--drag {
+      background-color: $background-color-500;
+    }
+  }
+}
+</style>

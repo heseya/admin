@@ -3,13 +3,13 @@
     <span class="media-upload-input-wrapper__label">{{ label }}</span>
     <media-uploader
       class="media-upload-input"
-      :class="{ 'media-upload-input--image': !!image, 'media-upload-input--drag': isDrag }"
-      :disabled="disabled || !!image"
+      :class="{ 'media-upload-input--image': !!media, 'media-upload-input--drag': isDrag }"
+      :disabled="disabled || !!media"
       @upload="(f) => $emit('upload', f)"
       @drag-change="(v) => (isDrag = v)"
     >
-      <template v-if="image">
-        <media-element :media="image" class="media-upload-input__media" />
+      <template v-if="media">
+        <media-element :media="media" class="media-upload-input__media" />
 
         <AppButton
           type="danger"
@@ -23,14 +23,18 @@
         <media-edit-form
           class="media-upload-input__edit-img"
           :disabled="disabled"
-          :media="image"
+          :media="media"
           placement="top"
           @updated="updateMedia"
         />
       </template>
       <template v-else>
         <div class="media-upload-input__circle">
-          <img :src="iconPath" :alt="$t('fileAdd')" class="media-upload-input__file-add" />
+          <img
+            :src="iconPath"
+            :alt="$t('fileAdd').toString()"
+            class="media-upload-input__file-add"
+          />
         </div>
         <span class="media-upload-input__title"
           >{{ $t('dropOrChooseImage') }} <b>{{ fileName }}</b></span
@@ -43,37 +47,37 @@
 <i18n lang="json">
 {
   "pl": {
-    "removeOrChangeImage": "Usuń lub zmień zdjęcie",
+    "removeOrChangeImage": "Usuń lub zmień multimedia",
     "dropOrChooseImage": "Przeciągnij lub kliknij aby dodać",
     "defaultFileName": "multimedia",
-    "chooseImage": "Wybierz zdjęcie",
-    "fileAdd": "Dodaj zdjęcie"
+    "chooseImage": "Wybierz multimedia",
+    "fileAdd": "Dodaj multimedia"
   },
   "en": {
-    "removeOrChangeImage": "Remove or change image",
-    "dropOrChooseImage": "Drop or choose image to add",
+    "removeOrChangeImage": "Remove or change multimedia",
+    "dropOrChooseImage": "Drop or choose multimedia to add",
     "defaultFileName": "media",
-    "chooseImage": "Choose image",
+    "chooseImage": "Choose multimedia",
     "fileAdd": "Add file"
   }
 }
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { CdnMedia } from '@heseya/store-core'
 
 import MediaEditForm from '@/components/modules/media/MediaEditForm.vue'
 import MediaUploader from '@/components/modules/media/MediaUploader.vue'
 import MediaElement from '@/components/MediaElement.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: { MediaUploader, MediaEditForm, MediaElement },
   props: {
-    image: {
-      type: Object,
+    media: {
+      type: Object as PropType<CdnMedia>,
       default: () => null,
-    } as Vue.PropOptions<CdnMedia>,
+    },
     disabled: {
       type: Boolean,
       default: false,
@@ -84,7 +88,7 @@ export default Vue.extend({
     },
     iconPath: {
       type: String,
-      default: () => require('@/assets/images/icons/file-add.svg'),
+      default: () => '/img/icons/file-add.svg',
     },
     fileName: {
       type: String,
@@ -126,6 +130,8 @@ export default Vue.extend({
   background-color: var(--background-color-500);
   border-radius: 4px;
   height: 100%;
+  min-height: 100px;
+  max-height: 100%;
   transition: 0.3s;
 
   &__media {
@@ -166,9 +172,8 @@ export default Vue.extend({
   }
 
   &__edit-img {
-    left: 50%;
-    bottom: 32px;
-    transform: translateX(-50%);
+    right: 16px;
+    top: 16px;
   }
 
   &__circle {

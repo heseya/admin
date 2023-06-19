@@ -20,7 +20,8 @@
       <span> {{ $t('table.shippingTime') }} </span>
       <span> {{ $t('table.quantity') }} </span>
       <span>
-        {{ $t('table.from_unlimited') }} <info-tooltip :text="$t('table.from_unlimited_tooltip')" />
+        {{ $t('table.from_unlimited') }}
+        <info-tooltip :text="$t('table.from_unlimited_tooltip').toString()" />
       </span>
     </div>
 
@@ -37,7 +38,10 @@
     >
       <span :class="{ 'items-availability__row-value--past': isDateInPast(shipping_date) }">
         {{ formatShippingTime(shipping_date || shipping_time) }}
-        <info-tooltip v-if="isDateInPast(shipping_date)" :text="$t('dateInPastTooltip')" />
+        <info-tooltip
+          v-if="isDateInPast(shipping_date)"
+          :text="$t('dateInPastTooltip').toString()"
+        />
       </span>
       <span> {{ quantity }} </span>
       <span> <BooleanTag small :value="from_unlimited" /> </span>
@@ -78,9 +82,7 @@
       "from_unlimited": "Z nieograniczonego stanu",
       "from_unlimited_tooltip": "Ta zmiana dotyczy nieskończonych ilości i nie wpływa na obecną ilość produktów na magazynie"
     },
-    "dateInPastTooltip": "Data dostępności jest w przeszłości, nie wpływa na aktualną dostępność produktu ani na aktualną sumę produktów w magazynie",
-    "availabilityTime": "w {time} dni",
-    "availabilityDate": "od {date}"
+    "dateInPastTooltip": "Data dostępności jest w przeszłości, nie wpływa na aktualną dostępność produktu ani na aktualną sumę produktów w magazynie"
   },
   "en": {
     "title": "Product availability",
@@ -92,25 +94,23 @@
       "from_unlimited": "From unlimited stock",
       "from_unlimited_tooltip": "This change concerns unlimited quantities and does not affect the current quantity of products in stock"
     },
-    "dateInPastTooltip": "The availability date is in the past, it does not affect the current availability of the product or the current sum of products in stock",
-    "availabilityTime": "in {time} days",
-    "availabilityDate": "from {date}"
+    "dateInPastTooltip": "The availability date is in the past, it does not affect the current availability of the product or the current sum of products in stock"
   }
 }
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import isNumber from 'lodash/isNumber'
 import { WarehouseItem } from '@heseya/store-core'
 
 import DepositFormModal from './DepositFormModal.vue'
 import { formatDate } from '@/utils/dates'
 
-export default Vue.extend({
+export default defineComponent({
   components: { DepositFormModal },
   props: {
-    item: { type: Object, default: null } as Vue.PropOptions<WarehouseItem | null>,
+    item: { type: Object as PropType<WarehouseItem | null>, default: null },
   },
 
   data: () => ({
@@ -127,8 +127,8 @@ export default Vue.extend({
 
   methods: {
     formatShippingTime(time: number | string | null) {
-      if (isNumber(time)) return this.$t('availabilityTime', { time })
-      if (time) return this.$t('availabilityDate', { date: formatDate(time) })
+      if (isNumber(time)) return this.$t('availability.time', { time })
+      if (time) return this.$t('availability.date', { date: formatDate(time) })
       return '-'
     },
 

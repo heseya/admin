@@ -34,9 +34,9 @@
 
           <pop-confirm
             :disabled="disabled"
-            :title="$t('deleteText')"
-            :ok-text="$t('common.delete')"
-            :cancel-text="$t('common.cancel')"
+            :title="$t('deleteText').toString()"
+            :ok-text="$t('common.delete').toString()"
+            :cancel-text="$t('common.cancel').toString()"
             @confirm="removeOption(option)"
           >
             <icon-button size="small" type="danger" :disabled="disabled">
@@ -88,7 +88,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { cloneDeep } from 'lodash'
 import {
   AttributeOption,
@@ -109,7 +109,7 @@ const EMPTY_FORM: AttributeOptionDto = {
   value_date: null,
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: { Empty, PopConfirm, OptionsEditForm, Pagination },
   props: {
     attributeId: {
@@ -117,9 +117,9 @@ export default Vue.extend({
       required: true,
     },
     type: {
-      type: String,
+      type: String as PropType<AttributeType>,
       required: true,
-    } as Vue.PropOptions<AttributeType>,
+    },
     disabled: {
       type: Boolean,
       default: false,

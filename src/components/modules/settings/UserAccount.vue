@@ -4,7 +4,7 @@
       <validated-input
         v-model="form.name"
         name="name"
-        :label="$t('username')"
+        :label="$t('username').toString()"
         type="text"
         rules="required"
       />
@@ -12,7 +12,7 @@
       <validated-input
         v-model="form.birthday_date"
         name="birthday_date"
-        :label="$t('birthday')"
+        :label="$t('birthday').toString()"
         type="date"
         rules=""
       />
@@ -73,7 +73,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { cloneDeep } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
 import { User, UserProfileUpdateDto } from '@heseya/store-core'
@@ -93,16 +93,16 @@ const UPDATE_USER_FORM: UserProfileUpdateDto = {
   },
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     ValidationObserver,
     MetadataForm,
   },
   props: {
     user: {
-      type: Object,
+      type: Object as PropType<User>,
       required: true,
-    } as Vue.PropOptions<User>,
+    },
   },
   data: () => ({
     form: {} as UserProfileUpdateDto,

@@ -17,7 +17,7 @@
     <pop-confirm
       v-if="!isLoggedUser && is2faEnabled"
       v-can="$p.Users.TfaRemove"
-      :title="$t('disableText')"
+      :title="$t('disableText').toString()"
       @confirm="disable2FA"
     >
       <app-button :disabled="disabled" size="small" type="danger" class="disable-2fa__disable-btn">
@@ -47,11 +47,11 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import { ApiError, formatApiNotificationError } from '@/utils/errors'
 
-export default Vue.extend({
+export default defineComponent({
   components: { PopConfirm },
   props: {
     disabled: {

@@ -1,7 +1,7 @@
 <template>
   <div class="narrower-page">
     <PaginatedList
-      :title="$t('title')"
+      :title="$t('title').toString()"
       store-key="productSets"
       :filters="filters"
       draggable
@@ -50,7 +50,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { cloneDeep, isString } from 'lodash'
 import { CdnMedia, ProductSet, ProductSetUpdateDto } from '@heseya/store-core'
 
@@ -67,7 +67,7 @@ import { UUID } from '@/interfaces/UUID'
 import { formatFilters } from '@/utils/utils'
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },

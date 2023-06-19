@@ -5,16 +5,20 @@
         <validated-input
           v-model="form.name"
           rules="required"
-          :label="$t('common.form.name')"
+          :label="$t('common.form.name').toString()"
           :disabled="disabled"
         />
-        <label class="app-input__label" :name="$t('common.form.description')">{{
-          $t('common.form.description')
-        }}</label>
+        <label class="app-input__label" :name="$t('common.form.description').toString()">
+          {{ $t('common.form.description') }}
+        </label>
         <rich-editor v-model="form.description_html" :disabled="disabled" />
         <br />
         <div class="switches">
-          <switch-input v-model="form.required" :label="$t('common.form.required')" horizontal />
+          <switch-input
+            v-model="form.required"
+            :label="$t('common.form.required').toString()"
+            horizontal
+          />
         </div>
         <br />
         <app-button v-if="!disabled" html-type="submit">
@@ -26,14 +30,14 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { Consent } from '@heseya/store-core'
 
 import Card from '@/components/layout/Card.vue'
 import RichEditor from '@/components/form/RichEditor.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     ValidationObserver,
     Card,
@@ -41,9 +45,9 @@ export default Vue.extend({
   },
   props: {
     value: {
-      type: Object,
+      type: Object as PropType<Consent>,
       required: true,
-    } as Vue.PropOptions<Consent>,
+    },
     disabled: {
       type: Boolean,
       default: false,

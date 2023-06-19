@@ -22,6 +22,10 @@ export const getApiURL = () => {
       return 'https://***REMOVED***-stage.***REMOVED***'
     case '***REMOVED***-admin.stage.heseya.pl':
       return 'https://demo-***REMOVED***.***REMOVED***'
+    case 'admin-***REMOVED***.***REMOVED***':
+      return 'https://***REMOVED***.***REMOVED***'
+    case '***REMOVED***-admin.stage.heseya.pl':
+      return 'https://demo-***REMOVED***.***REMOVED***'
 
     // Demo clients
     case '***REMOVED***':
@@ -43,6 +47,6 @@ export const getApiURL = () => {
     case '***REMOVED***':
       return '***REMOVED***'
     default:
-      return (process.env.VUE_APP_API_URL as string) || '***REMOVED***'
+      return import.meta.env.VITE_API_URL || '***REMOVED***'
   }
 }

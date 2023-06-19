@@ -36,7 +36,7 @@
       :label="$t('form.keywords')"
       :disabled="disabled"
       mode="tags"
-      @input="(v) => (form.keywords = v)"
+      @input="setKeywords"
     />
 
     <a-alert v-if="duplicatedKeywordsItem" type="warning" show-icon style="margin-bottom: 1rem">
@@ -58,10 +58,12 @@
       </a-select-option>
     </app-select>
 
+    <tags-editor v-model="form.header_tags" :disabled="disabled" />
+
     <media-upload-input
-      :label="$t('form.og_image')"
+      :label="$t('form.og_image').toString()"
       :disabled="disabled"
-      :image="form.og_image"
+      :media="form.og_image"
       @upload="changeMedia"
     />
   </modal-form>
@@ -119,7 +121,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import {
   SeoMetadata,
   SeoMetadataDto,
@@ -130,6 +132,8 @@ import {
 
 import ModalForm from '@/components/form/ModalForm.vue'
 import MediaUploadInput from '@/components/modules/media/MediaUploadInput.vue'
+import TagsEditor from './TagsEditor.vue'
+
 import { UUID } from '@/interfaces/UUID'
 
 type SeoMeta = SeoMetadata & SeoMetadataDto
@@ -144,16 +148,17 @@ export const CLEAR_SEO_FORM: SeoMeta = {
   no_index: false,
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     ModalForm,
+    TagsEditor,
     MediaUploadInput,
   },
   props: {
     value: {
-      type: Object,
-      required: true,
-    } as Vue.PropOptions<SeoMeta>,
+      type: Object as PropType<SeoMeta | null>,
+      default: () => null,
+    },
     disabled: {
       type: Boolean,
       default: false,
@@ -163,9 +168,9 @@ export default Vue.extend({
       default: false,
     },
     current: {
-      type: Object,
+      type: Object as PropType<{ id: UUID; model: SeoCheckModelType }>,
       default: null,
-    } as Vue.PropOptions<{ id: UUID; model: SeoCheckModelType }>,
+    },
   },
 
   data: () => ({
@@ -179,7 +184,7 @@ export default Vue.extend({
   computed: {
     form: {
       get(): SeoMeta {
-        return this.value
+        return this.value || {}
       },
       set(v: SeoMeta) {
         this.$emit('input', v)
@@ -202,7 +207,7 @@ export default Vue.extend({
   watch: {
     'form.keywords': {
       handler(keywords: string[]) {
-        if (keywords.length) {
+        if (keywords?.length) {
           this.checkDuplicates(keywords)
         } else {
           this.duplicatedKeywordsItem = null
@@ -228,6 +233,10 @@ export default Vue.extend({
     changeMedia(media: CdnMedia | undefined) {
       this.form.og_image = media
       this.form.og_image_id = media?.id || null
+    },
+
+    setKeywords(keywords: string[]) {
+      this.form.keywords = keywords
     },
 
     async checkDuplicates(keywords: string[]) {

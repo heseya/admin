@@ -19,13 +19,13 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { App } from '@heseya/store-core'
 
 import MicroFrontend from '@/components/MicroFrontend.vue'
 import Loading from '@/components/layout/Loading.vue'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.app?.name || (this.$t('title') as string) }
   },

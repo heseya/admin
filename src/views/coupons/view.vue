@@ -1,14 +1,14 @@
 <template>
   <div class="coupon-view narrower-page">
-    <top-nav :title="!isNew ? coupon.name : $t('newTitle')">
+    <top-nav :title="!isNew ? coupon.name : $t('newTitle').toString()">
       <!-- <audits-modal :id="coupon.id" model="coupons" /> -->
 
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Coupons.Remove"
-        :title="$t('deleteText')"
-        :ok-text="$t('common.delete')"
-        :cancel-text="$t('common.cancel')"
+        :title="$t('deleteText').toString()"
+        :ok-text="$t('common.delete').toString()"
+        :cancel-text="$t('common.cancel').toString()"
         @confirm="deleteCoupon"
       >
         <icon-button type="danger">
@@ -87,7 +87,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { cloneDeep } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
 import { Coupon, DiscountTargetType, DiscountType, CouponUpdateDto } from '@heseya/store-core'
@@ -107,7 +107,9 @@ import { mapCouponFormToCouponDto } from '@/utils/sales'
 const EMPTY_COUPON_FORM: CouponFormDto = {
   code: '',
   name: '',
+  slug: '',
   description: '',
+  description_html: '',
   value: 0,
   active: true,
   type: DiscountType.Percentage,
@@ -118,9 +120,10 @@ const EMPTY_COUPON_FORM: CouponFormDto = {
   target_sets: [],
   target_shipping_methods: [],
   target_is_allow_list: true,
+  seo: {},
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: { ValidationObserver, TopNav, Card, PopConfirm, SaleForm, MetadataForm },
   data: () => ({
     form: cloneDeep(EMPTY_COUPON_FORM) as CouponFormDto,

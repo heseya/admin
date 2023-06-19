@@ -39,7 +39,8 @@
       "quantity": "Zmiana ilości",
       "order": "Zamówienie",
       "from_unlimited": "Z nieograniczonego stanu",
-      "from_unlimited_tooltip": "Ta zmiana dotyczy nieskończonych ilości i nie wpływa na obecną ilość produktów na magazynie"
+      "from_unlimited_tooltip": "Ta zmiana dotyczy nieskończonych ilości i nie wpływa na obecną ilość produktów na magazynie",
+      "shipping_time": "Czas wysyłki"
     }
   },
   "en": {
@@ -49,14 +50,15 @@
       "quantity": "Quantity change",
       "order": "Order",
       "from_unlimited": "From unlimited stock",
-      "from_unlimited_tooltip": "This change concerns unlimited quantities and does not affect the current quantity of products in stock"
+      "from_unlimited_tooltip": "This change concerns unlimited quantities and does not affect the current quantity of products in stock",
+      "shipping_time": "Shipping time"
     }
   }
 }
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { WarehouseDeposit, WarehouseItem } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
@@ -66,7 +68,7 @@ import { TableConfig } from '@/interfaces/CmsTable'
 
 import { formatDate } from '@/utils/dates'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },
@@ -74,7 +76,7 @@ export default Vue.extend({
     PaginatedList,
     CmsTableRow,
   },
-  beforeRouteLeave(to, from, next) {
+  beforeRouteLeave(_to, _from, next) {
     if (this.isModalActive) this.isModalActive = false
     next()
   },
@@ -104,6 +106,13 @@ export default Vue.extend({
             render: (v) => formatDate(v) || '-',
           },
           {
+            key: 'shipping',
+            label: this.$t('table.shipping_time') as string,
+            render: (_, item) => {
+              return this.formatAvailability(item)
+            },
+          },
+          {
             key: 'from_unlimited',
             label: this.$t('table.from_unlimited') as string,
             labelTooltip: this.$t('table.from_unlimited_tooltip') as string,
@@ -112,6 +121,7 @@ export default Vue.extend({
       }
     },
   },
+
   async created() {
     this.$accessor.startLoading()
     const success = await this.$accessor.items.get(this.$route.params.id)
@@ -121,6 +131,18 @@ export default Vue.extend({
       this.$toast.error(this.$t('errors.CLIENT_ERROR.NOT_FOUND') as string)
       this.$router.push('/items')
     }
+  },
+
+  methods: {
+    formatAvailability(item: WarehouseDeposit) {
+      if (item.shipping_time)
+        return this.$t('availability.time', { time: item.shipping_time }) as string
+      if (item.shipping_date)
+        return this.$t('availability.date', {
+          date: formatDate(item.shipping_date),
+        }) as string
+      return '-'
+    },
   },
 })
 </script>

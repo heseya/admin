@@ -38,21 +38,21 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { Product } from '@heseya/store-core'
 
 import { ProductComponentForm } from '@/interfaces/Product'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     value: {
-      type: Object,
+      type: Object as PropType<ProductComponentForm>,
       required: true,
-    } as Vue.PropOptions<ProductComponentForm>,
+    },
     product: {
-      type: Object,
+      type: Object as PropType<Product>,
       default: () => ({} as Product),
-    } as Vue.PropOptions<Product>,
+    },
     disabled: { type: Boolean, default: false },
   },
   computed: {

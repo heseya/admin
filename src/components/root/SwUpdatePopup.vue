@@ -28,34 +28,25 @@ import { SERVICE_WORKER_UPDATED_EVENT } from '@/consts/serviceWorkerUpdated'
 export default defineComponent({
   data() {
     return {
-      refreshing: false,
       updateExists: false,
-      registration: null as null | ServiceWorkerRegistration,
     }
   },
 
   created() {
-    document.addEventListener(SERVICE_WORKER_UPDATED_EVENT, this.updateAvailable, { once: true })
-
-    // Watch for a new service worker to take control, then refresh the page
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (this.refreshing) return
-      this.refreshing = true
-      window.location.reload()
-    })
+    document.addEventListener(
+      SERVICE_WORKER_UPDATED_EVENT,
+      () => {
+        this.updateExists = true
+      },
+      { once: true },
+    )
   },
 
   methods: {
-    updateAvailable(event: any) {
-      this.registration = event.detail
-      this.updateExists = true
-    },
     refreshApp() {
+      window.updateSW()
       this.updateExists = false
-      // Make sure we only send a 'skip waiting' message if the SW is waiting
-      if (!this.registration || !this.registration.waiting) return
-      // Send message to SW to skip the waiting and activate the new SW
-      this.registration.waiting.postMessage({ type: 'SKIP_WAITING' })
+      return
     },
   },
 })

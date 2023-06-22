@@ -5,7 +5,6 @@ import { SERVICE_WORKER_UPDATED_EVENT } from './consts/serviceWorkerUpdated'
 
 const updateSW = registerSW({
   onNeedRefresh() {
-    console.log('onNeedRefresh')
     console.log('New content is available; please refresh.')
     document.dispatchEvent(new CustomEvent(SERVICE_WORKER_UPDATED_EVENT, {}))
   },

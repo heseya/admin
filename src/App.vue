@@ -13,7 +13,7 @@
 
     <!-- eslint-disable-next-line vue/no-bare-strings-in-template -->
     <div class="app__version" :class="{ 'app__version--center': !isNavHidden }">
-      &copy; 2017-{{ currentYear }} | v{{ version }}
+      &copy; {{ currentYear }} | v{{ version }}
     </div>
 
     <Loading :relative="false" :active="isLoading" />

@@ -1,9 +1,9 @@
 <template>
   <div id="app" class="app" :class="{ 'app--full-size': isNavHidden }">
-    <DesktopNavigation class="app__nav"></DesktopNavigation>
-    <MobileNavigation class="app__mobile-nav"></MobileNavigation>
+    <DesktopNavigation class="app__nav" />
+    <MobileNavigation class="app__mobile-nav" />
 
-    <AppHeader class="app__header"></AppHeader>
+    <AppHeader class="app__header" />
 
     <main class="app__content">
       <transition name="fade" mode="out-in">
@@ -13,7 +13,7 @@
 
     <!-- eslint-disable-next-line vue/no-bare-strings-in-template -->
     <div class="app__version" :class="{ 'app__version--center': !isNavHidden }">
-      &copy; {{ currentYear }} | v{{ version }}
+      &copy; 2017-{{ currentYear }} | v{{ version }}
     </div>
 
     <Loading :relative="false" :active="isLoading" />

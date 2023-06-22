@@ -1,9 +1,9 @@
 <template>
   <div id="app" class="app" :class="{ 'app--full-size': isNavHidden }">
-    <DesktopNavigation class="app__nav"></DesktopNavigation>
-    <MobileNavigation class="app__mobile-nav"></MobileNavigation>
+    <DesktopNavigation class="app__nav" />
+    <MobileNavigation class="app__mobile-nav" />
 
-    <AppHeader class="app__header"></AppHeader>
+    <AppHeader class="app__header" />
 
     <main class="app__content">
       <transition name="fade" mode="out-in">

@@ -4,6 +4,12 @@ import { PermissionsTree } from '@/consts/permissions'
 import { hasUserAccess, alertIfNoAccess } from './plugins/permissions'
 import { AccessorType } from './store'
 
+declare global {
+  interface Window {
+    updateSW: (reloadPage?: boolean) => void
+  }
+}
+
 declare module 'vue/types/vue' {
   interface Vue {
     $router: VueRouter

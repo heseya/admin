@@ -58,7 +58,7 @@
       </a-select-option>
     </app-select>
 
-    <tags-editor v-model="form.header_tags" :disabled="disabled" />
+    <TagsEditor v-model="form.header_tags" :disabled="disabled" />
 
     <media-upload-input
       :label="$t('form.og_image').toString()"
@@ -142,6 +142,7 @@ export const CLEAR_SEO_FORM: SeoMeta = {
   title: '',
   description: '',
   keywords: [],
+  header_tags: [],
   twitter_card: TwitterCardType.Summary,
   og_image: undefined,
   og_image_id: undefined,
@@ -221,6 +222,7 @@ export default defineComponent({
     this.form = {
       title: this.form.title || CLEAR_SEO_FORM.title,
       description: this.form.description || CLEAR_SEO_FORM.description,
+      header_tags: this.form.header_tags || CLEAR_SEO_FORM.header_tags,
       keywords: this.form.keywords || CLEAR_SEO_FORM.keywords,
       og_image: this.form.og_image || CLEAR_SEO_FORM.og_image,
       og_image_id: this.form.og_image?.id || CLEAR_SEO_FORM.og_image_id,

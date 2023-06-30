@@ -165,7 +165,7 @@
 import { defineComponent } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { clone } from 'lodash'
-import { PackagesTemplate } from '@heseya/store-core'
+import { PackagesTemplateCreateDto } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
@@ -175,8 +175,7 @@ import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordi
 
 import { UUID } from '@/interfaces/UUID'
 
-const CLEAR_PACKAGE_TEMPLATE: PackagesTemplate = {
-  id: '',
+const CLEAR_PACKAGE_TEMPLATE: PackagesTemplateCreateDto & { id?: string } = {
   name: '',
   width: 0,
   height: 0,
@@ -247,7 +246,9 @@ export default defineComponent({
       this.isModalActive = false
     },
     async deleteItem() {
+      if (!this.editedItem.id) return
       this.$accessor.startLoading()
+
       await this.$accessor.packageTemplates.remove(this.editedItem.id)
 
       this.$toast.success(this.$t('alerts.deleted') as string)

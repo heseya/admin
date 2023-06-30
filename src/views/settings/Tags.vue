@@ -92,7 +92,7 @@
 import { defineComponent } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { clone } from 'lodash'
-import { Tag } from '@heseya/store-core'
+import { TagCreateDto } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
@@ -102,8 +102,7 @@ import Avatar from '@/components/layout/Avatar.vue'
 
 import { UUID } from '@/interfaces/UUID'
 
-const CLEAR_TAG: Tag = {
-  id: '',
+const CLEAR_TAG: TagCreateDto & { id?: string } = {
   name: '',
   color: '000000',
 }
@@ -130,7 +129,7 @@ export default defineComponent({
   },
   data: () => ({
     isModalActive: false,
-    editedItem: clone(CLEAR_TAG) as Tag,
+    editedItem: clone(CLEAR_TAG) as TagCreateDto & { id?: string },
   }),
   computed: {
     canModify(): boolean {
@@ -138,8 +137,8 @@ export default defineComponent({
     },
   },
   methods: {
-    setColor(color: string) {
-      this.editedItem.color = color.split('#')[1] ?? color
+    setColor(color?: string) {
+      this.editedItem.color = color?.split('#')[1] ?? color
     },
     openModal(id?: UUID) {
       this.isModalActive = true
@@ -164,6 +163,7 @@ export default defineComponent({
       this.isModalActive = false
     },
     async deleteItem() {
+      if (!this.editedItem.id) return
       this.$accessor.startLoading()
       await this.$accessor.tags.remove(this.editedItem.id)
       this.$accessor.stopLoading()

@@ -18,12 +18,16 @@ export const getApiURL = () => {
       return '***REMOVED***'
     case 'admin.***REMOVED***.com':
       return 'https://***REMOVED***.***REMOVED***'
+    case 'admin-***REMOVED***.***REMOVED***':
+      return 'https://***REMOVED***.***REMOVED***'
+    case 'admin-***REMOVED***.***REMOVED***':
+      return 'https://***REMOVED***.***REMOVED***'
+
+    // Stage clients
     case '***REMOVED***-admin.stage.heseya.pl':
       return 'https://***REMOVED***-stage.***REMOVED***'
     case '***REMOVED***-admin.stage.heseya.pl':
       return 'https://demo-***REMOVED***.***REMOVED***'
-    case 'admin-***REMOVED***.***REMOVED***':
-      return 'https://***REMOVED***.***REMOVED***'
     case '***REMOVED***-admin.stage.heseya.pl':
       return 'https://demo-***REMOVED***.***REMOVED***'
     case '***REMOVED***-admin.stage.heseya.pl':

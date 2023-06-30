@@ -192,7 +192,6 @@ import { UUID } from '@/interfaces/UUID'
 import { ProductComponentForm } from '@/interfaces/Product'
 
 const EMPTY_FORM: ProductComponentForm = {
-  id: '',
   name: '',
   slug: '',
   price: 0,

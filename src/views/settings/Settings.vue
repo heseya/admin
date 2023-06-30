@@ -123,7 +123,7 @@
 import { defineComponent } from 'vue'
 import clone from 'lodash/clone'
 import { ValidationObserver } from 'vee-validate'
-import { CdnMedia, Setting } from '@heseya/store-core'
+import { CdnMedia, Setting, SettingCreateDto } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
@@ -132,8 +132,7 @@ import SwitchInput from '@/components/form/SwitchInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import MediaUploader from '@/components/modules/media/MediaUploader.vue'
 
-const CLEAR_SETTING: Setting = {
-  id: '',
+const CLEAR_SETTING: SettingCreateDto & { id?: string } = {
   name: '',
   value: '',
   permanent: false,

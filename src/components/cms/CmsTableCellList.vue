@@ -39,11 +39,11 @@
 </i18n>
 
 <script lang="ts">
-import Vue, { PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import CopyableTag from '../CopyableTag.vue'
 import Tag from '../Tag.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     CopyableTag,
     Tag,
@@ -56,9 +56,9 @@ export default Vue.extend({
       default: '',
     },
     items: {
-      type: Array,
+      type: Array as PropType<string[]>,
       required: true,
-    } as PropOptions<string[]>,
+    },
     numberOfVisbibleItems: {
       type: Number,
       required: false,

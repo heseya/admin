@@ -11,11 +11,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 
 import UiLangSwitch from '@/components/UiLangSwitch.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: { UiLangSwitch },
 })
 </script>

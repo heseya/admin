@@ -57,13 +57,13 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import last from 'lodash/last'
 import { User } from '@heseya/store-core'
 
 import ApiLangSwitch from '../ApiLangSwitch.vue'
 
-export default Vue.extend({
+export default defineComponent({
   name: 'AppHeader',
   components: { ApiLangSwitch },
   computed: {

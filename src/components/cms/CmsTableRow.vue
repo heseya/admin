@@ -34,11 +34,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import get from 'lodash/get'
 import { TableHeader, TableValue } from '@/interfaces/CmsTable'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     to: {
       type: String,
@@ -57,13 +57,13 @@ export default Vue.extend({
       default: false,
     },
     item: {
-      type: Object,
+      type: Object as PropType<Record<string, any>>,
       required: true,
-    } as Vue.PropOptions<Record<string, any>>,
+    },
     headers: {
-      type: Array,
+      type: Array as PropType<TableHeader[]>,
       required: true,
-    } as Vue.PropOptions<TableHeader[]>,
+    },
   },
   computed: {
     component(): any {

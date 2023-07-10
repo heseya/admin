@@ -24,36 +24,15 @@
       </div>
 
       <span class="log__data-key">{{ $t('payload') }}:</span>
-      <a-collapse v-if="data.payload" :bordered="false">
-        <template #expandIcon="{ isActive }">
-          <div><i :class="`bx ${isActive ? 'bx-chevron-up' : 'bx-chevron-down'}`"></i></div>
-        </template>
-
-        <a-collapse-panel class="log__data-value">
-          <template #header>
-            <span>{{ $t('expand') }}</span>
-          </template>
-
-          <vue-json-pretty v-if="data.payload" :path="'res'" :data="JSON.parse(payloadResponse)">
-          </vue-json-pretty>
-        </a-collapse-panel>
-      </a-collapse>
+      <LayoutAccordion v-if="data.payload" :title="$tc('expand')">
+        <vue-json-pretty v-if="data.payload" :path="'res'" :data="JSON.parse(payloadResponse)" />
+      </LayoutAccordion>
       <span v-else class="log__data-value"> - </span>
 
       <span class="log__data-key">{{ $t('response') }}:</span>
-      <a-collapse v-if="data.response" :bordered="false">
-        <template #expandIcon="{ isActive }">
-          <div><i :class="`bx ${isActive ? 'bx-chevron-up' : 'bx-chevron-down'}`"></i></div>
-        </template>
-
-        <a-collapse-panel class="log__data-value">
-          <template #header>
-            <span>{{ $t('expand') }}</span>
-          </template>
-          <vue-json-pretty v-if="data.response" :path="'res'" :data="JSON.parse(logResponse)">
-          </vue-json-pretty>
-        </a-collapse-panel>
-      </a-collapse>
+      <LayoutAccordion v-if="data.payload" :title="$tc('expand')">
+        <vue-json-pretty v-if="data.response" :path="'res'" :data="JSON.parse(logResponse)" />
+      </LayoutAccordion>
       <span v-else class="log__data-value"> - </span>
     </div>
   </div>
@@ -79,21 +58,25 @@
 </i18n>
 
 <script lang="ts">
-import Vue, { PropOptions } from 'vue'
+import { defineComponent, PropType } from 'vue'
+// @ts-ignore
 import VueJsonPretty from 'vue-json-pretty'
 import { WebhookEventLog } from '@heseya/store-core'
+
+import LayoutAccordion from '@/components/layout/Accordion.vue'
 
 import { ComputedClassName } from '@/interfaces/computedClassName'
 import { getRelativeDate } from '@/utils/utils'
 import 'vue-json-pretty/lib/styles.css'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     VueJsonPretty,
+    LayoutAccordion,
   },
 
   props: {
-    data: { type: Object, required: true } as PropOptions<WebhookEventLog>,
+    data: { type: Object as PropType<WebhookEventLog>, required: true },
   },
 
   computed: {

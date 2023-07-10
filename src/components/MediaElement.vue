@@ -6,7 +6,7 @@
     :width="size"
     :height="size"
     :object-fit="objectFit"
-    :alt="media.alt"
+    :alt="media.alt || ''"
   />
   <video
     v-else-if="media.type === CdnMediaType.Video"
@@ -16,14 +16,15 @@
     loop
     muted
   />
-  <i
+  <div
     v-else-if="media.type === CdnMediaType.Document"
-    class="bx bxs-file-pdf media-element--document"
-  ></i>
-  <i
-    v-else-if="media.type === CdnMediaType.Other"
-    class="bx bx-question-mark media-element--other"
-  ></i>
+    class="media-element media-element--document"
+  >
+    <i class="bx bxs-file-pdf"></i>
+  </div>
+  <div v-else-if="media.type === CdnMediaType.Other" class="media-element media-element--other">
+    <i class="bx bxs-file-pdf"></i>
+  </div>
   <div v-else class="media-element media-element--unknown">{{ $t('unknownType') }}</div>
 </template>
 
@@ -39,19 +40,19 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { CdnMedia, CdnMediaType } from '@heseya/store-core'
 
 import PictureElement from './PictureElement.vue'
 import { FEATURE_FLAGS } from '@/consts/featureFlags'
 
-export default Vue.extend({
+export default defineComponent({
   components: { PictureElement },
   props: {
     media: {
-      type: Object,
+      type: Object as PropType<CdnMedia>,
       required: true,
-    } as Vue.PropOptions<CdnMedia>,
+    },
     size: {
       type: Number,
       default: 350,
@@ -79,8 +80,9 @@ export default Vue.extend({
   &--document,
   &--other {
     font-size: 2rem;
-    display: grid;
-    place-items: center;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
   }
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList :title="$t('title')" store-key="tags">
+    <PaginatedList :title="$t('title').toString()" store-key="tags">
       <template #nav>
         <icon-button v-can="$p.Tags.Add" @click="openModal()">
           <template #icon>
@@ -49,9 +49,9 @@
             </app-button>
             <pop-confirm
               v-can="$p.Tags.Remove"
-              :title="$t('deleteText')"
-              :ok-text="$t('common.delete')"
-              :cancel-text="$t('common.cancel')"
+              :title="$t('deleteText').toString()"
+              :ok-text="$t('common.delete').toString()"
+              :cancel-text="$t('common.cancel').toString()"
               @confirm="deleteItem"
             >
               <app-button v-if="editedItem.id" type="danger">{{ $t('common.delete') }}</app-button>
@@ -89,10 +89,10 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { clone } from 'lodash'
-import { Tag } from '@heseya/store-core'
+import { TagCreateDto } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
@@ -102,13 +102,12 @@ import Avatar from '@/components/layout/Avatar.vue'
 
 import { UUID } from '@/interfaces/UUID'
 
-const CLEAR_TAG: Tag = {
-  id: '',
+const CLEAR_TAG: TagCreateDto & { id?: string } = {
   name: '',
   color: '000000',
 }
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },
@@ -130,7 +129,7 @@ export default Vue.extend({
   },
   data: () => ({
     isModalActive: false,
-    editedItem: clone(CLEAR_TAG) as Tag,
+    editedItem: clone(CLEAR_TAG) as TagCreateDto & { id?: string },
   }),
   computed: {
     canModify(): boolean {
@@ -138,8 +137,8 @@ export default Vue.extend({
     },
   },
   methods: {
-    setColor(color: string) {
-      this.editedItem.color = color.split('#')[1] ?? color
+    setColor(color?: string) {
+      this.editedItem.color = color?.split('#')[1] ?? color
     },
     openModal(id?: UUID) {
       this.isModalActive = true
@@ -164,6 +163,7 @@ export default Vue.extend({
       this.isModalActive = false
     },
     async deleteItem() {
+      if (!this.editedItem.id) return
       this.$accessor.startLoading()
       await this.$accessor.tags.remove(this.editedItem.id)
       this.$accessor.stopLoading()

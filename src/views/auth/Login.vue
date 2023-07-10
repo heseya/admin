@@ -4,7 +4,7 @@
       v-if="isMergingAccounts"
       :style="{ marginBottom: '24px' }"
       type="info"
-      :title="$t('mergeAccountsInfo')"
+      :title="$t('mergeAccountsInfo').toString()"
     />
 
     <login-form v-if="!isTwoFactorAuth" v-model="form" @submit="login" />
@@ -38,7 +38,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { first, isNull } from 'lodash'
 
 import CentralScreenForm from '@/components/form/CentralScreenForm.vue'
@@ -51,14 +51,14 @@ import { TwoFactorAuthMethod } from '@/enums/twoFactorAuth'
 import { LoginState } from '@/enums/login'
 import Zone from '@/components/layout/Zone.vue'
 
-const DEFAULT_CREDENTIALS = process.env.NODE_ENV === 'development'
+const SHOW_DEFAULT_CREDENTIALS = import.meta.env.DEV
 
 const CLEAR_LOGIN_FORM = {
-  email: DEFAULT_CREDENTIALS ? '***REMOVED***' : '',
-  password: DEFAULT_CREDENTIALS ? '***REMOVED***' : '',
+  email: SHOW_DEFAULT_CREDENTIALS ? '***REMOVED***' : '',
+  password: SHOW_DEFAULT_CREDENTIALS ? '***REMOVED***' : '',
 }
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('loginTitle') as string }
   },

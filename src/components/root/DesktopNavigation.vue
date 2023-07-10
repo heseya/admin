@@ -13,7 +13,7 @@
           <InlineSvg
             v-if="item.svgIconPath"
             class="nav-link-img"
-            :src="require(`@/assets/images/${item.svgIconPath}`)"
+            :src="`/img/${item.svgIconPath}`"
           />
           <img v-else-if="item.iconPath" :src="item.iconPath" class="nav-link-img" />
           <i v-else :class="item.iconClass" class="nav-link-svg" />
@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 // @ts-ignore
 import InlineSvg from 'vue-inline-svg'
 
@@ -37,7 +37,7 @@ import PoweredBy from './PoweredBy.vue'
 
 import { MenuItem, MenuItemType } from '@/consts/menuItems'
 
-export default Vue.extend({
+export default defineComponent({
   name: 'DesktopNavigation',
   components: { NavStoreLogo, InlineSvg, PoweredBy },
   computed: {

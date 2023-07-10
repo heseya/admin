@@ -26,10 +26,10 @@
 
     <pop-confirm
       v-if="!order.paid"
-      :title="$t('offlinePayment.confirmText')"
-      :ok-text="$t('offlinePayment.successText')"
+      :title="$t('offlinePayment.confirmText').toString()"
+      :ok-text="$t('offlinePayment.successText').toString()"
       ok-color="success"
-      :cancel-text="$t('common.cancel')"
+      :cancel-text="$t('common.cancel').toString()"
       @confirm="payOffline"
     >
       <icon-button size="small" reversed>
@@ -75,7 +75,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { Order, OrderPayment, PaymentStatus } from '@heseya/store-core'
 
 import PopConfirm from '@/components/layout/PopConfirm.vue'
@@ -85,13 +85,13 @@ import { sdk } from '@/api'
 import { formatCurrency } from '@/utils/currency'
 import { PAYMENT_METHODS } from '@/consts/paymentMethods'
 
-export default Vue.extend({
+export default defineComponent({
   components: { PopConfirm, InfoTooltip },
   props: {
     order: {
-      type: Object,
+      type: Object as PropType<Order>,
       required: true,
-    } as Vue.PropOptions<Order>,
+    },
   },
   computed: {
     lastSuccessfullPayment(): OrderPayment | undefined {

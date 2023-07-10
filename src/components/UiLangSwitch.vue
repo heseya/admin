@@ -1,11 +1,11 @@
 <template>
   <div class="lang-switch">
-    <app-select v-model="$root.$i18n.locale" :label="$t('name')">
+    <app-select v-model="$root.$i18n.locale" :label="$t('name').toString()">
       <a-select-option
         v-for="lang in $i18n.availableLocales"
         :key="lang"
         :value="lang"
-        :label="$t(lang)"
+        :label="$t(lang).toString()"
       >
         {{ $t(lang) }}
       </a-select-option>
@@ -29,10 +29,10 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { localeChanged } from 'vee-validate'
 
-export default Vue.extend({
+export default defineComponent({
   watch: {
     '$root.$i18n.locale'(locale: string) {
       this.$accessor.config.SET_UI_LANGUAGE(locale)

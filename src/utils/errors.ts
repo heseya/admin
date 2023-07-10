@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios'
 import isEmpty from 'lodash/isEmpty'
-import i18n from '@/i18n'
+import i18n from '../i18n'
 import { formatApiNotification } from './utils'
 
 enum ErrorType {
@@ -74,7 +74,7 @@ export const formatApiError = (error: ApiError | Error) => {
   }
 }
 
-export const formatApiNotificationError = (error: ApiError) => {
+export const formatApiNotificationError = (error: ApiError | Error) => {
   const { title, messages } = formatApiError(error)
   return formatApiNotification(title, ...messages)
 }

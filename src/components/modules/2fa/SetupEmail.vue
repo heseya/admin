@@ -34,14 +34,14 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 
 import { initEmailTwoFactorAuth } from '@/services/twoFactorAuth'
 import { formatApiNotificationError } from '@/utils/errors'
 
 const TIMEOUT = 30 // seconds
 
-export default Vue.extend({
+export default defineComponent({
   data: () => ({
     remainingSeconds: TIMEOUT,
     intervalId: 0,

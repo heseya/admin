@@ -12,6 +12,12 @@
         :label="$t('common.form.description')"
         :disabled="disabled"
       />
+      <switch-input v-model="form.is_registration_role" :disabled="disabled" horizontal>
+        <template #title>
+          {{ $t('form.isRegistrationRole') }}
+          <info-tooltip> {{ $t('form.isRegistrationRoleTooltip') }}</info-tooltip>
+        </template>
+      </switch-input>
       <br />
       <permissions-manager v-model="form.permissions" :disabled="disabled" />
       <br />
@@ -24,21 +30,32 @@
   </validation-observer>
 </template>
 
+<i18n lang="json">
+{
+  "pl": {
+    "form": {
+      "isRegistrationRole": "Czy można zarejestrować się z tą rolą?",
+      "isRegistrationRoleTooltip": "Jeśli zaznaczone, użytkownicy po zarejestrowaniu będą mogli przypisać sobie tę rolę."
+    }
+  }
+}
+</i18n>
+
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { RoleCreateDto } from '@heseya/store-core'
 
 import Card from '@/components/layout/Card.vue'
 import PermissionsManager from './PermissionsManager.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: { ValidationObserver, Card, PermissionsManager },
   props: {
     value: {
-      type: Object,
+      type: Object as PropType<RoleCreateDto>,
       required: true,
-    } as Vue.PropOptions<RoleCreateDto>,
+    },
     disabled: {
       type: Boolean,
       default: false,

@@ -3,7 +3,7 @@
     <autocomplete-input
       v-if="type === DiscountConditionType.UserInRole"
       v-model="form.roles"
-      :label="$t('form.roles')"
+      :label="$t('form.roles').toString()"
       model-url="roles"
       :disabled="disabled"
       :rules="{ required: form.is_allow_list }"
@@ -11,7 +11,7 @@
     <autocomplete-input
       v-else-if="type === DiscountConditionType.UserIn"
       v-model="form.users"
-      :label="$t('form.users')"
+      :label="$t('form.users').toString()"
       model-url="users"
       :disabled="disabled"
       :rules="{ required: form.is_allow_list }"
@@ -23,7 +23,7 @@
     <autocomplete-input
       v-else-if="type === DiscountConditionType.ProductIn"
       v-model="form.products"
-      :label="$t('form.products')"
+      :label="$t('form.products').toString()"
       model-url="products"
       :disabled="disabled"
       :rules="{ required: form.is_allow_list }"
@@ -35,7 +35,7 @@
     <autocomplete-input
       v-else-if="type === DiscountConditionType.ProductInSet"
       v-model="form.product_sets"
-      :label="$t('form.product_sets')"
+      :label="$t('form.product_sets').toString()"
       model-url="product-sets"
       :disabled="disabled"
       :rules="{ required: form.is_allow_list }"
@@ -87,7 +87,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { DiscountConditionType, Role, User, ProductSet, Product } from '@heseya/store-core'
 
 import SwitchInput from '@/components/form/SwitchInput.vue'
@@ -102,11 +102,11 @@ type EntitiesForm = {
   is_allow_list: boolean
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: { SwitchInput, AutocompleteInput },
   props: {
-    value: { type: Object, required: true } as Vue.PropOptions<EntitiesForm>,
-    type: { type: String, required: true } as Vue.PropOptions<DiscountConditionType>,
+    value: { type: Object as PropType<EntitiesForm>, required: true },
+    type: { type: String as PropType<DiscountConditionType>, required: true },
     disabled: { type: Boolean, default: false },
   },
   computed: {

@@ -29,7 +29,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { AuthProviderKey } from '@heseya/store-core'
 
 import { formatApiError, formatApiNotificationError } from '@/utils/errors'
@@ -39,7 +39,7 @@ import { stringifyQueryParams } from '@/utils/stringifyQuery'
 import CentralScreenForm from '@/components/form/CentralScreenForm.vue'
 import { OAUTH_NEXT_URL_KEY, OAUTH_PROVIDER_KEY } from '@/consts/oauthKeys'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: (this.errorMessage ? this.$t('errorTitle') : this.$t('title')) as string }
   },

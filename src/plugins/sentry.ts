@@ -2,16 +2,17 @@ import Vue from 'vue'
 import * as Sentry from '@sentry/vue'
 import { Integrations } from '@sentry/tracing'
 
-const { VUE_APP_SENTRY_URL, VUE_APP_SENTRY_DISABLED, VUE_APP_SENTRY_ENVIORNMENT } = process.env
+const { VITE_SENTRY_URL, VITE_SENTRY_DISABLED, VITE_SENTRY_ENVIORNMENT } = import.meta.env
 
-const ENVIRONMENT = VUE_APP_SENTRY_ENVIORNMENT || window.location.hostname
+const ENVIRONMENT = VITE_SENTRY_ENVIORNMENT || window.location.hostname
 
-if (!VUE_APP_SENTRY_DISABLED) {
+if (!VITE_SENTRY_DISABLED) {
   Sentry.init({
     Vue,
-    dsn: VUE_APP_SENTRY_URL || '***REMOVED***',
+    dsn:
+      (VITE_SENTRY_URL as string) || '***REMOVED***',
     integrations: [new Integrations.BrowserTracing()],
-    environment: ENVIRONMENT,
+    environment: ENVIRONMENT as string,
 
     // Set tracesSampleRate to 1.0 to capture 100%
     // of transactions for performance monitoring.

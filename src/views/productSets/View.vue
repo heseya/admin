@@ -18,9 +18,9 @@
       <pop-confirm
         v-if="!isNew"
         v-can="$p.ProductSets.Remove"
-        :title="$t('deleteText')"
-        :ok-text="$t('common.delete')"
-        :cancel-text="$t('common.cancel')"
+        :title="$t('deleteText').toString()"
+        :ok-text="$t('common.delete').toString()"
+        :cancel-text="$t('common.cancel').toString()"
         @confirm="deleteItem"
       >
         <icon-button type="danger">
@@ -40,13 +40,24 @@
               <div class="collection-view__drag-area">
                 <media-upload-input
                   :disabled="!canModify"
-                  :image="form.cover"
-                  :file-name="$t('collectionCover')"
+                  :media="form.cover"
+                  :file-name="$t('collectionCover').toString()"
                   @upload="changeMedia"
                 />
               </div>
 
               <div class="collection-view__inputs">
+                <div class="collection-view__switches">
+                  <flex-input>
+                    <switch-input
+                      v-model="form.public"
+                      :disabled="!canModify"
+                      horizontal
+                      :label="$t('form.public')"
+                    />
+                  </flex-input>
+                </div>
+
                 <validated-input
                   v-model="form.name"
                   rules="required"
@@ -77,24 +88,6 @@
                       {{ $t('form.slugOverrideHelp') }}
                     </template>
                   </a-tooltip>
-                </div>
-                <div class="collection-view__switches">
-                  <flex-input>
-                    <switch-input
-                      v-model="form.public"
-                      :disabled="!canModify"
-                      horizontal
-                      :label="$t('form.public')"
-                    />
-                  </flex-input>
-                  <flex-input>
-                    <switch-input
-                      v-model="form.hide_on_index"
-                      :disabled="!canModify"
-                      horizontal
-                      :label="$t('form.hideOnIndex')"
-                    />
-                  </flex-input>
                 </div>
               </div>
             </div>
@@ -188,7 +181,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { cloneDeep } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
 import { ProductSetUpdateDto, CdnMedia, Metadata, ProductSet } from '@heseya/store-core'
@@ -217,7 +210,6 @@ export const CLEAR_PRODUCT_SET_FORM: ProductSetUpdateDto & { cover: CdnMedia | n
   cover_id: undefined,
   slug_override: false,
   public: true,
-  hide_on_index: false,
   parent_id: null,
   children_ids: [],
   seo: {},
@@ -232,7 +224,7 @@ type CombinedSetDto = ProductSetUpdateDto & {
   metadata_private?: Metadata
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     ValidationObserver,
     TopNav,
@@ -287,6 +279,7 @@ export default Vue.extend({
         this.form = cloneDeep({
           ...CLEAR_PRODUCT_SET_FORM,
           ...productSet,
+          seo: productSet.seo || undefined,
           attributes: productSet.attributes.map((a) => a.id),
           parent_id: productSet.parent?.id || null,
         })
@@ -405,13 +398,14 @@ export default Vue.extend({
     @media ($viewport-7) {
       width: calc(100% - 200px);
       padding: 0.5em 1.5em;
+      padding-right: 0;
     }
   }
 
   &__switches {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     margin-top: 12px;
     padding: 0 10px;

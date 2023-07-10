@@ -26,17 +26,17 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import RecoveryCodes from './RecoveryCodes.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: { RecoveryCodes },
   props: {
     recoveryCodes: {
-      type: Array,
+      type: Array as PropType<string[]>,
       required: true,
-    } as Vue.PropOptions<string[]>,
+    },
   },
 })
 </script>

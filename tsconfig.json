@@ -14,7 +14,7 @@
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "baseUrl": ".",
-    "types": ["webpack-env", "jest", "vue-meta"],
+    "types": ["jest", "vue-meta", "vite-plugin-pwa/client"],
     "paths": {
       "@/*": ["src/*"]
     },

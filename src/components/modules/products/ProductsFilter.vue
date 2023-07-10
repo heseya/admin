@@ -4,7 +4,7 @@
       v-model="local.search"
       class="span-2"
       type="search"
-      :label="$t('common.search')"
+      :label="$t('common.search').toString()"
       allow-clear
       @input="debouncedSearch"
     />
@@ -13,7 +13,7 @@
       v-model="local.sets"
       prop-mode="slug"
       model-url="product-sets"
-      :label="$t('sets')"
+      :label="$t('sets').toString()"
       @input="debouncedSearch"
     >
       <template #option="set">
@@ -25,7 +25,7 @@
       v-model="local.tags"
       prop-mode="id"
       model-url="tags"
-      :label="$t('tags')"
+      :label="$t('tags').toString()"
       @input="debouncedSearch"
     >
       <template #option="{ name, color }">
@@ -36,24 +36,40 @@
       </template>
     </autocomplete-input>
 
-    <boolean-select v-model="local.available" :label="$t('available')" @change="debouncedSearch" />
-    <boolean-select v-model="local.public" :label="$t('public')" @change="debouncedSearch" />
-    <boolean-select v-model="local.has_cover" :label="$t('has_cover')" @change="debouncedSearch" />
-    <boolean-select v-model="local.has_items" :label="$t('has_items')" @change="debouncedSearch" />
+    <boolean-select
+      v-model="local.available"
+      :label="$t('available').toString()"
+      @change="debouncedSearch"
+    />
+    <boolean-select
+      v-model="local.public"
+      :label="$t('public').toString()"
+      @change="debouncedSearch"
+    />
+    <boolean-select
+      v-model="local.has_cover"
+      :label="$t('has_cover').toString()"
+      @change="debouncedSearch"
+    />
+    <boolean-select
+      v-model="local.has_items"
+      :label="$t('has_items').toString()"
+      @change="debouncedSearch"
+    />
     <boolean-select
       v-model="local.has_schemas"
-      :label="$t('has_schemas')"
+      :label="$t('has_schemas').toString()"
       @change="debouncedSearch"
     />
     <boolean-select
       v-model="local.shipping_digital"
-      :label="$t('shipping_digital')"
+      :label="$t('shipping_digital').toString()"
       @change="debouncedSearch"
     />
 
     <range-input
       :value="{ min: local['price.min'], max: local['price.max'] }"
-      :label="$t('price')"
+      :label="$t('price').toString()"
       :addon-after="$accessor.config.currency"
       :min="0"
       @input="
@@ -114,7 +130,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import debounce from 'lodash/debounce'
 import cloneDeep from 'lodash/cloneDeep'
 import { Attribute, AttributeType } from '@heseya/store-core'
@@ -156,13 +172,13 @@ export const EMPTY_PRODUCT_FILTERS: ProductFilers = {
   sort: undefined,
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: { BooleanSelect, AttributeFilterInput, RangeInput, AutocompleteInput },
   props: {
     filters: {
-      type: Object,
+      type: Object as PropType<ProductFilers>,
       default: () => cloneDeep(EMPTY_PRODUCT_FILTERS),
-    } as Vue.PropOptions<ProductFilers>,
+    },
   },
   data: () => ({
     local: cloneDeep(EMPTY_PRODUCT_FILTERS),

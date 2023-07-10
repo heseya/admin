@@ -1,10 +1,18 @@
 <template>
   <card class="order-summary">
-    <OrderField :label="$t('labels.code')" :value="order.code" :horizontal="isHorizontal" />
-    <OrderField :label="$t('labels.date')" :value="formattedDate" :horizontal="isHorizontal" />
+    <OrderField
+      :label="$t('labels.code').toString()"
+      :value="order.code"
+      :horizontal="isHorizontal"
+    />
+    <OrderField
+      :label="$t('labels.date').toString()"
+      :value="formattedDate"
+      :horizontal="isHorizontal"
+    />
     <OrderField
       v-if="order.shipping_method"
-      :label="$t('labels.shipping')"
+      :label="$t('labels.shipping').toString()"
       :value="order.shipping_method.name"
       :horizontal="isHorizontal"
     >
@@ -25,7 +33,7 @@
 
     <OrderField
       v-if="order.digital_shipping_method"
-      :label="$t('labels.digitalShipping')"
+      :label="$t('labels.digitalShipping').toString()"
       :value="order.digital_shipping_method.name"
       :horizontal="isHorizontal"
     >
@@ -44,14 +52,14 @@
       </template>
     </OrderField>
     <OrderField
-      :label="$t('labels.payment')"
+      :label="$t('labels.payment').toString()"
       class="order-summary__payment"
       :horizontal="isHorizontal"
     >
       <SummaryPayment :order="order" />
     </OrderField>
 
-    <OrderField :label="$t('labels.history')" :horizontal="isHorizontal">
+    <OrderField :label="$t('labels.history').toString()" :horizontal="isHorizontal">
       <icon-button reversed size="small" @click="showPaymentHistory">
         <template #icon>
           <i class="bx bx-list-ul"></i>
@@ -127,7 +135,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { Order } from '@heseya/store-core'
 
 import Card from '@/components/layout/Card.vue'
@@ -141,7 +149,7 @@ import { TableConfig } from '@/interfaces/CmsTable'
 import { PAYMENT_METHODS } from '@/consts/paymentMethods'
 import { formatCurrency } from '@/utils/currency'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     Card,
     OrderField,
@@ -151,9 +159,9 @@ export default Vue.extend({
   },
   props: {
     order: {
-      type: Object,
+      type: Object as PropType<Order>,
       required: true,
-    } as Vue.PropOptions<Order>,
+    },
   },
   data: () => ({
     viewportWidth: window.innerWidth,
@@ -227,7 +235,10 @@ export default Vue.extend({
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  white-space: nowrap;
+
+  @media ($viewport-5) {
+    white-space: nowrap;
+  }
 
   &__edit-btn {
     @media ($viewport-8) {

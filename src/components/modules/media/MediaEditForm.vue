@@ -2,18 +2,22 @@
   <a-popover
     v-model="isOpen"
     class="media-edit-modal"
-    :title="$t('title')"
+    :title="$t('title').toString()"
     trigger="click"
     :placement="placement"
   >
     <template #content>
       <validation-observer v-slot="{ handleSubmit }" slim>
         <form v-if="isOpen" class="media-edit-modal__form" @submit.prevent="handleSubmit(onSubmit)">
-          <validated-input v-model="form.alt" :label="$t('form.alt')" :disabled="isLoading" />
+          <validated-input
+            v-model="form.alt"
+            :label="$t('form.alt').toString()"
+            :disabled="isLoading"
+          />
 
           <validated-input
             v-model="form.slug"
-            :label="$t('form.slug')"
+            :label="$t('form.slug').toString()"
             :rules="{ required: !!media.slug }"
             :disabled="isLoading"
           />
@@ -33,8 +37,8 @@
               {{ $t('common.save') }}
             </app-button>
             <a-popconfirm
-              :cancel-text="$t('common.cancel')"
-              :ok-text="$t('common.delete')"
+              :cancel-text="$t('common.cancel').toString()"
+              :ok-text="$t('common.delete').toString()"
               @confirm="() => handleMediaRemove(media.id)"
             >
               <template #title> {{ $t('confirmDelete') }} </template>
@@ -93,7 +97,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { CdnMedia } from '@heseya/store-core'
 import { ValidationObserver } from 'vee-validate'
 import { generateSlug } from '@/utils/generateSlug'
@@ -103,12 +107,12 @@ const EMPTY_FORM = {
   slug: '',
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: { ValidationObserver },
   props: {
     disabled: { type: Boolean, default: false },
     placement: { type: String, default: 'bottomRight' },
-    media: { type: Object, required: true } as Vue.PropOptions<CdnMedia>,
+    media: { type: Object as PropType<CdnMedia>, required: true },
     allowDeletion: { type: Boolean, required: false, default: false },
   },
   data: () => ({

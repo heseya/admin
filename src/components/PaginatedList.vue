@@ -38,7 +38,7 @@
               :item="item"
               :draggable="draggable"
               :headers="table.headers"
-              :to="table.rowUrlBuilder ? table.rowUrlBuilder(item) : null"
+              :to="table.rowUrlBuilder ? table.rowUrlBuilder(item) : undefined"
               @click="table.rowOnClick ? table.rowOnClick(item) : null"
             />
           </slot>
@@ -54,7 +54,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import Draggable from 'vuedraggable'
 import { HeseyaPaginatedResponseMeta } from '@heseya/store-core'
 
@@ -77,7 +77,7 @@ import { VuexBaseItem } from '@/interfaces/VuexGenerator'
 import { formatFilters } from '@/utils/utils'
 import { formatApiNotificationError } from '@/utils/errors'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     Draggable,
     AppTopNav: TopNav,
@@ -101,9 +101,9 @@ export default Vue.extend({
       default: '',
     },
     storeKey: {
-      type: String,
+      type: String as PropType<GeneratedStoreModulesKeys>,
       required: true,
-    } as Vue.PropOptions<GeneratedStoreModulesKeys>,
+    },
     draggable: {
       type: Boolean,
       default: false,
@@ -113,21 +113,21 @@ export default Vue.extend({
       default: null,
     },
     filters: {
-      type: Object,
+      type: Object as PropType<Record<string, any>>,
       default: () => ({}),
-    } as Vue.PropOptions<Record<string, any>>,
+    },
     table: {
-      type: Object,
+      type: Object as PropType<TableConfig>,
       default: null,
-    } as Vue.PropOptions<TableConfig>,
+    },
     params: {
-      type: Object,
+      type: Object as PropType<Record<string, any>>,
       default: () => ({}),
-    } as Vue.PropOptions<Record<string, any>>,
+    },
     xlsxFileConfig: {
-      type: Object,
+      type: Object as PropType<XlsxFileConfig>,
       default: null,
-    } as Vue.PropOptions<XlsxFileConfig>,
+    },
   },
   data: () => ({
     page: 1,

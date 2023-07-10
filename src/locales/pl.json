@@ -109,6 +109,11 @@
     "other": "Inny"
   },
 
+  "availability": {
+    "time": "w {time} dni",
+    "date": "od {date}"
+  },
+
   "discountTypes": {
     "percent": "Rabat procentowy",
     "amount": "Rabat kwotowy"

@@ -11,13 +11,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { CdnMedia } from '@heseya/store-core'
 
 import { uploadMedia } from '@/services/uploadMedia'
 import { formatApiError } from '@/utils/errors'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     value: {
       type: String,

@@ -1,5 +1,5 @@
 <template>
-  <central-screen-form :title="$t('title')">
+  <central-screen-form :title="$t('title').toString()">
     <template v-if="!isSuccess">
       <ValidationObserver v-slot="{ handleSubmit }">
         <validated-input
@@ -47,14 +47,14 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 
 import CentralScreenForm from '@/components/form/CentralScreenForm.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },
@@ -83,7 +83,6 @@ export default Vue.extend({
       this.$accessor.startLoading()
       this.isSuccess = await this.$accessor.auth.requestResetPassword({
         email: this.email,
-        redirectUrl: `${window.location.origin}/new-password`,
       })
       this.$accessor.stopLoading()
     },

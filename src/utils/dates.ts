@@ -10,7 +10,7 @@ export const THIS_YEAR_DATE_FORMAT = 'dd.MM, HH:mm'
 export const HOURLESS_FULLDATE_FORMAT = 'dd.MM.yyyy'
 export const HOURLESS_THIS_YEAR_DATE_FORMAT = 'dd.MM'
 
-export const formatUTC = (date?: DateInput | null) => (date ? new Date(date).toUTCString() : null)
+export const formatISO = (date?: DateInput | null) => (date ? new Date(date).toISOString() : null)
 
 export const formatDate = (date?: DateInput | null, showHour = true) => {
   if (!date) return null

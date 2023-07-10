@@ -1,7 +1,7 @@
 <template>
   <div class="narrower-page">
     <PaginatedList
-      :title="$t('title')"
+      :title="$t('title').toString()"
       :filters="filters"
       store-key="schemas"
       @clear-filters="clearFilters"
@@ -21,7 +21,7 @@
             v-model="filters.search"
             class="span-2"
             type="search"
-            :label="$t('common.search')"
+            :label="$t('common.search').toString()"
             allow-clear
             @input="debouncedSearch"
           />
@@ -55,13 +55,13 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { debounce } from 'lodash'
 
 import ListItem from '@/components/layout/ListItem.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },

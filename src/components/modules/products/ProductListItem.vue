@@ -54,8 +54,8 @@
             </a-menu-item>
             <a-menu-item v-can="$p.Products.Remove">
               <pop-confirm
-                :ok-text="$t('common.delete')"
-                :cancel-text="$t('common.cancel')"
+                :ok-text="$t('common.delete').toString()"
+                :cancel-text="$t('common.cancel').toString()"
                 placement="bottom"
                 @confirm="deleteProduct"
               >
@@ -85,7 +85,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { Product } from '@heseya/store-core'
 
 import Avatar from '@/components/layout/Avatar.vue'
@@ -98,17 +98,17 @@ import { formatCurrency } from '@/utils/currency'
 import { TableConfig } from '@/interfaces/CmsTable'
 import { FEATURE_FLAGS } from '@/consts/featureFlags'
 
-export default Vue.extend({
+export default defineComponent({
   components: { Avatar, CmsTableRow, MediaElement, ProductPrice, PopConfirm },
   props: {
     product: {
-      type: Object,
+      type: Object as PropType<Product>,
       required: true,
-    } as Vue.PropOptions<Product>,
+    },
     table: {
-      type: Object,
+      type: Object as PropType<TableConfig<Product>>,
       required: true,
-    } as Vue.PropOptions<TableConfig<Product>>,
+    },
   },
   data: () => ({ publicIsLoading: false }),
   computed: {

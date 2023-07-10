@@ -45,14 +45,14 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { Metadata, Order } from '@heseya/store-core'
 
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 import Loading from '@/components/layout/Loading.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     MetadataForm,
     Loading,
@@ -60,9 +60,9 @@ export default Vue.extend({
   },
   props: {
     order: {
-      type: Object,
+      type: Object as PropType<Order>,
       required: true,
-    } as Vue.PropOptions<Order>,
+    },
   },
   data: () => ({
     isLoading: false,

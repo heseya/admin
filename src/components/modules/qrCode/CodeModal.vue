@@ -5,16 +5,16 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import { QrCodeObject, QrCodePayload } from '@/interfaces/QrCode'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     visible: { type: Boolean, default: false },
     size: { type: Number, default: 250 },
-    type: { type: String, required: true } as Vue.PropOptions<QrCodeObject>,
-    body: { type: Object, required: true } as Vue.PropOptions<Record<string, any>>,
+    type: { type: String as PropType<QrCodeObject>, required: true },
+    body: { type: Object as PropType<Record<string, any>>, required: true },
   },
 
   computed: {

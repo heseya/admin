@@ -6,15 +6,15 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { App, User } from '@heseya/store-core'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     buyer: {
-      type: Object,
+      type: Object as PropType<User | App>,
       required: true,
-    } as Vue.PropOptions<User | App>,
+    },
   },
 
   computed: {

@@ -36,7 +36,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 
 import InfoTooltip from '@/components/layout/InfoTooltip.vue'
 
@@ -47,7 +47,7 @@ interface GoogleCategoryOption {
   name: string
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: { InfoTooltip },
   props: {
     value: {

@@ -5,7 +5,7 @@
         <validated-input
           v-model="form.name"
           rules="required"
-          :label="$t('common.form.name')"
+          :label="$t('common.form.name').toString()"
           :disabled="disabled"
           @input="editSlug"
         />
@@ -59,7 +59,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { Banner } from '@heseya/store-core'
 
@@ -68,13 +68,13 @@ import BannerMediaForm from './BannerMediaForm.vue'
 
 import { generateSlug } from '@/utils/generateSlug'
 
-export default Vue.extend({
+export default defineComponent({
   components: { ValidationObserver, ValidationProvider, Card, BannerMediaForm },
   props: {
     value: {
-      type: Object,
+      type: Object as PropType<Banner>,
       required: true,
-    } as Vue.PropOptions<Banner>,
+    },
     disabled: {
       type: Boolean,
       default: false,

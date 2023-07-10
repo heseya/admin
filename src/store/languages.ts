@@ -1,9 +1,12 @@
+import { Language, LanguageCreateDto, LanguageUpdateDto } from '@heseya/store-core'
 import { createVuexCRUD } from './generator'
-import { Language, LanguageDto } from '@/interfaces/Language'
 
-export const languages = createVuexCRUD<Language, LanguageDto, LanguageDto>()('languages', {
-  state: {},
-  getters: {},
-  mutations: {},
-  actions: {},
-})
+export const languages = createVuexCRUD<Language, LanguageCreateDto, LanguageUpdateDto>()(
+  'languages',
+  {
+    state: {},
+    getters: {},
+    mutations: {},
+    actions: {},
+  },
+)

@@ -1,6 +1,11 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList ref="table" :title="$t('title')" store-key="languages" :table="tableConfig">
+    <PaginatedList
+      ref="table"
+      :title="$t('title').toString()"
+      store-key="languages"
+      :table="tableConfig"
+    >
       <template #nav>
         <icon-button v-can="$p.Languages.Add" @click="openModal()">
           <template #icon>
@@ -45,9 +50,9 @@
             <pop-confirm
               v-if="!editedItem.default"
               v-can="$p.Languages.Remove"
-              :title="$t('deleteText')"
-              :ok-text="$t('common.delete')"
-              :cancel-text="$t('common.cancel')"
+              :title="$t('deleteText').toString()"
+              :ok-text="$t('common.delete').toString()"
+              :cancel-text="$t('common.cancel').toString()"
               @confirm="deleteItem"
             >
               <app-button v-if="editedItem.id" type="danger">
@@ -69,7 +74,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Języki",
@@ -103,6 +108,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { ValidationObserver } from 'vee-validate'
+import { Language, LanguageCreateDto } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
@@ -110,10 +116,9 @@ import LanguagesForm from '@/components/modules/languages/Form.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import { TableConfig } from '@/interfaces/CmsTable'
-import { Language, LanguageDto } from '@/interfaces/Language'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 
-const EMPTY_FORM: LanguageDto = {
+const EMPTY_FORM: LanguageCreateDto = {
   name: '',
   iso: '',
   default: false,
@@ -141,7 +146,7 @@ export default Vue.extend({
   },
   data: () => ({
     isModalActive: false,
-    editedItem: { ...EMPTY_FORM } as LanguageDto,
+    editedItem: { ...EMPTY_FORM } as LanguageCreateDto & { id?: string },
   }),
   computed: {
     canModify(): boolean {

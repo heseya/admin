@@ -46,7 +46,7 @@
 {
   "en": {
     "offlinePayment": {
-      "buttonText": "Mark payed",
+      "buttonText": "Mark paid",
       "confirmText": "Are you sure you want to manually mark the order as paid? (E.g. by cash or bank transfer)",
       "successText": "Pay",
       "resultSuccess": "The order has been marked as paid",

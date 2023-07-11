@@ -48,22 +48,22 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Metody płatności",
     "methodDetails": "Szczegóły metody płatności",
     "method": {
-      "icon":"Ikona",
-      "public":"Publiczna"
+      "icon": "Ikona",
+      "public": "Publiczna"
     }
   },
   "en": {
     "title": "Payment methods",
     "methodDetails": "Payment method details",
     "method": {
-      "icon":"Icon",
-      "public":"Public"
+      "icon": "Icon",
+      "public": "Public"
     }
   }
 }

@@ -41,7 +41,7 @@
         :footer="null"
       >
         <AttachmentForm
-          v-if="form"
+          v-if="form && isModalOpen"
           v-model="form"
           :product-id="product.id"
           @created="onCreated"

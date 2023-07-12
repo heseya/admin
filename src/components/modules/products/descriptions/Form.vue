@@ -129,7 +129,7 @@ export default defineComponent({
       try {
         const page = await sdk.Pages.create({
           name: this.form.name,
-          slug: `${this.slugPrefix}-${generateSlug(this.form.name)}`,
+          slug: `${this.slugPrefix}-${generateSlug(this.form.name)}-${Date.now()}`,
           content_html: this.form.content_html,
           public: true,
         })

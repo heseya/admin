@@ -91,7 +91,14 @@ export const attributes = createVuexCRUD<Attribute, AttributeCreateDto, Attribut
       },
 
       async reorderOptions(_u, { parentId, ids }: { parentId: UUID; ids: UUID[] }) {
-        await reorderCollection('attributes', 'ids', 'options')(ids, parentId)
+        try {
+          await sdk.Attributes.reorderOptions(parentId, ids)
+          return true
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.error('Failed to reorder options', e)
+          return false
+        }
       },
     },
   },

@@ -14,12 +14,28 @@
       </icon-button>
     </div>
 
-    <div v-if="options.length" class="attributes-options-form__content">
+    <Draggable
+      v-if="options.length"
+      :value="options"
+      handle=".reorder-handle"
+      class="attributes-options-form__content"
+      @input="handleReorder"
+    >
+      <Loading :active="isLoading" />
+
       <div
         v-for="(option, i) in options"
         :key="option.id || i"
         class="attributes-options-form__option"
       >
+        <icon-button
+          class="attributes-options-form__reorder reorder-handle"
+          size="small"
+          type="transparent"
+        >
+          <template #icon> <i class="bx bx-menu"></i> </template>
+        </icon-button>
+
         <span class="attributes-options-form__option-value">
           {{ option.value_number || option.value_date || option.name }}
           <template v-if="option.value_number">({{ option.name }})</template>
@@ -47,7 +63,7 @@
           </pop-confirm>
         </template>
       </div>
-    </div>
+    </Draggable>
 
     <empty v-else>{{ $t('empty') }}</empty>
 
@@ -96,12 +112,14 @@ import {
   AttributeType,
   HeseyaPaginationMeta,
 } from '@heseya/store-core'
+import Draggable from 'vuedraggable'
 
 import Empty from '@/components/layout/Empty.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import OptionsEditForm from './OptionsEditForm.vue'
 import { formatApiNotificationError } from '@/utils/errors'
 import Pagination from '@/components/cms/Pagination.vue'
+import Loading from '@/components/layout/Loading.vue'
 
 const EMPTY_FORM: AttributeOptionDto = {
   name: '',
@@ -110,7 +128,7 @@ const EMPTY_FORM: AttributeOptionDto = {
 }
 
 export default defineComponent({
-  components: { Empty, PopConfirm, OptionsEditForm, Pagination },
+  components: { Empty, PopConfirm, OptionsEditForm, Pagination, Draggable, Loading },
   props: {
     attributeId: {
       type: String,
@@ -127,6 +145,7 @@ export default defineComponent({
   },
 
   data: () => ({
+    isLoading: false,
     editedOption: null as AttributeOptionDto | null,
   }),
 
@@ -150,7 +169,7 @@ export default defineComponent({
 
   methods: {
     async fetchOptions(page: number) {
-      this.$accessor.startLoading()
+      this.isLoading = true
       await this.$accessor.attributes.getOptions({
         attributeId: this.attributeId,
         params: {
@@ -158,11 +177,21 @@ export default defineComponent({
           page,
         },
       })
-      this.$accessor.stopLoading()
+      this.isLoading = false
+    },
+
+    async handleReorder(options: AttributeOption[]) {
+      this.isLoading = true
+      await this.$accessor.attributes.reorderOptions({
+        parentId: this.attributeId,
+        ids: options.map((option) => option?.id).filter(Boolean),
+      })
+      await this.fetchOptions(this.optionsMeta.currentPage)
+      this.isLoading = false
     },
 
     async removeOption(option: AttributeOption) {
-      this.$accessor.startLoading()
+      this.isLoading = true
       try {
         await this.$accessor.attributes.deleteOption({
           attributeId: this.attributeId,
@@ -172,7 +201,7 @@ export default defineComponent({
       } catch (e: any) {
         this.$toast.error(formatApiNotificationError(e))
       }
-      this.$accessor.stopLoading()
+      this.isLoading = false
     },
 
     openAddOptionModal() {
@@ -194,6 +223,10 @@ export default defineComponent({
     justify-content: space-between;
   }
 
+  &__content {
+    position: relative;
+  }
+
   &__pagination {
     margin-top: 12px;
   }
@@ -212,6 +245,12 @@ export default defineComponent({
     > *:not(:last-child) {
       margin-right: 8px;
     }
+  }
+
+  &__reorder {
+    cursor: move;
+    color: $gray-color-500;
+    margin-bottom: -1px;
   }
 
   &__option-value {

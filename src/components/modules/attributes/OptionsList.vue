@@ -1,5 +1,7 @@
 <template>
   <div class="attributes-options-form">
+    <Loading :active="isLoading" />
+
     <div class="attributes-options-form__header">
       <h4>{{ $t('title') }}</h4>
       <icon-button
@@ -21,8 +23,6 @@
       class="attributes-options-form__content"
       @input="handleReorder"
     >
-      <Loading :active="isLoading" />
-
       <div
         v-for="(option, i) in options"
         :key="option.id || i"

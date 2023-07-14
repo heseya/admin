@@ -19,8 +19,6 @@
     </transition>
 
     <div class="header__right-side">
-      <api-lang-switch class="header__lang-select" />
-
       <div v-if="user" class="header__user user">
         <div class="user__role"><i class="bx bx-user"></i> {{ userRole }}</div>
 
@@ -28,12 +26,7 @@
           <div class="user__email">{{ user.email }}</div>
 
           <template #overlay>
-            <a-menu>
-              <a-menu-item>
-                <router-link to="/settings"> {{ $t('settings') }}</router-link>
-              </a-menu-item>
-              <a-menu-item @click="logout"> {{ $t('logout') }} </a-menu-item>
-            </a-menu>
+            <header-menu />
           </template>
         </a-dropdown>
       </div>
@@ -44,14 +37,10 @@
 <i18n lang="json">
 {
   "pl": {
-    "back": "Wróć do listy",
-    "settings": "Ustawienia",
-    "logout": "Wyloguj się"
+    "back": "Wróć do listy"
   },
   "en": {
-    "back": "Return to list",
-    "settings": "Settings",
-    "logout": "Log out"
+    "back": "Return to list"
   }
 }
 </i18n>
@@ -61,11 +50,11 @@ import { defineComponent } from 'vue'
 import last from 'lodash/last'
 import { User } from '@heseya/store-core'
 
-import ApiLangSwitch from '../ApiLangSwitch.vue'
+import HeaderMenu from './HeaderMenu.vue'
 
 export default defineComponent({
   name: 'AppHeader',
-  components: { ApiLangSwitch },
+  components: { HeaderMenu },
   computed: {
     isHidden(): boolean {
       return !!this.$route.meta?.hiddenNav || false
@@ -87,13 +76,6 @@ export default defineComponent({
     },
     userRole(): string {
       return last(this.user?.roles)?.name || ''
-    },
-  },
-
-  methods: {
-    async logout() {
-      await this.$accessor.auth.logout()
-      this.$router.push('/login')
     },
   },
 })

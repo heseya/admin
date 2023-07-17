@@ -5,6 +5,7 @@
       :filters="filters"
       :table="tableConfig"
       store-key="attributes"
+      draggable
       @clear-filters="clearFilters"
     >
       <template #nav>
@@ -35,6 +36,7 @@
           :item="attribute"
           :headers="tableConfig.headers"
           :to="`/settings/attributes/${attribute.id}`"
+          draggable
         >
           <template #name="{ value }">
             {{ value }}

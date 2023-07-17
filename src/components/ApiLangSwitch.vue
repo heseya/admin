@@ -1,11 +1,23 @@
 <template>
   <div class="api-lang-switch">
     <a-tooltip>
-      <select v-model="apiLanguage" class="api-lang-switch__select" :label="$t('name')">
-        <option v-for="lang in languages" :key="lang.id" :value="lang.iso">
-          {{ lang.name }}
-        </option>
-      </select>
+      <app-select v-model="apiLanguage" class="api-lang-switch__select">
+        <a-select-option
+          v-for="lang in languages"
+          :key="lang.id"
+          :value="lang.iso"
+          :label="lang.name"
+        >
+          <span class="api-lang-switch__option">
+            <img
+              :src="`https://flagcdn.com/16x12/${getFlagName(lang.iso)}.png`"
+              role="presentation"
+              class="api-lang-switch__icon"
+            />
+            {{ $t('lang') }}: {{ lang.name }}
+          </span>
+        </a-select-option>
+      </app-select>
 
       <template #title> {{ $t('name') }}</template>
     </a-tooltip>
@@ -15,9 +27,11 @@
 <i18n lang="json">
 {
   "en": {
+    "lang": "Language",
     "name": "API content language"
   },
   "pl": {
+    "lang": "Język",
     "name": "Język treści z API"
   }
 }
@@ -40,42 +54,37 @@ export default Vue.extend({
       },
     },
   },
+
+  methods: {
+    getFlagName(iso: string) {
+      const firstIsoPart = iso.split('-')[0]
+      if (firstIsoPart === 'en' || firstIsoPart === 'eng') return 'us'
+      return firstIsoPart
+    },
+  },
 })
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .api-lang-switch {
   position: relative;
+  padding: 0 4px;
 
-  &::before {
-    font-family: boxicons !important;
-    content: '\eaf8';
-    position: absolute;
-    left: 8px;
-    top: 6px;
-    color: $primary-color-500;
-    pointer-events: none;
+  &__option {
+    text-transform: uppercase;
+    font-size: 0.7rem !important;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
   }
 
-  &__select {
-    all: unset;
-    box-sizing: border-box;
-    padding: 4px 22px;
-    width: 46px;
-    color: #fff;
-    border-radius: 24px;
-    background-color: #fff;
-    border: solid 1px $background-color-600;
-    background-image: url("data:image/svg+xml;utf8,<svg fill='%23979ea0' height='20' viewBox='0 0 16 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z' /><path d='M0 0h24v24H0z' fill='none'/></svg>");
-    background-repeat: no-repeat;
-    background-position-x: 90%;
-    background-position-y: 4px;
-
-    @media ($viewport-5) {
-      width: auto;
-      padding: 4px 28px;
-      color: $font-color;
-    }
+  &__icon {
+    display: block;
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+    object-position: center;
+    margin-right: 8px;
   }
 }
 </style>

@@ -45,6 +45,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .header-menu {
   display: flex;
+  width: 200px;
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;

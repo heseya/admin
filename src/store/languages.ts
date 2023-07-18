@@ -5,7 +5,11 @@ export const languages = createVuexCRUD<Language, LanguageCreateDto, LanguageUpd
   'languages',
   {
     state: {},
-    getters: {},
+    getters: {
+      default(state) {
+        return state.data.find((lang) => lang.default)
+      },
+    },
     mutations: {},
     actions: {},
   },

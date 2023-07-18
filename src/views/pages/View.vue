@@ -83,6 +83,8 @@
           </app-button>
         </card>
       </validation-observer>
+
+      <ContentLangSwitch v-model="editedLang" />
     </div>
   </div>
 </template>
@@ -128,6 +130,7 @@ import SwitchInput from '@/components/form/SwitchInput.vue'
 import SeoForm from '@/components/modules/seo/Accordion.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
+import ContentLangSwitch from '@/components/lang/ContentLangSwitch.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { generateSlug } from '@/utils/generateSlug'
@@ -152,8 +155,10 @@ export default defineComponent({
     SeoForm,
     AuditsModal,
     MetadataForm,
+    ContentLangSwitch,
   },
   data: () => ({
+    editedLang: '',
     form: {
       name: '',
       slug: '',
@@ -200,6 +205,8 @@ export default defineComponent({
       await this.$accessor.pages.get(this.id)
       this.$accessor.stopLoading()
     }
+
+    this.editedLang = this.$accessor.config.apiLanguage || ''
   },
   methods: {
     editSlug() {
@@ -250,19 +257,23 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.page__info {
-  width: 100%;
-  display: grid;
-  grid-auto-flow: row;
-  row-gap: 20px;
-  margin-top: 15px;
+.page {
+  position: relative;
 
-  input {
+  &__info {
     width: 100%;
-  }
+    display: grid;
+    grid-auto-flow: row;
+    row-gap: 20px;
+    margin-top: 15px;
 
-  .app-input {
-    margin-bottom: 0;
+    input {
+      width: 100%;
+    }
+
+    .app-input {
+      margin-bottom: 0;
+    }
   }
 }
 

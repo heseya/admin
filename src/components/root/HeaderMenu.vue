@@ -28,7 +28,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 
-import ApiLangSwitch from '../ApiLangSwitch.vue'
+import ApiLangSwitch from '@/components/lang/ApiLangSwitch.vue'
 
 export default defineComponent({
   components: { ApiLangSwitch },

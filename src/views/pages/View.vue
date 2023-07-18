@@ -55,6 +55,9 @@
           />
 
           <br />
+          <PublishedLangsForm v-model="tempPublished" />
+
+          <br />
           <small class="label">{{ $t('form.content') }}</small>
           <RichEditor v-model="form.content_html" :disabled="!canModify" />
 
@@ -131,6 +134,7 @@ import SeoForm from '@/components/modules/seo/Accordion.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 import ContentLangSwitch from '@/components/lang/ContentLangSwitch.vue'
+import PublishedLangsForm from '@/components/lang/PublishedLangsForm.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { generateSlug } from '@/utils/generateSlug'
@@ -156,9 +160,12 @@ export default defineComponent({
     AuditsModal,
     MetadataForm,
     ContentLangSwitch,
+    PublishedLangsForm,
   },
   data: () => ({
     editedLang: '',
+    // TODO: remove, this will be included in form
+    tempPublished: [] as string[],
     form: {
       name: '',
       slug: '',

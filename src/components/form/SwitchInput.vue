@@ -42,7 +42,7 @@
 import { defineComponent } from 'vue'
 export default defineComponent({
   props: {
-    value: { type: Boolean, required: true },
+    value: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
     horizontal: { type: Boolean, default: false },
     loading: { type: Boolean, default: false },

@@ -13,7 +13,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 
-import UiLangSwitch from '@/components/UiLangSwitch.vue'
+import UiLangSwitch from '@/components/lang/UiLangSwitch.vue'
 
 export default defineComponent({
   components: { UiLangSwitch },

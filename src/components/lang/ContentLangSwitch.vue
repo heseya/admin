@@ -9,10 +9,10 @@
         v-for="lang in languages"
         :key="lang.id"
         class="content-lang-switch__button"
-        :class="{ 'content-lang-switch__button--active': value === lang.iso }"
+        :class="{ 'content-lang-switch__button--active': value === lang.id }"
         :value="lang.iso"
         :label="lang.name"
-        @click="update(lang.iso)"
+        @click="update(lang.id)"
       >
         <img
           :src="`https://flagcdn.com/16x12/${getFlagName(lang.iso)}.png`"

@@ -57,7 +57,7 @@ export default defineComponent({
   props: {
     value: {
       type: Array as PropType<string[]>,
-      required: true,
+      default: () => [],
     },
   },
   emits: ['input'],

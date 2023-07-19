@@ -22,10 +22,12 @@
 
     <div class="page">
       <validation-observer v-slot="{ handleSubmit }">
+        {{ form }}
+
         <card>
           <div class="page__info">
             <validated-input
-              v-model="form.name"
+              v-model="formName"
               rules="required"
               :label="$t('common.form.name')"
               :disabled="!canModify"
@@ -49,17 +51,17 @@
 
           <br />
           <SeoForm
-            v-model="form.seo"
+            v-model="formSeo"
             :disabled="!canModify"
             :current="!isNew ? { id, model: 'Page' } : null"
           />
 
           <br />
-          <PublishedLangsForm v-model="tempPublished" />
+          <PublishedLangsForm v-model="form.published" />
 
           <br />
           <small class="label">{{ $t('form.content') }}</small>
-          <RichEditor v-model="form.content_html" :disabled="!canModify" />
+          <RichEditor v-model="formContentHtml" :disabled="!canModify" />
 
           <br />
 
@@ -87,7 +89,7 @@
         </card>
       </validation-observer>
 
-      <ContentLangSwitch v-model="editedLang" />
+      <ContentLangSwitch :value="editedLang" @input="setEditedLang" />
     </div>
   </div>
 </template>
@@ -122,7 +124,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { ValidationObserver } from 'vee-validate'
-import { Page, PageCreateDto } from '@heseya/store-core'
+import { Page, PageCreateDto, Translations } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
@@ -140,6 +142,9 @@ import { formatApiNotificationError } from '@/utils/errors'
 import { generateSlug } from '@/utils/generateSlug'
 
 import { UUID } from '@/interfaces/UUID'
+import { SeoMetadata } from '@heseya/store-core'
+
+type FlattenTranslationsDto<Dto> = Dto extends Translations<infer Content> ? Dto & Content : unknown
 
 export default defineComponent({
   metaInfo(this: any) {
@@ -164,14 +169,17 @@ export default defineComponent({
   },
   data: () => ({
     editedLang: '',
-    // TODO: remove, this will be included in form
-    tempPublished: [] as string[],
     form: {
-      name: '',
       slug: '',
-      content_html: '',
       public: true,
       seo: {},
+      published: [],
+      translations: {
+        '': {
+          name: '',
+          content_html: '',
+        },
+      },
     } as PageCreateDto,
   }),
   computed: {
@@ -193,6 +201,31 @@ export default defineComponent({
     canModify(): boolean {
       return this.$can(this.isNew ? this.$p.Pages.Add : this.$p.Pages.Edit)
     },
+
+    formContentHtml: {
+      get(): string {
+        return this.form.translations[this.editedLang]?.content_html || ''
+      },
+      set(value: string) {
+        this.form.translations[this.editedLang].content_html = value
+      },
+    },
+    formName: {
+      get(): string {
+        return this.form.translations[this.editedLang]?.name || ''
+      },
+      set(value: string) {
+        this.form.translations[this.editedLang].name = value
+      },
+    },
+    formSeo: {
+      get(): SeoMetadata {
+        return this.form.translations[this.editedLang]?.seo || {}
+      },
+      set(value: SeoMetadata) {
+        this.form.translations[this.editedLang].seo = value
+      },
+    },
   },
   watch: {
     page(page: Page) {
@@ -213,12 +246,20 @@ export default defineComponent({
       this.$accessor.stopLoading()
     }
 
-    this.editedLang = this.$accessor.config.apiLanguage || ''
+    this.editedLang =
+      this.$accessor.languages.data.find((lang) => lang.iso === this.$accessor.config.apiLanguage)
+        ?.id || ''
   },
   methods: {
+    setEditedLang(langId: string) {
+      this.editedLang = langId
+      if (!this.form.translations[langId])
+        this.form.translations[langId] = { name: '', content_html: '', seo: {} }
+    },
+
     editSlug() {
       if (this.isNew) {
-        this.form.slug = generateSlug(this.form.name)
+        this.form.slug = generateSlug(this.formName)
       }
     },
     async save() {

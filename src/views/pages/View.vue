@@ -225,9 +225,16 @@ export default defineComponent({
   },
   watch: {
     page(page: Page) {
-      if (!this.isNew) {
-        this.form = { ...page }
-      }
+      if (!this.isNew)
+        this.form = {
+          ...page,
+          translations: Object.fromEntries(
+            Object.entries(page.translations).map(([key, form]) => [
+              key,
+              { ...form, seo: form.seo || {} },
+            ]),
+          ),
+        }
     },
     error(error) {
       if (error) {
@@ -252,9 +259,7 @@ export default defineComponent({
     },
 
     editSlug() {
-      if (this.isNew) {
-        this.form.slug = generateSlug(this.formName)
-      }
+      if (this.isNew) this.form.slug = generateSlug(this.formName)
     },
 
     async save() {
@@ -279,6 +284,7 @@ export default defineComponent({
       }
       this.$accessor.stopLoading()
     },
+
     async deletePage() {
       this.$accessor.startLoading()
       const success = await this.$accessor.pages.remove(this.id)

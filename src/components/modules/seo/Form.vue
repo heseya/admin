@@ -42,7 +42,8 @@
     <a-alert v-if="duplicatedKeywordsItem" type="warning" show-icon style="margin-bottom: 1rem">
       <template #message>
         {{ $t('duplicatedKeywords.text1') }}
-        <a :href="duplicatedKeywordUrl" target="_blank">{{ $t('duplicatedKeywords.link') }}</a
+        <a :href="duplicatedKeywordUrl || undefined" target="_blank">
+          {{ $t('duplicatedKeywords.link') }} </a
         >. {{ $t('duplicatedKeywords.text2') }}
       </template>
     </a-alert>

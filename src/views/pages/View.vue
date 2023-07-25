@@ -122,7 +122,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { ValidationObserver } from 'vee-validate'
-import { Page, PageCreateDto } from '@heseya/store-core'
+import { Page, PageCreateDto, SeoMetadata } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
@@ -140,7 +140,7 @@ import { formatApiNotificationError } from '@/utils/errors'
 import { generateSlug } from '@/utils/generateSlug'
 
 import { UUID } from '@/interfaces/UUID'
-import { SeoMetadata } from '@heseya/store-core'
+import { initializeSeoInTranslations } from '@/utils/translations'
 
 export default defineComponent({
   metaInfo(this: any) {
@@ -228,12 +228,7 @@ export default defineComponent({
       if (!this.isNew)
         this.form = {
           ...page,
-          translations: Object.fromEntries(
-            Object.entries(page.translations).map(([key, form]) => [
-              key,
-              { ...form, seo: form.seo || {} },
-            ]),
-          ),
+          translations: initializeSeoInTranslations(page.translations),
         }
     },
     error(error) {

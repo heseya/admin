@@ -6,8 +6,11 @@ export const languages = createVuexCRUD<Language, LanguageCreateDto, LanguageUpd
   {
     state: {},
     getters: {
-      default(state) {
+      defaultLanguage(state) {
         return state.data.find((lang) => lang.default)
+      },
+      apiLanguage(state, _getters, rootState) {
+        return state.data.find((lang) => lang.iso === rootState.config.apiLanguage)
       },
     },
     mutations: {},

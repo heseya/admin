@@ -22,8 +22,6 @@
 
     <div class="page">
       <validation-observer v-slot="{ handleSubmit }">
-        {{ form }}
-
         <card>
           <div class="page__info">
             <validated-input
@@ -53,7 +51,7 @@
           <SeoForm
             v-model="formSeo"
             :disabled="!canModify"
-            :current="!isNew ? { id, model: 'Page' } : null"
+            :current="!isNew ? { id, model: 'Page' } : undefined"
           />
 
           <br />
@@ -124,7 +122,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { ValidationObserver } from 'vee-validate'
-import { Page, PageCreateDto, Translations } from '@heseya/store-core'
+import { Page, PageCreateDto } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
@@ -143,8 +141,6 @@ import { generateSlug } from '@/utils/generateSlug'
 
 import { UUID } from '@/interfaces/UUID'
 import { SeoMetadata } from '@heseya/store-core'
-
-type FlattenTranslationsDto<Dto> = Dto extends Translations<infer Content> ? Dto & Content : unknown
 
 export default defineComponent({
   metaInfo(this: any) {
@@ -172,12 +168,12 @@ export default defineComponent({
     form: {
       slug: '',
       public: true,
-      seo: {},
       published: [],
       translations: {
         '': {
           name: '',
           content_html: '',
+          seo: {},
         },
       },
     } as PageCreateDto,
@@ -230,7 +226,7 @@ export default defineComponent({
   watch: {
     page(page: Page) {
       if (!this.isNew) {
-        this.form = { ...page, seo: page.seo || {} }
+        this.form = { ...page }
       }
     },
     error(error) {
@@ -246,15 +242,13 @@ export default defineComponent({
       this.$accessor.stopLoading()
     }
 
-    this.editedLang =
-      this.$accessor.languages.data.find((lang) => lang.iso === this.$accessor.config.apiLanguage)
-        ?.id || ''
+    this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
   },
   methods: {
     setEditedLang(langId: string) {
       this.editedLang = langId
       if (!this.form.translations[langId])
-        this.form.translations[langId] = { name: '', content_html: '', seo: {} }
+        this.$set(this.form.translations, langId, { name: '', content_html: '', seo: {} })
     },
 
     editSlug() {
@@ -262,6 +256,7 @@ export default defineComponent({
         this.form.slug = generateSlug(this.formName)
       }
     },
+
     async save() {
       this.$accessor.startLoading()
       if (this.isNew) {

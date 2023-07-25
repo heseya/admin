@@ -21,11 +21,11 @@
           />
         </div>
         <SwitchInput
-          :id="lang.iso"
-          :value="publishedMap[lang.iso]"
+          :id="lang.id"
+          :value="publishedMap[lang.id]"
           :name="lang.iso"
           :disabled="lang.default"
-          @input="setPublished(lang.iso, $event)"
+          @input="setPublished(lang.id, $event)"
         />
       </div>
     </div>
@@ -60,7 +60,9 @@ export default defineComponent({
       default: () => [],
     },
   },
+
   emits: ['input'],
+
   computed: {
     languages() {
       return this.$accessor.languages.data.filter((lang) => !lang.hidden)
@@ -68,17 +70,28 @@ export default defineComponent({
 
     publishedMap(): Record<string, boolean> {
       return this.languages.reduce((acc, lang) => {
-        acc[lang.iso] = this.value.includes(lang.iso)
+        acc[lang.id] = this.value.includes(lang.id)
         return acc
       }, {} as Record<string, boolean>)
     },
   },
 
   watch: {
-    '$accessor.languages.default': {
+    '$accessor.languages.defaultLanguage': {
       handler(defaultLang) {
         // Default language must be always published
-        this.setPublished(defaultLang?.iso, true)
+        if (defaultLang && !this.publishedMap[defaultLang.id])
+          this.setPublished(defaultLang?.id, true)
+      },
+      immediate: true,
+    },
+
+    value: {
+      handler() {
+        const defaultLang = this.$accessor.languages.defaultLanguage
+        // Default language must be always published
+        if (defaultLang && !this.publishedMap[defaultLang.id])
+          this.setPublished(defaultLang?.id, true)
       },
       immediate: true,
     },
@@ -90,10 +103,10 @@ export default defineComponent({
       if (firstIsoPart === 'en' || firstIsoPart === 'eng') return 'us'
       return firstIsoPart
     },
-    setPublished(langIso: string, value: boolean) {
+    setPublished(langId: string, value: boolean) {
       const publishedMap = {
         ...this.publishedMap,
-        [langIso]: value,
+        [langId]: value,
       }
       this.$emit(
         'input',

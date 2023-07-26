@@ -235,6 +235,10 @@ export default defineComponent({
 
       this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
     },
+
+    active() {
+      this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
+    },
   },
 
   methods: {

@@ -59,6 +59,9 @@
       </a-select-option>
     </app-select>
 
+    <br />
+    <PublishedLangsForm v-model="form.published" />
+
     <TagsEditor v-model="form.header_tags" :disabled="disabled" />
 
     <media-upload-input
@@ -133,6 +136,7 @@ import {
 
 import ModalForm from '@/components/form/ModalForm.vue'
 import MediaUploadInput from '@/components/modules/media/MediaUploadInput.vue'
+import PublishedLangsForm from '@/components/lang/PublishedLangsForm.vue'
 import TagsEditor from './TagsEditor.vue'
 
 import { UUID } from '@/interfaces/UUID'
@@ -148,6 +152,8 @@ export const CLEAR_SEO_FORM: SeoMeta = {
   og_image: undefined,
   og_image_id: undefined,
   no_index: false,
+  published: [],
+  translations: {},
 }
 
 export default defineComponent({
@@ -155,6 +161,7 @@ export default defineComponent({
     ModalForm,
     TagsEditor,
     MediaUploadInput,
+    PublishedLangsForm,
   },
   props: {
     value: {
@@ -186,7 +193,7 @@ export default defineComponent({
   computed: {
     form: {
       get(): SeoMeta {
-        return this.value || {}
+        return this.value || { translations: {}, published: [] }
       },
       set(v: SeoMeta) {
         this.$emit('input', v)
@@ -229,6 +236,8 @@ export default defineComponent({
       og_image_id: this.form.og_image?.id || CLEAR_SEO_FORM.og_image_id,
       twitter_card: this.form.twitter_card || CLEAR_SEO_FORM.twitter_card,
       no_index: this.form.no_index || CLEAR_SEO_FORM.no_index,
+      translations: this.form.translations || {},
+      published: this.form.published || [],
     }
   },
 

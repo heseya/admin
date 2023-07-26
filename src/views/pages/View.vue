@@ -49,7 +49,7 @@
 
           <br />
           <SeoForm
-            v-model="formSeo"
+            v-model="form.seo"
             :disabled="!canModify"
             :current="!isNew ? { id, model: 'Page' } : undefined"
           />
@@ -122,7 +122,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { ValidationObserver } from 'vee-validate'
-import { Page, PageCreateDto, SeoMetadata } from '@heseya/store-core'
+import { Page, PageCreateDto } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
@@ -140,7 +140,6 @@ import { formatApiNotificationError } from '@/utils/errors'
 import { generateSlug } from '@/utils/generateSlug'
 
 import { UUID } from '@/interfaces/UUID'
-import { initializeSeoInTranslations } from '@/utils/translations'
 
 export default defineComponent({
   metaInfo(this: any) {
@@ -170,6 +169,7 @@ export default defineComponent({
       public: true,
       published: [],
       translations: {},
+      seo: {},
     } as PageCreateDto,
   }),
   computed: {
@@ -208,21 +208,13 @@ export default defineComponent({
         this.form.translations[this.editedLang].name = value
       },
     },
-    formSeo: {
-      get(): SeoMetadata {
-        return this.form.translations[this.editedLang]?.seo || {}
-      },
-      set(value: SeoMetadata) {
-        this.form.translations[this.editedLang].seo = value
-      },
-    },
   },
   watch: {
     page(page: Page) {
       if (!this.isNew)
         this.form = {
           ...page,
-          translations: initializeSeoInTranslations(page.translations),
+          seo: page.seo || {},
         }
     },
     error(error) {
@@ -244,7 +236,7 @@ export default defineComponent({
     setEditedLang(langId: string) {
       this.editedLang = langId
       if (!this.form.translations[langId])
-        this.$set(this.form.translations, langId, { name: '', content_html: '', seo: {} })
+        this.$set(this.form.translations, langId, { name: '', content_html: '' })
     },
 
     editSlug() {

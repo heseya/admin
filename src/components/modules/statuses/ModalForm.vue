@@ -238,6 +238,7 @@ export default defineComponent({
 
     active() {
       this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
+      if (!this.selectedItem) this.form = clone(CLEAR_STATUS)
     },
   },
 

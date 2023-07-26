@@ -73,7 +73,7 @@ export default defineComponent({
 <style lang="scss">
 .content-lang-switch-wrapper {
   position: absolute;
-  left: calc(100% + 8px);
+  left: 100%;
   top: 0;
   height: 100%;
 }
@@ -81,11 +81,14 @@ export default defineComponent({
 .content-lang-switch {
   position: sticky;
   // left: calc(100% + 16px);
-  top: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1em;
+  background-color: $background-color-500;
+  padding: 8px;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
 
   &__title {
     direction: rtl;

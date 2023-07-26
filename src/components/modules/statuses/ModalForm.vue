@@ -3,19 +3,19 @@
     <a-modal
       :visible="active"
       width="550px"
-      :title="editedItem.id ? $t('editTitle') : $t('newTitle')"
+      :title="form.id ? $t('editTitle') : $t('newTitle')"
       @cancel="$emit('close')"
     >
       <ModalForm class="order-status-form">
         <validated-input
-          v-model="editedItem.name"
+          v-model="formName"
           :disabled="disabled"
           rules="required"
           :label="$t('common.form.name')"
         />
 
         <validated-input
-          v-model="editedItem.description"
+          v-model="formDescription"
           :disabled="disabled"
           type="textarea"
           rows="5"
@@ -26,23 +26,26 @@
         <validated-input
           :disabled="disabled"
           rules="required"
-          :value="`#${editedItem.color}`"
+          :value="`#${form.color}`"
           :label="$t('form.color')"
           type="color"
           @input="setColor"
         />
 
         <br />
+        <PublishedLangsForm v-model="form.published" />
+
+        <br />
 
         <SwitchInput
-          v-model="editedItem.cancel"
+          v-model="form.cancel"
           :disabled="disabled"
           horizontal
           :label="$t('form.cancel').toString()"
         />
         <br />
 
-        <SwitchInput v-model="editedItem.hidden" :disabled="disabled" horizontal>
+        <SwitchInput v-model="form.hidden" :disabled="disabled" horizontal>
           <template #title>
             {{ $t('form.hidden') }}
             <info-tooltip>
@@ -52,7 +55,7 @@
         </SwitchInput>
         <br />
 
-        <SwitchInput v-model="editedItem.no_notifications" :disabled="disabled" horizontal>
+        <SwitchInput v-model="form.no_notifications" :disabled="disabled" horizontal>
           <template #title>
             {{ $t('form.noNotification') }}
             <info-tooltip>
@@ -78,6 +81,8 @@
             model="statuses"
           />
         </template>
+
+        <ContentLangSwitch :value="editedLang" @input="setEditedLang" />
       </ModalForm>
       <template #footer>
         <div class="row">
@@ -91,7 +96,7 @@
             :cancel-text="$t('common.cancel').toString()"
             @confirm="deleteItem"
           >
-            <app-button v-if="editedItem.id" type="danger">{{ $t('common.delete') }}</app-button>
+            <app-button v-if="form.id" type="danger">{{ $t('common.delete') }}</app-button>
           </pop-confirm>
         </div>
       </template>
@@ -148,20 +153,29 @@
 import { PropType, defineComponent } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import clone from 'lodash/clone'
-import { Metadata, OrderStatus, OrderStatusUpdateDto } from '@heseya/store-core'
+import { Metadata, OrderStatus, OrderStatusCreateDto } from '@heseya/store-core'
+
+import { TranslationsFromDto } from '@/interfaces/Translations'
 
 import ModalForm from '@/components/form/ModalForm.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
+import ContentLangSwitch from '@/components/lang/ContentLangSwitch.vue'
+import PublishedLangsForm from '@/components/lang/PublishedLangsForm.vue'
 
-const CLEAR_STATUS: OrderStatusUpdateDto = {
+const CLEAR_STATUS_TRANSLATION: TranslationsFromDto<OrderStatusCreateDto> = {
   name: '',
   description: '',
+}
+
+const CLEAR_STATUS: OrderStatusCreateDto = {
   color: '000000',
   cancel: false,
   hidden: false,
   no_notifications: false,
+  published: [],
+  translations: {},
 }
 
 export default defineComponent({
@@ -171,6 +185,8 @@ export default defineComponent({
     ValidationObserver,
     SwitchInput,
     MetadataForm,
+    ContentLangSwitch,
+    PublishedLangsForm,
   },
 
   props: {
@@ -189,50 +205,83 @@ export default defineComponent({
   },
 
   data: () => ({
-    editedItem: clone(CLEAR_STATUS) as OrderStatusUpdateDto & { id?: string },
+    editedLang: 'pl',
+    form: clone(CLEAR_STATUS) as OrderStatusCreateDto & { id?: string },
   }),
+
+  computed: {
+    formDescription: {
+      get(): string {
+        return this.form.translations[this.editedLang]?.description || ''
+      },
+      set(value: string) {
+        this.form.translations[this.editedLang].description = value
+      },
+    },
+    formName: {
+      get(): string {
+        return this.form.translations[this.editedLang]?.name || ''
+      },
+      set(value: string) {
+        this.form.translations[this.editedLang].name = value
+      },
+    },
+  },
 
   watch: {
     selectedItem(item) {
-      if (item) this.editedItem = clone(item)
-      else this.editedItem = clone(CLEAR_STATUS)
+      if (item) this.form = clone(item)
+      else this.form = clone(CLEAR_STATUS)
+
+      this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
     },
   },
 
   methods: {
     setColor(color: string) {
-      this.editedItem.color = color.split('#')[1] ?? color
+      this.form.color = color.split('#')[1] ?? color
+    },
+
+    setEditedLang(langId: string) {
+      this.editedLang = langId
+      if (!this.form?.translations?.[langId])
+        this.$set(this.form.translations, langId, { ...CLEAR_STATUS_TRANSLATION })
     },
 
     async saveModal() {
       this.$accessor.startLoading()
-      if (this.editedItem.id) {
+      if (this.form.id) {
         // Metadata can be saved only after status is created
-        const updatedMetadata = await this.saveMetadata(this.editedItem.id)
+        const updatedMetadata = await this.saveMetadata(this.form.id)
 
         this.$accessor.statuses.EDIT_DATA({
           key: 'id',
-          value: this.editedItem.id,
+          value: this.form.id,
           item: updatedMetadata,
         })
 
         const updatedStatus = await this.$accessor.statuses.update({
-          id: this.editedItem.id,
-          item: this.editedItem,
+          id: this.form.id,
+          item: this.form,
         })
 
-        if (updatedStatus) this.$toast.success(this.$t('alerts.updated') as string)
+        if (updatedStatus) {
+          this.$toast.success(this.$t('alerts.updated') as string)
+          this.$emit('close')
+        }
       } else {
-        const success = await this.$accessor.statuses.add(this.editedItem)
-        if (success) this.$toast.success(this.$t('alerts.created') as string)
+        const success = await this.$accessor.statuses.add(this.form)
+        if (success) {
+          this.$toast.success(this.$t('alerts.created') as string)
+          this.$emit('close')
+        }
       }
       this.$accessor.stopLoading()
-      this.$emit('close')
     },
 
     async deleteItem() {
       this.$accessor.startLoading()
-      const success = await this.$accessor.statuses.remove(this.editedItem.id!)
+      const success = await this.$accessor.statuses.remove(this.form.id!)
       if (success) this.$toast.success(this.$t('alerts.deleted') as string)
       this.$accessor.stopLoading()
       this.$emit('close')

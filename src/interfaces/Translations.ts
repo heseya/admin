@@ -4,3 +4,5 @@ import { Translations } from '@heseya/store-core'
 export type FlattenTranslationsDto<Dto> = Dto extends Translations<infer Content>
   ? Dto & Content
   : unknown
+
+export type TranslationsFromDto<Dto> = Dto extends Translations<infer Content> ? Content : unknown

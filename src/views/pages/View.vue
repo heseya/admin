@@ -169,13 +169,7 @@ export default defineComponent({
       slug: '',
       public: true,
       published: [],
-      translations: {
-        '': {
-          name: '',
-          content_html: '',
-          seo: {},
-        },
-      },
+      translations: {},
     } as PageCreateDto,
   }),
   computed: {

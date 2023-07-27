@@ -106,7 +106,7 @@ const storePattern = {
 
 const store = new Vuex.Store({
   ...storePattern,
-  plugins: [new VuexPersistence({ modules: ['config', 'auth', 'menuItems'] }).plugin],
+  plugins: [new VuexPersistence({ modules: ['config', 'auth', 'languages', 'menuItems'] }).plugin],
 })
 
 export const accessor = useAccessor(store, storePattern)

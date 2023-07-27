@@ -15,7 +15,7 @@
         </icon-button>
       </template>
       <template #default="{ item: status }">
-        <cms-table-row
+        <CmsTableRow
           :key="status.id"
           :item="status"
           draggable
@@ -31,107 +31,16 @@
           <template #description>
             <small>{{ status.description }}</small>
           </template>
-        </cms-table-row>
+        </CmsTableRow>
       </template>
     </PaginatedList>
 
-    <validation-observer v-slot="{ handleSubmit }">
-      <a-modal
-        v-model="isModalActive"
-        width="550px"
-        :title="editedItem.id ? $t('editTitle') : $t('newTitle')"
-      >
-        <modal-form>
-          <validated-input
-            v-model="editedItem.name"
-            :disabled="!canModify"
-            rules="required"
-            :label="$t('common.form.name')"
-          />
-
-          <validated-input
-            v-model="editedItem.description"
-            :disabled="!canModify"
-            type="textarea"
-            rows="5"
-            rules="required"
-            :label="$t('common.form.description')"
-          />
-
-          <validated-input
-            :disabled="!canModify"
-            rules="required"
-            :value="`#${editedItem.color}`"
-            :label="$t('form.color')"
-            type="color"
-            @input="setColor"
-          />
-
-          <br />
-
-          <SwitchInput
-            v-model="editedItem.cancel"
-            :disabled="!canModify"
-            horizontal
-            :label="$t('form.cancel').toString()"
-          />
-          <br />
-
-          <SwitchInput v-model="editedItem.hidden" :disabled="!canModify" horizontal>
-            <template #title>
-              {{ $t('form.hidden') }}
-              <info-tooltip>
-                {{ $t('form.hiddenTooltip') }}
-              </info-tooltip>
-            </template>
-          </SwitchInput>
-          <br />
-
-          <SwitchInput v-model="editedItem.no_notifications" :disabled="!canModify" horizontal>
-            <template #title>
-              {{ $t('form.noNotification') }}
-              <info-tooltip>
-                {{ $t('form.noNotificationTooltip') }}
-              </info-tooltip>
-            </template>
-          </SwitchInput>
-
-          <template v-if="selectedItem">
-            <hr />
-            <MetadataForm
-              ref="publicMeta"
-              :value="selectedItem.metadata"
-              :disabled="!canModify"
-              model="statuses"
-            />
-            <MetadataForm
-              v-if="selectedItem.metadata_private"
-              ref="privateMeta"
-              :value="selectedItem.metadata_private"
-              :disabled="!canModify"
-              type="private"
-              model="statuses"
-            />
-          </template>
-        </modal-form>
-        <template #footer>
-          <div class="row">
-            <app-button v-if="canModify" @click="handleSubmit(saveModal)">
-              {{ $t('common.save') }}
-            </app-button>
-            <pop-confirm
-              v-can="$p.Statuses.Remove"
-              :title="$t('deleteText').toString()"
-              :ok-text="$t('common.delete').toString()"
-              :cancel-text="$t('common.cancel').toString()"
-              @confirm="deleteItem"
-            >
-              <app-button v-if="editedItem.id" type="danger">{{ $t('common.delete') }}</app-button>
-            </pop-confirm>
-          </div>
-        </template>
-      </a-modal>
-    </validation-observer>
+    <StatusModalForm
+      :active="isModalActive"
+      :selected-item="selectedItem"
+      :disabled="!canModify"
+      @close="onModalClose"
+    />
   </div>
 </template>
 
@@ -182,29 +91,15 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { ValidationObserver } from 'vee-validate'
-import { clone } from 'lodash'
-import { Metadata, OrderStatus, OrderStatusUpdateDto } from '@heseya/store-core'
+import { OrderStatus } from '@heseya/store-core'
 
 import { UUID } from '@/interfaces/UUID'
 import { TableConfig } from '@/interfaces/CmsTable'
 
 import PaginatedList from '@/components/PaginatedList.vue'
-import ModalForm from '@/components/form/ModalForm.vue'
-import PopConfirm from '@/components/layout/PopConfirm.vue'
-import SwitchInput from '@/components/form/SwitchInput.vue'
-import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
+import StatusModalForm from '@/components/modules/statuses/ModalForm.vue'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 import Avatar from '@/components/layout/Avatar.vue'
-
-const CLEAR_STATUS: OrderStatusUpdateDto = {
-  name: '',
-  description: '',
-  color: '000000',
-  cancel: false,
-  hidden: false,
-  no_notifications: false,
-}
 
 export default defineComponent({
   metaInfo(this: any) {
@@ -212,11 +107,7 @@ export default defineComponent({
   },
   components: {
     PaginatedList,
-    ModalForm,
-    PopConfirm,
-    ValidationObserver,
-    SwitchInput,
-    MetadataForm,
+    StatusModalForm,
     CmsTableRow,
     Avatar,
   },
@@ -230,12 +121,11 @@ export default defineComponent({
   },
   data: () => ({
     isModalActive: false,
-    editedItem: clone(CLEAR_STATUS) as OrderStatusUpdateDto & { id?: string },
     selectedItem: null as OrderStatus | null,
   }),
   computed: {
     canModify(): boolean {
-      return this.$can(this.editedItem.id ? this.$p.Statuses.Edit : this.$p.Statuses.Add)
+      return this.$can(this.selectedItem ? this.$p.Statuses.Edit : this.$p.Statuses.Add)
     },
     tableConfig(): TableConfig<OrderStatus> {
       return {
@@ -258,72 +148,23 @@ export default defineComponent({
     },
   },
   methods: {
-    setColor(color: string) {
-      this.editedItem.color = color.split('#')[1] ?? color
-    },
     openModal(id?: UUID) {
       this.isModalActive = true
       if (id) {
-        this.editedItem = clone(this.$accessor.statuses.getFromListById(id))
         this.selectedItem = this.$accessor.statuses.getFromListById(id)
-        this.setColor(this.editedItem.color)
       } else {
-        this.editedItem = clone(CLEAR_STATUS)
         this.selectedItem = null
       }
     },
-    async saveModal() {
-      this.$accessor.startLoading()
-      if (this.editedItem.id) {
-        // Metadata can be saved only after status is created
-        const updatedMetadata = await this.saveMetadata(this.editedItem.id)
-
-        this.$accessor.statuses.EDIT_DATA({
-          key: 'id',
-          value: this.editedItem.id,
-          item: updatedMetadata,
-        })
-
-        const updatedStatus = await this.$accessor.statuses.update({
-          id: this.editedItem.id,
-          item: this.editedItem,
-        })
-
-        if (updatedStatus) this.$toast.success(this.$t('alerts.updated') as string)
-      } else {
-        const success = await this.$accessor.statuses.add(this.editedItem)
-        if (success) this.$toast.success(this.$t('alerts.created') as string)
-      }
-      this.$accessor.stopLoading()
+    onModalClose() {
       this.isModalActive = false
-    },
-    async deleteItem() {
-      this.$accessor.startLoading()
-      const success = await this.$accessor.statuses.remove(this.editedItem.id!)
-      if (success) this.$toast.success(this.$t('alerts.deleted') as string)
-      this.$accessor.stopLoading()
-      this.isModalActive = false
-    },
-
-    async saveMetadata(id: string) {
-      const [publicMetadata, privateMetadata] = await Promise.all([
-        (this.$refs.publicMeta as MetadataRef)?.saveMetadata(id),
-        (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id),
-      ])
-      const metadata: { metadata?: Metadata; metadata_private?: Metadata } = {}
-      if (publicMetadata) metadata.metadata = publicMetadata
-      if (privateMetadata) metadata.metadata_private = privateMetadata
-      return metadata
+      this.selectedItem = null
     },
   },
 })
 </script>
 
 <style lang="scss">
-input[type='color'] {
-  height: 30px !important;
-}
-
 .status-name {
   display: flex;
   align-items: center;

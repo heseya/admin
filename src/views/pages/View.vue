@@ -25,7 +25,7 @@
         <card>
           <div class="page__info">
             <validated-input
-              v-model="form.name"
+              v-model="formName"
               rules="required"
               :label="$t('common.form.name')"
               :disabled="!canModify"
@@ -51,15 +51,15 @@
           <SeoForm
             v-model="form.seo"
             :disabled="!canModify"
-            :current="!isNew ? { id, model: 'Page' } : null"
+            :current="!isNew ? { id, model: 'Page' } : undefined"
           />
 
           <br />
-          <PublishedLangsForm v-model="tempPublished" />
+          <PublishedLangsForm v-model="form.published" />
 
           <br />
           <small class="label">{{ $t('form.content') }}</small>
-          <RichEditor v-model="form.content_html" :disabled="!canModify" />
+          <RichEditor v-model="formContentHtml" :disabled="!canModify" />
 
           <br />
 
@@ -87,7 +87,7 @@
         </card>
       </validation-observer>
 
-      <ContentLangSwitch v-model="editedLang" />
+      <AbsoluteContentLangSwitch :value="editedLang" @input="setEditedLang" />
     </div>
   </div>
 </template>
@@ -133,7 +133,7 @@ import SwitchInput from '@/components/form/SwitchInput.vue'
 import SeoForm from '@/components/modules/seo/Accordion.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
-import ContentLangSwitch from '@/components/lang/ContentLangSwitch.vue'
+import AbsoluteContentLangSwitch from '@/components/lang/AbsoluteContentLangSwitch.vue'
 import PublishedLangsForm from '@/components/lang/PublishedLangsForm.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
@@ -159,18 +159,16 @@ export default defineComponent({
     SeoForm,
     AuditsModal,
     MetadataForm,
-    ContentLangSwitch,
+    AbsoluteContentLangSwitch,
     PublishedLangsForm,
   },
   data: () => ({
     editedLang: '',
-    // TODO: remove, this will be included in form
-    tempPublished: [] as string[],
     form: {
-      name: '',
       slug: '',
-      content_html: '',
       public: true,
+      published: [],
+      translations: {},
       seo: {},
     } as PageCreateDto,
   }),
@@ -193,12 +191,32 @@ export default defineComponent({
     canModify(): boolean {
       return this.$can(this.isNew ? this.$p.Pages.Add : this.$p.Pages.Edit)
     },
+
+    formContentHtml: {
+      get(): string {
+        return this.form.translations[this.editedLang]?.content_html || ''
+      },
+      set(value: string) {
+        this.form.translations[this.editedLang].content_html = value
+      },
+    },
+    formName: {
+      get(): string {
+        return this.form.translations[this.editedLang]?.name || ''
+      },
+      set(value: string) {
+        this.form.translations[this.editedLang].name = value
+      },
+    },
   },
   watch: {
     page(page: Page) {
-      if (!this.isNew) {
-        this.form = { ...page, seo: page.seo || {} }
-      }
+      if (!this.isNew)
+        this.form = {
+          ...page,
+          translations: page.translations || {},
+          seo: page.seo || {},
+        }
     },
     error(error) {
       if (error) {
@@ -213,14 +231,19 @@ export default defineComponent({
       this.$accessor.stopLoading()
     }
 
-    this.editedLang = this.$accessor.config.apiLanguage || ''
+    this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
   },
   methods: {
-    editSlug() {
-      if (this.isNew) {
-        this.form.slug = generateSlug(this.form.name)
-      }
+    setEditedLang(langId: string) {
+      this.editedLang = langId
+      if (!this.form.translations[langId])
+        this.$set(this.form.translations, langId, { name: '', content_html: '' })
     },
+
+    editSlug() {
+      if (this.isNew) this.form.slug = generateSlug(this.formName)
+    },
+
     async save() {
       this.$accessor.startLoading()
       if (this.isNew) {
@@ -243,6 +266,7 @@ export default defineComponent({
       }
       this.$accessor.stopLoading()
     },
+
     async deletePage() {
       this.$accessor.startLoading()
       const success = await this.$accessor.pages.remove(this.id)

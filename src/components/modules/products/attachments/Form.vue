@@ -1,6 +1,8 @@
 <template>
   <validation-observer v-slot="{ handleSubmit }">
     <form class="attachment-form" @submit.prevent="handleSubmit(onSubmit)">
+      <Loading :active="isLoading" />
+
       <validated-input
         v-model="form.name"
         name="name"
@@ -100,6 +102,7 @@ import {
 import { sdk } from '@/api'
 import { formatApiNotificationError } from '@/utils/errors'
 
+import Loading from '@/components/layout/Loading.vue'
 import ValidationBlock from '@/components/form/ValidationBlock.vue'
 
 type Form = ProductAttachmentCreateDto | (ProductAttachmentUpdateDto & { id: string })
@@ -109,7 +112,7 @@ const isCreateForm = (form: Form): form is ProductAttachmentCreateDto => {
 }
 
 export default defineComponent({
-  components: { ValidationObserver, ValidationBlock },
+  components: { ValidationObserver, ValidationBlock, Loading },
   props: {
     productId: {
       type: String,
@@ -125,6 +128,7 @@ export default defineComponent({
     mediaSource: CdnMediaSource.Silverbox,
     mediaExternalUrl: '',
     fileToUpload: null as File | null,
+    isLoading: false,
   }),
 
   computed: {
@@ -148,11 +152,16 @@ export default defineComponent({
 
   methods: {
     async onSubmit() {
+      if (this.isLoading) return
+      this.isLoading = true
+
       if (this.isNew) {
         await this.createAttachment()
       } else {
         await this.updateAttachment()
       }
+
+      this.isLoading = false
     },
 
     async createAttachment() {
@@ -221,6 +230,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .attachment-form {
+  position: relative;
+
   &__btn {
     margin: 0 auto;
     margin-top: 16px;

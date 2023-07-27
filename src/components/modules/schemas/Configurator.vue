@@ -51,14 +51,13 @@
       :footer="null"
       :title="editedSchema.id ? $t('editTitle') : $t('newTitle')"
     >
-      <modal-form v-if="isFormModalActive">
-        <SchemaForm
-          :schema="editedSchema"
-          :current-product-schemas="value"
-          :disabled="disabled"
-          @submit="updateSchema"
-        />
-      </modal-form>
+      <SchemaForm
+        v-if="isFormModalActive"
+        :schema="editedSchema"
+        :current-product-schemas="value"
+        :disabled="disabled"
+        @submit="updateSchema"
+      />
     </a-modal>
 
     <a-modal v-model="isModalActive" width="800px" :footer="null">

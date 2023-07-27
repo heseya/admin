@@ -59,7 +59,7 @@ export const createVuexCRUD =
   ) => {
     const GLOBAL_QUERY_PARAMS = {
       lang_fallback: 'any',
-      translations: 1,
+      with_translations: 1,
     }
 
     const privateState = {

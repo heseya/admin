@@ -10,6 +10,7 @@ import {
 } from '@heseya/store-core'
 import { UUID } from '@/interfaces/UUID'
 import { sdk } from '@/api'
+import { reorderCollection } from '@/services/reorderCollection'
 
 type CreateOptionAction = { attributeId: UUID; option: AttributeOptionDto }
 type UpdateOptionAction = { attributeId: UUID; optionId: UUID; option: AttributeOptionDto }
@@ -83,6 +84,21 @@ export const attributes = createVuexCRUD<Attribute, AttributeCreateDto, Attribut
         await sdk.Attributes.deleteOption(attributeId, optionId)
         commit('DELETE_OPTION', optionId)
         return true
+      },
+
+      async reorder(_u, ids) {
+        await reorderCollection('attributes', 'ids')(ids)
+      },
+
+      async reorderOptions(_u, { parentId, ids }: { parentId: UUID; ids: UUID[] }) {
+        try {
+          await sdk.Attributes.reorderOptions(parentId, ids)
+          return true
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.error('Failed to reorder options', e)
+          return false
+        }
       },
     },
   },

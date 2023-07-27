@@ -38,6 +38,7 @@
         :footer="null"
       >
         <SimplePageForm
+          v-if="isModalOpen"
           :key="selectedPageId"
           :page-id="selectedPageId"
           :slug-prefix="product.id"
@@ -55,8 +56,8 @@
     "title": "Additional descriptions",
     "addTitle": "Add description",
     "editTitle": "Edit description",
-    "deleteText": "Are you sure you want to delete this attachment?",
-    "onDeletedText": "Description has been deleted",
+    "deleteText": "Are you sure you want to remove description from product?",
+    "onDeletedText": "Description has been deleted from product, but still exists in system",
     "onCreatedText": "Description has been created and added to product",
     "onUpdatedText": "Description has been updated",
     "emptyText": "No additional descriptions added yet"
@@ -65,8 +66,8 @@
     "title": "Dodatkowe opisy",
     "addTitle": "Dodaj opis",
     "editTitle": "Edytuj opis",
-    "deleteText": "Czy na pewno chcesz usunąć ten opis?",
-    "onDeletedText": "Opis został usunięty",
+    "deleteText": "Czy na pewno chcesz usunąć powiazanie opisu z produktem?",
+    "onDeletedText": "Opis został usunięty z produktu, ale nadal istnieje w systemie",
     "onCreatedText": "Opis został dodany do produktu",
     "onUpdatedText": "Opis został zaktualizowany",
     "emptyText": "Brak dodatkowych opisów"

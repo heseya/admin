@@ -1,26 +1,29 @@
 <template>
   <modal-form class="seo-form">
-    <validated-input v-model="form.title" :disabled="disabled" :label="$t('form.title')" />
+    <ContentLangSwitch :value="editedLang" class="seo-form__lang-switch" @input="setEditedLang" />
+
+    <validated-input v-model="formTitle" :disabled="disabled" :label="$t('form.title')" />
     <small class="seo-form__subtext">
-      {{ $t('charsCount') }}: {{ form.title ? form.title.length : 0 }}
+      {{ $t('charsCount') }}: {{ formTitle ? formTitle.length : 0 }}
       <info-tooltip>
         {{ $t('titleCharsRecomendation') }}
       </info-tooltip>
     </small>
 
     <validated-input
-      v-model="form.description"
+      v-model="formDescription"
       :disabled="disabled"
       :label="$t('form.description')"
     />
+
     <small class="seo-form__subtext">
-      {{ $t('charsCount') }}: {{ form.description ? form.description.length : 0 }}
+      {{ $t('charsCount') }}: {{ formDescription ? formDescription.length : 0 }}
       <info-tooltip>
         {{ $t('descriptionCharsRecomendation') }}
       </info-tooltip>
     </small>
 
-    <switch-input v-if="!forceIndex" v-model="form.no_index" :disabled="disabled" type="red">
+    <switch-input v-if="!forceIndex" v-model="formNoIndex" :disabled="disabled" type="red">
       <template #title>
         {{ $t('form.no_index') }}
         <info-tooltip icon="seo-form__switch-tooltip-icon bx bxs-info-circle">
@@ -32,7 +35,7 @@
     </switch-input>
 
     <app-select
-      :value="form.keywords || []"
+      :value="formKeywords"
       :label="$t('form.keywords')"
       :disabled="disabled"
       mode="tags"
@@ -137,6 +140,7 @@ import {
 import ModalForm from '@/components/form/ModalForm.vue'
 import MediaUploadInput from '@/components/modules/media/MediaUploadInput.vue'
 import PublishedLangsForm from '@/components/lang/PublishedLangsForm.vue'
+import ContentLangSwitch from '@/components/lang/ContentLangSwitch.vue'
 import TagsEditor from './TagsEditor.vue'
 
 import { UUID } from '@/interfaces/UUID'
@@ -162,6 +166,7 @@ export default defineComponent({
     TagsEditor,
     MediaUploadInput,
     PublishedLangsForm,
+    ContentLangSwitch,
   },
   props: {
     value: {
@@ -183,6 +188,7 @@ export default defineComponent({
   },
 
   data: () => ({
+    editedLang: '',
     duplicatedKeywordsItem: null as null | {
       // eslint-disable-next-line camelcase
       model_type: SeoCheckModelType
@@ -199,6 +205,48 @@ export default defineComponent({
         this.$emit('input', v)
       },
     },
+
+    formTitle: {
+      get(): string {
+        return this.form.translations?.[this.editedLang]?.title || ''
+      },
+      set(value: string) {
+        // eslint-disable-next-line no-console
+        if (!this.form.translations) return console.error('Translations not defined in SEO!')
+        this.form.translations[this.editedLang].title = value
+      },
+    },
+    formDescription: {
+      get(): string {
+        return this.form.translations?.[this.editedLang]?.description || ''
+      },
+      set(value: string) {
+        // eslint-disable-next-line no-console
+        if (!this.form.translations) return console.error('Translations not defined in SEO!')
+        this.form.translations[this.editedLang].description = value
+      },
+    },
+    formKeywords: {
+      get(): string[] {
+        return this.form.translations?.[this.editedLang]?.keywords || []
+      },
+      set(value: string[]) {
+        // eslint-disable-next-line no-console
+        if (!this.form.translations) return console.error('Translations not defined in SEO!')
+        this.form.translations[this.editedLang].keywords = value
+      },
+    },
+    formNoIndex: {
+      get(): boolean {
+        return this.form.translations?.[this.editedLang]?.no_index ?? false
+      },
+      set(value: boolean) {
+        // eslint-disable-next-line no-console
+        if (!this.form.translations) return console.error('Translations not defined in SEO!')
+        this.form.translations[this.editedLang].no_index = value
+      },
+    },
+
     duplicatedKeywordUrl(): string | null {
       switch (this.duplicatedKeywordsItem?.model_type) {
         case 'Product':
@@ -214,7 +262,7 @@ export default defineComponent({
   },
 
   watch: {
-    'form.keywords': {
+    formKeywords: {
       handler(keywords: string[]) {
         if (keywords?.length) {
           this.checkDuplicates(keywords)
@@ -223,6 +271,13 @@ export default defineComponent({
         }
       },
       deep: true,
+    },
+
+    value: {
+      handler() {
+        this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
+      },
+      immediate: true,
     },
   },
 
@@ -242,13 +297,33 @@ export default defineComponent({
   },
 
   methods: {
+    setEditedLang(langId: string) {
+      this.editedLang = langId
+
+      if (!this.form.translations) this.$set(this.form, 'translations', {})
+
+      if (!this.form.translations?.[langId])
+        this.$set(this.form.translations!, langId, {
+          title: '',
+          description: '',
+          keywords: [],
+          no_index: false,
+        })
+      else {
+        this.$set(this.form.translations![langId], 'title', this.formTitle)
+        this.$set(this.form.translations![langId], 'description', this.formDescription)
+        this.$set(this.form.translations![langId], 'keywords', this.formKeywords)
+        this.$set(this.form.translations![langId], 'no_index', this.formNoIndex)
+      }
+    },
+
     changeMedia(media: CdnMedia | undefined) {
       this.form.og_image = media
       this.form.og_image_id = media?.id || null
     },
 
     setKeywords(keywords: string[]) {
-      this.form.keywords = keywords
+      this.formKeywords = keywords
     },
 
     async checkDuplicates(keywords: string[]) {
@@ -264,6 +339,12 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .seo-form {
+  &__lang-switch {
+    margin-bottom: 8px;
+    margin-left: auto;
+    background-color: transparent;
+  }
+
   &__subtext {
     display: block;
     text-align: right;

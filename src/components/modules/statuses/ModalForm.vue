@@ -82,7 +82,7 @@
           />
         </template>
 
-        <ContentLangSwitch :value="editedLang" @input="setEditedLang" />
+        <AbsoluteContentLangSwitch :value="editedLang" @input="setEditedLang" />
       </ModalForm>
       <template #footer>
         <div class="row">
@@ -161,7 +161,7 @@ import ModalForm from '@/components/form/ModalForm.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
-import ContentLangSwitch from '@/components/lang/ContentLangSwitch.vue'
+import AbsoluteContentLangSwitch from '@/components/lang/AbsoluteContentLangSwitch.vue'
 import PublishedLangsForm from '@/components/lang/PublishedLangsForm.vue'
 
 const CLEAR_STATUS_TRANSLATION: TranslationsFromDto<OrderStatusCreateDto> = {
@@ -185,7 +185,7 @@ export default defineComponent({
     ValidationObserver,
     SwitchInput,
     MetadataForm,
-    ContentLangSwitch,
+    AbsoluteContentLangSwitch,
     PublishedLangsForm,
   },
 

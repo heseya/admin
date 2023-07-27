@@ -87,7 +87,7 @@
         </card>
       </validation-observer>
 
-      <ContentLangSwitch :value="editedLang" @input="setEditedLang" />
+      <AbsoluteContentLangSwitch :value="editedLang" @input="setEditedLang" />
     </div>
   </div>
 </template>
@@ -133,7 +133,7 @@ import SwitchInput from '@/components/form/SwitchInput.vue'
 import SeoForm from '@/components/modules/seo/Accordion.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
-import ContentLangSwitch from '@/components/lang/ContentLangSwitch.vue'
+import AbsoluteContentLangSwitch from '@/components/lang/AbsoluteContentLangSwitch.vue'
 import PublishedLangsForm from '@/components/lang/PublishedLangsForm.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
@@ -159,7 +159,7 @@ export default defineComponent({
     SeoForm,
     AuditsModal,
     MetadataForm,
-    ContentLangSwitch,
+    AbsoluteContentLangSwitch,
     PublishedLangsForm,
   },
   data: () => ({
@@ -214,6 +214,7 @@ export default defineComponent({
       if (!this.isNew)
         this.form = {
           ...page,
+          translations: page.translations || {},
           seo: page.seo || {},
         }
     },

@@ -1,28 +1,26 @@
 <template>
-  <div class="content-lang-switch-wrapper">
-    <div class="content-lang-switch">
-      <span class="content-lang-switch__title">
-        {{ $t('title') }}
-      </span>
+  <div class="content-lang-switch" :class="{ 'content-lang-switch--vertical': vertical }">
+    <span class="content-lang-switch__title">
+      {{ $t('title') }}
+    </span>
 
-      <button
-        v-for="lang in languages"
-        :key="lang.id"
-        class="content-lang-switch__button"
-        :class="{ 'content-lang-switch__button--active': value === lang.id }"
-        :value="lang.iso"
-        :label="lang.name"
-        @click="update(lang.id)"
-      >
-        <img
-          :src="`https://flagcdn.com/16x12/${getFlagName(lang.iso)}.png`"
-          role="presentation"
-          class="content-lang-switch__icon"
-        />
-      </button>
+    <button
+      v-for="lang in languages"
+      :key="lang.id"
+      class="content-lang-switch__button"
+      :class="{ 'content-lang-switch__button--active': value === lang.id }"
+      :value="lang.iso"
+      :label="lang.name"
+      @click="update(lang.id)"
+    >
+      <img
+        :src="`https://flagcdn.com/16x12/${getFlagName(lang.iso)}.png`"
+        role="presentation"
+        class="content-lang-switch__icon"
+      />
+    </button>
 
-      <InfoTooltip class="content-lang-switch__tooltip" :text="$t('tooltipText').toString()" />
-    </div>
+    <InfoTooltip class="content-lang-switch__tooltip" :text="$t('tooltipText').toString()" />
   </div>
 </template>
 
@@ -50,6 +48,10 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    vertical: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ['input'],
   computed: {
@@ -71,18 +73,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.content-lang-switch-wrapper {
-  position: absolute;
-  left: 100%;
-  top: 0;
-  height: 100%;
-}
-
 .content-lang-switch {
-  position: sticky;
-  // left: calc(100% + 16px);
   display: flex;
-  flex-direction: column;
   align-items: center;
   gap: 1em;
   background-color: $background-color-500;
@@ -92,10 +84,16 @@ export default defineComponent({
 
   &__title {
     direction: rtl;
-    writing-mode: vertical-rl;
     color: $gray-color-600;
     font-size: 11px;
     letter-spacing: 1px;
+  }
+
+  &--vertical {
+    flex-direction: column;
+  }
+  &--vertical &__title {
+    writing-mode: vertical-rl;
     transform: rotate(180deg);
   }
 

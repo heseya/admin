@@ -1,7 +1,7 @@
 <template>
   <div class="product-basic-details">
     <validated-input
-      v-model="form.name"
+      v-model="formName"
       rules="required"
       :label="$t('common.form.name').toString()"
       name="name"
@@ -9,7 +9,7 @@
       @input="editSlug"
     />
 
-    <product-set-select v-model="form.sets" :product="product" :disabled="disabled" />
+    <ProductSetSelect v-model="form.sets" :product="product" :disabled="disabled" />
 
     <validated-input
       v-model="form.slug"
@@ -41,11 +41,11 @@
       />
     </div>
 
-    <tags-select v-model="form.tags" :disabled="disabled" />
+    <TagsSelect v-model="form.tags" :disabled="disabled" />
 
-    <app-textarea
+    <AppTextarea
       v-if="!loading"
-      v-model="form.description_short"
+      v-model="formDescriptionShort"
       :label="$t('form.shortDescription').toString()"
       :disabled="disabled"
     />
@@ -96,6 +96,7 @@ export default defineComponent({
     disabled: { type: Boolean, default: false },
     loading: { type: Boolean, default: false },
     isNew: { type: Boolean, default: false },
+    editedLang: { type: String, required: true },
   },
   computed: {
     form: {
@@ -104,6 +105,23 @@ export default defineComponent({
       },
       set(value: ProductComponentForm) {
         this.$emit('input', value)
+      },
+    },
+
+    formName: {
+      get(): string {
+        return this.form.translations?.[this.editedLang]?.name || ''
+      },
+      set(value: string) {
+        this.form.translations[this.editedLang].name = value
+      },
+    },
+    formDescriptionShort: {
+      get(): string {
+        return this.form.translations?.[this.editedLang]?.description_short || ''
+      },
+      set(value: string) {
+        this.form.translations[this.editedLang].description_short = value
       },
     },
   },

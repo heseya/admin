@@ -1,6 +1,8 @@
 <template>
-  <div :key="$route.params.id">
-    <top-nav>
+  <div :key="$route.params.id" class="product-page-wrapper">
+    <AbsoluteContentLangSwitch :value="editedLang" @input="setEditedLang" />
+
+    <TopNav>
       <template #title>
         <template v-if="!isNew">
           <span class="gray-text">{{ $t('title') }}&nbsp;</span>{{ product.name }}
@@ -10,9 +12,9 @@
         </template>
       </template>
 
-      <audits-modal :id="product.id" model="products" />
+      <AuditsModal :id="product.id" model="products" />
 
-      <pop-confirm
+      <PopConfirm
         v-if="!isNew"
         v-can="$p.Products.Remove"
         :title="$t('deleteConfirm').toString()"
@@ -26,25 +28,30 @@
           </template>
           {{ $t('common.delete') }}
         </icon-button>
-      </pop-confirm>
-    </top-nav>
+      </PopConfirm>
+    </TopNav>
 
-    <validation-observer v-slot="{ handleSubmit }">
+    <ValidationObserver v-slot="{ handleSubmit }">
       <form class="product-page" @submit.stop.prevent="handleSubmit(saveProduct)">
-        <card class="product-page__main">
+        <Card class="product-page__main">
           <h2 class="product-page__subtitle">{{ $t('baseFormTitle') }}</h2>
-          <product-basic-details
+          <ProductBasicDetails
             v-model="form"
             :product="product"
             :disabled="!canModify"
             :is-new="isNew"
             :loading="isLoading"
+            :edited-lang="editedLang"
           />
 
           <hr />
 
+          <PublishedLangsForm v-model="form.published" />
+
+          <hr />
+
           <DescriptionAccordion
-            v-model="form.description_html"
+            v-model="formDescriptionHtml"
             :disabled="!canModify"
             :loading="isLoading"
           />
@@ -75,7 +82,7 @@
             v-model="form.seo"
             class="product-page__seo-form"
             :disabled="!canModify"
-            :current="!isNew ? { id, model: 'Product' } : null"
+            :current="!isNew ? { id, model: 'Product' } : undefined"
           />
           <template v-if="!isNew">
             <MetadataForm
@@ -112,18 +119,18 @@
               {{ $t('saveAndNext') }}
             </app-button>
           </div>
-        </card>
+        </Card>
 
-        <card class="product-page__visibility">
-          <product-aside-details v-model="form" :product="product" :disabled="!canModify" />
-        </card>
+        <Card class="product-page__visibility">
+          <ProductAsideDetails v-model="form" :product="product" :disabled="!canModify" />
+        </Card>
 
-        <card class="product-page__gallery">
+        <Card class="product-page__gallery">
           <h2 class="product-page__subtitle">{{ $t('galleryTitle') }}</h2>
-          <gallery ref="gallery" v-model="form.gallery" :disabled="!canModify" />
-        </card>
+          <Gallery ref="gallery" v-model="form.gallery" :disabled="!canModify" />
+        </Card>
       </form>
-    </validation-observer>
+    </ValidationObserver>
   </div>
 </template>
 
@@ -159,7 +166,7 @@
 </i18n>
 
 <script lang="ts">
-import mixins from 'vue-typed-mixins'
+import { defineComponent } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import cloneDeep from 'lodash/cloneDeep'
 import { Product, ProductCreateDto } from '@heseya/store-core'
@@ -174,8 +181,10 @@ import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordi
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 import AttributesConfigurator from '@/components/modules/attributes/configurator/Configurator.vue'
 import WarehouseItemsConfigurator from '@/components/modules/products/WarehouseItemsConfigurator.vue'
+import AbsoluteContentLangSwitch from '@/components/lang/AbsoluteContentLangSwitch.vue'
 
 import ProductBasicDetails from '@/components/modules/products/view/ProductBasicDetails.vue'
+import PublishedLangsForm from '@/components/lang/PublishedLangsForm.vue'
 import ProductAdvancedDetails from '@/components/modules/products/view/ProductAdvancedDetails.vue'
 import ProductAsideDetails from '@/components/modules/products/view/ProductAsideDetails.vue'
 import ProductAdditionalDescriptions from '@/components/modules/products/descriptions/List.vue'
@@ -190,11 +199,18 @@ import { updateProductAttributeOptions } from '@/services/updateProductAttribute
 
 import { UUID } from '@/interfaces/UUID'
 import { ProductComponentForm } from '@/interfaces/Product'
+import { TranslationsFromDto } from '@/interfaces/Translations'
+
+const EMPTY_PRODUCT_TRANSLATIONS: TranslationsFromDto<ProductCreateDto> = {
+  name: '',
+  description_html: '',
+  description_short: '',
+}
 
 const EMPTY_FORM: ProductComponentForm = {
-  name: '',
   slug: '',
   price: 0,
+  name: '',
   description_html: '',
   description_short: '',
   vat_rate: 0,
@@ -214,14 +230,11 @@ const EMPTY_FORM: ProductComponentForm = {
   descriptions: [],
   attachments: [],
   related_sets: [],
+  published: [],
+  translations: {},
 }
 
-export default mixins(preventLeavingPage).extend({
-  metaInfo(this: any): any {
-    return {
-      title: (!this.isNew && this.product?.name) || (this.$t('titleNew') as string),
-    }
-  },
+export default defineComponent({
   components: {
     TopNav,
     Gallery,
@@ -241,8 +254,19 @@ export default mixins(preventLeavingPage).extend({
     ProductAdditionalDescriptions,
     ProductAttachments,
     ProductRelatedSets,
+    PublishedLangsForm,
+    AbsoluteContentLangSwitch,
+  },
+
+  mixins: [preventLeavingPage],
+
+  metaInfo(this: any): any {
+    return {
+      title: (!this.isNew && this.product?.name) || (this.$t('titleNew') as string),
+    }
   },
   data: () => ({
+    editedLang: '',
     form: cloneDeep(EMPTY_FORM),
   }),
   computed: {
@@ -264,6 +288,15 @@ export default mixins(preventLeavingPage).extend({
     canModify(): boolean {
       return this.$can(this.isNew ? this.$p.Products.Add : this.$p.Products.Edit)
     },
+
+    formDescriptionHtml: {
+      get(): string {
+        return this.form.translations?.[this.editedLang]?.description_html || ''
+      },
+      set(value: string) {
+        this.form.translations[this.editedLang].description_html = value
+      },
+    },
   },
   watch: {
     product(product: Product) {
@@ -274,7 +307,9 @@ export default mixins(preventLeavingPage).extend({
           shipping_digital: (+product.shipping_digital).toString() as '0' | '1',
           purchase_limit_per_user: product.purchase_limit_per_user || 0,
           seo: product.seo || {},
+          translations: product.translations || {},
         }
+        this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
       }
     },
     error(error) {
@@ -288,8 +323,18 @@ export default mixins(preventLeavingPage).extend({
   },
   async created() {
     await this.fetch()
+    this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
   },
   methods: {
+    setEditedLang(langId: string) {
+      this.editedLang = langId
+
+      if (!this.form?.translations) this.$set(this.form, 'translations', {})
+      this.$set(this.form.translations!, langId, {
+        ...EMPTY_PRODUCT_TRANSLATIONS,
+        ...this.form?.translations?.[langId],
+      })
+    },
     async fetch() {
       this.form = cloneDeep(EMPTY_FORM)
       if (this.isNew) return
@@ -380,6 +425,11 @@ export default mixins(preventLeavingPage).extend({
 </script>
 
 <style lang="scss">
+.product-page-wrapper {
+  position: relative;
+  margin-right: 24px;
+}
+
 .product-page {
   display: grid;
   grid-template-rows: auto;

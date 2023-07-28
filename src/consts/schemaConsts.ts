@@ -1,24 +1,32 @@
 import { cloneDeep } from 'lodash'
 import { SchemaType, SchemaOptionDto, WarehouseItem, SchemaCreateDto } from '@heseya/store-core'
+import { TranslationsFromDto } from '@/interfaces/Translations'
 
-export const CLEAR_OPTION: SchemaOptionDto & {
+export const CLEAR_SCHEMA_OPTION: SchemaOptionDto & {
   items: WarehouseItem[]
   default: boolean
 } = {
+  // TODO: remove name
   name: '',
   default: false,
   disabled: false,
   available: false,
   price: 0,
   items: [],
+  translations: {},
 }
 
-export const CLEAR_FORM: SchemaCreateDto = {
+export const CLEAR_SCHEMA_OPTION_TRANSLATION: TranslationsFromDto<SchemaOptionDto> = {
+  name: '',
+}
+
+export const CLEAR_SCHEMA: SchemaCreateDto = {
+  // TODO: remove name and description
+  name: '',
+  description: '',
   available: true,
   products: [],
-  name: '',
   type: SchemaType.Select,
-  description: '',
   price: 0,
   hidden: false,
   required: true,
@@ -29,5 +37,12 @@ export const CLEAR_FORM: SchemaCreateDto = {
   pattern: '',
   validation: '',
   used_schemas: [],
-  options: [cloneDeep(CLEAR_OPTION)],
+  options: [cloneDeep(CLEAR_SCHEMA_OPTION)],
+  published: [],
+  translations: {},
+}
+
+export const CLEAR_SCHEMA_TRANSLATION: TranslationsFromDto<SchemaCreateDto> = {
+  name: '',
+  description: '',
 }

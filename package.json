@@ -17,7 +17,7 @@
     "lint:eslint:fix": "eslint --ext .js,.ts,.vue --fix ./src"
   },
   "dependencies": {
-    "@heseya/store-core": "6.0.0-lang.9",
+    "@heseya/store-core": "6.0.0-lang.10",
     "@sentry/tracing": "^7.6.0",
     "@sentry/vue": "^7.6.0",
     "ant-design-vue": "^1.7.8",
@@ -46,7 +46,6 @@
     "vue-meta": "^2.4.0",
     "vue-router": "^3.5.4",
     "vue-toast-notification": "^0.6.3",
-    "vue-typed-mixins": "^0.2.0",
     "vue-xlsx": "^0.2.1",
     "vuedraggable": "^2.24.3",
     "vuex": "^3.6.2",

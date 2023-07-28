@@ -144,8 +144,11 @@ import ContentLangSwitch from '@/components/lang/ContentLangSwitch.vue'
 import TagsEditor from './TagsEditor.vue'
 
 import { UUID } from '@/interfaces/UUID'
+import { TranslationsCreateDto } from '@heseya/store-core'
+import { TranslationsFromDto } from '@/interfaces/Translations'
 
-type SeoMeta = SeoMetadata & SeoMetadataDto
+type SeoMeta = Omit<SeoMetadata & SeoMetadataDto, 'translations'> &
+  TranslationsCreateDto<TranslationsFromDto<SeoMetadataDto>>
 
 export const CLEAR_SEO_FORM: SeoMeta = {
   title: '',
@@ -211,8 +214,6 @@ export default defineComponent({
         return this.form.translations?.[this.editedLang]?.title || ''
       },
       set(value: string) {
-        // eslint-disable-next-line no-console
-        if (!this.form.translations) return console.error('Translations not defined in SEO!')
         this.form.translations[this.editedLang].title = value
       },
     },
@@ -221,8 +222,6 @@ export default defineComponent({
         return this.form.translations?.[this.editedLang]?.description || ''
       },
       set(value: string) {
-        // eslint-disable-next-line no-console
-        if (!this.form.translations) return console.error('Translations not defined in SEO!')
         this.form.translations[this.editedLang].description = value
       },
     },
@@ -231,8 +230,6 @@ export default defineComponent({
         return this.form.translations?.[this.editedLang]?.keywords || []
       },
       set(value: string[]) {
-        // eslint-disable-next-line no-console
-        if (!this.form.translations) return console.error('Translations not defined in SEO!')
         this.form.translations[this.editedLang].keywords = value
       },
     },
@@ -241,8 +238,6 @@ export default defineComponent({
         return this.form.translations?.[this.editedLang]?.no_index ?? false
       },
       set(value: boolean) {
-        // eslint-disable-next-line no-console
-        if (!this.form.translations) return console.error('Translations not defined in SEO!')
         this.form.translations[this.editedLang].no_index = value
       },
     },

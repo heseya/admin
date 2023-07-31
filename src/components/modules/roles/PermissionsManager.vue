@@ -69,7 +69,8 @@
       "webhooks": "Webhooki",
       "events": "Wydarzenia aktywujące Webhooki",
       "seo": "SEO",
-      "attributes": "Cechy"
+      "attributes": "Cechy",
+      "languages": "Języki"
     }
   },
   "en": {
@@ -109,7 +110,8 @@
       "webhooks": "Webhooks",
       "events": "Webhooks events",
       "seo": "SEO",
-      "attributes": "Attributes"
+      "attributes": "Attributes",
+      "languages": "Languages"
     }
   }
 }

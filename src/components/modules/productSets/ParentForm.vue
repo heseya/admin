@@ -41,18 +41,17 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { ProductSet, ProductSetUpdateDto } from '@heseya/store-core'
+import { ProductSet, ProductSetList } from '@heseya/store-core'
 
 import AutocompleteInput from '../../AutocompleteInput.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
-import { UUID } from '@/interfaces/UUID'
 
 export default defineComponent({
   components: { AutocompleteInput },
   props: {
     set: {
-      type: Object as PropType<ProductSetUpdateDto & { id?: UUID }>,
+      type: Object as PropType<ProductSetList>,
       required: true,
     },
     isOpen: {
@@ -81,7 +80,6 @@ export default defineComponent({
         await this.$accessor.productSets.update({
           id: this.set.id as string,
           item: {
-            ...this.set,
             parent_id: this.selectedParent.id,
           },
         })

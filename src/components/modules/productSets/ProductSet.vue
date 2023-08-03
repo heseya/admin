@@ -167,7 +167,7 @@
 import { defineComponent, PropType } from 'vue'
 import Draggable from 'vuedraggable'
 import { cloneDeep } from 'lodash'
-import { ProductSet, ProductSetUpdateDto, ProductSetList } from '@heseya/store-core'
+import { ProductSetUpdateDto, ProductSetList } from '@heseya/store-core'
 import { sdk } from '@/api'
 
 import Loading from '@/components/layout/Loading.vue'
@@ -184,7 +184,7 @@ export default defineComponent({
   components: { Draggable, PopConfirm, SetProductsList, ChangeParentForm, Loading },
   props: {
     set: {
-      type: Object as PropType<ProductSet>,
+      type: Object as PropType<ProductSetList>,
       required: true,
     },
     searchable: {
@@ -204,8 +204,8 @@ export default defineComponent({
     limit: 50,
     children: [] as ProductSetList[],
     searchedChildren: [] as ProductSetList[],
-    selectedSet: null as null | ProductSet,
-    selectedChildren: null as null | ProductSet,
+    selectedSet: null as null | ProductSetList,
+    selectedChildren: null as null | ProductSetList,
     editedItem: cloneDeep(CLEAR_PRODUCT_SET_FORM) as ProductSetUpdateDto,
     editedItemSlugPrefix: '' as string,
     areChildrenVisible: false,

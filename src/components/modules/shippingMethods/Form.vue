@@ -9,11 +9,11 @@
           :label="$t('form.shippingType').toString()"
         >
           <a-select-option
-            v-for="type in Object.values(ShippingType)"
-            :key="type"
-            :label="$t(`shippingTypes.${type}`)"
+            v-for="shippingType in Object.values(ShippingType)"
+            :key="shippingType"
+            :label="$t(`shippingTypes.${shippingType}`)"
           >
-            {{ $t(`shippingTypes.${type}`) }}
+            {{ $t(`shippingTypes.${shippingType}`) }}
           </a-select-option>
         </app-select>
       </div>
@@ -46,9 +46,20 @@
 
       <hr />
 
-      <validation-provider ref="priceRange" v-slot="{ errors }" rules="price-ranges-duplicates">
-        <PriceRangesForm v-model="form.price_ranges" :disabled="disabled" :error="errors[0]" />
-      </validation-provider>
+      <ValidationProvider
+        v-for="currency in $accessor.config.currencies"
+        :key="currency.code"
+        ref="priceRange"
+        v-slot="{ errors }"
+        :rules="`price-ranges-duplicates:${currency.code}`"
+      >
+        <PriceRangesForm
+          v-model="form.price_ranges"
+          :disabled="disabled"
+          :error="errors[0]"
+          :currency="currency"
+        />
+      </ValidationProvider>
 
       <hr />
 
@@ -141,7 +152,7 @@
     "form": {
       "shippingType": "Typ dostawy",
       "paymentMethods": "Dostępne metody płatności",
-      "public": "Widoczność opcji dostawy",
+      "public": "Widoczność metody dostawy",
       "deliveryTime": "Czas dostawy",
       "minDeliveryDays": "Minimalna ilość dni dostawy",
       "maxDeliveryDays": "Maksymalna ilość dni dostawy",
@@ -157,7 +168,7 @@
     "form": {
       "shippingType": "Shipping type",
       "paymentMethods": "Available payment methods",
-      "public": "Shipping option visibility",
+      "public": "Shipping method visibility",
       "deliveryTime": "Delivery time",
       "minDeliveryDays": "Minimal number of days of delivery",
       "maxDeliveryDays": "Maximum number of days of delivery",
@@ -246,7 +257,7 @@ export default defineComponent({
       deep: true,
       handler() {
         // @ts-ignore
-        this.$refs.priceRange.validate()
+        this.$refs.priceRange.forEach((slot) => slot.validate())
       },
     },
   },

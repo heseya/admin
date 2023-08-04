@@ -48,7 +48,12 @@
         width="660px"
         :title="editedItem.id ? $t('editTitle') : $t('newTitle')"
       >
-        <ShippingMethodsForm v-model="editedItem" :countries="countries" :disabled="!canModify" />
+        <ShippingMethodsForm
+          :key="editedItem.id || 'new'"
+          v-model="editedItem"
+          :countries="countries"
+          :disabled="!canModify"
+        />
         <template v-if="selectedItem">
           <hr />
           <MetadataForm
@@ -164,6 +169,7 @@ import { UUID } from '@/interfaces/UUID'
 import { TableConfig } from '@/interfaces/CmsTable'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 import CmsTableCellList from '@/components/cms/CmsTableCellList.vue'
+import { formatPrice } from '@/utils/currency'
 
 export default defineComponent({
   metaInfo(this: any) {
@@ -220,7 +226,12 @@ export default defineComponent({
             render: (countries: ShippingMethod['countries']) => countries.map(({ name }) => name),
             wordBreak: 'break-word',
           },
-          { key: 'price', label: this.$t('headers.basePrice') as string, width: '1fr' },
+          {
+            key: 'prices',
+            label: this.$t('headers.basePrice') as string,
+            width: '1fr',
+            render: (_, method) => method.prices.map((p) => formatPrice(p)).join(' | '),
+          },
           {
             key: 'shipping_time_min',
             label: this.$t('headers.minShippingTime') as string,
@@ -253,9 +264,10 @@ export default defineComponent({
           ...item,
           payment_methods: item.payment_methods.map(({ id }) => id),
           countries: item.countries.map(({ code }) => code),
-          price_ranges: item.price_ranges.map(({ start, prices }) => ({
-            start,
-            value: prices[0].value,
+          price_ranges: item.price_ranges.map(({ start, value }) => ({
+            start: start.gross,
+            value: value.gross,
+            currency: value.currency,
           })),
           shipping_points: item.shipping_points?.map((point) => omit(point, 'id')),
         }
@@ -269,12 +281,11 @@ export default defineComponent({
           countries: [],
           shipping_time_min: 0,
           shipping_time_max: 0,
-          price_ranges: [
-            {
-              start: 0,
-              value: 0,
-            },
-          ],
+          price_ranges: this.$accessor.config.currencies.map(({ code }) => ({
+            start: '0',
+            value: '0',
+            currency: code,
+          })),
           public: true,
           shipping_points: [],
         }
@@ -288,7 +299,15 @@ export default defineComponent({
 
         await this.$accessor.shippingMethods.update({
           id: this.editedItem.id,
-          item: this.editedItem,
+          item: {
+            ...this.editedItem,
+            price_ranges: this.editedItem.price_ranges.map(({ start, value, currency }) => ({
+              // Ensure this is a string
+              start: start.toString(),
+              value: value.toString(),
+              currency,
+            })),
+          },
         })
 
         this.$toast.success(this.$t('alerts.updated') as string)

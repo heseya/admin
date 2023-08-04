@@ -52,9 +52,8 @@ export const getApiURL = () => {
       return 'https://release-4-0-0.***REMOVED***'
     case '***REMOVED***':
       return '***REMOVED***'
-    case 'store-admin-git-feature-languages-***REMOVED***':
-    case 'store-admin-git-feature-hes-358-***REMOVED***': // TODO: remove this
-      return 'https://feature-languages.***REMOVED***'
+    case '***REMOVED***':
+      return '***REMOVED***'
     default:
       return import.meta.env.VITE_API_URL || '***REMOVED***'
   }

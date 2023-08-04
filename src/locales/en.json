@@ -70,7 +70,8 @@
     "languages": "Languages",
     "banners": "Banners",
     "attributes": "Attributes",
-    "media": "Media"
+    "media": "Media",
+    "currencies": "Currencies"
   },
   "attributeTypes": {
     "single-option": "Text single choice",

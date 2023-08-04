@@ -219,6 +219,15 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/settings/currencies',
+      name: 'Currencies',
+      component: () => import('./views/settings/Currencies.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [],
+      },
+    },
+    {
       path: '/settings/banners/:id',
       name: 'BannersView',
       component: () => import('./views/banners/view.vue'),

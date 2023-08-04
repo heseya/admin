@@ -4,6 +4,8 @@ import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 import { accessor } from './index'
 import { getApiURL } from '@/utils/api'
 import { getDefaultUiLanguage } from '@/utils/i18n'
+import { Currency } from '@heseya/store-core'
+import { sdk } from '@/api'
 
 const state = () => ({
   currency: 'PLN',
@@ -11,6 +13,7 @@ const state = () => ({
   uiLanguage: getDefaultUiLanguage(),
   // TODO: should be renamed to 'settings'
   env: {} as Record<string, string>,
+  currencies: [] as Currency[],
 })
 
 const getters = getterTree(state, {})
@@ -18,6 +21,9 @@ const getters = getterTree(state, {})
 const mutations = mutationTree(state, {
   SET_SETTINGS(state, newSettings: Record<string, string>) {
     state.env = newSettings
+  },
+  SET_CURRENCIES(state, currencies: Currency[]) {
+    state.currencies = currencies
   },
   SET_API_LANGUAGE(state, language: string) {
     state.apiLanguage = language
@@ -51,6 +57,16 @@ const actions = actionTree(
       if (!state.apiLanguage || !apiLanguage) {
         const defaultLang = languages.find((l) => l.default)
         if (defaultLang) commit('SET_API_LANGUAGE', defaultLang.iso)
+      }
+    },
+
+    async fetchCurrencies({ commit }) {
+      try {
+        const data = await sdk.Currencies.get({})
+        commit('SET_CURRENCIES', data)
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('Failed to fetch currencies', e)
       }
     },
   },

@@ -6,8 +6,9 @@
   "author": "Heseya",
   "scripts": {
     "dev": "vite --port 8080",
+    "serve": "yarn dev",
     "build": "vite build",
-    "serve": "vite preview",
+    "preview": "vite preview",
     "test:unit": "jest ./src",
     "test:e2e": "VITE_I18N_LOCALE=en yarn build && start-server-and-test 'yarn serve --port 8000' 8000 'yarn cypress run'",
     "test": "yarn test:unit && yarn test:e2e",

@@ -1,3 +1,5 @@
+import { Price } from '@heseya/store-core'
+
 const formattersMap = new Map<string, Intl.NumberFormat>()
 
 export const formatCurrency = (value: number, currency: string) => {
@@ -12,4 +14,9 @@ export const formatCurrency = (value: number, currency: string) => {
   formattersMap.set(currency, formatter)
 
   return formatter.format(value ?? 0)
+}
+
+export const formatPrice = (price: Price) => {
+  const { gross, currency } = price
+  return formatCurrency(parseFloat(gross), currency)
 }

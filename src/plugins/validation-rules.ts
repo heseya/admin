@@ -165,14 +165,17 @@ extend('time-same-or-before', {
 
 extend('price-ranges-duplicates', {
   message: () => i18n.t('validation.priceRangesDuplicates') as string,
-  validate: (priceRanges: ShippingMethodPriceRangeDto[]) => {
+  params: ['target'],
+  validate: (priceRanges: ShippingMethodPriceRangeDto[], { target }: Record<string, any>) => {
     const startValues: number[] = []
 
-    return priceRanges.every(({ start }) => {
-      const isDuplicate = startValues.includes(+start)
-      startValues.push(+start)
-      return !isDuplicate
-    })
+    return priceRanges
+      .filter(({ currency }) => currency === target)
+      .every(({ start }) => {
+        const isDuplicate = startValues.includes(+start)
+        startValues.push(+start)
+        return !isDuplicate
+      })
   },
 })
 

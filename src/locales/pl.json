@@ -70,7 +70,8 @@
     "languages": "Języki",
     "banners": "Bannery",
     "attributes": "Cechy",
-    "media": "Media"
+    "media": "Media",
+    "currencies": "Waluty"
   },
   "attributeTypes": {
     "single-option": "Tekstowy jednokrotnego wyboru",

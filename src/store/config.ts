@@ -22,6 +22,9 @@ const mutations = mutationTree(state, {
   SET_SETTINGS(state, newSettings: Record<string, string>) {
     state.env = newSettings
   },
+  SET_CURRENCY(state, currencyCode: string) {
+    state.currency = currencyCode
+  },
   SET_CURRENCIES(state, currencies: Currency[]) {
     state.currencies = currencies
   },

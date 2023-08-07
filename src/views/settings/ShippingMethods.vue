@@ -230,7 +230,13 @@ export default defineComponent({
             key: 'prices',
             label: this.$t('headers.basePrice') as string,
             width: '1fr',
-            render: (_, method) => method.prices.map((p) => formatPrice(p)).join(' | '),
+            render: (_, method) =>
+              formatPrice(
+                method.prices.find((p) => p.currency === this.$accessor.config.currency) || {
+                  gross: '0',
+                  currency: this.$accessor.config.currency,
+                },
+              ),
           },
           {
             key: 'shipping_time_min',

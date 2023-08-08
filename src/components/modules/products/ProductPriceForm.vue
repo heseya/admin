@@ -35,7 +35,7 @@ import { PropType, defineComponent } from 'vue'
 import { Currency } from '@heseya/store-core'
 
 import { ProductComponentForm } from '@/interfaces/Product'
-import { parsePrices } from '@/utils/currency'
+import { parsePriceDtos } from '@/utils/currency'
 
 export default defineComponent({
   props: {
@@ -66,7 +66,7 @@ export default defineComponent({
 
   methods: {
     getPriceValue(currency: string): number {
-      return parsePrices(this.form.prices_base, currency)
+      return parsePriceDtos(this.form.prices_base, currency)
     },
     setPriceValue(currency: string, value: number) {
       const pricesCopy = [...this.form.prices_base]
@@ -75,10 +75,10 @@ export default defineComponent({
       if (currencyIndex === -1) {
         pricesCopy.push({
           currency,
-          gross: value.toString(),
+          value: value.toString(),
         })
       } else {
-        pricesCopy[currencyIndex].gross = value.toString()
+        pricesCopy[currencyIndex].value = value.toString()
       }
 
       this.form.prices_base = pricesCopy

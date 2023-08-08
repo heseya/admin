@@ -209,7 +209,7 @@ const EMPTY_PRODUCT_TRANSLATIONS: TranslationsFromDto<ProductCreateDto> = {
 
 const EMPTY_FORM: ProductComponentForm = {
   slug: '',
-  price: 0,
+  prices_base: [],
   name: '',
   description_html: '',
   description_short: '',
@@ -308,6 +308,8 @@ export default defineComponent({
           purchase_limit_per_user: product.purchase_limit_per_user || 0,
           seo: product.seo || {},
           translations: product.translations || {},
+          prices_base:
+            product.prices_base.map((p) => ({ value: p.gross, currency: p.currency })) || [],
         }
         this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
       }

@@ -1,10 +1,8 @@
 <template>
   <div class="product-price">
     <component :is="tag" class="product-price__price">
-      {{ formatCurrency(product.price_min) }}
-      <template v-if="product.price_min !== product.price_max">
-        - {{ formatCurrency(product.price_max) }}
-      </template>
+      {{ formatCurrency(priceMin) }}
+      <template v-if="priceMin !== priceMax"> - {{ formatCurrency(priceMax) }} </template>
     </component>
 
     <component
@@ -12,9 +10,9 @@
       v-if="isDiscounted"
       class="product-price__price product-price__price--discounted"
     >
-      {{ formatCurrency(product.price_min_initial) }}
-      <template v-if="product.price_min_initial !== product.price_max_initial">
-        - {{ formatCurrency(product.price_max_initial) }}
+      {{ formatCurrency(priceMinInitial) }}
+      <template v-if="priceMinInitial !== priceMaxInitial">
+        - {{ formatCurrency(priceMaxInitial) }}
       </template>
     </component>
   </div>
@@ -24,7 +22,7 @@
 import { defineComponent, PropType } from 'vue'
 import { Product } from '@heseya/store-core'
 
-import { formatCurrency } from '@/utils/currency'
+import { formatCurrency, parsePrices } from '@/utils/currency'
 
 export default defineComponent({
   props: {
@@ -38,16 +36,30 @@ export default defineComponent({
     },
   },
   computed: {
+    currency(): string {
+      return this.$accessor.config.currency
+    },
+
+    priceMin(): number {
+      return parsePrices(this.product.prices_min, this.currency)
+    },
+    priceMax(): number {
+      return parsePrices(this.product.prices_max, this.currency)
+    },
+    priceMinInitial(): number {
+      return parsePrices(this.product.prices_min_initial, this.currency)
+    },
+    priceMaxInitial(): number {
+      return parsePrices(this.product.prices_max_initial, this.currency)
+    },
+
     isDiscounted(): boolean {
-      return (
-        this.product.price_max < this.product.price_max_initial ||
-        this.product.price_min < this.product.price_min_initial
-      )
+      return this.priceMax < this.priceMaxInitial || this.priceMin < this.priceMinInitial
     },
   },
   methods: {
     formatCurrency(amount: number) {
-      return formatCurrency(amount, this.$accessor.config.currency)
+      return formatCurrency(amount, this.currency)
     },
   },
 })

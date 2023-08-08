@@ -20,3 +20,6 @@ export const formatPrice = (price: Price) => {
   const { gross, currency } = price
   return formatCurrency(parseFloat(gross), currency)
 }
+
+export const parsePrices = (prices: Price[], currency: string) =>
+  parseFloat((prices || []).find((price) => price.currency === currency)?.gross || '0') || 0

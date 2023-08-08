@@ -60,13 +60,13 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
+import { LanguageCreateDto } from '@heseya/store-core'
 
 import ModalForm from '@/components/form/ModalForm.vue'
 import ValidatedInput from '@/components/form/ValidatedInput.vue'
-import { LanguageDto } from '@/interfaces/Language'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     ModalForm,
     ValidatedInput,
@@ -75,7 +75,7 @@ export default Vue.extend({
     value: {
       type: Object,
       required: true,
-    } as Vue.PropOptions<LanguageDto>,
+    } as Vue.PropOptions<LanguageCreateDto>,
     disabled: {
       type: Boolean,
       default: false,
@@ -83,10 +83,17 @@ export default Vue.extend({
   },
   computed: {
     form: {
-      get(): LanguageDto {
-        return this.value
+      get(): LanguageCreateDto {
+        return (
+          this.value || {
+            name: '',
+            iso: '',
+            default: false,
+            hidden: false,
+          }
+        )
       },
-      set(discount: LanguageDto) {
+      set(discount: LanguageCreateDto) {
         this.$emit('input', discount)
       },
     },

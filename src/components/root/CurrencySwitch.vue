@@ -25,10 +25,10 @@
 </i18n>
 
 <script lang="ts">
+import { defineComponent } from 'vue'
 import { Currency } from '@heseya/store-core'
-import Vue from 'vue'
 
-export default Vue.extend({
+export default defineComponent({
   computed: {
     currencies(): Currency[] {
       return this.$accessor.config.currencies

@@ -1,19 +1,15 @@
 <template>
   <div class="currency-switch">
-    <a-tooltip>
-      <app-select v-model="selectedCurrency" class="currency-switch__select">
-        <a-select-option
-          v-for="currency in currencies"
-          :key="currency.code"
-          :value="currency.code"
-          :label="currency.name"
-        >
-          <span class="currency-switch__option"> {{ currency.name }} </span>
-        </a-select-option>
-      </app-select>
-
-      <template #title> {{ $t('name') }}</template>
-    </a-tooltip>
+    <app-select v-model="selectedCurrency" class="currency-switch__select">
+      <a-select-option
+        v-for="currency in currencies"
+        :key="currency.code"
+        :value="currency.code"
+        :label="currency.name"
+      >
+        <span class="currency-switch__option"> {{ $t('name') }}: {{ currency.name }} </span>
+      </a-select-option>
+    </app-select>
   </div>
 </template>
 

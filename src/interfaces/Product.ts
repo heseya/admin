@@ -20,10 +20,11 @@ export interface ProductComponentForm
       | 'category'
       | 'cover'
       | 'visible'
-      | 'price_min'
-      | 'price_max'
-      | 'price_max_initial'
-      | 'price_min_initial'
+      | 'prices_base'
+      | 'prices_min'
+      | 'prices_max'
+      | 'prices_max_initial'
+      | 'prices_min_initial'
       | 'has_schemas'
       | 'availability'
       | 'available'
@@ -42,4 +43,5 @@ export interface ProductComponentForm
   sets: UUID[]
   shipping_digital: '0' | '1'
   seo?: SeoMetadataDto
+  prices_base: ProductCreateDto['prices_base']
 }

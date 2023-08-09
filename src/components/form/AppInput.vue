@@ -44,7 +44,6 @@ export default defineComponent({
     'rows',
     'loading',
     'addonBefore',
-    'addonAfter',
   ],
   computed: {
     innerValue: {

@@ -40,6 +40,7 @@ export default defineComponent({
     'disabled',
     'allowClear',
     'addonBefore',
+    'addonAfter',
   ],
 })
 </script>

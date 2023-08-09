@@ -20,15 +20,7 @@
     />
 
     <div class="product-basic-details__price-row">
-      <validated-input
-        v-model="form.price"
-        rules="required|not-negative"
-        type="number"
-        step="0.01"
-        :label="$t('form.price').toString()"
-        name="price"
-        :disabled="disabled"
-      />
+      <ProductPriceForm v-model="form" :disabled="disabled" />
 
       <validated-input
         v-model="form.vat_rate"
@@ -56,14 +48,12 @@
 {
   "pl": {
     "form": {
-      "price": "Cena brutto",
       "vatRate": "Stawka VAT (%)",
       "shortDescription": "Krótki opis"
     }
   },
   "en": {
     "form": {
-      "price": "Price (gross)",
       "vatRate": "VAT rate (%)",
       "shortDescription": "Short description"
     }
@@ -81,9 +71,10 @@ import Textarea from '@/components/form/Textarea.vue'
 import TagsSelect from '@/components/TagsSelect.vue'
 
 import { generateSlug } from '@/utils/generateSlug'
+import ProductPriceForm from '../ProductPriceForm.vue'
 
 export default defineComponent({
-  components: { ProductSetSelect, AppTextarea: Textarea, TagsSelect },
+  components: { ProductSetSelect, AppTextarea: Textarea, TagsSelect, ProductPriceForm },
   props: {
     value: {
       type: Object as PropType<ProductComponentForm>,

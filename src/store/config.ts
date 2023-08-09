@@ -8,7 +8,7 @@ import { Currency } from '@heseya/store-core'
 import { sdk } from '@/api'
 
 const state = () => ({
-  currency: 'PLN',
+  currency: '',
   apiLanguage: null as null | string,
   uiLanguage: getDefaultUiLanguage(),
   // TODO: should be renamed to 'settings'
@@ -21,6 +21,9 @@ const getters = getterTree(state, {})
 const mutations = mutationTree(state, {
   SET_SETTINGS(state, newSettings: Record<string, string>) {
     state.env = newSettings
+  },
+  SET_CURRENCY(state, currencyCode: string) {
+    state.currency = currencyCode
   },
   SET_CURRENCIES(state, currencies: Currency[]) {
     state.currencies = currencies
@@ -60,10 +63,12 @@ const actions = actionTree(
       }
     },
 
-    async fetchCurrencies({ commit }) {
+    async fetchCurrencies({ commit, state }) {
       try {
         const data = await sdk.Currencies.get({})
         commit('SET_CURRENCIES', data)
+        if (!state.currency || data.every((c) => c.code !== state.currency))
+          commit('SET_CURRENCY', data[0].code)
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error('Failed to fetch currencies', e)

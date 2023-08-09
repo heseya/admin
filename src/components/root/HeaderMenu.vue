@@ -1,6 +1,7 @@
 <template>
   <div class="header-menu">
     <ApiLangSwitch class="header-menu__lang-select" />
+    <CurrencySwitch class="header-menu__currency-select" />
 
     <router-link class="header-menu__item" to="/settings">
       <i class="header-menu__item-icon bx bx-cog"></i> {{ $t('settings') }}
@@ -29,9 +30,10 @@
 import { defineComponent } from 'vue'
 
 import ApiLangSwitch from '@/components/lang/ApiLangSwitch.vue'
+import CurrencySwitch from './CurrencySwitch.vue'
 
 export default defineComponent({
-  components: { ApiLangSwitch },
+  components: { ApiLangSwitch, CurrencySwitch },
 
   methods: {
     async logout() {

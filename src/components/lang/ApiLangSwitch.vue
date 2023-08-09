@@ -38,9 +38,9 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 
-export default Vue.extend({
+export default defineComponent({
   computed: {
     languages() {
       return this.$accessor.languages.data.filter((lang) => !lang.hidden)

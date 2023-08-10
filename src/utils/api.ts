@@ -1,8 +1,6 @@
 export const getApiURL = () => {
   switch (window.location.host) {
     // Production clients
-    case 'admin.***REMOVED***.pl':
-      return 'https://api.***REMOVED***.pl'
     case '***REMOVED***':
       return '***REMOVED***'
     case '***REMOVED***':

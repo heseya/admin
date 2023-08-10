@@ -7,6 +7,7 @@
     <button
       v-for="lang in languages"
       :key="lang.id"
+      type="button"
       class="content-lang-switch__button"
       :class="{ 'content-lang-switch__button--active': value === lang.id }"
       :value="lang.iso"

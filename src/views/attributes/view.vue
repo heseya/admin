@@ -34,9 +34,9 @@
 <i18n lang="json">
 {
   "pl": {
-    "newTitle": "Nowa cecha",
+    "newTitle": "Nowa atrybut",
     "deleteText": "Czy na pewno chcesz usunąć tą cechę?",
-    "deletedMessage": "Cecha została usunięty"
+    "deletedMessage": "Atrybut została usunięty"
   },
   "en": {
     "newTitle": "New attribute",

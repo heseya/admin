@@ -70,14 +70,14 @@
   "pl": {
     "form": {
       "slug": "Skrócona nazwa",
-      "global": "Globalna cecha",
-      "globalTooltip": "Globalna cecha oznacza, że po danej cesze można filtrować produkty niezależnie od kolekcji w której się one znajdują.",
-      "sortable": "Sortowalna cecha",
-      "sortableTooltip": "Sortowalna cecha oznacza, że po danej cesze można sortować listę produktów."
+      "global": "Globalna atrybut",
+      "globalTooltip": "Globalna atrybut oznacza, że po danej cesze można filtrować produkty niezależnie od kolekcji w której się one znajdują.",
+      "sortable": "Sortowalna atrybut",
+      "sortableTooltip": "Sortowalna atrybut oznacza, że po danej cesze można sortować listę produktów."
     },
     "alerts": {
-      "created": "Cecha została utworzona.",
-      "updated": "Cecha została zaktualizowana."
+      "created": "Atrybut została utworzona.",
+      "updated": "Atrybut została zaktualizowana."
     }
   },
   "en": {

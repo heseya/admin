@@ -77,11 +77,11 @@
     "copySuccess": "Attribute value has been copied!"
   },
   "pl": {
-    "title": "Cechy produktu",
+    "title": "Atrybuty produktu",
     "addAttribute": "Dodaj cechę",
-    "noAttributesInProduct": "Ten produkt nie ma jeszcze żadnej cechy",
-    "globalTooltip": "Globalna cecha jest automatycznie dodawana do wszystkich produktów",
-    "copySuccess": "Wartość cechy została skopiowana!"
+    "noAttributesInProduct": "Ten produkt nie ma jeszcze żadnego atrybutu",
+    "globalTooltip": "Globalna atrybut jest automatycznie dodawana do wszystkich produktów",
+    "copySuccess": "Wartość atrybutów została skopiowana!"
   }
 }
 </i18n>

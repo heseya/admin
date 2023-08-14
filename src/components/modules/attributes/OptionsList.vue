@@ -87,7 +87,7 @@
 <i18n lang="json">
 {
   "pl": {
-    "title": "Opcje cechy",
+    "title": "Opcje atrybutów",
     "add": "Dodaj opcję",
     "empty": "Brak opcji",
     "deleteText": "Czy na pewno chcesz usunąć tę opcję?",

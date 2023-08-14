@@ -3,12 +3,14 @@
     :visible="!!editedOption"
     :title="editedOption && editedOption.id ? $t('edit') : $t('add')"
     :footer="null"
-    @cancel="editedOption = null"
+    @cancel="close"
   >
     <template v-if="editedOption">
+      <ContentLangSwitch :value="editedLang" transparent @input="setEditedLang" />
+
       <validated-input
         v-if="type !== AttributeType.Date"
-        v-model="editedOption.name"
+        v-model="formName"
         :disabled="disabled"
         name="name"
         rules="required"
@@ -72,12 +74,20 @@ import { defineComponent, PropType } from 'vue'
 import { AttributeType, AttributeOptionDto } from '@heseya/store-core'
 
 import { formatApiNotificationError } from '@/utils/errors'
+import { TranslationsFromDto } from '@/interfaces/Translations'
+
+import ContentLangSwitch from '@/components/lang/ContentLangSwitch.vue'
+
+const EMPTY_TRANSLATION: TranslationsFromDto<AttributeOptionDto> = {
+  name: '',
+}
 
 export default defineComponent({
+  components: { ContentLangSwitch },
   props: {
     value: {
-      type: Object as PropType<AttributeOptionDto | null>,
-      default: null,
+      type: Object as PropType<AttributeOptionDto>,
+      required: true,
     },
     attributeId: {
       type: String,
@@ -92,16 +102,28 @@ export default defineComponent({
       default: false,
     },
   },
-
+  data: () => ({
+    editedLang: '',
+  }),
   computed: {
     editedOption: {
-      get(): AttributeOptionDto | null {
+      get(): AttributeOptionDto {
         return this.value
       },
       set(value: AttributeOptionDto) {
         this.$emit('input', value)
       },
     },
+
+    formName: {
+      get(): string {
+        return this.editedOption.translations[this.editedLang]?.name || ''
+      },
+      set(value: string) {
+        this.editedOption.translations[this.editedLang].name = value
+      },
+    },
+
     AttributeType(): typeof AttributeType {
       return AttributeType
     },
@@ -112,28 +134,55 @@ export default defineComponent({
     },
   },
 
+  watch: {
+    editedOption: {
+      handler() {
+        this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
+      },
+      immediate: true,
+    },
+  },
+
   methods: {
+    setEditedLang(langId: string) {
+      this.editedLang = langId
+
+      if (!this.editedOption.translations[langId])
+        this.$set(this.editedOption.translations, langId, { ...EMPTY_TRANSLATION })
+    },
+
+    close() {
+      this.$emit('input', null)
+    },
+
     async saveModalForm() {
       if (!this.editedOption) return
       this.$accessor.startLoading()
-
       try {
         if (this.editedOption.id) {
           const result = await this.$accessor.attributes.updateOption({
             attributeId: this.attributeId,
             optionId: this.editedOption.id,
-            option: this.editedOption,
+            option: {
+              ...this.editedOption,
+              // TODO: temporary, till api will remove requirement for this field
+              published: this.$accessor.languages.data.map((l) => l.id),
+            },
           })
           if (!result.success) throw result.error
         } else {
           const result = await this.$accessor.attributes.addOption({
             attributeId: this.attributeId,
-            option: this.editedOption,
+            option: {
+              ...this.editedOption,
+              // TODO: temporary, till api will remove requirement for this field
+              published: this.$accessor.languages.data.map((l) => l.id),
+            },
           })
           if (!result.success) throw result.error
         }
         this.$toast.success(this.$t('formSuccess') as string)
-        this.editedOption = null
+        this.close()
       } catch (e: any) {
         this.$toast.error(formatApiNotificationError(e))
       }

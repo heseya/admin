@@ -1,5 +1,11 @@
 <template>
-  <div class="content-lang-switch" :class="{ 'content-lang-switch--vertical': vertical }">
+  <div
+    class="content-lang-switch"
+    :class="{
+      'content-lang-switch--vertical': vertical,
+      'content-lang-switch--transparent': transparent,
+    }"
+  >
     <span class="content-lang-switch__title">
       {{ $t('title') }}
     </span>
@@ -53,6 +59,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    transparent: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ['input'],
   computed: {
@@ -82,6 +92,10 @@ export default defineComponent({
   padding: 8px;
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
+
+  &--transparent {
+    background-color: transparent;
+  }
 
   &__title {
     direction: rtl;

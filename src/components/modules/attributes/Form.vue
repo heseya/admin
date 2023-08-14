@@ -63,15 +63,14 @@
 
     <template v-if="!isNew">
       <hr />
-      <OptionsList
-        :attribute-id="attribute.id"
-        :edited-lang="editedLang"
-        :disabled="disabled"
-        :type="form.type"
-      />
+      <OptionsList :attribute-id="attribute.id" :disabled="disabled" :type="form.type" />
     </template>
 
-    <AbsoluteContentLangSwitch :value="editedLang" @input="setEditedLang" />
+    <AbsoluteContentLangSwitch
+      class="attribute-form__lang-switch"
+      :value="editedLang"
+      @input="setEditedLang"
+    />
   </validation-observer>
 </template>
 
@@ -217,6 +216,10 @@ export default defineComponent({
 <style lang="scss">
 .attribute-form {
   position: relative;
+
+  &__lang-switch {
+    left: calc(100% + 16px);
+  }
 
   &__switches {
     display: flex;

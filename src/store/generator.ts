@@ -23,6 +23,11 @@ import {
   InnerModifiedActionTree,
 } from '@/interfaces/VuexGenerator'
 
+export const GLOBAL_QUERY_PARAMS = {
+  lang_fallback: 'any',
+  with_translations: true,
+} as const
+
 /**
  * Creates state, actions and mutation for CRUD methods of given entity
  *
@@ -57,11 +62,6 @@ export const createVuexCRUD =
     },
     queryParams: VuexDefaultCrudParams = {},
   ) => {
-    const GLOBAL_QUERY_PARAMS = {
-      lang_fallback: 'any',
-      with_translations: 1,
-    }
-
     const privateState = {
       fetchAbortController: null as null | AbortController,
     }

@@ -1,7 +1,7 @@
 <template>
   <validation-observer v-slot="{ handleSubmit }" class="attribute-form">
     <validated-input
-      v-model="form.name"
+      v-model="formName"
       :disabled="disabled"
       name="name"
       rules="required"
@@ -21,6 +21,9 @@
       name="description"
       :label="$t('common.form.description').toString()"
     />
+
+    <br />
+    <PublishedLangsForm v-model="form.published" />
 
     <div class="attribute-form__switches">
       <switch-input v-model="form.global" :disabled="disabled" horizontal>
@@ -44,12 +47,12 @@
       :disabled="disabled || !isNew"
     >
       <a-select-option
-        v-for="type in AttributeType"
-        :key="type"
-        :value="type"
-        :label="$t('attributeTypes.' + type)"
+        v-for="t in AttributeType"
+        :key="t"
+        :value="t"
+        :label="$t(`attributeTypes.${t}`)"
       >
-        {{ $t('attributeTypes.' + type) }}
+        {{ $t(`attributeTypes.${t}`) }}
       </a-select-option>
     </app-select>
 
@@ -60,8 +63,15 @@
 
     <template v-if="!isNew">
       <hr />
-      <OptionsList :attribute-id="attribute.id" :disabled="disabled" :type="form.type" />
+      <OptionsList
+        :attribute-id="attribute.id"
+        :edited-lang="editedLang"
+        :disabled="disabled"
+        :type="form.type"
+      />
     </template>
+
+    <AbsoluteContentLangSwitch :value="editedLang" @input="setEditedLang" />
   </validation-observer>
 </template>
 
@@ -100,59 +110,81 @@
 import { defineComponent, PropType } from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import { ValidationObserver } from 'vee-validate'
-import { generateSlug } from '@/utils/generateSlug'
+import { Attribute, AttributeCreateDto, AttributeType } from '@heseya/store-core'
 
-import {
-  Attribute,
-  AttributeCreateDto,
-  AttributeUpdateDto,
-  AttributeType,
-} from '@heseya/store-core'
+import { generateSlug } from '@/utils/generateSlug'
 import { UUID } from '@/interfaces/UUID'
+import { TranslationsFromDto } from '@/interfaces/Translations'
 
 import OptionsList from './OptionsList.vue'
+import PublishedLangsForm from '@/components/lang/PublishedLangsForm.vue'
+import AbsoluteContentLangSwitch from '@/components/lang/AbsoluteContentLangSwitch.vue'
+
+const CLEAR_TRANSLATION_FORM: TranslationsFromDto<AttributeCreateDto> = {
+  name: '',
+}
 
 const CLEAR_FORM: AttributeCreateDto = {
-  name: '',
   slug: '',
   description: '',
   type: AttributeType.SingleOption,
   sortable: false,
   global: false,
+  translations: {},
+  published: [],
 }
 
 export default defineComponent({
   components: {
     ValidationObserver,
     OptionsList,
+    PublishedLangsForm,
+    AbsoluteContentLangSwitch,
   },
   props: {
     attribute: {
       type: Object as PropType<Attribute>,
-      required: true,
+      default: undefined,
     },
     disabled: { type: Boolean, default: false },
   },
   data: () => ({
-    form: {} as (AttributeCreateDto | AttributeUpdateDto) & { id?: UUID },
+    editedLang: '',
+    form: {} as AttributeCreateDto & { id?: UUID },
     AttributeType: AttributeType,
   }),
   computed: {
     isNew(): boolean {
       return !this.form.id
     },
-  },
-  watch: {
-    attribute(v) {
-      this.form = cloneDeep({ ...CLEAR_FORM, ...v })
+
+    formName: {
+      get(): string {
+        return this.form.translations[this.editedLang]?.name || ''
+      },
+      set(value: string) {
+        this.form.translations[this.editedLang].name = value
+      },
     },
   },
-  created() {
-    this.form = cloneDeep({ ...CLEAR_FORM, ...this.attribute })
+  watch: {
+    attribute: {
+      handler(v) {
+        this.form = cloneDeep({ ...CLEAR_FORM, ...v })
+        this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
+      },
+      immediate: true,
+    },
   },
   methods: {
+    setEditedLang(langId: string) {
+      this.editedLang = langId
+      if (!this.form.translations[langId])
+        this.$set(this.form.translations, langId, { ...CLEAR_TRANSLATION_FORM })
+    },
+
     editSlug() {
-      if (this.isNew) this.form.slug = generateSlug(this.form.name)
+      if (this.isNew) this.form.slug = generateSlug(this.formName)
     },
     async submit() {
       this.$accessor.startLoading()
@@ -184,6 +216,8 @@ export default defineComponent({
 
 <style lang="scss">
 .attribute-form {
+  position: relative;
+
   &__switches {
     display: flex;
     justify-content: space-evenly;

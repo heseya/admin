@@ -31,6 +31,7 @@
               v-model="attribute.selected_options"
               :attribute="attribute"
               :type="attribute.type"
+              :edited-lang="editedLang"
             />
           </div>
         </div>
@@ -110,6 +111,10 @@ export default defineComponent({
     SelectTypeInput,
   },
   props: {
+    editedLang: {
+      type: String,
+      required: true,
+    },
     value: {
       type: Array as PropType<ProductAttribute[]>,
       required: true,

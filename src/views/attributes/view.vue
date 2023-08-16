@@ -1,6 +1,6 @@
 <template>
-  <div :key="attribute.id" class="narrower-page">
-    <top-nav :title="!isNew ? attribute.name : $t('newTitle').toString()">
+  <div :key="attribute ? attribute.id : 'new'" class="narrower-page">
+    <top-nav :title="!isNew && attribute ? attribute.name : $t('newTitle').toString()">
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Attributes.Remove"
@@ -21,8 +21,8 @@
     <div class="attribute">
       <card>
         <AttributeForm
-          :key="attribute.id"
-          :attribute="isNew ? {} : attribute"
+          :key="attribute ? attribute.id : 'new'"
+          :attribute="isNew ? undefined : attribute"
           :disabled="!$can(isNew ? $p.Attributes.Edit : $p.Attributes.Add)"
           @submit="onSubmit"
         />
@@ -34,9 +34,9 @@
 <i18n lang="json">
 {
   "pl": {
-    "newTitle": "Nowa cecha",
+    "newTitle": "Nowy atrybut",
     "deleteText": "Czy na pewno chcesz usunąć tą cechę?",
-    "deletedMessage": "Cecha została usunięty"
+    "deletedMessage": "Atrybut została usunięty"
   },
   "en": {
     "newTitle": "New attribute",
@@ -74,8 +74,8 @@ export default defineComponent({
     isNew(): boolean {
       return this.id === 'create'
     },
-    attribute(): Attribute {
-      return this.$accessor.attributes.getSelected || ({} as any)
+    attribute(): Attribute | undefined {
+      return this.$accessor.attributes.getSelected || undefined
     },
     error(): any {
       return this.$accessor.attributes.getError

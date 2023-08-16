@@ -75,7 +75,8 @@
       @input="fetchOptions"
     />
 
-    <options-edit-form
+    <OptionsEditForm
+      v-if="editedOption"
       v-model="editedOption"
       :attribute-id="attributeId"
       :type="type"
@@ -87,7 +88,7 @@
 <i18n lang="json">
 {
   "pl": {
-    "title": "Opcje cechy",
+    "title": "Opcje atrybutów",
     "add": "Dodaj opcję",
     "empty": "Brak opcji",
     "deleteText": "Czy na pewno chcesz usunąć tę opcję?",
@@ -122,9 +123,9 @@ import Pagination from '@/components/cms/Pagination.vue'
 import Loading from '@/components/layout/Loading.vue'
 
 const EMPTY_FORM: AttributeOptionDto = {
-  name: '',
   value_number: null,
   value_date: null,
+  translations: {},
 }
 
 export default defineComponent({
@@ -209,7 +210,10 @@ export default defineComponent({
     },
 
     openEditOptionModal(option: AttributeOption) {
-      this.editedOption = cloneDeep(option)
+      this.editedOption = {
+        ...cloneDeep(option),
+        translations: cloneDeep(option.translations || {}),
+      }
     },
   },
 })

@@ -57,7 +57,7 @@
 <i18n lang="json">
 {
   "pl": {
-    "title": "Cechy produktów",
+    "title": "Atrybuty produktów",
     "add": "Dodaj cechę",
     "form": {
       "global": "Globalny",

@@ -70,7 +70,11 @@
 
           <hr />
 
-          <AttributesConfigurator v-model="form.attributes" :disabled="!canModify" />
+          <AttributesConfigurator
+            v-model="form.attributes"
+            :edited-lang="editedLang"
+            :disabled="!canModify"
+          />
           <hr />
           <SchemaConfigurator v-model="form.schemas" :disabled="!canModify" />
           <hr />

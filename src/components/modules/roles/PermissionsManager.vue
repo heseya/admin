@@ -69,7 +69,7 @@
       "webhooks": "Webhooki",
       "events": "Wydarzenia aktywujące Webhooki",
       "seo": "SEO",
-      "attributes": "Cechy",
+      "attributes": "Atrybuty",
       "languages": "Języki"
     }
   },

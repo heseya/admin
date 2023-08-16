@@ -5,7 +5,7 @@
   "description": "Admin panel for Heseya Store API",
   "author": "Heseya",
   "scripts": {
-    "dev": "vite --port 8080",
+    "dev": "vite --port 8080 --force",
     "serve": "yarn dev",
     "build": "vite build",
     "preview": "vite preview",
@@ -18,7 +18,7 @@
     "lint:eslint:fix": "eslint --ext .js,.ts,.vue --fix ./src"
   },
   "dependencies": {
-    "@heseya/store-core": "6.0.0-dev.3",
+    "@heseya/store-core": "6.0.0-dev.9",
     "@sentry/tracing": "^7.6.0",
     "@sentry/vue": "^7.6.0",
     "ant-design-vue": "^1.7.8",

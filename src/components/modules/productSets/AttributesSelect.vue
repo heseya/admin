@@ -19,8 +19,8 @@
 <i18n lang="json">
 {
   "pl": {
-    "label": "Cechy, po których można filtrować produkty",
-    "placeholder": "Wybierz cechy"
+    "label": "Atrybuty, po których można filtrować produkty",
+    "placeholder": "Wybierz atrybuty"
   },
   "en": {
     "label": "Attributes, by which you can filter products",

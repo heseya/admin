@@ -20,7 +20,12 @@
     "add": "Dodaj kanał",
     "table": {
       "slug": "Identyfikator",
-      "status": "Status",
+      "status": {
+        "title": "Status",
+        "active": "Aktywny",
+        "inactive": "Nieaktywny",
+        "hidden": "Ukryty"
+      },
       "default_currency": "Domyślna waluta",
       "default_language": "Domyślny język"
     }
@@ -30,7 +35,12 @@
     "add": "Add channel",
     "table": {
       "slug": "Identifier",
-      "status": "Status",
+      "status": {
+        "title": "Status",
+        "active": "Active",
+        "inactive": "Inactive",
+        "hidden": "Hidden"
+      },
       "default_currency": "Default currency",
       "default_language": "Default language"
     }
@@ -48,7 +58,7 @@ import { TableConfig } from '@/interfaces/CmsTable'
 
 export default defineComponent({
   metaInfo(this: any) {
-    return { title: this.$t('title') as string }
+    return { title: this.$t('title').toString() }
   },
 
   components: {
@@ -60,11 +70,24 @@ export default defineComponent({
       return {
         rowUrlBuilder: (row) => `/settings/sales-channels/${row.id}`,
         headers: [
-          { key: 'name', label: this.$t('common.form.name') as string },
-          { key: 'slug', label: this.$t('table.slug') as string },
-          { key: 'status', label: this.$t('table.status') as string },
-          { key: 'default_currency', label: this.$t('table.default_currency') as string },
-          { key: 'default_language_id', label: this.$t('table.default_language') as string },
+          { key: 'name', label: this.$t('common.form.name').toString() },
+          { key: 'slug', label: this.$t('table.slug').toString() },
+          {
+            key: 'status',
+            label: this.$t('table.status.title').toString(),
+            render: (key) => this.$t(`table.status.${key}`).toString(),
+          },
+          { key: 'vat_rate', label: this.$t('table.vat_rate').toString() },
+          {
+            key: 'default_currency',
+            label: this.$t('table.default_currency').toString(),
+            render: (_, channel) => channel.default_currency.name,
+          },
+          {
+            key: 'default_language',
+            label: this.$t('table.default_language').toString(),
+            render: (_, channel) => channel.default_language.name,
+          },
         ],
       }
     },

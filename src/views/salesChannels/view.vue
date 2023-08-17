@@ -19,6 +19,7 @@
     </TopNav>
 
     <Card>
+      {{ form }}
       <SalesChannelForm v-model="form" :disabled="isDisabled" @submit="save" />
     </Card>
   </div>
@@ -58,9 +59,9 @@ import Card from '@/components/layout/Card.vue'
 const CLEAN_FORM: SalesChannelCreateDto = {
   slug: '',
   status: SalesChannelStatus.Active,
-  country_block_list: true,
-  country_codes: [],
-  default_currency_id: '',
+  countries_block_list: true,
+  countries: [],
+  default_currency: '',
   default_language_id: '',
   vat_rate: '0',
   translations: {},
@@ -81,7 +82,6 @@ export default defineComponent({
   },
   data: () => ({
     form: cloneDeep(CLEAN_FORM),
-    selected: null as SalesChannel | null,
   }),
   computed: {
     id(): string {
@@ -110,11 +110,10 @@ export default defineComponent({
       if (!this.isNew) {
         this.form = cloneDeep({
           ...salesChannel,
-          default_currency_id: salesChannel.default_currency?.code,
+          default_currency: salesChannel.default_currency?.code,
           default_language_id: salesChannel.default_language?.id,
           translations: salesChannel.translations || {},
         })
-        this.selected = salesChannel
       }
     },
     error(error: any) {

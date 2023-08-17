@@ -1,24 +1,49 @@
 <template>
   <ValidationObserver v-slot="{ handleSubmit }" class="sales-channel-form">
-    <validated-input
-      v-model="formName"
+    <div class="sales-channel-form__row">
+      <validated-input
+        v-model="formName"
+        :disabled="disabled"
+        name="name"
+        rules="required"
+        :label="$t('common.form.name').toString()"
+      />
+
+      <validated-input
+        v-model="form.slug"
+        :disabled="disabled"
+        name="slug"
+        rules="required|slug"
+        :label="$t('common.form.slug').toString()"
+      />
+    </div>
+
+    <app-select
+      v-model="form.status"
+      :label="$t('form.status.title').toString()"
       :disabled="disabled"
-      name="name"
-      rules="required"
-      :label="$t('common.form.name').toString()"
-    />
+    >
+      <a-select-option
+        v-for="t in SalesChannelStatus"
+        :key="t"
+        :value="t"
+        :label="$t(`form.status.${t}`)"
+      >
+        {{ $t(`form.status.${t}`) }}
+      </a-select-option>
+    </app-select>
 
     <validated-input
-      v-model="form.slug"
+      v-model="form.vat_rate"
       :disabled="disabled"
-      name="slug"
-      rules="required|slug"
-      :label="$t('common.form.slug').toString()"
+      name="vat_rate"
+      rules="required|not-negative|less-than:100"
+      :label="$t('form.vat_rate').toString()"
     />
 
     <div class="sales-channel-form__row">
       <AutocompleteInput
-        v-model="form.default_currency_id"
+        v-model="form.default_currency"
         mode="default"
         prop-mode="code"
         model-url="currencies"
@@ -39,23 +64,19 @@
     <h5>{{ $t('form.deliveryRegions') }}</h5>
     <div class="sales-channel-form__row">
       <validated-select
-        v-model="form.country_codes"
+        v-model="form.countries"
         :options="countries"
         option-key="code"
         :disabled="disabled"
         mode="multiple"
         :label="$t('form.countries')"
         option-filter-prop="label"
-        :rules="{ required: !form.country_block_list && form.country_codes.length === 0 }"
+        :rules="{ required: !form.countries_block_list && form.countries.length === 0 }"
       />
 
       <flex-input class="sales-channel-form__switch">
         <label>{{ $t('common.blockList') }}</label>
-        <a-switch
-          :checked="form.country_block_list"
-          :disabled="disabled"
-          @change="form.country_block_list = !form.country_block_list"
-        />
+        <a-switch v-model="form.countries_block_list" :disabled="disabled" />
       </flex-input>
     </div>
 
@@ -79,7 +100,14 @@
       "deliveryRegions": "Wysyłka możliwa do",
       "countries": "Kraje",
       "default_currency": "Domyślna waluta",
-      "default_language": "Domyślny język"
+      "default_language": "Domyślny język",
+      "vat_rate": "Stawka VAT (%)",
+      "status": {
+        "title": "Status",
+        "active": "Aktywny",
+        "inactive": "Nieaktywny",
+        "hidden": "Ukryty"
+      }
     }
   },
   "en": {
@@ -87,7 +115,14 @@
       "deliveryRegions": "Delivery is possible to",
       "countries": "Countries",
       "default_currency": "Default currency",
-      "default_language": "Default language"
+      "default_language": "Default language",
+      "vat_rate": "VAT rate (%)",
+      "status": {
+        "title": "Status",
+        "active": "Active",
+        "inactive": "Inactive",
+        "hidden": "Hidden"
+      }
     }
   }
 }
@@ -96,7 +131,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import { ValidationObserver } from 'vee-validate'
-import { SalesChannelCreateDto, ShippingCountry } from '@heseya/store-core'
+import { SalesChannelCreateDto, ShippingCountry, SalesChannelStatus } from '@heseya/store-core'
 
 import { TranslationsFromDto } from '@/interfaces/Translations'
 import AbsoluteContentLangSwitch from '@/components/lang/AbsoluteContentLangSwitch.vue'
@@ -147,6 +182,10 @@ export default defineComponent({
       set(value: string) {
         this.form.translations[this.editedLang].name = value
       },
+    },
+
+    SalesChannelStatus(): typeof SalesChannelStatus {
+      return SalesChannelStatus
     },
   },
 

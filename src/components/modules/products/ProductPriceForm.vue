@@ -19,12 +19,12 @@
 {
   "pl": {
     "form": {
-      "price": "Cena brutto"
+      "price": "Cena netto"
     }
   },
   "en": {
     "form": {
-      "price": "Price (gross)"
+      "price": "Price (net)"
     }
   }
 }

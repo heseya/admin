@@ -49,7 +49,7 @@
       "list": "listy"
     },
     "form": {
-      "price": "Cena brutto",
+      "price": "Cena netto",
       "tags": "Tagi",
       "public": "Widoczność",
       "shippingDigital": "Wysyłka cyfrowa",
@@ -65,7 +65,7 @@
       "list": "list"
     },
     "form": {
-      "price": "Price (gross)",
+      "price": "Price (net)",
       "tags": "Tags",
       "public": "Visibility",
       "shippingDigital": "Digital shipping",

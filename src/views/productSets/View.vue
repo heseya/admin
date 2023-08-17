@@ -303,18 +303,21 @@ export default defineComponent({
     },
   },
   watch: {
-    productSet(productSet: ProductSet) {
-      if (!this.isNew) {
-        this.form = cloneDeep({
-          ...CLEAR_PRODUCT_SET_FORM,
-          ...productSet,
-          seo: productSet.seo || undefined,
-          attributes: productSet.attributes.map((a) => a.id),
-          parent_id: productSet.parent?.id || null,
-        })
-      }
+    productSet: {
+      handler(productSet: ProductSet) {
+        if (!this.isNew) {
+          this.form = cloneDeep({
+            ...CLEAR_PRODUCT_SET_FORM,
+            ...productSet,
+            seo: productSet.seo || undefined,
+            attributes: productSet.attributes.map((a) => a.id),
+            parent_id: productSet.parent?.id || null,
+          })
+        }
 
-      this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
+        this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
+      },
+      immediate: true,
     },
     error(error) {
       if (error) {

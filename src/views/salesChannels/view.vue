@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <top-nav :title="!isNew ? salesChannel.name : $t('newTitle').toString()">
-      <pop-confirm
+  <div class="narrower-page">
+    <TopNav :title="!isNew ? salesChannel.name : $t('newTitle').toString()">
+      <PopConfirm
         v-if="!isNew"
         v-can="$p.SalesChannels.Remove"
         :title="$t('deleteText').toString()"
@@ -15,10 +15,12 @@
           </template>
           {{ $t('common.delete') }}
         </icon-button>
-      </pop-confirm>
-    </top-nav>
+      </PopConfirm>
+    </TopNav>
 
-    <!-- <BannerForm ref="form" v-model="form" :disabled="isDisabled" @submit="save" /> -->
+    <Card>
+      <SalesChannelForm v-model="form" :disabled="isDisabled" @submit="save" />
+    </Card>
   </div>
 </template>
 
@@ -48,14 +50,15 @@ import { SalesChannel, SalesChannelCreateDto, SalesChannelStatus } from '@heseya
 
 import TopNav from '@/components/layout/TopNav.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import BannerForm from '@/components/modules/banners/Form.vue'
+import SalesChannelForm from '@/components/modules/salesChannel/Form.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
+import Card from '@/components/layout/Card.vue'
 
 const CLEAN_FORM: SalesChannelCreateDto = {
   slug: '',
   status: SalesChannelStatus.Active,
-  country_block_list: false,
+  country_block_list: true,
   country_codes: [],
   default_currency_id: '',
   default_language_id: '',
@@ -73,7 +76,8 @@ export default defineComponent({
   components: {
     TopNav,
     PopConfirm,
-    BannerForm,
+    SalesChannelForm,
+    Card,
   },
   data: () => ({
     form: cloneDeep(CLEAN_FORM),
@@ -140,8 +144,6 @@ export default defineComponent({
       const salesChannel = this.isNew
         ? await this.$accessor.salesChannels.add(form)
         : await this.$accessor.salesChannels.update({ id: this.id, item: form })
-
-      ;(this.$refs.form as any).clearMediaToDelete()
 
       if (salesChannel) {
         this.$toast.success(successMessage)

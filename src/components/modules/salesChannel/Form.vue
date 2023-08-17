@@ -1,0 +1,200 @@
+<template>
+  <ValidationObserver v-slot="{ handleSubmit }" class="sales-channel-form">
+    <validated-input
+      v-model="formName"
+      :disabled="disabled"
+      name="name"
+      rules="required"
+      :label="$t('common.form.name').toString()"
+    />
+
+    <validated-input
+      v-model="form.slug"
+      :disabled="disabled"
+      name="slug"
+      rules="required|slug"
+      :label="$t('common.form.slug').toString()"
+    />
+
+    <div class="sales-channel-form__row">
+      <AutocompleteInput
+        v-model="form.default_currency_id"
+        mode="default"
+        prop-mode="code"
+        model-url="currencies"
+        :label="$t('form.default_currency').toString()"
+      />
+
+      <AutocompleteInput
+        v-model="form.default_language_id"
+        mode="default"
+        prop-mode="id"
+        model-url="languages"
+        :label="$t('form.default_language').toString()"
+      />
+    </div>
+
+    <br />
+
+    <h5>{{ $t('form.deliveryRegions') }}</h5>
+    <div class="sales-channel-form__row">
+      <validated-select
+        v-model="form.country_codes"
+        :options="countries"
+        option-key="code"
+        :disabled="disabled"
+        mode="multiple"
+        :label="$t('form.countries')"
+        option-filter-prop="label"
+        :rules="{ required: !form.country_block_list && form.country_codes.length === 0 }"
+      />
+
+      <flex-input class="sales-channel-form__switch">
+        <label>{{ $t('common.blockList') }}</label>
+        <a-switch
+          :checked="form.country_block_list"
+          :disabled="disabled"
+          @change="form.country_block_list = !form.country_block_list"
+        />
+      </flex-input>
+    </div>
+
+    <br />
+    <app-button data-cy="submit-btn" :disabled="disabled" @click.stop="handleSubmit(onSubmit)">
+      {{ $t('common.save') }}
+    </app-button>
+
+    <AbsoluteContentLangSwitch
+      class="attribute-form__lang-switch"
+      :value="editedLang"
+      @input="setEditedLang"
+    />
+  </ValidationObserver>
+</template>
+
+<i18n lang="json">
+{
+  "pl": {
+    "form": {
+      "deliveryRegions": "Wysyłka możliwa do",
+      "countries": "Kraje",
+      "default_currency": "Domyślna waluta",
+      "default_language": "Domyślny język"
+    }
+  },
+  "en": {
+    "form": {
+      "deliveryRegions": "Delivery is possible to",
+      "countries": "Countries",
+      "default_currency": "Default currency",
+      "default_language": "Default language"
+    }
+  }
+}
+</i18n>
+
+<script lang="ts">
+import { defineComponent, PropType } from 'vue'
+import { ValidationObserver } from 'vee-validate'
+import { SalesChannelCreateDto, ShippingCountry } from '@heseya/store-core'
+
+import { TranslationsFromDto } from '@/interfaces/Translations'
+import AbsoluteContentLangSwitch from '@/components/lang/AbsoluteContentLangSwitch.vue'
+import AutocompleteInput from '@/components/AutocompleteInput.vue'
+import FlexInput from '@/components/layout/FlexInput.vue'
+
+import { sdk } from '@/api'
+
+const CLEAR_TRANSLATION_FORM: TranslationsFromDto<SalesChannelCreateDto> = {
+  name: '',
+}
+
+export default defineComponent({
+  components: { ValidationObserver, FlexInput, AbsoluteContentLangSwitch, AutocompleteInput },
+
+  props: {
+    value: {
+      type: Object as PropType<SalesChannelCreateDto>,
+      required: true,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+  },
+
+  emits: ['submit', 'input'],
+
+  data: () => ({
+    editedLang: '',
+    countries: [] as ShippingCountry[],
+  }),
+
+  computed: {
+    form: {
+      get(): SalesChannelCreateDto {
+        return this.value
+      },
+      set(value: SalesChannelCreateDto) {
+        this.$emit('input', value)
+      },
+    },
+
+    formName: {
+      get(): string {
+        return this.form.translations[this.editedLang]?.name || ''
+      },
+      set(value: string) {
+        this.form.translations[this.editedLang].name = value
+      },
+    },
+  },
+
+  watch: {
+    form: {
+      handler() {
+        this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
+      },
+      immediate: true,
+    },
+  },
+
+  async created() {
+    this.$accessor.startLoading()
+    this.countries = await sdk.ShippingMethods.getCountries()
+    this.$accessor.stopLoading()
+  },
+
+  methods: {
+    setEditedLang(langId: string) {
+      this.editedLang = langId
+      if (!this.form.translations[langId])
+        this.$set(this.form.translations, langId, { ...CLEAR_TRANSLATION_FORM })
+    },
+
+    onSubmit() {
+      this.$emit('submit')
+    },
+  },
+})
+</script>
+
+<style lang="scss" scoped>
+.sales-channel-form {
+  &__row {
+    display: flex;
+    gap: 8px;
+    justify-content: stretch;
+
+    & > * {
+      flex: 1;
+    }
+  }
+
+  &__switch {
+    text-align: right;
+    font-size: 0.8em;
+    flex: 0;
+  }
+}
+</style>

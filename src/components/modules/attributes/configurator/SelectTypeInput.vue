@@ -186,8 +186,6 @@ export default defineComponent({
               name: this.searchedValue,
             },
           },
-          // TODO: temporary, till api will remove requirement for this field
-          published: this.$accessor.languages.data.map((l) => l.id),
           value_number: null,
           value_date: null,
         },

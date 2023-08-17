@@ -163,21 +163,13 @@ export default defineComponent({
           const result = await this.$accessor.attributes.updateOption({
             attributeId: this.attributeId,
             optionId: this.editedOption.id,
-            option: {
-              ...this.editedOption,
-              // TODO: temporary, till api will remove requirement for this field
-              published: this.$accessor.languages.data.map((l) => l.id),
-            },
+            option: this.editedOption,
           })
           if (!result.success) throw result.error
         } else {
           const result = await this.$accessor.attributes.addOption({
             attributeId: this.attributeId,
-            option: {
-              ...this.editedOption,
-              // TODO: temporary, till api will remove requirement for this field
-              published: this.$accessor.languages.data.map((l) => l.id),
-            },
+            option: this.editedOption,
           })
           if (!result.success) throw result.error
         }

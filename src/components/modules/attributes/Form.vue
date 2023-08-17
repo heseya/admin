@@ -19,6 +19,7 @@
       v-model="form.description"
       :disabled="disabled"
       name="description"
+      rules="required"
       :label="$t('common.form.description').toString()"
     />
 

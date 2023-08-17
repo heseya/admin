@@ -87,8 +87,16 @@ export const MENU_ITEMS: MenuItem[] = [
     id: nextId(),
     type: MenuItemType.Link,
     to: '/settings/currencies',
-    iconClass: 'bx bxs-bank',
+    iconClass: 'bx bxs-dollar-circle',
     label: 'models.currencies',
+    section: SettingsSection.Shop,
+  },
+  {
+    id: nextId(),
+    type: MenuItemType.Link,
+    to: '/settings/sales-channels',
+    iconClass: 'bx bxs-bank',
+    label: 'models.salesChannels',
     section: SettingsSection.Shop,
   },
   {

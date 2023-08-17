@@ -71,7 +71,8 @@
     "banners": "Bannery",
     "attributes": "Atrybuty",
     "media": "Media",
-    "currencies": "Waluty"
+    "currencies": "Waluty",
+    "salesChannels": "Kanały sprzedaży"
   },
   "attributeTypes": {
     "single-option": "Tekstowy jednokrotnego wyboru",

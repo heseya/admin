@@ -34,6 +34,7 @@ import { attributes } from './attributes'
 import { media } from './media'
 import { menuItems } from './menuItems'
 import { providers } from './providers'
+import { salesChannels } from './salesChannels'
 
 Vue.use(Vuex)
 
@@ -93,6 +94,7 @@ const storeModules = {
   attributes,
   providers,
   media,
+  salesChannels,
   menuItems,
 }
 

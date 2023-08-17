@@ -64,6 +64,20 @@ export default defineComponent({
     },
   },
 
+  watch: {
+    value: {
+      handler() {
+        if (this.value.prices_base.length !== this.currencies.length) {
+          this.form.prices_base = this.currencies.map((currency) => ({
+            currency: currency.code,
+            value: '0',
+          }))
+        }
+      },
+      immediate: true,
+    },
+  },
+
   methods: {
     getPriceValue(currency: string): number {
       return parsePriceDtos(this.form.prices_base, currency)

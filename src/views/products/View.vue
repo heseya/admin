@@ -228,7 +228,7 @@ const EMPTY_FORM: ProductComponentForm = {
   schemas: [],
   gallery: [],
   tags: [],
-  seo: {},
+  seo: undefined,
   attributes: [],
   items: [],
   descriptions: [],

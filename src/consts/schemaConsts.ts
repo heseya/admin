@@ -1,4 +1,3 @@
-import { cloneDeep } from 'lodash'
 import { SchemaType, SchemaOptionDto, WarehouseItem, SchemaCreateDto } from '@heseya/store-core'
 import { TranslationsFromDto } from '@/interfaces/Translations'
 
@@ -30,7 +29,7 @@ export const CLEAR_SCHEMA: SchemaCreateDto = {
   pattern: '',
   validation: '',
   used_schemas: [],
-  options: [cloneDeep(CLEAR_SCHEMA_OPTION)],
+  options: [],
   published: [],
   translations: {},
 

@@ -352,7 +352,7 @@ export default defineComponent({
       }
     },
     'form.type'(type: SchemaType) {
-      if (type === SchemaType.Select) this.form.options = [cloneDeep(CLEAR_SCHEMA_OPTION)]
+      if (type === SchemaType.Select) this.form.options = [this.createEmptySchemaOption()]
       else this.form.options = []
     },
     'form.used_schemas.0'(schema: Schema) {
@@ -388,10 +388,22 @@ export default defineComponent({
             prices: mapPricesToDto(schema.prices),
             options: schema.options.map((o) => ({ ...o, prices: mapPricesToDto(o.prices) })),
           })
-        : cloneDeep(CLEAR_SCHEMA)
+        : cloneDeep({
+            ...CLEAR_SCHEMA,
+            prices: this.$accessor.config.currencies.map((c) => ({ value: '0', currency: c.code })),
+            options: [this.createEmptySchemaOption()],
+          })
       this.defaultOption = isNil(this.form.default) ? null : Number(this.form.default)
       this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
     },
+
+    createEmptySchemaOption() {
+      return cloneDeep({
+        ...CLEAR_SCHEMA_OPTION,
+        prices: this.$accessor.config.currencies.map((c) => ({ value: '0', currency: c.code })),
+      })
+    },
+
     isKindOfNumeric(type: SchemaType): boolean {
       return (
         type === SchemaType.Numeric ||
@@ -415,7 +427,7 @@ export default defineComponent({
         let id = ''
 
         this.form.default =
-          this.form.type === SchemaType.Select ? this.defaultOption : this.form.default
+          this.form.type === SchemaType.Select ? this.defaultOption?.toString() : this.form.default
 
         const options = this.form.options.map((opt: any) => ({
           ...opt,

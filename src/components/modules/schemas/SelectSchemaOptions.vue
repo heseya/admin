@@ -98,7 +98,7 @@ import Autocomplete from '@/components/Autocomplete.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import CurrencyPriceForm from '@/components/CurrencyPriceForm.vue'
 
-import { CLEAR_SCHEMA_OPTION } from '@/consts/schemaConsts'
+import { CLEAR_SCHEMA_OPTION, CLEAR_SCHEMA_OPTION_TRANSLATION } from '@/consts/schemaConsts'
 
 export default defineComponent({
   name: 'SelectSchemaOptions',
@@ -139,7 +139,13 @@ export default defineComponent({
       this.$emit('set-default', v)
     },
     addOption() {
-      this.options.push(cloneDeep(CLEAR_SCHEMA_OPTION))
+      this.options.push(
+        cloneDeep({
+          ...CLEAR_SCHEMA_OPTION,
+          translations: { [this.editedLang]: { ...CLEAR_SCHEMA_OPTION_TRANSLATION } },
+          prices: this.$accessor.config.currencies.map((c) => ({ value: '0', currency: c.code })),
+        }),
+      )
     },
     removeOption(index: number) {
       this.options = this.options.filter((_, i) => i !== index)

@@ -22,11 +22,10 @@
             :label="$t('common.form.name')"
             @input="setOptionName(i, $event)"
           />
-          <app-input
-            v-model="option.price"
+          <CurrencyPriceForm
+            v-model="option.prices"
             :disabled="disabled"
-            type="number"
-            :label="$t('form.price')"
+            :label="$t('form.price').toString()"
           />
           <Autocomplete
             v-model="options[i].items"
@@ -97,8 +96,9 @@ import { SchemaOptionDto } from '@heseya/store-core'
 import Zone from '@/components/layout/Zone.vue'
 import Autocomplete from '@/components/Autocomplete.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
+import CurrencyPriceForm from '@/components/CurrencyPriceForm.vue'
 
-import { CLEAR_SCHEMA_OPTION } from '@/consts/schemaConsts'
+import { CLEAR_SCHEMA_OPTION, CLEAR_SCHEMA_OPTION_TRANSLATION } from '@/consts/schemaConsts'
 
 export default defineComponent({
   name: 'SelectSchemaOptions',
@@ -107,6 +107,7 @@ export default defineComponent({
     Autocomplete,
     SwitchInput,
     Draggable,
+    CurrencyPriceForm,
   },
   props: {
     defaultOption: {
@@ -138,7 +139,13 @@ export default defineComponent({
       this.$emit('set-default', v)
     },
     addOption() {
-      this.options.push(cloneDeep(CLEAR_SCHEMA_OPTION))
+      this.options.push(
+        cloneDeep({
+          ...CLEAR_SCHEMA_OPTION,
+          translations: { [this.editedLang]: { ...CLEAR_SCHEMA_OPTION_TRANSLATION } },
+          prices: this.$accessor.config.currencies.map((c) => ({ value: '0', currency: c.code })),
+        }),
+      )
     },
     removeOption(index: number) {
       this.options = this.options.filter((_, i) => i !== index)
@@ -169,7 +176,7 @@ export default defineComponent({
       '. items items items'
       '. onoff radio radio'
       '. delete delete delete';
-    align-items: center;
+    align-items: start;
     justify-items: center;
     margin-bottom: 8px;
 

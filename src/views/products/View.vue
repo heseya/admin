@@ -204,6 +204,7 @@ import { updateProductAttributeOptions } from '@/services/updateProductAttribute
 import { UUID } from '@/interfaces/UUID'
 import { ProductComponentForm } from '@/interfaces/Product'
 import { TranslationsFromDto } from '@/interfaces/Translations'
+import { mapPricesToDto } from '@/utils/currency'
 
 const EMPTY_PRODUCT_TRANSLATIONS: TranslationsFromDto<ProductCreateDto> = {
   name: '',
@@ -217,8 +218,6 @@ const EMPTY_FORM: ProductComponentForm = {
   name: '',
   description_html: '',
   description_short: '',
-  // @deprecated
-  vat_rate: 0,
   google_product_category: null,
   shipping_digital: '0',
   purchase_limit_per_user: 0,
@@ -313,8 +312,7 @@ export default defineComponent({
           purchase_limit_per_user: product.purchase_limit_per_user || 0,
           seo: product.seo || {},
           translations: product.translations || {},
-          prices_base:
-            product.prices_base.map((p) => ({ value: p.gross, currency: p.currency })) || [],
+          prices_base: mapPricesToDto(product.prices_base),
         }
         this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
       }

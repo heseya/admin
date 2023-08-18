@@ -20,7 +20,7 @@
     />
 
     <div class="product-basic-details__price-row">
-      <ProductPriceForm v-model="form" :disabled="disabled" />
+      <CurrencyPriceForm v-model="form.prices_base" :disabled="disabled" />
     </div>
 
     <TagsSelect v-model="form.tags" :disabled="disabled" />
@@ -59,12 +59,12 @@ import { ProductComponentForm } from '@/interfaces/Product'
 import ProductSetSelect from '../ProductSetSelect.vue'
 import Textarea from '@/components/form/Textarea.vue'
 import TagsSelect from '@/components/TagsSelect.vue'
+import CurrencyPriceForm from '@/components/CurrencyPriceForm.vue'
 
 import { generateSlug } from '@/utils/generateSlug'
-import ProductPriceForm from '../ProductPriceForm.vue'
 
 export default defineComponent({
-  components: { ProductSetSelect, AppTextarea: Textarea, TagsSelect, ProductPriceForm },
+  components: { ProductSetSelect, AppTextarea: Textarea, TagsSelect, CurrencyPriceForm },
   props: {
     value: {
       type: Object as PropType<ProductComponentForm>,

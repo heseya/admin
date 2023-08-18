@@ -1,4 +1,4 @@
-import { Price } from '@heseya/store-core'
+import { Price, PriceDto } from '@heseya/store-core'
 
 const formattersMap = new Map<string, Intl.NumberFormat>()
 
@@ -20,3 +20,6 @@ export const formatPrice = (price: Price) => {
   const { gross, currency } = price
   return formatCurrency(parseFloat(gross), currency)
 }
+
+export const mapPricesToDto = (prices: Price[]): PriceDto[] =>
+  prices.map(({ gross, currency }) => ({ value: gross, currency }))

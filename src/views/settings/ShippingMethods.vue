@@ -318,7 +318,15 @@ export default defineComponent({
 
         this.$toast.success(this.$t('alerts.updated') as string)
       } else {
-        await this.$accessor.shippingMethods.add(this.editedItem)
+        await this.$accessor.shippingMethods.add({
+          ...this.editedItem,
+          price_ranges: this.editedItem.price_ranges.map(({ start, value, currency }) => ({
+            // Ensure this is a string
+            start: start.toString(),
+            value: value.toString(),
+            currency,
+          })),
+        })
 
         this.$toast.success(this.$t('alerts.created') as string)
       }

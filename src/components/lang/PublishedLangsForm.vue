@@ -1,5 +1,5 @@
 <template>
-  <div class="published-langs-form">
+  <div class="published-langs-form" :class="{ 'published-langs-form--slim': slim }">
     <h2 class="published-langs-form__title">{{ $t('title') }}</h2>
 
     <span class="published-langs-form__description">{{ $t('description') }}</span>
@@ -11,6 +11,7 @@
             :src="`https://flagcdn.com/16x12/${getFlagName(lang.iso)}.png`"
             role="presentation"
             class="lang-switch__icon"
+            @error="handleFlagError"
           />
           {{ lang.name }}
 
@@ -58,6 +59,10 @@ export default defineComponent({
     value: {
       type: Array as PropType<string[]>,
       default: () => [],
+    },
+    slim: {
+      type: Boolean,
+      default: false,
     },
   },
 
@@ -113,6 +118,11 @@ export default defineComponent({
         Object.keys(publishedMap).filter((key) => publishedMap[key]),
       )
     },
+
+    handleFlagError(e: Event) {
+      const target = e.target as HTMLImageElement
+      target.src = '/img/unknown-flag.png'
+    },
   },
 })
 </script>
@@ -139,6 +149,21 @@ export default defineComponent({
 
     @media ($viewport-7) {
       grid-template-columns: repeat(6, 1fr);
+    }
+  }
+
+  &--slim &__title {
+    font-size: 1em;
+  }
+  &--slim &__description {
+    font-size: 0.8em;
+  }
+  &--slim .lang-switch {
+    flex-direction: row;
+
+    &__name {
+      margin-bottom: 0;
+      margin-right: 8px;
     }
   }
 }

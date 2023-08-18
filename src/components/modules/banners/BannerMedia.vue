@@ -57,8 +57,7 @@
           <media-upload-input :disabled="disabled" @upload="onImageUpload" />
         </div>
       </div>
-      <!-- eslint-disable-next-line vue/no-bare-strings-in-template -->
-      <b>TODO: PUBLISHED FIELD</b>
+      <PublishedLangsForm v-model="bannerMedia.published" slim />
     </div>
 
     <div class="responsive-media__buttons">
@@ -107,9 +106,10 @@ import MediaEditForm from '../media/MediaEditForm.vue'
 import MediaUploadInput from '../media/MediaUploadInput.vue'
 
 import { BannerMediaComponentForm } from '@/interfaces/Banner'
+import PublishedLangsForm from '@/components/lang/PublishedLangsForm.vue'
 
 export default defineComponent({
-  components: { MediaElement, MediaEditForm, MediaUploadInput },
+  components: { MediaElement, MediaEditForm, MediaUploadInput, PublishedLangsForm },
   props: {
     value: {
       type: Object as PropType<BannerMediaComponentForm>,

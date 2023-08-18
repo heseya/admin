@@ -42,12 +42,15 @@
     />
 
     <div class="sales-channel-form__row">
-      <AutocompleteInput
+      <validated-select
         v-model="form.default_currency"
+        :options="currencies"
+        option-key="code"
+        :disabled="disabled"
         mode="default"
-        prop-mode="code"
-        model-url="currencies"
         :label="$t('form.default_currency').toString()"
+        option-filter-prop="name"
+        rules="required"
       />
 
       <AutocompleteInput
@@ -55,6 +58,7 @@
         mode="default"
         prop-mode="id"
         model-url="languages"
+        rules="required"
         :label="$t('form.default_language').toString()"
       />
     </div>
@@ -131,7 +135,12 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import { ValidationObserver } from 'vee-validate'
-import { SalesChannelCreateDto, ShippingCountry, SalesChannelStatus } from '@heseya/store-core'
+import {
+  SalesChannelCreateDto,
+  ShippingCountry,
+  SalesChannelStatus,
+  Currency,
+} from '@heseya/store-core'
 
 import { TranslationsFromDto } from '@/interfaces/Translations'
 import AbsoluteContentLangSwitch from '@/components/lang/AbsoluteContentLangSwitch.vue'
@@ -166,6 +175,10 @@ export default defineComponent({
   }),
 
   computed: {
+    currencies(): Currency[] {
+      return this.$accessor.config.currencies
+    },
+
     form: {
       get(): SalesChannelCreateDto {
         return this.value

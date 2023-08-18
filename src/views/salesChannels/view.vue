@@ -19,7 +19,6 @@
     </TopNav>
 
     <Card>
-      {{ form }}
       <SalesChannelForm v-model="form" :disabled="isDisabled" @submit="save" />
     </Card>
   </div>

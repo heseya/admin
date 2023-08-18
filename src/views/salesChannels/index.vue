@@ -27,7 +27,8 @@
         "hidden": "Ukryty"
       },
       "default_currency": "Domyślna waluta",
-      "default_language": "Domyślny język"
+      "default_language": "Domyślny język",
+      "vat_rate": "Stawka VAT"
     }
   },
   "en": {
@@ -42,7 +43,8 @@
         "hidden": "Hidden"
       },
       "default_currency": "Default currency",
-      "default_language": "Default language"
+      "default_language": "Default language",
+      "vat_rate": "VAT rate"
     }
   }
 }
@@ -77,7 +79,7 @@ export default defineComponent({
             label: this.$t('table.status.title').toString(),
             render: (key) => this.$t(`table.status.${key}`).toString(),
           },
-          { key: 'vat_rate', label: this.$t('table.vat_rate').toString() },
+          { key: 'vat_rate', label: this.$t('table.vat_rate').toString(), render: (v) => `${v}%` },
           {
             key: 'default_currency',
             label: this.$t('table.default_currency').toString(),

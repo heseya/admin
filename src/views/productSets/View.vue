@@ -227,7 +227,7 @@ export const CLEAR_PRODUCT_SET_FORM: CombinedSetDto = {
   public: true,
   parent_id: null,
   children_ids: [],
-  seo: {},
+  seo: undefined,
   attributes: [],
   published: [],
   translations: {},

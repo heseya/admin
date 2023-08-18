@@ -173,8 +173,8 @@ export default defineComponent({
   },
   props: {
     value: {
-      type: Object as PropType<SeoMeta | null>,
-      default: () => null,
+      type: Object as PropType<SeoMeta | undefined>,
+      default: () => undefined,
     },
     disabled: {
       type: Boolean,

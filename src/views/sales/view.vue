@@ -127,7 +127,7 @@ const EMPTY_SALE_FORM: SaleFormDto = {
   target_sets: [],
   target_shipping_methods: [],
   target_is_allow_list: true,
-  seo: {},
+  seo: undefined,
 }
 
 export default defineComponent({

@@ -169,7 +169,7 @@ export default defineComponent({
       public: true,
       published: [],
       translations: {},
-      seo: {},
+      seo: undefined,
     } as PageCreateDto,
   }),
   computed: {

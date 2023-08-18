@@ -120,7 +120,7 @@ const EMPTY_COUPON_FORM: CouponFormDto = {
   target_sets: [],
   target_shipping_methods: [],
   target_is_allow_list: true,
-  seo: {},
+  seo: undefined,
 }
 
 export default defineComponent({

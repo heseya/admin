@@ -217,6 +217,7 @@ const EMPTY_FORM: ProductComponentForm = {
   name: '',
   description_html: '',
   description_short: '',
+  // @deprecated
   vat_rate: 0,
   google_product_category: null,
   shipping_digital: '0',

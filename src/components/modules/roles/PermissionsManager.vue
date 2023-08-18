@@ -70,7 +70,8 @@
       "events": "Wydarzenia aktywujące Webhooki",
       "seo": "SEO",
       "attributes": "Atrybuty",
-      "languages": "Języki"
+      "languages": "Języki",
+      "sales_channels": "Kanały sprzedaży"
     }
   },
   "en": {
@@ -111,7 +112,8 @@
       "events": "Webhooks events",
       "seo": "SEO",
       "attributes": "Attributes",
-      "languages": "Languages"
+      "languages": "Languages",
+      "sales_channels": "Sales channels"
     }
   }
 }

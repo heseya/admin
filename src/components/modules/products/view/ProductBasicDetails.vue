@@ -21,16 +21,6 @@
 
     <div class="product-basic-details__price-row">
       <ProductPriceForm v-model="form" :disabled="disabled" />
-
-      <validated-input
-        v-model="form.vat_rate"
-        rules="not-negative|less-than:100"
-        type="number"
-        :label="$t('form.vatRate').toString()"
-        name="vat_rate"
-        :min="0"
-        :disabled="disabled"
-      />
     </div>
 
     <TagsSelect v-model="form.tags" :disabled="disabled" />

@@ -71,7 +71,8 @@
     "banners": "Banners",
     "attributes": "Attributes",
     "media": "Media",
-    "currencies": "Currencies"
+    "currencies": "Currencies",
+    "salesChannels": "Sales channels"
   },
   "attributeTypes": {
     "single-option": "Text single choice",

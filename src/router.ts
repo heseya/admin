@@ -446,6 +446,25 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/settings/sales-channels',
+      name: 'SalesChannels',
+      component: () => import('./views/salesChannels/index.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [],
+      },
+    },
+    {
+      path: '/settings/sales-channels/:id',
+      name: 'SalesChannelsView',
+      component: () => import('./views/salesChannels/view.vue'),
+      meta: {
+        returnUrl: '/settings/sales-channels',
+        requiresAuth: true,
+        permissions: [],
+      },
+    },
+    {
       path: '/b2b/companies',
       name: 'CompaniesList',
       component: () => import('./views/b2b/index.vue'),

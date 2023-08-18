@@ -1,5 +1,5 @@
 <template>
-  <div class="product-price-form">
+  <div class="currency-price-form">
     <validated-input
       v-for="currency in currencies"
       :key="currency.code"
@@ -7,7 +7,7 @@
       rules="required|not-negative"
       type="number"
       step="0.01"
-      :label="`${$t('form.price')} - ${currency.code}`"
+      :label="`${label || $t('form.price')} - ${currency.code}`"
       :name="`price_${currency.code}`"
       :disabled="disabled"
       @input="setPriceValue(currency.code, $event)"
@@ -32,19 +32,21 @@
 
 <script lang="ts">
 import { PropType, defineComponent } from 'vue'
-import { Currency, parsePriceDtos } from '@heseya/store-core'
-
-import { ProductComponentForm } from '@/interfaces/Product'
+import { Currency, PriceDto, parsePriceDtos } from '@heseya/store-core'
 
 export default defineComponent({
   props: {
     value: {
-      type: Object as PropType<ProductComponentForm>,
+      type: Array as PropType<PriceDto[]>,
       required: true,
     },
     disabled: {
       type: Boolean,
       default: false,
+    },
+    label: {
+      type: String,
+      default: '',
     },
   },
 
@@ -54,10 +56,10 @@ export default defineComponent({
     },
 
     form: {
-      get(): ProductComponentForm {
+      get(): PriceDto[] {
         return this.value
       },
-      set(value: ProductComponentForm) {
+      set(value: PriceDto[]) {
         this.$emit('input', value)
       },
     },
@@ -65,10 +67,10 @@ export default defineComponent({
 
   methods: {
     getPriceValue(currency: string): number {
-      return parsePriceDtos(this.form.prices_base, currency)
+      return parsePriceDtos(this.form, currency)
     },
     setPriceValue(currency: string, value: number) {
-      const pricesCopy = [...this.form.prices_base]
+      const pricesCopy = [...this.form]
 
       const currencyIndex = pricesCopy.findIndex((price) => price.currency === currency)
       if (currencyIndex === -1) {
@@ -80,13 +82,13 @@ export default defineComponent({
         pricesCopy[currencyIndex].value = value.toString()
       }
 
-      this.form.prices_base = pricesCopy
+      this.form = pricesCopy
     },
   },
 })
 </script>
 
 <style lang="scss" scoped>
-.product-price-form {
+.currency-price-form {
 }
 </style>

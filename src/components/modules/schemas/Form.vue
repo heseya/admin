@@ -38,15 +38,14 @@
         </app-select>
       </validation-provider>
 
-      <validated-input
+      <CurrencyPriceForm
         v-if="form.type !== SchemaType.MultiplySchema"
-        v-model="form.price"
+        v-model="form.prices"
         :disabled="disabled"
-        name="price"
-        type="number"
-        rules="required|not-negative"
         :label="
-          form.type === SchemaType.Multiply ? $t('form.pricePerUnit') : $t('form.additionalPrice')
+          form.type === SchemaType.Multiply
+            ? $t('form.pricePerUnit').toString()
+            : $t('form.additionalPrice').toString()
         "
       />
     </div>
@@ -272,6 +271,7 @@ import Selector from '@/components/Selector.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 import AbsoluteContentLangSwitch from '@/components/lang/AbsoluteContentLangSwitch.vue'
 import PublishedLangsForm from '@/components/lang/PublishedLangsForm.vue'
+import CurrencyPriceForm from '@/components/CurrencyPriceForm.vue'
 
 import {
   CLEAR_SCHEMA,
@@ -279,6 +279,7 @@ import {
   CLEAR_SCHEMA_OPTION_TRANSLATION,
   CLEAR_SCHEMA_TRANSLATION,
 } from '@/consts/schemaConsts'
+import { mapPricesToDto } from '@/utils/currency'
 
 export default defineComponent({
   components: {
@@ -292,6 +293,7 @@ export default defineComponent({
     MetadataForm,
     AbsoluteContentLangSwitch,
     PublishedLangsForm,
+    CurrencyPriceForm,
   },
   props: {
     schema: {
@@ -380,7 +382,13 @@ export default defineComponent({
       })
     },
     initSchemaForm(schema: Schema) {
-      this.form = schema.type ? cloneDeep(schema) : cloneDeep(CLEAR_SCHEMA)
+      this.form = schema.type
+        ? cloneDeep({
+            ...schema,
+            prices: mapPricesToDto(schema.prices),
+            options: schema.options.map((o) => ({ ...o, prices: mapPricesToDto(o.prices) })),
+          })
+        : cloneDeep(CLEAR_SCHEMA)
       this.defaultOption = isNil(this.form.default) ? null : Number(this.form.default)
       this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
     },

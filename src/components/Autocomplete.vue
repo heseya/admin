@@ -111,6 +111,7 @@ export default defineComponent({
 .autocomplete {
   &__label {
     font-size: 0.8em;
+    margin-bottom: 3px;
   }
 
   &__items {

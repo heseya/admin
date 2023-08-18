@@ -32,10 +32,9 @@
 
 <script lang="ts">
 import { PropType, defineComponent } from 'vue'
-import { Currency } from '@heseya/store-core'
+import { Currency, parsePriceDtos } from '@heseya/store-core'
 
 import { ProductComponentForm } from '@/interfaces/Product'
-import { parsePriceDtos } from '@/utils/currency'
 
 export default defineComponent({
   props: {

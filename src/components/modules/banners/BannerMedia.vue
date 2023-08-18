@@ -7,12 +7,12 @@
     <div class="responsive-media__content">
       <div class="responsive-media__inputs">
         <validated-input
-          v-model="bannerMedia.title"
+          v-model="bannerTitle"
           :label="$t('form.title').toString()"
           :disabled="disabled"
         />
         <validated-input
-          v-model="bannerMedia.subtitle"
+          v-model="bannerSubtitle"
           :label="$t('form.subtitle').toString()"
           :disabled="disabled"
         />
@@ -57,6 +57,8 @@
           <media-upload-input :disabled="disabled" @upload="onImageUpload" />
         </div>
       </div>
+      <!-- eslint-disable-next-line vue/no-bare-strings-in-template -->
+      <b>TODO: PUBLISHED FIELD</b>
     </div>
 
     <div class="responsive-media__buttons">
@@ -96,7 +98,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { BannerMedia, CdnMedia } from '@heseya/store-core'
+import { CdnMedia } from '@heseya/store-core'
 
 import { removeMedia } from '@/services/uploadMedia'
 
@@ -104,16 +106,22 @@ import MediaElement from '@/components/MediaElement.vue'
 import MediaEditForm from '../media/MediaEditForm.vue'
 import MediaUploadInput from '../media/MediaUploadInput.vue'
 
+import { BannerMediaComponentForm } from '@/interfaces/Banner'
+
 export default defineComponent({
   components: { MediaElement, MediaEditForm, MediaUploadInput },
   props: {
     value: {
-      type: Object as PropType<BannerMedia>,
+      type: Object as PropType<BannerMediaComponentForm>,
       required: true,
     },
     disabled: {
       type: Boolean,
       default: false,
+    },
+    editedLang: {
+      type: String,
+      required: true,
     },
   },
 
@@ -123,11 +131,28 @@ export default defineComponent({
 
   computed: {
     bannerMedia: {
-      get(): BannerMedia {
+      get(): BannerMediaComponentForm {
         return this.value
       },
-      set(v: BannerMedia) {
+      set(v: BannerMediaComponentForm) {
         this.$emit('input', v)
+      },
+    },
+
+    bannerTitle: {
+      get(): string {
+        return this.bannerMedia.translations[this.editedLang]?.title || ''
+      },
+      set(value: string) {
+        this.bannerMedia.translations[this.editedLang].title = value
+      },
+    },
+    bannerSubtitle: {
+      get(): string {
+        return this.bannerMedia.translations[this.editedLang]?.subtitle || ''
+      },
+      set(value: string) {
+        this.bannerMedia.translations[this.editedLang].subtitle = value
       },
     },
   },

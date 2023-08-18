@@ -25,7 +25,12 @@
       </div>
 
       <validation-provider v-slot="{ errors }" rules="responsive-media-valid|required">
-        <BannerMediaForm ref="mediaForm" v-model="form.banner_media" :disabled="disabled" />
+        <BannerMediaForm
+          ref="mediaForm"
+          v-model="form.banner_media"
+          :edited-lang="editedLang"
+          :disabled="disabled"
+        />
         <a-alert v-if="errors.length" type="error" show-icon :message="errors[0]" />
       </validation-provider>
 
@@ -61,18 +66,22 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
-import { Banner } from '@heseya/store-core'
 
 import Card from '@/components/layout/Card.vue'
 import BannerMediaForm from './BannerMediaForm.vue'
 
 import { generateSlug } from '@/utils/generateSlug'
+import { BannerComponentForm } from '@/interfaces/Banner'
 
 export default defineComponent({
   components: { ValidationObserver, ValidationProvider, Card, BannerMediaForm },
   props: {
+    editedLang: {
+      type: String,
+      required: true,
+    },
     value: {
-      type: Object as PropType<Banner>,
+      type: Object as PropType<BannerComponentForm>,
       required: true,
     },
     disabled: {
@@ -82,10 +91,10 @@ export default defineComponent({
   },
   computed: {
     form: {
-      get(): Banner {
+      get(): BannerComponentForm {
         return this.value
       },
-      set(v: Banner) {
+      set(v: BannerComponentForm) {
         this.$emit('input', v)
       },
     },

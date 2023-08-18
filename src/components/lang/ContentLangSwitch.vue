@@ -24,6 +24,7 @@
         :src="`https://flagcdn.com/16x12/${getFlagName(lang.iso)}.png`"
         role="presentation"
         class="content-lang-switch__icon"
+        @error="handleFlagError"
       />
     </button>
 
@@ -78,6 +79,11 @@ export default defineComponent({
     },
     update(lang: string) {
       this.$emit('input', lang)
+    },
+
+    handleFlagError(e: Event) {
+      const target = e.target as HTMLImageElement
+      target.src = '/img/unknown-flag.png'
     },
   },
 })

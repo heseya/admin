@@ -44,7 +44,9 @@
           </template>
           <template #value>
             -{{
-              coupon.percentage ? `${parseFloat(coupon.percentage)}%` : formatPrice(coupon.amounts)
+              coupon.percentage !== null
+                ? `${parseFloat(coupon.percentage)}%`
+                : formatPrice(coupon.amounts)
             }}
           </template>
         </cms-table-row>

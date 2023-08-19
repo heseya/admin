@@ -31,7 +31,9 @@
         <a v-for="sale in product.sales" :key="sale.id" :href="`/sales/${sale.id}`" target="_blank">
           <tag type="primary" small>
             {{ sale.name }} (-{{
-              sale.type === DiscountType.Percentage ? sale.value + '%' : formatCurrency(sale.value)
+              sale.percentage !== null
+                ? `${parseFloat(sale.percentage)}%`
+                : formatPrice(sale.amounts)
             }})
           </tag>
         </a>
@@ -70,7 +72,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { Product, DiscountType } from '@heseya/store-core'
+import { Product, Price, parsePrices } from '@heseya/store-core'
 
 import { ProductComponentForm } from '@/interfaces/Product'
 import ProductVisibilitySwitch from './ProductVisibilitySwitch.vue'
@@ -97,13 +99,11 @@ export default defineComponent({
         this.$emit('input', value)
       },
     },
-    DiscountType(): typeof DiscountType {
-      return DiscountType
-    },
   },
 
   methods: {
-    formatCurrency(amount: number) {
+    formatPrice(prices: Price[]) {
+      const amount = parsePrices(prices, this.$accessor.config.currency)
       return formatCurrency(amount, this.$accessor.config.currency)
     },
   },

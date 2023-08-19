@@ -68,8 +68,8 @@ export default defineComponent({
   watch: {
     value: {
       handler() {
-        if (this.value.prices_base.length !== this.currencies.length) {
-          this.form.prices_base = this.currencies.map((currency) => ({
+        if (this.value.length !== this.currencies.length) {
+          this.form = this.currencies.map((currency) => ({
             currency: currency.code,
             value: '0',
           }))

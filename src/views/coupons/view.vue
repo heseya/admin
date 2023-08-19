@@ -90,7 +90,7 @@
 import { defineComponent } from 'vue'
 import { cloneDeep } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
-import { Coupon, DiscountTargetType, DiscountType, CouponUpdateDto } from '@heseya/store-core'
+import { Coupon, DiscountTargetType, CouponUpdateDto } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
@@ -110,9 +110,8 @@ const EMPTY_COUPON_FORM: CouponFormDto = {
   slug: '',
   description: '',
   description_html: '',
-  value: 0,
+  percentage: '0',
   active: true,
-  type: DiscountType.Percentage,
   priority: 0,
   condition_groups: [],
   target_type: DiscountTargetType.OrderValue,

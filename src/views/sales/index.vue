@@ -40,7 +40,11 @@
             <small>{{ rawValue || '-' }}</small>
           </template>
           <template #value>
-            -{{ sale.percentage ? `${parseFloat(sale.percentage)}%` : formatPrice(sale.amounts) }}
+            -{{
+              sale.percentage !== null
+                ? `${parseFloat(sale.percentage)}%`
+                : formatPrice(sale.amounts)
+            }}
           </template>
         </cms-table-row>
       </template>

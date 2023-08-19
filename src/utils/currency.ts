@@ -22,4 +22,4 @@ export const formatPrice = (price: Price) => {
 }
 
 export const mapPricesToDto = (prices: Price[]): PriceDto[] =>
-  prices.map(({ gross, currency }) => ({ value: gross, currency }))
+  prices.map(({ net, currency }) => ({ value: net, currency }))

@@ -42,9 +42,9 @@
           <template #description="{ rawValue }">
             <small>{{ rawValue || '-' }}</small>
           </template>
-          <template #value="{ rawValue }">
+          <template #value>
             -{{
-              coupon.type === DiscountType.Percentage ? `${rawValue}%` : formatCurrency(rawValue)
+              coupon.percentage ? `${parseFloat(coupon.percentage)}%` : formatPrice(coupon.amounts)
             }}
           </template>
         </cms-table-row>
@@ -83,7 +83,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { debounce } from 'lodash'
-import { Coupon, DiscountType } from '@heseya/store-core'
+import { Coupon, Price, parsePrices } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
@@ -108,9 +108,6 @@ export default defineComponent({
   }),
 
   computed: {
-    DiscountType(): typeof DiscountType {
-      return DiscountType
-    },
     tableConfig(): TableConfig<Coupon> {
       return {
         headers: [
@@ -155,7 +152,8 @@ export default defineComponent({
       this.filters.search = ''
       this.makeSearch()
     },
-    formatCurrency(amount: number) {
+    formatPrice(prices: Price[]) {
+      const amount = parsePrices(prices, this.$accessor.config.currency)
       return formatCurrency(amount, this.$accessor.config.currency)
     },
   },

@@ -35,7 +35,7 @@
       />
 
       <ValidationProvider v-slot="{ errors }" rules="required" class="sale-type">
-        <app-select v-model="form.type" :disabled="disabled" :label="$t('form.type')">
+        <app-select v-model="formType" :disabled="disabled" :label="$t('form.type')">
           <a-select-option :value="DiscountType.Percentage" :label="$t('discountTypes.percent')">
             {{ $t('discountTypes.percent') }}
           </a-select-option>
@@ -47,16 +47,23 @@
       </ValidationProvider>
 
       <validated-input
-        v-model="form.value"
+        v-if="formType === DiscountType.Percentage"
+        v-model="form.percentage"
         class="sale-value"
         :disabled="disabled"
         :rules="{
           required: true,
           'not-negative': true,
-          'less-than': form.type === DiscountType.Percentage ? 100 : false,
+          'less-than': 100,
         }"
         type="number"
         :label="$t('form.discount')"
+      />
+      <CurrencyPriceForm
+        v-else
+        v-model="form.amounts"
+        :label="$t('form.discount').toString()"
+        class="sale-value"
       />
 
       <validated-input
@@ -196,7 +203,7 @@
       v-model="form.seo"
       class="product-page__seo-form"
       :disabled="disabled"
-      :current="form.id ? { id: form.id, model: 'Sale' } : null"
+      :current="form.id ? { id: form.id, model: 'Sale' } : undefined"
     />
   </div>
 </template>
@@ -267,20 +274,22 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import { ValidationProvider } from 'vee-validate'
-import {
-  DiscountCondition,
-  DiscountTargetType,
-  DiscountType,
-  SaleCreateDto,
-} from '@heseya/store-core'
+import { DiscountCondition, DiscountTargetType } from '@heseya/store-core'
 
 import FlexInput from '@/components/layout/FlexInput.vue'
 import SeoForm from '@/components/modules/seo/Accordion.vue'
 import DescriptionAccordion from '@/components/DescriptionAccordion.vue'
 import AutocompleteInput from '@/components/AutocompleteInput.vue'
 import ConditionsConfigurator from './ConditionsConfigurator.vue'
+import { SaleFormDto } from '@/interfaces/SalesAndCoupons'
+import CurrencyPriceForm from '@/components/CurrencyPriceForm.vue'
 
-type SaleForm = SaleCreateDto & { id?: string }
+type SaleForm = SaleFormDto & { id?: string }
+
+enum DiscountType {
+  Amount = 'amount',
+  Percentage = 'percentage',
+}
 
 export default defineComponent({
   components: {
@@ -290,6 +299,7 @@ export default defineComponent({
     ConditionsConfigurator,
     DescriptionAccordion,
     SeoForm,
+    CurrencyPriceForm,
   },
   props: {
     value: { type: Object as PropType<SaleForm>, required: true },
@@ -309,6 +319,21 @@ export default defineComponent({
       },
       set(v: SaleForm) {
         this.$emit('input', v)
+      },
+    },
+    formType: {
+      get(): DiscountType {
+        if (this.form.percentage !== null) return DiscountType.Percentage
+        else return DiscountType.Amount
+      },
+      set(type: DiscountType) {
+        if (type === DiscountType.Amount) {
+          this.form.percentage = null
+          this.form.amounts = []
+        } else {
+          this.form.amounts = null
+          this.form.percentage = '0'
+        }
       },
     },
   },

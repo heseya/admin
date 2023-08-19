@@ -88,7 +88,6 @@ import {
   DiscountCondition,
   DiscountConditionType,
   DiscountTargetType,
-  DiscountType,
   Role,
   Sale,
   SaleCreateDto,
@@ -104,6 +103,7 @@ import { UUID } from '@/interfaces/UUID'
 import { SaleFormDto } from '@/interfaces/SalesAndCoupons'
 import { formatApiNotificationError } from '@/utils/errors'
 import { mapSaleFormToSaleDto } from '@/utils/sales'
+import { mapPricesToDto } from '@/utils/currency'
 
 const createB2BCondition = (company: Role): DiscountCondition => ({
   id: '',
@@ -117,9 +117,9 @@ const EMPTY_SALE_FORM: SaleFormDto = {
   slug: '',
   description: '',
   description_html: '',
-  value: 0,
+  percentage: '0',
+  amounts: null,
   active: true,
-  type: DiscountType.Percentage,
   priority: 0,
   condition_groups: [],
   target_type: DiscountTargetType.OrderValue,
@@ -163,7 +163,12 @@ export default defineComponent({
   },
   watch: {
     sale(sale: Sale) {
-      if (!this.isNew) this.form = cloneDeep({ ...EMPTY_SALE_FORM, ...sale })
+      if (!this.isNew)
+        this.form = cloneDeep({
+          ...EMPTY_SALE_FORM,
+          ...sale,
+          amounts: sale.amounts ? mapPricesToDto(sale.amounts) : null,
+        })
     },
     error(error) {
       if (error) {

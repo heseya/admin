@@ -6,6 +6,8 @@ import { CouponFormDto, SaleFormDto } from '@/interfaces/SalesAndCoupons'
 export const mapSaleFormToSaleDto = (saleForm: SaleFormDto): SaleCreateDto => {
   return {
     ...cloneDeep(saleForm),
+    percentage: saleForm.percentage !== null ? saleForm.percentage?.toString() : undefined,
+    amounts: saleForm.amounts !== null ? saleForm.amounts : undefined,
     target_products: saleForm.target_products.map(({ id }) => id),
     target_sets: saleForm.target_sets.map(({ id }) => id),
     target_shipping_methods: saleForm.target_shipping_methods.map(({ id }) => id),

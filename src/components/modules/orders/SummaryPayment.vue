@@ -2,7 +2,7 @@
   <div class="order-summary-payment">
     <info-tooltip v-if="order.summary_paid > order.summary" icon="bx bxs-error" color="red">
       {{ $t('overpaidTitle') }}
-      <b>{{ formatCurrency(order.summary_paid - order.summary) }}</b>
+      <b>{{ formatCurrency(parseFloat(order.summary_paid) - parseFloat(order.summary)) }}</b>
       !
       <br />
       <br />
@@ -102,8 +102,8 @@ export default defineComponent({
     },
   },
   methods: {
-    formatCurrency(amount: number) {
-      return formatCurrency(amount, this.$accessor.config.currency)
+    formatCurrency(amount: number | string) {
+      return formatCurrency(amount, this.order.currency)
     },
     async payOffline() {
       this.$accessor.startLoading()

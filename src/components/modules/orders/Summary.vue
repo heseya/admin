@@ -170,8 +170,8 @@ export default defineComponent({
     isDigitalShippingMethodEdited: false,
   }),
   computed: {
-    formattedDate(): string | null {
-      return this.order.created_at && formatDate(this.order.created_at)
+    formattedDate(): string | undefined {
+      return (this.order.created_at && formatDate(this.order.created_at)) || undefined
     },
     isHorizontal(): boolean {
       return this.viewportWidth > 460 && this.viewportWidth < 850
@@ -211,7 +211,7 @@ export default defineComponent({
   },
   methods: {
     formatCurrency(amount: number) {
-      return formatCurrency(amount, this.$accessor.config.currency)
+      return formatCurrency(amount, this.order.currency)
     },
     updateWidth(): void {
       this.viewportWidth = window.innerWidth

@@ -85,7 +85,7 @@
 
           <small> {{ formatDate(order.created_at) }} </small>
           <template #action>
-            <div>{{ formatCurrency(order.summary) }}</div>
+            <div>{{ formatCurrency(order.summary, order.currency) }}</div>
           </template>
         </list-item>
       </card>
@@ -250,8 +250,8 @@ export default defineComponent({
     formatHourlessDate(date: DateInput) {
       return formatDate(date, false)
     },
-    formatCurrency(amount: number) {
-      return formatCurrency(amount, this.$accessor.config.currency)
+    formatCurrency(amount: number | string, currency?: string) {
+      return formatCurrency(amount, currency ?? this.$accessor.config.currency)
     },
     async getOrders() {
       await this.$accessor.orders.fetch({

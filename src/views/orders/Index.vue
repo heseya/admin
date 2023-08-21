@@ -32,7 +32,7 @@
             <a-tooltip v-if="item.summary_paid > item.summary">
               <template #title>
                 {{ $t('overpaid') }}
-                <b>{{ formatCurrency(item.summary_paid - item.summary) }}</b>
+                <b>{{ formatCurrency(item.summary_paid - item.summary, item.currency) }}</b>
               </template>
               <span class="order-icon"> <i class="bx bxs-error"></i> </span>
             </a-tooltip>
@@ -141,7 +141,7 @@ export default defineComponent({
             key: 'summary',
             label: this.$t('form.summary') as string,
             sortable: true,
-            render: (v) => this.formatCurrency(v),
+            render: (v, order) => this.formatCurrency(v, order.currency),
           },
           { key: 'paid', label: this.$t('form.paid') as string, width: '0.8fr' },
           { key: 'status', label: this.$t('form.status') as string, width: '0.8fr' },
@@ -225,8 +225,8 @@ export default defineComponent({
     clearFilters() {
       this.makeSearch({ ...EMPTY_ORDER_FILTERS })
     },
-    formatCurrency(value: number) {
-      return formatCurrency(value, this.$accessor.config.currency)
+    formatCurrency(value: number | string, currency: string) {
+      return formatCurrency(value, currency)
     },
     async copyToClipboard(value: string) {
       await navigator.clipboard.writeText(value)

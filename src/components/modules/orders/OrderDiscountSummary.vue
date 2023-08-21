@@ -60,6 +60,10 @@ export default defineComponent({
         DiscountTargetType.ShippingPrice,
       ],
     },
+    currency: {
+      type: String,
+      required: true,
+    },
   },
   computed: {
     selectedDiscounts(): OrderDiscount[] {
@@ -77,7 +81,7 @@ export default defineComponent({
   },
   methods: {
     formatCurrency(amount: number) {
-      return formatCurrency(amount, this.$accessor.config.currency)
+      return formatCurrency(amount, this.currency)
     },
   },
 })

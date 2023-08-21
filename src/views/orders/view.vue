@@ -39,7 +39,7 @@
       <card v-if="order.id && order.shipping_method" class="order-page__shipping">
         <send-package
           :order-id="order.id"
-          :shipping-number="order.shipping_number"
+          :shipping-number="order.shipping_number || undefined"
           @created="onPackageCreated"
         />
       </card>
@@ -112,7 +112,7 @@ export default defineComponent({
       return this.$accessor.orders.getError
     },
     order(): Order {
-      return this.$accessor.orders.getSelected || ({} as any)
+      return this.$accessor.orders.getSelected || ({ currency: 'PLN' } as any)
     },
     storefrontPaymentUrl(): string | undefined {
       return this.$accessor.config.env.storefront_payment_url || undefined

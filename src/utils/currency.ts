@@ -2,7 +2,7 @@ import { Price, PriceDto } from '@heseya/store-core'
 
 const formattersMap = new Map<string, Intl.NumberFormat>()
 
-export const formatCurrency = (value: number, currency: string) => {
+export const formatCurrency = (value: number | string, currency: string) => {
   const formatter =
     formattersMap.get(currency) ||
     new Intl.NumberFormat('pl-PL', {
@@ -13,7 +13,9 @@ export const formatCurrency = (value: number, currency: string) => {
 
   formattersMap.set(currency, formatter)
 
-  return formatter.format(value ?? 0)
+  const amount = typeof value === 'string' ? parseFloat(value) : value
+
+  return formatter.format(amount ?? 0)
 }
 
 export const formatPrice = (price: Price) => {

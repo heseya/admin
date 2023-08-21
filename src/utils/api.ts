@@ -29,7 +29,7 @@ export const getApiURL = () => {
     case '***REMOVED***-admin.stage.heseya.pl':
       return 'https://demo-***REMOVED***.***REMOVED***'
     case '***REMOVED***-admin.stage.heseya.pl':
-      return 'https://demo-***REMOVED***.***REMOVED***'
+      return '***REMOVED***'
     case '***REMOVED***-admin.stage.heseya.pl':
       return 'https://demo-***REMOVED***.***REMOVED***'
 

@@ -65,7 +65,13 @@
 
     <br />
 
-    <h5>{{ $t('form.deliveryRegions') }}</h5>
+    <h5>
+      {{
+        form.countries_block_list
+          ? $t('form.deliveryRegionsBlockList')
+          : $t('form.deliveryRegionsAllowList')
+      }}
+    </h5>
     <div class="sales-channel-form__row">
       <validated-select
         v-model="form.countries"
@@ -101,7 +107,8 @@
 {
   "pl": {
     "form": {
-      "deliveryRegions": "Wysyłka możliwa do",
+      "deliveryRegionsAllowList": "Wysyłka możliwa wyłącznie do",
+      "deliveryRegionsBlockList": "Kraje do których wysyłka będzie zablokowana (pozostałe kraje będą dozwolone)",
       "countries": "Kraje",
       "default_currency": "Domyślna waluta",
       "default_language": "Domyślny język",
@@ -116,7 +123,8 @@
   },
   "en": {
     "form": {
-      "deliveryRegions": "Delivery is possible to",
+      "deliveryRegionsAllowList": "Delivery allowed only to",
+      "deliveryRegionsBlockList": "Countries to which delivery will be blocked (other countries will be allowed)",
       "countries": "Countries",
       "default_currency": "Default currency",
       "default_language": "Default language",

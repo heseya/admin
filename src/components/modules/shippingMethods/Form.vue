@@ -87,7 +87,13 @@
 
       <hr />
 
-      <h5>{{ $t('form.deliveryRegions') }}</h5>
+      <h5>
+        {{
+          form.block_list
+            ? $t('form.deliveryRegionsBlockList')
+            : $t('form.deliveryRegionsAllowList')
+        }}
+      </h5>
       <div class="center">
         <flex-input>
           <label class="title">{{ $t('common.allowList') }}</label>
@@ -156,7 +162,8 @@
       "deliveryTime": "Czas dostawy",
       "minDeliveryDays": "Minimalna ilość dni dostawy",
       "maxDeliveryDays": "Maksymalna ilość dni dostawy",
-      "deliveryRegions": "Wysyłka możliwa do",
+      "deliveryRegionsAllowList": "Wysyłka możliwa wyłącznie do",
+      "deliveryRegionsBlockList": "Kraje do których wysyłka będzie zablokowana (pozostałe kraje będą dozwolone)",
       "countries": "Kraje",
       "addShippingPoints": "Dodaj punkty dostawy",
       "shippingPoints": "Punkty dostawy",
@@ -172,7 +179,8 @@
       "deliveryTime": "Delivery time",
       "minDeliveryDays": "Minimal number of days of delivery",
       "maxDeliveryDays": "Maximum number of days of delivery",
-      "deliveryRegions": "Delivery is possible to",
+      "deliveryRegionsAllowList": "Delivery allowed only to",
+      "deliveryRegionsBlockList": "Countries to which delivery will be blocked (other countries will be allowed)",
       "countries": "Countries",
       "addShippingPoints": "Add shipping points",
       "shippingPoints": "Shipping points",

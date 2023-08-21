@@ -16,7 +16,7 @@
       :label="$t('form.slug').toString()"
     />
     <validated-input
-      v-model="form.description"
+      v-model="formDescription"
       :disabled="disabled"
       name="description"
       rules="required"
@@ -122,6 +122,7 @@ import AbsoluteContentLangSwitch from '@/components/lang/AbsoluteContentLangSwit
 
 const CLEAR_TRANSLATION_FORM: TranslationsFromDto<AttributeCreateDto> = {
   name: '',
+  description: '',
 }
 
 const CLEAR_FORM: AttributeCreateDto = {
@@ -164,6 +165,14 @@ export default defineComponent({
       },
       set(value: string) {
         this.form.translations[this.editedLang].name = value
+      },
+    },
+    formDescription: {
+      get(): string {
+        return this.form.translations[this.editedLang]?.description || ''
+      },
+      set(value: string) {
+        this.form.translations[this.editedLang].description = value
       },
     },
   },

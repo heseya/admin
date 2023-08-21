@@ -92,7 +92,7 @@
 
       <card v-can="$p.Analytics.Payments" class="home__chart">
         <h2 class="section-title">{{ $t('chart.title') }}</h2>
-        <monthly-income-chart :data="monthlyStats" />
+        <MonthlyIncomeChart :data="monthlyStats" />
       </card>
     </div>
   </div>
@@ -208,39 +208,15 @@ export default defineComponent({
       }
     },
   },
+
+  watch: {
+    '$accessor.config.currency'() {
+      this.fetchAnalytics()
+    },
+  },
+
   async created() {
-    this.$accessor.startLoading()
-
-    try {
-      const [, currentWeek, currentMonth, currentYear, lastYear, monthlyStats] = await Promise.all([
-        this.getOrders(),
-        getPaymentsCount(this.dates.week.start, this.dates.week.end),
-        getPaymentsCount(this.dates.month.start, this.dates.month.end),
-        getPaymentsCount(this.dates.year.start, this.dates.year.end),
-        getPaymentsCount(this.dates.lastYear.start, this.dates.lastYear.end),
-        sdk.Analytics.getPayments({
-          group: 'monthly',
-          from: startOfMonth(sub(Date.now(), { years: 1 })),
-          to: new Date(),
-        }),
-      ])
-
-      this.currentWeekIncome = currentWeek.amount
-      this.currentWeekOrdersCount = currentWeek.count
-
-      this.currentMonthIncome = currentMonth.amount
-      this.currentMonthOrdersCount = currentMonth.count
-
-      this.currentYearIncome = currentYear.amount
-      this.currentYearOrdersCount = currentYear.count
-
-      this.lastYearIncome = lastYear.amount
-      this.lastYearOrdersCount = lastYear.count
-
-      this.monthlyStats = monthlyStats
-    } catch {}
-
-    this.$accessor.stopLoading()
+    await this.fetchAnalytics()
   },
 
   methods: {
@@ -253,6 +229,58 @@ export default defineComponent({
     formatCurrency(amount: number | string, currency?: string) {
       return formatCurrency(amount, currency ?? this.$accessor.config.currency)
     },
+
+    async fetchAnalytics() {
+      this.$accessor.startLoading()
+      try {
+        const [, currentWeek, currentMonth, currentYear, lastYear, monthlyStats] =
+          await Promise.all([
+            this.getOrders(),
+            getPaymentsCount(
+              this.dates.week.start,
+              this.dates.week.end,
+              this.$accessor.config.currency,
+            ),
+            getPaymentsCount(
+              this.dates.month.start,
+              this.dates.month.end,
+              this.$accessor.config.currency,
+            ),
+            getPaymentsCount(
+              this.dates.year.start,
+              this.dates.year.end,
+              this.$accessor.config.currency,
+            ),
+            getPaymentsCount(
+              this.dates.lastYear.start,
+              this.dates.lastYear.end,
+              this.$accessor.config.currency,
+            ),
+            sdk.Analytics.getPayments({
+              group: 'monthly',
+              from: startOfMonth(sub(Date.now(), { years: 1 })),
+              to: new Date(),
+            }),
+          ])
+
+        this.currentWeekIncome = currentWeek.amount
+        this.currentWeekOrdersCount = currentWeek.count
+
+        this.currentMonthIncome = currentMonth.amount
+        this.currentMonthOrdersCount = currentMonth.count
+
+        this.currentYearIncome = currentYear.amount
+        this.currentYearOrdersCount = currentYear.count
+
+        this.lastYearIncome = lastYear.amount
+        this.lastYearOrdersCount = lastYear.count
+
+        this.monthlyStats = monthlyStats
+      } catch {}
+
+      this.$accessor.stopLoading()
+    },
+
     async getOrders() {
       await this.$accessor.orders.fetch({
         page: 1,

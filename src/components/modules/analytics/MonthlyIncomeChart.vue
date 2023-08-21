@@ -25,6 +25,7 @@ import startOfMonth from 'date-fns/startOfMonth'
 
 import { Bar } from 'vue-chartjs/legacy'
 import ChartJS from 'chart.js'
+import { AnalyticsPayment } from '@heseya/store-core'
 
 export default defineComponent({
   components: { Bar },
@@ -40,12 +41,12 @@ export default defineComponent({
         responsive: true,
         maintainAspectRatio: false,
         scales: {
-          y: {
+          income: {
             type: 'linear',
             display: true,
             position: 'left',
           },
-          y1: {
+          count: {
             type: 'linear',
             display: true,
             position: 'right',
@@ -61,21 +62,25 @@ export default defineComponent({
         sub(startOfMonth(Date.now()), { months: i }),
       ).sort((a, b) => a.getTime() - b.getTime())
       const labels = monthsInThisYear.map((d) => format(d, 'YYY-MM'))
+
+      const getByCurrency = (data: AnalyticsPayment[], currency: string): AnalyticsPayment =>
+        data?.find((d) => d.currency === currency) || { amount: '0', count: 0, currency }
+
       return {
         labels,
         datasets: [
-          {
-            label: `${this.$t('income')} (${this.$accessor.config.currency})`,
-            data: labels.map((l) => this.data[l]?.amount || 0),
-            yAxisID: 'y',
+          ...this.$accessor.config.currencies.map((currency) => ({
+            label: `${this.$t('income')} (${currency.code})`,
+            data: labels.map((l) => parseFloat(getByCurrency(this.data[l], currency.code).amount)),
+            yAxisID: `income`,
             backgroundColor: '#8f022c',
-          },
-          {
-            label: `${this.$t('orders')}`,
-            data: labels.map((l) => this.data[l]?.count || 0),
-            yAxisID: 'y1',
+          })),
+          ...this.$accessor.config.currencies.map((currency) => ({
+            label: `${this.$t('orders')} (${currency.code})`,
+            data: labels.map((l) => getByCurrency(this.data[l], currency.code).count),
+            yAxisID: 'count',
             backgroundColor: '#bd204f',
-          },
+          })),
         ],
       }
     },

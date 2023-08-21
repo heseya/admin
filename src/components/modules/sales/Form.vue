@@ -12,7 +12,7 @@
 
     <div class="sale-configurator__fields">
       <validated-input
-        v-model="form.name"
+        v-model="formName"
         class="sale-name"
         :disabled="disabled"
         rules="required"
@@ -28,7 +28,7 @@
       />
 
       <validated-input
-        v-model="form.description"
+        v-model="formDescription"
         class="sale-desc"
         :disabled="disabled"
         :label="$t('common.form.description').toString()"
@@ -187,7 +187,7 @@
 
     <hr />
 
-    <DescriptionAccordion v-model="form.description_html" :disabled="disabled" />
+    <DescriptionAccordion v-model="formDescriptionHtml" :disabled="disabled" />
 
     <hr />
 
@@ -199,12 +199,18 @@
 
     <hr />
 
+    <PublishedLangsForm v-model="form.published" />
+
+    <br />
+
     <SeoForm
       v-model="form.seo"
       class="product-page__seo-form"
       :disabled="disabled"
       :current="form.id ? { id: form.id, model: 'Sale' } : undefined"
     />
+
+    <AbsoluteContentLangSwitch :value="editedLang" @input="setEditedLang" />
   </div>
 </template>
 
@@ -283,12 +289,22 @@ import AutocompleteInput from '@/components/AutocompleteInput.vue'
 import ConditionsConfigurator from './ConditionsConfigurator.vue'
 import { SaleFormDto } from '@/interfaces/SalesAndCoupons'
 import CurrencyPriceForm from '@/components/CurrencyPriceForm.vue'
+import PublishedLangsForm from '@/components/lang/PublishedLangsForm.vue'
+import AbsoluteContentLangSwitch from '@/components/lang/AbsoluteContentLangSwitch.vue'
+import { TranslationsFromDto } from '@/interfaces/Translations'
+import { SaleCreateDto } from '@heseya/store-core'
 
 type SaleForm = SaleFormDto & { id?: string }
 
 enum DiscountType {
   Amount = 'amount',
   Percentage = 'percentage',
+}
+
+const EMPTY_TRANSLATABLE: TranslationsFromDto<SaleCreateDto> = {
+  name: '',
+  description: '',
+  description_html: '',
 }
 
 export default defineComponent({
@@ -300,12 +316,17 @@ export default defineComponent({
     DescriptionAccordion,
     SeoForm,
     CurrencyPriceForm,
+    PublishedLangsForm,
+    AbsoluteContentLangSwitch,
   },
   props: {
     value: { type: Object as PropType<SaleForm>, required: true },
     disabled: { type: Boolean, default: false },
     forcedCondition: { type: Object as PropType<DiscountCondition | null>, default: null },
   },
+  data: () => ({
+    editedLang: '',
+  }),
   computed: {
     DiscountType(): typeof DiscountType {
       return DiscountType
@@ -321,6 +342,7 @@ export default defineComponent({
         this.$emit('input', v)
       },
     },
+
     formType: {
       get(): DiscountType {
         if (this.form.percentage !== null) return DiscountType.Percentage
@@ -328,13 +350,55 @@ export default defineComponent({
       },
       set(type: DiscountType) {
         if (type === DiscountType.Amount) {
-          this.form.percentage = null
+          this.form.percentage = undefined
           this.form.amounts = []
         } else {
-          this.form.amounts = null
+          this.form.amounts = undefined
           this.form.percentage = '0'
         }
       },
+    },
+
+    formName: {
+      get(): string {
+        return this.form.translations[this.editedLang]?.name || ''
+      },
+      set(value: string) {
+        this.form.translations[this.editedLang].name = value
+      },
+    },
+    formDescription: {
+      get(): string {
+        return this.form.translations[this.editedLang]?.description || ''
+      },
+      set(value: string) {
+        this.form.translations[this.editedLang].description = value
+      },
+    },
+    formDescriptionHtml: {
+      get(): string {
+        return this.form.translations[this.editedLang]?.description_html || ''
+      },
+      set(value: string) {
+        this.form.translations[this.editedLang].description_html = value
+      },
+    },
+  },
+
+  watch: {
+    value: {
+      handler() {
+        this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
+      },
+      immediate: true,
+    },
+  },
+
+  methods: {
+    setEditedLang(langId: string) {
+      this.editedLang = langId
+      if (!this.form.translations[langId])
+        this.$set(this.form.translations, langId, { ...EMPTY_TRANSLATABLE })
     },
   },
 })

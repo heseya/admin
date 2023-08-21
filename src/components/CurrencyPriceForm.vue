@@ -39,7 +39,7 @@ export default defineComponent({
   props: {
     value: {
       type: Array as PropType<PriceDto[]>,
-      required: true,
+      default: () => [],
     },
     disabled: {
       type: Boolean,

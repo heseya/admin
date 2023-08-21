@@ -118,7 +118,7 @@
         <hr />
         <h5>{{ $t('form.addShippingPoints') }}</h5>
         <ShippingPointsGrid
-          :shipping-points="form.shipping_points"
+          :shipping-points="form.shipping_points || []"
           @edit="edit"
           @remove="removePoint"
         />
@@ -141,7 +141,7 @@
         v-if="isShippingPointModalOpen"
         v-model="editedPoint"
         :countries="countries"
-        :shipping-points="form.shipping_points"
+        :shipping-points="form.shipping_points || []"
         :edit-mode="isShippingPointEditMode"
         :old-name="oldPointName"
         @added="addNewPoint"

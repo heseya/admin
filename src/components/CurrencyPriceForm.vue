@@ -10,6 +10,7 @@
       :label="`${label || $t('form.price')} - ${currency.code}`"
       :name="`price_${currency.code}`"
       :disabled="disabled"
+      :precision="currency.decimal_places"
       @input="setPriceValue(currency.code, $event)"
     />
   </div>

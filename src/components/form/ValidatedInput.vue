@@ -34,6 +34,7 @@ export default defineComponent({
     'min',
     'max',
     'step',
+    'precision',
     'rows',
     'border',
     'shadow',

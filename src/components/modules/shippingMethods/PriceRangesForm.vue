@@ -1,6 +1,6 @@
 <template>
   <div class="price-ranges-form">
-    <h5 class="price-ranges-form__title">{{ $t('title') }} {{ currency.name }}</h5>
+    <h5 class="price-ranges-form__title">{{ $t('title') }} {{ currency.code }}</h5>
 
     <div class="price-ranges-form__list">
       <div v-for="(range, i) in priceRanges" :key="`${i}`" class="price-ranges-form__row">
@@ -9,12 +9,14 @@
           :label="$t('rangeStart')"
           type="number"
           :disabled="i === 0 || disabled"
+          :precision="currency.decimal_places"
         />
         <app-input
           v-model="range.value"
           :disabled="disabled"
           :label="$t('rangeValue')"
           type="number"
+          :precision="currency.decimal_places"
         />
         <icon-button
           class="price-ranges-form__button"

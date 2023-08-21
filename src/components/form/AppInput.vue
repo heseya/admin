@@ -39,6 +39,7 @@ export default defineComponent({
     'max',
     'size',
     'step',
+    'precision',
     'allowClear',
     'disabled',
     'rows',

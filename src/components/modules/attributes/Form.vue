@@ -225,6 +225,7 @@ export default defineComponent({
 
 <style lang="scss">
 .attribute-form {
+  display: block;
   position: relative;
 
   &__lang-switch {

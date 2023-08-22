@@ -121,6 +121,7 @@ export default defineComponent({
     filters: cloneDeep(EMPTY_PRODUCT_FILTERS),
     listView: false,
   }),
+
   computed: {
     tableConfig(): TableConfig<Product> {
       return {
@@ -128,7 +129,13 @@ export default defineComponent({
           { key: 'cover', label: '', width: '60px' },
           { key: 'name', label: this.$t('common.form.name') as string, sortable: true },
           { key: 'tags', label: this.$t('form.tags') as string, width: '0.6fr' },
-          { key: 'price', label: this.$t('form.price') as string, width: '0.6fr', sortable: true },
+          {
+            key: 'price',
+            label: this.$t('form.price') as string,
+            width: '0.6fr',
+            sortable: true,
+            sortKey: () => `price:${this.$accessor.config.currency}`,
+          },
           {
             key: 'public',
             label: this.$t('form.public') as string,
@@ -181,9 +188,18 @@ export default defineComponent({
       }
     },
   },
+
   watch: {
     listView(listView: boolean) {
       window.localStorage.setItem(LOCAL_STORAGE_KEY, String(Number(listView)))
+    },
+
+    '$accessor.config.currency'() {
+      // Removes products sort key when currency changes
+      this.filters.sort = this.filters.sort
+        ?.split(',')
+        .filter((s) => !s.startsWith('price:'))
+        .join(',')
     },
   },
 

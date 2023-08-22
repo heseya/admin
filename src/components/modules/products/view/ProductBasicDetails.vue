@@ -109,7 +109,7 @@ export default defineComponent({
 
   methods: {
     editSlug() {
-      if (this.isNew) this.form.slug = generateSlug(this.form.name)
+      if (this.isNew) this.form.slug = generateSlug(this.formName)
     },
   },
 })

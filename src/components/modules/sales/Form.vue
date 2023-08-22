@@ -281,6 +281,7 @@
 import { defineComponent, PropType } from 'vue'
 import { ValidationProvider } from 'vee-validate'
 import { DiscountCondition, DiscountTargetType } from '@heseya/store-core'
+import isNil from 'lodash/isNil'
 
 import FlexInput from '@/components/layout/FlexInput.vue'
 import SeoForm from '@/components/modules/seo/Accordion.vue'
@@ -345,7 +346,7 @@ export default defineComponent({
 
     formType: {
       get(): DiscountType {
-        if (this.form.percentage !== null) return DiscountType.Percentage
+        if (!isNil(this.form.percentage)) return DiscountType.Percentage
         else return DiscountType.Amount
       },
       set(type: DiscountType) {
@@ -361,7 +362,7 @@ export default defineComponent({
 
     formName: {
       get(): string {
-        return this.form.translations[this.editedLang]?.name || ''
+        return this.form.translations?.[this.editedLang]?.name || ''
       },
       set(value: string) {
         this.form.translations[this.editedLang].name = value
@@ -369,7 +370,7 @@ export default defineComponent({
     },
     formDescription: {
       get(): string {
-        return this.form.translations[this.editedLang]?.description || ''
+        return this.form.translations?.[this.editedLang]?.description || ''
       },
       set(value: string) {
         this.form.translations[this.editedLang].description = value
@@ -377,7 +378,7 @@ export default defineComponent({
     },
     formDescriptionHtml: {
       get(): string {
-        return this.form.translations[this.editedLang]?.description_html || ''
+        return this.form.translations?.[this.editedLang]?.description_html || ''
       },
       set(value: string) {
         this.form.translations[this.editedLang].description_html = value
@@ -397,8 +398,10 @@ export default defineComponent({
   methods: {
     setEditedLang(langId: string) {
       this.editedLang = langId
-      if (!this.form.translations[langId])
-        this.$set(this.form.translations, langId, { ...EMPTY_TRANSLATABLE })
+      this.$set(this.form.translations, langId, {
+        ...EMPTY_TRANSLATABLE,
+        ...this.form.translations?.[langId],
+      })
     },
   },
 })

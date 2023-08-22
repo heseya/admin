@@ -107,12 +107,9 @@ import { mapPricesToDto } from '@/utils/currency'
 
 const EMPTY_COUPON_FORM: CouponFormDto = {
   code: '',
-  name: '',
   slug: '',
-  description: '',
-  description_html: '',
   percentage: '0',
-  amounts: null,
+  amounts: undefined,
   active: true,
   priority: 0,
   condition_groups: [],
@@ -122,6 +119,8 @@ const EMPTY_COUPON_FORM: CouponFormDto = {
   target_shipping_methods: [],
   target_is_allow_list: true,
   seo: undefined,
+  published: [],
+  translations: {},
 }
 
 export default defineComponent({

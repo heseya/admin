@@ -113,12 +113,9 @@ const createB2BCondition = (company: Role): DiscountCondition => ({
 })
 
 const EMPTY_SALE_FORM: SaleFormDto = {
-  name: '',
   slug: '',
-  description: '',
-  description_html: '',
   percentage: '0',
-  amounts: null,
+  amounts: undefined,
   active: true,
   priority: 0,
   condition_groups: [],
@@ -128,6 +125,8 @@ const EMPTY_SALE_FORM: SaleFormDto = {
   target_shipping_methods: [],
   target_is_allow_list: true,
   seo: undefined,
+  published: [],
+  translations: {},
 }
 
 export default defineComponent({

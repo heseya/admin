@@ -44,6 +44,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import { DateBetweenDiscountCondition } from '@heseya/store-core'
+import { formatDateInput } from '@/utils/dates'
 
 export default defineComponent({
   props: {
@@ -57,7 +58,11 @@ export default defineComponent({
     },
     form: {
       get(): DateBetweenDiscountCondition {
-        return this.value
+        return {
+          ...this.value,
+          start_at: formatDateInput(this.value.start_at),
+          end_at: formatDateInput(this.value.end_at),
+        }
       },
       set(v: DateBetweenDiscountCondition) {
         this.$emit('input', v)

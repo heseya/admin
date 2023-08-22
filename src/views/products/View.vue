@@ -57,6 +57,7 @@
           />
           <ProductAdditionalDescriptions
             v-model="form.descriptions"
+            :edited-lang="editedLang"
             :product="product"
             :disabled="!canModify"
           />

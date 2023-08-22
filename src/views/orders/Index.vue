@@ -75,6 +75,7 @@
       "status": "Status",
       "digital_shipping": "Przesyłka cyfrowa",
       "shipping": "Przesyłka",
+      "sales_channel": "Kanał sprzedaży",
       "date": "Data"
     }
   },
@@ -92,6 +93,7 @@
       "status": "Status",
       "digital_shipping": "Digital shipping",
       "shipping": "Shipping",
+      "sales_channel": "Sales channel",
       "date": "Date"
     }
   }
@@ -154,6 +156,11 @@ export default defineComponent({
                 .join(', ') || '-',
           },
           {
+            key: 'sales_channel',
+            label: this.$t('form.sales_channel') as string,
+            render: (_, r) => r.sales_channel?.name || '-',
+          },
+          {
             key: 'created_at',
             label: this.$t('form.date') as string,
             sortable: true,
@@ -191,6 +198,11 @@ export default defineComponent({
             key: 'digital_shipping_method',
             label: this.$t('form.digital_shipping') as string,
             format: (v: ShippingMethod) => v?.name || '-',
+          },
+          {
+            key: 'sales_channel',
+            label: this.$t('form.sales_channel') as string,
+            format: (_, o) => o.sales_channel?.name || '-',
           },
           {
             key: 'created_at',

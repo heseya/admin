@@ -11,6 +11,11 @@
       :horizontal="isHorizontal"
     />
     <OrderField
+      :label="$t('labels.channel').toString()"
+      :value="order.sales_channel?.name || '-'"
+      :horizontal="isHorizontal"
+    />
+    <OrderField
       v-if="order.shipping_method"
       :label="$t('labels.shipping').toString()"
       :value="order.shipping_method.name"
@@ -99,6 +104,7 @@
     "labels": {
       "code": "Order code",
       "date": "Order date",
+      "channel": "Sales channel",
       "shipping": "Shipping method",
       "digitalShipping": "Digital shipping",
       "payment": "Payment",
@@ -117,6 +123,7 @@
     "labels": {
       "code": "Nr zamówienia",
       "date": "Data zamówienia",
+      "channel": "Kanał sprzedaży",
       "shipping": "Metoda dostawy",
       "digitalShipping": "Dostawa cyfrowa",
       "payment": "Płatność",

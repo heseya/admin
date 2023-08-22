@@ -148,7 +148,7 @@ export default defineComponent({
   align-items: start;
 
   @media ($viewport-10) {
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 2.5fr 1fr;
     grid-template-areas: 'summary status' 'cart address' 'cart shipping' 'cart documents' 'cart metadata' 'cart .';
   }
 

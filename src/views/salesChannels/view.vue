@@ -55,7 +55,7 @@ import SalesChannelForm from '@/components/modules/salesChannel/Form.vue'
 import { formatApiNotificationError } from '@/utils/errors'
 import Card from '@/components/layout/Card.vue'
 
-const CLEAN_FORM: SalesChannelCreateDto = {
+const EMPTY_CHANNEL_FORM: SalesChannelCreateDto = {
   slug: '',
   status: SalesChannelStatus.Active,
   countries_block_list: true,
@@ -64,6 +64,7 @@ const CLEAN_FORM: SalesChannelCreateDto = {
   default_language_id: '',
   vat_rate: '0',
   translations: {},
+  published: [],
 }
 
 export default defineComponent({
@@ -80,7 +81,7 @@ export default defineComponent({
     Card,
   },
   data: () => ({
-    form: cloneDeep(CLEAN_FORM),
+    form: cloneDeep(EMPTY_CHANNEL_FORM),
   }),
   computed: {
     id(): string {
@@ -108,6 +109,7 @@ export default defineComponent({
     salesChannel(salesChannel: SalesChannel) {
       if (!this.isNew) {
         this.form = cloneDeep({
+          ...EMPTY_CHANNEL_FORM,
           ...salesChannel,
           default_currency: salesChannel.default_currency?.code,
           default_language_id: salesChannel.default_language?.id,

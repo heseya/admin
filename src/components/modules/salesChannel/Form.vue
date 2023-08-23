@@ -64,6 +64,8 @@
     </div>
 
     <br />
+    <PublishedLangsForm v-model="form.published" />
+    <br />
 
     <h5>
       {{
@@ -156,13 +158,20 @@ import AutocompleteInput from '@/components/AutocompleteInput.vue'
 import FlexInput from '@/components/layout/FlexInput.vue'
 
 import { sdk } from '@/api'
+import PublishedLangsForm from '@/components/lang/PublishedLangsForm.vue'
 
 const CLEAR_TRANSLATION_FORM: TranslationsFromDto<SalesChannelCreateDto> = {
   name: '',
 }
 
 export default defineComponent({
-  components: { ValidationObserver, FlexInput, AbsoluteContentLangSwitch, AutocompleteInput },
+  components: {
+    ValidationObserver,
+    FlexInput,
+    AbsoluteContentLangSwitch,
+    AutocompleteInput,
+    PublishedLangsForm,
+  },
 
   props: {
     value: {

@@ -10,11 +10,12 @@
     </div>
     <div v-else-if="type === AttributeType.Number" class="number-input">
       <app-input
-        v-model="selectedOption[0].name"
+        :value="getOptionName(selectedOption[0])"
         class="number-input__input"
         name="name"
         :label="$t('displayName').toString()"
         :placeholder="$t('namePlaceholder').toString()"
+        @input="setOptionName(selectedOption[0], $event)"
       />
       <app-input
         v-model="selectedOption[0].value_number"
@@ -49,11 +50,16 @@
 import { defineComponent, PropType } from 'vue'
 import { cloneDeep } from 'lodash'
 import { AttributeOptionDto, AttributeType, ProductAttribute } from '@heseya/store-core'
+import { TranslationsFromDto } from '@/interfaces/Translations'
+
+const EMPTY_OPTION_TRANSLATION: TranslationsFromDto<AttributeOptionDto> = {
+  name: '',
+}
 
 const EMPTY_OPTION: AttributeOptionDto = {
-  name: '',
   value_number: null,
   value_date: null,
+  translations: {},
 }
 
 export default defineComponent({
@@ -71,6 +77,10 @@ export default defineComponent({
       required: true,
     },
     disabled: { type: Boolean, default: false },
+    editedLang: {
+      type: String,
+      required: true,
+    },
   },
   data: () => ({
     isLoading: false,
@@ -84,6 +94,7 @@ export default defineComponent({
         this.$emit('input', option)
       },
     },
+
     AttributeType(): typeof AttributeType {
       return AttributeType
     },
@@ -92,6 +103,15 @@ export default defineComponent({
     value() {
       this.setDefaultValue()
     },
+    selectedOption: {
+      handler(options: AttributeOptionDto[]) {
+        options.forEach((o) => {
+          if (!o.translations[this.editedLang])
+            this.$set(o.translations, this.editedLang, { ...EMPTY_OPTION_TRANSLATION })
+        })
+      },
+      deep: true,
+    },
   },
   mounted() {
     this.setDefaultValue()
@@ -99,6 +119,16 @@ export default defineComponent({
   methods: {
     setDefaultValue() {
       if (!this.value?.[0]) this.selectedOption = [cloneDeep(EMPTY_OPTION)]
+    },
+
+    getOptionName(option: AttributeOptionDto): string {
+      return option.translations[this.editedLang]?.name || ''
+    },
+    setOptionName(option: AttributeOptionDto, name: string) {
+      this.$set(option.translations, this.editedLang, {
+        ...option.translations[this.editedLang],
+        name,
+      })
     },
   },
 })

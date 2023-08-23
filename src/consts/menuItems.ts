@@ -225,15 +225,6 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     id: nextId(),
     type: MenuItemType.Link,
-    to: '/settings/package-templates',
-    iconClass: 'bx bxs-box',
-    label: 'models.package_templates',
-    can: PERMISSIONS_TREE.Packages.Show,
-    section: SettingsSection.Shipping,
-  },
-  {
-    id: nextId(),
-    type: MenuItemType.Link,
     to: '/settings/users',
     iconClass: 'bx bxs-group',
     label: 'nav.users',

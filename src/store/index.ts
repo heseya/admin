@@ -21,7 +21,6 @@ import { orders } from './orders'
 import { statuses } from './statuses'
 import { shippingMethods } from './shippingMethods'
 import { paymentMethods } from './paymentMethods'
-import { packageTemplates } from './packageTemplates'
 import { settings } from './settings'
 import { apps } from './apps'
 import { webhooks } from './webhooks'
@@ -82,7 +81,6 @@ const storeModules = {
   shippingMethods,
   statuses,
   paymentMethods,
-  packageTemplates,
   settings,
   coupons,
   sales,

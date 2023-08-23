@@ -36,13 +36,6 @@
       <card class="order-page__address">
         <CustomerDetails :order="order" />
       </card>
-      <card v-if="order.id && order.shipping_method" class="order-page__shipping">
-        <send-package
-          :order-id="order.id"
-          :shipping-number="order.shipping_number || undefined"
-          @created="onPackageCreated"
-        />
-      </card>
       <card class="order-page__documents">
         <order-documents v-if="order.id" :order-id="order.id" :documents="order.documents" />
       </card>
@@ -71,7 +64,6 @@ import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 import NextPrevButtons from '@/components/modules/orders/NextPrevButtons.vue'
-import SendPackage from '@/components/modules/orders/SendPackage.vue'
 import OrderSummary from '@/components/modules/orders/Summary.vue'
 import StatusInput from '@/components/modules/orders/StatusInput.vue'
 
@@ -91,7 +83,6 @@ export default defineComponent({
     Card,
     AuditsModal,
     NextPrevButtons,
-    SendPackage,
     OrderSummary,
     StatusInput,
     CustomerDetails,
@@ -130,11 +121,6 @@ export default defineComponent({
       this.$accessor.statuses.fetch(),
     ])
     this.$accessor.stopLoading()
-  },
-  methods: {
-    onPackageCreated(shippingNumber: string) {
-      this.order.shipping_number = shippingNumber
-    },
   },
 })
 </script>

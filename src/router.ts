@@ -363,15 +363,6 @@ const router = new VueRouter({
       },
     },
     {
-      path: '/settings/package-templates',
-      name: 'PackageTemplates',
-      component: () => import('./views/settings/PackageTemplates.vue'),
-      meta: {
-        requiresAuth: true,
-        permissions: [Permissions.Packages.Show],
-      },
-    },
-    {
       path: '/settings/providers',
       name: 'Providers',
       component: () => import('./views/settings/Providers.vue'),

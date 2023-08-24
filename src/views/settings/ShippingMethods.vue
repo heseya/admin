@@ -234,6 +234,7 @@ export default defineComponent({
               formatPrice(
                 method.prices.find((p) => p.currency === this.$accessor.config.currency) || {
                   gross: '0',
+                  net: '0',
                   currency: this.$accessor.config.currency,
                 },
               ),
@@ -281,12 +282,12 @@ export default defineComponent({
         this.selectedItem = null
         this.editedItem = {
           name: '',
-          shipping_type: ShippingType.Digital,
+          shipping_type: ShippingType.Address,
           block_list: false,
           payment_methods: [],
           countries: [],
-          shipping_time_min: 0,
-          shipping_time_max: 0,
+          shipping_time_min: 1,
+          shipping_time_max: 3,
           price_ranges: this.$accessor.config.currencies.map(({ code }) => ({
             start: '0',
             value: '0',

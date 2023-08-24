@@ -75,15 +75,11 @@
       }}
     </h5>
     <div class="sales-channel-form__row">
-      <validated-select
+      <CountriesSelect
         v-model="form.countries"
-        :options="countries"
-        option-key="code"
         :disabled="disabled"
-        mode="multiple"
-        :label="$t('form.countries')"
-        option-filter-prop="label"
-        :rules="{ required: !form.countries_block_list && form.countries.length === 0 }"
+        :label="$t('form.countries').toString()"
+        :block-list="form.countries_block_list"
       />
 
       <flex-input class="sales-channel-form__switch">
@@ -145,20 +141,15 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import { ValidationObserver } from 'vee-validate'
-import {
-  SalesChannelCreateDto,
-  ShippingCountry,
-  SalesChannelStatus,
-  Currency,
-} from '@heseya/store-core'
+import { SalesChannelCreateDto, SalesChannelStatus, Currency } from '@heseya/store-core'
 
 import { TranslationsFromDto } from '@/interfaces/Translations'
 import AbsoluteContentLangSwitch from '@/components/lang/AbsoluteContentLangSwitch.vue'
 import AutocompleteInput from '@/components/AutocompleteInput.vue'
 import FlexInput from '@/components/layout/FlexInput.vue'
 
-import { sdk } from '@/api'
 import PublishedLangsForm from '@/components/lang/PublishedLangsForm.vue'
+import CountriesSelect from '@/components/CountriesSelect.vue'
 
 const CLEAR_TRANSLATION_FORM: TranslationsFromDto<SalesChannelCreateDto> = {
   name: '',
@@ -171,6 +162,7 @@ export default defineComponent({
     AbsoluteContentLangSwitch,
     AutocompleteInput,
     PublishedLangsForm,
+    CountriesSelect,
   },
 
   props: {
@@ -188,7 +180,6 @@ export default defineComponent({
 
   data: () => ({
     editedLang: '',
-    countries: [] as ShippingCountry[],
   }),
 
   computed: {
@@ -226,12 +217,6 @@ export default defineComponent({
       },
       immediate: true,
     },
-  },
-
-  async created() {
-    this.$accessor.startLoading()
-    this.countries = await sdk.ShippingMethods.getCountries()
-    this.$accessor.stopLoading()
   },
 
   methods: {

@@ -102,15 +102,11 @@
         </flex-input>
       </div>
       <div class="center">
-        <validated-select
+        <CountriesSelect
           v-model="form.countries"
-          :options="countries"
-          option-key="code"
           :disabled="disabled"
-          mode="multiple"
-          :label="$t('form.countries')"
-          option-filter-prop="label"
-          :rules="{ required: !form.block_list && form.countries.length === 0 }"
+          :label="$t('form.countries').toString()"
+          :block-list="form.block_list"
         />
       </div>
 
@@ -211,6 +207,7 @@ import ShippingPointForm from './ShippingPoint.vue'
 import ShippingPointsGrid from './ShippingPointsGrid.vue'
 
 import { DEFAULT_ADDRESS_FORM } from '@/consts/addressConsts'
+import CountriesSelect from '@/components/CountriesSelect.vue'
 
 export default defineComponent({
   name: 'ShippingMethodsForm',
@@ -222,6 +219,7 @@ export default defineComponent({
     PriceRangesForm,
     ShippingPointForm,
     ShippingPointsGrid,
+    CountriesSelect,
   },
   props: {
     value: {

@@ -58,7 +58,7 @@ import Card from '@/components/layout/Card.vue'
 const EMPTY_CHANNEL_FORM: SalesChannelCreateDto = {
   slug: '',
   status: SalesChannelStatus.Active,
-  countries_block_list: true,
+  countries_block_list: false,
   countries: [],
   default_currency: '',
   default_language_id: '',

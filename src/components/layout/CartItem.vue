@@ -10,7 +10,7 @@
       <div v-else class="cart-item__cover" />
       <div class="cart-item__content">
         <span class="cart-item__title">
-          <span class="cart-item__name"> {{ item.product.name }} </span>
+          <span class="cart-item__name"> {{ item.name }} </span>
 
           <info-tooltip
             v-if="item.product.sets.length"

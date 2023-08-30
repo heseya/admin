@@ -37,7 +37,7 @@
       v-model="form.vat_rate"
       :disabled="disabled"
       name="vat_rate"
-      rules="required|not-negative|less-than:100"
+      rules="required|not-negative|less-or-equal-than:100"
       :label="$t('form.vat_rate').toString()"
     />
 

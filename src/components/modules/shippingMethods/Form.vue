@@ -71,7 +71,7 @@
           :min="0"
           name="shipping_time_min"
           :disabled="disabled"
-          rules="not-negative|less-than:@shipping_time_max"
+          rules="not-negative|less-or-equal-than:@shipping_time_max"
           :label="$t('form.minDeliveryDays')"
         />
         <validated-input

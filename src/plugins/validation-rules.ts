@@ -60,12 +60,25 @@ extend('less-than', {
   params: ['target'],
   validate(value, { target }: Record<string, any>) {
     const maxValue = isNumber(target) ? target : parseFloat(target)
-    return isNaN(maxValue) || value <= maxValue
+    return isNaN(maxValue) || value < maxValue
   },
   message: (_, props) => {
     const value: string = props._target_ || props.target
     const text = isNaN(Number(value)) ? (i18n.t('validation.lessThanFallback') as string) : value
     return i18n.t('validation.lessThan', { target: text }) as string
+  },
+})
+
+extend('less-or-equal-than', {
+  params: ['target'],
+  validate(value, { target }: Record<string, any>) {
+    const maxValue = isNumber(target) ? target : parseFloat(target)
+    return isNaN(maxValue) || value <= maxValue
+  },
+  message: (_, props) => {
+    const value: string = props._target_ || props.target
+    const text = isNaN(Number(value)) ? (i18n.t('validation.lessThanFallback') as string) : value
+    return i18n.t('validation.lessOrEqualThan', { target: text }) as string
   },
 })
 

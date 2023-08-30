@@ -54,7 +54,7 @@
         :rules="{
           required: true,
           'not-negative': true,
-          'less-than': 100,
+          'less-or-equal-than': 100,
         }"
         type="number"
         :label="$t('form.discount')"

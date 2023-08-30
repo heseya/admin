@@ -93,6 +93,12 @@ export default defineComponent({
 
     value: {
       handler() {
+        if (this.value.some((langId) => !this.languages.find((lang) => lang.id === langId)))
+          this.$emit(
+            'input',
+            this.value.filter((langId) => this.languages.find((lang) => lang.id === langId)),
+          )
+
         const defaultLang = this.$accessor.languages.defaultLanguage
         // Default language must be always published
         if (defaultLang && !this.publishedMap[defaultLang.id])

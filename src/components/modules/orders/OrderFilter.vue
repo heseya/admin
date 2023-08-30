@@ -54,6 +54,18 @@
     </app-select>
 
     <app-select
+      v-model="local.sales_channel_id"
+      :label="$t('salesChannel').toString()"
+      add-all
+      option-filter-prop="label"
+      @change="debouncedSearch"
+    >
+      <a-select-option v-for="channel in salesChannels" :key="channel.id" :label="channel.name">
+        {{ channel.name }}
+      </a-select-option>
+    </app-select>
+
+    <app-select
       v-model="local.paid"
       :label="$t('paymentStatus').toString()"
       add-all
@@ -73,6 +85,7 @@
     "shipping": "Dostawa",
     "digitalShipping": "Cyfrowa dostawa",
     "paymentStatus": "Status płatności",
+    "salesChannel": "Kanał sprzedaży",
     "paid": "Opłacone",
     "notpaid": "Nie opłacone"
   },
@@ -81,6 +94,7 @@
     "shipping": "Shipping",
     "digitalShipping": "Digital shipping",
     "paymentStatus": "Payment status",
+    "salesChannel": "Sales channel",
     "paid": "Paid",
     "notpaid": "Not paid"
   }
@@ -94,12 +108,14 @@ import { debounce } from 'lodash'
 import { OrderStatus, ShippingMethod, ShippingType } from '@heseya/store-core'
 
 import { ALL_FILTER_VALUE } from '@/consts/filters'
+import { SalesChannel } from '@heseya/store-core'
 
 export type OrderFilersType = {
   search: string
   status_id: string
   shipping_method_id: string
   digital_shipping_method_id: string
+  sales_channel_id: string
   paid: string
   sort?: string
 }
@@ -109,6 +125,7 @@ export const EMPTY_ORDER_FILTERS: OrderFilersType = {
   status_id: ALL_FILTER_VALUE,
   shipping_method_id: ALL_FILTER_VALUE,
   digital_shipping_method_id: ALL_FILTER_VALUE,
+  sales_channel_id: ALL_FILTER_VALUE,
   paid: ALL_FILTER_VALUE,
   sort: undefined,
 }
@@ -139,6 +156,9 @@ export default defineComponent({
         (m) => m.shipping_type !== ShippingType.Digital,
       )
     },
+    salesChannels(): SalesChannel[] {
+      return this.$accessor.salesChannels.getData
+    },
   },
   watch: {
     filters(filters: OrderFilersType) {
@@ -148,6 +168,7 @@ export default defineComponent({
   created() {
     this.$accessor.statuses.fetch({ limit: 500 })
     this.$accessor.shippingMethods.fetch({ limit: 500 })
+    this.$accessor.salesChannels.fetch({ limit: 500 })
   },
   mounted() {
     this.local = { ...this.local, ...this.filters }

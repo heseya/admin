@@ -1,8 +1,6 @@
 <template>
   <div class="sale-view narrower-page">
     <top-nav :title="isNew ? $t('newTitle').toString() : $t('edit').toString()">
-      <!-- <audits-modal :id="sale.id" model="sales" /> -->
-
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Sales.Remove"

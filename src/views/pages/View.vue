@@ -1,8 +1,6 @@
 <template>
   <div class="narrower-page">
     <top-nav :title="!isNew ? page.name : $t('newTitle').toString()">
-      <audits-modal :id="page.id" model="pages" />
-
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Pages.Remove"
@@ -131,7 +129,6 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import RichEditor from '@/components/form/RichEditor.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import SeoForm from '@/components/modules/seo/Accordion.vue'
-import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 import AbsoluteContentLangSwitch from '@/components/lang/AbsoluteContentLangSwitch.vue'
 import PublishedLangsForm from '@/components/lang/PublishedLangsForm.vue'
@@ -157,7 +154,6 @@ export default defineComponent({
     ValidationObserver,
     SwitchInput,
     SeoForm,
-    AuditsModal,
     MetadataForm,
     AbsoluteContentLangSwitch,
     PublishedLangsForm,

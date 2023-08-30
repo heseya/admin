@@ -1,7 +1,6 @@
 <template>
   <div class="narrower-page">
     <top-nav :title="!isNew ? role.name : $t('newTitle').toString()">
-      <audits-modal :id="role.id" model="roles" />
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Roles.Remove"
@@ -66,7 +65,6 @@ import { Role, RoleCreateDto } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 import RolesForm from '@/components/modules/roles/Form.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
@@ -90,7 +88,6 @@ export default defineComponent({
     TopNav,
     PopConfirm,
     RolesForm,
-    AuditsModal,
     MetadataForm,
   },
   data: () => ({

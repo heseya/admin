@@ -2,12 +2,7 @@ import axios from 'axios'
 import { assign, cloneDeep, isNil } from 'lodash'
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 import { GetterTree, MutationTree } from 'vuex'
-import {
-  EntityAudits,
-  HeseyaPaginatedResponseMeta,
-  Metadata,
-  MetadataUpdateDto,
-} from '@heseya/store-core'
+import { HeseyaPaginatedResponseMeta, Metadata, MetadataUpdateDto } from '@heseya/store-core'
 
 import { api } from '../api'
 import { DefaultParams, stringifyQueryParams as stringifyQuery } from '@/utils/stringifyQuery'
@@ -336,24 +331,6 @@ export const createVuexCRUD =
             commit(DefaultVuexMutation.SetError, error)
             commit(DefaultVuexMutation.SetLoading, false)
             return false
-          }
-        },
-
-        // Audits
-        async fetchAudits({ commit }, id: UUID) {
-          commit(DefaultVuexMutation.SetError, null)
-          try {
-            const stringQuery = stringifyQuery(
-              assign({}, GLOBAL_QUERY_PARAMS, queryParams.get || {}),
-            )
-            const { data } = await api.get<{ data: EntityAudits<Item>[] }>(
-              `/audits/${endpoint}/id:${id}${stringQuery}`,
-            )
-            commit(DefaultVuexMutation.SetLoading, false)
-            return data.data
-          } catch (error: any) {
-            commit(DefaultVuexMutation.SetError, error)
-            return []
           }
         },
 

@@ -230,7 +230,6 @@
       "CLIENT_APP_WANTS_INVALID_PERMISSIONS": "App wants invalid permissions.",
       "CLIENT_ADD_APP_WITHOUT_REQUIRED_PERMISSIONS": "Can't add app without all required permissions.",
       "CLIENT_ADD_PERMISSION_APP_DOESNT_WANT": "Can't add any permissions application doesn't want.",
-      "CLIENT_MODEL_NOT_AUDITABLE": "Model not auditable.",
       "CLIENT_INVALID_CREDENTIALS": "Invalid credentials.",
       "CLIENT_INVALID_PASSWORD": "Invalid password.",
       "CLIENT_INVALID_TOKEN": "Invalid token.",

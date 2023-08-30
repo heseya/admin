@@ -12,8 +12,6 @@
         </template>
       </template>
 
-      <AuditsModal :id="product.id" model="products" />
-
       <PopConfirm
         v-if="!isNew"
         v-can="$p.Products.Remove"
@@ -183,7 +181,6 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import SchemaConfigurator from '@/components/modules/schemas/Configurator.vue'
 import SeoForm from '@/components/modules/seo/Accordion.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
-import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 import AttributesConfigurator from '@/components/modules/attributes/configurator/Configurator.vue'
 import WarehouseItemsConfigurator from '@/components/modules/products/WarehouseItemsConfigurator.vue'
 import AbsoluteContentLangSwitch from '@/components/lang/AbsoluteContentLangSwitch.vue'
@@ -248,7 +245,6 @@ export default defineComponent({
     ValidationObserver,
     SchemaConfigurator,
     SeoForm,
-    AuditsModal,
     MetadataForm,
     AttributesConfigurator,
     WarehouseItemsConfigurator,

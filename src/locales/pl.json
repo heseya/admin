@@ -229,7 +229,6 @@
       "CLIENT_APP_WANTS_INVALID_PERMISSIONS": "Aplikacja żąda nieprawidłowych uprawnień.",
       "CLIENT_ADD_APP_WITHOUT_REQUIRED_PERMISSIONS": "Nie można dodać aplikacji bez wszystkich wymaganych uprawnień.",
       "CLIENT_ADD_PERMISSION_APP_DOESNT_WANT": "Nie można dodać uprawnień, których aplikacja nie przyjmuje.",
-      "CLIENT_MODEL_NOT_AUDITABLE": "Model nie podlega audytowi",
       "CLIENT_INVALID_CREDENTIALS": "Nieprawidłowe dane.",
       "CLIENT_INVALID_PASSWORD": "Nieprawidłowe hasło.",
       "CLIENT_INVALID_TOKEN": "Nieprawidłowy token.",

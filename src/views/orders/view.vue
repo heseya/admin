@@ -3,7 +3,6 @@
     <top-nav :title="$t('title').toString()">
       <QrCodeModalButton type="Order" :body="{ id: order.id }" />
 
-      <audits-modal :id="order.id" model="orders" />
       <a v-if="storefrontPaymentUrl" :href="`${storefrontPaymentUrl}${order.code}`" target="_blank">
         <icon-button>
           <template #icon>
@@ -62,7 +61,6 @@ import { Order } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
-import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 import NextPrevButtons from '@/components/modules/orders/NextPrevButtons.vue'
 import OrderSummary from '@/components/modules/orders/Summary.vue'
 import StatusInput from '@/components/modules/orders/StatusInput.vue'
@@ -81,7 +79,6 @@ export default defineComponent({
   components: {
     TopNav,
     Card,
-    AuditsModal,
     NextPrevButtons,
     OrderSummary,
     StatusInput,

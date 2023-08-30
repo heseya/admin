@@ -1,8 +1,6 @@
 <template>
   <div class="coupon-view narrower-page">
     <top-nav :title="!isNew ? coupon.name : $t('newTitle').toString()">
-      <!-- <audits-modal :id="coupon.id" model="coupons" /> -->
-
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Coupons.Remove"

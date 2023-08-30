@@ -1,21 +1,19 @@
 <template>
   <div class="order-value-form">
     <div class="condition-form__row">
-      <validated-input
-        v-model="form.min_value"
-        :name="`${formId}.min_value`"
-        type="number"
-        :rules="`not-negative|less-than:@${formId}.max_value`"
-        :disabled="disabled"
+      <CurrencyPriceForm
+        v-model="form.min_values"
         :label="$t('form.min_value').toString()"
-      />
-      <validated-input
-        v-model="form.max_value"
-        :name="`${formId}.max_value`"
-        rules="not-negative"
-        type="number"
         :disabled="disabled"
+        :name="`${formId}.min_value_`"
+        :rules="maxValueRules"
+      />
+      <CurrencyPriceForm
+        v-model="form.max_values"
         :label="$t('form.max_value').toString()"
+        :disabled="disabled"
+        :name="`${formId}.max_value_`"
+        rules="not-negative"
       />
     </div>
 
@@ -63,11 +61,19 @@ import { defineComponent, PropType } from 'vue'
 import { OrderValueDiscountCondition } from '@heseya/store-core'
 
 import SwitchInput from '@/components/form/SwitchInput.vue'
+import CurrencyPriceForm from '@/components/CurrencyPriceForm.vue'
+import { OrderValueDiscountConditionDto } from '@heseya/store-core'
+import { mapPricesToDto } from '@/utils/currency'
+import { Price } from '@heseya/store-core'
+
+type Condition = OrderValueDiscountCondition | OrderValueDiscountConditionDto
+
+const isPriceArray = (v: any): v is Price[] => Array.isArray(v) && 'net' in v[0]
 
 export default defineComponent({
-  components: { SwitchInput },
+  components: { SwitchInput, CurrencyPriceForm },
   props: {
-    value: { type: Object as PropType<OrderValueDiscountCondition>, required: true },
+    value: { type: Object as PropType<Condition>, required: true },
     disabled: { type: Boolean, default: false },
   },
   computed: {
@@ -76,12 +82,40 @@ export default defineComponent({
       return this._uid
     },
     form: {
-      get(): OrderValueDiscountCondition {
-        return this.value
+      get(): OrderValueDiscountConditionDto {
+        // In watch there is a mapping from Price to PriceDto
+        return this.value as OrderValueDiscountConditionDto
       },
-      set(v: OrderValueDiscountCondition) {
+      set(v: OrderValueDiscountConditionDto) {
         this.$emit('input', v)
       },
+    },
+  },
+
+  watch: {
+    value: {
+      handler() {
+        /**
+         * If in min/max values there is Price instead of PriceDto, convert it to dto
+         */
+        if (isPriceArray(this.value.min_values) || isPriceArray(this.value.max_values))
+          this.form = {
+            ...this.form,
+            min_values: isPriceArray(this.value.min_values)
+              ? mapPricesToDto(this.value.min_values)
+              : this.value.min_values,
+            max_values: isPriceArray(this.value.max_values)
+              ? mapPricesToDto(this.value.max_values)
+              : this.value.max_values,
+          }
+      },
+      immediate: true,
+    },
+  },
+
+  methods: {
+    maxValueRules(currency: string) {
+      return `not-negative|less-than:@${this.formId}.max_value_${currency}`
     },
   },
 })

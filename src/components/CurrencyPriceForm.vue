@@ -4,11 +4,11 @@
       v-for="currency in currencies"
       :key="currency.code"
       :value="getPriceValue(currency.code)"
-      rules="required|not-negative"
+      :rules="getRules(currency.code)"
       type="number"
       step="0.01"
       :label="`${label || $t('form.price')} - ${currency.code}`"
-      :name="`price_${currency.code}`"
+      :name="`${name}${currency.code}`"
       :disabled="disabled"
       :precision="currency.decimal_places"
       @input="setPriceValue(currency.code, $event)"
@@ -49,6 +49,14 @@ export default defineComponent({
       type: String,
       default: '',
     },
+    rules: {
+      type: [String, Function],
+      default: 'required|not-negative',
+    },
+    name: {
+      type: String,
+      default: 'price_',
+    },
   },
 
   computed: {
@@ -81,6 +89,9 @@ export default defineComponent({
   },
 
   methods: {
+    getRules(currency: string) {
+      return typeof this.rules === 'function' ? this.rules(currency) : this.rules
+    },
     getPriceValue(currency: string): number {
       return parsePriceDtos(this.form, currency)
     },

@@ -66,7 +66,7 @@ import { DiscountConditionType } from '@heseya/store-core'
 import Empty from '@/components/layout/Empty.vue'
 import ConditionForm from './ConditionForm.vue'
 
-import { EMPTY_ORDER_VALUE_FORM } from '@/consts/salesConditionsForms'
+import { EMPTY_PRODUCT_IN_FORM } from '@/consts/salesConditionsForms'
 import { InnerConditionGroup } from '@/interfaces/SalesAndCoupons'
 
 export default defineComponent({
@@ -91,7 +91,7 @@ export default defineComponent({
   },
   methods: {
     addCondition() {
-      this.group.conditions = [...this.group.conditions, cloneDeep(EMPTY_ORDER_VALUE_FORM)]
+      this.group.conditions = [...this.group.conditions, cloneDeep(EMPTY_PRODUCT_IN_FORM)]
     },
     removeCondition(i: number) {
       this.group.conditions = this.group.conditions.filter((_, index) => index !== i)

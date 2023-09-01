@@ -45,9 +45,14 @@
             </button>
           </template>
 
-          <template #paid="{ rawValue }">
-            <span v-if="rawValue" class="order-tag success-text">{{ $t('paid') }}</span>
-            <span v-else class="order-tag danger-text">{{ $t('notpaid') }}</span>
+          <template #paid="{ rawValue, item }">
+            <span v-if="rawValue" class="order-tag success-text">{{ $t('payment.paid') }}</span>
+            <span
+              v-else-if="item.shipping_method.payment_on_delivery"
+              class="order-tag warning-text"
+              >{{ $t('payment.onDelivery') }}</span
+            >
+            <span v-else class="order-tag danger-text">{{ $t('payment.notPaid') }}</span>
           </template>
 
           <template #status="{ rawValue: { name, color } }">
@@ -64,8 +69,11 @@
   "pl": {
     "title": "Zamówienia",
     "overpaid": "Nadpłacono",
-    "paid": "Opłacone",
-    "notpaid": "Nieopłacone",
+    "payment": {
+      "paid": "Opłacone",
+      "notPaid": "Nieopłacone",
+      "onDelivery": "Za pobraniem"
+    },
     "copySuccess": "Skopiowiano do schowka",
     "form": {
       "code": "Kod zamówienia",
@@ -81,8 +89,11 @@
   "en": {
     "title": "Orders",
     "overpaid": "Overpaid",
-    "paid": "Paid",
-    "notpaid": "Not paid",
+    "payment": {
+      "paid": "Paid",
+      "notPaid": "Not paid",
+      "onDelivery": "On delivery"
+    },
     "copySuccess": "Copied to clipboard",
     "form": {
       "code": "Order code",
@@ -175,7 +186,12 @@ export default defineComponent({
           {
             key: 'paid',
             label: this.$t('form.paid') as string,
-            format: (v: boolean) => (v ? this.$t('paid') : this.$t('notpaid')) as string,
+            format: (isPaid: boolean, order) => {
+              if (isPaid) return this.$t('payment.paid').toString()
+              return order.shipping_method?.payment_on_delivery
+                ? this.$t('payment.onDelivery').toString()
+                : this.$t('payment.notPaid').toString()
+            },
           },
           {
             key: 'status',

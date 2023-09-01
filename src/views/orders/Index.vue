@@ -48,7 +48,7 @@
           <template #paid="{ rawValue, item }">
             <span v-if="rawValue" class="order-tag success-text">{{ $t('payment.paid') }}</span>
             <span
-              v-else-if="item.shipping_method.payment_on_delivery"
+              v-else-if="item?.shipping_method?.payment_on_delivery"
               class="order-tag warning-text"
               >{{ $t('payment.onDelivery') }}</span
             >
@@ -195,7 +195,7 @@ export default defineComponent({
             label: this.$t('form.paid') as string,
             format: (isPaid: boolean, order) => {
               if (isPaid) return this.$t('payment.paid').toString()
-              return order.shipping_method?.payment_on_delivery
+              return order?.shipping_method?.payment_on_delivery
                 ? this.$t('payment.onDelivery').toString()
                 : this.$t('payment.notPaid').toString()
             },

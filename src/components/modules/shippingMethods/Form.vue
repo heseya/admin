@@ -9,11 +9,11 @@
           :label="$t('form.shippingType').toString()"
         >
           <a-select-option
-            v-for="type in Object.values(ShippingType)"
-            :key="type"
-            :label="$t(`shippingTypes.${type}`)"
+            v-for="t in Object.values(ShippingType)"
+            :key="t"
+            :label="$t(`shippingTypes.${t}`)"
           >
-            {{ $t(`shippingTypes.${type}`) }}
+            {{ $t(`shippingTypes.${t}`) }}
           </a-select-option>
         </app-select>
       </div>
@@ -23,7 +23,16 @@
         rules="required"
         :label="$t('common.form.name')"
       />
+
       <div class="center">
+        <flex-input>
+          <label class="title">{{ $t('form.paymentBeforeDelivery') }}</label>
+          <a-switch v-model="form.payment_on_delivery" :disabled="disabled" />
+          <label class="title">{{ $t('form.paymentOnDelivery') }}</label>
+        </flex-input>
+      </div>
+
+      <div v-show="!form.payment_on_delivery" class="center">
         <app-select
           v-model="form.payment_methods"
           :disabled="disabled"
@@ -150,7 +159,9 @@
       "addShippingPoints": "Dodaj punkty dostawy",
       "shippingPoints": "Punkty dostawy",
       "addNewPoint": "Dodaj nowy punkt",
-      "editPoint": "Edytuj punkt"
+      "editPoint": "Edytuj punkt",
+      "paymentOnDelivery": "Płatność przy odbiorze",
+      "paymentBeforeDelivery": "Płatność przed wysyłką"
     }
   },
   "en": {
@@ -166,7 +177,9 @@
       "addShippingPoints": "Add shipping points",
       "shippingPoints": "Shipping points",
       "addNewPoint": "Add shipping point",
-      "editPoint": "Edit point"
+      "editPoint": "Edit point",
+      "paymentOnDelivery": "Payment on delivery",
+      "paymentBeforeDelivery": "Payment before delivery"
     }
   }
 }
@@ -248,6 +261,9 @@ export default defineComponent({
         // @ts-ignore
         this.$refs.priceRange.validate()
       },
+    },
+    'form.payment_on_delivery'() {
+      if (this.form.payment_on_delivery) this.form.payment_methods = []
     },
   },
   methods: {

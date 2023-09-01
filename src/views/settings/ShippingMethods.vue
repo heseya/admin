@@ -112,7 +112,8 @@
       "basePrice": "Bazowa cena",
       "minShippingTime": "Minimalny czas dostawy",
       "maxShippingTime": "Maksymalny czas dostawy",
-      "visibility": "Widoczność"
+      "visibility": "Widoczność",
+      "paymentOnDelivery": "Za pobraniem"
     }
   },
   "en": {
@@ -137,7 +138,8 @@
       "basePrice": "Base price",
       "minShippingTime": "Minimal delivery time",
       "maxShippingTime": "Maximum delivery time",
-      "visibility": "Visibility"
+      "visibility": "Visibility",
+      "paymentOnDelivery": "Payment on delivery"
     }
   }
 }
@@ -232,6 +234,11 @@ export default defineComponent({
             width: '1fr',
           },
           { key: 'public', label: this.$t('headers.visibility') as string, width: '0.5fr' },
+          {
+            key: 'payment_on_delivery',
+            label: this.$t('headers.paymentOnDelivery') as string,
+            width: '0.5fr',
+          },
         ],
       }
     },
@@ -277,6 +284,7 @@ export default defineComponent({
           ],
           public: true,
           shipping_points: [],
+          payment_on_delivery: false,
         }
       }
     },

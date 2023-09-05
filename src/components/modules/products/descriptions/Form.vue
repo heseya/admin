@@ -144,7 +144,7 @@ export default defineComponent({
               content_html: this.form.content_html,
             },
           },
-          published: this.$accessor.languages.data.map((lang) => lang.id),
+          published: [this.editedLang],
           public: true,
         })
 

@@ -1,5 +1,14 @@
 <template>
   <div class="media-filter">
+    <app-input
+      v-model="local.search"
+      class="span-2"
+      type="search"
+      :label="$t('common.search').toString()"
+      allow-clear
+      @input="debouncedSearch"
+    />
+
     <app-select
       v-model="local.type"
       :label="$t('mediaType').toString()"
@@ -52,11 +61,13 @@ import BooleanSelect from '@/components/form/BooleanSelect.vue'
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 
 export type MediaFiltersType = {
+  search: string
   type: CdnMediaType | typeof ALL_FILTER_VALUE
   has_relationships: boolean | typeof ALL_FILTER_VALUE
 }
 
 export const EMPTY_MEDIA_FILTERS: MediaFiltersType = {
+  search: '',
   type: ALL_FILTER_VALUE,
   has_relationships: ALL_FILTER_VALUE,
 }

@@ -97,7 +97,7 @@ type Condition = OrderValueDiscountCondition | OrderValueDiscountConditionDto
 
 type RangeType = 'min' | 'max' | 'both'
 
-const isPriceArray = (v: any): v is Price[] => Array.isArray(v) && 'net' in v[0]
+const isPriceArray = (v: any): v is Price[] => Array.isArray(v) && !!v[0] && 'net' in v[0]
 
 export default defineComponent({
   components: { SwitchInput, CurrencyPriceForm, AppSelect },

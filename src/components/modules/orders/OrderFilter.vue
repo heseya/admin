@@ -54,6 +54,18 @@
     </app-select>
 
     <app-select
+      v-model="local.payment_method_id"
+      :label="$t('paymentMethods').toString()"
+      add-all
+      option-filter-prop="label"
+      @change="debouncedSearch"
+    >
+      <a-select-option v-for="method in paymentMethods" :key="method.id" :label="method.name">
+        {{ method.name }}
+      </a-select-option>
+    </app-select>
+
+    <app-select
       v-model="local.sales_channel_id"
       :label="$t('salesChannel').toString()"
       add-all
@@ -86,6 +98,7 @@
     "digitalShipping": "Cyfrowa dostawa",
     "paymentStatus": "Status płatności",
     "salesChannel": "Kanał sprzedaży",
+    "paymentMethods": "Metoda płatności",
     "paid": "Opłacone",
     "notpaid": "Nie opłacone"
   },
@@ -95,6 +108,7 @@
     "digitalShipping": "Digital shipping",
     "paymentStatus": "Payment status",
     "salesChannel": "Sales channel",
+    "paymentMethods": "Payment method",
     "paid": "Paid",
     "notpaid": "Not paid"
   }
@@ -109,6 +123,7 @@ import { OrderStatus, ShippingMethod, ShippingType } from '@heseya/store-core'
 
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 import { SalesChannel } from '@heseya/store-core'
+import { PaymentMethod } from '@heseya/store-core'
 
 export type OrderFilersType = {
   search: string
@@ -116,6 +131,7 @@ export type OrderFilersType = {
   shipping_method_id: string
   digital_shipping_method_id: string
   sales_channel_id: string
+  payment_method_id: string
   paid: string
   sort?: string
 }
@@ -126,6 +142,7 @@ export const EMPTY_ORDER_FILTERS: OrderFilersType = {
   shipping_method_id: ALL_FILTER_VALUE,
   digital_shipping_method_id: ALL_FILTER_VALUE,
   sales_channel_id: ALL_FILTER_VALUE,
+  payment_method_id: ALL_FILTER_VALUE,
   paid: ALL_FILTER_VALUE,
   sort: undefined,
 }
@@ -159,6 +176,9 @@ export default defineComponent({
     salesChannels(): SalesChannel[] {
       return this.$accessor.salesChannels.getData
     },
+    paymentMethods(): PaymentMethod[] {
+      return this.$accessor.paymentMethods.getData
+    },
   },
   watch: {
     filters(filters: OrderFilersType) {
@@ -169,6 +189,7 @@ export default defineComponent({
     this.$accessor.statuses.fetch({ limit: 500 })
     this.$accessor.shippingMethods.fetch({ limit: 500 })
     this.$accessor.salesChannels.fetch({ limit: 500 })
+    this.$accessor.paymentMethods.fetch({ limit: 500 })
   },
   mounted() {
     this.local = { ...this.local, ...this.filters }

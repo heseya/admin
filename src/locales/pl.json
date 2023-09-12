@@ -286,6 +286,7 @@
       "UNPROCESSABLE_ENTITY": "422: Nieprocesowalna zawartość",
       "NO_ADMIN_PERMISSIONS": "Nie masz uprawnień, by zalogować się do panelu administracyjnego",
       "INTERNAL_SERVER_ERROR": "Wewnętrzny błąd serwera",
+      "PUBLISHING_TRANSLATION_EXCEPTION": "Nie można opublikować w języku, jeśli nie podano w nim wszystkich wymaganych treści",
       "undefined": "Nieznany błąd, skontaktuj się z administratorem"
     },
     "SERVER_ERROR": {

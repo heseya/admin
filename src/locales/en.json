@@ -69,7 +69,8 @@
     "webhooks": "Webhooks",
     "banners": "Banners",
     "attributes": "Attributes",
-    "media": "Media"
+    "media": "Media",
+    "redirects": "Redirects"
   },
   "attributeTypes": {
     "single-option": "Text single choice",

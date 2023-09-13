@@ -33,6 +33,7 @@ import { attributes } from './attributes'
 import { media } from './media'
 import { menuItems } from './menuItems'
 import { providers } from './providers'
+import { redirects } from './redirects'
 
 Vue.use(Vuex)
 
@@ -92,6 +93,7 @@ const storeModules = {
   providers,
   media,
   menuItems,
+  redirects,
 }
 
 const storePattern = {

@@ -22,11 +22,21 @@
 {
   "pl": {
     "title": "Przekierowania",
-    "add": "Dodaj przekierowanie"
+    "add": "Dodaj przekierowanie",
+    "table": {
+      "sourceUrl": "Źródło",
+      "targetUrl": "Cel",
+      "enabled": "Włączone"
+    }
   },
   "en": {
     "title": "Redirects",
-    "add": "Add redirect"
+    "add": "Add redirect",
+    "table": {
+      "sourceUrl": "Source",
+      "targetUrl": "Target",
+      "enabled": "Enabled"
+    }
   }
 }
 </i18n>
@@ -51,8 +61,8 @@ export default defineComponent({
         rowUrlBuilder: (item) => `/settings/redirects/${item.id}`,
         headers: [
           { key: 'name', label: this.$t('common.form.name') as string },
-          { key: 'source_url', label: this.$t('table.source_url') as string },
-          { key: 'target_url', label: this.$t('table_target_url') as string },
+          { key: 'source_url', label: this.$t('table.sourceUrl') as string },
+          { key: 'target_url', label: this.$t('table.targetUrl') as string },
           { key: 'enabled', label: this.$t('table.enabled') as string },
         ],
       }

@@ -273,6 +273,14 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     id: nextId(),
     type: MenuItemType.Link,
+    to: '/settings/redirects',
+    iconClass: 'bx bx-link-external',
+    label: 'nav.redirects',
+    section: SettingsSection.Other,
+  },
+  {
+    id: nextId(),
+    type: MenuItemType.Link,
     to: '/settings/providers',
     iconClass: 'bx bxs-log-in',
     label: 'nav.providers',

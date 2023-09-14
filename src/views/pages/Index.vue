@@ -44,7 +44,7 @@
 import { defineComponent } from 'vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 import { TableConfig } from '@/interfaces/CmsTable'
-import { Sale } from '@heseya/store-core'
+import { Page } from '@heseya/store-core'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 
 export default defineComponent({
@@ -56,7 +56,7 @@ export default defineComponent({
     PaginatedList,
   },
   computed: {
-    tableConfig(): TableConfig<Sale> {
+    tableConfig(): TableConfig<Page> {
       return {
         headers: [
           { key: 'name', label: this.$t('common.form.name') as string, width: '2fr' },

@@ -26,7 +26,9 @@
             <span class="cart-item__schema-name">{{ schema.name }}:</span>
             <span class="cart-item__schema-value">
               {{ schema.value }}
-              <small v-if="schema.price !== 0">(+ {{ formatCurrency(schema.price) }} )</small>
+              <small v-if="parseFloat(schema.price.gross) !== 0"
+                >(+ {{ formatCurrency(schema.price.gross) }} )</small
+              >
             </span>
           </div>
         </div>

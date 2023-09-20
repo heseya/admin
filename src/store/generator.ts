@@ -197,7 +197,7 @@ export const createVuexCRUD =
           commit(DefaultVuexMutation.SetLoading, true)
           try {
             const stringQuery = stringifyQuery(
-              assign({}, GLOBAL_QUERY_PARAMS, queryParams.get || {}),
+              assign({}, GLOBAL_QUERY_PARAMS, queryParams.getOne || {}),
             )
             const { data } = await api.get<{ data: Item }>(`/${endpoint}/id:${id}${stringQuery}`)
             // @ts-ignore type is correct, but TS is screaming

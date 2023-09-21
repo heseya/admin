@@ -224,7 +224,7 @@ export default defineComponent({
       digital_shipping_method_id:
         (this.$route.query.digital_shipping_method_id as string) || ALL_FILTER_VALUE,
       paid: (this.$route.query.paid as string) || ALL_FILTER_VALUE,
-      sort: (this.$route.query.sort as string) || 'created_at:desc', // TODO: remove this default sort
+      sort: (this.$route.query.sort as string) || '',
     }
   },
   methods: {

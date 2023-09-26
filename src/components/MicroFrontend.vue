@@ -47,17 +47,18 @@ export default defineComponent({
   },
   methods: {
     initShadowDom() {
-      this.$el.attachShadow({ mode: 'open' }).innerHTML = `
-        <div id="document">
-          <div id="head"></div>
-          <div id="body"></div>
-        </div>`
+      const shadowRoot = this.$el.attachShadow({ mode: 'closed' })
 
-      const document = this.$el.shadowRoot!.getElementById('document')!
-      const head = document.querySelector('#head')!
-      const body = document.querySelector('#body')!
+      const shadowDocument = document.createElement('html')
+      const shadowHead = document.createElement('head')
+      const shadowBody = document.createElement('body')
 
-      return { head, body, document }
+      shadowDocument.appendChild(shadowHead)
+      shadowDocument.appendChild(shadowBody)
+
+      shadowRoot.appendChild(shadowDocument)
+
+      return { head: shadowHead, body: shadowBody, document: shadowDocument }
     },
 
     mountApp(container: Element | string) {

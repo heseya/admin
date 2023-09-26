@@ -236,6 +236,7 @@ export default defineComponent({
   }
 
   &__title {
+    width: 100%;
     display: flex;
     align-items: center;
 

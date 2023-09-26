@@ -48,7 +48,8 @@
     "seo": "SEO settings",
     "providers": "Manage oAuth login",
     "advanced": "Advanced settings",
-    "b2b": "List of B2B Companies"
+    "b2b": "List of B2B Companies",
+    "redirects": "Redirects"
   },
   "models": {
     "orders": "Orders",

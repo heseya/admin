@@ -148,7 +148,8 @@
     "messages": {
       "removed": "Produkt został usunięty.",
       "created": "Produkt został utworzony.",
-      "updated": "Produkt został zaktualizowany."
+      "updated": "Produkt został zaktualizowany.",
+      "error": "Wystąpił błąd podczas zapisywania produktu."
     },
     "saveAndNext": "Zapisz i dodaj następny"
   },
@@ -161,7 +162,8 @@
     "messages": {
       "removed": "Product has been removed.",
       "created": "Product has been created.",
-      "updated": "Product has been updated."
+      "updated": "Product has been updated.",
+      "error": "An error occurred while saving the product."
     },
     "saveAndNext": "Save and add next"
   }
@@ -360,46 +362,45 @@ export default defineComponent({
 
     async saveProduct() {
       this.$accessor.startLoading()
+      try {
+        const attributes = await updateProductAttributeOptions(
+          this.form.attributes.filter((v) => v.selected_options),
+        )
 
-      const attributes = await updateProductAttributeOptions(
-        this.form.attributes.filter((v) => v.selected_options),
-      )
+        const apiPayload: ProductCreateDto = {
+          ...this.form,
+          order: this.form.order || 0,
+          media: this.form.gallery.map(({ id }) => id),
+          tags: this.form.tags.map(({ id }) => id),
+          schemas: this.form.schemas.map(({ id }) => id),
+          related_sets: this.form.related_sets.map(({ id }) => id),
+          shipping_digital: Boolean(+this.form.shipping_digital),
+          purchase_limit_per_user: this.form.purchase_limit_per_user || null,
+          attributes: attributes.reduce(
+            (acc, { id, selected_options: option }) => ({
+              ...acc,
+              [id]: option.map((v) => v.id) || undefined,
+            }),
+            {},
+          ),
+          descriptions: this.form.descriptions.map(({ id }) => id),
+        }
 
-      const apiPayload: ProductCreateDto = {
-        ...this.form,
-        order: this.form.order || 0,
-        media: this.form.gallery.map(({ id }) => id),
-        tags: this.form.tags.map(({ id }) => id),
-        schemas: this.form.schemas.map(({ id }) => id),
-        related_sets: this.form.related_sets.map(({ id }) => id),
-        shipping_digital: Boolean(+this.form.shipping_digital),
-        purchase_limit_per_user: this.form.purchase_limit_per_user || null,
-        attributes: attributes.reduce(
-          (acc, { id, selected_options: option }) => ({
-            ...acc,
-            [id]: option.map((v) => v.id) || undefined,
-          }),
-          {},
-        ),
-        descriptions: this.form.descriptions.map(({ id }) => id),
-      }
+        const successMessage = this.isNew
+          ? (this.$t('messages.created') as string)
+          : (this.$t('messages.updated') as string)
 
-      const successMessage = this.isNew
-        ? (this.$t('messages.created') as string)
-        : (this.$t('messages.updated') as string)
+        // Metadata can be saved only after product is created
+        if (!this.isNew) await this.saveMetadata(this.id)
 
-      // Metadata can be saved only after product is created
-      if (!this.isNew) await this.saveMetadata(this.id)
+        const item = this.isNew
+          ? await this.$accessor.products.add(apiPayload)
+          : await this.$accessor.products.update({ id: this.id, item: apiPayload })
 
-      const item = this.isNew
-        ? await this.$accessor.products.add(apiPayload)
-        : await this.$accessor.products.update({ id: this.id, item: apiPayload })
+        ;(this.$refs.gallery as any).clearMediaToDelete()
 
-      ;(this.$refs.gallery as any).clearMediaToDelete()
+        if (!item) throw new Error('Product was not saved')
 
-      this.$accessor.stopLoading()
-
-      if (item) {
         this.$toast.success(successMessage)
 
         // After form submitting isDirty should be reset
@@ -408,7 +409,13 @@ export default defineComponent({
         if (item.id !== this.product.id) {
           this.$router.push(`/products/${item.id}`)
         }
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('🚀 ~ file: View.vue:321 ~ saveProduct ~ error:', error)
+        this.$toast.error(this.$t('messages.error') as string)
       }
+
+      this.$accessor.stopLoading()
     },
 
     async saveMetadata(id: string) {

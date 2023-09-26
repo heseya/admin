@@ -49,7 +49,7 @@ export const getApiURL = () => {
 
     // Internal domains
     case '***REMOVED***':
-      return 'https://release-4-0-0.***REMOVED***'
+      return '***REMOVED***'
     case '***REMOVED***':
       return '***REMOVED***'
     case '***REMOVED***':

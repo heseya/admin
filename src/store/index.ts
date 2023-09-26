@@ -34,6 +34,7 @@ import { media } from './media'
 import { menuItems } from './menuItems'
 import { providers } from './providers'
 import { salesChannels } from './salesChannels'
+import { redirects } from './redirects'
 
 Vue.use(Vuex)
 
@@ -94,6 +95,7 @@ const storeModules = {
   media,
   salesChannels,
   menuItems,
+  redirects,
 }
 
 const storePattern = {

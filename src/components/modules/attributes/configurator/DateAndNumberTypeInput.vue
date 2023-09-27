@@ -21,6 +21,7 @@
         v-model="selectedOption[0].value_number"
         class="number-input__input"
         type="number"
+        step="0.00001"
         name="value_number"
         :label="$t('value').toString()"
         :placeholder="$t('valuePlaceholder').toString()"

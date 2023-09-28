@@ -277,6 +277,7 @@
       "CLIENT_PROVIDER_MERGE_TOKEN_EXPIRED": "The ability to link accounts has expired, go through the process again.",
       "CLIENT_PROVIDER_MERGE_TOKEN_INVALID": "The token is invalid or inactive. Try to link accounts again.",
       "CLIENT_PROVIDER_MERGE_TOKEN_MISMATCH": "Unable to link accounts because you logged into an account with a different email address, go through the process again.",
+      "CLIENT_UPDATE_NOT_REGULAR_JOINABLE": "This role cannot be updated so that the user himself can join it",
       "PRODUCT_IS_NOT_ON_WISHLIST": "Product is not on wishlist",
       "BAD_REQUEST": "400: Bad request",
       "UNAUTHORIZED": "401: Unauthorized",

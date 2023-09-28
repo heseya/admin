@@ -28,10 +28,10 @@
               <template #title>
                 {{
                   !method.countries.length
-                    ? method.block_list
+                    ? method.is_block_list_countries
                       ? $t('list.allEnabled')
                       : $t('list.allDisabled')
-                    : method.block_list
+                    : method.is_block_list_countries
                     ? $t('list.blockList')
                     : $t('list.allowList')
                 }}
@@ -290,9 +290,12 @@ export default defineComponent({
         this.editedItem = {
           name: '',
           shipping_type: ShippingType.Address,
-          block_list: false,
           payment_methods: [],
+          is_block_list_countries: false,
           countries: [],
+          is_block_list_products: false,
+          product_ids: [],
+          product_set_ids: [],
           shipping_time_min: 1,
           shipping_time_max: 3,
           price_ranges: this.$accessor.config.currencies.map(({ code }) => ({

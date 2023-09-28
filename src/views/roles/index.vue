@@ -20,6 +20,7 @@
     "add": "Dodaj rolę",
     "table": {
       "isRegistrationRole": "Czy można zarejestrować się z tą rolą?",
+      "isJoinableRole": "Czy można dołączyć do tej roli?",
       "usersCount": "Liczba użytkowników"
     }
   },
@@ -28,6 +29,7 @@
     "add": "Add role",
     "table": {
       "isRegistrationRole": "Can register with this role?",
+      "isJoinableRole": "Can join to this role?",
       "usersCount": "Users count"
     }
   }
@@ -57,6 +59,7 @@ export default defineComponent({
         headers: [
           { key: 'name', label: this.$t('common.form.name') as string },
           { key: 'is_registration_role', label: this.$t('table.isRegistrationRole') as string },
+          { key: 'is_joinable', label: this.$t('table.isJoinableRole') as string },
           { key: 'users_count', label: this.$t('table.usersCount') as string },
         ],
       }

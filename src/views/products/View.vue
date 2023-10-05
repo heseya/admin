@@ -196,7 +196,7 @@ import ProductAttachments from '@/components/modules/products/attachments/List.v
 import ProductRelatedSets from '@/components/modules/products/related/List.vue'
 import DescriptionAccordion from '@/components/DescriptionAccordion.vue'
 
-import preventLeavingPage from '@/mixins/preventLeavingPage'
+// import preventLeavingPage from '@/mixins/preventLeavingPage'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { updateProductAttributeOptions } from '@/services/updateProductAttributeOptions'
@@ -261,7 +261,7 @@ export default defineComponent({
     AbsoluteContentLangSwitch,
   },
 
-  mixins: [preventLeavingPage],
+  // mixins: [preventLeavingPage],
 
   metaInfo(this: any): any {
     return {
@@ -346,7 +346,7 @@ export default defineComponent({
       await this.$accessor.products.get(this.$route.params.id)
 
       // isFormPrefilled should be set to true after form was prefilled
-      this.isFormPrefilled = true
+      // this.isFormPrefilled = true
 
       this.$accessor.stopLoading()
     },
@@ -404,7 +404,7 @@ export default defineComponent({
         this.$toast.success(successMessage)
 
         // After form submitting isDirty should be reset
-        this.isDirty = false
+        // this.isDirty = false
 
         if (item.id !== this.product.id) {
           this.$router.push(`/products/${item.id}`)

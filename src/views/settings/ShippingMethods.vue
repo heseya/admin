@@ -262,11 +262,9 @@ export default defineComponent({
     },
   },
   async created() {
-    this.$accessor.startLoading()
     this.$accessor.paymentMethods.fetch()
     const countries = await sdk.ShippingMethods.getCountries()
     this.countries = countries
-    this.$accessor.stopLoading()
   },
   methods: {
     openModal(id?: UUID) {

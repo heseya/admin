@@ -1,5 +1,11 @@
 <template>
-  <validation-provider v-slot="{ errors }" :rules="rules" :name="name" class="rich-editor" :style="{ '--height': height }">
+  <validation-provider
+    v-slot="{ errors }"
+    :rules="rules"
+    :name="name"
+    class="rich-editor"
+    :style="{ '--height': height }"
+  >
     <article-editor
       ref="editor"
       v-model="innerValue"
@@ -21,7 +27,7 @@ import { formatApiError } from '@/utils/errors'
 
 export default defineComponent({
   components: {
-      ValidationProvider,
+    ValidationProvider,
   },
   props: {
     value: {

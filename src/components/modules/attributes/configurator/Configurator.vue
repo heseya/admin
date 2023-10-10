@@ -73,7 +73,6 @@ import Item from '@/components/modules/attributes/configurator/Item.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import LayoutAccordion from '@/components/layout/Accordion.vue'
-import {at} from "lodash";
 
 export default defineComponent({
   components: {
@@ -121,7 +120,6 @@ export default defineComponent({
     }
   },
   methods: {
-    at,
     loadGlobalAttributes() {
       const attributesToAdd = this.globalAttributes
         .filter((attr) => this.attributes.findIndex((a) => a.id === attr.id) === -1)

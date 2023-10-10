@@ -61,6 +61,7 @@ export default defineComponent({
       if (this.type === 'password') return 'a-input-password'
       if (this.type === 'textarea') return 'a-textarea'
       if (this.type === 'number') return 'a-input-number'
+      if (this.type === 'datetime-local') return 'a-date-picker'
       return 'a-input'
     },
   },

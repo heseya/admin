@@ -173,9 +173,11 @@ export default defineComponent({
     font-size: 1.3em;
   }
 }
+
 ::v-deep .ant-collapse > .ant-collapse-item > .ant-collapse-header {
   padding: 1rem 0 !important;
 }
+
 ::v-deep .ant-collapse-content > .ant-collapse-content-box {
   padding: 0 !important;
 }

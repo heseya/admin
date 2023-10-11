@@ -13,7 +13,7 @@
     <empty v-if="attributes.length === 0">{{ $t('noAttributesInProduct') }}</empty>
 
     <list v-else class="attributes-configurator__list">
-      <item
+      <AttributeItem
         v-for="attribute in attributes.slice(0, 4)"
         :key="attribute.id"
         :edited-lang="editedLang"
@@ -23,9 +23,10 @@
       <LayoutAccordion
         v-if="attributes.length > 4"
         :title="$t('showMore', { x: attributes.length - 4 }).toString()"
-        :white="true"
+        :expanded-title="$t('hideMore', { x: attributes.length - 4 }).toString()"
+        white
       >
-        <item
+        <AttributeItem
           v-for="attribute in attributes.slice(4)"
           :key="attribute.id"
           :edited-lang="editedLang"
@@ -50,13 +51,15 @@
     "title": "Product attributes",
     "addAttribute": "Add attribute",
     "noAttributesInProduct": "This product has no attributes yet",
-    "showMore": "Show remaining {x} elements"
+    "showMore": "Show remaining {x} attributes",
+    "hideMore": "Hide remaining {x} attributes"
   },
   "pl": {
     "title": "Atrybuty produktu",
     "addAttribute": "Dodaj cechę",
     "noAttributesInProduct": "Ten produkt nie ma jeszcze żadnego atrybutu",
-    "showMore": "Pokaż pozostałe {x} elementów"
+    "showMore": "Pokaż pozostałe atrybuty ({x})",
+    "hideMore": "Ukryj pozostałe atrybuty ({x})"
   }
 }
 </i18n>
@@ -69,7 +72,7 @@ import Empty from '@/components/layout/Empty.vue'
 import List from '@/components/layout/List.vue'
 import AttributeSelector from '@/components/modules/attributes/Selector.vue'
 
-import Item from '@/components/modules/attributes/configurator/Item.vue'
+import AttributeItem from '@/components/modules/attributes/configurator/Item.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import LayoutAccordion from '@/components/layout/Accordion.vue'
@@ -80,7 +83,7 @@ export default defineComponent({
     Empty,
     List,
     AttributeSelector,
-    Item,
+    AttributeItem,
   },
   props: {
     editedLang: {
@@ -172,13 +175,18 @@ export default defineComponent({
     color: var(--gray-color-300);
     font-size: 1.3em;
   }
-}
 
-::v-deep .ant-collapse > .ant-collapse-item > .ant-collapse-header {
-  padding: 1rem 0 !important;
-}
+  &:deep(.ant-collapse > .ant-collapse-item > .ant-collapse-header) {
+    padding: 14px !important;
+  }
 
-::v-deep .ant-collapse-content > .ant-collapse-content-box {
-  padding: 0 !important;
+  &:deep(.accordion__title) {
+    font-weight: 300 !important;
+    font-style: italic;
+  }
+
+  &:deep(.ant-collapse-content > .ant-collapse-content-box) {
+    padding: 0 !important;
+  }
 }
 </style>

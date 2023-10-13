@@ -47,7 +47,7 @@ export default defineComponent({
   },
   methods: {
     initShadowDom() {
-      const shadowRoot = this.$el.attachShadow({ mode: 'closed' })
+      const shadowRoot = this.$el.attachShadow({ mode: 'open' })
 
       const shadowDocument = document.createElement('html')
       const shadowHead = document.createElement('head')

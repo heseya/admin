@@ -37,6 +37,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { Language } from '@heseya/store-core'
 import { first } from 'lodash'
 import pkg from '../package.json'
 import { init as initMicroApps, onMounted, openCommunicationChannel } from 'bout'
@@ -104,6 +105,9 @@ export default defineComponent({
     '$i18n.locale'(locale: string) {
       this.mainChannel.emit('uiLanguage:set', locale)
     },
+    '$accessor.config.apiLanguage'(lang: Language) {
+      this.mainChannel.emit('apiLanguage:set', lang)
+    },
   },
   created() {
     initMicroApps()
@@ -120,6 +124,7 @@ export default defineComponent({
         token: this.$accessor.auth.getIdentityToken,
         user: this.$accessor.auth.user,
         uiLanguage: this.$i18n.locale,
+        apiLanguage: this.$accessor.config.apiLanguage,
       })
     })
 

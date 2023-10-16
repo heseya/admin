@@ -116,7 +116,7 @@ export const createVuexCRUD =
         state.data = newData
       },
       [DefaultVuexMutation.AddData](state, newItem) {
-        state.data = [...state.data, newItem]
+        state.data = [newItem, ...state.data]
       },
       [DefaultVuexMutation.EditData](state, { key, value, item: editedItem }) {
         if (state.selected?.[key] === value) {

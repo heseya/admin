@@ -5,6 +5,7 @@ stages:
   - build
   - deploy
   - postdeploy
+  - trigger
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}
@@ -58,3 +59,20 @@ test-e2e:
     expire_in: 1 day
   rules:
     - when: manual
+
+trigger-***REMOVED***-repo:
+  stage: trigger
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $MPTECH_TRIGGER_BRANCH
+      when: always
+    - if: $CI_COMMIT_TAG
+      when: always
+  script:
+    - 'echo "Token: $MPTECH_TRIGGER_TOKEN"'
+    - if [ "$CI_COMMIT_TAG" != "" ]; then
+      export IMAGE_NAME=$CI_COMMIT_TAG;
+      else
+      export IMAGE_NAME=$MPTECH_TRIGGER_BRANCH;
+      fi
+    - apt update -y && apt install -y curl
+    - curl -X POST -F token=$MPTECH_TRIGGER_TOKEN -F ref=main -F variables[IMAGE_NAME]=$IMAGE_NAME "***REMOVED***/api/v4/projects/928/trigger/pipeline"

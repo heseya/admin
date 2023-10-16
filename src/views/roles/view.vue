@@ -75,6 +75,7 @@ const CLEAN_FORM: RoleCreateDto = {
   description: '',
   permissions: [],
   is_registration_role: false,
+  is_joinable: false,
 }
 
 export default defineComponent({

@@ -75,7 +75,7 @@
     "title": "Related collections",
     "selectorTitle": "related collections",
     "addTitle": "Add related collection",
-    "deleteText": "Are you sure you want to delete this related collection?",
+    "deleteText": "Are you sure you want to remove this related collection? (collection will not be deleted)",
     "emptyText": "No related collections",
     "createText": "Create new collection",
     "seeRelatedProducts": "See products"
@@ -84,7 +84,7 @@
     "title": "Kolekcje z powiązanymi produktami",
     "selectorTitle": "kolekcję z powiązanymi produktami",
     "addTitle": "Dodaj powiazaną kolekcję",
-    "deleteText": "Czy na pewno chcesz usunąć tą powiązaną kolekcje?",
+    "deleteText": "Czy na pewno chcesz usunąć powiązanie z tą kolekcją? (kolekcja nie zostanie usunięta)",
     "emptyText": "Brak powiązanych kolekcji",
     "createText": "Utwórz nową kolekcję",
     "seeRelatedProducts": "Zobacz produkty"

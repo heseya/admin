@@ -15,7 +15,7 @@ export const getApiURL = () => {
     case '***REMOVED***':
       return '***REMOVED***'
     case 'admin.***REMOVED***.com':
-      return 'https://***REMOVED***.***REMOVED***'
+      return 'https://api.***REMOVED***.com'
     case 'admin-***REMOVED***.***REMOVED***':
       return 'https://***REMOVED***.***REMOVED***'
     case 'admin-***REMOVED***.***REMOVED***':
@@ -49,7 +49,7 @@ export const getApiURL = () => {
 
     // Internal domains
     case '***REMOVED***':
-      return 'https://release-4-0-0.***REMOVED***'
+      return '***REMOVED***'
     case '***REMOVED***':
       return '***REMOVED***'
     default:

@@ -400,6 +400,24 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/settings/redirects',
+      name: 'RedirectsList',
+      component: () => import('./views/redirects/index.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Redirects.Show],
+      },
+    },
+    {
+      path: '/settings/redirects/:id',
+      name: 'RedirectsView',
+      component: () => import('./views/redirects/view.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Redirects.Show],
+      },
+    },
+    {
       path: '/settings/seo',
       name: 'Seo',
       component: () => import('./views/seo/index.vue'),

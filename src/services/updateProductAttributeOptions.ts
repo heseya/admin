@@ -38,6 +38,9 @@ export const updateProductAttributeOptions = async (rawAttributes: ProductAttrib
 
   const updatedAttributes = await Promise.all(updatesPromises)
 
+  if (updatedAttributes.some((a) => !a.selected_options.success))
+    throw new Error('Failed to update attribute options')
+
   // There are duplicated attributes, all with only one selected option (becouse they've been flatted before)
   const singleOptionAttributes = updatedAttributes
     .filter((a) => a.selected_options.success)

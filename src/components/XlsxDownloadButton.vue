@@ -1,5 +1,5 @@
 <template>
-  <xlsx-workbook v-if="fileContent.length">
+  <xlsx-workbook v-if="fileContent.length" :key="fileName">
     <xlsx-sheet :sheet-name="fileName" :collection="fileContent" />
     <xlsx-download :filename="`${fileName}-${getDate()}.xlsx`">
       <icon-button>

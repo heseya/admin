@@ -18,10 +18,14 @@
       {{ PAYMENT_METHODS[lastSuccessfullPayment.method] || lastSuccessfullPayment.method }}
     </span>
 
+    <tag v-if="!order.paid && order.shipping_method?.payment_on_delivery" type="warning">
+      <i class="bx bxs-package"></i> {{ $t('status.onDelivery') }}
+    </tag>
     <boolean-tag
+      v-else
       :value="order.paid"
-      :true-text="$t('orderPaid')"
-      :false-text="$t('orderNotPaid')"
+      :true-text="$t('status.paid')"
+      :false-text="$t('status.notPaid')"
     />
 
     <pop-confirm
@@ -46,7 +50,7 @@
 {
   "en": {
     "offlinePayment": {
-      "buttonText": "Mark payed",
+      "buttonText": "Mark paid",
       "confirmText": "Are you sure you want to manually mark the order as paid? (E.g. by cash or bank transfer)",
       "successText": "Pay",
       "resultSuccess": "The order has been marked as paid",
@@ -54,8 +58,11 @@
     },
     "overpaidTitle": "Order was overpaid by",
     "overpaidMessage": "Client paid {paid} instead of {should}",
-    "orderPaid": "Paid",
-    "orderNotPaid": "Not paid"
+    "status": {
+      "paid": "Paid",
+      "notPaid": "Not paid",
+      "onDelivery": "On delivery"
+    }
   },
   "pl": {
     "offlinePayment": {
@@ -68,8 +75,11 @@
     "overpaidTitle": "Zamówienie zostało nadpłacone o",
     "overpaidMessage": "Klient zapłacił {paid} zamiast {should}",
     "changedSuccess": "Status zamówienia został zmieniony",
-    "orderPaid": "Opłacono",
-    "orderNotPaid": "Nie opłacono"
+    "status": {
+      "paid": "Opłacone",
+      "notPaid": "Nieopłacone",
+      "onDelivery": "Za pobraniem"
+    }
   }
 }
 </i18n>

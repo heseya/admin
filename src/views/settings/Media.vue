@@ -141,7 +141,7 @@ input[type='color'] {
     }
 
     &--value {
-      color: var(--primary-color-300);
+      color: var(--gray-color-600);
     }
   }
 

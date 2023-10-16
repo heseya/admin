@@ -2,7 +2,7 @@
   <div class="date-between-form">
     <div class="condition-form__row">
       <validated-input
-        v-model="form.start_at"
+        v-model="formStartAt"
         :name="`${formId}.start_at`"
         type="date"
         :rules="`required|date-same-or-before:@${formId}.end_at`"
@@ -10,7 +10,7 @@
         :label="$t('form.start_at').toString()"
       />
       <validated-input
-        v-model="form.end_at"
+        v-model="formEndAt"
         :name="`${formId}.end_at`"
         rules="required"
         type="date"
@@ -66,6 +66,22 @@ export default defineComponent({
       },
       set(v: DateBetweenDiscountCondition) {
         this.$emit('input', v)
+      },
+    },
+    formStartAt: {
+      get(): string | null {
+        return formatDateInput(this.value.start_at)
+      },
+      set(v: string | null) {
+        this.form = { ...this.form, start_at: v }
+      },
+    },
+    formEndAt: {
+      get(): string | null {
+        return formatDateInput(this.value.end_at)
+      },
+      set(v: string | null) {
+        this.form = { ...this.form, end_at: v }
       },
     },
   },

@@ -34,12 +34,14 @@
   "pl": {
     "search": "Wyszukaj",
     "defaultTypeName": "schemat",
-    "defaultAddBtn": "Dodaj"
+    "defaultAddBtn": "Dodaj",
+    "slug": "Link"
   },
   "en": {
     "search": "Search",
     "defaultTypeName": "schema",
-    "defaultAddBtn": "Add"
+    "defaultAddBtn": "Add",
+    "slug": "Slug"
   }
 }
 </i18n>
@@ -47,7 +49,7 @@
 <script lang="ts">
 import { PropType, defineComponent } from 'vue'
 import debounce from 'lodash/debounce'
-import { Schema, Attribute, WarehouseItem } from '@heseya/store-core'
+import {Schema, Attribute, WarehouseItem, Product} from '@heseya/store-core'
 
 import { api } from '../api'
 import { formatApiNotificationError } from '@/utils/errors'
@@ -145,6 +147,7 @@ export default defineComponent({
         return `${this.$t('common.form.type')}: ${this.$t(
           'attributeTypes.' + (item as Attribute).type,
         )}`
+      if (this.type === 'products') return `${this.$t('slug')}: ${(item as Product).slug}`
       return ''
     },
   },

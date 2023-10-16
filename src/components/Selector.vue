@@ -147,11 +147,7 @@ export default defineComponent({
         return `${this.$t('common.form.type')}: ${this.$t(
           'attributeTypes.' + (item as Attribute).type,
         )}`
-      if (this.type === 'products') {
-        const product = item as Product
-        const ean = product.metadata?.ean
-        return ean ? `EAN: ${ean}` : `${this.$t('slug')}: ${product.slug}`
-      }
+      if (this.type === 'products') return `${this.$t('slug')}: ${(item as Product).slug}`
       return ''
     },
   },

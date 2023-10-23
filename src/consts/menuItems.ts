@@ -54,6 +54,7 @@ export const MENU_ITEMS: MenuItem[] = [
     label: 'nav.dashboard',
     disabled: true,
   },
+  { id: nextId(), type: MenuItemType.Spacer, disabled: true },
   {
     id: nextId(),
     type: MenuItemType.Link,
@@ -64,6 +65,7 @@ export const MENU_ITEMS: MenuItem[] = [
     disabled: true,
     can: PERMISSIONS_TREE.Orders.ShowSummary,
   },
+  { id: nextId(), type: MenuItemType.Spacer, disabled: true },
   {
     id: nextId(),
     type: MenuItemType.Link,
@@ -271,6 +273,14 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     id: nextId(),
     type: MenuItemType.Link,
+    to: '/settings/redirects',
+    iconClass: 'bx bx-link-external',
+    label: 'nav.redirects',
+    section: SettingsSection.Other,
+  },
+  {
+    id: nextId(),
+    type: MenuItemType.Link,
     to: '/settings/providers',
     iconClass: 'bx bxs-log-in',
     label: 'nav.providers',
@@ -278,7 +288,7 @@ export const MENU_ITEMS: MenuItem[] = [
     section: SettingsSection.Other,
   },
   {
-    id: '27',
+    id: nextId(),
     type: MenuItemType.Link,
     to: '/settings/advanced',
     iconClass: 'bx bxs-cog',
@@ -301,4 +311,5 @@ export const MENU_LINKS = MENU_ITEMS.filter((item) => item.type === MenuItemType
 export const DEFAULT_MENU_ITEMS = MENU_ITEMS.filter(
   (item) => item.type === MenuItemType.Spacer || item.default,
 )
+
 export const SETTINGS_LINKS = MENU_LINKS.filter((item) => item.section) as MenuLink[]

@@ -8,13 +8,13 @@
         name="name"
         rules="required"
         :disabled="!isNew"
-        :label="$t('common.form.name')"
+        :label="$t('common.form.name').toString()"
       />
       <validated-input
         v-model="form.url"
         name="url"
         rules="required|url"
-        :label="$t('common.form.slug')"
+        :label="$t('common.form.slug').toString()"
       />
 
       <br />
@@ -55,18 +55,18 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { OrderProductUrl } from '@heseya/store-core'
 
-export default Vue.extend({
+export default defineComponent({
   components: { ValidationObserver },
 
   props: {
     editedUrl: {
-      type: Object,
+      type: Object as PropType<OrderProductUrl | null>,
       default: null,
-    } as Vue.PropOptions<OrderProductUrl | null>,
+    },
     orderId: {
       type: String,
       required: true,

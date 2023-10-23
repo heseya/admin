@@ -29,19 +29,19 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import { QrCodeObject } from '@/interfaces/QrCode'
 import { EXPERIMENTAL_FLAGS } from '@/consts/featureFlags'
 
 import CodeModal from './CodeModal.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: { CodeModal },
   props: {
     size: { type: Number, default: 250 },
-    type: { type: String, required: true } as Vue.PropOptions<QrCodeObject>,
-    body: { type: Object, required: true } as Vue.PropOptions<Record<string, any>>,
+    type: { type: String as PropType<QrCodeObject>, required: true },
+    body: { type: Object as PropType<Record<string, any>>, required: true },
   },
 
   data: () => ({

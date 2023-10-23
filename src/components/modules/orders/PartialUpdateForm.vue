@@ -6,7 +6,7 @@
           v-if="key === 'email'"
           v-model="form[key]"
           name="email"
-          :label="$t('email')"
+          :label="$t('email').toString()"
           rules="required|email"
         />
 
@@ -14,25 +14,19 @@
           v-else-if="key === 'comment'"
           v-model="form[key]"
           name="comment"
-          :label="$t('comment')"
+          :label="$t('comment').toString()"
         />
+
         <app-select
           v-else-if="key === 'shipping_place' && orderShippingType === ShippingType.Point"
           v-model="form.shipping_place"
           option-filter-prop="label"
-          :label="$t('choosePoint')"
+          :label="$t('choosePoint').toString()"
         >
           <a-select-option v-for="point in shippingPoints" :key="point.id" :label="point.name">
             {{ point.name }}
           </a-select-option>
         </app-select>
-
-        <switch-input
-          v-else-if="key === 'invoice_requested'"
-          v-model="form.invoice_requested"
-          :label="$t('invoiceRequested')"
-          horizontal
-        />
 
         <validated-input
           v-else-if="key === 'shipping_place' && orderShippingType === ShippingType.PointExternal"
@@ -48,6 +42,13 @@
         <address-form
           v-else-if="(key === 'shipping_place' || key === 'billing_address') && form[key]"
           v-model="form[key]"
+        />
+
+        <switch-input
+          v-else-if="key === 'invoice_requested'"
+          v-model="form.invoice_requested"
+          :label="$t('invoiceRequested').toString()"
+          horizontal
         />
       </div>
       <app-button @click="handleSubmit(save)">{{ $t('common.save') }}</app-button>
@@ -77,24 +78,24 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { Order, Address, ShippingMethod, ShippingType } from '@heseya/store-core'
 
 import AddressForm from './AddressForm.vue'
 
-export default Vue.extend({
+export default defineComponent({
   name: 'PartialUpdateForm',
   components: { AddressForm, ValidationObserver },
   props: {
     value: {
-      type: Object,
+      type: Object as PropType<Partial<Order>>,
       required: true,
-    } as Vue.PropOptions<Partial<Order>>,
+    },
     shippingMethod: {
-      type: Object,
+      type: Object as PropType<ShippingMethod | undefined>,
       default: () => {},
-    } as Vue.PropOptions<ShippingMethod | undefined>,
+    },
   },
   computed: {
     form: {

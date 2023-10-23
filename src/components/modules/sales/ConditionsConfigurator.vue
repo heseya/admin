@@ -21,7 +21,8 @@
         v-for="(group, i) in groups"
         :key="i"
         v-model="groups[i]"
-        :disabled="disabled || group.forced"
+        :disabled="disabled"
+        :deletable="isDeletable"
         @remove="removeConditionGroup(i)"
       />
     </div>
@@ -46,42 +47,123 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
-import { DiscountConditionGroupDto, DiscountConditionType } from '@heseya/store-core'
+import isEqual from 'lodash/isEqual'
+import { DiscountCondition, DiscountConditionType } from '@heseya/store-core'
 
 import Empty from '@/components/layout/Empty.vue'
 import ConditionGroup from './ConditionGroup.vue'
 
+import { InnerConditionGroup } from '@/interfaces/SalesAndCoupons'
+
 import { EMPTY_ORDER_VALUE_FORM } from '@/consts/salesConditionsForms'
 
-type ConditionGroup = DiscountConditionGroupDto & { forced?: true }
-
-export default Vue.extend({
+export default defineComponent({
   components: { Empty, ConditionGroup },
   props: {
-    value: { type: Array, required: true } as Vue.PropOptions<ConditionGroup[]>,
+    value: { type: Array as PropType<InnerConditionGroup[]>, required: true },
     disabled: { type: Boolean, default: false },
+    forcedCondition: { type: Object as PropType<DiscountCondition | null>, default: null },
   },
   computed: {
     DiscountConditionType(): typeof DiscountConditionType {
       return DiscountConditionType
     },
     groups: {
-      get(): ConditionGroup[] {
+      get(): InnerConditionGroup[] {
         return this.value
       },
-      set(v: ConditionGroup[]) {
+      set(v: InnerConditionGroup[]) {
         this.$emit('input', v)
       },
     },
+
+    isDeletable(): boolean {
+      if (this.forcedCondition) return this.groups.length > 1
+      return true
+    },
   },
+
+  watch: {
+    forcedCondition: {
+      immediate: true,
+      handler() {
+        this.handleForcedConditions()
+      },
+    },
+
+    groups() {
+      this.handleForcedConditions()
+    },
+  },
+
   methods: {
-    addConditionGroup() {
-      this.groups.push({
-        conditions: [cloneDeep(EMPTY_ORDER_VALUE_FORM)],
+    isSameCondition(
+      conditionA: Omit<DiscountCondition, 'id'> | null,
+      conditionB: Omit<DiscountCondition, 'id'> | null,
+    ): boolean {
+      if (!conditionA || !conditionB) return false
+      // @ts-ignore Dirty hack to make it work
+      return Object.keys(conditionA).every((key: keyof object) => {
+        if (key === 'id' || key === 'forced') return true
+        if (Array.isArray(conditionA[key])) {
+          return isEqual(
+            (conditionA[key] as { id: string[] }[]).map((o) => o.id),
+            (conditionB[key] as { id: string[] }[]).map((o) => o.id),
+          )
+        }
+        return isEqual(conditionA[key], conditionB[key])
       })
     },
+
+    handleForcedConditions() {
+      if (!this.forcedCondition) return
+
+      // If there is no group, create one and add forced condition to it
+      if (this.groups.length === 0) {
+        this.addConditionGroup()
+      } else {
+        // If every group contains forced condition with 'forced' flag, do nothing
+        if (
+          this.groups.every((group) =>
+            group.conditions.some(
+              (condition) =>
+                this.isSameCondition(condition, this.forcedCondition) && condition.forced,
+            ),
+          )
+        )
+          return
+
+        // For each of group check if it already contains forced condition, if not add it, if it has, add the forced flag to it (backend does not return it)
+        this.groups.forEach((group) => {
+          const forcedConditionIndex = group.conditions.findIndex((condition) =>
+            this.isSameCondition(condition, this.forcedCondition),
+          )
+
+          if (forcedConditionIndex === -1) {
+            group.conditions.push(cloneDeep({ ...this.forcedCondition!, forced: true }))
+          } else {
+            // Forces reactive update
+            this.$set(group.conditions, forcedConditionIndex, {
+              ...group.conditions[forcedConditionIndex],
+              forced: true,
+            })
+          }
+        })
+      }
+    },
+
+    addConditionGroup() {
+      const addedCondition = this.forcedCondition
+        ? cloneDeep({ ...this.forcedCondition, forced: true })
+        : cloneDeep(EMPTY_ORDER_VALUE_FORM)
+
+      this.groups.push({
+        conditions: [addedCondition],
+      })
+    },
+
     removeConditionGroup(i: number) {
       this.groups.splice(i, 1)
     },

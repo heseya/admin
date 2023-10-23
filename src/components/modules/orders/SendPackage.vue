@@ -5,8 +5,8 @@
       <div class="send-package__selects">
         <app-select
           v-model="packageTemplateId"
-          :label="$t('sendPackage.template')"
-          :placeholder="$t('sendPackage.templatePlaceholder')"
+          :label="$t('sendPackage.template').toString()"
+          :placeholder="$t('sendPackage.templatePlaceholder').toString()"
           option-filter-prop="label"
         >
           <a-select-option
@@ -93,13 +93,13 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { PackagesTemplate } from '@heseya/store-core'
 import { createStandardPackage } from '@/services/createStandardPackage'
 
 import { formatApiNotificationError } from '@/utils/errors'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     shippingNumber: {
       type: String,

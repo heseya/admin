@@ -1,6 +1,6 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList :title="$t('title')" store-key="paymentMethods">
+    <PaginatedList :title="$t('title').toString()" store-key="paymentMethods">
       <template #default="{ item: paymentMethod }">
         <list-item :key="paymentMethod.id" @click="openModal(paymentMethod.id)">
           <template #avatar>
@@ -29,18 +29,18 @@
       @cancel="selectedMethod = null"
     >
       <div class="payment-method-details">
-        <field :label="$t('method.icon')">
+        <field :label="$t('method.icon').toString()">
           <avatar color="#eee" class="payment-method-details__icon">
             <img v-if="selectedMethod.icon" :src="selectedMethod.icon" />
             <i v-else class="bx bx-image"></i>
           </avatar>
         </field>
 
-        <field :label="$t('common.form.name')">
+        <field :label="$t('common.form.name').toString()">
           <span>{{ selectedMethod.name }}</span>
         </field>
 
-        <field :label="$t('method.public')">
+        <field :label="$t('method.public').toString()">
           <boolean-tag :value="selectedMethod.public" class="payment-method-details__public" />
         </field>
       </div>
@@ -48,29 +48,29 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "title": "Metody płatności",
     "methodDetails": "Szczegóły metody płatności",
     "method": {
-      "icon":"Ikona",
-      "public":"Publiczna"
+      "icon": "Ikona",
+      "public": "Publiczna"
     }
   },
   "en": {
     "title": "Payment methods",
     "methodDetails": "Payment method details",
     "method": {
-      "icon":"Icon",
-      "public":"Public"
+      "icon": "Icon",
+      "public": "Public"
     }
   }
 }
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { PaymentMethod } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
@@ -80,7 +80,7 @@ import Field from '@/components/Field.vue'
 
 import { UUID } from '@/interfaces/UUID'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     PaginatedList,
     ListItem,

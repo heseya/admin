@@ -1,10 +1,10 @@
 <template>
   <div class="order-customer-details">
-    <field v-if="order.buyer" :label="$t('userSection')">
+    <field v-if="order.buyer" :label="$t('userSection').toString()">
       <order-buyer :buyer="order.buyer" />
     </field>
 
-    <field :label="$t('emailSection')">
+    <field :label="$t('emailSection').toString()">
       <template #labelSuffix>
         <icon-button
           v-can="$p.Orders.Edit"
@@ -24,14 +24,14 @@
 
     <div class="order-customer-details__addresses">
       <EditableOrderAddress
-        :title="$t('deliveryAddressSection')"
+        :title="$t('deliveryAddressSection').toString()"
         :order="order"
         :hide-edit="order.shipping_place === null"
         @edit="editShippingAddress"
       />
 
       <EditableOrderAddress
-        :title="$t('invoiceAddressSection')"
+        :title="$t('invoiceAddressSection').toString()"
         :order="order"
         billing
         @edit="editBillingAddress"
@@ -39,7 +39,7 @@
     </div>
 
     <field
-      :label="$t('commentSection')"
+      :label="$t('commentSection').toString()"
       class="comment-field"
       :class="{ 'comment-field--filled': !!order.comment }"
     >
@@ -69,7 +69,7 @@
       <modal-form>
         <partial-update-form
           v-model="form"
-          :shipping-method="order.shipping_method"
+          :shipping-method="order.shipping_method || undefined"
           @save="saveForm"
         />
       </modal-form>
@@ -103,7 +103,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { Address, Order, OrderUpdateDto, ShippingType } from '@heseya/store-core'
 
 import Field from '@/components/Field.vue'
@@ -116,13 +116,13 @@ import OrderBuyer from './OrderBuyer.vue'
 
 import { DEFAULT_ADDRESS_FORM } from '@/consts/addressConsts'
 
-export default Vue.extend({
+export default defineComponent({
   components: { Field, EditableOrderAddress, PartialUpdateForm, ModalForm, IconButton, OrderBuyer },
   props: {
     order: {
-      type: Object,
+      type: Object as PropType<Order>,
       required: true,
-    } as Vue.PropOptions<Order>,
+    },
   },
   data: () => ({
     isEditModalActive: false,
@@ -184,16 +184,7 @@ export default Vue.extend({
     },
     async saveForm() {
       this.$accessor.startLoading()
-
-      const form = { ...this.form }
-      if ('shipping_place' in form) {
-        form.shipping_place =
-          this.order.shipping_method?.shipping_type === ShippingType.Point
-            ? (this.order.shipping_place as Address).id
-            : this.order.shipping_place
-      }
-
-      const success = await this.$accessor.orders.update({ id: this.order.id, item: form })
+      const success = await this.$accessor.orders.update({ id: this.order.id, item: this.form })
       this.isEditModalActive = false
       if (success) this.$toast.success(this.$t('editSuccess') as string)
       else this.$toast.error(this.$t('editFailed') as string)

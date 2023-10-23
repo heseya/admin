@@ -74,8 +74,8 @@
                 <a-menu-item v-can="$p.ProductSets.Remove">
                   <pop-confirm
                     :title="`${$t('collection')}: ${set.name}. ${$t('deleteText')}`"
-                    :ok-text="$t('common.delete')"
-                    :cancel-text="$t('common.cancel')"
+                    :ok-text="$t('common.delete').toString()"
+                    :cancel-text="$t('common.cancel').toString()"
                     placement="bottom"
                     @confirm="deleteCollection"
                   >
@@ -164,7 +164,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import Draggable from 'vuedraggable'
 import { cloneDeep } from 'lodash'
 import { ProductSet, ProductSetUpdateDto, ProductSetList } from '@heseya/store-core'
@@ -179,14 +179,14 @@ import { CLEAR_PRODUCT_SET_FORM } from '@/views/productSets/View.vue'
 import { UUID } from '@/interfaces/UUID'
 import { formatApiNotificationError } from '@/utils/errors'
 
-export default Vue.extend({
+export default defineComponent({
   name: 'ProductSet',
   components: { Draggable, PopConfirm, SetProductsList, ChangeParentForm, Loading },
   props: {
     set: {
-      type: Object,
+      type: Object as PropType<ProductSet>,
       required: true,
-    } as Vue.PropOptions<ProductSet>,
+    },
     searchable: {
       type: Boolean,
       required: false,
@@ -313,14 +313,14 @@ export default Vue.extend({
       this.isSearching = true
       try {
         this.searchedPhrase = this.searchPhrase
-        const { data: res } = await api.get<{
-          data: ProductSet[]
-          meta: HeseyaPaginatedResponseMeta
-        }>(`/product-sets?parent_id=${parentId}&search=${search}`)
+        const { data, pagination } = await sdk.ProductSets.get({
+          parent_id: parentId,
+          search,
+        })
 
-        this.searchedChildren = res.data
-        this.totalSearchedResults = res.meta.total
-        this.searchedDisplayLimit = res.meta.per_page
+        this.searchedChildren = data
+        this.totalSearchedResults = pagination.total
+        this.searchedDisplayLimit = pagination.perPage
       } catch (e: any) {
         this.searchedPhrase = ''
         this.searchingError = true

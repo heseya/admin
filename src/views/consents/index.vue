@@ -1,6 +1,6 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList :title="$t('title')" store-key="consents">
+    <PaginatedList :title="$t('title').toString()" store-key="consents">
       <template #nav>
         <icon-button v-can="$p.Consents.Add" to="/settings/consents/create">
           <template #icon>
@@ -34,12 +34,12 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 
 import ListItem from '@/components/layout/ListItem.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },

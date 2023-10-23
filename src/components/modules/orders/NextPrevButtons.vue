@@ -2,7 +2,7 @@
   <div class="next-prev-buttons">
     <a-tooltip>
       <template #title>
-        <div v-html="$t('tooltip')" />
+        <div v-html="$t('tooltip').toString()" />
       </template>
 
       <Keypress
@@ -21,8 +21,8 @@
       <div class="next-prev-buttons__content">
         <icon-button
           :disabled="!prevOrder"
-          :title="$t('prev')"
-          :aria-label="$t('prev')"
+          :title="$t('prev').toString()"
+          :aria-label="$t('prev').toString()"
           @click="goToPrevOrder"
         >
           <template #icon>
@@ -31,8 +31,8 @@
         </icon-button>
         <icon-button
           :disabled="!nextOrder"
-          :title="$t('next')"
-          :aria-label="$t('next')"
+          :title="$t('next').toString()"
+          :aria-label="$t('next').toString()"
           @click="goToNextOrder"
         >
           <template #icon>
@@ -60,10 +60,10 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { Order } from '@heseya/store-core'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     Keypress: () => import('vue-keypress'),
   },

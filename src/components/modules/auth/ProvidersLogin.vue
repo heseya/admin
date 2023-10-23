@@ -20,7 +20,7 @@
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "orUse": "lub zaloguj się używając"
@@ -32,14 +32,14 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { AuthProviderKey, AuthProviderList } from '@heseya/store-core'
 
 import { sdk } from '@/api'
 import { formatApiNotificationError } from '@/utils/errors'
 import { OAUTH_PROVIDER_KEY, OAUTH_NEXT_URL_KEY } from '@/consts/oauthKeys'
 
-export default Vue.extend({
+export default defineComponent({
   data: () => ({
     providers: [] as AuthProviderList[],
   }),

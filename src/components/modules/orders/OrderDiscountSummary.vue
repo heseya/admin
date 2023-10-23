@@ -39,22 +39,34 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import groupBy from 'lodash/groupBy'
 import { DiscountTargetType, OrderDiscount } from '@heseya/store-core'
 
 import { formatCurrency } from '@/utils/currency'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     discounts: {
-      type: Array,
+      type: Array as PropType<OrderDiscount[]>,
       required: true,
-    } as Vue.PropOptions<OrderDiscount[]>,
+    },
+    types: {
+      type: Array as PropType<DiscountTargetType[]>,
+      default: () => [
+        DiscountTargetType.CheapestProduct,
+        DiscountTargetType.OrderValue,
+        DiscountTargetType.Products,
+        DiscountTargetType.ShippingPrice,
+      ],
+    },
   },
   computed: {
+    selectedDiscounts(): OrderDiscount[] {
+      return this.discounts.filter((d) => this.types.includes(d.target_type))
+    },
     groupedDiscounts(): Record<DiscountTargetType, OrderDiscount[]> {
-      return groupBy(this.discounts, 'target_type') as unknown as Record<
+      return groupBy(this.selectedDiscounts, 'target_type') as unknown as Record<
         DiscountTargetType,
         OrderDiscount[]
       >

@@ -1,10 +1,10 @@
 <template>
   <div class="narrower-page">
-    <top-nav :title="$t('title')">
+    <top-nav :title="$t('title').toString()">
       <BooleanTag
         :value="user && user.is_tfa_active"
-        :true-text="$t('common.active')"
-        :false-text="$t('common.inactive')"
+        :true-text="$t('common.active').toString()"
+        :false-text="$t('common.inactive').toString()"
       />
     </top-nav>
 
@@ -31,7 +31,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { User } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
@@ -40,7 +40,7 @@ import Setup2FA from '@/components/modules/2fa/Setup.vue'
 import Remove2FA from '@/components/modules/2fa/Remove.vue'
 import GenerateRecoveryCodes from '@/components/modules/2fa/GenerateRecoveryCodes.vue'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },

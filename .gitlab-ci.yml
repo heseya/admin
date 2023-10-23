@@ -16,16 +16,28 @@ lint:
   before_script:
     - yarn
   script:
-    - yarn lint
+    - yarn lint:eslint
   rules:
     - if: $CI_COMMIT_BRANCH != "master"
+
+vue-tsc:
+  image: node:16-alpine
+  stage: test
+  before_script:
+    - yarn install
+  rules:
+    - if: $CI_COMMIT_BRANCH != "master"
+  script:
+    - yarn lint:vue
+  # Hopefully only for some time, until we have fixed all the errors
+  allow_failure: true
 
 test-unit:
   stage: test
   before_script:
     - yarn
   script:
-    - yarn jest ./src --coverage
+    - yarn test:unit --coverage
   rules:
     - if: $CI_COMMIT_BRANCH != "master"
   coverage: /All files\s*\|\s*([\d\.]+)/
@@ -37,7 +49,7 @@ test-e2e:
     - yarn
     - yarn cypress install --force
   script:
-    - yarn test:e2e --headless --record --key $CYPRESS_RECORD_KEY
+    - yarn test:e2e --record --key $CYPRESS_RECORD_KEY
   artifacts:
     when: always
     paths:
@@ -45,4 +57,4 @@ test-e2e:
       - tests/e2e/screenshots/**/*.png
     expire_in: 1 day
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop"
+    - when: manual

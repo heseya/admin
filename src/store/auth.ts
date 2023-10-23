@@ -249,11 +249,14 @@ const actions = actionTree(
 
     async requestResetPassword(
       { commit },
-      { email, redirectUrl }: { email: string; redirectUrl: string },
+      { email, redirectUrl }: { email: string; redirectUrl?: string },
     ) {
       commit('SET_ERROR', null)
       try {
-        await sdk.Auth.requestResetPassword(email, redirectUrl)
+        await sdk.Auth.requestResetPassword(
+          email,
+          redirectUrl || `${window.location.origin}/new-password`,
+        )
         return true
       } catch (e: any) {
         commit('SET_ERROR', e)

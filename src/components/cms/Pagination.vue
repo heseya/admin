@@ -39,10 +39,10 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import PaginationButton from './PaginationButton.vue'
 
-export default Vue.extend({
+export default defineComponent({
   name: 'Pagination',
   components: { pButton: PaginationButton },
   props: {

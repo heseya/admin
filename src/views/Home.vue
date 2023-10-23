@@ -130,7 +130,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import sub from 'date-fns/sub'
 import startOfMonth from 'date-fns/startOfMonth'
 import endOfMonth from 'date-fns/endOfMonth'
@@ -150,11 +150,13 @@ import Card from '@/components/layout/Card.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import MonthlyIncomeChart from '@/components/modules/analytics/MonthlyIncomeChart.vue'
 
+const ORDER_LIMIT = 6
+
 type DateRange = { start: Date; end: Date }
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
-    return { title: this.$t('nav.settings') as string }
+    return { title: this.$t('nav.dashboard') as string }
   },
   components: {
     ListItem,
@@ -178,7 +180,7 @@ export default Vue.extend({
       return this.$accessor.config.env.store_name ?? 'Heseya Store'
     },
     orders(): Order[] {
-      return this.$accessor.orders.getData
+      return this.$accessor.orders.getData.filter((_o, i) => i < ORDER_LIMIT)
     },
     dates(): {
       week: DateRange
@@ -254,7 +256,7 @@ export default Vue.extend({
     async getOrders() {
       await this.$accessor.orders.fetch({
         page: 1,
-        limit: 6,
+        limit: ORDER_LIMIT,
       })
     },
   },

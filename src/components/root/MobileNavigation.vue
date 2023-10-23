@@ -28,14 +28,14 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 
 import MenuLinkComponent from './MenuLink.vue'
 import MobileOverlay from './MobileOverlay.vue'
 
 import { MenuLink } from '@/consts/menuItems'
 
-export default Vue.extend({
+export default defineComponent({
   name: 'MobileNavigation',
   components: { MobileOverlay, MenuLink: MenuLinkComponent },
   data: () => ({

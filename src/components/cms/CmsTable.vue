@@ -23,7 +23,7 @@
             <cms-table-row
               :item="item"
               :headers="config.headers"
-              :to="config.rowUrlBuilder ? config.rowUrlBuilder(item) : null"
+              :to="config.rowUrlBuilder ? config.rowUrlBuilder(item) : undefined"
               :no-hover="noHover"
               :draggable="draggable"
               :el="rowEl"
@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import Draggable from 'vuedraggable'
 
 import { VuexBaseItem } from '@/interfaces/VuexGenerator'
@@ -48,17 +48,17 @@ import { TableConfig } from '@/interfaces/CmsTable'
 import CmsTableHeader from '@/components/cms/CmsTableHeader.vue'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: { CmsTableHeader, Draggable, CmsTableRow },
   props: {
     value: {
-      type: Array,
+      type: Array as PropType<VuexBaseItem[]>,
       required: true,
-    } as Vue.PropOptions<VuexBaseItem[]>,
+    },
     config: {
-      type: Object,
+      type: Object as PropType<TableConfig>,
       required: true,
-    } as Vue.PropOptions<TableConfig>,
+    },
     draggable: {
       type: Boolean,
       default: false,

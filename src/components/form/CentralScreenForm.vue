@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 
 import pkg from '../../../package.json'
 
@@ -22,7 +22,7 @@ import Card from '../layout/Card.vue'
 import NavStoreLogo from '../root/NavStoreLogo.vue'
 import PoweredBy from '../root/PoweredBy.vue'
 
-export default Vue.extend({
+export default defineComponent({
   name: 'CentralScreenForm',
   components: { Card, NavStoreLogo, PoweredBy },
   props: {

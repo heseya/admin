@@ -16,14 +16,22 @@
         class="sale-name"
         :disabled="disabled"
         rules="required"
-        :label="$t('common.form.name')"
+        :label="$t('common.form.name').toString()"
+      />
+
+      <validated-input
+        v-model="form.slug"
+        class="sale-slug"
+        rules="slug"
+        :disabled="disabled"
+        :label="$t('common.form.slug').toString()"
       />
 
       <validated-input
         v-model="form.description"
         class="sale-desc"
         :disabled="disabled"
-        :label="$t('common.form.description')"
+        :label="$t('common.form.description').toString()"
       />
 
       <ValidationProvider v-slot="{ errors }" rules="required" class="sale-type">
@@ -44,7 +52,7 @@
         :disabled="disabled"
         :rules="{
           required: true,
-          positive: true,
+          'not-negative': true,
           'less-than': form.type === DiscountType.Percentage ? 100 : false,
         }"
         type="number"
@@ -126,7 +134,9 @@
         <autocomplete-input
           key="target_products"
           v-model="form.target_products"
-          :label="$t('form.target_products')"
+          :label="`${$t('form.target_products')} ${
+            form.target_is_allow_list ? $t('allowed') : $t('disallowed')
+          }`"
           model-url="products"
           :disabled="disabled"
           :rules="{ required: form.target_is_allow_list && form.target_sets.length === 0 }"
@@ -140,7 +150,9 @@
         <autocomplete-input
           key="target_sets"
           v-model="form.target_sets"
-          :label="$t('form.target_sets')"
+          :label="`${$t('form.target_sets')} ${
+            form.target_is_allow_list ? $t('allowed') : $t('disallowed')
+          }`"
           model-url="product-sets"
           :disabled="disabled"
           :rules="{ required: form.target_is_allow_list && form.target_products.length === 0 }"
@@ -156,7 +168,9 @@
         v-if="form.target_type === DiscountTargetType.ShippingPrice"
         key="target_shipping_methods"
         v-model="form.target_shipping_methods"
-        :label="$t('form.target_shipping_methods')"
+        :label="`${$t('form.target_shipping_methods')} ${
+          form.target_is_allow_list ? $t('allowed') : $t('disallowed')
+        }`"
         model-url="shipping-methods"
         :disabled="disabled"
         :rules="{ required: form.target_is_allow_list }"
@@ -166,7 +180,24 @@
 
     <hr />
 
-    <ConditionsConfigurator v-model="form.condition_groups" :disabled="disabled" />
+    <DescriptionAccordion v-model="form.description_html" :disabled="disabled" />
+
+    <hr />
+
+    <ConditionsConfigurator
+      v-model="form.condition_groups"
+      :disabled="disabled"
+      :forced-condition="forcedCondition"
+    />
+
+    <hr />
+
+    <SeoForm
+      v-model="form.seo"
+      class="product-page__seo-form"
+      :disabled="disabled"
+      :current="form.id ? { id: form.id, model: 'Sale' } : null"
+    />
   </div>
 </template>
 
@@ -174,6 +205,8 @@
 {
   "pl": {
     "refers": "Dotyczy",
+    "allowed": "objęte promocją",
+    "disallowed": "wyłączone z promocji (obejmuje wszystkie pozostałe)",
     "status": {
       "title": "Status",
       "active": "Aktywna",
@@ -184,16 +217,25 @@
       "discount": "Wartość zniżki",
       "priority": "Priorytet",
       "priorityTooltip": "Określa który w kolei będzie dany rabat przy naliczaniu wszystkich rabatów (w kolejności od największego do najmniejszego). Przy czym priorytet brany jest pod uwagę dopiero, gdy dwa rabaty mają ten sam typ przeceny i typ celu przeceny.",
-      "type": "Typ przeceny",
-      "target_type": "Typ celu przeceny",
+      "type": "Rodzaj przeceny",
+      "target_type": "Promocja będzie oddziaływać na",
       "target_is_allow_list": "Czy lista dozwolonych",
       "target_products": "Produkty",
-      "target_sets": "Kolekcje",
+      "target_sets": "Kolekcje zawierające produkty",
       "target_shipping_methods": "Metody dostawy"
+    },
+
+    "discountTargetTypes": {
+      "order-value": "Całkowitą wartość zamówienia",
+      "products": "Wybrane produkty",
+      "shipping-price": "Cenę dostawy",
+      "cheapest-product": "Najtańszy produkt w koszyku"
     }
   },
   "en": {
     "refers": "Refers to",
+    "allowed": "allowed",
+    "disallowed": "disallowed (includes all others)",
     "status": {
       "title": "Status",
       "active": "Active",
@@ -205,30 +247,54 @@
       "priority": "Priority",
       "priorityTooltip": "Defines which discount will be applied first (in order of priority). Only discounts with the same type and target type will be considered.",
       "type": "Discount type",
-      "target_type": "Discount target type",
+      "target_type": "The promotion will affect",
       "target_is_allow_list": "Is allow list",
       "target_products": "Products",
-      "target_sets": "Product sets",
+      "target_sets": "Collections containing products",
       "target_shipping_methods": "Shipping methods"
+    },
+
+    "discountTargetTypes": {
+      "order-value": "Order total value",
+      "products": "Selected products",
+      "shipping-price": "Shipping price",
+      "cheapest-product": "Cheapest product in cart"
     }
   }
 }
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { ValidationProvider } from 'vee-validate'
-import { DiscountTargetType, DiscountType, SaleCreateDto } from '@heseya/store-core'
+import {
+  DiscountCondition,
+  DiscountTargetType,
+  DiscountType,
+  SaleCreateDto,
+} from '@heseya/store-core'
 
 import FlexInput from '@/components/layout/FlexInput.vue'
-import AutocompleteInput from '../../AutocompleteInput.vue'
+import SeoForm from '@/components/modules/seo/Accordion.vue'
+import DescriptionAccordion from '@/components/DescriptionAccordion.vue'
+import AutocompleteInput from '@/components/AutocompleteInput.vue'
 import ConditionsConfigurator from './ConditionsConfigurator.vue'
 
-export default Vue.extend({
-  components: { ValidationProvider, FlexInput, AutocompleteInput, ConditionsConfigurator },
+type SaleForm = SaleCreateDto & { id?: string }
+
+export default defineComponent({
+  components: {
+    ValidationProvider,
+    FlexInput,
+    AutocompleteInput,
+    ConditionsConfigurator,
+    DescriptionAccordion,
+    SeoForm,
+  },
   props: {
-    value: { type: Object, required: true } as Vue.PropOptions<SaleCreateDto>,
+    value: { type: Object as PropType<SaleForm>, required: true },
     disabled: { type: Boolean, default: false },
+    forcedCondition: { type: Object as PropType<DiscountCondition | null>, default: null },
   },
   computed: {
     DiscountType(): typeof DiscountType {
@@ -238,10 +304,10 @@ export default Vue.extend({
       return DiscountTargetType
     },
     form: {
-      get(): SaleCreateDto {
+      get(): SaleForm {
         return this.value
       },
-      set(v: SaleCreateDto) {
+      set(v: SaleForm) {
         this.$emit('input', v)
       },
     },
@@ -268,6 +334,7 @@ export default Vue.extend({
 
     grid-template-areas:
       'name'
+      'slug'
       'desc'
       'type'
       'value'
@@ -279,6 +346,7 @@ export default Vue.extend({
       grid-template-columns: 2fr 1fr 1fr;
       grid-template-areas:
         'name name name'
+        'slug slug slug'
         'desc desc desc'
         'type value priority'
         'purpose purpose purpose'
@@ -289,7 +357,8 @@ export default Vue.extend({
       grid-template-columns: 35fr 15fr 25fr 25fr;
       gap: 12px;
       grid-template-areas:
-        'name desc desc desc'
+        'name slug slug slug'
+        'desc desc desc desc'
         'type type value priority'
         'purpose purpose switches switches';
     }
@@ -319,6 +388,10 @@ export default Vue.extend({
 
     .sale-desc {
       grid-area: desc;
+    }
+
+    .sale-slug {
+      grid-area: slug;
     }
 
     .sale-type {

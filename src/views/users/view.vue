@@ -1,6 +1,15 @@
 <template>
   <div class="narrower-page">
-    <top-nav :title="isNewUser(editedUser) ? $t('newTitle') : $t('editTitle')" />
+    <top-nav
+      :title="isNewUser(editedUser) ? $t('newTitle').toString() : $t('editTitle').toString()"
+    >
+      <icon-button v-if="selectedUser" @click="resetPassword">
+        <template #icon>
+          <i class="bx bxs-shield-plus"></i>
+        </template>
+        {{ $t('resetPassword') }}
+      </icon-button>
+    </top-nav>
 
     <card>
       <validation-observer v-slot="{ handleSubmit }">
@@ -41,9 +50,9 @@
             </app-button>
             <pop-confirm
               v-can="$p.Users.Remove"
-              :title="$t('deleteText')"
-              :ok-text="$t('common.delete')"
-              :cancel-text="$t('common.cancel')"
+              :title="$t('deleteText').toString()"
+              :ok-text="$t('common.delete').toString()"
+              :cancel-text="$t('common.cancel').toString()"
               @confirm="deleteItem"
             >
               <app-button
@@ -67,6 +76,8 @@
     "editTitle": "Edycja użytkownika",
     "newTitle": "Nowy użytkownik",
     "deleteText": "Czy na pewno chcesz usunąć tego użytkownika?",
+    "resetPassword": "Zresetuj hasło użytkownika",
+    "resetPasswordSuccess": "Mail z linkiem do zresetowania hasła został wysłany na adres email użytkownika.",
     "messages": {
       "removed": "Użytkownik został usunięty.",
       "created": "Użytkownik został utworzony.",
@@ -77,6 +88,8 @@
     "editTitle": "Edit user",
     "newTitle": "New user",
     "deleteText": "Are you sure you want to delete this user?",
+    "resetPassword": "Reset user password",
+    "resetPasswordSuccess": "Mail with link to reset password has been sent to user's email address.",
     "messages": {
       "removed": "User has been removed.",
       "created": "User has been created.",
@@ -87,7 +100,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { clone } from 'lodash'
 import { User, UserCreateDto, UserUpdateDto } from '@heseya/store-core'
@@ -118,7 +131,7 @@ const mapUserToEditableUser = (user: User): UserForm => ({
   password: '',
 })
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.isNewUser(this.editedUser) ? this.$t('newTitle') : this.$t('editTitle') }
   },
@@ -212,6 +225,7 @@ export default Vue.extend({
 
       this.$accessor.stopLoading()
     },
+
     async deleteItem() {
       if (this.isNewUser(this.editedUser)) return
 
@@ -220,6 +234,19 @@ export default Vue.extend({
       if (success) {
         this.$toast.success(this.$t('messages.removed') as string)
         this.$router.push('/settings/users')
+      }
+      this.$accessor.stopLoading()
+    },
+
+    async resetPassword() {
+      if (!this.selectedUser) return
+
+      this.$accessor.startLoading()
+      const success = await this.$accessor.auth.requestResetPassword({
+        email: this.selectedUser.email,
+      })
+      if (success) {
+        this.$toast.success(this.$t('resetPasswordSuccess') as string)
       }
       this.$accessor.stopLoading()
     },

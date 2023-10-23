@@ -1,7 +1,11 @@
 <template>
   <div class="micro-app-containter">
     <loading :active="isLoading" />
-    <micro-frontend v-if="app && !isLoading" :app-key="app.slug" :host="app.microfrontend_url" />
+    <micro-frontend
+      v-if="app && !isLoading"
+      :app-key="app.slug"
+      :host="app.microfrontend_url || ''"
+    />
   </div>
 </template>
 
@@ -19,13 +23,13 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { App } from '@heseya/store-core'
 
 import MicroFrontend from '@/components/microfrontends/MicroFrontend.vue'
 import Loading from '@/components/layout/Loading.vue'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.app?.name || (this.$t('title') as string) }
   },

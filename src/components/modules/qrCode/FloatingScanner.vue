@@ -13,9 +13,9 @@
 <script lang="ts">
 import { EXPERIMENTAL_FLAGS } from '@/consts/featureFlags'
 import { QrCodeObject, QrCodePayload } from '@/interfaces/QrCode'
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import Scanner from './Scanner.vue'
-export default Vue.extend({
+export default defineComponent({
   components: { Scanner },
 
   data: () => ({

@@ -27,10 +27,10 @@
 
 <script lang="ts">
 import { formatApiNotificationError } from '@/utils/errors'
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import Tag from './Tag.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     Tag,
   },

@@ -12,8 +12,8 @@
 
 <script lang="ts">
 import LangSwitch from '@/components/LangSwitch.vue'
-import Vue from 'vue'
-export default Vue.extend({
+import { defineComponent } from 'vue'
+export default defineComponent({
   components: { LangSwitch },
 })
 </script>

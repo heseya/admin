@@ -1,6 +1,6 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList :title="$t('title')" store-key="packageTemplates">
+    <PaginatedList :title="$t('title').toString()" store-key="packageTemplates">
       <template #nav>
         <icon-button v-can="$p.Packages.Add" @click="openModal()">
           <template #icon>
@@ -94,9 +94,9 @@
             </app-button>
             <pop-confirm
               v-can="$p.Packages.Remove"
-              :title="$t('deleteText')"
-              :ok-text="$t('common.delete')"
-              :cancel-text="$t('common.cancel')"
+              :title="$t('deleteText').toString()"
+              :ok-text="$t('common.delete').toString()"
+              :cancel-text="$t('common.cancel').toString()"
               @confirm="deleteItem"
             >
               <app-button v-if="editedItem.id" type="danger">{{ $t('common.delete') }}</app-button>
@@ -162,10 +162,10 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { clone } from 'lodash'
-import { PackagesTemplate } from '@heseya/store-core'
+import { PackagesTemplateCreateDto } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
@@ -175,8 +175,7 @@ import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordi
 
 import { UUID } from '@/interfaces/UUID'
 
-const CLEAR_PACKAGE_TEMPLATE: PackagesTemplate = {
-  id: '',
+const CLEAR_PACKAGE_TEMPLATE: PackagesTemplateCreateDto & { id?: string } = {
   name: '',
   width: 0,
   height: 0,
@@ -185,7 +184,7 @@ const CLEAR_PACKAGE_TEMPLATE: PackagesTemplate = {
   metadata: {},
 }
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return {
       title: this.$t('title') as string,
@@ -247,7 +246,9 @@ export default Vue.extend({
       this.isModalActive = false
     },
     async deleteItem() {
+      if (!this.editedItem.id) return
       this.$accessor.startLoading()
+
       await this.$accessor.packageTemplates.remove(this.editedItem.id)
 
       this.$toast.success(this.$t('alerts.deleted') as string)

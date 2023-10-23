@@ -15,9 +15,9 @@
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Products.Remove"
-        :title="$t('deleteConfirm')"
-        :ok-text="$t('common.delete')"
-        :cancel-text="$t('common.cancel')"
+        :title="$t('deleteConfirm').toString()"
+        :ok-text="$t('common.delete').toString()"
+        :cancel-text="$t('common.cancel').toString()"
         @confirm="deleteProduct"
       >
         <icon-button type="danger" data-cy="delete-btn">
@@ -43,13 +43,23 @@
 
           <hr />
 
-          <product-description
-            v-model="form"
-            :product="product"
+          <DescriptionAccordion
+            v-model="form.description_html"
             :disabled="!canModify"
             :loading="isLoading"
           />
-          <product-advanced-details v-model="form" :product="product" :disabled="!canModify" />
+          <ProductAdditionalDescriptions
+            v-model="form.descriptions"
+            :product="product"
+            :disabled="!canModify"
+          />
+          <ProductAdvancedDetails v-model="form" :product="product" :disabled="!canModify" />
+          <ProductRelatedSets
+            v-model="form.related_sets"
+            :product="product"
+            :disabled="!canModify"
+          />
+          <ProductAttachments v-if="!isNew" :product="product" :disabled="!canModify" />
 
           <hr />
 
@@ -132,7 +142,8 @@
     "messages": {
       "removed": "Produkt został usunięty.",
       "created": "Produkt został utworzony.",
-      "updated": "Produkt został zaktualizowany."
+      "updated": "Produkt został zaktualizowany.",
+      "error": "Wystąpił błąd podczas zapisywania produktu."
     },
     "saveAndNext": "Zapisz i dodaj następny"
   },
@@ -145,7 +156,8 @@
     "messages": {
       "removed": "Product has been removed.",
       "created": "Product has been created.",
-      "updated": "Product has been updated."
+      "updated": "Product has been updated.",
+      "error": "An error occurred while saving the product."
     },
     "saveAndNext": "Save and add next"
   }
@@ -174,6 +186,10 @@ import ProductAdvancedDetails from '@/components/modules/products/view/ProductAd
 import ProductAsideDetails from '@/components/modules/products/view/ProductAsideDetails.vue'
 import ProductDescription from '@/components/modules/products/view/ProductDescription.vue'
 import CardMicroWidgets from '@/components/microfrontends/CardMicroWidgets.vue'
+import ProductAdditionalDescriptions from '@/components/modules/products/descriptions/List.vue'
+import ProductAttachments from '@/components/modules/products/attachments/List.vue'
+import ProductRelatedSets from '@/components/modules/products/related/List.vue'
+import DescriptionAccordion from '@/components/DescriptionAccordion.vue'
 
 import preventLeavingPage from '@/mixins/preventLeavingPage'
 
@@ -184,7 +200,6 @@ import { UUID } from '@/interfaces/UUID'
 import { ProductComponentForm } from '@/interfaces/Product'
 
 const EMPTY_FORM: ProductComponentForm = {
-  id: '',
   name: '',
   slug: '',
   price: 0,
@@ -204,6 +219,9 @@ const EMPTY_FORM: ProductComponentForm = {
   seo: {},
   attributes: [],
   items: [],
+  descriptions: [],
+  attachments: [],
+  related_sets: [],
 }
 
 export default mixins(preventLeavingPage).extend({
@@ -226,8 +244,11 @@ export default mixins(preventLeavingPage).extend({
     WarehouseItemsConfigurator,
     ProductBasicDetails,
     ProductAdvancedDetails,
-    ProductDescription,
+    DescriptionAccordion,
     ProductAsideDetails,
+    ProductAdditionalDescriptions,
+    ProductAttachments,
+    ProductRelatedSets,
     CardMicroWidgets,
   },
   data: () => ({
@@ -301,44 +322,45 @@ export default mixins(preventLeavingPage).extend({
 
     async saveProduct() {
       this.$accessor.startLoading()
+      try {
+        const attributes = await updateProductAttributeOptions(
+          this.form.attributes.filter((v) => v.selected_options),
+        )
 
-      const attributes = await updateProductAttributeOptions(
-        this.form.attributes.filter((v) => v.selected_options),
-      )
+        const apiPayload: ProductCreateDto = {
+          ...this.form,
+          order: this.form.order || 0,
+          media: this.form.gallery.map(({ id }) => id),
+          tags: this.form.tags.map(({ id }) => id),
+          schemas: this.form.schemas.map(({ id }) => id),
+          related_sets: this.form.related_sets.map(({ id }) => id),
+          shipping_digital: Boolean(+this.form.shipping_digital),
+          purchase_limit_per_user: this.form.purchase_limit_per_user || null,
+          attributes: attributes.reduce(
+            (acc, { id, selected_options: option }) => ({
+              ...acc,
+              [id]: option.map((v) => v.id) || undefined,
+            }),
+            {},
+          ),
+          descriptions: this.form.descriptions.map(({ id }) => id),
+        }
 
-      const apiPayload: ProductCreateDto = {
-        ...this.form,
-        order: this.form.order || 0,
-        media: this.form.gallery.map(({ id }) => id),
-        tags: this.form.tags.map(({ id }) => id),
-        schemas: this.form.schemas.map(({ id }) => id),
-        shipping_digital: Boolean(+this.form.shipping_digital),
-        purchase_limit_per_user: this.form.purchase_limit_per_user || null,
-        attributes: attributes.reduce(
-          (acc, { id, selected_options: option }) => ({
-            ...acc,
-            [id]: option.map((v) => v.id) || undefined,
-          }),
-          {},
-        ),
-      }
+        const successMessage = this.isNew
+          ? (this.$t('messages.created') as string)
+          : (this.$t('messages.updated') as string)
 
-      const successMessage = this.isNew
-        ? (this.$t('messages.created') as string)
-        : (this.$t('messages.updated') as string)
+        // Metadata can be saved only after product is created
+        if (!this.isNew) await this.saveMetadata(this.id)
 
-      // Metadata can be saved only after product is created
-      if (!this.isNew) await this.saveMetadata(this.id)
+        const item = this.isNew
+          ? await this.$accessor.products.add(apiPayload)
+          : await this.$accessor.products.update({ id: this.id, item: apiPayload })
 
-      const item = this.isNew
-        ? await this.$accessor.products.add(apiPayload)
-        : await this.$accessor.products.update({ id: this.id, item: apiPayload })
+        ;(this.$refs.gallery as any).clearMediaToDelete()
 
-      ;(this.$refs.gallery as any).clearMediaToDelete()
+        if (!item) throw new Error('Product was not saved')
 
-      this.$accessor.stopLoading()
-
-      if (item) {
         this.$toast.success(successMessage)
 
         // After form submitting isDirty should be reset
@@ -347,7 +369,13 @@ export default mixins(preventLeavingPage).extend({
         if (item.id !== this.product.id) {
           this.$router.push(`/products/${item.id}`)
         }
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('🚀 ~ file: View.vue:321 ~ saveProduct ~ error:', error)
+        this.$toast.error(this.$t('messages.error') as string)
       }
+
+      this.$accessor.stopLoading()
     },
 
     async saveMetadata(id: string) {

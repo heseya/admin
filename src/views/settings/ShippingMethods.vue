@@ -1,6 +1,11 @@
 <template>
   <div>
-    <PaginatedList :title="$t('title')" store-key="shippingMethods" draggable :table="tableConfig">
+    <PaginatedList
+      :title="$t('title').toString()"
+      store-key="shippingMethods"
+      draggable
+      :table="tableConfig"
+    >
       <template #nav>
         <icon-button v-can="$p.ShippingMethods.Add" @click="openModal()">
           <template #icon>
@@ -69,9 +74,9 @@
             </app-button>
             <pop-confirm
               v-can="$p.ShippingMethods.Remove"
-              :title="$t('deleteText')"
-              :ok-text="$t('common.delete')"
-              :cancel-text="$t('common.cancel')"
+              :title="$t('deleteText').toString()"
+              :ok-text="$t('common.delete').toString()"
+              :cancel-text="$t('common.cancel').toString()"
               @confirm="deleteItem"
             >
               <app-button v-if="editedItem.id" type="danger">{{ $t('common.delete') }}</app-button>
@@ -107,7 +112,8 @@
       "basePrice": "Bazowa cena",
       "minShippingTime": "Minimalny czas dostawy",
       "maxShippingTime": "Maksymalny czas dostawy",
-      "visibility": "Widoczność"
+      "visibility": "Widoczność",
+      "paymentOnDelivery": "Za pobraniem"
     }
   },
   "en": {
@@ -132,14 +138,15 @@
       "basePrice": "Base price",
       "minShippingTime": "Minimal delivery time",
       "maxShippingTime": "Maximum delivery time",
-      "visibility": "Visibility"
+      "visibility": "Visibility",
+      "paymentOnDelivery": "Payment on delivery"
     }
   }
 }
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import omit from 'lodash/omit'
 import {
@@ -160,7 +167,7 @@ import { TableConfig } from '@/interfaces/CmsTable'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 import CmsTableCellList from '@/components/cms/CmsTableCellList.vue'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },
@@ -227,6 +234,11 @@ export default Vue.extend({
             width: '1fr',
           },
           { key: 'public', label: this.$t('headers.visibility') as string, width: '0.5fr' },
+          {
+            key: 'payment_on_delivery',
+            label: this.$t('headers.paymentOnDelivery') as string,
+            width: '0.5fr',
+          },
         ],
       }
     },
@@ -272,6 +284,7 @@ export default Vue.extend({
           ],
           public: true,
           shipping_points: [],
+          payment_on_delivery: false,
         }
       }
     },

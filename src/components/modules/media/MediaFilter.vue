@@ -1,8 +1,17 @@
 <template>
   <div class="media-filter">
+    <app-input
+      v-model="local.search"
+      class="span-2"
+      type="search"
+      :label="$t('common.search').toString()"
+      allow-clear
+      @input="debouncedSearch"
+    />
+
     <app-select
       v-model="local.type"
-      :label="$t('mediaType')"
+      :label="$t('mediaType').toString()"
       add-all
       option-filter-prop="label"
       @change="debouncedSearch"
@@ -23,13 +32,13 @@
 
     <boolean-select
       v-model="local.has_relationships"
-      :label="$t('hasRelationships')"
+      :label="$t('hasRelationships').toString()"
       @change="debouncedSearch"
     />
   </div>
 </template>
 
-<i18n>
+<i18n lang="json">
 {
   "pl": {
     "hasRelationships": "Czy posiada relacje",
@@ -44,7 +53,7 @@
 
 <script lang="ts">
 /* eslint-disable camelcase */
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import debounce from 'lodash/debounce'
 import { CdnMediaType } from '@heseya/store-core'
 
@@ -52,25 +61,27 @@ import BooleanSelect from '@/components/form/BooleanSelect.vue'
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 
 export type MediaFiltersType = {
+  search: string
   type: CdnMediaType | typeof ALL_FILTER_VALUE
   has_relationships: boolean | typeof ALL_FILTER_VALUE
 }
 
 export const EMPTY_MEDIA_FILTERS: MediaFiltersType = {
+  search: '',
   type: ALL_FILTER_VALUE,
   has_relationships: ALL_FILTER_VALUE,
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     BooleanSelect,
   },
 
   props: {
     filters: {
-      type: Object,
+      type: Object as PropType<MediaFiltersType>,
       default: () => ({ ...EMPTY_MEDIA_FILTERS }),
-    } as Vue.PropOptions<MediaFiltersType>,
+    },
   },
 
   data: () => ({

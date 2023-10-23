@@ -1,7 +1,7 @@
 <template>
   <div>
     <PaginatedList
-      :title="$t('title')"
+      :title="$t('title').toString()"
       :filters="filters"
       :table="tableConfig"
       :xlsx-file-config="fileConfig"
@@ -71,7 +71,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { Role, User } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
@@ -86,7 +86,7 @@ import { TableConfig } from '@/interfaces/CmsTable'
 import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 import { formatDate } from '@/utils/dates'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },

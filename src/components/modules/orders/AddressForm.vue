@@ -1,6 +1,11 @@
 <template>
   <div class="address-form">
-    <validated-input v-model="form.name" rules="required" name="name" :label="$t('name')" />
+    <validated-input
+      v-model="form.name"
+      rules="required"
+      name="name"
+      :label="$t('name').toString()"
+    />
     <validated-input
       v-model="form.address"
       rules="required"
@@ -8,13 +13,23 @@
       :label="$t('address')"
     />
     <div class="address-form__row">
-      <validated-input v-model="form.zip" rules="required" name="zip" :label="$t('zip')" />
-      <validated-input v-model="form.city" rules="required" name="city" :label="$t('city')" />
+      <validated-input
+        v-model="form.zip"
+        rules="required"
+        name="zip"
+        :label="$t('zip').toString()"
+      />
+      <validated-input
+        v-model="form.city"
+        rules="required"
+        name="city"
+        :label="$t('city').toString()"
+      />
     </div>
     <ValidationProvider rules="required" tag="div" class="address-form__select">
       <app-select
         v-model="form.country"
-        :label="$t('country')"
+        :label="$t('country').toString()"
         show-search
         option-filter-prop="label"
       >
@@ -23,8 +38,13 @@
         </a-select-option>
       </app-select>
     </ValidationProvider>
-    <validated-input v-model="form.phone" rules="required" name="phone" :label="$t('phone')" />
-    <validated-input v-model="form.vat" name="vat" :label="$t('vat')" />
+    <validated-input
+      v-model="form.phone"
+      rules="required"
+      name="phone"
+      :label="$t('phone').toString()"
+    />
+    <validated-input v-model="form.vat" name="vat" :label="$t('vat').toString()" />
   </div>
 </template>
 
@@ -52,22 +72,22 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { ValidationProvider } from 'vee-validate'
 import { Address, ShippingCountry } from '@heseya/store-core'
 
 import { sdk } from '@/api'
 
-export default Vue.extend({
+export default defineComponent({
   name: 'AddressForm',
   components: {
     ValidationProvider,
   },
   props: {
     value: {
-      type: Object,
+      type: Object as PropType<Address>,
       required: true,
-    } as Vue.PropOptions<Address>,
+    },
   },
   data: () => ({
     countries: [] as ShippingCountry[],

@@ -1,10 +1,11 @@
 <template>
   <div>
     <PaginatedList
-      :title="$t('title')"
+      :title="$t('title').toString()"
       :filters="filters"
       :table="tableConfig"
       store-key="attributes"
+      draggable
       @clear-filters="clearFilters"
     >
       <template #nav>
@@ -35,6 +36,7 @@
           :item="attribute"
           :headers="tableConfig.headers"
           :to="`/settings/attributes/${attribute.id}`"
+          draggable
         >
           <template #name="{ value }">
             {{ value }}
@@ -74,7 +76,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { debounce } from 'lodash'
 import { Attribute } from '@heseya/store-core'
 
@@ -83,7 +85,7 @@ import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 
 import { TableConfig } from '@/interfaces/CmsTable'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },

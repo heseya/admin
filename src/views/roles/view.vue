@@ -1,13 +1,13 @@
 <template>
   <div class="narrower-page">
-    <top-nav :title="!isNew ? role.name : $t('newTitle')">
+    <top-nav :title="!isNew ? role.name : $t('newTitle').toString()">
       <audits-modal :id="role.id" model="roles" />
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Roles.Remove"
-        :title="$t('deleteText')"
-        :ok-text="$t('common.delete')"
-        :cancel-text="$t('common.cancel')"
+        :title="$t('deleteText').toString()"
+        :ok-text="$t('common.delete').toString()"
+        :cancel-text="$t('common.cancel').toString()"
         @confirm="deleteRole"
       >
         <icon-button type="danger">
@@ -60,7 +60,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { cloneDeep } from 'lodash'
 import { Role, RoleCreateDto } from '@heseya/store-core'
 
@@ -76,9 +76,11 @@ const CLEAN_FORM: RoleCreateDto = {
   name: '',
   description: '',
   permissions: [],
+  is_registration_role: false,
+  is_joinable: false,
 }
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any): any {
     const fallback = this.$t('newTitle') as string
     return {

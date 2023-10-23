@@ -1,7 +1,7 @@
 <template>
   <div>
     <PaginatedList
-      :title="$t('title')"
+      :title="$t('title').toString()"
       store-key="items"
       :filters="filters"
       :table="tableConfig"
@@ -42,9 +42,7 @@
       "sku": "SKU",
       "quantity": "Ilość w magazynie",
       "unlimited": "Nieograniczona możliwość zakupu",
-      "availability": "Dostępność",
-      "availabilityTime": "w {time} dni",
-      "availabilityDate": "od {date}"
+      "availability": "Dostępność"
     }
   },
   "en": {
@@ -57,16 +55,14 @@
       "sku": "SKU",
       "quantity": "Quantity in stock",
       "unlimited": "Unlimited purchase",
-      "availability": "Availibility",
-      "availabilityTime": "in {time} days",
-      "availabilityDate": "from {date}"
+      "availability": "Availibility"
     }
   }
 }
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import { WarehouseItem, WarehouseItemCreateDto } from '@heseya/store-core'
 
@@ -92,7 +88,7 @@ const EMPTY_FORM: WarehouseItemCreateDto = {
   unlimited_stock_shipping_date: null,
 }
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },
@@ -192,9 +188,9 @@ export default Vue.extend({
   methods: {
     formatAvailability(item: WarehouseItem) {
       if (item.shipping_time)
-        return this.$t('table.availabilityTime', { time: item.shipping_time }) as string
+        return this.$t('availability.time', { time: item.shipping_time }) as string
       if (item.shipping_date)
-        return this.$t('table.availabilityDate', {
+        return this.$t('availability.date', {
           date: formatDate(item.shipping_date),
         }) as string
       return '-'

@@ -1,7 +1,7 @@
 <template>
   <div class="products-container" :class="{ 'products-container--grid-view': !listView }">
     <PaginatedList
-      :title="$t('title')"
+      :title="$t('title').toString()"
       :filters="filters"
       store-key="products"
       :table="listView ? tableConfig : undefined"
@@ -52,6 +52,7 @@
       "price": "Cena brutto",
       "tags": "Tagi",
       "public": "Widoczność",
+      "shippingDigital": "Wysyłka cyfrowa",
       "available": "Dostępny"
     }
   },
@@ -67,6 +68,7 @@
       "price": "Price (gross)",
       "tags": "Tags",
       "public": "Visibility",
+      "shippingDigital": "Digital shipping",
       "available": "Available"
     }
   }
@@ -74,7 +76,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { cloneDeep } from 'lodash'
 import { Product, Tag } from '@heseya/store-core'
 
@@ -93,7 +95,7 @@ import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 
 const LOCAL_STORAGE_KEY = 'products-list-view'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },
@@ -138,6 +140,11 @@ export default Vue.extend({
             label: this.$t('form.available') as string,
             width: '0.4fr',
           },
+          {
+            key: 'shipping_digital',
+            label: this.$t('form.shippingDigital') as string,
+            width: '0.4fr',
+          },
           { key: 'action', label: '', width: '64px' },
         ],
       }
@@ -146,6 +153,7 @@ export default Vue.extend({
       return {
         name: this.$t('title') as string,
         headers: [
+          { key: 'id', label: 'ID' },
           { key: 'name', label: this.$t('common.form.name') as string },
           { key: 'price', label: this.$t('form.price') as string },
           {
@@ -156,6 +164,17 @@ export default Vue.extend({
           {
             key: 'public',
             label: this.$t('form.public') as string,
+            format: (v: boolean) => (v ? this.$t('common.yes') : this.$t('common.no')) as string,
+          },
+
+          {
+            key: 'available',
+            label: this.$t('form.available') as string,
+            format: (v: boolean) => (v ? this.$t('common.yes') : this.$t('common.no')) as string,
+          },
+          {
+            key: 'shipping_digital',
+            label: this.$t('form.shippingDigital') as string,
             format: (v: boolean) => (v ? this.$t('common.yes') : this.$t('common.no')) as string,
           },
         ],
@@ -177,12 +196,24 @@ export default Vue.extend({
       this.filters[key] = value as any
     })
 
-    const { sets, tags, public: isPublic, available, has_cover: hasCover } = this.$route.query
+    const {
+      sets,
+      tags,
+      public: isPublic,
+      available,
+      has_cover: hasCover,
+      has_items: hasItems,
+      has_schemas: hasSchemas,
+      shipping_digital: shippingDigital,
+    } = this.$route.query
     this.filters.sets = (Array.isArray(sets) ? (sets as string[]) : [sets]).filter(Boolean)
     this.filters.tags = (Array.isArray(tags) ? (tags as string[]) : [tags]).filter(Boolean)
     this.filters.public = (isPublic as string) || ALL_FILTER_VALUE
     this.filters.available = (available as string) || ALL_FILTER_VALUE
     this.filters.has_cover = (hasCover as string) || ALL_FILTER_VALUE
+    this.filters.has_items = (hasItems as string) || ALL_FILTER_VALUE
+    this.filters.has_schemas = (hasSchemas as string) || ALL_FILTER_VALUE
+    this.filters.shipping_digital = (shippingDigital as string) || ALL_FILTER_VALUE
 
     this.listView = !!+(window.localStorage.getItem(LOCAL_STORAGE_KEY) || 0)
   },

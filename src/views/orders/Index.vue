@@ -1,7 +1,7 @@
 <template>
   <div>
     <PaginatedList
-      :title="$t('title')"
+      :title="$t('title').toString()"
       :filters="filters"
       :table="tableConfig"
       :xlsx-file-config="fileConfig"
@@ -22,7 +22,8 @@
           :to="`/orders/${order.id}`"
         >
           <template #code="{ value, item }">
-            {{ value }}
+            <b>{{ value }}</b>
+
             <a-tooltip v-if="item.comment">
               <template #title> {{ item.comment }} </template>
               <span class="order-icon"> <i class="bx bxs-comment-detail"></i> </span>
@@ -44,9 +45,14 @@
             </button>
           </template>
 
-          <template #paid="{ rawValue }">
-            <span v-if="rawValue" class="order-tag success-text">{{ $t('paid') }}</span>
-            <span v-else class="order-tag danger-text">{{ $t('notpaid') }}</span>
+          <template #paid="{ rawValue, item }">
+            <span v-if="rawValue" class="order-tag success-text">{{ $t('payment.paid') }}</span>
+            <span
+              v-else-if="item?.shipping_method?.payment_on_delivery"
+              class="order-tag warning-text"
+              >{{ $t('payment.onDelivery') }}</span
+            >
+            <span v-else class="order-tag danger-text">{{ $t('payment.notPaid') }}</span>
           </template>
 
           <template #status="{ rawValue: { name, color } }">
@@ -63,8 +69,11 @@
   "pl": {
     "title": "Zamówienia",
     "overpaid": "Nadpłacono",
-    "paid": "Opłacone",
-    "notpaid": "Nieopłacone",
+    "payment": {
+      "paid": "Opłacone",
+      "notPaid": "Nieopłacone",
+      "onDelivery": "Za pobraniem"
+    },
     "copySuccess": "Skopiowiano do schowka",
     "form": {
       "code": "Kod zamówienia",
@@ -80,8 +89,11 @@
   "en": {
     "title": "Orders",
     "overpaid": "Overpaid",
-    "paid": "Paid",
-    "notpaid": "Not paid",
+    "payment": {
+      "paid": "Paid",
+      "notPaid": "Not paid",
+      "onDelivery": "On delivery"
+    },
     "copySuccess": "Copied to clipboard",
     "form": {
       "code": "Order code",
@@ -98,7 +110,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { Order, OrderStatus, ShippingMethod } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
@@ -117,7 +129,7 @@ import { formatFilters } from '@/utils/utils'
 import { formatDate } from '@/utils/dates'
 import { formatCurrency } from '@/utils/currency'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },
@@ -156,7 +168,7 @@ export default Vue.extend({
             key: 'created_at',
             label: this.$t('form.date') as string,
             sortable: true,
-            render: (v) => formatDate(v),
+            render: (v) => formatDate(v) || '?',
           },
         ],
       }
@@ -174,7 +186,12 @@ export default Vue.extend({
           {
             key: 'paid',
             label: this.$t('form.paid') as string,
-            format: (v: boolean) => (v ? this.$t('paid') : this.$t('notpaid')) as string,
+            format: (isPaid: boolean, order) => {
+              if (isPaid) return this.$t('payment.paid').toString()
+              return order?.shipping_method?.payment_on_delivery
+                ? this.$t('payment.onDelivery').toString()
+                : this.$t('payment.notPaid').toString()
+            },
           },
           {
             key: 'status',
@@ -257,10 +274,15 @@ export default Vue.extend({
 
   .order-email-btn {
     all: unset;
-    font-size: 0.8em;
+    font-size: 0.7em;
     cursor: pointer;
     color: var(--gray-color-600);
     transition: color 0.3s;
+    white-space: nowrap;
+
+    @media ($viewport-4) {
+      font-size: 0.8em;
+    }
 
     &:hover {
       color: var(--primary-color-500);

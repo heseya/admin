@@ -13,7 +13,7 @@ Vue.use(VueMeta)
 
 const router = new VueRouter({
   mode: 'history',
-  base: process.env.BASE_URL,
+  base: import.meta.env.BASE_URL,
   routes: [
     {
       path: '/login',
@@ -397,6 +397,24 @@ const router = new VueRouter({
         returnUrl: '/settings/users',
         requiresAuth: true,
         permissions: [Permissions.Users.ShowDetails],
+      },
+    },
+    {
+      path: '/settings/redirects',
+      name: 'RedirectsList',
+      component: () => import('./views/redirects/index.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Redirects.Show],
+      },
+    },
+    {
+      path: '/settings/redirects/:id',
+      name: 'RedirectsView',
+      component: () => import('./views/redirects/view.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Redirects.Show],
       },
     },
     {

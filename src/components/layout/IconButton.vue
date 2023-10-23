@@ -27,8 +27,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-export default Vue.extend({
+import { defineComponent, PropType } from 'vue'
+
+export default defineComponent({
   props: {
     disabled: {
       type: Boolean,
@@ -51,22 +52,22 @@ export default Vue.extend({
       default: null,
     },
     type: {
-      type: String,
+      type: String as PropType<
+        | 'default'
+        | 'primary'
+        | 'danger'
+        | 'transparent'
+        | 'transparent-white'
+        | 'success'
+        | 'black'
+        | 'burgund'
+      >,
       default: 'primary',
-    } as Vue.PropOptions<
-      | 'default'
-      | 'primary'
-      | 'danger'
-      | 'transparent'
-      | 'transparent-white'
-      | 'success'
-      | 'black'
-      | 'burgund'
-    >,
+    },
     size: {
-      type: String,
+      type: String as PropType<'small' | 'default' | 'big'>,
       default: 'default',
-    } as Vue.PropOptions<'small' | 'default' | 'big'>,
+    },
     dataCy: { type: String, default: '' },
   },
   computed: {

@@ -133,7 +133,7 @@
         <modal-form v-if="isUsedSchemaModalActive">
           <selector
             type="schemas"
-            :add-text="$t('choose')"
+            :add-text="$t('choose').toString()"
             :existing="[form]"
             @select="selectUsedSchema"
           />
@@ -143,7 +143,7 @@
 
     <br />
 
-    <Zone :title="$t('advancedOptions')" type="danger">
+    <Zone :title="$t('advancedOptions').toString()" type="danger">
       <validated-input
         v-model="form.pattern"
         :disabled="disabled"
@@ -246,10 +246,11 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import { SchemaType, Schema } from '@heseya/store-core'
+import isNil from 'lodash/isNil'
 
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import Zone from '@/components/layout/Zone.vue'
@@ -260,7 +261,7 @@ import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordi
 
 import { CLEAR_FORM, CLEAR_OPTION } from '@/consts/schemaConsts'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     ValidationProvider,
     ValidationObserver,
@@ -273,19 +274,19 @@ export default Vue.extend({
   },
   props: {
     schema: {
-      type: Object,
+      type: Object as PropType<Schema>,
       required: true,
-    } as Vue.PropOptions<Schema>,
+    },
     currentProductSchemas: {
-      type: Array,
+      type: Array as PropType<Schema[]>,
       default: () => [],
-    } as Vue.PropOptions<Schema[]>,
+    },
     disabled: { type: Boolean, default: false },
   },
   data: () => ({
     // TODO: correct SchemaComponentDto
     form: cloneDeep(CLEAR_FORM) as any & { id?: string },
-    defaultOption: 0,
+    defaultOption: null as number | null,
     isUsedSchemaModalActive: false,
     usedSchemaName: '',
     SchemaType: SchemaType,
@@ -302,7 +303,8 @@ export default Vue.extend({
     },
   },
   watch: {
-    defaultOption(defaultOption: number) {
+    defaultOption(defaultOption: number | null) {
+      if (isNil(defaultOption)) return
       if (this.form.type === SchemaType.Select) {
         this.form.options = this.form.options.map((v: any) => ({ ...v, default: false }))
         this.form.options[defaultOption].default = true
@@ -330,7 +332,7 @@ export default Vue.extend({
   methods: {
     initSchemaForm(schema: Schema) {
       this.form = schema.type ? cloneDeep(schema) : cloneDeep(CLEAR_FORM)
-      this.defaultOption = Number(this.form.default)
+      this.defaultOption = isNil(this.form.default) ? null : Number(this.form.default)
     },
     isKindOfNumeric(type: SchemaType): boolean {
       return (

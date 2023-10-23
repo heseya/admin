@@ -9,7 +9,7 @@
       show-search
       allow-clear
       :loading="isLoading"
-      :placeholder="$t('placeholder')"
+      :placeholder="$t('placeholder').toString()"
       @search="onSearch"
       @input-keydown="onInputKeydown"
       @change="setValue"
@@ -57,7 +57,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import debounce from 'lodash/debounce'
 import { AttributeOption, AttributeType, ProductAttribute } from '@heseya/store-core'
 
@@ -66,21 +66,21 @@ import { UUID } from '@/interfaces/UUID'
 import { ApiError, formatApiNotificationError } from '@/utils/errors'
 import { uniqueArray } from '@/utils/uniqueArray'
 
-export default Vue.extend({
+export default defineComponent({
   components: { Empty },
   props: {
     value: {
-      type: Array,
+      type: Array as PropType<AttributeOption[]>,
       default: () => [],
-    } as Vue.PropOptions<AttributeOption[]>,
+    },
     attribute: {
-      type: Object,
+      type: Object as PropType<ProductAttribute>,
       required: true,
-    } as Vue.PropOptions<ProductAttribute>,
+    },
     type: {
-      type: String,
+      type: String as PropType<AttributeType>,
       required: true,
-    } as Vue.PropOptions<AttributeType>,
+    },
     disabled: { type: Boolean, default: false },
   },
   data: () => ({

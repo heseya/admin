@@ -5,7 +5,7 @@
       :disabled="disabled"
       name="name"
       rules="required"
-      :label="$t('common.form.name')"
+      :label="$t('common.form.name').toString()"
       @input="editSlug"
     />
     <validated-input
@@ -13,13 +13,13 @@
       :disabled="disabled"
       name="slug"
       rules="required|slug"
-      :label="$t('form.slug')"
+      :label="$t('form.slug').toString()"
     />
     <validated-input
       v-model="form.description"
       :disabled="disabled"
       name="description"
-      :label="$t('common.form.description')"
+      :label="$t('common.form.description').toString()"
     />
 
     <div class="attribute-form__switches">
@@ -38,7 +38,11 @@
       </switch-input>
     </div>
 
-    <app-select v-model="form.type" :label="$t('common.form.type')" :disabled="disabled || !isNew">
+    <app-select
+      v-model="form.type"
+      :label="$t('common.form.type').toString()"
+      :disabled="disabled || !isNew"
+    >
       <a-select-option
         v-for="type in AttributeType"
         :key="type"
@@ -93,7 +97,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import { ValidationObserver } from 'vee-validate'
 import { generateSlug } from '@/utils/generateSlug'
@@ -117,16 +121,16 @@ const CLEAR_FORM: AttributeCreateDto = {
   global: false,
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     ValidationObserver,
     OptionsList,
   },
   props: {
     attribute: {
-      type: Object,
+      type: Object as PropType<Attribute>,
       required: true,
-    } as Vue.PropOptions<Attribute>,
+    },
     disabled: { type: Boolean, default: false },
   },
   data: () => ({

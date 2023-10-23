@@ -133,19 +133,19 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { WebhookEntryUpdateDto, WebhookEventType, WebHookEventObject } from '@heseya/store-core'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     ValidationObserver,
   },
   props: {
     value: {
-      type: Object,
+      type: Object as PropType<WebhookEntryUpdateDto>,
       required: true,
-    } as Vue.PropOptions<WebhookEntryUpdateDto>,
+    },
     disabled: {
       type: Boolean,
       default: false,

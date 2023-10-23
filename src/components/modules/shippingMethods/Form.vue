@@ -6,14 +6,14 @@
           v-model="form.shipping_type"
           :disabled="disabled"
           option-filter-prop="label"
-          :label="$t('form.shippingType')"
+          :label="$t('form.shippingType').toString()"
         >
           <a-select-option
-            v-for="type in Object.values(ShippingType)"
-            :key="type"
-            :label="$t(`shippingTypes.${type}`)"
+            v-for="t in Object.values(ShippingType)"
+            :key="t"
+            :label="$t(`shippingTypes.${t}`)"
           >
-            {{ $t(`shippingTypes.${type}`) }}
+            {{ $t(`shippingTypes.${t}`) }}
           </a-select-option>
         </app-select>
       </div>
@@ -23,7 +23,16 @@
         rules="required"
         :label="$t('common.form.name')"
       />
+
       <div class="center">
+        <flex-input>
+          <label class="title">{{ $t('form.paymentBeforeDelivery') }}</label>
+          <a-switch v-model="form.payment_on_delivery" :disabled="disabled" />
+          <label class="title">{{ $t('form.paymentOnDelivery') }}</label>
+        </flex-input>
+      </div>
+
+      <div v-show="!form.payment_on_delivery" class="center">
         <app-select
           v-model="form.payment_methods"
           :disabled="disabled"
@@ -150,7 +159,9 @@
       "addShippingPoints": "Dodaj punkty dostawy",
       "shippingPoints": "Punkty dostawy",
       "addNewPoint": "Dodaj nowy punkt",
-      "editPoint": "Edytuj punkt"
+      "editPoint": "Edytuj punkt",
+      "paymentOnDelivery": "Płatność przy odbiorze",
+      "paymentBeforeDelivery": "Płatność przed wysyłką"
     }
   },
   "en": {
@@ -166,14 +177,16 @@
       "addShippingPoints": "Add shipping points",
       "shippingPoints": "Shipping points",
       "addNewPoint": "Add shipping point",
-      "editPoint": "Edit point"
+      "editPoint": "Edit point",
+      "paymentOnDelivery": "Payment on delivery",
+      "paymentBeforeDelivery": "Payment before delivery"
     }
   }
 }
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { ValidationProvider } from 'vee-validate'
 import {
   PaymentMethod,
@@ -193,7 +206,7 @@ import ShippingPointsGrid from './ShippingPointsGrid.vue'
 
 import { DEFAULT_ADDRESS_FORM } from '@/consts/addressConsts'
 
-export default Vue.extend({
+export default defineComponent({
   name: 'ShippingMethodsForm',
   components: {
     ModalForm,
@@ -206,13 +219,13 @@ export default Vue.extend({
   },
   props: {
     value: {
-      type: Object,
+      type: Object as PropType<ShippingMethodCreateDto>,
       required: true,
-    } as Vue.PropOptions<ShippingMethodCreateDto>,
+    },
     countries: {
-      type: Array,
+      type: Array as PropType<ShippingCountry[]>,
       required: true,
-    } as Vue.PropOptions<ShippingCountry[]>,
+    },
     disabled: {
       type: Boolean,
       required: true,
@@ -248,6 +261,9 @@ export default Vue.extend({
         // @ts-ignore
         this.$refs.priceRange.validate()
       },
+    },
+    'form.payment_on_delivery'() {
+      if (this.form.payment_on_delivery) this.form.payment_methods = []
     },
   },
   methods: {

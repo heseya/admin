@@ -2,11 +2,7 @@
   <list-item :url="url" @click="$emit('click')">
     <template #avatar>
       <avatar>
-        <InlineSvg
-          v-if="svgIconPath"
-          class="nav-link-img"
-          :src="require(`@/assets/images/${svgIconPath}`)"
-        />
+        <InlineSvg v-if="svgIconPath" class="nav-link-img" :src="`/img/${svgIconPath}`" />
         <i v-else :class="iconClass"></i>
       </avatar>
     </template>
@@ -18,12 +14,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import InlineSvg from 'vue-inline-svg'
 import ListItem from '@/components/layout/ListItem.vue'
 import Avatar from '@/components/layout/Avatar.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: { ListItem, Avatar, InlineSvg },
   props: {
     name: {

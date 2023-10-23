@@ -1,9 +1,9 @@
 <template>
   <div id="app" class="app" :class="{ 'app--full-size': isNavHidden }">
-    <DesktopNavigation class="app__nav"></DesktopNavigation>
-    <MobileNavigation class="app__mobile-nav"></MobileNavigation>
+    <DesktopNavigation class="app__nav" />
+    <MobileNavigation class="app__mobile-nav" />
 
-    <AppHeader class="app__header"></AppHeader>
+    <AppHeader class="app__header" />
 
     <main class="app__content">
       <transition name="fade" mode="out-in">
@@ -36,7 +36,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { first } from 'lodash'
 import pkg from '../package.json'
 import { init as initMicroApps, onMounted, openCommunicationChannel } from 'bout'
@@ -52,7 +52,7 @@ import OfflineBanner from './components/root/OfflineBanner.vue'
 import { onTokensSync } from './utils/authSync'
 import { getApiURL } from './utils/api'
 
-export default Vue.extend({
+export default defineComponent({
   metaInfo: {
     // if no subcomponents specify a metaInfo.title, this title will be used
     title: 'Admin',

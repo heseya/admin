@@ -10,8 +10,8 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-export default Vue.extend({
+import { defineComponent } from 'vue'
+export default defineComponent({
   props: {
     text: {
       type: String,
@@ -89,6 +89,15 @@ export default Vue.extend({
 
     > .bx {
       background-color: var(--red-color-500);
+    }
+  }
+
+  &--warning {
+    background-color: var(--orange-color-200);
+    color: var(--orange-color-500);
+
+    > .bx {
+      background-color: var(--orange-color-500);
     }
   }
 

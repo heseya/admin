@@ -3,7 +3,7 @@
     <media-upload-input
       :disabled="disabled"
       class="gallery__upload-btn"
-      :icon-path="require('@/assets/images/icons/plus-icon.svg')"
+      icon-path="/img/icons/plus-icon.svg"
       @upload="onImageUpload"
     />
 
@@ -43,7 +43,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import Draggable from 'vuedraggable'
 import { CdnMedia, CdnMediaType } from '@heseya/store-core'
 
@@ -54,7 +54,7 @@ import MediaEditForm from '@/components/modules/media/MediaEditForm.vue'
 import MediaElement from '@/components/MediaElement.vue'
 import MediaUploadInput from '../media/MediaUploadInput.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     Draggable,
     MediaEditForm,
@@ -63,9 +63,9 @@ export default Vue.extend({
   },
   props: {
     value: {
-      type: Array,
+      type: Array as PropType<CdnMedia[]>,
       default: () => [],
-    } as Vue.PropOptions<CdnMedia[]>,
+    },
     disabled: { type: Boolean, default: false },
   },
   data: () => ({
@@ -128,8 +128,8 @@ export default Vue.extend({
 .gallery {
   padding-top: 12px;
 
-  &__upload-btn {
-  }
+  // &__upload-btn {
+  // }
 
   &__info-text {
     display: block;

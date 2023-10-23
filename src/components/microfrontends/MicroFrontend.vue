@@ -3,10 +3,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { findAppByHost, installApp, uninstallApp } from 'bout'
 
-export default Vue.extend({
+export default defineComponent({
   name: 'MicroFrontend',
   props: {
     host: {
@@ -45,22 +45,6 @@ export default Vue.extend({
   },
 
   methods: {
-    initShadowDom(): { head: Element; body: Element; document: Element } {
-      const root = this.$el.attachShadow({ mode: 'open' })
-
-      root.innerHTML = `
-        <div id="document">
-          <div id="head"></div>
-          <div id="body"></div>
-        </div>`
-
-      const document = root.getElementById('document')!
-      const head = document.querySelector('#head')!
-      const body = document.querySelector('#body')!
-
-      return { head, body, document }
-    },
-
     async initialize(): Promise<void> {
       this.$accessor.SET_IS_MICROFRONTEND_INSTALATION(true)
       const { head, body } = this.initShadowDom()
@@ -75,6 +59,21 @@ export default Vue.extend({
       }
       this.$accessor.SET_IS_MICROFRONTEND_INSTALATION(false)
       this.isInitialized = true
+    },
+
+    initShadowDom() {
+      const shadowRoot = this.$el.attachShadow({ mode: 'open' })
+
+      const shadowDocument = document.createElement('html')
+      const shadowHead = document.createElement('head')
+      const shadowBody = document.createElement('body')
+
+      shadowDocument.appendChild(shadowHead)
+      shadowDocument.appendChild(shadowBody)
+
+      shadowRoot.appendChild(shadowDocument)
+
+      return { head: shadowHead, body: shadowBody, document: shadowDocument }
     },
 
     mountApp(container: Element | string) {

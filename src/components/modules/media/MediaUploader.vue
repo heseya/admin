@@ -8,7 +8,7 @@
     @dragenter.prevent="changeDrag(true)"
     @dragleave.prevent="changeDrag(false)"
   >
-    <slot />
+    <slot v-bind="{ drag: isDrag, loading: isLoading }" />
   </div>
 </template>
 
@@ -24,16 +24,16 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import { getLastElement } from '@/utils/utils'
 import { uploadMedia } from '@/services/uploadMedia'
 
-export default Vue.extend({
+export default defineComponent({
   name: 'MediaUploader',
   props: {
     extensions: {
-      type: Array,
+      type: Array as PropType<string[]>,
       default: () => [
         // disabled frontend validation
         // 'jpg',
@@ -50,7 +50,7 @@ export default Vue.extend({
         // 'mov',
         // 'wmv',
       ],
-    } as Vue.PropOptions<string[]>,
+    },
     disabled: {
       type: Boolean,
       default: false,
@@ -62,6 +62,7 @@ export default Vue.extend({
   },
   data: () => ({
     isDrag: false,
+    isLoading: false,
   }),
   methods: {
     selectFiles() {
@@ -97,6 +98,7 @@ export default Vue.extend({
         return
       }
 
+      this.isLoading = true
       this.$emit('upload-start', files)
 
       files.forEach(async (rawFile) => {
@@ -107,6 +109,7 @@ export default Vue.extend({
           this.$emit('error', error)
         }
       })
+      this.isLoading = false
     },
     isFileValid(file: File) {
       if (!file) return false

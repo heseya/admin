@@ -110,7 +110,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import Draggable from 'vuedraggable'
 import { Schema } from '@heseya/store-core'
 
@@ -123,7 +123,7 @@ import Selector from '@/components/Selector.vue'
 
 import { UUID } from '@/interfaces/UUID'
 
-export default Vue.extend({
+export default defineComponent({
   name: 'SchemaConfigurator',
   components: {
     List,
@@ -136,9 +136,9 @@ export default Vue.extend({
   },
   props: {
     value: {
-      type: Array,
+      type: Array as PropType<Schema[]>,
       required: true,
-    } as Vue.PropOptions<Schema[]>,
+    },
     disabled: { type: Boolean, default: false },
   },
   data: () => ({

@@ -3,14 +3,14 @@
     <validated-input
       v-model="oldPassword"
       icon-after
-      :label="$t('currentPassword')"
+      :label="$t('currentPassword').toString()"
       type="password"
       rules="required"
     >
     </validated-input>
     <validated-input
       v-model="newPassword"
-      :label="$t('newPassword')"
+      :label="$t('newPassword').toString()"
       type="password"
       rules="required|password"
       name="newPassword"
@@ -18,7 +18,7 @@
     </validated-input>
     <validated-input
       v-model="confirmNewPassword"
-      :label="$t('confirmNewPassword')"
+      :label="$t('confirmNewPassword').toString()"
       type="password"
       rules="required|repeatPassword:@newPassword"
     >
@@ -56,11 +56,11 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { formatApiNotificationError } from '@/utils/errors'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     ValidationObserver,
   },

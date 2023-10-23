@@ -87,7 +87,7 @@
 </i18n>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { AttributeType, Attribute, ProductAttribute } from '@heseya/store-core'
 
 import Empty from '@/components/layout/Empty.vue'
@@ -100,7 +100,7 @@ import SelectTypeInput from '@/components/modules/attributes/configurator/Select
 
 import { UUID } from '@/interfaces/UUID'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     Empty,
     List,
@@ -111,9 +111,9 @@ export default Vue.extend({
   },
   props: {
     value: {
-      type: Array,
+      type: Array as PropType<ProductAttribute[]>,
       required: true,
-    } as Vue.PropOptions<ProductAttribute[]>,
+    },
     disabled: { type: Boolean, default: false },
   },
   data: () => ({
@@ -231,6 +231,7 @@ export default Vue.extend({
   }
 
   &__title {
+    width: 100%;
     display: flex;
     align-items: center;
 

@@ -49,10 +49,10 @@ export const getApiURL = () => {
 
     // Internal domains
     case '***REMOVED***':
-      return '***REMOVED***'
+      return 'https://release-7-0.***REMOVED***'
     case '***REMOVED***':
       return '***REMOVED***'
     default:
-      return import.meta.env.VITE_API_URL || '***REMOVED***'
+      return import.meta.env.VITE_API_URL || 'https://release-7-0.***REMOVED***'
   }
 }

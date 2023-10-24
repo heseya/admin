@@ -18,21 +18,18 @@
       <div v-else class="header__text">{{ storeName }}</div>
     </transition>
 
-    <div v-if="user" class="header__user user">
-      <div class="user__role"><i class="bx bx-user"></i> {{ userRole }}</div>
+    <div class="header__right-side">
+      <div v-if="user" class="header__user user">
+        <div class="user__role"><i class="bx bx-user"></i> {{ userRole }}</div>
 
-      <a-dropdown :trigger="['click']">
-        <div class="user__email">{{ user.email }}</div>
+        <a-dropdown :trigger="['click']">
+          <div class="user__email">{{ user.email }}</div>
 
-        <template #overlay>
-          <a-menu>
-            <a-menu-item>
-              <router-link to="/settings"> {{ $t('settings') }}</router-link>
-            </a-menu-item>
-            <a-menu-item @click="logout"> {{ $t('logout') }} </a-menu-item>
-          </a-menu>
-        </template>
-      </a-dropdown>
+          <template #overlay>
+            <header-menu />
+          </template>
+        </a-dropdown>
+      </div>
     </div>
   </header>
 </template>
@@ -40,14 +37,10 @@
 <i18n lang="json">
 {
   "pl": {
-    "back": "Wróć do listy",
-    "settings": "Ustawienia",
-    "logout": "Wyloguj się"
+    "back": "Wróć do listy"
   },
   "en": {
-    "back": "Return to list",
-    "settings": "Settings",
-    "logout": "Log out"
+    "back": "Return to list"
   }
 }
 </i18n>
@@ -57,9 +50,11 @@ import { defineComponent } from 'vue'
 import last from 'lodash/last'
 import { User } from '@heseya/store-core'
 
+import HeaderMenu from './HeaderMenu.vue'
+
 export default defineComponent({
   name: 'AppHeader',
-
+  components: { HeaderMenu },
   computed: {
     isHidden(): boolean {
       return !!this.$route.meta?.hiddenNav || false
@@ -83,13 +78,6 @@ export default defineComponent({
       return last(this.user?.roles)?.name || ''
     },
   },
-
-  methods: {
-    async logout() {
-      await this.$accessor.auth.logout()
-      this.$router.push('/login')
-    },
-  },
 })
 </script>
 
@@ -110,6 +98,13 @@ export default defineComponent({
     justify-content: space-between;
   }
 
+  &__right-side {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-left: auto;
+  }
+
   &--hidden {
     margin-top: -50px;
   }
@@ -120,15 +115,19 @@ export default defineComponent({
     font-size: 0.9em;
   }
 
+  &__lang-select {
+    margin-right: 8px;
+
+    ::v-deep .app-input {
+      margin-bottom: 0;
+    }
+  }
+
   @media ($max-viewport-4) {
     &__text,
     &__return-btn {
       display: none;
     }
-  }
-
-  &__user {
-    margin-left: auto;
   }
 }
 

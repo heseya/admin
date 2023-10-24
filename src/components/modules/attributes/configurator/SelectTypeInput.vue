@@ -69,6 +69,10 @@ import { uniqueArray } from '@/utils/uniqueArray'
 export default defineComponent({
   components: { Empty },
   props: {
+    editedLang: {
+      type: String,
+      required: true,
+    },
     value: {
       type: Array as PropType<AttributeOption[]>,
       default: () => [],
@@ -177,7 +181,11 @@ export default defineComponent({
       const result = await this.$accessor.attributes.addOption({
         attributeId: this.attribute.id,
         option: {
-          name: this.searchedValue,
+          translations: {
+            [this.editedLang]: {
+              name: this.searchedValue,
+            },
+          },
           value_number: null,
           value_date: null,
         },

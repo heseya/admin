@@ -19,8 +19,8 @@
 <i18n lang="json">
 {
   "pl": {
-    "label": "Cechy, po których można filtrować produkty",
-    "placeholder": "Wybierz cechy"
+    "label": "Atrybuty, po których można filtrować produkty",
+    "placeholder": "Wybierz atrybuty"
   },
   "en": {
     "label": "Attributes, by which you can filter products",
@@ -37,7 +37,7 @@ import { Attribute } from '@heseya/store-core'
 export default defineComponent({
   props: {
     value: {
-      type: Array as PropType<Attribute[] | string[]>,
+      type: Array as PropType<Attribute[] | string[] | undefined>,
       required: true,
     },
     disabled: { type: Boolean, default: false },
@@ -48,8 +48,11 @@ export default defineComponent({
   computed: {
     selectedAttributes: {
       get(): string[] {
-        return this.value.map(
-          (attribute: Attribute | string) => (attribute as Attribute)?.id || (attribute as string),
+        return (
+          this.value?.map(
+            (attribute: Attribute | string) =>
+              (attribute as Attribute)?.id || (attribute as string),
+          ) || []
         )
       },
       set(value: string[]) {

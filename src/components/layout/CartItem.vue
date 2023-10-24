@@ -26,7 +26,9 @@
             <span class="cart-item__schema-name">{{ schema.name }}:</span>
             <span class="cart-item__schema-value">
               {{ schema.value }}
-              <small v-if="schema.price !== 0">(+ {{ formatCurrency(schema.price) }} )</small>
+              <small v-if="parseFloat(schema.price.gross) !== 0"
+                >(+ {{ formatCurrency(schema.price.gross) }} )</small
+              >
             </span>
           </div>
         </div>
@@ -58,7 +60,7 @@
         {{ formatCurrency(item.price) }}
 
         <info-tooltip v-if="item.discounts && item.discounts.length">
-          <OrderDiscountSummary :discounts="item.discounts" />
+          <OrderDiscountSummary :discounts="item.discounts" :currency="currency" />
         </info-tooltip>
       </span>
     </field>
@@ -134,21 +136,25 @@ export default defineComponent({
       type: Object as PropType<OrderProduct>,
       required: true,
     },
+    currency: {
+      type: String,
+      required: true,
+    },
   },
   computed: {
     coverUrl(): string {
       return this.item?.product?.cover?.url || ''
     },
-    objectFit(): string {
+    objectFit(): 'contain' | 'cover' {
       return +this.$accessor.config.env[FEATURE_FLAGS.ProductContain] ? 'contain' : 'cover'
     },
     totalPrice(): number {
-      return this.item.price * this.item.quantity
+      return parseFloat(this.item.price) * this.item.quantity
     },
   },
   methods: {
-    formatCurrency(amount: number) {
-      return formatCurrency(amount, this.$accessor.config.currency)
+    formatCurrency(amount: number | string) {
+      return formatCurrency(amount, this.currency)
     },
     showProductUrls() {
       this.$emit('show-urls')

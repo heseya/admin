@@ -32,7 +32,7 @@
             <a-tooltip v-if="item.summary_paid > item.summary">
               <template #title>
                 {{ $t('overpaid') }}
-                <b>{{ formatCurrency(item.summary_paid - item.summary) }}</b>
+                <b>{{ formatCurrency(item.summary_paid - item.summary, item.currency) }}</b>
               </template>
               <span class="order-icon"> <i class="bx bxs-error"></i> </span>
             </a-tooltip>
@@ -83,6 +83,7 @@
       "status": "Status",
       "digital_shipping": "Przesyłka cyfrowa",
       "shipping": "Przesyłka",
+      "sales_channel": "Kanał sprzedaży",
       "date": "Data"
     }
   },
@@ -103,6 +104,7 @@
       "status": "Status",
       "digital_shipping": "Digital shipping",
       "shipping": "Shipping",
+      "sales_channel": "Sales channel",
       "date": "Date"
     }
   }
@@ -152,7 +154,7 @@ export default defineComponent({
             key: 'summary',
             label: this.$t('form.summary') as string,
             sortable: true,
-            render: (v) => this.formatCurrency(v),
+            render: (v, order) => this.formatCurrency(v, order.currency),
           },
           { key: 'paid', label: this.$t('form.paid') as string, width: '0.8fr' },
           { key: 'status', label: this.$t('form.status') as string, width: '0.8fr' },
@@ -163,6 +165,11 @@ export default defineComponent({
               [r.shipping_method?.name, r.digital_shipping_method?.name]
                 .filter(Boolean)
                 .join(', ') || '-',
+          },
+          {
+            key: 'sales_channel',
+            label: this.$t('form.sales_channel') as string,
+            render: (_, r) => r.sales_channel?.name || '-',
           },
           {
             key: 'created_at',
@@ -209,6 +216,11 @@ export default defineComponent({
             format: (v: ShippingMethod) => v?.name || '-',
           },
           {
+            key: 'sales_channel',
+            label: this.$t('form.sales_channel') as string,
+            format: (_, o) => o.sales_channel?.name || '-',
+          },
+          {
             key: 'created_at',
             label: this.$t('form.date') as string,
           },
@@ -241,8 +253,8 @@ export default defineComponent({
     clearFilters() {
       this.makeSearch({ ...EMPTY_ORDER_FILTERS })
     },
-    formatCurrency(value: number) {
-      return formatCurrency(value, this.$accessor.config.currency)
+    formatCurrency(value: number | string, currency: string) {
+      return formatCurrency(value, currency)
     },
     async copyToClipboard(value: string) {
       await navigator.clipboard.writeText(value)

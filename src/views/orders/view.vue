@@ -3,7 +3,6 @@
     <top-nav :title="$t('title').toString()">
       <QrCodeModalButton type="Order" :body="{ id: order.id }" />
 
-      <audits-modal :id="order.id" model="orders" />
       <a v-if="storefrontPaymentUrl" :href="`${storefrontPaymentUrl}${order.code}`" target="_blank">
         <icon-button>
           <template #icon>
@@ -36,13 +35,6 @@
       <card class="order-page__address">
         <CustomerDetails :order="order" />
       </card>
-      <card v-if="order.id && order.shipping_method" class="order-page__shipping">
-        <send-package
-          :order-id="order.id"
-          :shipping-number="order.shipping_number"
-          @created="onPackageCreated"
-        />
-      </card>
       <card class="order-page__documents">
         <order-documents v-if="order.id" :order-id="order.id" :documents="order.documents" />
       </card>
@@ -69,9 +61,7 @@ import { Order } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
-import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 import NextPrevButtons from '@/components/modules/orders/NextPrevButtons.vue'
-import SendPackage from '@/components/modules/orders/SendPackage.vue'
 import OrderSummary from '@/components/modules/orders/Summary.vue'
 import StatusInput from '@/components/modules/orders/StatusInput.vue'
 
@@ -89,9 +79,7 @@ export default defineComponent({
   components: {
     TopNav,
     Card,
-    AuditsModal,
     NextPrevButtons,
-    SendPackage,
     OrderSummary,
     StatusInput,
     CustomerDetails,
@@ -112,7 +100,7 @@ export default defineComponent({
       return this.$accessor.orders.getError
     },
     order(): Order {
-      return this.$accessor.orders.getSelected || ({} as any)
+      return this.$accessor.orders.getSelected || ({ currency: 'PLN' } as any)
     },
     storefrontPaymentUrl(): string | undefined {
       return this.$accessor.config.env.storefront_payment_url || undefined
@@ -131,11 +119,6 @@ export default defineComponent({
     ])
     this.$accessor.stopLoading()
   },
-  methods: {
-    onPackageCreated(shippingNumber: string) {
-      this.order.shipping_number = shippingNumber
-    },
-  },
 })
 </script>
 
@@ -148,7 +131,7 @@ export default defineComponent({
   align-items: start;
 
   @media ($viewport-10) {
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 2.5fr 1fr;
     grid-template-areas: 'summary status' 'cart address' 'cart shipping' 'cart documents' 'cart metadata' 'cart .';
   }
 

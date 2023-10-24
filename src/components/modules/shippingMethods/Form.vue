@@ -9,11 +9,11 @@
           :label="$t('form.shippingType').toString()"
         >
           <a-select-option
-            v-for="t in Object.values(ShippingType)"
-            :key="t"
-            :label="$t(`shippingTypes.${t}`)"
+            v-for="shippingType in Object.values(ShippingType)"
+            :key="shippingType"
+            :label="$t(`shippingTypes.${shippingType}`)"
           >
-            {{ $t(`shippingTypes.${t}`) }}
+            {{ $t(`shippingTypes.${shippingType}`) }}
           </a-select-option>
         </app-select>
       </div>
@@ -55,9 +55,20 @@
 
       <hr />
 
-      <validation-provider ref="priceRange" v-slot="{ errors }" rules="price-ranges-duplicates">
-        <PriceRangesForm v-model="form.price_ranges" :disabled="disabled" :error="errors[0]" />
-      </validation-provider>
+      <ValidationProvider
+        v-for="currency in $accessor.config.currencies"
+        :key="currency.code"
+        ref="priceRange"
+        v-slot="{ errors }"
+        :rules="`price-ranges-duplicates:${currency.code}`"
+      >
+        <PriceRangesForm
+          v-model="form.price_ranges"
+          :disabled="disabled"
+          :error="errors[0]"
+          :currency="currency"
+        />
+      </ValidationProvider>
 
       <hr />
 
@@ -69,7 +80,7 @@
           :min="0"
           name="shipping_time_min"
           :disabled="disabled"
-          rules="not-negative|less-than:@shipping_time_max"
+          rules="not-negative|less-or-equal-than:@shipping_time_max"
           :label="$t('form.minDeliveryDays')"
         />
         <validated-input
@@ -85,32 +96,66 @@
 
       <hr />
 
-      <h5>{{ $t('form.deliveryRegions') }}</h5>
+      <h5>
+        {{
+          form.is_block_list_countries
+            ? $t('form.deliveryRegionsBlockList')
+            : $t('form.deliveryRegionsAllowList')
+        }}
+      </h5>
       <div class="center">
         <flex-input>
           <label class="title">{{ $t('common.allowList') }}</label>
-          <a-switch v-model="form.block_list" :disabled="disabled" />
+          <a-switch v-model="form.is_block_list_countries" :disabled="disabled" />
           <label class="title">{{ $t('common.blockList') }}</label>
         </flex-input>
       </div>
       <div class="center">
-        <validated-select
+        <CountriesSelect
           v-model="form.countries"
-          :options="countries"
-          option-key="code"
           :disabled="disabled"
-          mode="multiple"
-          :label="$t('form.countries')"
-          option-filter-prop="label"
-          :rules="{ required: !form.block_list && form.countries.length === 0 }"
+          :label="$t('form.countries').toString()"
+          :block-list="form.is_block_list_countries"
         />
       </div>
+
+      <hr />
+
+      <h5>
+        {{
+          form.is_block_list_products ? $t('form.productsBlockList') : $t('form.productsAllowList')
+        }}
+      </h5>
+      <div class="center">
+        <flex-input>
+          <label class="title">{{ $t('common.allowList') }}</label>
+          <a-switch v-model="form.is_block_list_products" :disabled="disabled" />
+          <label class="title">{{ $t('common.blockList') }}</label>
+        </flex-input>
+      </div>
+
+      <AutocompleteInput
+        v-model="form.product_ids"
+        :label="$t('form.products').toString()"
+        prop-mode="id"
+        model-url="products"
+        :disabled="disabled"
+        :rules="{ required: !form.is_block_list_products }"
+      />
+      <AutocompleteInput
+        v-model="form.product_set_ids"
+        prop-mode="id"
+        model-url="product-sets"
+        :label="$t('form.productSets').toString()"
+        :disabled="disabled"
+        :rules="{ required: !form.is_block_list_products }"
+      />
 
       <template v-if="form.shipping_type === ShippingType.Point">
         <hr />
         <h5>{{ $t('form.addShippingPoints') }}</h5>
         <ShippingPointsGrid
-          :shipping-points="form.shipping_points"
+          :shipping-points="form.shipping_points || []"
           @edit="edit"
           @remove="removePoint"
         />
@@ -133,7 +178,7 @@
         v-if="isShippingPointModalOpen"
         v-model="editedPoint"
         :countries="countries"
-        :shipping-points="form.shipping_points"
+        :shipping-points="form.shipping_points || []"
         :edit-mode="isShippingPointEditMode"
         :old-name="oldPointName"
         @added="addNewPoint"
@@ -150,12 +195,17 @@
     "form": {
       "shippingType": "Typ dostawy",
       "paymentMethods": "Dostępne metody płatności",
-      "public": "Widoczność opcji dostawy",
+      "public": "Widoczność metody dostawy",
       "deliveryTime": "Czas dostawy",
       "minDeliveryDays": "Minimalna ilość dni dostawy",
       "maxDeliveryDays": "Maksymalna ilość dni dostawy",
-      "deliveryRegions": "Wysyłka możliwa do",
+      "deliveryRegionsAllowList": "Wysyłka możliwa wyłącznie do",
+      "deliveryRegionsBlockList": "Kraje do których wysyłka będzie zablokowana (pozostałe kraje będą dozwolone)",
       "countries": "Kraje",
+      "productsAllowList": "Wysyłka możliwa wyłącznie dla wybranych produktów i kolekcji",
+      "productsBlockList": "Wysyłka zablokowana dla wybranych produktów i kolekcji",
+      "products": "Produkty",
+      "productSets": "Kolekcje",
       "addShippingPoints": "Dodaj punkty dostawy",
       "shippingPoints": "Punkty dostawy",
       "addNewPoint": "Dodaj nowy punkt",
@@ -168,12 +218,17 @@
     "form": {
       "shippingType": "Shipping type",
       "paymentMethods": "Available payment methods",
-      "public": "Shipping option visibility",
+      "public": "Shipping method visibility",
       "deliveryTime": "Delivery time",
       "minDeliveryDays": "Minimal number of days of delivery",
       "maxDeliveryDays": "Maximum number of days of delivery",
-      "deliveryRegions": "Delivery is possible to",
+      "deliveryRegionsAllowList": "Delivery allowed only to",
+      "deliveryRegionsBlockList": "Countries to which delivery will be blocked (other countries will be allowed)",
       "countries": "Countries",
+      "productsAllowList": "Shipping possible only for selected products and collections",
+      "productsBlockList": "Shipping blocked for selected products and collections",
+      "products": "Products",
+      "productSets": "Collections",
       "addShippingPoints": "Add shipping points",
       "shippingPoints": "Shipping points",
       "addNewPoint": "Add shipping point",
@@ -199,16 +254,19 @@ import {
 import ModalForm from '@/components/form/ModalForm.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import FlexInput from '@/components/layout/FlexInput.vue'
+import AutocompleteInput from '@/components/AutocompleteInput.vue'
 
 import PriceRangesForm from './PriceRangesForm.vue'
 import ShippingPointForm from './ShippingPoint.vue'
 import ShippingPointsGrid from './ShippingPointsGrid.vue'
 
 import { DEFAULT_ADDRESS_FORM } from '@/consts/addressConsts'
+import CountriesSelect from '@/components/CountriesSelect.vue'
 
 export default defineComponent({
   name: 'ShippingMethodsForm',
   components: {
+    AutocompleteInput,
     ModalForm,
     FlexInput,
     ValidationProvider,
@@ -216,6 +274,7 @@ export default defineComponent({
     PriceRangesForm,
     ShippingPointForm,
     ShippingPointsGrid,
+    CountriesSelect,
   },
   props: {
     value: {
@@ -259,7 +318,7 @@ export default defineComponent({
       deep: true,
       handler() {
         // @ts-ignore
-        this.$refs.priceRange.validate()
+        this.$refs.priceRange.forEach((slot) => slot.validate())
       },
     },
     'form.payment_on_delivery'() {

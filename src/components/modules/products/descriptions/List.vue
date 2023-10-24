@@ -42,6 +42,7 @@
           :key="selectedPageId"
           :page-id="selectedPageId"
           :slug-prefix="product.id"
+          :edited-lang="editedLang"
           @created="onCreated"
           @updated="onUpdated"
         />
@@ -100,6 +101,10 @@ export default defineComponent({
     disabled: {
       type: Boolean,
       default: false,
+    },
+    editedLang: {
+      type: String,
+      required: true,
     },
   },
 

@@ -1,4 +1,4 @@
-import { createVuexCRUD } from './generator'
+import { GLOBAL_QUERY_PARAMS, createVuexCRUD } from './generator'
 
 import {
   Attribute,
@@ -50,7 +50,10 @@ export const attributes = createVuexCRUD<Attribute, AttributeCreateDto, Attribut
         { attributeId, params }: { attributeId: UUID; params: Record<string, any> },
       ) {
         try {
-          const { data, pagination } = await sdk.Attributes.getOptions(attributeId, params)
+          const { data, pagination } = await sdk.Attributes.getOptions(attributeId, {
+            ...params,
+            ...GLOBAL_QUERY_PARAMS,
+          })
           commit('SET_OPTIONS_META', pagination)
           commit('SET_OPTIONS', data)
           return data
@@ -61,7 +64,7 @@ export const attributes = createVuexCRUD<Attribute, AttributeCreateDto, Attribut
 
       async addOption({ commit }, { attributeId, option }: CreateOptionAction) {
         try {
-          const attr = await sdk.Attributes.addOption(attributeId, option)
+          const attr = await sdk.Attributes.addOption(attributeId, option, GLOBAL_QUERY_PARAMS)
           commit('ADD_OPTION', attr)
           return { success: true, option: attr } as const
         } catch (error) {
@@ -71,7 +74,12 @@ export const attributes = createVuexCRUD<Attribute, AttributeCreateDto, Attribut
 
       async updateOption({ commit }, { attributeId, optionId, option }: UpdateOptionAction) {
         try {
-          const attr = await sdk.Attributes.updateOption(attributeId, optionId, option)
+          const attr = await sdk.Attributes.updateOption(
+            attributeId,
+            optionId,
+            option,
+            GLOBAL_QUERY_PARAMS,
+          )
 
           commit('UPDATE_OPTION', { optionId, option: attr })
           return { success: true, option: attr } as const

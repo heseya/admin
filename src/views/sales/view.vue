@@ -1,8 +1,6 @@
 <template>
   <div class="sale-view narrower-page">
     <top-nav :title="isNew ? $t('newTitle').toString() : $t('edit').toString()">
-      <!-- <audits-modal :id="sale.id" model="sales" /> -->
-
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Sales.Remove"
@@ -88,7 +86,6 @@ import {
   DiscountCondition,
   DiscountConditionType,
   DiscountTargetType,
-  DiscountType,
   Role,
   Sale,
   SaleCreateDto,
@@ -104,6 +101,7 @@ import { UUID } from '@/interfaces/UUID'
 import { SaleFormDto } from '@/interfaces/SalesAndCoupons'
 import { formatApiNotificationError } from '@/utils/errors'
 import { mapSaleFormToSaleDto } from '@/utils/sales'
+import { mapPricesToDto } from '@/utils/currency'
 
 const createB2BCondition = (company: Role): DiscountCondition => ({
   id: '',
@@ -113,13 +111,10 @@ const createB2BCondition = (company: Role): DiscountCondition => ({
 })
 
 const EMPTY_SALE_FORM: SaleFormDto = {
-  name: '',
   slug: '',
-  description: '',
-  description_html: '',
-  value: 0,
+  percentage: '0',
+  amounts: undefined,
   active: true,
-  type: DiscountType.Percentage,
   priority: 0,
   condition_groups: [],
   target_type: DiscountTargetType.OrderValue,
@@ -127,7 +122,9 @@ const EMPTY_SALE_FORM: SaleFormDto = {
   target_sets: [],
   target_shipping_methods: [],
   target_is_allow_list: true,
-  seo: {},
+  seo: undefined,
+  published: [],
+  translations: {},
 }
 
 export default defineComponent({
@@ -163,7 +160,12 @@ export default defineComponent({
   },
   watch: {
     sale(sale: Sale) {
-      if (!this.isNew) this.form = cloneDeep({ ...EMPTY_SALE_FORM, ...sale })
+      if (!this.isNew)
+        this.form = cloneDeep({
+          ...EMPTY_SALE_FORM,
+          ...sale,
+          amounts: sale.amounts ? mapPricesToDto(sale.amounts) : null,
+        })
     },
     error(error) {
       if (error) {

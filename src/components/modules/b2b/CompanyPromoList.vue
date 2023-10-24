@@ -26,7 +26,9 @@
           </field>
           <field :label="$t('field.value').toString()">
             -{{
-              sale.type === DiscountType.Percentage ? `${sale.value}%` : formatCurrency(sale.value)
+              sale.percentage !== null
+                ? `${parseFloat(sale.percentage)}%`
+                : formatPrice(sale.amounts)
             }}
           </field>
           <field :label="$t('field.uses').toString()">{{ sale.uses }} </field>
@@ -71,7 +73,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { DiscountType, Role, Sale } from '@heseya/store-core'
+import { Price, parsePrices, Role, Sale } from '@heseya/store-core'
 
 import Card from '@/components/layout/Card.vue'
 import IconButton from '@/components/layout/IconButton.vue'
@@ -98,9 +100,6 @@ export default defineComponent({
   }),
 
   computed: {
-    DiscountType(): typeof DiscountType {
-      return DiscountType
-    },
     sales(): Sale[] {
       return this.$accessor.sales.getData
     },
@@ -127,7 +126,8 @@ export default defineComponent({
       this.isLoading = false
     },
 
-    formatCurrency(amount: number) {
+    formatPrice(prices: Price[]) {
+      const amount = parsePrices(prices, this.$accessor.config.currency)
       return formatCurrency(amount, this.$accessor.config.currency)
     },
   },

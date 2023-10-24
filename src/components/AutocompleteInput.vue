@@ -145,13 +145,13 @@ export default defineComponent({
     options(): BaseItem[] {
       if (this.mode === this.SelectType.Multiple)
         return (
-          uniqBy([...this.multiOptionsIds, ...this.searchedOptions], 'id').filter(
+          uniqBy([...this.multiOptionsIds, ...this.searchedOptions], this.propMode || 'id').filter(
             (item) => !this.bannedSetIds.includes(item.id),
           ) || []
         )
       else
         return (
-          uniqBy([...this.searchedOptions], 'id').filter(
+          uniqBy([...this.searchedOptions], this.propMode || 'id').filter(
             (item) => !this.bannedSetIds.includes(item.id),
           ) || []
         )

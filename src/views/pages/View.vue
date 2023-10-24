@@ -1,8 +1,6 @@
 <template>
   <div class="narrower-page">
     <top-nav :title="!isNew ? page.name : $t('newTitle').toString()">
-      <audits-modal :id="page.id" model="pages" />
-
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Pages.Remove"
@@ -25,7 +23,7 @@
         <card>
           <div class="page__info">
             <validated-input
-              v-model="form.name"
+              v-model="formName"
               rules="required"
               :label="$t('common.form.name')"
               :disabled="!canModify"
@@ -51,12 +49,15 @@
           <SeoForm
             v-model="form.seo"
             :disabled="!canModify"
-            :current="!isNew ? { id, model: 'Page' } : null"
+            :current="!isNew ? { id, model: 'Page' } : undefined"
           />
 
           <br />
+          <PublishedLangsForm v-model="form.published" />
+
+          <br />
           <small class="label">{{ $t('form.content') }}</small>
-          <RichEditor v-model="form.content_html" :disabled="!canModify" />
+          <ValidatedRichEditor v-model="formContentHtml" :disabled="!canModify" rules="required" />
 
           <br />
 
@@ -83,6 +84,8 @@
           </app-button>
         </card>
       </validation-observer>
+
+      <AbsoluteContentLangSwitch :value="editedLang" @input="setEditedLang" />
     </div>
   </div>
 </template>
@@ -126,13 +129,15 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import RichEditor from '@/components/form/RichEditor.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import SeoForm from '@/components/modules/seo/Accordion.vue'
-import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
+import AbsoluteContentLangSwitch from '@/components/lang/AbsoluteContentLangSwitch.vue'
+import PublishedLangsForm from '@/components/lang/PublishedLangsForm.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { generateSlug } from '@/utils/generateSlug'
 
 import { UUID } from '@/interfaces/UUID'
+import ValidatedRichEditor from "@/components/form/ValidatedRichEditor.vue";
 
 export default defineComponent({
   metaInfo(this: any) {
@@ -142,6 +147,7 @@ export default defineComponent({
     }
   },
   components: {
+    ValidatedRichEditor,
     TopNav,
     Card,
     FlexInput,
@@ -150,16 +156,18 @@ export default defineComponent({
     ValidationObserver,
     SwitchInput,
     SeoForm,
-    AuditsModal,
     MetadataForm,
+    AbsoluteContentLangSwitch,
+    PublishedLangsForm,
   },
   data: () => ({
+    editedLang: '',
     form: {
-      name: '',
       slug: '',
-      content_html: '',
       public: true,
-      seo: {},
+      published: [],
+      translations: {},
+      seo: undefined,
     } as PageCreateDto,
   }),
   computed: {
@@ -181,12 +189,32 @@ export default defineComponent({
     canModify(): boolean {
       return this.$can(this.isNew ? this.$p.Pages.Add : this.$p.Pages.Edit)
     },
+
+    formContentHtml: {
+      get(): string {
+        return this.form.translations[this.editedLang]?.content_html || ''
+      },
+      set(value: string) {
+        this.form.translations[this.editedLang].content_html = value
+      },
+    },
+    formName: {
+      get(): string {
+        return this.form.translations[this.editedLang]?.name || ''
+      },
+      set(value: string) {
+        this.form.translations[this.editedLang].name = value
+      },
+    },
   },
   watch: {
     page(page: Page) {
-      if (!this.isNew) {
-        this.form = { ...page, seo: page.seo || {} }
-      }
+      if (!this.isNew)
+        this.form = {
+          ...page,
+          translations: page.translations || {},
+          seo: page.seo || {},
+        }
     },
     error(error) {
       if (error) {
@@ -200,13 +228,20 @@ export default defineComponent({
       await this.$accessor.pages.get(this.id)
       this.$accessor.stopLoading()
     }
+
+    this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
   },
   methods: {
-    editSlug() {
-      if (this.isNew) {
-        this.form.slug = generateSlug(this.form.name)
-      }
+    setEditedLang(langId: string) {
+      this.editedLang = langId
+      if (!this.form.translations[langId])
+        this.$set(this.form.translations, langId, { name: '', content_html: '' })
     },
+
+    editSlug() {
+      if (this.isNew) this.form.slug = generateSlug(this.formName)
+    },
+
     async save() {
       this.$accessor.startLoading()
       if (this.isNew) {
@@ -229,6 +264,7 @@ export default defineComponent({
       }
       this.$accessor.stopLoading()
     },
+
     async deletePage() {
       this.$accessor.startLoading()
       const success = await this.$accessor.pages.remove(this.id)
@@ -250,19 +286,23 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.page__info {
-  width: 100%;
-  display: grid;
-  grid-auto-flow: row;
-  row-gap: 20px;
-  margin-top: 15px;
+.page {
+  position: relative;
 
-  input {
+  &__info {
     width: 100%;
-  }
+    display: grid;
+    grid-auto-flow: row;
+    row-gap: 20px;
+    margin-top: 15px;
 
-  .app-input {
-    margin-bottom: 0;
+    input {
+      width: 100%;
+    }
+
+    .app-input {
+      margin-bottom: 0;
+    }
   }
 }
 

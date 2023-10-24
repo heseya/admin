@@ -35,16 +35,18 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { ValidationObserver } from 'vee-validate'
+import { PageCreateDto } from '@heseya/store-core'
 
 import { sdk } from '@/api'
 import { formatApiNotificationError } from '@/utils/errors'
 import { generateSlug } from '@/utils/generateSlug'
 
 import Loading from '@/components/layout/Loading.vue'
+import { TranslationsFromDto } from '@/interfaces/Translations'
 
 // TODO: enable rich editor, now its crashing whole page
 
-const EMPTY_FORM = {
+const EMPTY_FORM: TranslationsFromDto<PageCreateDto> = {
   name: '',
   content_html: '<div></div>',
 }
@@ -63,6 +65,10 @@ export default defineComponent({
     disabled: {
       type: Boolean,
       default: false,
+    },
+    editedLang: {
+      type: String,
+      required: true,
     },
   },
 
@@ -107,11 +113,14 @@ export default defineComponent({
 
       try {
         const page = await sdk.Pages.getOne(this.pageId)
-        this.form.name = page.name
-        this.form.content_html = page.content_html
+        this.form = {
+          name: page.name,
+          content_html: page.content_html,
+        }
       } catch (e: any) {
         this.$toast.error(formatApiNotificationError(e))
       }
+
       this.isLoading = false
     },
 
@@ -128,9 +137,14 @@ export default defineComponent({
     async createPage() {
       try {
         const page = await sdk.Pages.create({
-          name: this.form.name,
           slug: `${this.slugPrefix}-${generateSlug(this.form.name)}-${Date.now()}`,
-          content_html: this.form.content_html,
+          translations: {
+            [this.editedLang]: {
+              name: this.form.name,
+              content_html: this.form.content_html,
+            },
+          },
+          published: [this.editedLang],
           public: true,
         })
 
@@ -145,9 +159,14 @@ export default defineComponent({
         if (this.isNew) return
 
         const page = await sdk.Pages.update(this.pageId, {
-          name: this.form.name,
           slug: `${this.slugPrefix}-${generateSlug(this.form.name)}`,
-          content_html: this.form.content_html,
+          published: this.$accessor.languages.data.map((lang) => lang.id),
+          translations: {
+            [this.editedLang]: {
+              name: this.form.name,
+              content_html: this.form.content_html,
+            },
+          },
           public: true,
         })
 

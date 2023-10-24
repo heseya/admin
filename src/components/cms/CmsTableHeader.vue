@@ -1,18 +1,21 @@
 <template>
   <div class="cms-table-header">
     <button
-      v-for="{ key, label, sortable, labelTooltip } in headers"
-      :key="key"
+      v-for="header in headers"
+      :key="header.key"
       class="cms-table-header__col"
-      :class="{ 'cms-table-header__col--sortable': sortable }"
-      @click="sortable && handleSort(key)"
+      :class="{ 'cms-table-header__col--sortable': header.sortable }"
+      @click="header.sortable && handleSort(getSortKey(header))"
     >
-      {{ label }}
-      <info-tooltip v-if="labelTooltip" :text="labelTooltip" />
-      <template v-if="sortable">
-        <i v-if="!sortingObject[key]" class="bx bx-sort-alt-2"></i>
-        <i v-else-if="sortingObject[key] === 'asc'" class="bx bx-up-arrow-alt"></i>
-        <i v-else-if="sortingObject[key] === 'desc'" class="bx bx-down-arrow-alt"></i>
+      {{ header.label }}
+      <info-tooltip v-if="header.labelTooltip" :text="header.labelTooltip" />
+      <template v-if="header.sortable">
+        <i v-if="!sortingObject[getSortKey(header)]" class="bx bx-sort-alt-2"></i>
+        <i v-else-if="sortingObject[getSortKey(header)] === 'asc'" class="bx bx-up-arrow-alt"></i>
+        <i
+          v-else-if="sortingObject[getSortKey(header)] === 'desc'"
+          class="bx bx-down-arrow-alt"
+        ></i>
       </template>
     </button>
   </div>
@@ -38,13 +41,19 @@ export default defineComponent({
   },
   computed: {
     sortingObject(): Record<string, string> {
-      return this.sortFilters.split(',').reduce<Record<string, string>>((acc, keyvalue) => {
-        const [key, value] = keyvalue.split(':')
-        return { ...acc, [key]: value }
+      return this.sortFilters.split(',').reduce<Record<string, string>>((acc, keyValue) => {
+        const parts = keyValue.split(':')
+
+        const value = parts.pop()!
+        return { ...acc, [parts.join(':')]: value }
       }, {})
     },
   },
   methods: {
+    getSortKey(header: TableHeader) {
+      return typeof header.sortKey === 'function' ? header.sortKey() : header.sortKey || header.key
+    },
+
     handleSort(key: string) {
       if (!this.sortingObject[key]) this.makeSort({ ...this.sortingObject, [key]: 'asc' })
       else if (this.sortingObject[key] === 'asc')

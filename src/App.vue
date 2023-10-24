@@ -7,7 +7,7 @@
 
     <main class="app__content">
       <transition name="fade" mode="out-in">
-        <router-view :key="$route.path" />
+        <router-view :key="viewKey" />
       </transition>
     </main>
 
@@ -37,6 +37,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { Language } from '@heseya/store-core'
 import { first } from 'lodash'
 import pkg from '../package.json'
 import { init as initMicroApps, onMounted, openCommunicationChannel } from 'bout'
@@ -69,6 +70,9 @@ export default defineComponent({
     FloatingQrScanner,
   },
   computed: {
+    viewKey(): string {
+      return `${this.$accessor.config.apiLanguage}:${this.$route.path}`
+    },
     isLoading(): boolean {
       return this.$accessor.loading
     },
@@ -101,12 +105,16 @@ export default defineComponent({
     '$i18n.locale'(locale: string) {
       this.mainChannel.emit('uiLanguage:set', locale)
     },
+    '$accessor.config.apiLanguage'(lang: Language) {
+      this.mainChannel.emit('apiLanguage:set', lang)
+    },
   },
   created() {
     initMicroApps()
     this.$accessor.config.fetchSettings()
+    this.$accessor.config.fetchCurrencies()
+    this.$accessor.config.initLanguages()
     this.$accessor.menuItems.initMicrofrontendMenuItems()
-
     if (this.$accessor.auth.isLogged) this.$accessor.auth.fetchProfile()
 
     // MicroFrontend Events Start
@@ -116,6 +124,7 @@ export default defineComponent({
         token: this.$accessor.auth.getIdentityToken,
         user: this.$accessor.auth.user,
         uiLanguage: this.$i18n.locale,
+        apiLanguage: this.$accessor.config.apiLanguage,
       })
     })
 

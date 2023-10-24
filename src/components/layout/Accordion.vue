@@ -7,10 +7,10 @@
     </template>
 
     <a-collapse-panel>
-      <template #header>
+      <template #header="{ isActive }">
         <span class="accordion__title">
-          <slot name="title">
-            {{ title }}
+          <slot name="title" v-bind="{ isActive }">
+            {{ (isActive ? expandedTitle : title) || title }}
           </slot>
         </span>
       </template>
@@ -26,6 +26,10 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   props: {
     title: {
+      type: String,
+      default: '',
+    },
+    expandedTitle: {
       type: String,
       default: '',
     },

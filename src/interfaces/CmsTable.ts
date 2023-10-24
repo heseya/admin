@@ -8,6 +8,7 @@ export interface TableHeader<Item extends VuexBaseItem = any> {
   sortable?: boolean
   render?: (keyValue: any, item: Item) => string | number | boolean | string[]
   wordBreak?: 'break-all' | 'break-word' | 'none'
+  sortKey?: string | (() => string)
 }
 
 export interface TableValue {

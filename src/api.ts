@@ -39,7 +39,7 @@ export const createApiInstance = (baseURL: string, useAccessToken = true) => {
 
     config.headers['Cache-Control'] = 'no-cache, no-store'
     config.headers['X-Core-Url'] = CORE_API_URL
-    config.headers['X-Language'] = 'pl'
+    if (accessor.config.apiLanguage) config.headers['Accept-Language'] = accessor.config.apiLanguage
 
     return config
   })

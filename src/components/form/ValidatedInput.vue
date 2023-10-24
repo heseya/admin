@@ -34,12 +34,14 @@ export default defineComponent({
     'min',
     'max',
     'step',
+    'precision',
     'rows',
     'border',
     'shadow',
     'disabled',
     'allowClear',
     'addonBefore',
+    'addonAfter',
   ],
 })
 </script>

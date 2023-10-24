@@ -1,8 +1,6 @@
 <template>
   <div class="coupon-view narrower-page">
     <top-nav :title="!isNew ? coupon.name : $t('newTitle').toString()">
-      <!-- <audits-modal :id="coupon.id" model="coupons" /> -->
-
       <pop-confirm
         v-if="!isNew"
         v-can="$p.Coupons.Remove"
@@ -90,7 +88,7 @@
 import { defineComponent } from 'vue'
 import { cloneDeep } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
-import { Coupon, DiscountTargetType, DiscountType, CouponUpdateDto } from '@heseya/store-core'
+import { Coupon, DiscountTargetType, CouponUpdateDto } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
@@ -103,16 +101,14 @@ import { CouponFormDto } from '@/interfaces/SalesAndCoupons'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { mapCouponFormToCouponDto } from '@/utils/sales'
+import { mapPricesToDto } from '@/utils/currency'
 
 const EMPTY_COUPON_FORM: CouponFormDto = {
   code: '',
-  name: '',
   slug: '',
-  description: '',
-  description_html: '',
-  value: 0,
+  percentage: '0',
+  amounts: undefined,
   active: true,
-  type: DiscountType.Percentage,
   priority: 0,
   condition_groups: [],
   target_type: DiscountTargetType.OrderValue,
@@ -120,7 +116,9 @@ const EMPTY_COUPON_FORM: CouponFormDto = {
   target_sets: [],
   target_shipping_methods: [],
   target_is_allow_list: true,
-  seo: {},
+  seo: undefined,
+  published: [],
+  translations: {},
 }
 
 export default defineComponent({
@@ -151,7 +149,11 @@ export default defineComponent({
   watch: {
     coupon(coupon: Coupon) {
       if (!this.isNew) {
-        this.form = cloneDeep({ ...EMPTY_COUPON_FORM, ...coupon })
+        this.form = cloneDeep({
+          ...EMPTY_COUPON_FORM,
+          ...coupon,
+          amounts: coupon.amounts ? mapPricesToDto(coupon.amounts) : null,
+        })
       }
     },
     error(error) {

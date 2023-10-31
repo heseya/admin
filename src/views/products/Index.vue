@@ -10,6 +10,8 @@
       @clear-filters="clearFilters"
     >
       <template #nav>
+        <UpdatePriceButton v-if="$accessor.config.env.show_import_prices_btn === '1'" />
+
         <icon-button @click="listView = !listView">
           <template #icon>
             <i v-if="!listView" class="bx bx-list-ul"></i>
@@ -92,6 +94,7 @@ import { formatFilters } from '@/utils/utils'
 import { ALL_FILTER_VALUE } from '@/consts/filters'
 import { TableConfig } from '@/interfaces/CmsTable'
 import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
+import UpdatePriceButton from '@/components/modules/products/UpdatePriceButton.vue'
 
 const LOCAL_STORAGE_KEY = 'products-list-view'
 
@@ -104,6 +107,7 @@ export default defineComponent({
     ProductsFilter,
     PaginatedList,
     ProductListItem,
+    UpdatePriceButton,
   },
 
   beforeRouteLeave(to, _from, next) {

@@ -49,7 +49,7 @@
 <script lang="ts">
 import { PropType, defineComponent } from 'vue'
 import debounce from 'lodash/debounce'
-import {Schema, Attribute, WarehouseItem, Product} from '@heseya/store-core'
+import { Schema, Attribute, WarehouseItem, Product } from '@heseya/store-core'
 
 import { api } from '../api'
 import { formatApiNotificationError } from '@/utils/errors'

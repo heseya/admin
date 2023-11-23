@@ -57,6 +57,24 @@
       </a-select-option>
     </app-select>
 
+    <template v-if="!isNew">
+      <hr />
+      <MetadataForm
+        ref="publicMeta"
+        :value="attribute.metadata"
+        :disabled="disabled"
+        model="attributes"
+      />
+      <MetadataForm
+        v-if="attribute.metadata_private"
+        ref="privateMeta"
+        :value="attribute.metadata_private"
+        :disabled="disabled"
+        type="private"
+        model="attributes"
+      />
+    </template>
+
     <br />
     <app-button data-cy="submit-btn" :disabled="disabled" @click.stop="handleSubmit(submit)">
       {{ $t('common.save') }}
@@ -119,6 +137,7 @@ import { TranslationsFromDto } from '@/interfaces/Translations'
 import OptionsList from './OptionsList.vue'
 import PublishedLangsForm from '@/components/lang/PublishedLangsForm.vue'
 import AbsoluteContentLangSwitch from '@/components/lang/AbsoluteContentLangSwitch.vue'
+import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 const CLEAR_TRANSLATION_FORM: TranslationsFromDto<AttributeCreateDto> = {
   name: '',
@@ -133,10 +152,13 @@ const CLEAR_FORM: AttributeCreateDto = {
   global: false,
   translations: {},
   published: [],
+  metadata: {},
+  metadata_private: {},
 }
 
 export default defineComponent({
   components: {
+    MetadataForm,
     ValidationObserver,
     OptionsList,
     PublishedLangsForm,
@@ -205,6 +227,8 @@ export default defineComponent({
           this.$toast.success(this.$t('alerts.created') as string)
           this.$emit('submit', newAttribute)
         } else {
+          await this.saveMetadata(this.form.id)
+
           const editedAttribute = await this.$accessor.attributes.update({
             id: this.form.id,
             item: this.form,
@@ -218,6 +242,13 @@ export default defineComponent({
       } finally {
         this.$accessor.stopLoading()
       }
+    },
+
+    async saveMetadata(id: string) {
+      await Promise.all([
+        (this.$refs.privateMeta as MetadataRef)?.saveMetadata(id),
+        (this.$refs.publicMeta as MetadataRef)?.saveMetadata(id),
+      ])
     },
   },
 })

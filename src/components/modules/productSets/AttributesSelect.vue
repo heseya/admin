@@ -33,7 +33,8 @@
 import { defineComponent, PropType } from 'vue'
 import debounce from 'lodash/debounce'
 import { Attribute } from '@heseya/store-core'
-import { isEqual, cloneDeep } from 'lodash'
+import isEqual from 'lodash/isEqual'
+import cloneDeep from 'lodash/cloneDeep'
 
 export default defineComponent({
   props: {

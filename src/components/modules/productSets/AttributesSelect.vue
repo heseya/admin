@@ -10,7 +10,7 @@
     option-filter-prop="label"
     @search="onSearch"
   >
-    <a-select-option v-for="attribute in attributes" :key="attribute.id" :label="attribute.name">
+    <a-select-option v-for="attribute in attributes()" :key="attribute.id" :label="attribute.name">
       {{ attribute.name }}
     </a-select-option>
   </app-select>
@@ -66,23 +66,6 @@ export default defineComponent({
         this.$emit('input', value)
       },
     },
-
-    attributes(): Attribute[] {
-      const initAttributes = this.$accessor.attributes.data
-      if (
-        initAttributes.length &&
-        this.selectedAttributes.length &&
-        !this.loadedSelect &&
-        !this.isLoading
-      ) {
-        this.loadAttributes(cloneDeep(initAttributes))
-        this.toggleLoaded()
-      }
-
-      return this.loadedSelect
-        ? this.defaultAttributes.concat(this.loadedAttributes)
-        : this.defaultAttributes
-    },
   },
 
   created() {
@@ -102,6 +85,23 @@ export default defineComponent({
 
     toggleLoaded() {
       this.loadedSelect = !this.loadedSelect
+    },
+
+    attributes(): Attribute[] {
+      const initAttributes = this.$accessor.attributes.data
+      if (
+        initAttributes.length &&
+        this.selectedAttributes.length &&
+        !this.loadedSelect &&
+        !this.isLoading
+      ) {
+        this.loadAttributes(cloneDeep(initAttributes))
+        this.toggleLoaded()
+      }
+
+      return this.loadedSelect
+        ? this.defaultAttributes.concat(this.loadedAttributes)
+        : this.defaultAttributes
     },
 
     async loadAttributes(oldAttributes: Attribute[]) {

@@ -80,6 +80,8 @@ export default defineComponent({
     async searchAttributes(value?: string) {
       this.isLoading = true
       await this.$accessor.attributes.fetch({ search: value, global: 0 })
+      this.initialAttributes = []
+      this.loadedAttributes = cloneDeep(this.$accessor.attributes.data)
       this.isLoading = false
     },
 

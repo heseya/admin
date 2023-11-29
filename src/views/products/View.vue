@@ -12,6 +12,13 @@
         </template>
       </template>
 
+      <icon-button v-if="storefrontProductUrl" target="_blank" :to="storefrontProductUrl">
+        <template #icon>
+          <i class="bx bx-link-external"></i>
+        </template>
+        {{ $t('nav.goTo') }}
+      </icon-button>
+
       <PopConfirm
         v-if="!isNew"
         v-can="$p.Products.Remove"
@@ -145,6 +152,9 @@
     "baseFormTitle": "Informacje podstawowe",
     "galleryTitle": "Zdjęcia i wideo produktu",
     "deleteConfirm": "Czy na pewno chcesz usunąć ten produkt?",
+    "nav": {
+      "goTo": "Przejdź do produktu"
+    },
     "messages": {
       "removed": "Produkt został usunięty.",
       "created": "Produkt został utworzony.",
@@ -159,6 +169,9 @@
     "baseFormTitle": "Basic information",
     "galleryTitle": "Product gallery",
     "deleteConfirm": "Are you sure you want to delete this product?",
+    "nav": {
+      "goTo": "Go to product"
+    },
     "messages": {
       "removed": "Product has been removed.",
       "created": "Product has been created.",
@@ -290,6 +303,13 @@ export default defineComponent({
     },
     canModify(): boolean {
       return this.$can(this.isNew ? this.$p.Products.Add : this.$p.Products.Edit)
+    },
+
+    storefrontProductUrl(): string | null {
+      const base = this.$accessor.config.env.storefront_product_url
+      if (!base || !this.product.slug) return null
+
+      return new URL(`/product/${this.product.slug}`, base).toString()
     },
 
     formDescriptionHtml: {

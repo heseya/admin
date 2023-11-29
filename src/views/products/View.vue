@@ -12,6 +12,16 @@
         </template>
       </template>
 
+      <icon-button
+        v-if="highlightedAttributeSlug && product.attributes"
+        @click="copyHighlightedAttribute"
+      >
+        <template #icon>
+          <i class="bx bx-copy"></i>
+        </template>
+        {{ highlightedAttributeSlug.toUpperCase() }}: {{ highlightedAttributeValue }}
+      </icon-button>
+
       <icon-button v-if="storefrontProductUrl" target="_blank" :to="storefrontProductUrl">
         <template #icon>
           <i class="bx bx-link-external"></i>
@@ -159,7 +169,8 @@
       "removed": "Produkt został usunięty.",
       "created": "Produkt został utworzony.",
       "updated": "Produkt został zaktualizowany.",
-      "error": "Wystąpił błąd podczas zapisywania produktu."
+      "error": "Wystąpił błąd podczas zapisywania produktu.",
+      "highlightedAttributeCopySuccess": "Wartość atrybutu została skopiowana!"
     },
     "saveAndNext": "Zapisz i dodaj następny"
   },
@@ -176,7 +187,8 @@
       "removed": "Product has been removed.",
       "created": "Product has been created.",
       "updated": "Product has been updated.",
-      "error": "An error occurred while saving the product."
+      "error": "An error occurred while saving the product.",
+      "highlightedAttributeCopySuccess": "Highlighted attribute value has been copied!"
     },
     "saveAndNext": "Save and add next"
   }
@@ -218,6 +230,7 @@ import { UUID } from '@/interfaces/UUID'
 import { ProductComponentForm } from '@/interfaces/Product'
 import { TranslationsFromDto } from '@/interfaces/Translations'
 import { mapPricesToDto } from '@/utils/currency'
+import { SETTINGS_KEYS } from '@/consts/featureFlags'
 
 const EMPTY_PRODUCT_TRANSLATIONS: TranslationsFromDto<ProductCreateDto> = {
   name: '',
@@ -306,10 +319,21 @@ export default defineComponent({
     },
 
     storefrontProductUrl(): string | null {
-      const base = this.$accessor.config.env.storefront_product_url
+      const base = this.$accessor.config.env[SETTINGS_KEYS.StorefrontProductUrl]
       if (!base || !this.product.slug) return null
 
       return new URL(`/product/${this.product.slug}`, base).toString()
+    },
+
+    highlightedAttributeSlug(): string | undefined {
+      return this.$accessor.config.env[SETTINGS_KEYS.HighlightedProductAttribute]
+    },
+    highlightedAttributeValue(): string {
+      return (
+        this.product.attributes?.find(
+          (attribute) => attribute.slug === this.highlightedAttributeSlug,
+        )?.selected_options[0]?.name || this.$i18n.t('common.none').toString()
+      )
     },
 
     formDescriptionHtml: {
@@ -448,6 +472,11 @@ export default defineComponent({
     async submitAndGoNext() {
       await this.saveProduct()
       this.$router.push('/products/create')
+    },
+
+    async copyHighlightedAttribute() {
+      await navigator.clipboard.writeText(this.highlightedAttributeValue)
+      this.$toast.info(this.$t('messages.highlightedAttributeCopySuccess') as string)
     },
   },
 })

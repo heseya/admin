@@ -10,7 +10,7 @@
     option-filter-prop="label"
     @search="onSearch"
   >
-    <a-select-option v-for="attribute in attributes()" :key="attribute.id" :label="attribute.name">
+    <a-select-option v-for="attribute in attributes" :key="attribute.id" :label="attribute.name">
       {{ attribute.name }}
     </a-select-option>
   </app-select>
@@ -33,7 +33,6 @@
 import { defineComponent, PropType } from 'vue'
 import debounce from 'lodash/debounce'
 import { Attribute } from '@heseya/store-core'
-import isEqual from 'lodash/isEqual'
 import cloneDeep from 'lodash/cloneDeep'
 
 export default defineComponent({
@@ -47,8 +46,7 @@ export default defineComponent({
 
   data: () => ({
     isLoading: false,
-    loadedSelect: false,
-    defaultAttributes: [] as Attribute[],
+    initialAttributes: [] as Attribute[],
     loadedAttributes: [] as Attribute[],
   }),
 
@@ -66,10 +64,16 @@ export default defineComponent({
         this.$emit('input', value)
       },
     },
+
+    attributes(): Attribute[] {
+      return this.initialAttributes.concat(this.loadedAttributes)
+    },
   },
 
-  created() {
-    this.searchAttributes()
+  async created() {
+    await this.searchAttributes()
+    this.initialAttributes = cloneDeep(this.$accessor.attributes.data)
+    await this.loadSelectedAttributes()
   },
 
   methods: {
@@ -83,37 +87,10 @@ export default defineComponent({
       this.searchAttributes(value)
     }, 200),
 
-    toggleLoaded() {
-      this.loadedSelect = !this.loadedSelect
-    },
-
-    attributes(): Attribute[] {
-      const initAttributes = this.$accessor.attributes.data
-      if (
-        initAttributes.length &&
-        this.selectedAttributes.length &&
-        !this.loadedSelect &&
-        !this.isLoading
-      ) {
-        this.loadAttributes(cloneDeep(initAttributes))
-        this.toggleLoaded()
-      }
-
-      return this.loadedSelect
-        ? this.defaultAttributes.concat(this.loadedAttributes)
-        : this.defaultAttributes
-    },
-
-    async loadAttributes(oldAttributes: Attribute[]) {
+    async loadSelectedAttributes() {
       this.isLoading = true
-      this.defaultAttributes = oldAttributes
       await this.$accessor.attributes.fetch({ ids: this.selectedAttributes })
-      const loadedAttributes = cloneDeep(this.$accessor.attributes.data)
-
-      if (!isEqual(loadedAttributes, oldAttributes)) {
-        this.loadedAttributes = loadedAttributes
-      }
-
+      this.loadedAttributes = cloneDeep(this.$accessor.attributes.data)
       this.isLoading = false
     },
   },

@@ -32,6 +32,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import debounce from 'lodash/debounce'
+import uniqBy from 'lodash/uniqBy'
 import { Attribute } from '@heseya/store-core'
 import cloneDeep from 'lodash/cloneDeep'
 
@@ -47,7 +48,6 @@ export default defineComponent({
   data: () => ({
     isLoading: false,
     initialAttributes: [] as Attribute[],
-    loadedAttributes: [] as Attribute[],
   }),
 
   computed: {
@@ -66,7 +66,7 @@ export default defineComponent({
     },
 
     attributes(): Attribute[] {
-      return this.initialAttributes.concat(this.loadedAttributes)
+      return uniqBy(this.$accessor.attributes.data.concat(this.initialAttributes), 'id')
     },
   },
 
@@ -81,7 +81,6 @@ export default defineComponent({
       this.isLoading = true
       await this.$accessor.attributes.fetch({ search: value, global: 0 })
       this.initialAttributes = []
-      this.loadedAttributes = cloneDeep(this.$accessor.attributes.data)
       this.isLoading = false
     },
 
@@ -92,7 +91,6 @@ export default defineComponent({
     async loadSelectedAttributes() {
       this.isLoading = true
       await this.$accessor.attributes.fetch({ ids: this.selectedAttributes })
-      this.loadedAttributes = cloneDeep(this.$accessor.attributes.data)
       this.isLoading = false
     },
   },

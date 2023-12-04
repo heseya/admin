@@ -54,6 +54,7 @@
       "email": "E-mail",
       "roles": "Role",
       "isTfaActive": "Aktywne 2FA",
+      "verified": "Zweryfikowany",
       "createdAt": "Data rejestracji"
     }
   },
@@ -64,6 +65,7 @@
       "email": "E-mail",
       "roles": "Roles",
       "isTfaActive": "Active 2FA",
+      "verified": "Verified",
       "createdAt": "Registration date"
     }
   }
@@ -85,6 +87,7 @@ import { formatFilters } from '@/utils/utils'
 import { TableConfig } from '@/interfaces/CmsTable'
 import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 import { formatDate } from '@/utils/dates'
+import isNil from 'lodash/isNil'
 
 export default defineComponent({
   metaInfo(this: any) {
@@ -125,6 +128,12 @@ export default defineComponent({
             label: this.$t('table.isTfaActive') as string,
             width: '0.6fr',
             render: (_v, item) => item.is_tfa_active,
+          },
+          {
+            key: 'verified',
+            label: this.$t('table.verified') as string,
+            width: '0.6fr',
+            render: (_v, item) => !isNil(item.email_verified_at),
           },
           {
             key: 'created_at',

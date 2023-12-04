@@ -51,13 +51,13 @@
 
     <field :label="$t('header.perItem').toString()">
       <span class="cart-item__value">
-        {{ formatCurrency(item.price_initial) }}
+        {{ formatCurrency(item.price_initial.gross) }}
       </span>
     </field>
 
     <field :label="$t('header.discounted').toString()">
       <span class="cart-item__value">
-        {{ formatCurrency(item.price) }}
+        {{ formatCurrency(item.price.gross) }}
 
         <info-tooltip v-if="item.discounts && item.discounts.length">
           <OrderDiscountSummary :discounts="item.discounts" :currency="currency" />
@@ -149,7 +149,7 @@ export default defineComponent({
       return +this.$accessor.config.env[FEATURE_FLAGS.ProductContain] ? 'contain' : 'cover'
     },
     totalPrice(): number {
-      return parseFloat(this.item.price) * this.item.quantity
+      return parseFloat(this.item.price.gross) * this.item.quantity
     },
   },
   methods: {

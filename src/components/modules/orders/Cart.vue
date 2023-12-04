@@ -27,17 +27,17 @@
 
     <div class="order-cart__summary">
       <field :label="$t('summary.cart').toString()" horizontal>
-        {{ formatCurrency(order.cart_total_initial) }}
+        {{ formatCurrency(order.cart_total_initial.gross) }}
       </field>
       <field :label="$t('summary.shipping').toString()" horizontal>
         <div class="discount-summary">
           <span class="discount-summary__total">
-            {{ formatCurrency(order.shipping_price) }}
+            {{ formatCurrency(order.shipping_price.gross) }}
           </span>
           <info-tooltip v-if="order.shipping_price !== order.shipping_price_initial">
             <b>
               {{ $t('summary.baseShipping') }}:
-              {{ formatCurrency(order.shipping_price_initial) }}
+              {{ formatCurrency(order.shipping_price_initial.gross) }}
             </b>
             <OrderDiscountSummary
               :discounts="order.discounts"
@@ -70,7 +70,7 @@
         </div>
       </field>
       <field class="order-cart__summary-total" :label="$t('summary.total').toString()" horizontal>
-        {{ formatCurrency(order.summary) }}
+        {{ formatCurrency(order.summary.gross) }}
       </field>
       <boolean-tag
         :value="order.paid"
@@ -192,7 +192,7 @@ export default defineComponent({
         this.order.discounts
           // Ignore shipping price discounts, they are already included in shipping price
           ?.filter((d) => d.target_type !== DiscountTargetType.ShippingPrice)
-          .map((d) => parseFloat(d.applied_discount))
+          .map((d) => parseFloat(d.applied_discount.gross))
           .reduce((sum, discount) => sum + discount, 0) || 0
       )
     },
@@ -219,10 +219,16 @@ export default defineComponent({
           {
             key: 'price_initial',
             label: this.$t('export.priceInitial') as string,
+            format(_k, item) {
+              return item.price_initial.gross
+            },
           },
           {
             key: 'price',
             label: this.$t('export.price') as string,
+            format(_k, item) {
+              return item.price.gross
+            },
           },
           {
             key: 'quantity',
@@ -233,7 +239,7 @@ export default defineComponent({
             key: 'total',
             label: this.$t('export.total') as string,
             format(_k, item) {
-              return parseFloat(item.price) * item.quantity
+              return parseFloat(item.price.gross) * item.quantity
             },
           },
           {
@@ -247,7 +253,8 @@ export default defineComponent({
             label: this.$t('export.discounts') as string,
             format(_k, item) {
               return (
-                item.discounts.map((d) => `${d.name} (-${d.applied_discount})`).join(', ') || '-'
+                item.discounts.map((d) => `${d.name} (-${d.applied_discount.gross})`).join(', ') ||
+                '-'
               )
             },
           },

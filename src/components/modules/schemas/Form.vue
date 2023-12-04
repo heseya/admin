@@ -18,150 +18,13 @@
     <PublishedLangsForm v-model="form.published" />
     <br />
 
-    <div class="flex">
-      <validation-provider v-slot="{ errors }" name="schema-type" rules="id-required">
-        <app-select
-          v-model="form.type"
-          :disabled="disabled"
-          name="type"
-          :label="$t('form.type')"
-          option-filter-prop="label"
-        >
-          <a-select-option
-            v-for="{ value, label } in SchemaTypesOptions"
-            :key="value"
-            :label="label"
-          >
-            {{ label }}
-          </a-select-option>
-          <template #message-danger>{{ errors[0] }}</template>
-        </app-select>
-      </validation-provider>
-
-      <CurrencyPriceForm
-        v-if="form.type !== SchemaType.MultiplySchema"
-        v-model="form.prices"
-        :disabled="disabled"
-        :label="
-          form.type === SchemaType.Multiply
-            ? $t('form.pricePerUnit').toString()
-            : $t('form.additionalPrice').toString()
-        "
-      />
-    </div>
-    <div class="flex switches">
-      <ValidatedSwitchInput
-        v-model="form.hidden"
-        :disabled="disabled"
-        name="hidden"
-        rules="schema-checkbox:@disabled"
-      >
-        <template #title>{{ $t('form.hidden') }}</template>
-      </ValidatedSwitchInput>
-      <ValidatedSwitchInput
-        v-model="form.required"
-        :disabled="disabled"
-        name="disabled"
-        rules="schema-checkbox:@hidden"
-      >
-        <template #title>{{ $t('form.required') }}</template>
-      </ValidatedSwitchInput>
-    </div>
-    <div v-if="isKindOfNumeric(form.type) || form.type === SchemaType.String" class="flex">
-      <validated-input
-        v-model="form.min"
-        :disabled="disabled"
-        default="0"
-        name="min"
-        type="number"
-        :label="isKindOfNumeric(form.type) ? $t('form.minValue') : $t('form.minLength')"
-      />
-      <validated-input
-        v-model="form.max"
-        :disabled="disabled"
-        type="number"
-        name="max"
-        :label="isKindOfNumeric(form.type) ? $t('form.maxValue') : $t('form.maxLength')"
-      />
-      <validated-input
-        v-if="isKindOfNumeric(form.type)"
-        v-model="form.step"
-        :disabled="disabled"
-        type="number"
-        name="step"
-        :label="$t('form.step')"
-      />
-    </div>
-    <validated-input
-      v-if="isKindOfNumeric(form.type) || form.type === SchemaType.String"
-      v-model="form.default"
-      :disabled="disabled"
-      name="default"
-      :type="isKindOfNumeric(form.type) ? 'number' : 'text'"
-      :label="$t('form.default')"
-    />
-    <SwitchInput
-      v-if="form.type === SchemaType.Boolean"
-      v-model="form.default"
-      :disabled="disabled"
-    >
-      <template #title>{{ $t('form.default') }}</template>
-    </SwitchInput>
-
-    <br />
-
     <SelectSchemaOptions
-      v-if="form.type === SchemaType.Select"
       v-model="form.options"
       :default-option="defaultOption || undefined"
       :disabled="disabled"
       :edited-lang="editedLang"
       @set-default="(v) => (defaultOption = v)"
     />
-
-    <Zone v-if="form.type === SchemaType.MultiplySchema">
-      <div class="used-schema">
-        <div>
-          <small>{{ $t('multipliedSchema') }}</small
-          ><br />
-          <b>{{ usedSchemaName || $t('choosePlaceholder') }}</b>
-        </div>
-        <app-button @click="isUsedSchemaModalActive = true">{{ $t('change') }}</app-button>
-      </div>
-
-      <a-modal
-        v-model="isUsedSchemaModalActive"
-        width="800px"
-        :title="$t('modalTitle')"
-        :footer="null"
-      >
-        <modal-form v-if="isUsedSchemaModalActive">
-          <selector
-            type="schemas"
-            :add-text="$t('choose').toString()"
-            :existing="[form]"
-            @select="selectUsedSchema"
-          />
-        </modal-form>
-      </a-modal>
-    </Zone>
-
-    <br />
-
-    <Zone :title="$t('advancedOptions').toString()" type="danger">
-      <validated-input
-        v-model="form.pattern"
-        :disabled="disabled"
-        name="pattern"
-        :label="$t('form.pattern')"
-      />
-      <validated-input
-        v-model="form.validation"
-        :disabled="disabled"
-        name="validation"
-        :label="$t('form.validation')"
-      />
-    </Zone>
 
     <br />
 
@@ -220,7 +83,6 @@
     "choosePlaceholder": "-- wybierz --",
     "change": "Zmień",
     "alerts": {
-      "selectMultiplied": "Wybierz mnożony schemat",
       "created": "Schemat został utworzony.",
       "updated": "Schemat został zaktualizowany."
     }
@@ -248,7 +110,6 @@
     "choosePlaceholder": "-- choose --",
     "change": "Change",
     "alerts": {
-      "selectMultiplied": "Select multiplied schema",
       "created": "Schema has been created.",
       "updated": "Schema has been updated."
     }
@@ -259,19 +120,14 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
-import { ValidationProvider, ValidationObserver } from 'vee-validate'
-import { SchemaType, Schema, SchemaOptionDto, SchemaCreateDto } from '@heseya/store-core'
+import { ValidationObserver } from 'vee-validate'
+import { Schema, SchemaOptionDto, SchemaCreateDto } from '@heseya/store-core'
 import isNil from 'lodash/isNil'
 
-import SwitchInput from '@/components/form/SwitchInput.vue'
-import Zone from '@/components/layout/Zone.vue'
 import SelectSchemaOptions from '@/components/modules/schemas/SelectSchemaOptions.vue'
-import ModalForm from '@/components/form/ModalForm.vue'
-import Selector from '@/components/Selector.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 import AbsoluteContentLangSwitch from '@/components/lang/AbsoluteContentLangSwitch.vue'
 import PublishedLangsForm from '@/components/lang/PublishedLangsForm.vue'
-import CurrencyPriceForm from '@/components/CurrencyPriceForm.vue'
 
 import {
   CLEAR_SCHEMA,
@@ -283,17 +139,11 @@ import { mapPricesToDto } from '@/utils/currency'
 
 export default defineComponent({
   components: {
-    ValidationProvider,
     ValidationObserver,
-    SwitchInput,
-    Zone,
     SelectSchemaOptions,
-    ModalForm,
-    Selector,
     MetadataForm,
     AbsoluteContentLangSwitch,
     PublishedLangsForm,
-    CurrencyPriceForm,
   },
   props: {
     schema: {
@@ -312,19 +162,8 @@ export default defineComponent({
     defaultOption: null as number | null,
     isUsedSchemaModalActive: false,
     usedSchemaName: '',
-    SchemaType: SchemaType,
   }),
   computed: {
-    selectableSchemas(): Schema[] {
-      return this.currentProductSchemas.filter(({ id }) => id !== this.form.id)
-    },
-    SchemaTypesOptions(): { value: string; label: string }[] {
-      return Object.values(SchemaType).map((t) => ({
-        value: t,
-        label: this.$t(`schemaTypes.${t}`) as string,
-      }))
-    },
-
     formDescription: {
       get(): string {
         return this.form.translations[this.editedLang]?.description || ''
@@ -345,15 +184,12 @@ export default defineComponent({
   watch: {
     defaultOption(defaultOption: number | null) {
       if (isNil(defaultOption)) return
-      if (this.form.type === SchemaType.Select) {
-        this.form.options = this.form.options.map((v: any) => ({ ...v, default: false }))
-        // TODO: fix typing, in this component actually default is a custom field in SchemaOptionDto
-        this.form.options[defaultOption].default = true
-      }
+      this.form.options = this.form.options.map((v: any) => ({ ...v, default: false }))
+      // TODO: fix typing, in this component actually default is a custom field in SchemaOptionDto
+      this.form.options[defaultOption].default = true
     },
-    'form.type'(type: SchemaType) {
-      if (type === SchemaType.Select) this.form.options = [this.createEmptySchemaOption()]
-      else this.form.options = []
+    'form.type'() {
+      this.form.options = [this.createEmptySchemaOption()]
     },
     'form.used_schemas.0'(schema: Schema) {
       // ! This is buggy, and somehow works only on init
@@ -381,16 +217,15 @@ export default defineComponent({
           this.$set(option.translations, langId, { ...CLEAR_SCHEMA_OPTION_TRANSLATION })
       })
     },
+
     initSchemaForm(schema: Schema) {
-      this.form = schema.type
+      this.form = schema.id
         ? cloneDeep({
             ...schema,
-            prices: mapPricesToDto(schema.prices),
             options: schema.options.map((o) => ({ ...o, prices: mapPricesToDto(o.prices) })),
           })
         : cloneDeep({
             ...CLEAR_SCHEMA,
-            prices: this.$accessor.config.currencies.map((c) => ({ value: '0', currency: c.code })),
             options: [this.createEmptySchemaOption()],
           })
       this.defaultOption = isNil(this.form.default) ? null : Number(this.form.default)
@@ -404,30 +239,12 @@ export default defineComponent({
       })
     },
 
-    isKindOfNumeric(type: SchemaType): boolean {
-      return (
-        type === SchemaType.Numeric ||
-        type === SchemaType.Multiply ||
-        type === SchemaType.MultiplySchema
-      )
-    },
-    selectUsedSchema(schema: Schema) {
-      this.form.used_schemas[0] = schema.id
-      this.usedSchemaName = schema.name
-      this.isUsedSchemaModalActive = false
-    },
     async submit() {
-      if (this.form.type === SchemaType.MultiplySchema && !this.form.used_schemas[0]) {
-        this.$toast.warning(this.$t('alerts.selectMultiplied') as string)
-        return
-      }
-
       this.$accessor.startLoading()
       try {
         let id = ''
 
-        this.form.default =
-          this.form.type === SchemaType.Select ? this.defaultOption?.toString() : this.form.default
+        this.form.default = this.defaultOption?.toString() || null
 
         const options = this.form.options.map((opt: any) => ({
           ...opt,

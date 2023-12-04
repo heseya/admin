@@ -32,7 +32,9 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import debounce from 'lodash/debounce'
+import uniqBy from 'lodash/uniqBy'
 import { Attribute } from '@heseya/store-core'
+import cloneDeep from 'lodash/cloneDeep'
 
 export default defineComponent({
   props: {
@@ -42,9 +44,12 @@ export default defineComponent({
     },
     disabled: { type: Boolean, default: false },
   },
+
   data: () => ({
     isLoading: false,
+    initialAttributes: [] as Attribute[],
   }),
+
   computed: {
     selectedAttributes: {
       get(): string[] {
@@ -59,22 +64,35 @@ export default defineComponent({
         this.$emit('input', value)
       },
     },
+
     attributes(): Attribute[] {
-      return this.$accessor.attributes.data
+      return uniqBy(this.$accessor.attributes.data.concat(this.initialAttributes), 'id')
     },
   },
-  created() {
-    this.searchAttributes()
+
+  async created() {
+    await this.searchAttributes()
+    this.initialAttributes = cloneDeep(this.$accessor.attributes.data)
+    await this.loadSelectedAttributes()
   },
+
   methods: {
     async searchAttributes(value?: string) {
       this.isLoading = true
       await this.$accessor.attributes.fetch({ search: value, global: 0 })
+      this.initialAttributes = []
       this.isLoading = false
     },
+
     onSearch: debounce(function (this: any, value: string) {
       this.searchAttributes(value)
     }, 200),
+
+    async loadSelectedAttributes() {
+      this.isLoading = true
+      await this.$accessor.attributes.fetch({ ids: this.selectedAttributes })
+      this.isLoading = false
+    },
   },
 })
 </script>

@@ -12,6 +12,23 @@
         </template>
       </template>
 
+      <icon-button
+        v-if="highlightedAttributeSlug && product.attributes"
+        @click="copyHighlightedAttribute"
+      >
+        <template #icon>
+          <i class="bx bx-copy"></i>
+        </template>
+        {{ highlightedAttributeSlug.toUpperCase() }}: {{ highlightedAttributeValue }}
+      </icon-button>
+
+      <icon-button v-if="storefrontProductUrl" target="_blank" :to="storefrontProductUrl">
+        <template #icon>
+          <i class="bx bx-link-external"></i>
+        </template>
+        {{ $t('nav.goTo') }}
+      </icon-button>
+
       <PopConfirm
         v-if="!isNew"
         v-can="$p.Products.Remove"
@@ -145,11 +162,15 @@
     "baseFormTitle": "Informacje podstawowe",
     "galleryTitle": "Zdjęcia i wideo produktu",
     "deleteConfirm": "Czy na pewno chcesz usunąć ten produkt?",
+    "nav": {
+      "goTo": "Przejdź do produktu"
+    },
     "messages": {
       "removed": "Produkt został usunięty.",
       "created": "Produkt został utworzony.",
       "updated": "Produkt został zaktualizowany.",
-      "error": "Wystąpił błąd podczas zapisywania produktu."
+      "error": "Wystąpił błąd podczas zapisywania produktu.",
+      "highlightedAttributeCopySuccess": "Wartość atrybutu została skopiowana!"
     },
     "saveAndNext": "Zapisz i dodaj następny"
   },
@@ -159,11 +180,15 @@
     "baseFormTitle": "Basic information",
     "galleryTitle": "Product gallery",
     "deleteConfirm": "Are you sure you want to delete this product?",
+    "nav": {
+      "goTo": "Go to product"
+    },
     "messages": {
       "removed": "Product has been removed.",
       "created": "Product has been created.",
       "updated": "Product has been updated.",
-      "error": "An error occurred while saving the product."
+      "error": "An error occurred while saving the product.",
+      "highlightedAttributeCopySuccess": "Highlighted attribute value has been copied!"
     },
     "saveAndNext": "Save and add next"
   }
@@ -205,6 +230,7 @@ import { UUID } from '@/interfaces/UUID'
 import { ProductComponentForm } from '@/interfaces/Product'
 import { TranslationsFromDto } from '@/interfaces/Translations'
 import { mapPricesToDto } from '@/utils/currency'
+import { SETTINGS_KEYS } from '@/consts/featureFlags'
 
 const EMPTY_PRODUCT_TRANSLATIONS: TranslationsFromDto<ProductCreateDto> = {
   name: '',
@@ -290,6 +316,24 @@ export default defineComponent({
     },
     canModify(): boolean {
       return this.$can(this.isNew ? this.$p.Products.Add : this.$p.Products.Edit)
+    },
+
+    storefrontProductUrl(): string | null {
+      const base = this.$accessor.config.env[SETTINGS_KEYS.StorefrontProductUrl]
+      if (!base || !this.product.slug) return null
+
+      return new URL(`/product/${this.product.slug}`, base).toString()
+    },
+
+    highlightedAttributeSlug(): string | undefined {
+      return this.$accessor.config.env[SETTINGS_KEYS.HighlightedProductAttribute]
+    },
+    highlightedAttributeValue(): string {
+      return (
+        this.product.attributes?.find(
+          (attribute) => attribute.slug === this.highlightedAttributeSlug,
+        )?.selected_options[0]?.name || this.$i18n.t('common.none').toString()
+      )
     },
 
     formDescriptionHtml: {
@@ -428,6 +472,11 @@ export default defineComponent({
     async submitAndGoNext() {
       await this.saveProduct()
       this.$router.push('/products/create')
+    },
+
+    async copyHighlightedAttribute() {
+      await navigator.clipboard.writeText(this.highlightedAttributeValue)
+      this.$toast.info(this.$t('messages.highlightedAttributeCopySuccess') as string)
     },
   },
 })

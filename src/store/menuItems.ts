@@ -2,6 +2,9 @@ import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 import { App } from '@heseya/store-core'
 
 import { DEFAULT_MENU_ITEMS, MenuItemType, MenuItem, MenuLink } from '@/consts/menuItems'
+import { hasAccess } from '@/utils/hasAccess'
+import { accessor } from '.'
+import { PERMISSIONS_TREE } from '@/consts/permissions'
 
 const state = () => ({
   activeItems: DEFAULT_MENU_ITEMS,
@@ -12,6 +15,12 @@ const getters = getterTree(state, {
     return state.activeItems.filter(
       (item: MenuItem) => item.type === MenuItemType.Link,
     ) as MenuLink[]
+  },
+
+  items(state): MenuItem[] {
+    return state.activeItems.filter((item) =>
+      `can` in item ? hasAccess(item.can || [])(accessor.auth.user?.permissions || []) : true,
+    )
   },
 })
 
@@ -45,7 +54,8 @@ const actions = actionTree(
 
     async initMicrofrontendMenuItems({ dispatch, rootGetters }) {
       if (rootGetters['auth/isLogged']) {
-        await dispatch('apps/fetch', { limit: 500 }, { root: true })
+        if (hasAccess(PERMISSIONS_TREE.Apps.Show)(accessor.auth.user?.permissions || []))
+          await dispatch('apps/fetch', { limit: 500 }, { root: true })
         dispatch('removeNotExistingApps')
       }
     },

@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
-import { LOCALE_STORAGE_KEY } from './consts/i18n'
 import { getDefaultUiLanguage } from './utils/i18n'
 import { accessor } from './store'
 

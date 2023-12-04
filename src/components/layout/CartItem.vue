@@ -10,7 +10,9 @@
       <div v-else class="cart-item__cover" />
       <div class="cart-item__content">
         <span class="cart-item__title">
-          <span class="cart-item__name"> {{ item.name }} </span>
+          <router-link :to="`/products/${item.product.id}`" class="cart-item__name">
+            {{ item.name }}
+          </router-link>
 
           <info-tooltip
             v-if="item.product.sets.length"
@@ -22,6 +24,16 @@
         </span>
 
         <div class="cart-item__schema-list">
+          <div
+            v-if="highlightedAttributeSlug && highlightedAttributeValue"
+            class="cart-item__schema"
+          >
+            <span class="cart-item__schema-name">
+              {{ highlightedAttributeSlug.toUpperCase() }}:
+            </span>
+            <span class="cart-item__schema-value"> {{ highlightedAttributeValue }} </span>
+          </div>
+
           <div v-for="schema in item.schemas" :key="schema.id" class="cart-item__schema">
             <span class="cart-item__schema-name">{{ schema.name }}:</span>
             <span class="cart-item__schema-value">
@@ -51,13 +63,13 @@
 
     <field :label="$t('header.perItem').toString()">
       <span class="cart-item__value">
-        {{ formatCurrency(item.price_initial) }}
+        {{ formatCurrency(item.price_initial.gross) }}
       </span>
     </field>
 
     <field :label="$t('header.discounted').toString()">
       <span class="cart-item__value">
-        {{ formatCurrency(item.price) }}
+        {{ formatCurrency(item.price.gross) }}
 
         <info-tooltip v-if="item.discounts && item.discounts.length">
           <OrderDiscountSummary :discounts="item.discounts" :currency="currency" />
@@ -122,7 +134,7 @@ import InfoTooltip from './InfoTooltip.vue'
 import OrderDiscountSummary from '../modules/orders/OrderDiscountSummary.vue'
 import IconButton from './IconButton.vue'
 
-import { FEATURE_FLAGS } from '@/consts/featureFlags'
+import { FEATURE_FLAGS, SETTINGS_KEYS } from '@/consts/featureFlags'
 
 export default defineComponent({
   components: {
@@ -149,7 +161,18 @@ export default defineComponent({
       return +this.$accessor.config.env[FEATURE_FLAGS.ProductContain] ? 'contain' : 'cover'
     },
     totalPrice(): number {
-      return parseFloat(this.item.price) * this.item.quantity
+      return parseFloat(this.item.price.gross) * this.item.quantity
+    },
+    highlightedAttributeSlug(): string {
+      return this.$accessor.config.env[SETTINGS_KEYS.HighlightedProductAttribute]
+    },
+    highlightedAttributeValue(): string {
+      // TODO: this fails, cause item.product does not have attributes on this resource
+      return (
+        this.item.product.attributes?.find(
+          (attribute) => attribute.slug === this.highlightedAttributeSlug,
+        )?.selected_options[0]?.name || this.$i18n.t('common.none').toString()
+      )
     },
   },
   methods: {
@@ -233,6 +256,12 @@ export default defineComponent({
   &__name {
     font-weight: 500;
     font-size: 1.1em;
+    color: var(--font-color);
+    transition: 0.3s;
+
+    &:hover {
+      color: var(--primary-color-300);
+    }
   }
 
   &__schema-list {

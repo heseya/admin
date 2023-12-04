@@ -16,16 +16,7 @@
       </template>
 
       <template #filters>
-        <div>
-          <app-input
-            v-model="filters.search"
-            class="span-2"
-            type="search"
-            :label="$t('common.search').toString()"
-            allow-clear
-            @input="debouncedSearch"
-          />
-        </div>
+        <schema-filter :filters="filters" @search="makeSearch" />
       </template>
 
       <template #default="{ item }">
@@ -33,7 +24,7 @@
           {{ item.name }}
           <small>{{ item.description }}</small>
           <template #action>
-            <small>{{ $t(`schemaTypes.${item.type}`) }}</small>
+            <small>{{ !isNil(item.product_id) ? $t('assigned') : $t('notAssigned') }}</small>
           </template>
         </list-item>
       </template>
@@ -45,46 +36,63 @@
 {
   "pl": {
     "title": "Schematy",
-    "add": "Dodaj schemat"
+    "add": "Dodaj schemat",
+    "assigned": "Schemat przypisany do produktu",
+    "notAssigned": "Schemat nie przypisany do produktu"
   },
   "en": {
     "title": "Schemas",
-    "add": "Add schema"
+    "add": "Add schema",
+    "assigned": "Schema assigned to product",
+    "notAssigned": "Schema not assigned to product"
   }
 }
 </i18n>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { debounce } from 'lodash'
+import debounce from 'lodash/debounce'
+import isNil from 'lodash/isNil'
 
 import ListItem from '@/components/layout/ListItem.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
+import SchemaFilter, {
+  EMPTY_SCHEMA_FILTERS,
+  SchemaFilersType,
+} from '@/components/modules/schemas/SchemaFilter.vue'
+import { formatFilters } from '@/utils/utils'
 
 export default defineComponent({
   metaInfo(this: any) {
     return { title: this.$t('title') as string }
   },
   components: {
+    SchemaFilter,
     PaginatedList,
     ListItem,
   },
   data: () => ({
     filters: {
       search: '',
+      has_product: '',
     },
   }),
   created() {
-    this.filters.search = (this.$route.query.search as string) || ''
+    this.filters = {
+      search: (this.$route.query.search as string) || '',
+      has_product: (this.$route.query.has_product as string) || '',
+    }
   },
   methods: {
-    makeSearch() {
-      if (this.filters.search !== this.$route.query.search) {
-        this.$router.push({
-          path: 'schemas',
-          query: { page: undefined, search: this.filters.search || undefined },
-        })
-      }
+    isNil,
+    makeSearch(filters: SchemaFilersType) {
+      this.filters = filters
+      const queryFilters = formatFilters(filters)
+
+      this.$router.push({
+        path: 'schemas',
+        query: { page: undefined, ...queryFilters },
+      })
     },
     debouncedSearch: debounce(function (this: any) {
       this.$nextTick(() => {
@@ -92,8 +100,7 @@ export default defineComponent({
       })
     }, 300),
     clearFilters() {
-      this.filters.search = ''
-      this.makeSearch()
+      this.makeSearch({ ...EMPTY_SCHEMA_FILTERS })
     },
   },
 })

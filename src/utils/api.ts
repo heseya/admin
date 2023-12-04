@@ -1,4 +1,6 @@
 export const getApiURL = () => {
+  if (window.apiUrl !== 'REPLACE_ME_API_URL') return window.apiUrl!
+
   switch (window.location.host) {
     // Production clients
     case '***REMOVED***':

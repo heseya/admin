@@ -405,7 +405,7 @@ export default defineComponent({
 
     changeMedia(media: CdnMedia | null) {
       this.form.cover = media
-      this.form.cover_id = media?.id
+      this.form.cover_id = media?.id || null
     },
   },
 })

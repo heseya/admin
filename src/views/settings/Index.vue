@@ -12,7 +12,7 @@
             v-for="item in group"
             v-show="!isLinkHidden(item)"
             :key="item.id"
-            :v-can="item.can"
+            v-can="item.can"
             :name="$t(item.label).toString()"
             :url="item.to"
             :icon-class="item.iconClass"

@@ -61,7 +61,8 @@
     "add": "Dodaj cechę",
     "form": {
       "global": "Globalny",
-      "sortable": "Sortowalny"
+      "sortable": "Sortowalny",
+      "includeInSearch": "Uwzględniony w wyszukiwarce"
     }
   },
   "en": {
@@ -69,7 +70,8 @@
     "add": "Add attribute",
     "form": {
       "global": "Global",
-      "sortable": "Sortable"
+      "sortable": "Sortable",
+      "includeInSearch": "Included in search"
     }
   }
 }
@@ -109,6 +111,11 @@ export default defineComponent({
             width: '1.6fr',
           },
           { key: 'type', label: this.$t('common.form.type') as string, width: '0.6fr' },
+          {
+            key: 'include_in_text_search',
+            label: this.$t('form.includeInSearch') as string,
+            width: '0.6fr',
+          },
           { key: 'sortable', label: this.$t('form.sortable') as string, width: '0.6fr' },
           { key: 'global', label: this.$t('form.global') as string, width: '0.6fr' },
         ],

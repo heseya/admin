@@ -166,6 +166,11 @@ export default defineComponent({
       this.setDefault(this.defaultOption === index ? null : index)
     },
     setOptionName(index: number, name: string) {
+      if (!this.options[index].translations[this.editedLang])
+        this.options[index].translations = {
+          [this.editedLang]: { ...CLEAR_SCHEMA_OPTION_TRANSLATION },
+        }
+
       this.options[index].translations[this.editedLang].name = name
     },
   },

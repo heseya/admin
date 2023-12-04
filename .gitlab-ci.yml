@@ -1,11 +1,11 @@
 image: node:16-buster
 
 stages:
+  - trigger
   - test
   - build
   - deploy
   - postdeploy
-  - trigger
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}

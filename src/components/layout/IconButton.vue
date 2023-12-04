@@ -2,9 +2,11 @@
   <component
     :is="component"
     :to="to"
+    :href="to"
     class="icon-button"
     :type="htmlType"
     :data-cy="dataCy"
+    :target="target"
     :class="[
       `icon-button--${type}`,
       `icon-button--${size}`,
@@ -43,6 +45,10 @@ export default defineComponent({
       type: String,
       default: 'button',
     },
+    target: {
+      type: String,
+      default: '_self',
+    },
     htmlType: {
       type: String,
       default: 'button',
@@ -72,6 +78,7 @@ export default defineComponent({
   },
   computed: {
     component(): string {
+      if (this.target === '_blank' && this.to) return 'a'
       return this.to ? 'router-link' : this.el || 'button'
     },
   },

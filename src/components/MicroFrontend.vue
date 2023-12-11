@@ -19,6 +19,10 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    serviceUrl: {
+      type: String,
+      required: true,
+    },
   },
   data: () => ({
     wasMounted: false,
@@ -59,7 +63,7 @@ export default defineComponent({
         this.mainChannel.emit('init', {
           coreUrl: getApiURL(),
           // TODO: this will be injected into any microfrontend, not only this one!
-          serviceUrl: this.standardHost,
+          serviceUrl: this.serviceUrl,
           token: this.$accessor.auth.getIdentityToken,
           user: this.$accessor.auth.user,
           uiLanguage: this.$i18n.locale,

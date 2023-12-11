@@ -1,7 +1,12 @@
 <template>
   <div class="micro-app-containter">
     <loading :active="isLoading" />
-    <micro-frontend v-if="app && !isLoading" :app-key="app.slug" :host="app.microfrontend_url" />
+    <micro-frontend
+      v-if="app && app.microfrontend_url && !isLoading"
+      :app-key="app.slug"
+      :host="app.microfrontend_url"
+      :service-url="app.url"
+    />
   </div>
 </template>
 

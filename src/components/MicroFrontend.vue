@@ -69,7 +69,6 @@ export default defineComponent({
           uiLanguage: this.$i18n.locale,
           apiLanguage: this.$accessor.config.apiLanguage,
         }
-        console.log('🚀 ~ file: MicroFrontend.vue:72 ~ onMounted ~ data:', data)
 
         this.mainChannel.emit('init', data)
 

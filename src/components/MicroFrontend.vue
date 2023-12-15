@@ -60,7 +60,7 @@ export default defineComponent({
   created() {
     onMounted(() => {
       if (!this.wasMounted) {
-        this.mainChannel.emit('init', {
+        const data = {
           coreUrl: getApiURL(),
           // TODO: this will be injected into any microfrontend, not only this one!
           serviceUrl: this.serviceUrl,
@@ -68,7 +68,10 @@ export default defineComponent({
           user: this.$accessor.auth.user,
           uiLanguage: this.$i18n.locale,
           apiLanguage: this.$accessor.config.apiLanguage,
-        })
+        }
+        console.log('🚀 ~ file: MicroFrontend.vue:72 ~ onMounted ~ data:', data)
+
+        this.mainChannel.emit('init', data)
 
         this.wasMounted = true
       }

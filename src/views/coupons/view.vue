@@ -123,6 +123,12 @@ const EMPTY_COUPON_FORM: CouponFormDto = {
 
 export default defineComponent({
   components: { ValidationObserver, TopNav, Card, PopConfirm, SaleForm, MetadataForm },
+  metaInfo(this: any): any {
+    return {
+      title:
+        (!this.isNew && this.coupon?.name) || this.coupon?.code || (this.$t('newTitle') as string),
+    }
+  },
   data: () => ({
     form: cloneDeep(EMPTY_COUPON_FORM) as CouponFormDto,
   }),

@@ -248,6 +248,11 @@ export default defineComponent({
     PublishedLangsForm,
     AbsoluteContentLangSwitch,
   },
+  metaInfo(this: any): any {
+    return {
+      title: (!this.isNew && this.productSet?.name) || (this.$t('newTitle') as string),
+    }
+  },
   data: () => ({
     editedLang: '',
     form: cloneDeep(CLEAR_PRODUCT_SET_FORM) as CombinedSetDto,

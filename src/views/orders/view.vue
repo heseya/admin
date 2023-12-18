@@ -16,6 +16,8 @@
     </top-nav>
 
     <main class="order-page">
+      <Loading :active="isLoading" />
+
       <OrderSummary class="order-page__summary" :order="order" />
 
       <card class="order-page__status">
@@ -71,6 +73,7 @@ import Cart from '@/components/modules/orders/Cart.vue'
 import OrderMetadatas from '@/components/modules/orders/OrderMetadatas.vue'
 import OrderDocuments from '@/components/modules/orders/documents/OrderDocumentsList.vue'
 import QrCodeModalButton from '@/components/modules/qrCode/CodeModalButton.vue'
+import Loading from '@/components/layout/Loading.vue'
 
 export default defineComponent({
   metaInfo(this: any): any {
@@ -87,12 +90,14 @@ export default defineComponent({
     OrderMetadatas,
     OrderDocuments,
     QrCodeModalButton,
+    Loading,
   },
 
   data: () => ({
     packageTemplateId: '',
     modalFormTitle: '',
     form: {},
+    isLoading: false,
     isModalActive: false,
   }),
   computed: {
@@ -112,12 +117,12 @@ export default defineComponent({
     },
   },
   async created() {
-    this.$accessor.startLoading()
+    this.isLoading = true
     await Promise.all([
       this.$accessor.orders.get(this.$route.params.id),
       this.$accessor.statuses.fetch(),
     ])
-    this.$accessor.stopLoading()
+    this.isLoading = false
   },
 })
 </script>
@@ -129,6 +134,7 @@ export default defineComponent({
   grid-template-areas: 'summary' 'status' 'cart' 'address' 'documents' 'shipping' 'metadata';
   grid-gap: 16px;
   align-items: start;
+  position: relative;
 
   @media ($viewport-10) {
     grid-template-columns: 2.5fr 1fr;

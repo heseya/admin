@@ -7,12 +7,7 @@
     <div class="published-langs-form__content">
       <div v-for="lang in languages" :key="lang.id" class="lang-switch">
         <div class="lang-switch__name">
-          <img
-            :src="`https://flagcdn.com/16x12/${getFlagName(lang.iso)}.png`"
-            role="presentation"
-            class="lang-switch__icon"
-            @error="handleFlagError"
-          />
+          <LangFlag :lang="lang.iso" class="lang-switch__icon" />
           {{ lang.name }}
 
           <InfoTooltip
@@ -52,9 +47,10 @@
 import { PropType, defineComponent } from 'vue'
 import SwitchInput from '../form/SwitchInput.vue'
 import InfoTooltip from '../layout/InfoTooltip.vue'
+import LangFlag from './LangFlag.vue'
 
 export default defineComponent({
-  components: { SwitchInput, InfoTooltip },
+  components: { SwitchInput, InfoTooltip, LangFlag },
   props: {
     value: {
       type: Array as PropType<string[]>,
@@ -109,11 +105,6 @@ export default defineComponent({
   },
 
   methods: {
-    getFlagName(iso: string) {
-      const firstIsoPart = iso.split('-')[0]
-      if (firstIsoPart === 'en' || firstIsoPart === 'eng') return 'us'
-      return firstIsoPart
-    },
     setPublished(langId: string, value: boolean) {
       const publishedMap = {
         ...this.publishedMap,
@@ -123,11 +114,6 @@ export default defineComponent({
         'input',
         Object.keys(publishedMap).filter((key) => publishedMap[key]),
       )
-    },
-
-    handleFlagError(e: Event) {
-      const target = e.target as HTMLImageElement
-      target.src = '/img/unknown-flag.png'
     },
   },
 })

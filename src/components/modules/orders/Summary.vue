@@ -16,6 +16,11 @@
       :horizontal="isHorizontal"
     />
     <OrderField
+      :label="$t('labels.language').toString()"
+      :value="languageName"
+      :horizontal="isHorizontal"
+    />
+    <OrderField
       v-if="order.shipping_method"
       :label="$t('labels.shipping').toString()"
       :value="order.shipping_method.name"
@@ -109,7 +114,8 @@
       "digitalShipping": "Digital shipping",
       "payment": "Payment",
       "history": "Payment history",
-      "editShippingMethod": "Edit shipping method"
+      "editShippingMethod": "Edit shipping method",
+      "language": "Language"
     },
     "table": {
       "date": "Date of transaction",
@@ -128,7 +134,8 @@
       "digitalShipping": "Dostawa cyfrowa",
       "payment": "Płatność",
       "history": "Historia płatności",
-      "editShippingMethod": "Edytuj metodę dostawy"
+      "editShippingMethod": "Edytuj metodę dostawy",
+      "language": "Język"
     },
     "table": {
       "date": "Data transakcji",
@@ -182,6 +189,13 @@ export default defineComponent({
     },
     isHorizontal(): boolean {
       return this.viewportWidth > 460 && this.viewportWidth < 850
+    },
+    languageName(): string {
+      return (
+        this.$accessor.languages.data.find((lang) => lang.iso === this.order.language)?.name ||
+        this.order.language ||
+        '-'
+      )
     },
     paymentsTableConfig(): TableConfig {
       return {

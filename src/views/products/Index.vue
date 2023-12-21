@@ -228,12 +228,13 @@ export default defineComponent({
     } = this.$route.query
     this.filters.sets = (Array.isArray(sets) ? (sets as string[]) : [sets]).filter(Boolean)
     this.filters.tags = (Array.isArray(tags) ? (tags as string[]) : [tags]).filter(Boolean)
-    this.filters.public = (isPublic as string) || ALL_FILTER_VALUE
-    this.filters.available = (available as string) || ALL_FILTER_VALUE
-    this.filters.has_cover = (hasCover as string) || ALL_FILTER_VALUE
-    this.filters.has_items = (hasItems as string) || ALL_FILTER_VALUE
-    this.filters.has_schemas = (hasSchemas as string) || ALL_FILTER_VALUE
-    this.filters.shipping_digital = (shippingDigital as string) || ALL_FILTER_VALUE
+    this.filters.public = (isPublic as string) || EMPTY_PRODUCT_FILTERS.public
+    this.filters.available = (available as string) || EMPTY_PRODUCT_FILTERS.available
+    this.filters.has_cover = (hasCover as string) || EMPTY_PRODUCT_FILTERS.has_cover
+    this.filters.has_items = (hasItems as string) || EMPTY_PRODUCT_FILTERS.has_items
+    this.filters.has_schemas = (hasSchemas as string) || EMPTY_PRODUCT_FILTERS.has_schemas
+    this.filters.shipping_digital =
+      (shippingDigital as string) || EMPTY_PRODUCT_FILTERS.shipping_digital
 
     this.listView = !!+(window.localStorage.getItem(LOCAL_STORAGE_KEY) || 0)
   },

@@ -6,7 +6,7 @@
       </div>
     </template>
 
-    <a-collapse-panel>
+    <a-collapse-panel force-render>
       <template #header="{ isActive }">
         <span class="accordion__title">
           <slot name="title" v-bind="{ isActive }">

@@ -146,6 +146,7 @@ import TagsEditor from './TagsEditor.vue'
 import { UUID } from '@/interfaces/UUID'
 import { TranslationsCreateDto } from '@heseya/store-core'
 import { TranslationsFromDto } from '@/interfaces/Translations'
+import { isEqual } from 'lodash'
 
 type SeoMeta = Omit<SeoMetadata & SeoMetadataDto, 'translations'> &
   TranslationsCreateDto<TranslationsFromDto<SeoMetadataDto>>
@@ -270,6 +271,21 @@ export default defineComponent({
 
     value: {
       handler() {
+        const initialForm = {
+          title: this.form.title || CLEAR_SEO_FORM.title,
+          description: this.form.description || CLEAR_SEO_FORM.description,
+          header_tags: this.form.header_tags || CLEAR_SEO_FORM.header_tags,
+          keywords: this.form.keywords || CLEAR_SEO_FORM.keywords,
+          og_image: this.form.og_image || CLEAR_SEO_FORM.og_image,
+          og_image_id: this.form.og_image?.id || CLEAR_SEO_FORM.og_image_id,
+          twitter_card: this.form.twitter_card || CLEAR_SEO_FORM.twitter_card,
+          no_index: this.form.no_index || CLEAR_SEO_FORM.no_index,
+          translations: this.form.translations || {},
+          published: this.form.published || [],
+        }
+
+        if (!isEqual(this.form, initialForm)) this.form = initialForm
+
         this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
       },
       immediate: true,
@@ -277,7 +293,7 @@ export default defineComponent({
   },
 
   created() {
-    this.form = {
+    const initialForm = {
       title: this.form.title || CLEAR_SEO_FORM.title,
       description: this.form.description || CLEAR_SEO_FORM.description,
       header_tags: this.form.header_tags || CLEAR_SEO_FORM.header_tags,
@@ -289,6 +305,7 @@ export default defineComponent({
       translations: this.form.translations || {},
       published: this.form.published || [],
     }
+    if (!isEqual(this.form, initialForm)) this.form = initialForm
   },
 
   methods: {

@@ -35,8 +35,21 @@
             <i v-else class="product-list-item__img-icon bx bx-image"></i>
           </avatar>
           <div class="set-product-item__main">
-            <span class="set-product-item__name">{{ product.name }}</span>
-            <product-price tag="span" class="set-product-item__price" :product="product" />
+            <div class="set-product-item__row">
+              <div>
+                <span class="set-product-item__name">{{ product.name }}</span>
+                <product-price tag="span" class="set-product-item__price" :product="product" />
+              </div>
+              <boolean-tag
+                :value="product.public"
+                class="product-list-item__public"
+                small
+                true-icon="bx bx-show-alt"
+                false-icon="bx bx-low-vision"
+                :true-text="$t('common.visible').toString()"
+                :false-text="$t('common.hidden').toString()"
+              />
+            </div>
           </div>
           <div class="set-product-item__actions undragabble">
             <icon-button
@@ -115,9 +128,10 @@ import { formatCurrency } from '@/utils/currency'
 import { formatApiNotificationError } from '@/utils/errors'
 
 import { FEATURE_FLAGS } from '@/consts/featureFlags'
+import BooleanTag from '@/components/layout/BooleanTag.vue'
 
 export default defineComponent({
-  components: { Draggable, Selector, Empty, Avatar, ProductPrice },
+  components: { Draggable, Selector, Empty, Avatar, ProductPrice, BooleanTag },
   props: {
     set: {
       type: Object as PropType<ProductSet | null>,
@@ -282,6 +296,12 @@ export default defineComponent({
     margin-left: auto;
     position: relative;
     z-index: 100;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
 }
 </style>

@@ -6,9 +6,22 @@
     :class="{ 'cms-table-row--no-hover': noHover, 'cms-table-row--draggable': draggable }"
     @click.prevent="click"
   >
-    <icon-button class="cms-table-row__reorder reorder-handle" size="small" type="transparent">
-      <template #icon> <i class="bx bx-menu"></i> </template>
-    </icon-button>
+    <a-dropdown :trigger="['contextmenu']">
+      <icon-button class="cms-table-row__reorder reorder-handle" size="small" type="transparent">
+        <template #icon> <i class="bx bx-menu"></i> </template>
+      </icon-button>
+
+      <template #overlay>
+        <a-menu>
+          <a-menu-item @click="onDragTop">
+            {{ $t('draggable.moveToTop') }}
+          </a-menu-item>
+          <a-menu-item @click="onDragBottom">
+            {{ $t('draggable.moveToBottom') }}
+          </a-menu-item>
+        </a-menu>
+      </template>
+    </a-dropdown>
 
     <div
       v-for="{ key, label, value, rawValue, wordBreak } in values"
@@ -33,12 +46,31 @@
   </component>
 </template>
 
+<i18n lang="json">
+{
+  "en": {
+    "draggable": {
+      "moveToTop": "Move to top",
+      "moveToBottom": "Move to bottom"
+    }
+  },
+  "pl": {
+    "draggable": {
+      "moveToTop": "Przemieść na górę",
+      "moveToBottom": "Przemieść na dół"
+    }
+  }
+}
+</i18n>
+
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import get from 'lodash/get'
 import { TableHeader, TableValue } from '@/interfaces/CmsTable'
 
 export default defineComponent({
+  inject: ['handleDragTop', 'handleDragBottom'],
+
   props: {
     to: {
       type: String,
@@ -65,6 +97,7 @@ export default defineComponent({
       required: true,
     },
   },
+  emits: ['click'],
   computed: {
     component(): any {
       if (this.to) return 'router-link'
@@ -86,6 +119,19 @@ export default defineComponent({
   methods: {
     click() {
       this.$emit('click')
+    },
+
+    onDragTop() {
+      // @ts-expect-error This is injected
+      if (this.handleDragTop) this.handleDragTop?.(this.item)
+      // eslint-disable-next-line no-console
+      else console.warn('handleDragTop is not injected')
+    },
+    onDragBottom() {
+      // @ts-expect-error This is injected
+      if (this.handleDragBottom) this.handleDragBottom?.(this.item)
+      // eslint-disable-next-line no-console
+      else console.warn('handleDragBottom is not injected')
     },
   },
 })

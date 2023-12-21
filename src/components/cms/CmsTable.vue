@@ -50,6 +50,21 @@ import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 
 export default defineComponent({
   components: { CmsTableHeader, Draggable, CmsTableRow },
+
+  provide() {
+    const parent = this
+    return {
+      handleDragTop(item: VuexBaseItem) {
+        const itemsWithout = parent.items.filter((i) => i.id !== item.id)
+        parent.items = [item, ...itemsWithout]
+      },
+      handleDragBottom(item: VuexBaseItem) {
+        const itemsWithout = parent.items.filter((i) => i.id !== item.id)
+        parent.items = [...itemsWithout, item]
+      },
+    }
+  },
+
   props: {
     value: {
       type: Array as PropType<VuexBaseItem[]>,

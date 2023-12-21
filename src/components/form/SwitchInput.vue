@@ -2,6 +2,7 @@
   <div
     class="switch-input"
     :class="{ 'switch-input--horizontal': horizontal, [`switch-input--${type}`]: true }"
+    @click.prevent
   >
     <label
       class="switch-input__label"
@@ -112,16 +113,21 @@ export default defineComponent({
 
   .ant-switch {
     background-color: var(--background-color-600);
+    position: relative;
 
-    i {
-      margin-top: 4px;
+    .ant-switch-loading-icon,
+    .ant-switch-inner i {
       color: var(--font-color) !important;
+    }
+
+    .ant-switch-inner i {
+      margin-top: 4px;
     }
   }
   .ant-switch-checked {
     background-color: var(--green-color-500);
 
-    i {
+    .ant-switch-inner i {
       color: var(--white-color) !important;
     }
   }

@@ -35,7 +35,6 @@
         class="product-list-item__visibility"
         :loading="publicIsLoading"
         @input="changeVisibility"
-        @click.native.stop
       />
     </template>
 

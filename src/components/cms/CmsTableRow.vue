@@ -4,7 +4,7 @@
     :to="to"
     class="cms-table-row"
     :class="{ 'cms-table-row--no-hover': noHover, 'cms-table-row--draggable': draggable }"
-    @click.stop="click"
+    @click.prevent="click"
   >
     <icon-button class="cms-table-row__reorder reorder-handle" size="small" type="transparent">
       <template #icon> <i class="bx bx-menu"></i> </template>

@@ -22,6 +22,9 @@
     "hidden": "Hidden",
     "reset": "Reset",
     "confirmLeave": "Do you really want to leave? You have unsaved changes!",
+    "price": "Price",
+    "net": "Net",
+    "gross": "Gross",
     "form": {
       "name": "Name",
       "description": "Description",

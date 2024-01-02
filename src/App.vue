@@ -94,6 +94,7 @@ export default defineComponent({
     initMicroApps()
     this.$accessor.config.fetchSettings()
     this.$accessor.config.fetchCurrencies()
+    this.$accessor.salesChannels.fetch()
     this.$accessor.config.initLanguages()
     this.$accessor.menuItems.initMicrofrontendMenuItems()
     if (this.$accessor.auth.isLogged) this.$accessor.auth.fetchProfile()

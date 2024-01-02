@@ -22,6 +22,9 @@
     "hidden": "Ukryty",
     "reset": "Przywróć domyślne",
     "confirmLeave": "Czy na pewno chcesz wyjść? Masz niezapisane zmiany!",
+    "price": "Cena",
+    "net": "Netto",
+    "gross": "Brutto",
     "form": {
       "name": "Nazwa",
       "description": "Opis",

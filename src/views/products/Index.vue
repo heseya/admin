@@ -51,7 +51,6 @@
       "list": "listy"
     },
     "form": {
-      "price": "Cena netto",
       "tags": "Tagi",
       "public": "Widoczność",
       "shippingDigital": "Wysyłka cyfrowa",
@@ -67,7 +66,6 @@
       "list": "list"
     },
     "form": {
-      "price": "Price (net)",
       "tags": "Tags",
       "public": "Visibility",
       "shippingDigital": "Digital shipping",
@@ -91,7 +89,6 @@ import ProductsFilter, {
 import PaginatedList from '@/components/PaginatedList.vue'
 
 import { formatFilters } from '@/utils/utils'
-import { ALL_FILTER_VALUE } from '@/consts/filters'
 import { TableConfig } from '@/interfaces/CmsTable'
 import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 import UpdatePriceButton from '@/components/modules/products/UpdatePriceButton.vue'
@@ -100,7 +97,7 @@ const LOCAL_STORAGE_KEY = 'products-list-view'
 
 export default defineComponent({
   metaInfo(this: any) {
-    return { title: this.$t('title') as string }
+    return { title: this.$t('title').toString() }
   },
   components: {
     ProductTile,
@@ -127,33 +124,44 @@ export default defineComponent({
   }),
 
   computed: {
+    /**
+     * If all sales channels have a VAT rate equal to 0, we can surlly assume that all prices are gross.
+     */
+    priceLabel(): string {
+      return `${this.$t('common.price')} ${this.$t(
+        this.$accessor.config.allPricesGross ? 'common.gross' : 'common.net',
+      )
+        .toString()
+        .toLowerCase()}`
+    },
+
     tableConfig(): TableConfig<Product> {
       return {
         headers: [
           { key: 'cover', label: '', width: '60px' },
-          { key: 'name', label: this.$t('common.form.name') as string, sortable: true },
-          { key: 'tags', label: this.$t('form.tags') as string, width: '0.6fr' },
+          { key: 'name', label: this.$t('common.form.name').toString(), sortable: true },
+          { key: 'tags', label: this.$t('form.tags').toString(), width: '0.6fr' },
           {
             key: 'price',
-            label: this.$t('form.price') as string,
+            label: this.priceLabel,
             width: '0.6fr',
             sortable: true,
             sortKey: () => `price:${this.$accessor.config.currency}`,
           },
           {
             key: 'public',
-            label: this.$t('form.public') as string,
+            label: this.$t('form.public').toString(),
             width: '0.4fr',
             sortable: true,
           },
           {
             key: 'available',
-            label: this.$t('form.available') as string,
+            label: this.$t('form.available').toString(),
             width: '0.4fr',
           },
           {
             key: 'shipping_digital',
-            label: this.$t('form.shippingDigital') as string,
+            label: this.$t('form.shippingDigital').toString(),
             width: '0.4fr',
           },
           { key: 'action', label: '', width: '64px' },
@@ -162,31 +170,31 @@ export default defineComponent({
     },
     fileConfig(): XlsxFileConfig<Product> {
       return {
-        name: this.$t('title') as string,
+        name: this.$t('title').toString(),
         headers: [
           { key: 'id', label: 'ID' },
-          { key: 'name', label: this.$t('common.form.name') as string },
-          { key: 'price', label: this.$t('form.price') as string },
+          { key: 'name', label: this.$t('common.form.name').toString() },
+          { key: 'price', label: this.priceLabel },
           {
             key: 'tags',
-            label: this.$t('form.tags') as string,
+            label: this.$t('form.tags').toString(),
             format: (v: Tag[]) => v.map((tag) => tag.name).join(', '),
           },
           {
             key: 'public',
-            label: this.$t('form.public') as string,
-            format: (v: boolean) => (v ? this.$t('common.yes') : this.$t('common.no')) as string,
+            label: this.$t('form.public').toString(),
+            format: (v: boolean) => (v ? this.$t('common.yes') : this.$t('common.no')).toString(),
           },
 
           {
             key: 'available',
-            label: this.$t('form.available') as string,
-            format: (v: boolean) => (v ? this.$t('common.yes') : this.$t('common.no')) as string,
+            label: this.$t('form.available').toString(),
+            format: (v: boolean) => (v ? this.$t('common.yes') : this.$t('common.no')).toString(),
           },
           {
             key: 'shipping_digital',
-            label: this.$t('form.shippingDigital') as string,
-            format: (v: boolean) => (v ? this.$t('common.yes') : this.$t('common.no')) as string,
+            label: this.$t('form.shippingDigital').toString(),
+            format: (v: boolean) => (v ? this.$t('common.yes') : this.$t('common.no')).toString(),
           },
         ],
       }

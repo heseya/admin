@@ -175,7 +175,7 @@ export default defineComponent({
       this.isLoading = true
       const response = await sdk.ProductSets.getAllProducts(this.id, {
         page: this.pagination.currentPage + 1,
-        limit: 20,
+        limit: 100,
         public: true,
       })
       this.products = [...this.products, ...response.data]

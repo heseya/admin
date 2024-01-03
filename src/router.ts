@@ -306,6 +306,16 @@ const router = new VueRouter({
         permissions: [Permissions.ProductSets.ShowDetails],
       },
     },
+    {
+      path: '/collections/:id/products',
+      name: 'ProductSets Products View',
+      component: () => import('./views/productSets/Products.vue'),
+      meta: {
+        returnUrl: '/collections',
+        requiresAuth: true,
+        permissions: [Permissions.ProductSets.ShowDetails],
+      },
+    },
 
     {
       path: '/settings/attributes',

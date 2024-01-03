@@ -52,9 +52,7 @@
     },
     "form": {
       "tags": "Tagi",
-      "public": "Widoczność",
-      "shippingDigital": "Wysyłka cyfrowa",
-      "available": "Dostępny"
+      "shippingDigital": "Wysyłka cyfrowa"
     }
   },
   "en": {
@@ -67,9 +65,7 @@
     },
     "form": {
       "tags": "Tags",
-      "public": "Visibility",
-      "shippingDigital": "Digital shipping",
-      "available": "Available"
+      "shippingDigital": "Digital shipping"
     }
   }
 }
@@ -156,7 +152,7 @@ export default defineComponent({
           },
           {
             key: 'available',
-            label: this.$t('form.available').toString(),
+            label: this.$t('common.available').toString(),
             width: '0.4fr',
           },
           {
@@ -174,7 +170,7 @@ export default defineComponent({
         headers: [
           { key: 'id', label: 'ID' },
           { key: 'name', label: this.$t('common.form.name').toString() },
-          { key: 'price', label: this.priceLabel },
+          { key: 'price' as any, label: this.priceLabel },
           {
             key: 'tags',
             label: this.$t('form.tags').toString(),
@@ -182,7 +178,7 @@ export default defineComponent({
           },
           {
             key: 'public',
-            label: this.$t('form.public').toString(),
+            label: this.$t('common.visible').toString(),
             format: (v: boolean) => (v ? this.$t('common.yes') : this.$t('common.no')).toString(),
           },
 

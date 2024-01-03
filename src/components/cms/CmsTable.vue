@@ -16,6 +16,7 @@
       v-model="items"
       class="cms-table__content"
       handle=".reorder-handle"
+      @change="handleReorder"
     >
       <template v-if="shouldRenderList">
         <div v-for="item in items" :key="item.id" class="cms-table__item">
@@ -55,10 +56,21 @@ export default defineComponent({
     const parent = this
     return {
       handleDragTop(item: VuexBaseItem) {
+        parent.handleReorder({
+          moved: { element: item, newIndex: 0, oldIndex: parent.items.indexOf(item) },
+        })
         const itemsWithout = parent.items.filter((i) => i.id !== item.id)
         parent.items = [item, ...itemsWithout]
       },
+
       handleDragBottom(item: VuexBaseItem) {
+        parent.handleReorder({
+          moved: {
+            element: item,
+            newIndex: parent.items.length - 1,
+            oldIndex: parent.items.indexOf(item),
+          },
+        })
         const itemsWithout = parent.items.filter((i) => i.id !== item.id)
         parent.items = [...itemsWithout, item]
       },
@@ -110,6 +122,13 @@ export default defineComponent({
   methods: {
     click() {
       this.$emit('click')
+    },
+    handleReorder({
+      moved,
+    }: {
+      moved: { element: VuexBaseItem; newIndex: number; oldIndex: number }
+    }) {
+      this.$emit('reorder', moved)
     },
   },
 })

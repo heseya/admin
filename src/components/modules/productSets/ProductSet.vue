@@ -64,6 +64,11 @@
                   <i class="bx bx-customize"></i> &nbsp; {{ $t('menu.showProducts') }}
                 </a-menu-item>
                 <a-menu-item v-can="$p.ProductSets.ShowDetails">
+                  <router-link :to="`/collections/${set.id}/products`">
+                    <i class="bx bx-customize"></i> &nbsp; {{ $t('menu.showAllProducts') }}
+                  </router-link>
+                </a-menu-item>
+                <a-menu-item v-can="$p.ProductSets.ShowDetails">
                   <router-link :to="`/collections/${set.id}`">
                     <i class="bx bx-edit"></i> &nbsp; {{ $t('menu.edit') }}
                   </router-link>
@@ -128,7 +133,8 @@
       "edit": "Edytuj kolekcję",
       "editParent": "Zmień nadrzędną kolekcję",
       "delete": "Usuń kolekcję",
-      "showProducts": "Zobacz produkty w kolekcji"
+      "showProducts": "Zobacz produkty powiązane bezpośrednio z kolekcją",
+      "showAllProducts": "Zobacz wszystkie produkty w kolekcji"
     },
     "collection": "Kolekcja",
     "deleteText": "Czy na pewno chcesz usunąć tę kolekcję? Wraz z nią usuniesz wszystkie jej subkolekcje!",
@@ -141,7 +147,8 @@
       "edit": "Edit collection",
       "editParent": "Change parent collection",
       "delete": "Delete collection",
-      "showProducts": "Show products in collection"
+      "showProducts": "See products directly related to the collection",
+      "showAllProducts": "See all products in the collection"
     },
     "search": {
       "placeholder": "Search (min. 3 letters)",

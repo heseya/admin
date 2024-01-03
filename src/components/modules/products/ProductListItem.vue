@@ -3,7 +3,9 @@
     class="product-list-item"
     :item="product"
     :headers="table.headers"
-    :to="`products/${product.id}`"
+    :draggable="draggable"
+    :no-hover="static"
+    :to="!static ? `products/${product.id}` : undefined"
   >
     <template #cover>
       <avatar color="#eee">
@@ -29,7 +31,7 @@
       </div>
     </template>
 
-    <template #public>
+    <template v-if="!static" #public>
       <switch-input
         :value="product.public"
         class="product-list-item__visibility"
@@ -106,6 +108,14 @@ export default defineComponent({
     table: {
       type: Object as PropType<TableConfig<Product>>,
       required: true,
+    },
+    draggable: {
+      type: Boolean,
+      default: false,
+    },
+    static: {
+      type: Boolean,
+      default: false,
     },
   },
   data: () => ({ publicIsLoading: false }),

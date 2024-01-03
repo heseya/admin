@@ -8,43 +8,37 @@
 
     <Loading :active="isLoading" />
 
-    <div v-if="products.length" class="set-products-list">
-      <draggable
+    <Card ref="table">
+      <CmsTable
+        v-if="products.length"
+        :config="tableConfig"
+        draggable
         :value="products"
-        :disabled="!$can($p.ProductSets.Edit)"
-        @change="reorderSetProducts"
+        no-hover
+        @reorder="handleReorder"
       >
-        <div v-for="product in products" :key="product.id" class="set-product-item">
-          <Avatar color="#eee">
-            <img
-              v-if="product.cover"
-              :src="`${product.cover.url}?w=100&h=100`"
-              :style="{ objectFit }"
-            />
-            <i v-else class="product-list-item__img-icon bx bx-image"></i>
-          </Avatar>
-          <div class="set-product-item__main">
-            <div class="set-product-item__row">
-              <div>
-                <span class="set-product-item__name">{{ product.name }}</span>
-                <ProductPrice tag="span" class="set-product-item__price" :product="product" />
-              </div>
-              <BooleanTag
-                :value="product.public"
-                class="product-list-item__public"
-                small
-                true-icon="bx bx-show-alt"
-                false-icon="bx bx-low-vision"
-                :true-text="$t('common.visible').toString()"
-                :false-text="$t('common.hidden').toString()"
-              />
-            </div>
-          </div>
-        </div>
-      </draggable>
-    </div>
+        <template #item="{ item: product }">
+          <ProductListItem
+            :key="product.id"
+            :product="product"
+            :table="tableConfig"
+            draggable
+            static
+          />
+        </template>
+      </CmsTable>
+      <Empty v-else>{{ $t('empty') }}</Empty>
 
-    <Empty v-else>{{ $t('empty') }}</Empty>
+      <AppButton
+        v-if="canLoadMore"
+        :loading="isLoading"
+        class="load-more-btn"
+        type="primary"
+        @click="fetchProducts"
+      >
+        {{ $t('loadMoreButton') }}
+      </AppButton>
+    </Card>
   </div>
 </template>
 
@@ -52,11 +46,13 @@
 {
   "pl": {
     "title": "Produkty w kolekcji",
-    "empty": "Brak produktów w kolekcji"
+    "empty": "Brak produktów w kolekcji",
+    "loadMoreButton": "Załaduj więcej produktów"
   },
   "en": {
     "title": "Products in collection",
-    "empty": "No products in collection"
+    "empty": "No products in collection",
+    "loadMoreButton": "Load more products"
   }
 }
 </i18n>
@@ -64,30 +60,32 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { ProductSet, ProductList } from '@heseya/store-core'
-import Draggable from 'vuedraggable'
-
-import TopNav from '@/components/layout/TopNav.vue'
 
 import { UUID } from '@/interfaces/UUID'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { sdk } from '@/api'
 import { FEATURE_FLAGS } from '@/consts/featureFlags'
-import Avatar from '@/components/layout/Avatar.vue'
-import BooleanTag from '@/components/layout/BooleanTag.vue'
-import ProductPrice from '@/components/modules/products/ProductPrice.vue'
+
+import TopNav from '@/components/layout/TopNav.vue'
 import Empty from '@/components/layout/Empty.vue'
 import Loading from '@/components/layout/Loading.vue'
+import CmsTable from '@/components/cms/CmsTable.vue'
+import { TableConfig } from '@/interfaces/CmsTable'
+import ProductListItem from '@/components/modules/products/ProductListItem.vue'
+import Card from '@/components/layout/Card.vue'
+import { HeseyaPaginationMeta } from '@heseya/store-core'
+import AppButton from '@/components/layout/AppButton.vue'
 
 export default defineComponent({
   components: {
     TopNav,
-    Draggable,
-    Avatar,
-    BooleanTag,
-    ProductPrice,
     Empty,
     Loading,
+    CmsTable,
+    ProductListItem,
+    Card,
+    AppButton,
   },
   metaInfo(this: any): any {
     return {
@@ -96,6 +94,7 @@ export default defineComponent({
   },
   data: () => ({
     products: [] as ProductList[],
+    pagination: { currentPage: 0, lastPage: Infinity } as HeseyaPaginationMeta,
     isLoading: false,
   }),
   computed: {
@@ -111,6 +110,51 @@ export default defineComponent({
     objectFit(): 'contain' | 'cover' {
       return +this.$accessor.config.env[FEATURE_FLAGS.ProductContain] ? 'contain' : 'cover'
     },
+
+    canLoadMore(): boolean {
+      return (
+        this.pagination.currentPage + 1 <= this.pagination.lastPage &&
+        this.pagination.currentPage !== 0
+      )
+    },
+
+    /**
+     * If all sales channels have a VAT rate equal to 0, we can surlly assume that all prices are gross.
+     */
+    priceLabel(): string {
+      return `${this.$t('common.price')} ${this.$t(
+        this.$accessor.config.allPricesGross ? 'common.gross' : 'common.net',
+      )
+        .toString()
+        .toLowerCase()}`
+    },
+
+    tableConfig(): TableConfig<ProductList> {
+      return {
+        headers: [
+          { key: 'cover', label: '', width: '60px' },
+          { key: 'name', label: this.$t('common.form.name').toString(), sortable: true },
+          {
+            key: 'price',
+            label: this.priceLabel,
+            width: '0.6fr',
+            sortable: true,
+            sortKey: () => `price:${this.$accessor.config.currency}`,
+          },
+          {
+            key: 'public',
+            label: this.$t('common.visible').toString(),
+            width: '0.4fr',
+            sortable: true,
+          },
+          {
+            key: 'available',
+            label: this.$t('common.available').toString(),
+            width: '0.4fr',
+          },
+        ],
+      }
+    },
   },
   watch: {
     error(error) {
@@ -121,23 +165,27 @@ export default defineComponent({
   },
 
   async created() {
-    this.isLoading = true
     await Promise.all([this.$accessor.productSets.get(this.id), this.fetchProducts()])
-    this.isLoading = false
   },
 
   methods: {
     async fetchProducts() {
-      const products = await sdk.ProductSets.getAllProducts(this.id, { limit: 500 })
-      this.products = products.data
+      if (this.pagination.currentPage + 1 > this.pagination.lastPage) return
+
+      this.isLoading = true
+      const response = await sdk.ProductSets.getAllProducts(this.id, {
+        page: this.pagination.currentPage + 1,
+        limit: 20,
+        public: true,
+      })
+      this.products = [...this.products, ...response.data]
+      this.pagination = response.pagination
+      this.isLoading = false
     },
 
-    async reorderSetProducts({
-      moved,
-    }: {
-      moved: { element: ProductList; newIndex: number; oldIndex: number }
-    }) {
+    async handleReorder(moved: { element: ProductList; newIndex: number; oldIndex: number }) {
       if (!this.productSet) return
+      this.isLoading = true
       try {
         await sdk.ProductSets.reorderProducts(this.productSet.id, [
           { id: moved.element.id, order: moved.newIndex },
@@ -147,52 +195,14 @@ export default defineComponent({
       } catch (e: any) {
         this.$toast.error(formatApiNotificationError(e))
       }
+      this.isLoading = false
     },
   },
 })
 </script>
 
 <style lang="scss" scoped>
-.set-products-list {
-}
-
-.set-product-item {
-  display: flex;
-  align-items: center;
-  padding: 4px;
-  border-radius: 8px;
-  transition: 0.3s;
-  cursor: move;
-
-  @media (pointer: fine) {
-    &:hover {
-      background-color: var(--background-color-500);
-    }
-  }
-  &__main {
-    margin-left: 8px;
-  }
-
-  &__name {
-    display: block;
-    font-weight: 600;
-  }
-
-  &__price {
-    display: block;
-    font-size: 0.8em;
-  }
-
-  &__actions {
-    margin-left: auto;
-    position: relative;
-    z-index: 100;
-  }
-
-  &__row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+.load-more-btn {
+  margin: 16px auto 8px;
 }
 </style>

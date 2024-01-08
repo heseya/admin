@@ -173,13 +173,17 @@ export default defineComponent({
       if (this.pagination.currentPage + 1 > this.pagination.lastPage) return
 
       this.isLoading = true
-      const response = await sdk.ProductSets.getAllProducts(this.id, {
-        page: this.pagination.currentPage + 1,
-        limit: 100,
-        public: true,
-      })
-      this.products = [...this.products, ...response.data]
-      this.pagination = response.pagination
+      try {
+        const response = await sdk.ProductSets.getAllProducts(this.id, {
+          page: this.pagination.currentPage + 1,
+          limit: 100,
+          public: true,
+        })
+        this.products = [...this.products, ...response.data]
+        this.pagination = response.pagination
+      } catch (e: any) {
+        this.$toast.error(formatApiNotificationError(e))
+      }
       this.isLoading = false
     },
 

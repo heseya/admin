@@ -153,6 +153,10 @@ export default defineComponent({
     }
   }
 
+  &__btn {
+    display: none;
+  }
+
   .ant-select-selection__rendered &__btn {
     all: unset;
     background-color: $gray-color-300;

@@ -16,6 +16,8 @@
       v-model="items"
       class="cms-table__content"
       handle=".reorder-handle"
+      :force-fallback="true"
+      :scroll-sensitivity="200"
       @change="handleReorder"
     >
       <template v-if="shouldRenderList">
@@ -54,25 +56,26 @@ export default defineComponent({
 
   provide() {
     const parent = this
-    return {
-      handleDragTop(item: VuexBaseItem) {
-        parent.handleReorder({
-          moved: { element: item, newIndex: 0, oldIndex: parent.items.indexOf(item) },
-        })
-        const itemsWithout = parent.items.filter((i) => i.id !== item.id)
-        parent.items = [item, ...itemsWithout]
-      },
 
-      handleDragBottom(item: VuexBaseItem) {
-        parent.handleReorder({
-          moved: {
-            element: item,
-            newIndex: parent.items.length - 1,
-            oldIndex: parent.items.indexOf(item),
-          },
-        })
-        const itemsWithout = parent.items.filter((i) => i.id !== item.id)
-        parent.items = [...itemsWithout, item]
+    const handleDragTo = (item: VuexBaseItem, newIndex: number) => {
+      if (newIndex < 0) newIndex = 0
+      if (newIndex >= parent.items.length) newIndex = parent.items.length - 1
+
+      parent.handleReorder({
+        moved: { element: item, newIndex, oldIndex: parent.items.indexOf(item) },
+      })
+
+      const items = [...parent.items]
+      items.splice(items.indexOf(item), 1)
+      items.splice(newIndex, 0, item)
+      parent.items = items
+    }
+
+    return {
+      handleDragTo,
+      handleDragBy(item: VuexBaseItem, by: number) {
+        const newIndex = parent.items.indexOf(item) + by
+        handleDragTo(item, newIndex)
       },
     }
   },

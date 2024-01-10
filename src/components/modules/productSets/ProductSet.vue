@@ -94,7 +94,13 @@
       </div>
 
       <div v-show="areChildrenVisible">
-        <Draggable v-model="children" handle=".reorder-handle" @change="onDrop">
+        <Draggable
+          v-model="children"
+          handle=".reorder-handle"
+          :force-fallback="true"
+          :scroll-sensitivity="200"
+          @change="onDrop"
+        >
           <product-set
             v-for="child in uniqueChildren"
             :key="child.id"

@@ -36,8 +36,8 @@
   "pl": {
     "menu": {
       "moveToTop": "Przemieść na samą górę",
-      "moveOneUp": "Przemieść jeden w górę",
-      "moveOneDown": "Przemieść jeden w dół",
+      "moveOneUp": "Przemieść o jeden w górę",
+      "moveOneDown": "Przemieść o jeden w dół",
       "moveToBottom": "Przemieść na sam dół"
     }
   }

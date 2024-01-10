@@ -180,10 +180,6 @@ export default defineComponent({
   },
 
   methods: {
-    onScroll(...args: any[]) {
-      console.log('onScroll', args)
-    },
-
     async fetchOptions(page: number) {
       this.isLoading = true
       await this.$accessor.attributes.getOptions({

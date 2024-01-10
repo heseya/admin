@@ -15,7 +15,7 @@
       <Empty v-if="media.length === 0">{{ $t('emptyMedia') }}</Empty>
 
       <draggable v-model="media" :disabled="disabled">
-        <div v-for="(item, i) in media" :key="i" class="responsive-media-form__row">
+        <div v-for="(_item, i) in media" :key="i" class="responsive-media-form__row">
           <BannerMediaComponent
             ref="mediaForm"
             v-model="media[i]"

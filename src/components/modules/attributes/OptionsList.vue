@@ -28,13 +28,11 @@
         :key="option.id || i"
         class="attributes-options-form__option"
       >
-        <icon-button
-          class="attributes-options-form__reorder reorder-handle"
-          size="small"
-          type="transparent"
-        >
-          <template #icon> <i class="bx bx-menu"></i> </template>
-        </icon-button>
+        <DraggableHandle
+          btn-class="attributes-options-form__reorder reorder-handle"
+          @drag-top="handleReorderToIndex(option, 0)"
+          @drag-bottom="handleReorderToIndex(option, options.length - 1)"
+        />
 
         <span class="attributes-options-form__option-value">
           {{ option.value_number || option.value_date || option.name }}
@@ -121,6 +119,7 @@ import OptionsEditForm from './OptionsEditForm.vue'
 import { formatApiNotificationError } from '@/utils/errors'
 import Pagination from '@/components/cms/Pagination.vue'
 import Loading from '@/components/layout/Loading.vue'
+import DraggableHandle from '@/components/cms/DraggableHandle.vue'
 
 const EMPTY_FORM: AttributeOptionDto = {
   value_number: null,
@@ -129,7 +128,15 @@ const EMPTY_FORM: AttributeOptionDto = {
 }
 
 export default defineComponent({
-  components: { Empty, PopConfirm, OptionsEditForm, Pagination, Draggable, Loading },
+  components: {
+    Empty,
+    PopConfirm,
+    OptionsEditForm,
+    Pagination,
+    Draggable,
+    Loading,
+    DraggableHandle,
+  },
   props: {
     attributeId: {
       type: String,
@@ -174,11 +181,18 @@ export default defineComponent({
       await this.$accessor.attributes.getOptions({
         attributeId: this.attributeId,
         params: {
-          limit: 24,
+          limit: 48,
           page,
         },
       })
       this.isLoading = false
+    },
+
+    handleReorderToIndex(option: AttributeOption, index: number) {
+      const options = [...this.options]
+      options.splice(options.indexOf(option), 1)
+      options.splice(index, 0, option)
+      this.handleReorder(options)
     },
 
     async handleReorder(options: AttributeOption[]) {

@@ -14,7 +14,12 @@
     <div class="responsive-media-form__content">
       <Empty v-if="media.length === 0">{{ $t('emptyMedia') }}</Empty>
 
-      <draggable v-model="media" :disabled="disabled">
+      <Draggable
+        v-model="media"
+        :disabled="disabled"
+        :force-fallback="true"
+        :scroll-sensitivity="200"
+      >
         <div v-for="(_item, i) in media" :key="i" class="responsive-media-form__row">
           <BannerMediaComponent
             ref="mediaForm"
@@ -23,7 +28,7 @@
             @delete="removeGroup(i)"
           />
         </div>
-      </draggable>
+      </Draggable>
     </div>
   </div>
 </template>

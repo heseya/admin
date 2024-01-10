@@ -21,6 +21,8 @@
       :value="options"
       handle=".reorder-handle"
       class="attributes-options-form__content"
+      :force-fallback="true"
+      :scroll-sensitivity="200"
       @input="handleReorder"
     >
       <div
@@ -178,6 +180,10 @@ export default defineComponent({
   },
 
   methods: {
+    onScroll(...args: any[]) {
+      console.log('onScroll', args)
+    },
+
     async fetchOptions(page: number) {
       this.isLoading = true
       await this.$accessor.attributes.getOptions({
@@ -256,7 +262,7 @@ export default defineComponent({
   &__option {
     display: flex;
     align-items: center;
-    transition: 0.3s;
+
     padding: 2px 8px;
     border-radius: 4px;
 

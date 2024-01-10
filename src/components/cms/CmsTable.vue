@@ -16,6 +16,8 @@
       v-model="items"
       class="cms-table__content"
       handle=".reorder-handle"
+      :force-fallback="true"
+      :scroll-sensitivity="200"
       @change="handleReorder"
     >
       <template v-if="shouldRenderList">

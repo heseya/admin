@@ -1,16 +1,22 @@
 <template>
-  <a-dropdown :trigger="!hideContextMenu ? ['contextmenu'] : []">
+  <a-dropdown :trigger="isContextMenu ? ['contextmenu'] : []">
     <icon-button :class="`draggable-handle ${btnClass}`" size="small" type="transparent">
       <template #icon> <i class="bx bx-menu"></i> </template>
     </icon-button>
 
     <template #overlay>
       <a-menu>
-        <a-menu-item @click="onDragTop">
-          {{ $t('draggable.moveToTop') }}
+        <a-menu-item v-if="isToTop" @click="onMoveToTop">
+          <i class="bx bx-arrow-to-top"></i> {{ $t('menu.moveToTop') }}
         </a-menu-item>
-        <a-menu-item @click="onDragBottom">
-          {{ $t('draggable.moveToBottom') }}
+        <a-menu-item v-if="isOneUp" @click="onMoveOneTop">
+          <i class="bx bx-up-arrow-alt"></i> {{ $t('menu.moveOneUp') }}
+        </a-menu-item>
+        <a-menu-item v-if="isOneDown" @click="onMoveOneBottom">
+          <i class="bx bx-down-arrow-alt"></i> {{ $t('menu.moveOneDown') }}
+        </a-menu-item>
+        <a-menu-item v-if="isToBottom" @click="onMoveToBottom">
+          <i class="bx bx-arrow-to-bottom"></i> {{ $t('menu.moveToBottom') }}
         </a-menu-item>
       </a-menu>
     </template>
@@ -20,22 +26,26 @@
 <i18n lang="json">
 {
   "en": {
-    "draggable": {
+    "menu": {
       "moveToTop": "Move to top",
+      "moveOneUp": "Move one up",
+      "moveOneDown": "Move one down",
       "moveToBottom": "Move to bottom"
     }
   },
   "pl": {
-    "draggable": {
-      "moveToTop": "Przemieść na górę",
-      "moveToBottom": "Przemieść na dół"
+    "menu": {
+      "moveToTop": "Przemieść na samą górę",
+      "moveOneUp": "Przemieść jeden w górę",
+      "moveOneDown": "Przemieść jeden w dół",
+      "moveToBottom": "Przemieść na sam dół"
     }
   }
 }
 </i18n>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { PropType, defineComponent } from 'vue'
 
 export default defineComponent({
   props: {
@@ -43,19 +53,43 @@ export default defineComponent({
       type: String,
       default: null,
     },
-    hideContextMenu: {
-      type: Boolean,
-      default: false,
+    contextMenu: {
+      type: [Array, Boolean] as PropType<false | string[] | undefined>,
+      default: () => ['top', 'up', 'down', 'bottom'],
     },
   },
-  emits: ['drag-top', 'drag-bottom'],
+  emits: ['move-to-top', 'move-one-up', 'move-one-down', 'move-to-bottom'],
+
+  computed: {
+    isContextMenu(): boolean {
+      return !!this.contextMenu && this.contextMenu.length > 0
+    },
+    isToTop(): boolean {
+      return !!this.contextMenu && this.contextMenu.includes('top')
+    },
+    isOneUp(): boolean {
+      return !!this.contextMenu && this.contextMenu.includes('up')
+    },
+    isOneDown(): boolean {
+      return !!this.contextMenu && this.contextMenu.includes('down')
+    },
+    isToBottom(): boolean {
+      return !!this.contextMenu && this.contextMenu.includes('bottom')
+    },
+  },
 
   methods: {
-    onDragTop() {
-      this.$emit('drag-top')
+    onMoveToTop() {
+      this.$emit('move-to-top')
     },
-    onDragBottom() {
-      this.$emit('drag-bottom')
+    onMoveOneTop() {
+      this.$emit('move-one-up')
+    },
+    onMoveOneBottom() {
+      this.$emit('move-one-down')
+    },
+    onMoveToBottom() {
+      this.$emit('move-to-bottom')
     },
   },
 })

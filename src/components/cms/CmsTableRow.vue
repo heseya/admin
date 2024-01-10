@@ -9,8 +9,10 @@
     <DraggableHandle
       v-if="draggable"
       btn-class="cms-table-row__reorder reorder-handle"
-      @drag-top="onDragTop"
-      @drag-bottom="onDragBottom"
+      @move-to-top="onDragBy(-Infinity)"
+      @move-one-up="onDragBy(-1)"
+      @move-one-down="onDragBy(1)"
+      @move-to-bottom="onDragBy(Infinity)"
     />
 
     <div
@@ -44,7 +46,7 @@ import DraggableHandle from './DraggableHandle.vue'
 
 export default defineComponent({
   components: { DraggableHandle },
-  inject: ['handleDragTop', 'handleDragBottom'],
+  inject: ['handleDragBy'],
   props: {
     to: {
       type: String,
@@ -94,17 +96,11 @@ export default defineComponent({
     click() {
       this.$emit('click')
     },
-    onDragTop() {
+    onDragBy(diff: number) {
       // @ts-expect-error This is injected
-      if (this.handleDragTop) this.handleDragTop?.(this.item)
+      if (this.handleDragBy) this.handleDragBy?.(this.item, diff)
       // eslint-disable-next-line no-console
-      else console.warn('handleDragTop is not injected')
-    },
-    onDragBottom() {
-      // @ts-expect-error This is injected
-      if (this.handleDragBottom) this.handleDragBottom?.(this.item)
-      // eslint-disable-next-line no-console
-      else console.warn('handleDragBottom is not injected')
+      else console.warn('handleDragBy is not injected')
     },
   },
 })

@@ -30,8 +30,10 @@
       >
         <DraggableHandle
           btn-class="attributes-options-form__reorder reorder-handle"
-          @drag-top="handleReorderToIndex(option, 0)"
-          @drag-bottom="handleReorderToIndex(option, options.length - 1)"
+          @move-to-top="handleReorderToIndex(option, 0)"
+          @move-one-up="handleReorderToIndex(option, i - 1)"
+          @move-one-down="handleReorderToIndex(option, i + 1)"
+          @move-to-bottom="handleReorderToIndex(option, options.length - 1)"
         />
 
         <span class="attributes-options-form__option-value">
@@ -189,6 +191,8 @@ export default defineComponent({
     },
 
     handleReorderToIndex(option: AttributeOption, index: number) {
+      if (index < 0) index = 0
+      if (index >= this.options.length) index = this.options.length - 1
       const options = [...this.options]
       options.splice(options.indexOf(option), 1)
       options.splice(index, 0, option)

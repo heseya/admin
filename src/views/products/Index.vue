@@ -146,7 +146,7 @@ export default defineComponent({
           },
           {
             key: 'public',
-            label: this.$t('form.public').toString(),
+            label: this.$t('common.visible').toString(),
             width: '0.4fr',
             sortable: true,
           },

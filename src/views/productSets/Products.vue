@@ -133,19 +133,18 @@ export default defineComponent({
       return {
         headers: [
           { key: 'cover', label: '', width: '60px' },
-          { key: 'name', label: this.$t('common.form.name').toString(), sortable: true },
+          { key: 'name', label: this.$t('common.form.name').toString() },
           {
             key: 'price',
             label: this.priceLabel,
             width: '0.6fr',
-            sortable: true,
+
             sortKey: () => `price:${this.$accessor.config.currency}`,
           },
           {
             key: 'public',
             label: this.$t('common.visible').toString(),
             width: '0.4fr',
-            sortable: true,
           },
           {
             key: 'available',

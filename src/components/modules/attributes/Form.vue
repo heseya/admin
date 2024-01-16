@@ -114,8 +114,8 @@
       "sortableTooltip": "Sortowalna atrybut oznacza, że po danej cesze można sortować listę produktów."
     },
     "alerts": {
-      "created": "Atrybut została utworzona.",
-      "updated": "Atrybut została zaktualizowana."
+      "created": "Atrybut został utworzony.",
+      "updated": "Atrybut został zaktualizowany."
     }
   },
   "en": {

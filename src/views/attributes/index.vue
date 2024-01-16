@@ -18,16 +18,7 @@
       </template>
 
       <template #filters>
-        <div>
-          <app-input
-            v-model="filters.search"
-            class="span-2"
-            type="search"
-            :label="$t('common.search')"
-            allow-clear
-            @input="debouncedSearch"
-          />
-        </div>
+        <AttributesFilter :filters="filters" @search="makeSearch" />
       </template>
 
       <template #default="{ item: attribute }">
@@ -84,8 +75,13 @@ import { Attribute } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
+import AttributesFilter, {
+  AttributesFilersType,
+} from '@/components/modules/attributes/AttributesFilter.vue'
 
 import { TableConfig } from '@/interfaces/CmsTable'
+import { ALL_FILTER_VALUE } from '@/consts/filters'
+import { formatFilters } from '@/utils/utils'
 
 export default defineComponent({
   metaInfo(this: any) {
@@ -94,10 +90,13 @@ export default defineComponent({
   components: {
     PaginatedList,
     CmsTableRow,
+    AttributesFilter,
   },
   data: () => ({
     filters: {
       search: '',
+      global: ALL_FILTER_VALUE,
+      sortable: ALL_FILTER_VALUE,
     },
   }),
   computed: {
@@ -124,24 +123,28 @@ export default defineComponent({
   },
   created() {
     this.filters.search = (this.$route.query.search as string) || ''
+    this.filters.global = (this.$route.query.global as string) || ALL_FILTER_VALUE
+    this.filters.sortable = (this.$route.query.sortable as string) || ALL_FILTER_VALUE
   },
   methods: {
-    makeSearch() {
-      if (this.filters.search !== this.$route.query.search) {
-        this.$router.push({
-          path: '/settings/attributes',
-          query: { page: undefined, search: this.filters.search || undefined },
-        })
-      }
+    makeSearch(filters: AttributesFilersType) {
+      this.filters = filters
+      const queryFilters = formatFilters(this.filters)
+
+      this.$router.push({
+        path: '/settings/attributes',
+        query: { page: undefined, ...queryFilters },
+      })
     },
+
     debouncedSearch: debounce(function (this: any) {
       this.$nextTick(() => {
         this.makeSearch()
       })
     }, 300),
+
     clearFilters() {
-      this.filters.search = ''
-      this.makeSearch()
+      this.makeSearch({ search: '', global: ALL_FILTER_VALUE, sortable: ALL_FILTER_VALUE })
     },
   },
 })

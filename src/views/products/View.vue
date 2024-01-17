@@ -83,6 +83,11 @@
             :disabled="!canModify"
           />
           <ProductAttachments v-if="!isNew" :product="product" :disabled="!canModify" />
+          <ProductBannerForm
+            v-model="form.banner_media"
+            :disabled="!canModify"
+            :edited-lang="editedLang"
+          />
 
           <hr />
 
@@ -220,6 +225,7 @@ import ProductAdditionalDescriptions from '@/components/modules/products/descrip
 import ProductAttachments from '@/components/modules/products/attachments/List.vue'
 import ProductRelatedSets from '@/components/modules/products/related/List.vue'
 import DescriptionAccordion from '@/components/DescriptionAccordion.vue'
+import ProductBannerForm from '@/components/modules/products/BannerForm.vue'
 
 // import preventLeavingPage from '@/mixins/preventLeavingPage'
 
@@ -262,6 +268,7 @@ const EMPTY_FORM: ProductComponentForm = {
   related_sets: [],
   published: [],
   translations: {},
+  banner_media: null,
 }
 
 export default defineComponent({
@@ -282,6 +289,7 @@ export default defineComponent({
     ProductAsideDetails,
     ProductAdditionalDescriptions,
     ProductAttachments,
+    ProductBannerForm,
     ProductRelatedSets,
     PublishedLangsForm,
     AbsoluteContentLangSwitch,
@@ -420,6 +428,16 @@ export default defineComponent({
           related_sets: this.form.related_sets.map(({ id }) => id),
           shipping_digital: Boolean(+this.form.shipping_digital),
           purchase_limit_per_user: this.form.purchase_limit_per_user || null,
+          banner_media: this.form.banner_media
+            ? {
+                ...this.form.banner_media,
+                translations: this.form.banner_media.translations || {},
+                media: this.form.banner_media.media.map((media) => ({
+                  ...media,
+                  media: media.media.id,
+                })),
+              }
+            : null,
           attributes: attributes.reduce(
             (acc, { id, selected_options: option }) => ({
               ...acc,

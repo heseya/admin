@@ -184,7 +184,10 @@ export default defineComponent({
 
     onMediaDelete(i: number) {
       const deletedId = this.bannerMedia.media[i].media.id
-      this.bannerMedia.media = this.bannerMedia.media.filter((_, index) => index !== i)
+      this.bannerMedia = {
+        ...this.bannerMedia,
+        media: this.bannerMedia.media.filter((_, index) => index !== i),
+      }
 
       if (this.mediaToDelete.find((id) => deletedId === id)) {
         this.mediaToDelete = this.mediaToDelete.filter((id) => deletedId !== id)
@@ -193,7 +196,11 @@ export default defineComponent({
     },
 
     onImageUpload(media: CdnMedia) {
-      this.bannerMedia.media.push({ min_screen_width: 0, media })
+      this.bannerMedia = {
+        ...this.bannerMedia,
+        media: [...this.bannerMedia.media, { min_screen_width: 0, media }],
+      }
+
       this.mediaToDelete = [...this.mediaToDelete, media.id]
     },
 

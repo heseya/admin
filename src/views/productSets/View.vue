@@ -94,11 +94,13 @@
               </div>
             </div>
 
-            <br />
-            <AttributesSelect v-model="form.attributes" :disabled="!canModify" />
-            <hr />
-            <PublishedLangsForm v-model="form.published" />
-            <br />
+            <template v-if="!isLoading">
+              <br />
+              <AttributesSelect v-model="form.attributes" :disabled="!canModify" />
+              <hr />
+              <PublishedLangsForm v-model="form.published" />
+              <br />
+            </template>
 
             <small class="label">{{ $t('common.form.description') }}</small>
             <rich-editor

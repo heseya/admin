@@ -4,6 +4,12 @@
       <template #title>
         <span class="gray-text">{{ $t('title') }}&nbsp;</span>"{{ productSet.name }}"
       </template>
+      <icon-button reversed @click="togglePublic">
+        <template #icon>
+          <i class="bx bx-low-vision"></i>
+        </template>
+        {{ showOnlyPublic ? $t('showAll') : $t('showOnlyPublic') }}
+      </icon-button>
     </TopNav>
 
     <Loading :active="isLoading" />
@@ -47,12 +53,16 @@
   "pl": {
     "title": "Produkty w kolekcji",
     "empty": "Brak produktów w kolekcji",
-    "loadMoreButton": "Załaduj więcej produktów"
+    "loadMoreButton": "Załaduj więcej produktów",
+    "showOnlyPublic": "Pokaż tylko publiczne produkty",
+    "showAll": "Pokaż wszystkie produkty"
   },
   "en": {
     "title": "Products in collection",
     "empty": "No products in collection",
-    "loadMoreButton": "Load more products"
+    "loadMoreButton": "Load more products",
+    "showOnlyPublic": "Show only public products",
+    "showAll": "Show all products"
   }
 }
 </i18n>
@@ -96,6 +106,7 @@ export default defineComponent({
     products: [] as ProductList[],
     pagination: { currentPage: 0, lastPage: Infinity } as HeseyaPaginationMeta,
     isLoading: false,
+    showOnlyPublic: true,
   }),
   computed: {
     id(): UUID {
@@ -164,10 +175,16 @@ export default defineComponent({
   },
 
   async created() {
-    await Promise.all([this.$accessor.productSets.get(this.id), this.fetchProducts()])
+    await this.init()
   },
 
   methods: {
+    init() {
+      this.pagination = { currentPage: 0, lastPage: Infinity } as HeseyaPaginationMeta
+      this.products = []
+      return Promise.all([this.$accessor.productSets.get(this.id), this.fetchProducts()])
+    },
+
     async fetchProducts() {
       if (this.pagination.currentPage + 1 > this.pagination.lastPage) return
 
@@ -176,7 +193,7 @@ export default defineComponent({
         const response = await sdk.ProductSets.getAllProducts(this.id, {
           page: this.pagination.currentPage + 1,
           limit: 100,
-          public: true,
+          public: this.showOnlyPublic ? true : undefined,
         })
         this.products = [...this.products, ...response.data]
         this.pagination = response.pagination
@@ -198,6 +215,13 @@ export default defineComponent({
       } catch (e: any) {
         this.$toast.error(formatApiNotificationError(e))
       }
+      this.isLoading = false
+    },
+
+    async togglePublic() {
+      this.showOnlyPublic = !this.showOnlyPublic
+      this.isLoading = true
+      await this.init()
       this.isLoading = false
     },
   },

@@ -84,7 +84,7 @@
           />
           <ProductAttachments v-if="!isNew" :product="product" :disabled="!canModify" />
           <ProductBannerForm
-            v-model="form.banner_media"
+            v-model="form.banner"
             :disabled="!canModify"
             :edited-lang="editedLang"
           />
@@ -268,7 +268,7 @@ const EMPTY_FORM: ProductComponentForm = {
   related_sets: [],
   published: [],
   translations: {},
-  banner_media: null,
+  banner: null,
 }
 
 export default defineComponent({
@@ -428,11 +428,11 @@ export default defineComponent({
           related_sets: this.form.related_sets.map(({ id }) => id),
           shipping_digital: Boolean(+this.form.shipping_digital),
           purchase_limit_per_user: this.form.purchase_limit_per_user || null,
-          banner_media: this.form.banner_media
+          banner: this.form.banner
             ? {
-                ...this.form.banner_media,
-                translations: this.form.banner_media.translations || {},
-                media: this.form.banner_media.media.map((media) => ({
+                ...this.form.banner,
+                translations: this.form.banner.translations || {},
+                media: this.form.banner.media.map((media) => ({
                   ...media,
                   media: media.media.id,
                 })),

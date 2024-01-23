@@ -49,7 +49,7 @@ export default defineComponent({
   components: { LayoutAccordion, BannerMediaComponent, Empty, IconButton },
   props: {
     value: {
-      type: Object as PropType<BannerMedia | null>,
+      type: Object as PropType<BannerMedia | Omit<BannerMedia, 'published'> | null>,
       default: null,
     },
     editedLang: {
@@ -65,11 +65,23 @@ export default defineComponent({
   computed: {
     bannerMedia: {
       get(): BannerMediaComponentForm | null {
-        return this.value ? { translations: {}, ...this.value } : null
+        return this.value ? (this.value as BannerMediaComponentForm) : null
       },
       set(bannerMedia: BannerMediaComponentForm | null) {
         this.$emit('input', bannerMedia)
       },
+    },
+  },
+
+  watch: {
+    bannerMedia: {
+      handler() {
+        if (this.bannerMedia && !this.bannerMedia?.translations?.[this.editedLang])
+          this.bannerMedia.translations = { [this.editedLang]: { title: '', subtitle: '' } }
+
+        if (this.bannerMedia && !this.bannerMedia.published) this.bannerMedia.published = []
+      },
+      immediate: true,
     },
   },
 

@@ -250,7 +250,7 @@ export default defineComponent({
 
       this.$router.push({
         path: 'products',
-        query: { page: undefined, ...queryFilters },
+        query: { ...queryFilters, page: undefined },
       })
     },
     clearFilters() {

@@ -133,7 +133,7 @@ export default defineComponent({
 
       this.$router.push({
         path: '/settings/attributes',
-        query: { page: undefined, ...queryFilters },
+        query: { ...queryFilters, page: undefined },
       })
     },
 

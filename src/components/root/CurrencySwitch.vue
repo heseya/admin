@@ -42,14 +42,6 @@ export default defineComponent({
       },
     },
   },
-
-  methods: {
-    getFlagName(iso: string) {
-      const firstIsoPart = iso.split('-')[0]
-      if (firstIsoPart === 'en' || firstIsoPart === 'eng') return 'us'
-      return firstIsoPart
-    },
-  },
 })
 </script>
 

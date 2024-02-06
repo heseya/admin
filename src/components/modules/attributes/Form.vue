@@ -23,10 +23,14 @@
       :label="$t('common.form.description').toString()"
     />
 
-    <br />
-    <PublishedLangsForm v-model="form.published" />
-
     <div class="attribute-form__switches">
+      <switch-input v-model="form.include_in_text_search" :disabled="disabled" horizontal>
+        <template #title>
+          {{ $t('form.includeInSearch') }}
+          <info-tooltip> {{ $t('form.includeInSearchTooltip') }}</info-tooltip>
+        </template>
+      </switch-input>
+
       <switch-input v-model="form.global" :disabled="disabled" horizontal>
         <template #title>
           {{ $t('form.global') }}
@@ -41,6 +45,10 @@
         </template>
       </switch-input>
     </div>
+
+    <br />
+    <PublishedLangsForm v-model="form.published" />
+    <br />
 
     <app-select
       v-model="form.type"
@@ -98,19 +106,23 @@
   "pl": {
     "form": {
       "slug": "Skrócona nazwa",
+      "includeInSearch": "Uwzględnij w wyszukiwarce",
+      "includeInSearchTooltip": "Uwzględnij atrybut w wyszukiwarce produktów. Dzięki temu łatwo znajdziej produkty dla których atrybut ma daną wartość.",
       "global": "Globalna atrybut",
       "globalTooltip": "Globalna atrybut oznacza, że po danej cesze można filtrować produkty niezależnie od kolekcji w której się one znajdują.",
       "sortable": "Sortowalna atrybut",
       "sortableTooltip": "Sortowalna atrybut oznacza, że po danej cesze można sortować listę produktów."
     },
     "alerts": {
-      "created": "Atrybut została utworzona.",
-      "updated": "Atrybut została zaktualizowana."
+      "created": "Atrybut został utworzony.",
+      "updated": "Atrybut został zaktualizowany."
     }
   },
   "en": {
     "form": {
       "slug": "Short name",
+      "includeInSearch": "Include in search",
+      "includeInSearchTooltip": "Include attribute in product search. This allows you to easily find products for which the attribute has a given value.",
       "global": "Global attribute",
       "globalTooltip": "Global attribute means that you can filter products independently from the collection in which they are located.",
       "sortable": "Sortable attribute",
@@ -150,6 +162,7 @@ const CLEAR_FORM: AttributeCreateDto = {
   type: AttributeType.SingleOption,
   sortable: false,
   global: false,
+  include_in_text_search: false,
   translations: {},
   published: [],
   metadata: {},
@@ -210,8 +223,11 @@ export default defineComponent({
   methods: {
     setEditedLang(langId: string) {
       this.editedLang = langId
-      if (!this.form.translations[langId])
-        this.$set(this.form.translations, langId, { ...CLEAR_TRANSLATION_FORM })
+
+      this.$set(this.form.translations, langId, {
+        ...CLEAR_TRANSLATION_FORM,
+        ...this.form.translations[langId],
+      })
     },
 
     editSlug() {

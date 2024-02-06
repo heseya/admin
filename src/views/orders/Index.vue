@@ -55,6 +55,10 @@
             <span v-else class="order-tag danger-text">{{ $t('payment.notPaid') }}</span>
           </template>
 
+          <template #language="{ rawValue, value }">
+            <LangFlag :lang="rawValue" /> <small>{{ value }}</small>
+          </template>
+
           <template #status="{ rawValue: { name, color } }">
             <span class="order-tag" :style="{ color: `#${color}` }"> {{ name }} </span>
           </template>
@@ -84,6 +88,7 @@
       "digital_shipping": "Przesyłka cyfrowa",
       "shipping": "Przesyłka",
       "sales_channel": "Kanał sprzedaży",
+      "language": "Język",
       "date": "Data"
     }
   },
@@ -105,6 +110,7 @@
       "digital_shipping": "Digital shipping",
       "shipping": "Shipping",
       "sales_channel": "Sales channel",
+      "language": "Language",
       "date": "Date"
     }
   }
@@ -130,6 +136,8 @@ import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 import { formatFilters } from '@/utils/utils'
 import { formatDate } from '@/utils/dates'
 import { formatCurrency } from '@/utils/currency'
+import LangFlag from '@/components/lang/LangFlag.vue'
+import { Language } from '@heseya/store-core'
 
 export default defineComponent({
   metaInfo(this: any) {
@@ -139,11 +147,16 @@ export default defineComponent({
     OrderFilter,
     PaginatedList,
     CmsTableRow,
+    LangFlag,
   },
   data: () => ({
     filters: { ...EMPTY_ORDER_FILTERS } as OrderFilersType,
   }),
   computed: {
+    languages(): Language[] {
+      return this.$accessor.languages.data.filter((lang) => !lang.hidden)
+    },
+
     tableConfig(): TableConfig<Order> {
       return {
         rowUrlBuilder: (order) => `/orders/${order.id}`,
@@ -170,6 +183,11 @@ export default defineComponent({
             key: 'sales_channel',
             label: this.$t('form.sales_channel') as string,
             render: (_, r) => r.sales_channel?.name || '-',
+          },
+          {
+            key: 'language',
+            label: this.$t('form.language') as string,
+            render: (iso) => this.languages.find((l) => l.iso === iso)?.name || iso,
           },
           {
             key: 'created_at',
@@ -221,6 +239,10 @@ export default defineComponent({
             format: (_, o) => o.sales_channel?.name || '-',
           },
           {
+            key: 'language',
+            label: this.$t('form.language') as string,
+          },
+          {
             key: 'created_at',
             label: this.$t('form.date') as string,
           },
@@ -247,7 +269,7 @@ export default defineComponent({
 
       this.$router.push({
         path: 'orders',
-        query: { page: undefined, ...queryFilters },
+        query: { ...queryFilters, page: undefined },
       })
     },
     clearFilters() {

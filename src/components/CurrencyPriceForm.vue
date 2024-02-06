@@ -7,7 +7,7 @@
       :rules="getRules(currency.code)"
       type="number"
       step="0.01"
-      :label="`${label || $t('form.price')} - ${currency.code}`"
+      :label="`${label || priceLabel} - ${currency.code}`"
       :name="`${name}${currency.code}`"
       :disabled="disabled"
       :precision="currency.decimal_places"
@@ -15,21 +15,6 @@
     />
   </div>
 </template>
-
-<i18n lang="json">
-{
-  "pl": {
-    "form": {
-      "price": "Cena netto"
-    }
-  },
-  "en": {
-    "form": {
-      "price": "Price (net)"
-    }
-  }
-}
-</i18n>
 
 <script lang="ts">
 import { PropType, defineComponent } from 'vue'
@@ -62,6 +47,17 @@ export default defineComponent({
   computed: {
     currencies(): Currency[] {
       return this.$accessor.config.currencies
+    },
+
+    /**
+     * If all sales channels have a VAT rate equal to 0, we can surlly assume that all prices are gross.
+     */
+    priceLabel(): string {
+      return `${this.$t('common.price')} ${this.$t(
+        this.$accessor.config.allPricesGross ? 'common.gross' : 'common.net',
+      )
+        .toString()
+        .toLowerCase()}`
     },
 
     form: {

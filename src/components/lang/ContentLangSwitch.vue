@@ -20,12 +20,7 @@
       :label="lang.name"
       @click="update(lang.id)"
     >
-      <img
-        :src="`https://flagcdn.com/16x12/${getFlagName(lang.iso)}.png`"
-        role="presentation"
-        class="content-lang-switch__icon"
-        @error="handleFlagError"
-      />
+      <LangFlag :lang="lang.iso" class="content-lang-switch__icon" />
     </button>
 
     <InfoTooltip class="content-lang-switch__tooltip" :text="$t('tooltipText').toString()" />
@@ -48,9 +43,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import InfoTooltip from '../layout/InfoTooltip.vue'
+import LangFlag from './LangFlag.vue'
 
 export default defineComponent({
-  components: { InfoTooltip },
+  components: { InfoTooltip, LangFlag },
   props: {
     value: {
       type: String,
@@ -72,18 +68,8 @@ export default defineComponent({
     },
   },
   methods: {
-    getFlagName(iso: string) {
-      const firstIsoPart = iso.split('-')[0]
-      if (firstIsoPart === 'en' || firstIsoPart === 'eng') return 'us'
-      return firstIsoPart
-    },
     update(lang: string) {
       this.$emit('input', lang)
-    },
-
-    handleFlagError(e: Event) {
-      const target = e.target as HTMLImageElement
-      target.src = '/img/unknown-flag.png'
     },
   },
 })

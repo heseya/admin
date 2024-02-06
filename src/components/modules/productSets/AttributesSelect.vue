@@ -8,9 +8,31 @@
     mode="multiple"
     name="selectedAttributes"
     option-filter-prop="label"
+    class="attribute-select"
     @search="onSearch"
   >
-    <a-select-option v-for="attribute in attributes" :key="attribute.id" :label="attribute.name">
+    <a-select-option
+      v-for="attribute in attributes"
+      :key="attribute.id"
+      class="attribute-select__option"
+      :label="attribute.name"
+    >
+      <button
+        v-if="!isFirst(attribute.id)"
+        type="button"
+        class="attribute-select__btn"
+        @click.stop="move(attribute.id, -1)"
+      >
+        <i class="bx bx-left-arrow-alt"></i>
+      </button>
+      <button
+        v-if="!isLast(attribute.id)"
+        type="button"
+        class="attribute-select__btn"
+        @click.stop="move(attribute.id, 1)"
+      >
+        <i class="bx bx-right-arrow-alt"></i>
+      </button>
       {{ attribute.name }}
     </a-select-option>
   </app-select>
@@ -90,9 +112,75 @@ export default defineComponent({
 
     async loadSelectedAttributes() {
       this.isLoading = true
-      await this.$accessor.attributes.fetch({ ids: this.selectedAttributes })
+      await this.$accessor.attributes.fetch({ ids: this.selectedAttributes, limit: 100 })
       this.isLoading = false
+    },
+
+    isFirst(id: string) {
+      return this.selectedAttributes[0] === id
+    },
+    isLast(id: string) {
+      return this.selectedAttributes[this.selectedAttributes.length - 1] === id
+    },
+
+    move(id: string, direction: -1 | 1) {
+      const currentIndex = this.selectedAttributes.findIndex((attr) => attr === id)
+      const nextIndex = currentIndex + direction
+      if (nextIndex < 0 || nextIndex >= this.selectedAttributes.length) return
+
+      const copy = [...this.selectedAttributes]
+      copy.splice(currentIndex, 1)
+      copy.splice(nextIndex, 0, id)
+      this.selectedAttributes = copy
     },
   },
 })
 </script>
+
+<style lang="scss">
+.attribute-select {
+  &__option {
+    position: relative;
+  }
+
+  .ant-select-selection__choice {
+    padding-left: 40px;
+    transition: 0s;
+
+    &:first-child,
+    &:nth-last-child(2) {
+      padding-left: 20px;
+    }
+  }
+
+  &__btn {
+    display: none;
+  }
+
+  .ant-select-selection__rendered &__btn {
+    all: unset;
+    background-color: $gray-color-300;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    left: 20px;
+    top: 4px;
+    font-size: 16px;
+    line-height: 14px;
+    height: 14px;
+    width: 14px;
+    border-radius: 50%;
+    padding: 0;
+    cursor: pointer;
+
+    &:first-child {
+      left: 3px;
+    }
+
+    &:hover {
+      background-color: $gray-color-400;
+    }
+  }
+}
+</style>

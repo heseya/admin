@@ -57,7 +57,7 @@
 
           <br />
           <small class="label">{{ $t('form.content') }}</small>
-          <RichEditor v-model="formContentHtml" :disabled="!canModify" />
+          <ValidatedRichEditor v-model="formContentHtml" :disabled="!canModify" rules="required" />
 
           <br />
 
@@ -126,7 +126,6 @@ import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import FlexInput from '@/components/layout/FlexInput.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import RichEditor from '@/components/form/RichEditor.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import SeoForm from '@/components/modules/seo/Accordion.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
@@ -137,6 +136,7 @@ import { formatApiNotificationError } from '@/utils/errors'
 import { generateSlug } from '@/utils/generateSlug'
 
 import { UUID } from '@/interfaces/UUID'
+import ValidatedRichEditor from '@/components/form/ValidatedRichEditor.vue'
 
 export default defineComponent({
   metaInfo(this: any) {
@@ -146,11 +146,11 @@ export default defineComponent({
     }
   },
   components: {
+    ValidatedRichEditor,
     TopNav,
     Card,
     FlexInput,
     PopConfirm,
-    RichEditor,
     ValidationObserver,
     SwitchInput,
     SeoForm,

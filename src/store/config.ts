@@ -4,7 +4,7 @@ import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 import { accessor } from './index'
 import { getApiURL } from '@/utils/api'
 import { getDefaultUiLanguage } from '@/utils/i18n'
-import { Currency } from '@heseya/store-core'
+import { Currency, SalesChannel } from '@heseya/store-core'
 import { sdk } from '@/api'
 
 const state = () => ({
@@ -16,7 +16,18 @@ const state = () => ({
   currencies: [] as Currency[],
 })
 
-const getters = getterTree(state, {})
+const getters = getterTree(state, {
+  /**
+   * If all sales channels have a VAT rate equal to 0, we can surlly assume that all prices are gross.
+   */
+  allPricesGross(_state, _getters, rootState) {
+    return (
+      (rootState.salesChannels?.data as SalesChannel[])?.every(
+        (sc) => parseFloat(sc.vat_rate) === 0,
+      ) ?? false
+    )
+  },
+})
 
 const mutations = mutationTree(state, {
   SET_SETTINGS(state, newSettings: Record<string, string>) {

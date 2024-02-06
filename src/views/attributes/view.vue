@@ -36,7 +36,7 @@
   "pl": {
     "newTitle": "Nowy atrybut",
     "deleteText": "Czy na pewno chcesz usunąć tą cechę?",
-    "deletedMessage": "Atrybut została usunięty"
+    "deletedMessage": "Atrybut został usunięty"
   },
   "en": {
     "newTitle": "New attribute",

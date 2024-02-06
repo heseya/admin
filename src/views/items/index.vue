@@ -203,7 +203,7 @@ export default defineComponent({
 
       this.$router.push({
         path: 'items',
-        query: { page: undefined, ...queryFilters },
+        query: { ...queryFilters, page: undefined },
       })
     },
 

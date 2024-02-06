@@ -41,6 +41,11 @@ export default defineComponent({
   &__message {
     font-family: $primaryFont;
     color: inherit;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     font-weight: 300;
     font-size: 0.9em;
     letter-spacing: 0.55px;

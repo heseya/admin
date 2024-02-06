@@ -11,7 +11,12 @@
     </div>
     <empty v-if="schemas.length === 0">{{ $t('noSchemaInProduct') }}</empty>
     <list class="configurator__schemas">
-      <draggable v-model="schemas" :disabled="disabled">
+      <Draggable
+        v-model="schemas"
+        :disabled="disabled"
+        :force-fallback="true"
+        :scroll-sensitivity="200"
+      >
         <list-item
           v-for="schema in value"
           :key="schema.id"
@@ -42,7 +47,7 @@
             </div>
           </template>
         </list-item>
-      </draggable>
+      </Draggable>
     </list>
 
     <a-modal

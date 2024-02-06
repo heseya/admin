@@ -1,4 +1,6 @@
 export const getApiURL = () => {
+  if (window.apiUrl !== 'REPLACE_ME_API_URL') return window.apiUrl!
+
   switch (window.location.host) {
     // Production clients
     case '***REMOVED***':
@@ -15,7 +17,7 @@ export const getApiURL = () => {
     case '***REMOVED***':
       return '***REMOVED***'
     case 'admin.***REMOVED***.com':
-      return 'https://***REMOVED***.***REMOVED***'
+      return 'https://api.***REMOVED***.com'
     case 'admin-***REMOVED***.***REMOVED***':
       return 'https://***REMOVED***.***REMOVED***'
     case 'admin-***REMOVED***.***REMOVED***':
@@ -48,8 +50,6 @@ export const getApiURL = () => {
       return '***REMOVED***'
 
     // Internal domains
-    case '***REMOVED***':
-      return '***REMOVED***'
     case '***REMOVED***':
       return '***REMOVED***'
     case '***REMOVED***':

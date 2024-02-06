@@ -112,7 +112,7 @@ export default defineComponent({
 
     async loadSelectedAttributes() {
       this.isLoading = true
-      await this.$accessor.attributes.fetch({ ids: this.selectedAttributes })
+      await this.$accessor.attributes.fetch({ ids: this.selectedAttributes, limit: 100 })
       this.isLoading = false
     },
 

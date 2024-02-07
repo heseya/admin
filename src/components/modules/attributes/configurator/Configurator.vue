@@ -56,7 +56,7 @@
   },
   "pl": {
     "title": "Atrybuty produktu",
-    "addAttribute": "Dodaj cechę",
+    "addAttribute": "Dodaj atrybut",
     "noAttributesInProduct": "Ten produkt nie ma jeszcze żadnego atrybutu",
     "showMore": "Pokaż pozostałe atrybuty ({x})",
     "hideMore": "Ukryj pozostałe atrybuty ({x})"

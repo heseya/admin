@@ -49,7 +49,7 @@
 {
   "pl": {
     "title": "Atrybuty produktów",
-    "add": "Dodaj cechę",
+    "add": "Dodaj atrybut",
     "form": {
       "global": "Globalny",
       "sortable": "Sortowalny",

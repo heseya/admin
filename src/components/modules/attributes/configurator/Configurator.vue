@@ -19,6 +19,7 @@
         :edited-lang="editedLang"
         :disabled="disabled"
         :value="attribute"
+        @delete="deleteAttribute"
       />
       <LayoutAccordion
         v-if="attributes.length > 4"
@@ -32,6 +33,7 @@
           :edited-lang="editedLang"
           :disabled="disabled"
           :value="attribute"
+          @delete="deleteAttribute"
         />
       </LayoutAccordion>
     </list>

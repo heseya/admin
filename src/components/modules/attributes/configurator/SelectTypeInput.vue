@@ -141,7 +141,7 @@ export default defineComponent({
 
     async fetchOptions() {
       this.isLoading = true
-      const allOptions =
+      const searchedOptions =
         (await this.$accessor.attributes.getOptions({
           attributeId: this.attribute.id,
           params: { search: this.searchedValue },
@@ -165,13 +165,17 @@ export default defineComponent({
           )
         ).filter(Boolean) as AttributeOption[][]
 
-        this.options = uniqueArray([...this.options, ...allOptions, ...choosenOptions.flat()])
+        // #notFoundContent slot is shown only when options array is empty.
+        // So we need to clear it when API does not return any data from main query
+        this.options = searchedOptions.length
+          ? uniqueArray([...this.options, ...searchedOptions, ...choosenOptions.flat()])
+          : []
         this.isLoading = false
 
         return
       }
 
-      this.options = allOptions
+      this.options = searchedOptions
       this.isLoading = false
     },
 

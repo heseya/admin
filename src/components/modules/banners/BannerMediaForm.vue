@@ -19,6 +19,7 @@
         :disabled="disabled"
         :force-fallback="true"
         :scroll-sensitivity="200"
+        handle=".reorder-handle"
       >
         <div v-for="(_item, i) in media" :key="i" class="responsive-media-form__row">
           <BannerMediaComponent

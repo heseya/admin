@@ -15,7 +15,7 @@
       @change="setValue"
     >
       <a-select-option
-        v-for="option in options"
+        v-for="option in visibleOptions"
         :key="option.id"
         :value="option.id"
         :label="option.name"
@@ -89,7 +89,8 @@ export default defineComponent({
   },
   data: () => ({
     isLoading: false,
-    options: [] as AttributeOption[],
+    visibleOptions: [] as AttributeOption[],
+    allOptions: [] as AttributeOption[],
     searchedValue: '',
   }),
   computed: {
@@ -120,10 +121,10 @@ export default defineComponent({
   methods: {
     setValue(v: UUID | UUID[] | undefined) {
       if (this.isMutipleMode) {
-        const options = this.options.filter((o) => (v as UUID[])?.includes(o.id))
+        const options = this.allOptions.filter((o) => (v as UUID[])?.includes(o.id))
         this.$emit('input', options)
       } else {
-        const option = this.options.find((o) => o.id === (v as UUID | undefined)) || null
+        const option = this.allOptions.find((o) => o.id === (v as UUID | undefined)) || null
         this.$emit('input', [option])
       }
     },
@@ -147,7 +148,7 @@ export default defineComponent({
           params: { search: this.searchedValue },
         })) || []
 
-      if (!this.options) {
+      if (!this.visibleOptions) {
         this.$toast.error(this.$t('optionsFetchError') as string)
         this.isLoading = false
         return
@@ -165,17 +166,20 @@ export default defineComponent({
           )
         ).filter(Boolean) as AttributeOption[][]
 
+        this.allOptions = uniqueArray([
+          ...this.allOptions,
+          ...searchedOptions,
+          ...choosenOptions.flat(),
+        ])
         // #notFoundContent slot is shown only when options array is empty.
         // So we need to clear it when API does not return any data from main query
-        this.options = searchedOptions.length
-          ? uniqueArray([...this.options, ...searchedOptions, ...choosenOptions.flat()])
-          : []
+        this.visibleOptions = searchedOptions.length ? [...this.allOptions] : []
         this.isLoading = false
 
         return
       }
 
-      this.options = searchedOptions
+      this.visibleOptions = searchedOptions
       this.isLoading = false
     },
 
@@ -197,7 +201,8 @@ export default defineComponent({
 
       if (result.success) {
         const option = result.option
-        this.options = [...this.options, option]
+        this.visibleOptions = [...this.visibleOptions, option]
+        this.allOptions = [...this.allOptions, option]
 
         this.setValue(this.isMutipleMode ? [...this.multiOptionsIds, option.id] : option.id)
 

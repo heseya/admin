@@ -108,7 +108,7 @@ export default defineComponent({
   },
   methods: {
     deleteAttribute(id: UUID) {
-      this.$emit('deleteAttribute', id)
+      this.$emit('delete', id)
     },
 
     async copyAttribute(attribute: ProductAttribute) {

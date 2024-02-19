@@ -110,8 +110,8 @@
       "includeInSearchTooltip": "Uwzględnij atrybut w wyszukiwarce produktów. Dzięki temu łatwo znajdziej produkty dla których atrybut ma daną wartość.",
       "global": "Globalna atrybut",
       "globalTooltip": "Globalna atrybut oznacza, że po danej cesze można filtrować produkty niezależnie od kolekcji w której się one znajdują.",
-      "sortable": "Sortowalna atrybut",
-      "sortableTooltip": "Sortowalna atrybut oznacza, że po danej cesze można sortować listę produktów."
+      "sortable": "Sortowalny atrybut",
+      "sortableTooltip": "Sortowalny atrybut oznacza, że po danej cesze można sortować listę produktów."
     },
     "alerts": {
       "created": "Atrybut został utworzony.",

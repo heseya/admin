@@ -1,6 +1,10 @@
 <template>
   <div class="responsive-media" :class="{ 'responsive-media--no-hover': static }">
-    <div v-if="!static" class="responsive-media__drag" :title="$t('dragTitle').toString()">
+    <div
+      v-if="!static"
+      class="responsive-media__drag reorder-handle"
+      :title="$t('dragTitle').toString()"
+    >
       <i class="bx bx-grid-vertical"></i>
     </div>
 

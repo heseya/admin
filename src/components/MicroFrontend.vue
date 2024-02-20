@@ -7,6 +7,7 @@ import { defineComponent } from 'vue'
 import { findAppByHost, installApp, onMounted, openCommunicationChannel, uninstallApp } from 'bout'
 import { Language } from '@heseya/store-core'
 import { getApiURL } from '@/utils/api'
+import { trimSlash } from '@/utils/trimSlash'
 
 export default defineComponent({
   name: 'MicroFrontend',
@@ -33,6 +34,7 @@ export default defineComponent({
       return `${this.appKey}-container`
     },
     standardHost(): string {
+      // Enforce trailing slash
       return this.host.endsWith('/') ? this.host : `${this.host}/`
     },
 
@@ -61,9 +63,9 @@ export default defineComponent({
     onMounted(() => {
       if (!this.wasMounted) {
         const data = {
-          coreUrl: getApiURL(),
+          coreUrl: trimSlash(getApiURL()),
           // TODO: this will be injected into any microfrontend, not only this one!
-          serviceUrl: this.serviceUrl,
+          serviceUrl: trimSlash(this.serviceUrl),
           token: this.$accessor.auth.getIdentityToken,
           user: this.$accessor.auth.user,
           uiLanguage: this.$i18n.locale,

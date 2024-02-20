@@ -6,6 +6,7 @@ import router from './router'
 import { getApiURL } from './utils/api'
 import { broadcastTokensUpdate } from './utils/authSync'
 import { createHeseyaApiService } from '@heseya/store-core'
+import { trimSlash } from './utils/trimSlash'
 
 const CORE_API_URL = getApiURL()
 
@@ -16,7 +17,7 @@ type OnRefreshFunction = (
 ) => void
 
 export const createApiInstance = (baseURL: string, useAccessToken = true) => {
-  const apiInstance = axios.create({ baseURL })
+  const apiInstance = axios.create({ baseURL: trimSlash(baseURL) })
 
   let isRefreshing = false
   let subscribers: OnRefreshFunction[] = []
@@ -38,7 +39,7 @@ export const createApiInstance = (baseURL: string, useAccessToken = true) => {
       config.headers.Authorization = `Bearer ${token}`
 
     config.headers['Cache-Control'] = 'no-cache, no-store'
-    config.headers['X-Core-Url'] = CORE_API_URL
+    config.headers['X-Core-Url'] = trimSlash(CORE_API_URL)
     if (accessor.config.apiLanguage) config.headers['Accept-Language'] = accessor.config.apiLanguage
 
     return config

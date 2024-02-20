@@ -140,6 +140,7 @@ import AddForm from '@/components/modules/apps/AddForm.vue'
 import ConfigureAppForm from '@/components/modules/apps/ConfigureAppForm.vue'
 import ActionsList from '@/components/modules/apps/ActionsList.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
+import { trimSlash } from '@/utils/trimSlash'
 
 const CLEAN_FORM: AppCreateDto = {
   url: '',
@@ -210,7 +211,7 @@ export default defineComponent({
       await this.$accessor.apps.add({
         ...this.installForm,
         // ? Only to allow local apps to work on docker
-        url: this.installForm.url.replace('localhost', 'host.docker.internal'),
+        url: trimSlash(this.installForm.url.replace('localhost', 'host.docker.internal')),
       })
       this.$accessor.stopLoading()
       this.isInstallModalActive = false

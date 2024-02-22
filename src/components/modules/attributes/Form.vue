@@ -88,7 +88,7 @@
       {{ $t('common.save') }}
     </app-button>
 
-    <template v-if="!isNew">
+    <template v-if="!isNew && optionsVisible">
       <hr />
       <OptionsList :attribute-id="attribute.id" :disabled="disabled" :type="form.type" />
     </template>
@@ -192,6 +192,10 @@ export default defineComponent({
   computed: {
     isNew(): boolean {
       return !this.form.id
+    },
+
+    optionsVisible(): boolean {
+      return [AttributeType.MultiChoiceOption, AttributeType.SingleOption].includes(this.form.type)
     },
 
     formName: {

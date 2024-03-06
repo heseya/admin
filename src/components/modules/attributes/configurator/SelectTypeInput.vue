@@ -180,6 +180,7 @@ export default defineComponent({
       }
 
       this.visibleOptions = searchedOptions
+      this.allOptions = uniqueArray([...this.allOptions, ...searchedOptions])
       this.isLoading = false
     },
 

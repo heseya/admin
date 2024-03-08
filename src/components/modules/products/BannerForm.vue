@@ -3,6 +3,7 @@
     <div class="product-banner-form">
       <BannerMediaComponent
         v-if="bannerMedia"
+        ref="bannerMedia"
         v-model="bannerMedia"
         :edited-lang="editedLang"
         static
@@ -100,6 +101,10 @@ export default defineComponent({
           },
         },
       }
+    },
+
+    clearMediaToDelete() {
+      ;(this.$refs.bannerMedia as any)?.clearMediaToDelete?.()
     },
   },
 })

@@ -84,6 +84,7 @@
           />
           <ProductAttachments v-if="!isNew" :product="product" :disabled="!canModify" />
           <ProductBannerForm
+            ref="banner"
             v-model="form.banner"
             :disabled="!canModify"
             :edited-lang="editedLang"
@@ -460,6 +461,7 @@ export default defineComponent({
           : await this.$accessor.products.update({ id: this.id, item: apiPayload })
 
         ;(this.$refs.gallery as any).clearMediaToDelete()
+        ;(this.$refs.banner as any)?.clearMediaToDelete?.()
 
         if (!item) throw new Error('Product was not saved')
 

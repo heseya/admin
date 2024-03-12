@@ -10,5 +10,5 @@ export const b2bCompanies = createVuexCRUD<Role, RoleCreateDto, RoleUpdateDto>()
     mutations: {},
     actions: {},
   },
-  { get: { 'metadata.b2b_company': true } },
+  { get: { 'metadata.b2b_company': true }, getOne: { 'metadata.b2b_company': true } },
 )

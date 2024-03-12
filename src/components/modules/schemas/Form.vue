@@ -1,18 +1,23 @@
 <template>
   <validation-observer v-slot="{ handleSubmit }" class="schema-form">
     <validated-input
-      v-model="form.name"
+      v-model="formName"
       :disabled="disabled"
       name="name"
       rules="required"
       :label="$t('common.form.name')"
     />
     <validated-input
-      v-model="form.description"
+      v-model="formDescription"
       :disabled="disabled"
       name="description"
       :label="$t('common.form.description')"
     />
+
+    <br />
+    <PublishedLangsForm v-model="form.published" />
+    <br />
+
     <div class="flex">
       <validation-provider v-slot="{ errors }" name="schema-type" rules="id-required">
         <app-select
@@ -33,15 +38,14 @@
         </app-select>
       </validation-provider>
 
-      <validated-input
+      <CurrencyPriceForm
         v-if="form.type !== SchemaType.MultiplySchema"
-        v-model="form.price"
+        v-model="form.prices"
         :disabled="disabled"
-        name="price"
-        type="number"
-        rules="required|not-negative"
         :label="
-          form.type === SchemaType.Multiply ? $t('form.pricePerUnit') : $t('form.additionalPrice')
+          form.type === SchemaType.Multiply
+            ? $t('form.pricePerUnit').toString()
+            : $t('form.additionalPrice').toString()
         "
       />
     </div>
@@ -106,11 +110,12 @@
 
     <br />
 
-    <select-schema-options
+    <SelectSchemaOptions
       v-if="form.type === SchemaType.Select"
       v-model="form.options"
-      :default-option="defaultOption"
+      :default-option="defaultOption || undefined"
       :disabled="disabled"
+      :edited-lang="editedLang"
       @set-default="(v) => (defaultOption = v)"
     />
 
@@ -181,6 +186,12 @@
     <app-button data-cy="submit-btn" :disabled="disabled" @click.stop="handleSubmit(submit)">
       {{ $t('common.save') }}
     </app-button>
+
+    <AbsoluteContentLangSwitch
+      class="schema-form__lang-switch"
+      :value="editedLang"
+      @input="setEditedLang"
+    />
   </validation-observer>
 </template>
 
@@ -249,7 +260,7 @@
 import { defineComponent, PropType } from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
-import { SchemaType, Schema } from '@heseya/store-core'
+import { SchemaType, Schema, SchemaOptionDto, SchemaCreateDto } from '@heseya/store-core'
 import isNil from 'lodash/isNil'
 
 import SwitchInput from '@/components/form/SwitchInput.vue'
@@ -258,8 +269,17 @@ import SelectSchemaOptions from '@/components/modules/schemas/SelectSchemaOption
 import ModalForm from '@/components/form/ModalForm.vue'
 import Selector from '@/components/Selector.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
+import AbsoluteContentLangSwitch from '@/components/lang/AbsoluteContentLangSwitch.vue'
+import PublishedLangsForm from '@/components/lang/PublishedLangsForm.vue'
+import CurrencyPriceForm from '@/components/CurrencyPriceForm.vue'
 
-import { CLEAR_FORM, CLEAR_OPTION } from '@/consts/schemaConsts'
+import {
+  CLEAR_SCHEMA,
+  CLEAR_SCHEMA_OPTION,
+  CLEAR_SCHEMA_OPTION_TRANSLATION,
+  CLEAR_SCHEMA_TRANSLATION,
+} from '@/consts/schemaConsts'
+import { mapPricesToDto } from '@/utils/currency'
 
 export default defineComponent({
   components: {
@@ -271,6 +291,9 @@ export default defineComponent({
     ModalForm,
     Selector,
     MetadataForm,
+    AbsoluteContentLangSwitch,
+    PublishedLangsForm,
+    CurrencyPriceForm,
   },
   props: {
     schema: {
@@ -284,8 +307,8 @@ export default defineComponent({
     disabled: { type: Boolean, default: false },
   },
   data: () => ({
-    // TODO: correct SchemaComponentDto
-    form: cloneDeep(CLEAR_FORM) as any & { id?: string },
+    editedLang: 'pl',
+    form: cloneDeep(CLEAR_SCHEMA) as SchemaCreateDto & { id?: string },
     defaultOption: null as number | null,
     isUsedSchemaModalActive: false,
     usedSchemaName: '',
@@ -301,17 +324,35 @@ export default defineComponent({
         label: this.$t(`schemaTypes.${t}`) as string,
       }))
     },
+
+    formDescription: {
+      get(): string {
+        return this.form.translations[this.editedLang]?.description || ''
+      },
+      set(value: string) {
+        this.form.translations[this.editedLang].description = value
+      },
+    },
+    formName: {
+      get(): string {
+        return this.form.translations[this.editedLang]?.name || ''
+      },
+      set(value: string) {
+        this.form.translations[this.editedLang].name = value
+      },
+    },
   },
   watch: {
     defaultOption(defaultOption: number | null) {
       if (isNil(defaultOption)) return
       if (this.form.type === SchemaType.Select) {
         this.form.options = this.form.options.map((v: any) => ({ ...v, default: false }))
+        // TODO: fix typing, in this component actually default is a custom field in SchemaOptionDto
         this.form.options[defaultOption].default = true
       }
     },
     'form.type'(type: SchemaType) {
-      if (type === SchemaType.Select) this.form.options = [cloneDeep(CLEAR_OPTION)]
+      if (type === SchemaType.Select) this.form.options = [this.createEmptySchemaOption()]
       else this.form.options = []
     },
     'form.used_schemas.0'(schema: Schema) {
@@ -330,10 +371,39 @@ export default defineComponent({
     this.initSchemaForm(this.schema)
   },
   methods: {
-    initSchemaForm(schema: Schema) {
-      this.form = schema.type ? cloneDeep(schema) : cloneDeep(CLEAR_FORM)
-      this.defaultOption = isNil(this.form.default) ? null : Number(this.form.default)
+    setEditedLang(langId: string) {
+      this.editedLang = langId
+      if (!this.form?.translations?.[langId])
+        this.$set(this.form.translations, langId, { ...CLEAR_SCHEMA_TRANSLATION })
+
+      this.form.options.forEach((option: SchemaOptionDto) => {
+        if (!option.translations?.[langId])
+          this.$set(option.translations, langId, { ...CLEAR_SCHEMA_OPTION_TRANSLATION })
+      })
     },
+    initSchemaForm(schema: Schema) {
+      this.form = schema.type
+        ? cloneDeep({
+            ...schema,
+            prices: mapPricesToDto(schema.prices),
+            options: schema.options.map((o) => ({ ...o, prices: mapPricesToDto(o.prices) })),
+          })
+        : cloneDeep({
+            ...CLEAR_SCHEMA,
+            prices: this.$accessor.config.currencies.map((c) => ({ value: '0', currency: c.code })),
+            options: [this.createEmptySchemaOption()],
+          })
+      this.defaultOption = isNil(this.form.default) ? null : Number(this.form.default)
+      this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
+    },
+
+    createEmptySchemaOption() {
+      return cloneDeep({
+        ...CLEAR_SCHEMA_OPTION,
+        prices: this.$accessor.config.currencies.map((c) => ({ value: '0', currency: c.code })),
+      })
+    },
+
     isKindOfNumeric(type: SchemaType): boolean {
       return (
         type === SchemaType.Numeric ||
@@ -357,7 +427,7 @@ export default defineComponent({
         let id = ''
 
         this.form.default =
-          this.form.type === SchemaType.Select ? this.defaultOption : this.form.default
+          this.form.type === SchemaType.Select ? this.defaultOption?.toString() : this.form.default
 
         const options = this.form.options.map((opt: any) => ({
           ...opt,
@@ -404,6 +474,16 @@ export default defineComponent({
 
 <style lang="scss">
 .schema-form {
+  position: relative;
+
+  &__lang-switch {
+    left: calc(100% + 12px);
+
+    .content-lang-switch {
+      background-color: #fff;
+    }
+  }
+
   .flex {
     display: flex;
 

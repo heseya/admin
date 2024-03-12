@@ -219,6 +219,15 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/settings/currencies',
+      name: 'Currencies',
+      component: () => import('./views/settings/Currencies.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [],
+      },
+    },
+    {
       path: '/settings/banners/:id',
       name: 'BannersView',
       component: () => import('./views/banners/view.vue'),
@@ -297,6 +306,16 @@ const router = new VueRouter({
         permissions: [Permissions.ProductSets.ShowDetails],
       },
     },
+    {
+      path: '/collections/:id/products',
+      name: 'ProductSets Products View',
+      component: () => import('./views/productSets/Products.vue'),
+      meta: {
+        returnUrl: '/collections',
+        requiresAuth: true,
+        permissions: [Permissions.ProductSets.ShowDetails],
+      },
+    },
 
     {
       path: '/settings/attributes',
@@ -351,15 +370,6 @@ const router = new VueRouter({
       meta: {
         requiresAuth: true,
         permissions: [Permissions.Tags.Show],
-      },
-    },
-    {
-      path: '/settings/package-templates',
-      name: 'PackageTemplates',
-      component: () => import('./views/settings/PackageTemplates.vue'),
-      meta: {
-        requiresAuth: true,
-        permissions: [Permissions.Packages.Show],
       },
     },
     {
@@ -426,6 +436,16 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/settings/languages',
+      name: 'Languages',
+      component: () => import('./views/languages/index.vue'),
+      meta: {
+        requiresAuth: true,
+        // all authenticated users can show languages
+        // permissions: [Permissions.Languages.Show],
+      },
+    },
+    {
       path: '/settings/roles',
       name: 'Roles',
       component: () => import('./views/roles/index.vue'),
@@ -442,6 +462,25 @@ const router = new VueRouter({
         returnUrl: '/settings/roles',
         requiresAuth: true,
         permissions: [Permissions.Roles.ShowDetails],
+      },
+    },
+    {
+      path: '/settings/sales-channels',
+      name: 'SalesChannels',
+      component: () => import('./views/salesChannels/index.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [],
+      },
+    },
+    {
+      path: '/settings/sales-channels/:id',
+      name: 'SalesChannelsView',
+      component: () => import('./views/salesChannels/view.vue'),
+      meta: {
+        returnUrl: '/settings/sales-channels',
+        requiresAuth: true,
+        permissions: [],
       },
     },
     {

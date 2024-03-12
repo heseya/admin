@@ -95,7 +95,7 @@ export default defineComponent({
 
       this.$router.push({
         path: 'media',
-        query: { page: undefined, ...queryFilters },
+        query: { ...queryFilters, page: undefined },
       })
     },
     clearFilters(): void {

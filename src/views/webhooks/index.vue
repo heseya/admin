@@ -146,7 +146,7 @@ export default defineComponent({
 
       this.$router.push({
         path: 'webhooks',
-        query: { page: undefined, ...queryFilters },
+        query: { ...queryFilters, page: undefined },
       })
     },
 

@@ -31,20 +31,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { localeChanged } from 'vee-validate'
-import { LOCALE_STORAGE_KEY } from '@/consts/i18n'
 
 export default defineComponent({
   watch: {
     '$root.$i18n.locale'(locale: string) {
-      window.localStorage.setItem(LOCALE_STORAGE_KEY, locale)
+      this.$accessor.config.SET_UI_LANGUAGE(locale)
       this.$i18n.locale = locale
       localeChanged()
     },
   },
 })
 </script>
-
-<style lang="scss" scoped>
-.lang-switch {
-}
-</style>

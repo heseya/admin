@@ -3,6 +3,7 @@ import { SeoCheckModelType, SeoMetadata } from '@heseya/store-core'
 
 import { sdk } from '../api'
 import { UUID } from '@/interfaces/UUID'
+import { GLOBAL_QUERY_PARAMS } from './generator'
 
 const state = () => ({
   error: null as null | Error,
@@ -30,7 +31,7 @@ const actions = actionTree(
     async get({ commit }) {
       commit('SET_ERROR', null)
       try {
-        const seo = await sdk.GlobalSeo.get()
+        const seo = await sdk.GlobalSeo.get(GLOBAL_QUERY_PARAMS)
 
         commit('SET_SEO', seo)
 
@@ -43,7 +44,7 @@ const actions = actionTree(
     async update({ commit }, payload: SeoMetadata) {
       commit('SET_ERROR', null)
       try {
-        const updatedSeo = await sdk.GlobalSeo.update(payload)
+        const updatedSeo = await sdk.GlobalSeo.update(payload, GLOBAL_QUERY_PARAMS)
         commit('SET_SEO', updatedSeo)
         return updatedSeo
       } catch (e: any) {

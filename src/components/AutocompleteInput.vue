@@ -63,6 +63,7 @@ import { api } from '@/api'
 import Empty from '@/components/layout/Empty.vue'
 import { UUID } from '@/interfaces/UUID'
 import { SelectType } from '@/enums/select'
+import { stringifyQueryParams } from '@/utils/stringifyQuery'
 
 interface BaseItem {
   id: UUID
@@ -145,13 +146,13 @@ export default defineComponent({
     options(): BaseItem[] {
       if (this.mode === this.SelectType.Multiple)
         return (
-          uniqBy([...this.multiOptionsIds, ...this.searchedOptions], 'id').filter(
+          uniqBy([...this.multiOptionsIds, ...this.searchedOptions], this.propMode || 'id').filter(
             (item) => !this.bannedSetIds.includes(item.id),
           ) || []
         )
       else
         return (
-          uniqBy([...this.searchedOptions], 'id').filter(
+          uniqBy([...this.searchedOptions], this.propMode || 'id').filter(
             (item) => !this.bannedSetIds.includes(item.id),
           ) || []
         )
@@ -186,13 +187,12 @@ export default defineComponent({
       }
     },
 
-    async fetchItems(query: string = '') {
+    async fetchItems(search: string = '') {
       this.isLoading = true
+      const query = stringifyQueryParams({ search, limit: this.limit, lang_fallback: 'any' })
       const {
         data: { data: data },
-      } = await api.get<{ data: BaseItem[] }>(
-        `/${this.modelUrl}?search=${query}&limit=${this.limit}`,
-      )
+      } = await api.get<{ data: BaseItem[] }>(`/${this.modelUrl}${query}`)
 
       this.searchedOptions = data
 

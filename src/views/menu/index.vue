@@ -12,11 +12,13 @@
           <legend class="menu-items__title">
             {{ $t('options') }}
           </legend>
-          <draggable
+          <Draggable
             class="dragArea list-group menu-items__inactive"
             :list="availableItems"
             :move="checkMove"
             :group="{ name: 'menu-items' }"
+            :force-fallback="true"
+            :scroll-sensitivity="200"
           >
             <div v-for="item in availableItems" :key="item.id" v-can="item.can">
               <list-item :key="item.id">
@@ -36,18 +38,20 @@
                 {{ $t(item.label) }}
               </list-item>
             </div>
-          </draggable>
+          </Draggable>
         </div>
         <div class="menu-items__container">
           <legend class="menu-items__title">
             {{ $t('menu') }}
           </legend>
-          <draggable
+          <Draggable
             class="dragArea list-group menu-items__active"
             handle=".draggable"
             :move="checkMove"
             :list="menu"
             :group="{ name: 'menu-items' }"
+            :force-fallback="true"
+            :scroll-sensitivity="200"
           >
             <div v-for="item in menu" :key="item.id">
               <list-item
@@ -80,7 +84,7 @@
                 class="menu-items__spacer"
               ></div>
             </div>
-          </draggable>
+          </Draggable>
         </div>
       </div>
       <hr />

@@ -20,8 +20,12 @@
     "continue": "Kontynuuj",
     "visible": "Widoczny",
     "hidden": "Ukryty",
+    "available": "Dostępny",
     "reset": "Przywróć domyślne",
     "confirmLeave": "Czy na pewno chcesz wyjść? Masz niezapisane zmiany!",
+    "price": "Cena",
+    "net": "Netto",
+    "gross": "Brutto",
     "form": {
       "name": "Nazwa",
       "description": "Opis",
@@ -68,9 +72,12 @@
     "roles": "Role",
     "apps": "Aplikacje",
     "webhooks": "Webhooki",
+    "languages": "Języki",
     "banners": "Bannery",
-    "attributes": "Cechy",
-    "media": "Media"
+    "attributes": "Atrybuty",
+    "media": "Media",
+    "currencies": "Waluty",
+    "salesChannels": "Kanały sprzedaży"
   },
   "attributeTypes": {
     "single-option": "Tekstowy jednokrotnego wyboru",
@@ -133,7 +140,8 @@
     "positive": "To pole musi być większe od zera",
     "notNegative": "To pole nie może być mniejsze od 0",
     "nonZero": "To pole nie może być równe 0",
-    "lessThan": "Wartość musi być mniejsza bądź równa od {target}",
+    "lessThan": "Wartość musi być mniejsza od {target}",
+    "lessOrEqualThan": "Wartość musi być mniejsza bądź równa od {target}",
     "lessThanFallback": "maksymalnej wartości",
     "idRequired": "Wymagane jest podanie ID",
     "slug": "Link może składać się tylko z małych liter, cyfr i myślników",
@@ -194,7 +202,7 @@
       "VALIDATION_REQUIRED_WITH": "Wartość pola jest wymagane i nie może być puste, jeżeli inne wskazane pola są wypełnione i nie są puste.",
       "VALIDATION_UNIQUE_ID_IN_REQUEST": "Wartości pól ID nie mogą się powtórzyć.",
       "VALIDATION_APP_UNIQUE_URL": "Link aplikacji jest identyczny z linkiem jednej z aplikacji, która jest już zainstalowana.",
-      "VALIDATION_ATTRIBUTE_OPTION_EXISTS": "Nie istnieje taka opcja dla podanej cechy.",
+      "VALIDATION_ATTRIBUTE_OPTION_EXISTS": "Nie istnieje taka opcja dla podanych atrybutów.",
       "VALIDATION_CAN_SHOW_PRIVATE_METADATA": "Użytkownik nie ma uprawnień do podglądu prywatnych metadanych.",
       "VALIDATION_CONSENT_EXISTS": "Nie istnieje zgoda o podanym ID.",
       "VALIDATION_DECIMAL": "Wartość pola musi być numerem.",
@@ -212,6 +220,7 @@
       "VALIDATION_GTE": "Wartość pola musi być większa bądź równa wartości pola {field}.",
       "VALIDATION_APP_UNIQUE_ID": "Aplikacja o podanym url jest już zainstalowana.",
       "VALIDATION_PHONE": "Wartość pola musi być poprawnym numerem telefonu",
+      "VALIDATION_EMAIL_TAKEN": "Podany adres email jest już zajęty.",
       "INTERNAL_SERVER_ERROR": "Wewnętrzny błąd serwera"
     },
     "CLIENT_ERROR": {
@@ -227,7 +236,6 @@
       "CLIENT_APP_WANTS_INVALID_PERMISSIONS": "Aplikacja żąda nieprawidłowych uprawnień.",
       "CLIENT_ADD_APP_WITHOUT_REQUIRED_PERMISSIONS": "Nie można dodać aplikacji bez wszystkich wymaganych uprawnień.",
       "CLIENT_ADD_PERMISSION_APP_DOESNT_WANT": "Nie można dodać uprawnień, których aplikacja nie przyjmuje.",
-      "CLIENT_MODEL_NOT_AUDITABLE": "Model nie podlega audytowi",
       "CLIENT_INVALID_CREDENTIALS": "Nieprawidłowe dane.",
       "CLIENT_INVALID_PASSWORD": "Nieprawidłowe hasło.",
       "CLIENT_INVALID_TOKEN": "Nieprawidłowy token.",
@@ -284,7 +292,9 @@
       "NOT_FOUND": "404: Strona nie została znaleziona",
       "UNPROCESSABLE_ENTITY": "422: Nieprocesowalna zawartość",
       "NO_ADMIN_PERMISSIONS": "Nie masz uprawnień, by zalogować się do panelu administracyjnego",
-      "INTERNAL_SERVER_ERROR": "Wewnętrzny błąd serwera"
+      "INTERNAL_SERVER_ERROR": "Wewnętrzny błąd serwera",
+      "PUBLISHING_TRANSLATION_EXCEPTION": "Nie można opublikować w języku, jeśli nie podano w nim wszystkich wymaganych treści",
+      "undefined": "Nieznany błąd, skontaktuj się z administratorem"
     },
     "SERVER_ERROR": {
       "INTERNAL_SERVER_ERROR": "500: Wewnętrzny błąd serwera",

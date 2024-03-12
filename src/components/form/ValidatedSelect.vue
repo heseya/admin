@@ -32,6 +32,7 @@ export default defineComponent({
     'mode',
     'optionFilterProp',
     'options',
+    'filterOption',
     'optionKey',
     'error',
     'size',

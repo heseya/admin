@@ -11,7 +11,12 @@
     </div>
     <empty v-if="schemas.length === 0">{{ $t('noSchemaInProduct') }}</empty>
     <list class="configurator__schemas">
-      <draggable v-model="schemas" :disabled="disabled">
+      <Draggable
+        v-model="schemas"
+        :disabled="disabled"
+        :force-fallback="true"
+        :scroll-sensitivity="200"
+      >
         <list-item
           v-for="schema in value"
           :key="schema.id"
@@ -42,7 +47,7 @@
             </div>
           </template>
         </list-item>
-      </draggable>
+      </Draggable>
     </list>
 
     <a-modal
@@ -51,14 +56,13 @@
       :footer="null"
       :title="editedSchema.id ? $t('editTitle') : $t('newTitle')"
     >
-      <modal-form v-if="isFormModalActive">
-        <SchemaForm
-          :schema="editedSchema"
-          :current-product-schemas="value"
-          :disabled="disabled"
-          @submit="updateSchema"
-        />
-      </modal-form>
+      <SchemaForm
+        v-if="isFormModalActive"
+        :schema="editedSchema"
+        :current-product-schemas="value"
+        :disabled="disabled"
+        @submit="updateSchema"
+      />
     </a-modal>
 
     <a-modal v-model="isModalActive" width="800px" :footer="null">

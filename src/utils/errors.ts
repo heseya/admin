@@ -45,7 +45,10 @@ export const formatApiError = (error: ApiError | Error) => {
   }
 
   if (responseStatus === 500) {
-    return { title: i18n.t('errors.SERVER_ERROR.INTERNAL_SERVER_ERROR') as string, messages: [] }
+    return {
+      title: i18n.t('errors.SERVER_ERROR.INTERNAL_SERVER_ERROR') as string,
+      messages: [error.response?.data?.message || ''],
+    }
   }
 
   const fallbackMessage = i18n.t(`errors.${errorType}.${responseData?.key}`) as string

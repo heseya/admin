@@ -16,8 +16,8 @@ import {
 
 export const EMPTY_ORDER_VALUE_FORM: OrderValueDiscountConditionDto = {
   type: DiscountConditionType.OrderValue,
-  min_value: 0,
-  max_value: 0,
+  min_values: [],
+  max_values: [],
   include_taxes: true,
   is_in_range: true,
 }

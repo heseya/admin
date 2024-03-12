@@ -51,11 +51,8 @@
       "list": "listy"
     },
     "form": {
-      "price": "Cena brutto",
       "tags": "Tagi",
-      "public": "Widoczność",
-      "shippingDigital": "Wysyłka cyfrowa",
-      "available": "Dostępny"
+      "shippingDigital": "Wysyłka cyfrowa"
     }
   },
   "en": {
@@ -67,11 +64,8 @@
       "list": "list"
     },
     "form": {
-      "price": "Price (gross)",
       "tags": "Tags",
-      "public": "Visibility",
-      "shippingDigital": "Digital shipping",
-      "available": "Available"
+      "shippingDigital": "Digital shipping"
     }
   }
 }
@@ -91,7 +85,6 @@ import ProductsFilter, {
 import PaginatedList from '@/components/PaginatedList.vue'
 
 import { formatFilters } from '@/utils/utils'
-import { ALL_FILTER_VALUE } from '@/consts/filters'
 import { TableConfig } from '@/interfaces/CmsTable'
 import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 import UpdatePriceButton from '@/components/modules/products/UpdatePriceButton.vue'
@@ -100,7 +93,7 @@ const LOCAL_STORAGE_KEY = 'products-list-view'
 
 export default defineComponent({
   metaInfo(this: any) {
-    return { title: this.$t('title') as string }
+    return { title: this.$t('title').toString() }
   },
   components: {
     ProductTile,
@@ -125,28 +118,46 @@ export default defineComponent({
     filters: cloneDeep(EMPTY_PRODUCT_FILTERS),
     listView: false,
   }),
+
   computed: {
+    /**
+     * If all sales channels have a VAT rate equal to 0, we can surlly assume that all prices are gross.
+     */
+    priceLabel(): string {
+      return `${this.$t('common.price')} ${this.$t(
+        this.$accessor.config.allPricesGross ? 'common.gross' : 'common.net',
+      )
+        .toString()
+        .toLowerCase()}`
+    },
+
     tableConfig(): TableConfig<Product> {
       return {
         headers: [
           { key: 'cover', label: '', width: '60px' },
-          { key: 'name', label: this.$t('common.form.name') as string, sortable: true },
-          { key: 'tags', label: this.$t('form.tags') as string, width: '0.6fr' },
-          { key: 'price', label: this.$t('form.price') as string, width: '0.6fr', sortable: true },
+          { key: 'name', label: this.$t('common.form.name').toString(), sortable: true },
+          { key: 'tags', label: this.$t('form.tags').toString(), width: '0.6fr' },
+          {
+            key: 'price',
+            label: this.priceLabel,
+            width: '0.6fr',
+            sortable: true,
+            sortKey: () => `price:${this.$accessor.config.currency}`,
+          },
           {
             key: 'public',
-            label: this.$t('form.public') as string,
+            label: this.$t('common.visible').toString(),
             width: '0.4fr',
             sortable: true,
           },
           {
             key: 'available',
-            label: this.$t('form.available') as string,
+            label: this.$t('common.available').toString(),
             width: '0.4fr',
           },
           {
             key: 'shipping_digital',
-            label: this.$t('form.shippingDigital') as string,
+            label: this.$t('form.shippingDigital').toString(),
             width: '0.4fr',
           },
           { key: 'action', label: '', width: '64px' },
@@ -155,39 +166,48 @@ export default defineComponent({
     },
     fileConfig(): XlsxFileConfig<Product> {
       return {
-        name: this.$t('title') as string,
+        name: this.$t('title').toString(),
         headers: [
           { key: 'id', label: 'ID' },
-          { key: 'name', label: this.$t('common.form.name') as string },
-          { key: 'price', label: this.$t('form.price') as string },
+          { key: 'name', label: this.$t('common.form.name').toString() },
+          { key: 'price' as any, label: this.priceLabel },
           {
             key: 'tags',
-            label: this.$t('form.tags') as string,
+            label: this.$t('form.tags').toString(),
             format: (v: Tag[]) => v.map((tag) => tag.name).join(', '),
           },
           {
             key: 'public',
-            label: this.$t('form.public') as string,
-            format: (v: boolean) => (v ? this.$t('common.yes') : this.$t('common.no')) as string,
+            label: this.$t('common.visible').toString(),
+            format: (v: boolean) => (v ? this.$t('common.yes') : this.$t('common.no')).toString(),
           },
 
           {
             key: 'available',
-            label: this.$t('form.available') as string,
-            format: (v: boolean) => (v ? this.$t('common.yes') : this.$t('common.no')) as string,
+            label: this.$t('form.available').toString(),
+            format: (v: boolean) => (v ? this.$t('common.yes') : this.$t('common.no')).toString(),
           },
           {
             key: 'shipping_digital',
-            label: this.$t('form.shippingDigital') as string,
-            format: (v: boolean) => (v ? this.$t('common.yes') : this.$t('common.no')) as string,
+            label: this.$t('form.shippingDigital').toString(),
+            format: (v: boolean) => (v ? this.$t('common.yes') : this.$t('common.no')).toString(),
           },
         ],
       }
     },
   },
+
   watch: {
     listView(listView: boolean) {
       window.localStorage.setItem(LOCAL_STORAGE_KEY, String(Number(listView)))
+    },
+
+    '$accessor.config.currency'() {
+      // Removes products sort key when currency changes
+      this.filters.sort = this.filters.sort
+        ?.split(',')
+        .filter((s) => !s.startsWith('price:'))
+        .join(',')
     },
   },
 
@@ -212,12 +232,13 @@ export default defineComponent({
     } = this.$route.query
     this.filters.sets = (Array.isArray(sets) ? (sets as string[]) : [sets]).filter(Boolean)
     this.filters.tags = (Array.isArray(tags) ? (tags as string[]) : [tags]).filter(Boolean)
-    this.filters.public = (isPublic as string) || ALL_FILTER_VALUE
-    this.filters.available = (available as string) || ALL_FILTER_VALUE
-    this.filters.has_cover = (hasCover as string) || ALL_FILTER_VALUE
-    this.filters.has_items = (hasItems as string) || ALL_FILTER_VALUE
-    this.filters.has_schemas = (hasSchemas as string) || ALL_FILTER_VALUE
-    this.filters.shipping_digital = (shippingDigital as string) || ALL_FILTER_VALUE
+    this.filters.public = (isPublic as string) || EMPTY_PRODUCT_FILTERS.public
+    this.filters.available = (available as string) || EMPTY_PRODUCT_FILTERS.available
+    this.filters.has_cover = (hasCover as string) || EMPTY_PRODUCT_FILTERS.has_cover
+    this.filters.has_items = (hasItems as string) || EMPTY_PRODUCT_FILTERS.has_items
+    this.filters.has_schemas = (hasSchemas as string) || EMPTY_PRODUCT_FILTERS.has_schemas
+    this.filters.shipping_digital =
+      (shippingDigital as string) || EMPTY_PRODUCT_FILTERS.shipping_digital
 
     this.listView = !!+(window.localStorage.getItem(LOCAL_STORAGE_KEY) || 0)
   },
@@ -229,7 +250,7 @@ export default defineComponent({
 
       this.$router.push({
         path: 'products',
-        query: { page: undefined, ...queryFilters },
+        query: { ...queryFilters, page: undefined },
       })
     },
     clearFilters() {

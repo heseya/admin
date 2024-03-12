@@ -1,11 +1,11 @@
 {
   "name": "store-admin",
-  "version": "5.3.1",
+  "version": "6.0.0",
   "private": true,
   "description": "Admin panel for Heseya Store API",
   "author": "Heseya",
   "scripts": {
-    "dev": "vite --port 8080",
+    "dev": "vite --port 8080 --force",
     "serve": "yarn dev",
     "build": "vite build",
     "preview": "vite preview",
@@ -15,10 +15,11 @@
     "lint:eslint": "eslint --ext .js,.ts,.vue ./src",
     "lint:vue": "vue-tsc --noEmit",
     "lint": "yarn lint:eslint && yarn lint:vue",
-    "lint:eslint:fix": "eslint --ext .js,.ts,.vue --fix ./src"
+    "lint:eslint:fix": "eslint --ext .js,.ts,.vue --fix ./src",
+    "postinstall": "patch-package"
   },
   "dependencies": {
-    "@heseya/store-core": "5.3.0",
+    "@heseya/store-core": "6.0.0",
     "@sentry/tracing": "^7.6.0",
     "@sentry/vue": "^7.6.0",
     "ant-design-vue": "^1.7.8",
@@ -32,6 +33,8 @@
     "date-fns": "^2.28.0",
     "flat": "^5.0.2",
     "lodash": "^4.17.21",
+    "patch-package": "^8.0.0",
+    "postinstall-postinstall": "^2.1.0",
     "qr-scanner": "^1.4.1",
     "register-service-worker": "^1.7.2",
     "slugify": "^1.6.5",
@@ -47,7 +50,6 @@
     "vue-meta": "^2.4.0",
     "vue-router": "^3.5.4",
     "vue-toast-notification": "^0.6.3",
-    "vue-typed-mixins": "^0.2.0",
     "vue-xlsx": "^0.2.1",
     "vuedraggable": "^2.24.3",
     "vuex": "^3.6.2",

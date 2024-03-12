@@ -7,7 +7,7 @@
 
     <main class="app__content">
       <transition name="fade" mode="out-in">
-        <router-view :key="$route.path" />
+        <router-view :key="viewKey" />
       </transition>
     </main>
 
@@ -39,7 +39,7 @@
 import { defineComponent } from 'vue'
 import { first } from 'lodash'
 import pkg from '../package.json'
-import { init as initMicroApps, onMounted, openCommunicationChannel } from 'bout'
+import { init as initMicroApps } from 'bout'
 
 import DesktopNavigation from './components/root/DesktopNavigation.vue'
 import MobileNavigation from './components/root/MobileNavigation.vue'
@@ -50,7 +50,6 @@ import FloatingQrScanner from './components/modules/qrCode/FloatingScanner.vue'
 import OfflineBanner from './components/root/OfflineBanner.vue'
 
 import { onTokensSync } from './utils/authSync'
-import { getApiURL } from './utils/api'
 
 export default defineComponent({
   metaInfo: {
@@ -69,17 +68,14 @@ export default defineComponent({
     FloatingQrScanner,
   },
   computed: {
+    viewKey(): string {
+      return `${this.$accessor.config.apiLanguage}:${this.$route.path}`
+    },
     isLoading(): boolean {
       return this.$accessor.loading
     },
     isNavHidden(): boolean {
       return !!this.$route.meta?.hiddenNav || false
-    },
-    tokenChannel() {
-      return openCommunicationChannel('Token')
-    },
-    mainChannel() {
-      return openCommunicationChannel('Main')
     },
     currentYear(): string {
       return new Date().getFullYear().toString()
@@ -93,37 +89,15 @@ export default defineComponent({
     '$accessor.auth.permissionsError'(_permissionsError) {
       this.$toast.error(this.$t('noPermissionError') as string)
     },
-
-    '$accessor.auth.getIdentityToken'(token: string) {
-      this.tokenChannel.emit('set', token)
-    },
-
-    '$i18n.locale'(locale: string) {
-      this.mainChannel.emit('uiLanguage:set', locale)
-    },
   },
   created() {
     initMicroApps()
     this.$accessor.config.fetchSettings()
+    this.$accessor.config.fetchCurrencies()
+    this.$accessor.salesChannels.fetch()
+    this.$accessor.config.initLanguages()
     this.$accessor.menuItems.initMicrofrontendMenuItems()
-
     if (this.$accessor.auth.isLogged) this.$accessor.auth.fetchProfile()
-
-    // MicroFrontend Events Start
-    onMounted(() => {
-      this.mainChannel.emit('init', {
-        coreUrl: getApiURL(),
-        token: this.$accessor.auth.getIdentityToken,
-        user: this.$accessor.auth.user,
-        uiLanguage: this.$i18n.locale,
-      })
-    })
-
-    this.tokenChannel.on<undefined>('refresh', async () => {
-      const { identityToken } = await this.$accessor.auth.refreshToken()
-      return identityToken
-    })
-    // MicroFrontend Events End
 
     // MultiTabs Token Sync Start
     onTokensSync(async (tokens) => {

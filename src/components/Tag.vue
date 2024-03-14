@@ -92,6 +92,15 @@ export default defineComponent({
     }
   }
 
+  &--warning {
+    background-color: var(--orange-color-200);
+    color: var(--orange-color-500);
+
+    > .bx {
+      background-color: var(--orange-color-500);
+    }
+  }
+
   &--primary {
     background-color: var(--primary-color-100);
     color: var(--primary-color-500);

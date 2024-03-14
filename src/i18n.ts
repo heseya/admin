@@ -1,24 +1,16 @@
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
-import { LOCALE_STORAGE_KEY } from './consts/i18n'
+import { getDefaultUiLanguage } from './utils/i18n'
+import { accessor } from './store'
 
 // Locales
 import en from '@/locales/en.json'
 import pl from '@/locales/pl.json'
 
-const getDefaultUiLanguage = () => {
-  const browserLang = window.navigator.language
-  if (browserLang.includes('pl')) return 'pl'
-  return 'en'
-}
-
 Vue.use(VueI18n)
 
-const i18n = new VueI18n({
-  locale:
-    import.meta.env.VITE_I18N_LOCALE ||
-    window.localStorage.getItem(LOCALE_STORAGE_KEY) ||
-    getDefaultUiLanguage(),
+export default new VueI18n({
+  locale: import.meta.env.VITE_I18N_LOCALE || accessor.config.uiLanguage || getDefaultUiLanguage(),
   fallbackLocale: (import.meta.env.VITE_I18N_FALLBACK_LOCALE as string) || 'pl', // TODO: change to 'en' when all translations are done
   messages: {
     pl,
@@ -45,5 +37,3 @@ const i18n = new VueI18n({
     },
   },
 })
-
-export default i18n

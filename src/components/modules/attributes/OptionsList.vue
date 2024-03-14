@@ -1,5 +1,7 @@
 <template>
   <div class="attributes-options-form">
+    <Loading :active="isLoading" />
+
     <div class="attributes-options-form__header">
       <h4>{{ $t('title') }}</h4>
       <icon-button
@@ -14,12 +16,28 @@
       </icon-button>
     </div>
 
-    <div v-if="options.length" class="attributes-options-form__content">
+    <Draggable
+      v-if="options.length"
+      :value="options"
+      handle=".reorder-handle"
+      class="attributes-options-form__content"
+      :force-fallback="true"
+      :scroll-sensitivity="200"
+      @input="handleReorder"
+    >
       <div
         v-for="(option, i) in options"
         :key="option.id || i"
         class="attributes-options-form__option"
       >
+        <DraggableHandle
+          btn-class="attributes-options-form__reorder reorder-handle"
+          @move-to-top="handleReorderToIndex(option, 0)"
+          @move-one-up="handleReorderToIndex(option, i - 1)"
+          @move-one-down="handleReorderToIndex(option, i + 1)"
+          @move-to-bottom="handleReorderToIndex(option, options.length - 1)"
+        />
+
         <span class="attributes-options-form__option-value">
           {{ option.value_number || option.value_date || option.name }}
           <template v-if="option.value_number">({{ option.name }})</template>
@@ -47,7 +65,7 @@
           </pop-confirm>
         </template>
       </div>
-    </div>
+    </Draggable>
 
     <empty v-else>{{ $t('empty') }}</empty>
 
@@ -59,7 +77,8 @@
       @input="fetchOptions"
     />
 
-    <options-edit-form
+    <OptionsEditForm
+      v-if="editedOption"
       v-model="editedOption"
       :attribute-id="attributeId"
       :type="type"
@@ -71,7 +90,7 @@
 <i18n lang="json">
 {
   "pl": {
-    "title": "Opcje cechy",
+    "title": "Opcje atrybutów",
     "add": "Dodaj opcję",
     "empty": "Brak opcji",
     "deleteText": "Czy na pewno chcesz usunąć tę opcję?",
@@ -96,21 +115,32 @@ import {
   AttributeType,
   HeseyaPaginationMeta,
 } from '@heseya/store-core'
+import Draggable from 'vuedraggable'
 
 import Empty from '@/components/layout/Empty.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import OptionsEditForm from './OptionsEditForm.vue'
 import { formatApiNotificationError } from '@/utils/errors'
 import Pagination from '@/components/cms/Pagination.vue'
+import Loading from '@/components/layout/Loading.vue'
+import DraggableHandle from '@/components/cms/DraggableHandle.vue'
 
 const EMPTY_FORM: AttributeOptionDto = {
-  name: '',
   value_number: null,
   value_date: null,
+  translations: {},
 }
 
 export default defineComponent({
-  components: { Empty, PopConfirm, OptionsEditForm, Pagination },
+  components: {
+    Empty,
+    PopConfirm,
+    OptionsEditForm,
+    Pagination,
+    Draggable,
+    Loading,
+    DraggableHandle,
+  },
   props: {
     attributeId: {
       type: String,
@@ -127,6 +157,7 @@ export default defineComponent({
   },
 
   data: () => ({
+    isLoading: false,
     editedOption: null as AttributeOptionDto | null,
   }),
 
@@ -150,19 +181,38 @@ export default defineComponent({
 
   methods: {
     async fetchOptions(page: number) {
-      this.$accessor.startLoading()
+      this.isLoading = true
       await this.$accessor.attributes.getOptions({
         attributeId: this.attributeId,
         params: {
-          limit: 24,
+          limit: 48,
           page,
         },
       })
-      this.$accessor.stopLoading()
+      this.isLoading = false
+    },
+
+    handleReorderToIndex(option: AttributeOption, index: number) {
+      if (index < 0) index = 0
+      if (index >= this.options.length) index = this.options.length - 1
+      const options = [...this.options]
+      options.splice(options.indexOf(option), 1)
+      options.splice(index, 0, option)
+      this.handleReorder(options)
+    },
+
+    async handleReorder(options: AttributeOption[]) {
+      this.isLoading = true
+      await this.$accessor.attributes.reorderOptions({
+        parentId: this.attributeId,
+        ids: options.map((option) => option?.id).filter(Boolean),
+      })
+      await this.fetchOptions(this.optionsMeta.currentPage)
+      this.isLoading = false
     },
 
     async removeOption(option: AttributeOption) {
-      this.$accessor.startLoading()
+      this.isLoading = true
       try {
         await this.$accessor.attributes.deleteOption({
           attributeId: this.attributeId,
@@ -172,7 +222,7 @@ export default defineComponent({
       } catch (e: any) {
         this.$toast.error(formatApiNotificationError(e))
       }
-      this.$accessor.stopLoading()
+      this.isLoading = false
     },
 
     openAddOptionModal() {
@@ -180,7 +230,10 @@ export default defineComponent({
     },
 
     openEditOptionModal(option: AttributeOption) {
-      this.editedOption = cloneDeep(option)
+      this.editedOption = {
+        ...cloneDeep(option),
+        translations: cloneDeep(option.translations || {}),
+      }
     },
   },
 })
@@ -194,6 +247,10 @@ export default defineComponent({
     justify-content: space-between;
   }
 
+  &__content {
+    position: relative;
+  }
+
   &__pagination {
     margin-top: 12px;
   }
@@ -201,7 +258,7 @@ export default defineComponent({
   &__option {
     display: flex;
     align-items: center;
-    transition: 0.3s;
+
     padding: 2px 8px;
     border-radius: 4px;
 
@@ -212,6 +269,12 @@ export default defineComponent({
     > *:not(:last-child) {
       margin-right: 8px;
     }
+  }
+
+  &__reorder {
+    cursor: move;
+    color: $gray-color-500;
+    margin-bottom: -1px;
   }
 
   &__option-value {

@@ -37,13 +37,13 @@
     </autocomplete-input>
 
     <boolean-select
-      v-model="local.available"
-      :label="$t('available').toString()"
+      v-model="local.public"
+      :label="$t('public').toString()"
       @change="debouncedSearch"
     />
     <boolean-select
-      v-model="local.public"
-      :label="$t('public').toString()"
+      v-model="local.available"
+      :label="$t('available').toString()"
       @change="debouncedSearch"
     />
     <boolean-select
@@ -68,16 +68,14 @@
     />
 
     <range-input
-      :value="{ min: local['price.min'], max: local['price.max'] }"
+      :value="{
+        min: local['price.min'] || '',
+        max: local['price.max'] || '',
+      }"
       :label="$t('price').toString()"
       :addon-after="$accessor.config.currency"
       :min="0"
-      @input="
-        (v) => {
-          updateRangeValue('price', v)
-          debouncedSearch()
-        }
-      "
+      @input="(v) => updatePriceRangeValue(v)"
     />
 
     <attribute-filter-input
@@ -152,8 +150,12 @@ export interface ProductFilers extends Record<string, string | string[] | undefi
   available: string
   public: string
   has_cover: string
+  has_items: string
+  has_schemas: string
+  shipping_digital: string
   'price.min'?: string
   'price.max'?: string
+  'price.currency'?: string
   sort?: string
 }
 
@@ -162,13 +164,18 @@ export const EMPTY_PRODUCT_FILTERS: ProductFilers = {
   sets: [ALL_FILTER_VALUE],
   tags: [ALL_FILTER_VALUE],
   available: ALL_FILTER_VALUE,
-  public: ALL_FILTER_VALUE,
+  /**
+   * this forces to show only public products by default
+   * TODO: maybe we should do this conditionally? (***REMOVED*** needs it)
+   */
+  public: '1',
   has_cover: ALL_FILTER_VALUE,
   has_items: ALL_FILTER_VALUE,
   has_schemas: ALL_FILTER_VALUE,
   shipping_digital: ALL_FILTER_VALUE,
   'price.min': undefined,
   'price.max': undefined,
+  'price.currency': undefined,
   sort: undefined,
 }
 
@@ -199,6 +206,13 @@ export default defineComponent({
       },
       deep: true,
     },
+    '$accessor.config.currency'() {
+      // Update currency in filters when it changes
+      this.updatePriceRangeValue({
+        min: this.local['price.min'] || '',
+        max: this.local['price.max'] || '',
+      })
+    },
   },
   created() {
     this.fetchCustomFilters()
@@ -207,6 +221,16 @@ export default defineComponent({
     this.local = { ...this.local, ...this.filters }
   },
   methods: {
+    updatePriceRangeValue(range: { min: string; max: string }) {
+      this.local['price.min'] = range.min
+      this.local['price.max'] = range.max
+      // Reset currency if no min/max is set
+      this.local['price.currency'] =
+        range.min || range.max ? this.$accessor.config.currency : undefined
+
+      this.debouncedSearch()
+    },
+
     updateRangeValue(key: string, range: { min: string; max: string }) {
       this.local[`${key}.min`] = range.min
       this.local[`${key}.max`] = range.max

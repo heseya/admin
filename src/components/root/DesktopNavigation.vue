@@ -6,6 +6,7 @@
         <router-link
           v-if="item.type === MenuItemType.Link"
           :key="i"
+          v-can="item.can"
           class="nav__link"
           :to="item.to"
           :exact="item.exact"

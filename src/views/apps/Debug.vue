@@ -1,6 +1,6 @@
 <template>
   <div class="micro-app-containter">
-    <micro-frontend app-key="debug" :host="appUrl" />
+    <micro-frontend app-key="debug" :host="appUrl" :service-url="appUrl" />
   </div>
 </template>
 

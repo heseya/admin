@@ -2,6 +2,13 @@ import { PermissionsTree } from '@/consts/permissions'
 import { hasUserAccess, alertIfNoAccess } from './plugins/permissions'
 import { AccessorType } from './store'
 
+declare global {
+  interface Window {
+    updateSW: (reloadPage?: boolean) => void
+    apiUrl?: string
+  }
+}
+
 declare module 'vue' {
   import { CompatVue } from '@vue/runtime-dom'
   const Vue: CompatVue

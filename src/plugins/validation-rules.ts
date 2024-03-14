@@ -60,12 +60,25 @@ extend('less-than', {
   params: ['target'],
   validate(value, { target }: Record<string, any>) {
     const maxValue = isNumber(target) ? target : parseFloat(target)
-    return isNaN(maxValue) || value <= maxValue
+    return isNaN(maxValue) || value < maxValue
   },
   message: (_, props) => {
     const value: string = props._target_ || props.target
     const text = isNaN(Number(value)) ? (i18n.t('validation.lessThanFallback') as string) : value
     return i18n.t('validation.lessThan', { target: text }) as string
+  },
+})
+
+extend('less-or-equal-than', {
+  params: ['target'],
+  validate(value, { target }: Record<string, any>) {
+    const maxValue = isNumber(target) ? target : parseFloat(target)
+    return isNaN(maxValue) || value <= maxValue
+  },
+  message: (_, props) => {
+    const value: string = props._target_ || props.target
+    const text = isNaN(Number(value)) ? (i18n.t('validation.lessThanFallback') as string) : value
+    return i18n.t('validation.lessOrEqualThan', { target: text }) as string
   },
 })
 
@@ -165,14 +178,17 @@ extend('time-same-or-before', {
 
 extend('price-ranges-duplicates', {
   message: () => i18n.t('validation.priceRangesDuplicates') as string,
-  validate: (priceRanges: ShippingMethodPriceRangeDto[]) => {
+  params: ['target'],
+  validate: (priceRanges: ShippingMethodPriceRangeDto[], { target }: Record<string, any>) => {
     const startValues: number[] = []
 
-    return priceRanges.every(({ start }) => {
-      const isDuplicate = startValues.includes(+start)
-      startValues.push(+start)
-      return !isDuplicate
-    })
+    return priceRanges
+      .filter(({ currency }) => currency === target)
+      .every(({ start }) => {
+        const isDuplicate = startValues.includes(+start)
+        startValues.push(+start)
+        return !isDuplicate
+      })
   },
 })
 

@@ -27,7 +27,7 @@
       >
         <modal-form>
           <validated-input
-            v-model="editedItem.name"
+            v-model="editedName"
             :disabled="!canModify"
             rules="required"
             :label="$t('common.form.name')"
@@ -41,6 +41,11 @@
             type="color"
             @input="setColor"
           />
+
+          <br />
+          <PublishedLangsForm v-model="editedItem.published" />
+
+          <AbsoluteContentLangSwitch :value="editedLang" @input="setEditedLang" />
         </modal-form>
         <template #footer>
           <div class="row">
@@ -92,7 +97,7 @@
 import { defineComponent } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { clone } from 'lodash'
-import { Tag } from '@heseya/store-core'
+import { TagCreateDto } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import ModalForm from '@/components/form/ModalForm.vue'
@@ -101,11 +106,13 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import Avatar from '@/components/layout/Avatar.vue'
 
 import { UUID } from '@/interfaces/UUID'
+import PublishedLangsForm from '@/components/lang/PublishedLangsForm.vue'
+import AbsoluteContentLangSwitch from '@/components/lang/AbsoluteContentLangSwitch.vue'
 
-const CLEAR_TAG: Tag = {
-  id: '',
-  name: '',
+const CLEAR_TAG: TagCreateDto & { id?: string } = {
   color: '000000',
+  published: [],
+  translations: {},
 }
 
 export default defineComponent({
@@ -119,6 +126,8 @@ export default defineComponent({
     PopConfirm,
     ValidationObserver,
     Avatar,
+    PublishedLangsForm,
+    AbsoluteContentLangSwitch,
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {
@@ -129,26 +138,50 @@ export default defineComponent({
     }
   },
   data: () => ({
+    editedLang: '',
     isModalActive: false,
-    editedItem: clone(CLEAR_TAG) as Tag,
+    editedItem: clone(CLEAR_TAG) as TagCreateDto & { id?: string },
   }),
   computed: {
     canModify(): boolean {
       return this.$can(this.editedItem.id ? this.$p.Tags.Edit : this.$p.Tags.Add)
     },
+
+    editedName: {
+      get(): string {
+        return this.editedItem.translations[this.editedLang]?.name || ''
+      },
+      set(value: string) {
+        this.editedItem.translations[this.editedLang].name = value
+      },
+    },
   },
   methods: {
-    setColor(color: string) {
-      this.editedItem.color = color.split('#')[1] ?? color
+    setEditedLang(langId: string) {
+      this.editedLang = langId
+      if (!this.editedItem.translations[langId])
+        this.$set(this.editedItem.translations, langId, { name: '' })
+    },
+
+    setColor(color?: string) {
+      this.editedItem.color = color?.split('#')[1] ?? color
     },
     openModal(id?: UUID) {
       this.isModalActive = true
       if (id) {
-        this.editedItem = this.$accessor.tags.getFromListById(id)
+        const item = this.$accessor.tags.getFromListById(id)
+        this.editedItem = {
+          ...item,
+          translations: {
+            ...item.translations,
+          },
+        }
         this.setColor(this.editedItem.color)
       } else {
         this.editedItem = clone(CLEAR_TAG)
       }
+
+      this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
     },
     async saveModal() {
       this.$accessor.startLoading()
@@ -164,6 +197,7 @@ export default defineComponent({
       this.isModalActive = false
     },
     async deleteItem() {
+      if (!this.editedItem.id) return
       this.$accessor.startLoading()
       await this.$accessor.tags.remove(this.editedItem.id)
       this.$accessor.stopLoading()

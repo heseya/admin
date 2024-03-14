@@ -28,10 +28,10 @@
               <template #title>
                 {{
                   !method.countries.length
-                    ? method.block_list
+                    ? method.is_block_list_countries
                       ? $t('list.allEnabled')
                       : $t('list.allDisabled')
-                    : method.block_list
+                    : method.is_block_list_countries
                     ? $t('list.blockList')
                     : $t('list.allowList')
                 }}
@@ -48,7 +48,12 @@
         width="660px"
         :title="editedItem.id ? $t('editTitle') : $t('newTitle')"
       >
-        <ShippingMethodsForm v-model="editedItem" :countries="countries" :disabled="!canModify" />
+        <ShippingMethodsForm
+          :key="editedItem.id || 'new'"
+          v-model="editedItem"
+          :countries="countries"
+          :disabled="!canModify"
+        />
         <template v-if="selectedItem">
           <hr />
           <MetadataForm
@@ -112,7 +117,8 @@
       "basePrice": "Bazowa cena",
       "minShippingTime": "Minimalny czas dostawy",
       "maxShippingTime": "Maksymalny czas dostawy",
-      "visibility": "Widoczność"
+      "visibility": "Widoczność",
+      "paymentOnDelivery": "Za pobraniem"
     }
   },
   "en": {
@@ -137,7 +143,8 @@
       "basePrice": "Base price",
       "minShippingTime": "Minimal delivery time",
       "maxShippingTime": "Maximum delivery time",
-      "visibility": "Visibility"
+      "visibility": "Visibility",
+      "paymentOnDelivery": "Payment on delivery"
     }
   }
 }
@@ -164,6 +171,7 @@ import { UUID } from '@/interfaces/UUID'
 import { TableConfig } from '@/interfaces/CmsTable'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 import CmsTableCellList from '@/components/cms/CmsTableCellList.vue'
+import { formatPrice } from '@/utils/currency'
 
 export default defineComponent({
   metaInfo(this: any) {
@@ -220,7 +228,19 @@ export default defineComponent({
             render: (countries: ShippingMethod['countries']) => countries.map(({ name }) => name),
             wordBreak: 'break-word',
           },
-          { key: 'price', label: this.$t('headers.basePrice') as string, width: '1fr' },
+          {
+            key: 'prices',
+            label: this.$t('headers.basePrice') as string,
+            width: '1fr',
+            render: (_, method) =>
+              formatPrice(
+                method.prices.find((p) => p.currency === this.$accessor.config.currency) || {
+                  gross: '0',
+                  net: '0',
+                  currency: this.$accessor.config.currency,
+                },
+              ),
+          },
           {
             key: 'shipping_time_min',
             label: this.$t('headers.minShippingTime') as string,
@@ -232,16 +252,19 @@ export default defineComponent({
             width: '1fr',
           },
           { key: 'public', label: this.$t('headers.visibility') as string, width: '0.5fr' },
+          {
+            key: 'payment_on_delivery',
+            label: this.$t('headers.paymentOnDelivery') as string,
+            width: '0.5fr',
+          },
         ],
       }
     },
   },
   async created() {
-    this.$accessor.startLoading()
     this.$accessor.paymentMethods.fetch()
     const countries = await sdk.ShippingMethods.getCountries()
     this.countries = countries
-    this.$accessor.stopLoading()
   },
   methods: {
     openModal(id?: UUID) {
@@ -253,9 +276,10 @@ export default defineComponent({
           ...item,
           payment_methods: item.payment_methods.map(({ id }) => id),
           countries: item.countries.map(({ code }) => code),
-          price_ranges: item.price_ranges.map(({ start, prices }) => ({
-            start,
-            value: prices[0].value,
+          price_ranges: item.price_ranges.map(({ start, value }) => ({
+            start: start.gross,
+            value: value.gross,
+            currency: value.currency,
           })),
           shipping_points: item.shipping_points?.map((point) => omit(point, 'id')),
         }
@@ -263,20 +287,23 @@ export default defineComponent({
         this.selectedItem = null
         this.editedItem = {
           name: '',
-          shipping_type: ShippingType.Digital,
-          block_list: false,
+          shipping_type: ShippingType.Address,
           payment_methods: [],
+          is_block_list_countries: false,
           countries: [],
-          shipping_time_min: 0,
-          shipping_time_max: 0,
-          price_ranges: [
-            {
-              start: 0,
-              value: 0,
-            },
-          ],
+          is_block_list_products: false,
+          product_ids: [],
+          product_set_ids: [],
+          shipping_time_min: 1,
+          shipping_time_max: 3,
+          price_ranges: this.$accessor.config.currencies.map(({ code }) => ({
+            start: '0',
+            value: '0',
+            currency: code,
+          })),
           public: true,
           shipping_points: [],
+          payment_on_delivery: false,
         }
       }
     },
@@ -288,12 +315,28 @@ export default defineComponent({
 
         await this.$accessor.shippingMethods.update({
           id: this.editedItem.id,
-          item: this.editedItem,
+          item: {
+            ...this.editedItem,
+            price_ranges: this.editedItem.price_ranges.map(({ start, value, currency }) => ({
+              // Ensure this is a string
+              start: start.toString(),
+              value: value.toString(),
+              currency,
+            })),
+          },
         })
 
         this.$toast.success(this.$t('alerts.updated') as string)
       } else {
-        await this.$accessor.shippingMethods.add(this.editedItem)
+        await this.$accessor.shippingMethods.add({
+          ...this.editedItem,
+          price_ranges: this.editedItem.price_ranges.map(({ start, value, currency }) => ({
+            // Ensure this is a string
+            start: start.toString(),
+            value: value.toString(),
+            currency,
+          })),
+        })
 
         this.$toast.success(this.$t('alerts.created') as string)
       }

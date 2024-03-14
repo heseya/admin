@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="banners-view">
     <top-nav :title="!isNew ? banner.name : $t('newTitle').toString()">
       <pop-confirm
         v-if="!isNew"
@@ -18,7 +18,13 @@
       </pop-confirm>
     </top-nav>
 
-    <BannerForm ref="form" v-model="form" :disabled="isDisabled" @submit="save">
+    <BannerForm
+      ref="form"
+      v-model="form"
+      :edited-lang="editedLang"
+      :disabled="isDisabled"
+      @submit="save"
+    >
       <template v-if="selectedBanner">
         <MetadataForm
           ref="publicMeta"
@@ -36,6 +42,8 @@
         />
       </template>
     </BannerForm>
+
+    <AbsoluteContentLangSwitch :value="editedLang" @input="setEditedLang" />
   </div>
 </template>
 
@@ -69,8 +77,12 @@ import BannerForm from '@/components/modules/banners/Form.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
+import { BannerMedia } from '@heseya/store-core'
+import { TranslationsFromDto } from '@/interfaces/Translations'
+import { BannerComponentForm } from '@/interfaces/Banner'
+import AbsoluteContentLangSwitch from '@/components/lang/AbsoluteContentLangSwitch.vue'
 
-const CLEAN_FORM: Banner = {
+const CLEAN_FORM: BannerComponentForm = {
   id: '',
   name: '',
   slug: '',
@@ -78,6 +90,11 @@ const CLEAN_FORM: Banner = {
   banner_media: [],
   metadata: {},
   metadata_private: {},
+}
+
+const CLEAN_BANNER_MEDIA_TRANSLATABLE: TranslationsFromDto<BannerMedia> = {
+  title: '',
+  subtitle: '',
 }
 
 export default defineComponent({
@@ -92,8 +109,10 @@ export default defineComponent({
     PopConfirm,
     BannerForm,
     MetadataForm,
+    AbsoluteContentLangSwitch,
   },
   data: () => ({
+    editedLang: '',
     form: cloneDeep(CLEAN_FORM),
     selectedBanner: null as Banner | null,
   }),
@@ -120,7 +139,13 @@ export default defineComponent({
   watch: {
     banner(banner: Banner) {
       if (!this.isNew) {
-        this.form = cloneDeep(banner)
+        this.form = cloneDeep({
+          ...banner,
+          banner_media: banner.banner_media.map((banner) => ({
+            ...banner,
+            translations: banner.translations || {},
+          })),
+        })
         this.selectedBanner = banner
       }
     },
@@ -136,8 +161,19 @@ export default defineComponent({
       await this.$accessor.banners.get(this.id)
       this.$accessor.stopLoading()
     }
+    this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
   },
   methods: {
+    setEditedLang(langId: string) {
+      this.editedLang = langId
+      this.form.banner_media.forEach((banner) => {
+        if (!banner.translations) this.$set(banner, 'translations', {})
+
+        if (!banner.translations![langId])
+          this.$set(banner.translations!, langId, { ...CLEAN_BANNER_MEDIA_TRANSLATABLE })
+      })
+    },
+
     async save() {
       this.$accessor.startLoading()
       const successMessage = this.isNew
@@ -151,6 +187,7 @@ export default defineComponent({
         ...this.form,
         banner_media: this.form.banner_media.map((banner) => ({
           ...banner,
+          translations: banner.translations!,
           media: banner.media.map((item) => ({
             ...item,
             media: item.media.id,
@@ -192,3 +229,9 @@ export default defineComponent({
   },
 })
 </script>
+<style lang="scss" scoped>
+.banners-view {
+  position: relative;
+  margin-right: 32px;
+}
+</style>

@@ -12,6 +12,7 @@
       v-for="item in order.products"
       :key="item.id"
       :item="item"
+      :currency="order.currency"
       @show-urls="openProductUrls(item)"
     />
     <hr />
@@ -41,6 +42,7 @@
             <OrderDiscountSummary
               :discounts="order.discounts"
               :types="[DiscountTargetType.ShippingPrice]"
+              :currency="order.currency"
             />
           </info-tooltip>
         </div>
@@ -62,6 +64,7 @@
                 DiscountTargetType.OrderValue,
                 DiscountTargetType.Products,
               ]"
+              :currency="order.currency"
             />
           </info-tooltip>
         </div>
@@ -113,6 +116,7 @@
       "price": "Final price",
       "quantity": "Quantity",
       "total": "Total",
+      "currency": "Currency",
       "discounts": "Discounts",
       "isDelivered": "Delivered",
       "shippingDigital": "Digital shipping",
@@ -143,6 +147,7 @@
       "price": "Cena końcowa",
       "quantity": "Ilość",
       "total": "Wartość",
+      "currency": "Waluta",
       "discounts": "Rabaty",
       "isDelivered": "Dostarczono",
       "shippingDigital": "Dostawa cyfrowa",
@@ -187,7 +192,7 @@ export default defineComponent({
         this.order.discounts
           // Ignore shipping price discounts, they are already included in shipping price
           ?.filter((d) => d.target_type !== DiscountTargetType.ShippingPrice)
-          .map((d) => d.applied_discount)
+          .map((d) => parseFloat(d.applied_discount))
           .reduce((sum, discount) => sum + discount, 0) || 0
       )
     },
@@ -220,10 +225,6 @@ export default defineComponent({
             label: this.$t('export.price') as string,
           },
           {
-            key: 'vat_rate',
-            label: this.$t('export.vatRate') as string,
-          },
-          {
             key: 'quantity',
             label: this.$t('export.quantity') as string,
           },
@@ -232,8 +233,14 @@ export default defineComponent({
             key: 'total',
             label: this.$t('export.total') as string,
             format(_k, item) {
-              return item.price * item.quantity
+              return parseFloat(item.price) * item.quantity
             },
+          },
+          {
+            // @ts-ignore custom key
+            key: 'currency',
+            label: this.$t('export.currency') as string,
+            format: () => this.order.currency,
           },
           {
             key: 'discounts',
@@ -259,8 +266,8 @@ export default defineComponent({
     },
   },
   methods: {
-    formatCurrency(amount: number) {
-      return formatCurrency(amount, this.$accessor.config.currency)
+    formatCurrency(amount: number | string) {
+      return formatCurrency(amount, this.order.currency)
     },
     openProductUrls(item: OrderProduct) {
       this.isProductUrlsModalActive = true

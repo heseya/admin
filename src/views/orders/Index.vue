@@ -32,7 +32,7 @@
             <a-tooltip v-if="item.summary_paid > item.summary">
               <template #title>
                 {{ $t('overpaid') }}
-                <b>{{ formatCurrency(item.summary_paid - item.summary) }}</b>
+                <b>{{ formatCurrency(item.summary_paid - item.summary, item.currency) }}</b>
               </template>
               <span class="order-icon"> <i class="bx bxs-error"></i> </span>
             </a-tooltip>
@@ -45,9 +45,18 @@
             </button>
           </template>
 
-          <template #paid="{ rawValue }">
-            <span v-if="rawValue" class="order-tag success-text">{{ $t('paid') }}</span>
-            <span v-else class="order-tag danger-text">{{ $t('notpaid') }}</span>
+          <template #paid="{ rawValue, item }">
+            <span v-if="rawValue" class="order-tag success-text">{{ $t('payment.paid') }}</span>
+            <span
+              v-else-if="item?.shipping_method?.payment_on_delivery"
+              class="order-tag warning-text"
+              >{{ $t('payment.onDelivery') }}</span
+            >
+            <span v-else class="order-tag danger-text">{{ $t('payment.notPaid') }}</span>
+          </template>
+
+          <template #language="{ rawValue, value }">
+            <LangFlag :lang="rawValue" /> <small>{{ value }}</small>
           </template>
 
           <template #status="{ rawValue: { name, color } }">
@@ -64,8 +73,11 @@
   "pl": {
     "title": "Zamówienia",
     "overpaid": "Nadpłacono",
-    "paid": "Opłacone",
-    "notpaid": "Nieopłacone",
+    "payment": {
+      "paid": "Opłacone",
+      "notPaid": "Nieopłacone",
+      "onDelivery": "Za pobraniem"
+    },
     "copySuccess": "Skopiowiano do schowka",
     "form": {
       "code": "Kod zamówienia",
@@ -75,14 +87,19 @@
       "status": "Status",
       "digital_shipping": "Przesyłka cyfrowa",
       "shipping": "Przesyłka",
+      "sales_channel": "Kanał sprzedaży",
+      "language": "Język",
       "date": "Data"
     }
   },
   "en": {
     "title": "Orders",
     "overpaid": "Overpaid",
-    "paid": "Paid",
-    "notpaid": "Not paid",
+    "payment": {
+      "paid": "Paid",
+      "notPaid": "Not paid",
+      "onDelivery": "On delivery"
+    },
     "copySuccess": "Copied to clipboard",
     "form": {
       "code": "Order code",
@@ -92,6 +109,8 @@
       "status": "Status",
       "digital_shipping": "Digital shipping",
       "shipping": "Shipping",
+      "sales_channel": "Sales channel",
+      "language": "Language",
       "date": "Date"
     }
   }
@@ -117,6 +136,8 @@ import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 import { formatFilters } from '@/utils/utils'
 import { formatDate } from '@/utils/dates'
 import { formatCurrency } from '@/utils/currency'
+import LangFlag from '@/components/lang/LangFlag.vue'
+import { Language } from '@heseya/store-core'
 
 export default defineComponent({
   metaInfo(this: any) {
@@ -126,11 +147,16 @@ export default defineComponent({
     OrderFilter,
     PaginatedList,
     CmsTableRow,
+    LangFlag,
   },
   data: () => ({
     filters: { ...EMPTY_ORDER_FILTERS } as OrderFilersType,
   }),
   computed: {
+    languages(): Language[] {
+      return this.$accessor.languages.data.filter((lang) => !lang.hidden)
+    },
+
     tableConfig(): TableConfig<Order> {
       return {
         rowUrlBuilder: (order) => `/orders/${order.id}`,
@@ -141,7 +167,7 @@ export default defineComponent({
             key: 'summary',
             label: this.$t('form.summary') as string,
             sortable: true,
-            render: (v) => this.formatCurrency(v),
+            render: (v, order) => this.formatCurrency(v, order.currency),
           },
           { key: 'paid', label: this.$t('form.paid') as string, width: '0.8fr' },
           { key: 'status', label: this.$t('form.status') as string, width: '0.8fr' },
@@ -152,6 +178,16 @@ export default defineComponent({
               [r.shipping_method?.name, r.digital_shipping_method?.name]
                 .filter(Boolean)
                 .join(', ') || '-',
+          },
+          {
+            key: 'sales_channel',
+            label: this.$t('form.sales_channel') as string,
+            render: (_, r) => r.sales_channel?.name || '-',
+          },
+          {
+            key: 'language',
+            label: this.$t('form.language') as string,
+            render: (iso) => this.languages.find((l) => l.iso === iso)?.name || iso,
           },
           {
             key: 'created_at',
@@ -175,7 +211,12 @@ export default defineComponent({
           {
             key: 'paid',
             label: this.$t('form.paid') as string,
-            format: (v: boolean) => (v ? this.$t('paid') : this.$t('notpaid')) as string,
+            format: (isPaid: boolean, order) => {
+              if (isPaid) return this.$t('payment.paid').toString()
+              return order?.shipping_method?.payment_on_delivery
+                ? this.$t('payment.onDelivery').toString()
+                : this.$t('payment.notPaid').toString()
+            },
           },
           {
             key: 'status',
@@ -191,6 +232,15 @@ export default defineComponent({
             key: 'digital_shipping_method',
             label: this.$t('form.digital_shipping') as string,
             format: (v: ShippingMethod) => v?.name || '-',
+          },
+          {
+            key: 'sales_channel',
+            label: this.$t('form.sales_channel') as string,
+            format: (_, o) => o.sales_channel?.name || '-',
+          },
+          {
+            key: 'language',
+            label: this.$t('form.language') as string,
           },
           {
             key: 'created_at',
@@ -219,14 +269,14 @@ export default defineComponent({
 
       this.$router.push({
         path: 'orders',
-        query: { page: undefined, ...queryFilters },
+        query: { ...queryFilters, page: undefined },
       })
     },
     clearFilters() {
       this.makeSearch({ ...EMPTY_ORDER_FILTERS })
     },
-    formatCurrency(value: number) {
-      return formatCurrency(value, this.$accessor.config.currency)
+    formatCurrency(value: number | string, currency: string) {
+      return formatCurrency(value, currency)
     },
     async copyToClipboard(value: string) {
       await navigator.clipboard.writeText(value)

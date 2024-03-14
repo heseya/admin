@@ -2,6 +2,7 @@
   <div
     class="switch-input"
     :class="{ 'switch-input--horizontal': horizontal, [`switch-input--${type}`]: true }"
+    @click.prevent
   >
     <label
       class="switch-input__label"
@@ -42,7 +43,7 @@
 import { defineComponent } from 'vue'
 export default defineComponent({
   props: {
-    value: { type: Boolean, required: true },
+    value: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
     horizontal: { type: Boolean, default: false },
     loading: { type: Boolean, default: false },
@@ -112,16 +113,21 @@ export default defineComponent({
 
   .ant-switch {
     background-color: var(--background-color-600);
+    position: relative;
 
-    i {
-      margin-top: 4px;
+    .ant-switch-loading-icon,
+    .ant-switch-inner i {
       color: var(--font-color) !important;
+    }
+
+    .ant-switch-inner i {
+      margin-top: 4px;
     }
   }
   .ant-switch-checked {
     background-color: var(--green-color-500);
 
-    i {
+    .ant-switch-inner i {
       color: var(--white-color) !important;
     }
   }

@@ -32,15 +32,17 @@
       </pop-confirm>
     </top-nav>
 
-    <div class="coupon-view__form">
-      <validation-observer v-slot="{ handleSubmit }">
+    <div class="collection-view">
+      <AbsoluteContentLangSwitch :value="editedLang" @input="setEditedLang" />
+
+      <ValidationObserver v-slot="{ handleSubmit }">
         <form @submit.prevent="handleSubmit(save)">
-          <card>
+          <Card>
             <div class="collection-view__section">
               <div class="collection-view__drag-area">
-                <media-upload-input
+                <MediaUploadInput
                   :disabled="!canModify"
-                  :media="form.cover"
+                  :media="form.cover || undefined"
                   :file-name="$t('collectionCover').toString()"
                   @upload="changeMedia"
                 />
@@ -59,7 +61,7 @@
                 </div>
 
                 <validated-input
-                  v-model="form.name"
+                  v-model="formName"
                   rules="required"
                   :label="$t('common.form.name')"
                   :disabled="!canModify"
@@ -92,14 +94,18 @@
               </div>
             </div>
 
-            <br />
-            <attributes-select v-model="form.attributes" :disabled="!canModify" />
-            <br />
+            <template v-if="!isLoading">
+              <br />
+              <AttributesSelect v-model="form.attributes" :disabled="!canModify" />
+              <hr />
+              <PublishedLangsForm v-model="form.published" />
+              <br />
+            </template>
 
             <small class="label">{{ $t('common.form.description') }}</small>
             <rich-editor
               v-if="isEditorActive"
-              v-model="form.description_html"
+              v-model="formDescriptionHtml"
               :disabled="!canModify"
             />
             <br />
@@ -107,7 +113,7 @@
             <SeoForm
               v-model="form.seo"
               :disabled="!canModify"
-              :current="form.id ? { id: form.id, model: 'ProductSet' } : null"
+              :current="form.id ? { id: form.id, model: 'ProductSet' } : undefined"
             />
 
             <MetadataForm
@@ -130,9 +136,9 @@
             <app-button v-if="canModify" @click="handleSubmit(save)">
               {{ $t('common.save') }}
             </app-button>
-          </card>
+          </Card>
         </form>
-      </validation-observer>
+      </ValidationObserver>
     </div>
   </div>
 </template>
@@ -184,7 +190,7 @@
 import { defineComponent } from 'vue'
 import { cloneDeep } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
-import { ProductSetUpdateDto, CdnMedia, Metadata, ProductSet } from '@heseya/store-core'
+import { CdnMedia, ProductSet, ProductSetCreateDto } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
@@ -195,33 +201,38 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import SeoForm from '@/components/modules/seo/Accordion.vue'
 import RichEditor from '@/components/form/RichEditor.vue'
 import MediaUploadInput from '@/components/modules/media/MediaUploadInput.vue'
+import PublishedLangsForm from '@/components/lang/PublishedLangsForm.vue'
 
 import { UUID } from '@/interfaces/UUID'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { generateSlug } from '@/utils/generateSlug'
 import { sdk } from '@/api'
+import AbsoluteContentLangSwitch from '@/components/lang/AbsoluteContentLangSwitch.vue'
+import { TranslationsFromDto } from '@/interfaces/Translations'
 
-export const CLEAR_PRODUCT_SET_FORM: ProductSetUpdateDto & { cover: CdnMedia | null } = {
+type CombinedSetDto = ProductSetCreateDto & {
+  id?: UUID
+  cover: CdnMedia | null
+}
+
+const EMPTY_PRODUCT_SET_TRANSLATIONS: TranslationsFromDto<CombinedSetDto> = {
   name: '',
-  slug_suffix: '',
   description_html: '',
+}
+
+export const CLEAR_PRODUCT_SET_FORM: CombinedSetDto = {
+  slug_suffix: '',
   cover: null,
   cover_id: undefined,
   slug_override: false,
   public: true,
   parent_id: null,
   children_ids: [],
-  seo: {},
+  seo: undefined,
   attributes: [],
-}
-
-type CombinedSetDto = ProductSetUpdateDto & {
-  id?: UUID
-  cover: CdnMedia | null
-  metadata?: Metadata
-  // eslint-disable-next-line camelcase
-  metadata_private?: Metadata
+  published: [],
+  translations: {},
 }
 
 export default defineComponent({
@@ -236,8 +247,16 @@ export default defineComponent({
     SeoForm,
     RichEditor,
     MediaUploadInput,
+    PublishedLangsForm,
+    AbsoluteContentLangSwitch,
+  },
+  metaInfo(this: any): any {
+    return {
+      title: (!this.isNew && this.productSet?.name) || (this.$t('newTitle') as string),
+    }
   },
   data: () => ({
+    editedLang: '',
     form: cloneDeep(CLEAR_PRODUCT_SET_FORM) as CombinedSetDto,
     isEditorActive: true,
     parent: null as ProductSet | null,
@@ -272,18 +291,40 @@ export default defineComponent({
     slugPrefix(): string {
       return (this.isNew ? this.parent?.slug : this.productSet.parent?.slug) || ''
     },
+
+    formName: {
+      get(): string {
+        return this.form.translations?.[this.editedLang]?.name || ''
+      },
+      set(value: string) {
+        this.form.translations[this.editedLang].name = value
+      },
+    },
+    formDescriptionHtml: {
+      get(): string {
+        return this.form.translations?.[this.editedLang]?.description_html || ''
+      },
+      set(value: string) {
+        this.form.translations[this.editedLang].description_html = value
+      },
+    },
   },
   watch: {
-    productSet(productSet: ProductSet) {
-      if (!this.isNew) {
-        this.form = cloneDeep({
-          ...CLEAR_PRODUCT_SET_FORM,
-          ...productSet,
-          seo: productSet.seo || undefined,
-          attributes: productSet.attributes.map((a) => a.id),
-          parent_id: productSet.parent?.id || null,
-        })
-      }
+    productSet: {
+      handler(productSet: ProductSet) {
+        if (!this.isNew) {
+          this.form = cloneDeep({
+            ...CLEAR_PRODUCT_SET_FORM,
+            ...productSet,
+            seo: productSet.seo || undefined,
+            attributes: productSet.attributes?.map((a) => a.id) || [],
+            parent_id: productSet.parent?.id || null,
+          })
+        }
+
+        this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
+      },
+      immediate: true,
     },
     error(error) {
       if (error) {
@@ -309,6 +350,16 @@ export default defineComponent({
   },
 
   methods: {
+    setEditedLang(langId: string) {
+      this.editedLang = langId
+
+      if (!this.form?.translations) this.$set(this.form, 'translations', {})
+      this.$set(this.form.translations!, langId, {
+        ...EMPTY_PRODUCT_SET_TRANSLATIONS,
+        ...this.form?.translations?.[langId],
+      })
+    },
+
     activateEditor(active = true) {
       // ? Workaround for a bugged ArticleEditor, which doesn't render correctly in the first time
       this.$nextTick(() => (this.isEditorActive = active))
@@ -316,7 +367,7 @@ export default defineComponent({
 
     editSlug() {
       if (!this.form.id) {
-        this.form.slug_suffix = generateSlug(this.form.name)
+        this.form.slug_suffix = generateSlug(this.formName)
       }
     },
 
@@ -361,7 +412,7 @@ export default defineComponent({
 
     changeMedia(media: CdnMedia | null) {
       this.form.cover = media
-      this.form.cover_id = media?.id
+      this.form.cover_id = media?.id || null
     },
   },
 })
@@ -369,6 +420,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .collection-view {
+  position: relative;
+
   &__section {
     display: flex;
     flex-direction: column;

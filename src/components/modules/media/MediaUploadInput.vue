@@ -2,6 +2,7 @@
   <div class="media-upload-input-wrapper">
     <span class="media-upload-input-wrapper__label">{{ label }}</span>
     <media-uploader
+      v-slot="{ loading }"
       class="media-upload-input"
       :class="{ 'media-upload-input--image': !!media, 'media-upload-input--drag': isDrag }"
       :disabled="disabled || !!media"
@@ -35,6 +36,7 @@
             :alt="$t('fileAdd').toString()"
             class="media-upload-input__file-add"
           />
+          <Loading class="media-upload-input__loading" :active="loading" />
         </div>
         <span class="media-upload-input__title"
           >{{ $t('dropOrChooseImage') }} <b>{{ fileName }}</b></span
@@ -70,9 +72,10 @@ import { CdnMedia } from '@heseya/store-core'
 import MediaEditForm from '@/components/modules/media/MediaEditForm.vue'
 import MediaUploader from '@/components/modules/media/MediaUploader.vue'
 import MediaElement from '@/components/MediaElement.vue'
+import Loading from '@/components/layout/Loading.vue'
 
 export default defineComponent({
-  components: { MediaUploader, MediaEditForm, MediaElement },
+  components: { MediaUploader, MediaEditForm, MediaElement, Loading },
   props: {
     media: {
       type: Object as PropType<CdnMedia>,
@@ -181,10 +184,15 @@ export default defineComponent({
     width: 68px;
     height: 68px;
     border-radius: 50%;
+    position: relative;
     border: none;
     background-color: var(--white-color);
     cursor: pointer;
     transition: 0.3s;
+  }
+
+  &__loading {
+    border-radius: 50%;
   }
 
   &__file-add {

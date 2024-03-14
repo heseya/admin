@@ -3,15 +3,19 @@
     <form @submit.prevent="handleSubmit(submit)">
       <card>
         <validated-input
-          v-model="form.name"
+          v-model="formName"
           rules="required"
           :label="$t('common.form.name').toString()"
           :disabled="disabled"
         />
+
+        <br />
+        <PublishedLangsForm v-model="form.published" />
+
         <label class="app-input__label" :name="$t('common.form.description').toString()">
           {{ $t('common.form.description') }}
         </label>
-        <rich-editor v-model="form.description_html" :disabled="disabled" />
+        <rich-editor v-model="formDescriptionHtml" :disabled="disabled" />
         <br />
         <div class="switches">
           <switch-input
@@ -32,20 +36,26 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import { ValidationObserver } from 'vee-validate'
-import { Consent } from '@heseya/store-core'
+import { ConsentCreateDto } from '@heseya/store-core'
 
 import Card from '@/components/layout/Card.vue'
 import RichEditor from '@/components/form/RichEditor.vue'
+import PublishedLangsForm from '@/components/lang/PublishedLangsForm.vue'
 
 export default defineComponent({
   components: {
     ValidationObserver,
     Card,
     RichEditor,
+    PublishedLangsForm,
   },
   props: {
+    editedLang: {
+      type: String,
+      required: true,
+    },
     value: {
-      type: Object as PropType<Consent>,
+      type: Object as PropType<ConsentCreateDto>,
       required: true,
     },
     disabled: {
@@ -55,11 +65,28 @@ export default defineComponent({
   },
   computed: {
     form: {
-      get(): Consent {
+      get(): ConsentCreateDto {
         return this.value
       },
-      set(v: Consent) {
+      set(v: ConsentCreateDto) {
         this.$emit('input', v)
+      },
+    },
+
+    formDescriptionHtml: {
+      get(): string {
+        return this.form.translations[this.editedLang]?.description_html || ''
+      },
+      set(value: string) {
+        this.form.translations[this.editedLang].description_html = value
+      },
+    },
+    formName: {
+      get(): string {
+        return this.form.translations[this.editedLang]?.name || ''
+      },
+      set(value: string) {
+        this.form.translations[this.editedLang].name = value
       },
     },
   },

@@ -95,7 +95,7 @@ export default defineComponent({
 
       this.$router.push({
         path: 'media',
-        query: { page: undefined, ...queryFilters },
+        query: { ...queryFilters, page: undefined },
       })
     },
     clearFilters(): void {
@@ -141,7 +141,7 @@ input[type='color'] {
     }
 
     &--value {
-      color: var(--primary-color-300);
+      color: var(--gray-color-600);
     }
   }
 

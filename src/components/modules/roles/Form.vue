@@ -18,6 +18,12 @@
           <info-tooltip> {{ $t('form.isRegistrationRoleTooltip') }}</info-tooltip>
         </template>
       </switch-input>
+      <switch-input v-model="form.is_joinable" :disabled="disabled" horizontal>
+        <template #title>
+          {{ $t('form.isJoinableRole') }}
+          <info-tooltip> {{ $t('form.isJoinableRoleTooltip') }}</info-tooltip>
+        </template>
+      </switch-input>
       <br />
       <permissions-manager v-model="form.permissions" :disabled="disabled" />
       <br />
@@ -35,7 +41,17 @@
   "pl": {
     "form": {
       "isRegistrationRole": "Czy można zarejestrować się z tą rolą?",
-      "isRegistrationRoleTooltip": "Jeśli zaznaczone, użytkownicy po zarejestrowaniu będą mogli przypisać sobie tę rolę."
+      "isRegistrationRoleTooltip": "Jeśli zaznaczone, użytkownicy po zarejestrowaniu będą mogli przypisać sobie tę rolę.",
+      "isJoinableRole": "Czy można dołączyć do tej roli?",
+      "isJoinableRoleTooltip": "Jeśli zaznaczone, użytkownicy będą mogli przypisać sobie tę rolę po dołączeniu."
+    }
+  },
+  "en": {
+    "form": {
+      "isRegistrationRole": "Can register with this role?",
+      "isRegistrationRoleTooltip": "If checked, users will be able to assign themselves this role after registration.",
+      "isJoinableRole": "Can join to this role?",
+      "isJoinableRoleTooltip": "If checked, users will be able to assign themselves this role after joining."
     }
   }
 }

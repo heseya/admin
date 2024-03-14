@@ -11,6 +11,16 @@
       :horizontal="isHorizontal"
     />
     <OrderField
+      :label="$t('labels.channel').toString()"
+      :value="order.sales_channel?.name || '-'"
+      :horizontal="isHorizontal"
+    />
+    <OrderField
+      :label="$t('labels.language').toString()"
+      :value="languageName"
+      :horizontal="isHorizontal"
+    />
+    <OrderField
       v-if="order.shipping_method"
       :label="$t('labels.shipping').toString()"
       :value="order.shipping_method.name"
@@ -99,11 +109,13 @@
     "labels": {
       "code": "Order code",
       "date": "Order date",
+      "channel": "Sales channel",
       "shipping": "Shipping method",
       "digitalShipping": "Digital shipping",
       "payment": "Payment",
       "history": "Payment history",
-      "editShippingMethod": "Edit shipping method"
+      "editShippingMethod": "Edit shipping method",
+      "language": "Language"
     },
     "table": {
       "date": "Date of transaction",
@@ -117,11 +129,13 @@
     "labels": {
       "code": "Nr zamówienia",
       "date": "Data zamówienia",
+      "channel": "Kanał sprzedaży",
       "shipping": "Metoda dostawy",
       "digitalShipping": "Dostawa cyfrowa",
       "payment": "Płatność",
       "history": "Historia płatności",
-      "editShippingMethod": "Edytuj metodę dostawy"
+      "editShippingMethod": "Edytuj metodę dostawy",
+      "language": "Język"
     },
     "table": {
       "date": "Data transakcji",
@@ -170,11 +184,18 @@ export default defineComponent({
     isDigitalShippingMethodEdited: false,
   }),
   computed: {
-    formattedDate(): string | null {
-      return this.order.created_at && formatDate(this.order.created_at)
+    formattedDate(): string | undefined {
+      return (this.order.created_at && formatDate(this.order.created_at)) || undefined
     },
     isHorizontal(): boolean {
       return this.viewportWidth > 460 && this.viewportWidth < 850
+    },
+    languageName(): string {
+      return (
+        this.$accessor.languages.data.find((lang) => lang.iso === this.order.language)?.name ||
+        this.order.language ||
+        '-'
+      )
     },
     paymentsTableConfig(): TableConfig {
       return {
@@ -211,7 +232,7 @@ export default defineComponent({
   },
   methods: {
     formatCurrency(amount: number) {
-      return formatCurrency(amount, this.$accessor.config.currency)
+      return formatCurrency(amount, this.order.currency)
     },
     updateWidth(): void {
       this.viewportWidth = window.innerWidth

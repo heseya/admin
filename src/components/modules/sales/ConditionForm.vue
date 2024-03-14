@@ -168,29 +168,51 @@ export default defineComponent({
     changeConditionType(newType: DiscountConditionType) {
       switch (newType) {
         case DiscountConditionType.OrderValue:
-          return (this.condition = cloneDeep(SALES_FORMS.EMPTY_ORDER_VALUE_FORM))
+          this.condition = cloneDeep({
+            ...SALES_FORMS.EMPTY_ORDER_VALUE_FORM,
+            min_values: this.$accessor.config.currencies.map((currency) => ({
+              currency: currency.code,
+              value: '0',
+            })),
+            max_values: this.$accessor.config.currencies.map((currency) => ({
+              currency: currency.code,
+              value: '0',
+            })),
+          })
+          break
         case DiscountConditionType.UserInRole:
-          return (this.condition = cloneDeep(SALES_FORMS.EMPTY_USER_IN_ROLE_FORM))
+          this.condition = cloneDeep(SALES_FORMS.EMPTY_USER_IN_ROLE_FORM)
+          break
         case DiscountConditionType.UserIn:
-          return (this.condition = cloneDeep(SALES_FORMS.EMPTY_USER_IN_FORM))
+          this.condition = cloneDeep(SALES_FORMS.EMPTY_USER_IN_FORM)
+          break
         case DiscountConditionType.ProductInSet:
-          return (this.condition = cloneDeep(SALES_FORMS.EMPTY_PRODUCT_IN_SET_FORM))
+          this.condition = cloneDeep(SALES_FORMS.EMPTY_PRODUCT_IN_SET_FORM)
+          break
         case DiscountConditionType.ProductIn:
-          return (this.condition = cloneDeep(SALES_FORMS.EMPTY_PRODUCT_IN_FORM))
+          this.condition = cloneDeep(SALES_FORMS.EMPTY_PRODUCT_IN_FORM)
+          break
         case DiscountConditionType.DateBetween:
-          return (this.condition = cloneDeep(SALES_FORMS.EMPTY_DATE_BETWEEN_FORM))
+          this.condition = cloneDeep(SALES_FORMS.EMPTY_DATE_BETWEEN_FORM)
+          break
         case DiscountConditionType.TimeBetween:
-          return (this.condition = cloneDeep(SALES_FORMS.EMPTY_TIME_BETWEEN_FORM))
+          this.condition = cloneDeep(SALES_FORMS.EMPTY_TIME_BETWEEN_FORM)
+          break
         case DiscountConditionType.MaxUses:
-          return (this.condition = cloneDeep(SALES_FORMS.EMPTY_MAX_USES_FORM))
+          this.condition = cloneDeep(SALES_FORMS.EMPTY_MAX_USES_FORM)
+          break
         case DiscountConditionType.MaxUsesPerUser:
-          return (this.condition = cloneDeep(SALES_FORMS.EMPTY_MAX_USES_PER_USER_FORM))
+          this.condition = cloneDeep(SALES_FORMS.EMPTY_MAX_USES_PER_USER_FORM)
+          break
         case DiscountConditionType.WeekdayIn:
-          return (this.condition = cloneDeep(SALES_FORMS.EMPTY_WEEKDAY_IN_FORM))
+          this.condition = cloneDeep(SALES_FORMS.EMPTY_WEEKDAY_IN_FORM)
+          break
         case DiscountConditionType.CartLength:
-          return (this.condition = cloneDeep(SALES_FORMS.EMPTY_CART_LENGTH_FORM))
+          this.condition = cloneDeep(SALES_FORMS.EMPTY_CART_LENGTH_FORM)
+          break
         case DiscountConditionType.CouponsCount:
-          return (this.condition = cloneDeep(SALES_FORMS.EMPTY_COUPONS_COUNT_FORM))
+          this.condition = cloneDeep(SALES_FORMS.EMPTY_COUPONS_COUNT_FORM)
+          break
         default:
           throw new Error(`Unknown condition type: ${newType}`)
       }

@@ -2,7 +2,8 @@
   <a-modal width="900px" class="set-products" :visible="isOpen" @cancel="$emit('close')">
     <template #title>
       <div class="set-products__header">
-        <h4>{{ $t('title') }} {{ set && set.name }}</h4>
+        <h4>{{ $t('title') }} "{{ set && set.name }}"</h4>
+
         <icon-button v-can="$p.ProductSets.Edit" size="small" dark @click="isSelectorActive = true">
           <template #icon>
             <i class="bx bx-plus"></i>
@@ -12,46 +13,51 @@
       </div>
     </template>
 
+    <p v-if="set">
+      {{ $t('description') }}
+      <router-link :to="`/collections/${set.id}/products`">{{ $t('clickHere') }}</router-link>
+    </p>
+
     <div v-if="products.length" class="set-products__list">
-      <draggable
-        :value="products"
-        :disabled="!$can($p.ProductSets.Edit)"
-        :options="{ filter: '.undragabble' }"
-        :move="checkMove"
-        @change="reorderSetProducts"
-      >
-        <div
-          v-for="product in products"
-          :key="product.id"
-          class="set-product-item"
-          :class="{ undragabble: product.unsaved }"
-        >
-          <avatar color="#eee">
-            <img
-              v-if="product.cover"
-              :src="`${product.cover.url}?w=100&h=100`"
-              :style="{ objectFit }"
+      <div v-for="product in products" :key="product.id" class="set-product-item">
+        <avatar color="#eee">
+          <img
+            v-if="product.cover"
+            :src="`${product.cover.url}?w=100&h=100`"
+            :style="{ objectFit }"
+          />
+          <i v-else class="product-list-item__img-icon bx bx-image"></i>
+        </avatar>
+        <div class="set-product-item__main">
+          <div class="set-product-item__row">
+            <div>
+              <span class="set-product-item__name">{{ product.name }}</span>
+              <product-price tag="span" class="set-product-item__price" :product="product" />
+            </div>
+            <boolean-tag
+              :value="product.public"
+              class="product-list-item__public"
+              small
+              true-icon="bx bx-show-alt"
+              false-icon="bx bx-low-vision"
+              :true-text="$t('common.visible').toString()"
+              :false-text="$t('common.hidden').toString()"
             />
-            <i v-else class="product-list-item__img-icon bx bx-image"></i>
-          </avatar>
-          <div class="set-product-item__main">
-            <span class="set-product-item__name">{{ product.name }}</span>
-            <product-price tag="span" class="set-product-item__price" :product="product" />
-          </div>
-          <div class="set-product-item__actions undragabble">
-            <icon-button
-              v-can="$p.ProductSets.Edit"
-              size="small"
-              type="danger"
-              @click.stop="removeProduct(product.id)"
-            >
-              <template #icon>
-                <i class="bx bx-trash"></i>
-              </template>
-            </icon-button>
           </div>
         </div>
-      </draggable>
+        <div class="set-product-item__actions undragabble">
+          <icon-button
+            v-can="$p.ProductSets.Edit"
+            size="small"
+            type="danger"
+            @click.stop="removeProduct(product.id)"
+          >
+            <template #icon>
+              <i class="bx bx-trash"></i>
+            </template>
+          </icon-button>
+        </div>
+      </div>
     </div>
 
     <empty v-else>{{ $t('empty') }}</empty>
@@ -81,16 +87,20 @@
 {
   "pl": {
     "title": "Produkty w kolekcji",
+    "description": "Widoczne tutaj produkty są produktami bezpośrednio powiazanymi z kolekcją. Lista nie obejmuje produktów, które są w kolekcji z powodu przynależności do jednej lub wielu kolekcji-dzieci tej kolekcji. W związku z tym nie ma możliwości zmiany kolejności produktów w tym miejscu, aby to zrobić ",
+    "clickHere": "przejdź tutaj.",
     "addProduct": "Dodaj produkt do kolekcji",
-    "empty": "Ta kolekcja nie zawiera produktów",
+    "empty": "Ta kolekcja nie zawiera produktów.",
     "chooseProduct": "Wybierz produkt",
     "successMessage": "Produkty zostały zapisane w kolekcji",
     "product": "produkt"
   },
   "en": {
     "title": "Products in collection",
+    "description": "The products visible here are products directly associated with the collection. The list does not include products that are in the collection because they belong to one or more child collections of this collection. Therefore, it is not possible to change the order of products here, to do this ",
+    "clickHere": "go here.",
     "addProduct": "Add product to collection",
-    "empty": "This collection does not contain products",
+    "empty": "This collection does not contain products.",
     "chooseProduct": "Choose product",
     "successMessage": "Products saved in collection",
     "product": "product"
@@ -100,7 +110,6 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import Draggable from 'vuedraggable'
 import { ProductList, ProductSet } from '@heseya/store-core'
 
 import Selector from '@/components/Selector.vue'
@@ -115,9 +124,10 @@ import { formatCurrency } from '@/utils/currency'
 import { formatApiNotificationError } from '@/utils/errors'
 
 import { FEATURE_FLAGS } from '@/consts/featureFlags'
+import BooleanTag from '@/components/layout/BooleanTag.vue'
 
 export default defineComponent({
-  components: { Draggable, Selector, Empty, Avatar, ProductPrice },
+  components: { Selector, Empty, Avatar, ProductPrice, BooleanTag },
   props: {
     set: {
       type: Object as PropType<ProductSet | null>,
@@ -133,7 +143,7 @@ export default defineComponent({
     products: [] as (ProductList & { unsaved?: true })[],
   }),
   computed: {
-    objectFit(): string {
+    objectFit(): 'contain' | 'cover' {
       return +this.$accessor.config.env[FEATURE_FLAGS.ProductContain] ? 'contain' : 'cover'
     },
   },
@@ -151,12 +161,6 @@ export default defineComponent({
     },
     removeProduct(productId: UUID) {
       this.products = this.products.filter((product) => product.id !== productId)
-    },
-
-    checkMove(evt: any) {
-      const futureIndex = evt.draggedContext.futureIndex
-      const savedProductsLength = this.products.filter((product) => !product.unsaved).length
-      return futureIndex < savedProductsLength
     },
 
     async fetchProducts() {
@@ -182,23 +186,6 @@ export default defineComponent({
         this.$toast.error(formatApiNotificationError(e))
       }
       this.$accessor.stopLoading()
-    },
-
-    async reorderSetProducts({
-      moved,
-    }: {
-      moved: { element: ProductList; newIndex: number; oldIndex: number }
-    }) {
-      if (!this.set) return
-      try {
-        await sdk.ProductSets.reorderProducts(this.set.id, [
-          { id: moved.element.id, order: moved.newIndex },
-        ])
-        // Move element in local array to the new index
-        this.products.splice(moved.newIndex, 0, this.products.splice(moved.oldIndex, 1)[0])
-      } catch (e: any) {
-        this.$toast.error(formatApiNotificationError(e))
-      }
     },
 
     async save() {
@@ -253,7 +240,6 @@ export default defineComponent({
   padding: 4px;
   border-radius: 8px;
   transition: 0.3s;
-  cursor: move;
 
   @media (pointer: fine) {
     &:hover {
@@ -261,9 +247,6 @@ export default defineComponent({
     }
   }
 
-  &.undragabble {
-    cursor: not-allowed;
-  }
   &__main {
     margin-left: 8px;
   }
@@ -282,6 +265,12 @@ export default defineComponent({
     margin-left: auto;
     position: relative;
     z-index: 100;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
 }
 </style>

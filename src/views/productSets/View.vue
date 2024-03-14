@@ -94,11 +94,13 @@
               </div>
             </div>
 
-            <br />
-            <AttributesSelect v-model="form.attributes" :disabled="!canModify" />
-            <hr />
-            <PublishedLangsForm v-model="form.published" />
-            <br />
+            <template v-if="!isLoading">
+              <br />
+              <AttributesSelect v-model="form.attributes" :disabled="!canModify" />
+              <hr />
+              <PublishedLangsForm v-model="form.published" />
+              <br />
+            </template>
 
             <small class="label">{{ $t('common.form.description') }}</small>
             <rich-editor
@@ -248,6 +250,11 @@ export default defineComponent({
     PublishedLangsForm,
     AbsoluteContentLangSwitch,
   },
+  metaInfo(this: any): any {
+    return {
+      title: (!this.isNew && this.productSet?.name) || (this.$t('newTitle') as string),
+    }
+  },
   data: () => ({
     editedLang: '',
     form: cloneDeep(CLEAR_PRODUCT_SET_FORM) as CombinedSetDto,
@@ -310,7 +317,7 @@ export default defineComponent({
             ...CLEAR_PRODUCT_SET_FORM,
             ...productSet,
             seo: productSet.seo || undefined,
-            attributes: productSet.attributes.map((a) => a.id),
+            attributes: productSet.attributes?.map((a) => a.id) || [],
             parent_id: productSet.parent?.id || null,
           })
         }

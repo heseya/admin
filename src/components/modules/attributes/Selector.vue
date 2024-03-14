@@ -50,11 +50,11 @@
     "newTitle": "New attribute"
   },
   "pl": {
-    "createNew": "Utwórz nową cechę",
-    "chooseExisting": "Wybierz istniejącą cechę",
-    "typeName": "cechę",
-    "editTitle": "Edytuj cechę",
-    "newTitle": "Nowy cechę"
+    "createNew": "Utwórz nowy atrybut",
+    "chooseExisting": "Wybierz istniejący atrybut",
+    "typeName": "atrybut",
+    "editTitle": "Edytuj atrybut",
+    "newTitle": "Nowy atrybut"
   }
 }
 </i18n>

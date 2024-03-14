@@ -23,11 +23,12 @@ import { defineComponent, PropType } from 'vue'
 import { Product, parsePrices } from '@heseya/store-core'
 
 import { formatCurrency } from '@/utils/currency'
+import { ProductList } from '@heseya/store-core'
 
 export default defineComponent({
   props: {
     product: {
-      type: Object as PropType<Product>,
+      type: Object as PropType<Product | ProductList>,
       required: true,
     },
     tag: {

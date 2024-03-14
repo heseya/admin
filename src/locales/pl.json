@@ -20,8 +20,12 @@
     "continue": "Kontynuuj",
     "visible": "Widoczny",
     "hidden": "Ukryty",
+    "available": "Dostępny",
     "reset": "Przywróć domyślne",
     "confirmLeave": "Czy na pewno chcesz wyjść? Masz niezapisane zmiany!",
+    "price": "Cena",
+    "net": "Netto",
+    "gross": "Brutto",
     "form": {
       "name": "Nazwa",
       "description": "Opis",
@@ -216,6 +220,7 @@
       "VALIDATION_GTE": "Wartość pola musi być większa bądź równa wartości pola {field}.",
       "VALIDATION_APP_UNIQUE_ID": "Aplikacja o podanym url jest już zainstalowana.",
       "VALIDATION_PHONE": "Wartość pola musi być poprawnym numerem telefonu",
+      "VALIDATION_EMAIL_TAKEN": "Podany adres email jest już zajęty.",
       "INTERNAL_SERVER_ERROR": "Wewnętrzny błąd serwera"
     },
     "CLIENT_ERROR": {

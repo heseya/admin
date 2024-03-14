@@ -129,6 +129,13 @@ const EMPTY_SALE_FORM: SaleFormDto = {
 
 export default defineComponent({
   components: { ValidationObserver, TopNav, Card, PopConfirm, SaleForm, MetadataForm },
+  metaInfo(this: any): any {
+    return {
+      title: this.isNew
+        ? this.$t('newTitle').toString()
+        : this.sale?.name || this.$t('edit').toString(),
+    }
+  },
   data: () => ({
     form: cloneDeep(EMPTY_SALE_FORM) as SaleFormDto,
     b2bCompany: null as Role | null,

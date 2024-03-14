@@ -124,7 +124,7 @@ export default defineComponent({
 
       this.isLoading = true
       try {
-        const query = stringifyQueryParams({ search, has_product: 0 })
+        const query = stringifyQueryParams({ search, has_product: 0, lang_fallback: 'any' })
         const { data } = await api.get<{ data: Item[] }>(`/${this.type}${query}`)
         this.data = data.data
       } catch (error: any) {

@@ -9,11 +9,7 @@
           :label="lang.name"
         >
           <span class="api-lang-switch__option">
-            <img
-              :src="`https://flagcdn.com/16x12/${getFlagName(lang.iso)}.png`"
-              role="presentation"
-              class="api-lang-switch__icon"
-            />
+            <LangFlag :lang="lang.iso" class="api-lang-switch__icon" />
             {{ $t('lang') }}: {{ lang.name }}
           </span>
         </a-select-option>
@@ -39,8 +35,10 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import LangFlag from './LangFlag.vue'
 
 export default defineComponent({
+  components: { LangFlag },
   computed: {
     languages() {
       return this.$accessor.languages.data.filter((lang) => !lang.hidden)
@@ -52,14 +50,6 @@ export default defineComponent({
       set(iso: string) {
         this.$accessor.config.SET_API_LANGUAGE(iso)
       },
-    },
-  },
-
-  methods: {
-    getFlagName(iso: string) {
-      const firstIsoPart = iso.split('-')[0]
-      if (firstIsoPart === 'en' || firstIsoPart === 'eng') return 'us'
-      return firstIsoPart
     },
   },
 })

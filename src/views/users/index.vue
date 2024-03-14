@@ -180,7 +180,7 @@ export default defineComponent({
 
       this.$router.push({
         path: 'users',
-        query: { page: undefined, ...queryFilters },
+        query: { ...queryFilters, page: undefined },
       })
     },
     clearFilters() {

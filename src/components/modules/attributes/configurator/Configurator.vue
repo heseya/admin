@@ -19,6 +19,7 @@
         :edited-lang="editedLang"
         :disabled="disabled"
         :value="attribute"
+        @delete="deleteAttribute"
       />
       <LayoutAccordion
         v-if="attributes.length > 4"
@@ -32,6 +33,7 @@
           :edited-lang="editedLang"
           :disabled="disabled"
           :value="attribute"
+          @delete="deleteAttribute"
         />
       </LayoutAccordion>
     </list>
@@ -56,7 +58,7 @@
   },
   "pl": {
     "title": "Atrybuty produktu",
-    "addAttribute": "Dodaj cechę",
+    "addAttribute": "Dodaj atrybut",
     "noAttributesInProduct": "Ten produkt nie ma jeszcze żadnego atrybutu",
     "showMore": "Pokaż pozostałe atrybuty ({x})",
     "hideMore": "Ukryj pozostałe atrybuty ({x})"

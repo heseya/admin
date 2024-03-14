@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import VueRouter from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import VueMeta from 'vue-meta'
 
 import { Permission } from '@/interfaces/Permissions'
@@ -8,12 +8,11 @@ import { accessor } from './store'
 import { hasAccess } from './utils/hasAccess'
 import { FEATURE_FLAGS } from './consts/featureFlags'
 
-Vue.use(VueRouter)
 Vue.use(VueMeta)
 
-const router = new VueRouter({
-  mode: 'history',
-  base: import.meta.env.BASE_URL,
+const router = createRouter({
+  history: createWebHistory(),
+  // base: import.meta.env.BASE_URL,
   routes: [
     {
       path: '/login',
@@ -581,7 +580,7 @@ router.beforeEach((to, from, next) => {
 
   const redirectIfLoggedIn = !!to.meta?.redirectIfLoggedIn || false
   const authRequired = !!to.meta?.requiresAuth || false
-  const requiredPermissions: Permission[] = to.meta?.permissions || []
+  const requiredPermissions: Permission[] = (to.meta?.permissions as []) || []
 
   if (redirectIfLoggedIn && accessor.auth.isLogged) {
     return next('/')

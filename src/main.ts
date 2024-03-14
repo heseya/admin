@@ -1,6 +1,5 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
 import VueMeta from 'vue-meta'
-import AntDesign from 'ant-design-vue'
 import VueToast from 'vue-toast-notification'
 
 import App from './App.vue'
@@ -19,21 +18,18 @@ import './plugins/sentry'
 
 import './registerServiceWorker'
 
-import 'ant-design-vue/dist/antd.less'
+import 'ant-design-vue/dist/antd.css'
 import 'vue-toast-notification/dist/theme-sugar.css'
 import 'boxicons/css/boxicons.min.css'
 
-Vue.config.productionTip = false
-
-Vue.use(VueMeta)
-Vue.use(AntDesign)
-Vue.use(VueToast)
-
-new Vue({
-  router,
+createApp({
   store,
-  i18n,
   render: (h: Function) => h(App),
-}).$mount('#app')
+})
+  .use(router)
+  .use(i18n)
+  .use(VueMeta)
+  .use(VueToast)
+  .mount('#app')
 
 disableScrollOnInput()

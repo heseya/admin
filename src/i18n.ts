@@ -1,5 +1,4 @@
-import Vue from 'vue'
-import VueI18n from 'vue-i18n'
+import { createI18n } from 'vue-i18n'
 import { getDefaultUiLanguage } from './utils/i18n'
 import { accessor } from './store'
 
@@ -7,9 +6,7 @@ import { accessor } from './store'
 import en from '@/locales/en.json'
 import pl from '@/locales/pl.json'
 
-Vue.use(VueI18n)
-
-export default new VueI18n({
+const i18n = createI18n({
   locale: import.meta.env.VITE_I18N_LOCALE || accessor.config.uiLanguage || getDefaultUiLanguage(),
   fallbackLocale: (import.meta.env.VITE_I18N_FALLBACK_LOCALE as string) || 'pl', // TODO: change to 'en' when all translations are done
   messages: {
@@ -37,3 +34,5 @@ export default new VueI18n({
     },
   },
 })
+
+export default i18n

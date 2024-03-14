@@ -2,7 +2,9 @@ import { defineConfig } from 'vite'
 import path from 'path'
 
 import createVuePlugin from '@vitejs/plugin-vue'
-import { createI18nPlugin } from '@yfwz100/vite-plugin-vue2-i18n'
+import createI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
+import Components from 'unplugin-vue-components/vite'
+import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers'
 import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vitejs.dev/config/
@@ -17,6 +19,9 @@ export default defineConfig({
           },
         },
       },
+    }),
+    Components({
+      resolvers: [AntDesignVueResolver({})],
     }),
     VitePWA({
       strategies: 'generateSW',
@@ -55,7 +60,7 @@ export default defineConfig({
         maximumFileSizeToCacheInBytes: 4000000,
       },
     }),
-    createI18nPlugin(),
+    createI18nPlugin({}),
   ],
 
   css: {

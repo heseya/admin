@@ -1,26 +1,29 @@
 <template>
   <modal-form class="seo-form">
-    <validated-input v-model="form.title" :disabled="disabled" :label="$t('form.title')" />
+    <ContentLangSwitch :value="editedLang" class="seo-form__lang-switch" @input="setEditedLang" />
+
+    <validated-input v-model="formTitle" :disabled="disabled" :label="$t('form.title')" />
     <small class="seo-form__subtext">
-      {{ $t('charsCount') }}: {{ form.title ? form.title.length : 0 }}
+      {{ $t('charsCount') }}: {{ formTitle ? formTitle.length : 0 }}
       <info-tooltip>
         {{ $t('titleCharsRecomendation') }}
       </info-tooltip>
     </small>
 
     <validated-input
-      v-model="form.description"
+      v-model="formDescription"
       :disabled="disabled"
       :label="$t('form.description')"
     />
+
     <small class="seo-form__subtext">
-      {{ $t('charsCount') }}: {{ form.description ? form.description.length : 0 }}
+      {{ $t('charsCount') }}: {{ formDescription ? formDescription.length : 0 }}
       <info-tooltip>
         {{ $t('descriptionCharsRecomendation') }}
       </info-tooltip>
     </small>
 
-    <switch-input v-if="!forceIndex" v-model="form.no_index" :disabled="disabled" type="red">
+    <switch-input v-if="!forceIndex" v-model="formNoIndex" :disabled="disabled" type="red">
       <template #title>
         {{ $t('form.no_index') }}
         <info-tooltip icon="seo-form__switch-tooltip-icon bx bxs-info-circle">
@@ -32,7 +35,7 @@
     </switch-input>
 
     <app-select
-      :value="form.keywords || []"
+      :value="formKeywords"
       :label="$t('form.keywords')"
       :disabled="disabled"
       mode="tags"
@@ -42,7 +45,8 @@
     <a-alert v-if="duplicatedKeywordsItem" type="warning" show-icon style="margin-bottom: 1rem">
       <template #message>
         {{ $t('duplicatedKeywords.text1') }}
-        <a :href="duplicatedKeywordUrl" target="_blank">{{ $t('duplicatedKeywords.link') }}</a
+        <a :href="duplicatedKeywordUrl || undefined" target="_blank">
+          {{ $t('duplicatedKeywords.link') }} </a
         >. {{ $t('duplicatedKeywords.text2') }}
       </template>
     </a-alert>
@@ -57,6 +61,9 @@
         >)
       </a-select-option>
     </app-select>
+
+    <br />
+    <PublishedLangsForm v-model="form.published" />
 
     <TagsEditor v-model="form.header_tags" :disabled="disabled" />
 
@@ -132,11 +139,17 @@ import {
 
 import ModalForm from '@/components/form/ModalForm.vue'
 import MediaUploadInput from '@/components/modules/media/MediaUploadInput.vue'
+import PublishedLangsForm from '@/components/lang/PublishedLangsForm.vue'
+import ContentLangSwitch from '@/components/lang/ContentLangSwitch.vue'
 import TagsEditor from './TagsEditor.vue'
 
 import { UUID } from '@/interfaces/UUID'
+import { TranslationsCreateDto } from '@heseya/store-core'
+import { TranslationsFromDto } from '@/interfaces/Translations'
+import { isEqual } from 'lodash'
 
-type SeoMeta = SeoMetadata & SeoMetadataDto
+type SeoMeta = Omit<SeoMetadata & SeoMetadataDto, 'translations'> &
+  TranslationsCreateDto<TranslationsFromDto<SeoMetadataDto>>
 
 export const CLEAR_SEO_FORM: SeoMeta = {
   title: '',
@@ -147,6 +160,8 @@ export const CLEAR_SEO_FORM: SeoMeta = {
   og_image: undefined,
   og_image_id: undefined,
   no_index: false,
+  published: [],
+  translations: {},
 }
 
 export default defineComponent({
@@ -154,11 +169,13 @@ export default defineComponent({
     ModalForm,
     TagsEditor,
     MediaUploadInput,
+    PublishedLangsForm,
+    ContentLangSwitch,
   },
   props: {
     value: {
-      type: Object as PropType<SeoMeta | null>,
-      default: () => null,
+      type: Object as PropType<SeoMeta | undefined>,
+      default: () => undefined,
     },
     disabled: {
       type: Boolean,
@@ -175,6 +192,7 @@ export default defineComponent({
   },
 
   data: () => ({
+    editedLang: '',
     duplicatedKeywordsItem: null as null | {
       // eslint-disable-next-line camelcase
       model_type: SeoCheckModelType
@@ -185,12 +203,46 @@ export default defineComponent({
   computed: {
     form: {
       get(): SeoMeta {
-        return this.value || {}
+        return this.value || { translations: {}, published: [] }
       },
       set(v: SeoMeta) {
         this.$emit('input', v)
       },
     },
+
+    formTitle: {
+      get(): string {
+        return this.form.translations?.[this.editedLang]?.title || ''
+      },
+      set(value: string) {
+        this.form.translations[this.editedLang].title = value
+      },
+    },
+    formDescription: {
+      get(): string {
+        return this.form.translations?.[this.editedLang]?.description || ''
+      },
+      set(value: string) {
+        this.form.translations[this.editedLang].description = value
+      },
+    },
+    formKeywords: {
+      get(): string[] {
+        return this.form.translations?.[this.editedLang]?.keywords || []
+      },
+      set(value: string[]) {
+        this.form.translations[this.editedLang].keywords = value
+      },
+    },
+    formNoIndex: {
+      get(): boolean {
+        return this.form.translations?.[this.editedLang]?.no_index ?? false
+      },
+      set(value: boolean) {
+        this.form.translations[this.editedLang].no_index = value
+      },
+    },
+
     duplicatedKeywordUrl(): string | null {
       switch (this.duplicatedKeywordsItem?.model_type) {
         case 'Product':
@@ -206,7 +258,7 @@ export default defineComponent({
   },
 
   watch: {
-    'form.keywords': {
+    formKeywords: {
       handler(keywords: string[]) {
         if (keywords?.length) {
           this.checkDuplicates(keywords)
@@ -216,10 +268,32 @@ export default defineComponent({
       },
       deep: true,
     },
+
+    value: {
+      handler() {
+        const initialForm = {
+          title: this.form.title || CLEAR_SEO_FORM.title,
+          description: this.form.description || CLEAR_SEO_FORM.description,
+          header_tags: this.form.header_tags || CLEAR_SEO_FORM.header_tags,
+          keywords: this.form.keywords || CLEAR_SEO_FORM.keywords,
+          og_image: this.form.og_image || CLEAR_SEO_FORM.og_image,
+          og_image_id: this.form.og_image?.id || CLEAR_SEO_FORM.og_image_id,
+          twitter_card: this.form.twitter_card || CLEAR_SEO_FORM.twitter_card,
+          no_index: this.form.no_index || CLEAR_SEO_FORM.no_index,
+          translations: this.form.translations || {},
+          published: this.form.published || [],
+        }
+
+        if (!isEqual(this.form, initialForm)) this.form = initialForm
+
+        this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
+      },
+      immediate: true,
+    },
   },
 
   created() {
-    this.form = {
+    const initialForm = {
       title: this.form.title || CLEAR_SEO_FORM.title,
       description: this.form.description || CLEAR_SEO_FORM.description,
       header_tags: this.form.header_tags || CLEAR_SEO_FORM.header_tags,
@@ -228,17 +302,40 @@ export default defineComponent({
       og_image_id: this.form.og_image?.id || CLEAR_SEO_FORM.og_image_id,
       twitter_card: this.form.twitter_card || CLEAR_SEO_FORM.twitter_card,
       no_index: this.form.no_index || CLEAR_SEO_FORM.no_index,
+      translations: this.form.translations || {},
+      published: this.form.published || [],
     }
+    if (!isEqual(this.form, initialForm)) this.form = initialForm
   },
 
   methods: {
+    setEditedLang(langId: string) {
+      this.editedLang = langId
+
+      if (!this.form.translations) this.$set(this.form, 'translations', {})
+
+      if (!this.form.translations?.[langId])
+        this.$set(this.form.translations!, langId, {
+          title: '',
+          description: '',
+          keywords: [],
+          no_index: false,
+        })
+      else {
+        this.$set(this.form.translations![langId], 'title', this.formTitle)
+        this.$set(this.form.translations![langId], 'description', this.formDescription)
+        this.$set(this.form.translations![langId], 'keywords', this.formKeywords)
+        this.$set(this.form.translations![langId], 'no_index', this.formNoIndex)
+      }
+    },
+
     changeMedia(media: CdnMedia | undefined) {
       this.form.og_image = media
       this.form.og_image_id = media?.id || null
     },
 
     setKeywords(keywords: string[]) {
-      this.form.keywords = keywords
+      this.formKeywords = keywords
     },
 
     async checkDuplicates(keywords: string[]) {
@@ -254,6 +351,12 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .seo-form {
+  &__lang-switch {
+    margin-bottom: 8px;
+    margin-left: auto;
+    background-color: transparent;
+  }
+
   &__subtext {
     display: block;
     text-align: right;

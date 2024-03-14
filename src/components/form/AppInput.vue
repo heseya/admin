@@ -12,6 +12,7 @@
       v-model="innerValue"
       class="app-input__input"
       :data-cy="dataCy"
+      :show-time="isDateTime"
     />
 
     <span class="app-input__error">
@@ -39,12 +40,12 @@ export default defineComponent({
     'max',
     'size',
     'step',
+    'precision',
     'allowClear',
     'disabled',
     'rows',
     'loading',
     'addonBefore',
-    'addonAfter',
   ],
   computed: {
     innerValue: {
@@ -61,7 +62,12 @@ export default defineComponent({
       if (this.type === 'password') return 'a-input-password'
       if (this.type === 'textarea') return 'a-textarea'
       if (this.type === 'number') return 'a-input-number'
+      if (this.isDateTime) return 'a-date-picker'
       return 'a-input'
+    },
+
+    isDateTime(): boolean {
+      return this.type === 'datetime-local'
     },
   },
   methods: {

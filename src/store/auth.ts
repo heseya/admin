@@ -112,6 +112,8 @@ const actions = actionTree(
 
         // side effect
         dispatch('menuItems/initMicrofrontendMenuItems', null, { root: true })
+        dispatch('config/fetchCurrencies', null, { root: true })
+        dispatch('config/initLanguages', null, { root: true })
 
         return {
           state: LoginState.Success,

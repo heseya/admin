@@ -21,7 +21,6 @@ import { orders } from './orders'
 import { statuses } from './statuses'
 import { shippingMethods } from './shippingMethods'
 import { paymentMethods } from './paymentMethods'
-import { packageTemplates } from './packageTemplates'
 import { settings } from './settings'
 import { apps } from './apps'
 import { webhooks } from './webhooks'
@@ -29,10 +28,12 @@ import { coupons } from './coupons'
 import { sales } from './sales'
 import { tags } from './tags'
 import { productSets } from './productSets'
+import { languages } from './languages'
 import { attributes } from './attributes'
 import { media } from './media'
 import { menuItems } from './menuItems'
 import { providers } from './providers'
+import { salesChannels } from './salesChannels'
 import { redirects } from './redirects'
 
 Vue.use(Vuex)
@@ -85,7 +86,6 @@ const storeModules = {
   shippingMethods,
   statuses,
   paymentMethods,
-  packageTemplates,
   settings,
   coupons,
   sales,
@@ -93,9 +93,11 @@ const storeModules = {
   webhooks,
   tags,
   productSets,
+  languages,
   attributes,
   providers,
   media,
+  salesChannels,
   menuItems,
   redirects,
 }
@@ -110,7 +112,7 @@ const storePattern = {
 
 const store = new Vuex.Store({
   ...storePattern,
-  plugins: [new VuexPersistence({ modules: ['config', 'auth', 'menuItems'] }).plugin],
+  plugins: [new VuexPersistence({ modules: ['config', 'auth', 'languages', 'menuItems'] }).plugin],
 })
 
 export const accessor = useAccessor(store, storePattern)

@@ -43,6 +43,10 @@
         />
       </template>
 
+      <Empty v-if="!fields.length">
+        {{ $t('appNoConfig') }}
+      </Empty>
+
       <br />
 
       <div class="configure-app-form__btns">
@@ -60,13 +64,15 @@
     "fetchFailed": "Nie udało się pobrać konfiguracji aplikacji",
     "save": "Zapisz konfigurację",
     "savedSuccess": "Konfiguracja została zapisana",
-    "savedError": "Nie udało się zapisać konfiguracji aplikacji"
+    "savedError": "Nie udało się zapisać konfiguracji aplikacji",
+    "appNoConfig": "Aplikacja nie posiada konfiguracji"
   },
   "en": {
     "fetchFailed": "Failed to fetch app configuration",
     "save": "Save configuration",
     "savedSuccess": "Configuration saved",
-    "savedError": "Failed to save configuration"
+    "savedError": "Failed to save configuration",
+    "appNoConfig": "App has no configuration"
   }
 }
 </i18n>
@@ -82,9 +88,10 @@ import { createApiInstance } from '@/api'
 
 import Loading from '@/components/layout/Loading.vue'
 import AppSelect from '@/components/form/AppSelect.vue'
+import Empty from '@/components/layout/Empty.vue'
 
 export default defineComponent({
-  components: { ValidationObserver, Loading, AppSelect },
+  components: { ValidationObserver, Loading, AppSelect, Empty },
   props: {
     app: {
       type: Object as PropType<App | null>,

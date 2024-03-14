@@ -2,12 +2,7 @@ import axios from 'axios'
 import { assign, cloneDeep, isNil } from 'lodash'
 import { actionTree, getterTree, mutationTree } from 'typed-vuex'
 import { GetterTree, MutationTree } from 'vuex'
-import {
-  EntityAudits,
-  HeseyaPaginatedResponseMeta,
-  Metadata,
-  MetadataUpdateDto,
-} from '@heseya/store-core'
+import { HeseyaPaginatedResponseMeta, Metadata, MetadataUpdateDto } from '@heseya/store-core'
 
 import { api } from '../api'
 import { DefaultParams, stringifyQueryParams as stringifyQuery } from '@/utils/stringifyQuery'
@@ -22,6 +17,11 @@ import {
   VuexDefaultCrudParams,
   InnerModifiedActionTree,
 } from '@/interfaces/VuexGenerator'
+
+export const GLOBAL_QUERY_PARAMS = {
+  lang_fallback: 'any',
+  with_translations: true,
+} as const
 
 /**
  * Creates state, actions and mutation for CRUD methods of given entity
@@ -165,9 +165,9 @@ export const createVuexCRUD =
             privateState.fetchAbortController = new AbortController()
 
             const filteredQuery = Object.fromEntries(
-              Object.entries({ ...(queryParams.get || {}), ...(query || {}) }).filter(
-                ([, value]) => !isNil(value),
-              ),
+              Object.entries(
+                assign({}, GLOBAL_QUERY_PARAMS, queryParams.get || {}, query || {}),
+              ).filter(([, value]) => !isNil(value)),
             )
 
             commit(DefaultVuexMutation.SetQueryParams, filteredQuery)
@@ -196,7 +196,9 @@ export const createVuexCRUD =
           commit(DefaultVuexMutation.SetError, null)
           commit(DefaultVuexMutation.SetLoading, true)
           try {
-            const stringQuery = stringifyQuery(queryParams.get || {})
+            const stringQuery = stringifyQuery(
+              assign({}, GLOBAL_QUERY_PARAMS, queryParams.getOne || {}),
+            )
             const { data } = await api.get<{ data: Item }>(`/${endpoint}/id:${id}${stringQuery}`)
             // @ts-ignore type is correct, but TS is screaming
             commit(DefaultVuexMutation.SetSelected, data.data)
@@ -213,7 +215,9 @@ export const createVuexCRUD =
           commit(DefaultVuexMutation.SetError, null)
           commit(DefaultVuexMutation.SetLoading, true)
           try {
-            const stringQuery = stringifyQuery(queryParams.add || {})
+            const stringQuery = stringifyQuery(
+              assign({}, GLOBAL_QUERY_PARAMS, queryParams.add || {}),
+            )
             const { data } = await api.post<{ data: Item }>(`/${endpoint}${stringQuery}`, item)
             // @ts-ignore type is correct, but TS is screaming
             commit(DefaultVuexMutation.AddData, data.data)
@@ -230,7 +234,9 @@ export const createVuexCRUD =
           commit(DefaultVuexMutation.SetLoading, true)
           commit(DefaultVuexMutation.SetError, null)
           try {
-            const stringQuery = stringifyQuery(queryParams.edit || {})
+            const stringQuery = stringifyQuery(
+              assign({}, GLOBAL_QUERY_PARAMS, queryParams.edit || {}),
+            )
             const { data } = await api.put<{ data: Item }>(
               `/${endpoint}/id:${id}${stringQuery}`,
               item,
@@ -249,7 +255,9 @@ export const createVuexCRUD =
           commit(DefaultVuexMutation.SetLoading, true)
           commit(DefaultVuexMutation.SetError, null)
           try {
-            const stringQuery = stringifyQuery(queryParams.update || {})
+            const stringQuery = stringifyQuery(
+              assign({}, GLOBAL_QUERY_PARAMS, queryParams.update || {}),
+            )
             const { data } = await api.patch<{ data: Item }>(
               `/${endpoint}/id:${id}${stringQuery}`,
               item,
@@ -270,7 +278,9 @@ export const createVuexCRUD =
           commit(DefaultVuexMutation.SetLoading, true)
           commit(DefaultVuexMutation.SetError, null)
           try {
-            const stringQuery = stringifyQuery(queryParams.update || {})
+            const stringQuery = stringifyQuery(
+              assign({}, GLOBAL_QUERY_PARAMS, queryParams.update || {}),
+            )
             const { data } = await api.patch<{ data: Item }>(
               `/${endpoint}/${value}${stringQuery}`,
               item,
@@ -293,7 +303,7 @@ export const createVuexCRUD =
             const id = typeof payload === 'string' ? payload : payload.value
 
             const payloadParams = typeof payload === 'string' ? {} : payload.params || {}
-            const params = assign({}, queryParams.remove || {}, payloadParams)
+            const params = assign({}, GLOBAL_QUERY_PARAMS, queryParams.remove || {}, payloadParams)
             const stringQuery = stringifyQuery(params)
 
             await api.delete(`/${endpoint}/id:${id}${stringQuery}`)
@@ -310,7 +320,9 @@ export const createVuexCRUD =
           commit(DefaultVuexMutation.SetLoading, true)
           commit(DefaultVuexMutation.SetError, null)
           try {
-            const stringQuery = stringifyQuery(queryParams.remove || {})
+            const stringQuery = stringifyQuery(
+              assign({}, GLOBAL_QUERY_PARAMS, queryParams.remove || {}),
+            )
             await api.delete(`/${endpoint}/${value}${stringQuery}`)
             commit(DefaultVuexMutation.RemoveData, { key, value })
             commit(DefaultVuexMutation.SetLoading, false)
@@ -319,22 +331,6 @@ export const createVuexCRUD =
             commit(DefaultVuexMutation.SetError, error)
             commit(DefaultVuexMutation.SetLoading, false)
             return false
-          }
-        },
-
-        // Audits
-        async fetchAudits({ commit }, id: UUID) {
-          commit(DefaultVuexMutation.SetError, null)
-          try {
-            const stringQuery = stringifyQuery(queryParams.get || {})
-            const { data } = await api.get<{ data: EntityAudits<Item>[] }>(
-              `/audits/${endpoint}/id:${id}${stringQuery}`,
-            )
-            commit(DefaultVuexMutation.SetLoading, false)
-            return data.data
-          } catch (error: any) {
-            commit(DefaultVuexMutation.SetError, error)
-            return []
           }
         },
 

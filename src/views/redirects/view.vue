@@ -148,7 +148,7 @@ export default defineComponent({
   metaInfo(this: any) {
     const fallback = this.$t('newTitle') as string
     return {
-      title: this.isNew ? fallback : this.page?.name || fallback,
+      title: this.isNew ? fallback : this.redirect?.name || fallback,
     }
   },
   components: {

@@ -1,4 +1,6 @@
 export const getApiURL = () => {
+  if (window.apiUrl !== 'REPLACE_ME_API_URL') return window.apiUrl!
+
   switch (window.location.host) {
     // Production clients
     case '***REMOVED***':
@@ -29,7 +31,7 @@ export const getApiURL = () => {
     case '***REMOVED***-admin.stage.heseya.pl':
       return 'https://demo-***REMOVED***.***REMOVED***'
     case '***REMOVED***-admin.stage.heseya.pl':
-      return 'https://demo-***REMOVED***.***REMOVED***'
+      return '***REMOVED***'
     case '***REMOVED***-admin.stage.heseya.pl':
       return 'https://demo-***REMOVED***.***REMOVED***'
 

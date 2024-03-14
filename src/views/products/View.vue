@@ -1,6 +1,8 @@
 <template>
-  <div :key="$route.params.id">
-    <top-nav>
+  <div :key="$route.params.id" class="product-page-wrapper">
+    <AbsoluteContentLangSwitch :value="editedLang" @input="setEditedLang" />
+
+    <TopNav>
       <template #title>
         <template v-if="!isNew">
           <span class="gray-text">{{ $t('title') }}&nbsp;</span>{{ product.name }}
@@ -10,9 +12,24 @@
         </template>
       </template>
 
-      <audits-modal :id="product.id" model="products" />
+      <icon-button
+        v-if="highlightedAttributeSlug && product.attributes"
+        @click="copyHighlightedAttribute"
+      >
+        <template #icon>
+          <i class="bx bx-copy"></i>
+        </template>
+        {{ highlightedAttributeSlug.toUpperCase() }}: {{ highlightedAttributeValue }}
+      </icon-button>
 
-      <pop-confirm
+      <icon-button v-if="storefrontProductUrl" target="_blank" :to="storefrontProductUrl">
+        <template #icon>
+          <i class="bx bx-link-external"></i>
+        </template>
+        {{ $t('nav.goTo') }}
+      </icon-button>
+
+      <PopConfirm
         v-if="!isNew"
         v-can="$p.Products.Remove"
         :title="$t('deleteConfirm').toString()"
@@ -26,30 +43,36 @@
           </template>
           {{ $t('common.delete') }}
         </icon-button>
-      </pop-confirm>
-    </top-nav>
+      </PopConfirm>
+    </TopNav>
 
-    <validation-observer v-slot="{ handleSubmit }">
+    <ValidationObserver v-slot="{ handleSubmit }">
       <form class="product-page" @submit.stop.prevent="handleSubmit(saveProduct)">
-        <card class="product-page__main">
+        <Card class="product-page__main">
           <h2 class="product-page__subtitle">{{ $t('baseFormTitle') }}</h2>
-          <product-basic-details
+          <ProductBasicDetails
             v-model="form"
             :product="product"
             :disabled="!canModify"
             :is-new="isNew"
             :loading="isLoading"
+            :edited-lang="editedLang"
           />
 
           <hr />
 
+          <PublishedLangsForm v-model="form.published" />
+
+          <hr />
+
           <DescriptionAccordion
-            v-model="form.description_html"
+            v-model="formDescriptionHtml"
             :disabled="!canModify"
             :loading="isLoading"
           />
           <ProductAdditionalDescriptions
             v-model="form.descriptions"
+            :edited-lang="editedLang"
             :product="product"
             :disabled="!canModify"
           />
@@ -60,10 +83,20 @@
             :disabled="!canModify"
           />
           <ProductAttachments v-if="!isNew" :product="product" :disabled="!canModify" />
+          <ProductBannerForm
+            ref="banner"
+            v-model="form.banner"
+            :disabled="!canModify"
+            :edited-lang="editedLang"
+          />
 
           <hr />
 
-          <AttributesConfigurator v-model="form.attributes" :disabled="!canModify" />
+          <AttributesConfigurator
+            v-model="form.attributes"
+            :edited-lang="editedLang"
+            :disabled="!canModify"
+          />
           <hr />
           <SchemaConfigurator v-model="form.schemas" :disabled="!canModify" />
           <hr />
@@ -75,7 +108,7 @@
             v-model="form.seo"
             class="product-page__seo-form"
             :disabled="!canModify"
-            :current="!isNew ? { id, model: 'Product' } : null"
+            :current="!isNew ? { id, model: 'Product' } : undefined"
           />
           <template v-if="!isNew">
             <MetadataForm
@@ -112,22 +145,22 @@
               {{ $t('saveAndNext') }}
             </app-button>
           </div>
-        </card>
+        </Card>
 
         <card-micro-widgets class="product-page__widgets-main" section="ProductMain" />
 
-        <card class="product-page__visibility">
-          <product-aside-details v-model="form" :product="product" :disabled="!canModify" />
-        </card>
+        <Card class="product-page__visibility">
+          <ProductAsideDetails v-model="form" :product="product" :disabled="!canModify" />
+        </Card>
 
-        <card class="product-page__gallery">
+        <Card class="product-page__gallery">
           <h2 class="product-page__subtitle">{{ $t('galleryTitle') }}</h2>
-          <gallery ref="gallery" v-model="form.gallery" :disabled="!canModify" />
-        </card>
+          <Gallery ref="gallery" v-model="form.gallery" :disabled="!canModify" />
+        </Card>
 
         <card-micro-widgets class="product-page__widgets-aside" section="ProductAside" />
       </form>
-    </validation-observer>
+    </ValidationObserver>
   </div>
 </template>
 
@@ -139,11 +172,15 @@
     "baseFormTitle": "Informacje podstawowe",
     "galleryTitle": "Zdjęcia i wideo produktu",
     "deleteConfirm": "Czy na pewno chcesz usunąć ten produkt?",
+    "nav": {
+      "goTo": "Przejdź do produktu"
+    },
     "messages": {
       "removed": "Produkt został usunięty.",
       "created": "Produkt został utworzony.",
       "updated": "Produkt został zaktualizowany.",
-      "error": "Wystąpił błąd podczas zapisywania produktu."
+      "error": "Wystąpił błąd podczas zapisywania produktu.",
+      "highlightedAttributeCopySuccess": "Wartość atrybutu została skopiowana!"
     },
     "saveAndNext": "Zapisz i dodaj następny"
   },
@@ -153,11 +190,15 @@
     "baseFormTitle": "Basic information",
     "galleryTitle": "Product gallery",
     "deleteConfirm": "Are you sure you want to delete this product?",
+    "nav": {
+      "goTo": "Go to product"
+    },
     "messages": {
       "removed": "Product has been removed.",
       "created": "Product has been created.",
       "updated": "Product has been updated.",
-      "error": "An error occurred while saving the product."
+      "error": "An error occurred while saving the product.",
+      "highlightedAttributeCopySuccess": "Highlighted attribute value has been copied!"
     },
     "saveAndNext": "Save and add next"
   }
@@ -165,7 +206,7 @@
 </i18n>
 
 <script lang="ts">
-import mixins from 'vue-typed-mixins'
+import { defineComponent } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import cloneDeep from 'lodash/cloneDeep'
 import { Product, ProductCreateDto } from '@heseya/store-core'
@@ -177,11 +218,12 @@ import PopConfirm from '@/components/layout/PopConfirm.vue'
 import SchemaConfigurator from '@/components/modules/schemas/Configurator.vue'
 import SeoForm from '@/components/modules/seo/Accordion.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
-import AuditsModal from '@/components/modules/audits/AuditsModal.vue'
 import AttributesConfigurator from '@/components/modules/attributes/configurator/Configurator.vue'
 import WarehouseItemsConfigurator from '@/components/modules/products/WarehouseItemsConfigurator.vue'
+import AbsoluteContentLangSwitch from '@/components/lang/AbsoluteContentLangSwitch.vue'
 
 import ProductBasicDetails from '@/components/modules/products/view/ProductBasicDetails.vue'
+import PublishedLangsForm from '@/components/lang/PublishedLangsForm.vue'
 import ProductAdvancedDetails from '@/components/modules/products/view/ProductAdvancedDetails.vue'
 import ProductAsideDetails from '@/components/modules/products/view/ProductAsideDetails.vue'
 import ProductDescription from '@/components/modules/products/view/ProductDescription.vue'
@@ -190,22 +232,31 @@ import ProductAdditionalDescriptions from '@/components/modules/products/descrip
 import ProductAttachments from '@/components/modules/products/attachments/List.vue'
 import ProductRelatedSets from '@/components/modules/products/related/List.vue'
 import DescriptionAccordion from '@/components/DescriptionAccordion.vue'
+import ProductBannerForm from '@/components/modules/products/BannerForm.vue'
 
-import preventLeavingPage from '@/mixins/preventLeavingPage'
+// import preventLeavingPage from '@/mixins/preventLeavingPage'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { updateProductAttributeOptions } from '@/services/updateProductAttributeOptions'
 
 import { UUID } from '@/interfaces/UUID'
 import { ProductComponentForm } from '@/interfaces/Product'
+import { TranslationsFromDto } from '@/interfaces/Translations'
+import { mapPricesToDto } from '@/utils/currency'
+import { SETTINGS_KEYS } from '@/consts/featureFlags'
 
-const EMPTY_FORM: ProductComponentForm = {
+const EMPTY_PRODUCT_TRANSLATIONS: TranslationsFromDto<ProductCreateDto> = {
   name: '',
-  slug: '',
-  price: 0,
   description_html: '',
   description_short: '',
-  vat_rate: 0,
+}
+
+const EMPTY_FORM: ProductComponentForm = {
+  slug: '',
+  prices_base: [],
+  name: '',
+  description_html: '',
+  description_short: '',
   google_product_category: null,
   shipping_digital: '0',
   purchase_limit_per_user: 0,
@@ -216,20 +267,18 @@ const EMPTY_FORM: ProductComponentForm = {
   schemas: [],
   gallery: [],
   tags: [],
-  seo: {},
+  seo: undefined,
   attributes: [],
   items: [],
   descriptions: [],
   attachments: [],
   related_sets: [],
+  published: [],
+  translations: {},
+  banner: null,
 }
 
-export default mixins(preventLeavingPage).extend({
-  metaInfo(this: any): any {
-    return {
-      title: (!this.isNew && this.product?.name) || (this.$t('titleNew') as string),
-    }
-  },
+export default defineComponent({
   components: {
     TopNav,
     Gallery,
@@ -238,7 +287,6 @@ export default mixins(preventLeavingPage).extend({
     ValidationObserver,
     SchemaConfigurator,
     SeoForm,
-    AuditsModal,
     MetadataForm,
     AttributesConfigurator,
     WarehouseItemsConfigurator,
@@ -248,10 +296,22 @@ export default mixins(preventLeavingPage).extend({
     ProductAsideDetails,
     ProductAdditionalDescriptions,
     ProductAttachments,
+    ProductBannerForm,
     ProductRelatedSets,
+    PublishedLangsForm,
+    AbsoluteContentLangSwitch,
     CardMicroWidgets,
   },
+
+  // mixins: [preventLeavingPage],
+
+  metaInfo(this: any): any {
+    return {
+      title: (!this.isNew && this.product?.name) || (this.$t('titleNew') as string),
+    }
+  },
   data: () => ({
+    editedLang: '',
     form: cloneDeep(EMPTY_FORM),
   }),
   computed: {
@@ -273,6 +333,33 @@ export default mixins(preventLeavingPage).extend({
     canModify(): boolean {
       return this.$can(this.isNew ? this.$p.Products.Add : this.$p.Products.Edit)
     },
+
+    storefrontProductUrl(): string | null {
+      const base = this.$accessor.config.env[SETTINGS_KEYS.StorefrontProductUrl]
+      if (!base || !this.product.slug) return null
+
+      return new URL(`/product/${this.product.slug}`, base).toString()
+    },
+
+    highlightedAttributeSlug(): string | undefined {
+      return this.$accessor.config.env[SETTINGS_KEYS.HighlightedProductAttribute]
+    },
+    highlightedAttributeValue(): string {
+      return (
+        this.product.attributes?.find(
+          (attribute) => attribute.slug === this.highlightedAttributeSlug,
+        )?.selected_options[0]?.name || this.$i18n.t('common.none').toString()
+      )
+    },
+
+    formDescriptionHtml: {
+      get(): string {
+        return this.form.translations?.[this.editedLang]?.description_html || ''
+      },
+      set(value: string) {
+        this.form.translations[this.editedLang].description_html = value
+      },
+    },
   },
   watch: {
     product(product: Product) {
@@ -283,7 +370,10 @@ export default mixins(preventLeavingPage).extend({
           shipping_digital: (+product.shipping_digital).toString() as '0' | '1',
           purchase_limit_per_user: product.purchase_limit_per_user || 0,
           seo: product.seo || {},
+          translations: product.translations || {},
+          prices_base: mapPricesToDto(product.prices_base),
         }
+        this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
       }
     },
     error(error) {
@@ -297,8 +387,18 @@ export default mixins(preventLeavingPage).extend({
   },
   async created() {
     await this.fetch()
+    this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
   },
   methods: {
+    setEditedLang(langId: string) {
+      this.editedLang = langId
+
+      if (!this.form?.translations) this.$set(this.form, 'translations', {})
+      this.$set(this.form.translations!, langId, {
+        ...EMPTY_PRODUCT_TRANSLATIONS,
+        ...this.form?.translations?.[langId],
+      })
+    },
     async fetch() {
       this.form = cloneDeep(EMPTY_FORM)
       if (this.isNew) return
@@ -306,7 +406,7 @@ export default mixins(preventLeavingPage).extend({
       await this.$accessor.products.get(this.$route.params.id)
 
       // isFormPrefilled should be set to true after form was prefilled
-      this.isFormPrefilled = true
+      // this.isFormPrefilled = true
 
       this.$accessor.stopLoading()
     },
@@ -336,6 +436,16 @@ export default mixins(preventLeavingPage).extend({
           related_sets: this.form.related_sets.map(({ id }) => id),
           shipping_digital: Boolean(+this.form.shipping_digital),
           purchase_limit_per_user: this.form.purchase_limit_per_user || null,
+          banner: this.form.banner
+            ? {
+                ...this.form.banner,
+                translations: this.form.banner.translations || {},
+                media: this.form.banner.media.map((media) => ({
+                  ...media,
+                  media: media.media.id,
+                })),
+              }
+            : null,
           attributes: attributes.reduce(
             (acc, { id, selected_options: option }) => ({
               ...acc,
@@ -358,13 +468,14 @@ export default mixins(preventLeavingPage).extend({
           : await this.$accessor.products.update({ id: this.id, item: apiPayload })
 
         ;(this.$refs.gallery as any).clearMediaToDelete()
+        ;(this.$refs.banner as any)?.clearMediaToDelete?.()
 
         if (!item) throw new Error('Product was not saved')
 
         this.$toast.success(successMessage)
 
         // After form submitting isDirty should be reset
-        this.isDirty = false
+        // this.isDirty = false
 
         if (item.id !== this.product.id) {
           this.$router.push(`/products/${item.id}`)
@@ -389,11 +500,21 @@ export default mixins(preventLeavingPage).extend({
       await this.saveProduct()
       this.$router.push('/products/create')
     },
+
+    async copyHighlightedAttribute() {
+      await navigator.clipboard.writeText(this.highlightedAttributeValue)
+      this.$toast.info(this.$t('messages.highlightedAttributeCopySuccess') as string)
+    },
   },
 })
 </script>
 
 <style lang="scss">
+.product-page-wrapper {
+  position: relative;
+  margin-right: 24px;
+}
+
 .product-page {
   display: grid;
   grid-template-rows: auto;

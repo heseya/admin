@@ -98,18 +98,21 @@ export default defineComponent({
         return
       }
 
-      this.isLoading = true
+      this.changeLoading(true)
       this.$emit('upload-start', files)
 
-      files.forEach(async (rawFile) => {
-        const { success, file, error } = await uploadMedia(rawFile)
-        if (success && file) {
-          this.$emit('upload', file)
-        } else {
-          this.$emit('error', error)
-        }
-      })
-      this.isLoading = false
+      await Promise.all(
+        files.map(async (rawFile) => {
+          const { success, file, error } = await uploadMedia(rawFile)
+          if (success && file) {
+            this.$emit('upload', file)
+          } else {
+            this.$emit('error', error)
+          }
+        }),
+      )
+
+      this.changeLoading(false)
     },
     isFileValid(file: File) {
       if (!file) return false
@@ -119,6 +122,10 @@ export default defineComponent({
     changeDrag(isDrag: boolean) {
       this.isDrag = isDrag
       this.$emit('drag-change', isDrag)
+    },
+    changeLoading(isLoading: boolean) {
+      this.isLoading = isLoading
+      this.$emit('loading-change', isLoading)
     },
   },
 })

@@ -3,7 +3,9 @@
     class="product-list-item"
     :item="product"
     :headers="table.headers"
-    :to="`products/${product.id}`"
+    :draggable="draggable"
+    :no-hover="static"
+    :to="!static ? `products/${product.id}` : undefined"
   >
     <template #cover>
       <avatar color="#eee">
@@ -29,13 +31,12 @@
       </div>
     </template>
 
-    <template #public>
+    <template v-if="!static" #public>
       <switch-input
         :value="product.public"
         class="product-list-item__visibility"
         :loading="publicIsLoading"
         @input="changeVisibility"
-        @click.native.stop
       />
     </template>
 
@@ -94,7 +95,6 @@ import MediaElement from '@/components/MediaElement.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ProductPrice from './ProductPrice.vue'
 
-import { formatCurrency } from '@/utils/currency'
 import { TableConfig } from '@/interfaces/CmsTable'
 import { FEATURE_FLAGS } from '@/consts/featureFlags'
 
@@ -109,6 +109,14 @@ export default defineComponent({
       type: Object as PropType<TableConfig<Product>>,
       required: true,
     },
+    draggable: {
+      type: Boolean,
+      default: false,
+    },
+    static: {
+      type: Boolean,
+      default: false,
+    },
   },
   data: () => ({ publicIsLoading: false }),
   computed: {
@@ -120,9 +128,6 @@ export default defineComponent({
     navigator.permissions.query({ name: 'clipboard-write' as PermissionName })
   },
   methods: {
-    formatCurrency(amount: number) {
-      return formatCurrency(amount, this.$accessor.config.currency)
-    },
     async changeVisibility(isPublic: boolean) {
       this.publicIsLoading = true
       await this.$accessor.products.update({ id: this.product.id, item: { public: isPublic } })

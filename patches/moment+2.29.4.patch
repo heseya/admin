@@ -1,0 +1,12 @@
+diff --git a/node_modules/moment/package.json b/node_modules/moment/package.json
+index 6c1205c..3eb02b5 100644
+--- a/node_modules/moment/package.json
++++ b/node_modules/moment/package.json
+@@ -23,7 +23,6 @@
+         "ender"
+     ],
+     "main": "./moment.js",
+-    "jsnext:main": "./dist/moment.js",
+     "typings": "./moment.d.ts",
+     "typesVersions": {
+         ">=3.1": {

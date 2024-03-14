@@ -57,7 +57,7 @@ import ConditionGroup from './ConditionGroup.vue'
 
 import { InnerConditionGroup } from '@/interfaces/SalesAndCoupons'
 
-import { EMPTY_ORDER_VALUE_FORM } from '@/consts/salesConditionsForms'
+import { EMPTY_PRODUCT_IN_FORM } from '@/consts/salesConditionsForms'
 
 export default defineComponent({
   components: { Empty, ConditionGroup },
@@ -157,7 +157,7 @@ export default defineComponent({
     addConditionGroup() {
       const addedCondition = this.forcedCondition
         ? cloneDeep({ ...this.forcedCondition, forced: true })
-        : cloneDeep(EMPTY_ORDER_VALUE_FORM)
+        : cloneDeep(EMPTY_PRODUCT_IN_FORM)
 
       this.groups.push({
         conditions: [addedCondition],

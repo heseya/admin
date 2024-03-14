@@ -1,23 +1,27 @@
 <template>
-  <div class="responsive-media">
-    <div class="responsive-media__drag" :title="$t('dragTitle').toString()">
+  <div class="responsive-media" :class="{ 'responsive-media--no-hover': static }">
+    <div
+      v-if="!static"
+      class="responsive-media__drag reorder-handle"
+      :title="$t('dragTitle').toString()"
+    >
       <i class="bx bx-grid-vertical"></i>
     </div>
 
     <div class="responsive-media__content">
       <div class="responsive-media__inputs">
         <validated-input
-          v-model="bannerMedia.title"
+          v-model="bannerTitle"
           :label="$t('form.title').toString()"
           :disabled="disabled"
         />
         <validated-input
-          v-model="bannerMedia.subtitle"
+          v-model="bannerSubtitle"
           :label="$t('form.subtitle').toString()"
           :disabled="disabled"
         />
 
-        <validated-input v-model="bannerMedia.url" :disabled="disabled">
+        <validated-input v-model="bannerUrl" :disabled="disabled">
           <template #label>
             {{ $t('form.url') }}
             <info-tooltip> {{ $t('form.urlTooltip') }}</info-tooltip>
@@ -25,7 +29,7 @@
         </validated-input>
       </div>
 
-      <div class="responsive-media__media-list">
+      <div :key="bannerMedia.media.length" class="responsive-media__media-list">
         <div v-for="(image, i) in bannerMedia.media" :key="image.media.id" class="item-wrapper">
           <div class="single-media">
             <media-element :media="image.media" :size="120" fit="contain" />
@@ -57,6 +61,7 @@
           <media-upload-input :disabled="disabled" @upload="onImageUpload" />
         </div>
       </div>
+      <PublishedLangsForm v-if="!static" v-model="bannerMedia.published" slim />
     </div>
 
     <div class="responsive-media__buttons">
@@ -96,7 +101,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { BannerMedia, CdnMedia } from '@heseya/store-core'
+import { CdnMedia } from '@heseya/store-core'
 
 import { removeMedia } from '@/services/uploadMedia'
 
@@ -104,14 +109,25 @@ import MediaElement from '@/components/MediaElement.vue'
 import MediaEditForm from '../media/MediaEditForm.vue'
 import MediaUploadInput from '../media/MediaUploadInput.vue'
 
+import { BannerMediaComponentForm } from '@/interfaces/Banner'
+import PublishedLangsForm from '@/components/lang/PublishedLangsForm.vue'
+
 export default defineComponent({
-  components: { MediaElement, MediaEditForm, MediaUploadInput },
+  components: { MediaElement, MediaEditForm, MediaUploadInput, PublishedLangsForm },
   props: {
     value: {
-      type: Object as PropType<BannerMedia>,
+      type: Object as PropType<BannerMediaComponentForm>,
       required: true,
     },
     disabled: {
+      type: Boolean,
+      default: false,
+    },
+    editedLang: {
+      type: String,
+      required: true,
+    },
+    static: {
       type: Boolean,
       default: false,
     },
@@ -123,11 +139,36 @@ export default defineComponent({
 
   computed: {
     bannerMedia: {
-      get(): BannerMedia {
+      get(): BannerMediaComponentForm {
         return this.value
       },
-      set(v: BannerMedia) {
+      set(v: BannerMediaComponentForm) {
         this.$emit('input', v)
+      },
+    },
+
+    bannerUrl: {
+      get(): string {
+        return this.bannerMedia.url || ''
+      },
+      set(value: string) {
+        this.$emit('input', { ...this.bannerMedia, url: value })
+      },
+    },
+    bannerTitle: {
+      get(): string {
+        return this.bannerMedia.translations[this.editedLang]?.title || ''
+      },
+      set(value: string) {
+        this.bannerMedia.translations[this.editedLang].title = value
+      },
+    },
+    bannerSubtitle: {
+      get(): string {
+        return this.bannerMedia.translations[this.editedLang]?.subtitle || ''
+      },
+      set(value: string) {
+        this.bannerMedia.translations[this.editedLang].subtitle = value
       },
     },
   },
@@ -147,7 +188,10 @@ export default defineComponent({
 
     onMediaDelete(i: number) {
       const deletedId = this.bannerMedia.media[i].media.id
-      this.bannerMedia.media = this.bannerMedia.media.filter((_, index) => index !== i)
+      this.bannerMedia = {
+        ...this.bannerMedia,
+        media: this.bannerMedia.media.filter((_, index) => index !== i),
+      }
 
       if (this.mediaToDelete.find((id) => deletedId === id)) {
         this.mediaToDelete = this.mediaToDelete.filter((id) => deletedId !== id)
@@ -156,7 +200,11 @@ export default defineComponent({
     },
 
     onImageUpload(media: CdnMedia) {
-      this.bannerMedia.media.push({ min_screen_width: 0, media })
+      this.bannerMedia = {
+        ...this.bannerMedia,
+        media: [...this.bannerMedia.media, { min_screen_width: 0, media }],
+      }
+
       this.mediaToDelete = [...this.mediaToDelete, media.id]
     },
 
@@ -181,7 +229,7 @@ $item-size: 160px;
   transition: 0.1s;
   border-radius: 16px;
 
-  &:hover {
+  &:not(&--no-hover):hover {
     // background-color: rgba(var(--background-color-700), 0.4);
     background-color: var(--background-color-500);
   }

@@ -1,7 +1,7 @@
 <template>
   <div class="product-basic-details">
     <validated-input
-      v-model="form.name"
+      v-model="formName"
       rules="required"
       :label="$t('common.form.name').toString()"
       name="name"
@@ -9,7 +9,7 @@
       @input="editSlug"
     />
 
-    <product-set-select v-model="form.sets" :product="product" :disabled="disabled" />
+    <ProductSetSelect v-model="form.sets" :product="product" :disabled="disabled" />
 
     <validated-input
       v-model="form.slug"
@@ -20,32 +20,14 @@
     />
 
     <div class="product-basic-details__price-row">
-      <validated-input
-        v-model="form.price"
-        rules="required|not-negative"
-        type="number"
-        step="0.01"
-        :label="$t('form.price').toString()"
-        name="price"
-        :disabled="disabled"
-      />
-
-      <validated-input
-        v-model="form.vat_rate"
-        rules="not-negative|less-than:100"
-        type="number"
-        :label="$t('form.vatRate').toString()"
-        name="vat_rate"
-        :min="0"
-        :disabled="disabled"
-      />
+      <CurrencyPriceForm v-model="form.prices_base" :disabled="disabled" />
     </div>
 
-    <tags-select v-model="form.tags" :disabled="disabled" />
+    <TagsSelect v-model="form.tags" :disabled="disabled" />
 
-    <app-textarea
+    <AppTextarea
       v-if="!loading"
-      v-model="form.description_short"
+      v-model="formDescriptionShort"
       :label="$t('form.shortDescription').toString()"
       :disabled="disabled"
     />
@@ -56,14 +38,12 @@
 {
   "pl": {
     "form": {
-      "price": "Cena brutto",
       "vatRate": "Stawka VAT (%)",
       "shortDescription": "Krótki opis"
     }
   },
   "en": {
     "form": {
-      "price": "Price (gross)",
       "vatRate": "VAT rate (%)",
       "shortDescription": "Short description"
     }
@@ -79,11 +59,12 @@ import { ProductComponentForm } from '@/interfaces/Product'
 import ProductSetSelect from '../ProductSetSelect.vue'
 import Textarea from '@/components/form/Textarea.vue'
 import TagsSelect from '@/components/TagsSelect.vue'
+import CurrencyPriceForm from '@/components/CurrencyPriceForm.vue'
 
 import { generateSlug } from '@/utils/generateSlug'
 
 export default defineComponent({
-  components: { ProductSetSelect, AppTextarea: Textarea, TagsSelect },
+  components: { ProductSetSelect, AppTextarea: Textarea, TagsSelect, CurrencyPriceForm },
   props: {
     value: {
       type: Object as PropType<ProductComponentForm>,
@@ -96,6 +77,7 @@ export default defineComponent({
     disabled: { type: Boolean, default: false },
     loading: { type: Boolean, default: false },
     isNew: { type: Boolean, default: false },
+    editedLang: { type: String, required: true },
   },
   computed: {
     form: {
@@ -106,11 +88,28 @@ export default defineComponent({
         this.$emit('input', value)
       },
     },
+
+    formName: {
+      get(): string {
+        return this.form.translations?.[this.editedLang]?.name || ''
+      },
+      set(value: string) {
+        this.form.translations[this.editedLang].name = value
+      },
+    },
+    formDescriptionShort: {
+      get(): string {
+        return this.form.translations?.[this.editedLang]?.description_short || ''
+      },
+      set(value: string) {
+        this.form.translations[this.editedLang].description_short = value
+      },
+    },
   },
 
   methods: {
     editSlug() {
-      if (this.isNew) this.form.slug = generateSlug(this.form.name)
+      if (this.isNew) this.form.slug = generateSlug(this.formName)
     },
   },
 })

@@ -32,7 +32,7 @@
             <a-tooltip v-if="item.summary_paid > item.summary">
               <template #title>
                 {{ $t('overpaid') }}
-                <b>{{ formatCurrency(item.summary_paid - item.summary) }}</b>
+                <b>{{ formatCurrency(item.summary_paid - item.summary, item.currency) }}</b>
               </template>
               <span class="order-icon"> <i class="bx bxs-error"></i> </span>
             </a-tooltip>
@@ -53,6 +53,10 @@
               >{{ $t('payment.onDelivery') }}</span
             >
             <span v-else class="order-tag danger-text">{{ $t('payment.notPaid') }}</span>
+          </template>
+
+          <template #language="{ rawValue, value }">
+            <LangFlag :lang="rawValue" /> <small>{{ value }}</small>
           </template>
 
           <template #status="{ rawValue: { name, color } }">
@@ -83,6 +87,8 @@
       "status": "Status",
       "digital_shipping": "Przesyłka cyfrowa",
       "shipping": "Przesyłka",
+      "sales_channel": "Kanał sprzedaży",
+      "language": "Język",
       "date": "Data"
     }
   },
@@ -103,6 +109,8 @@
       "status": "Status",
       "digital_shipping": "Digital shipping",
       "shipping": "Shipping",
+      "sales_channel": "Sales channel",
+      "language": "Language",
       "date": "Date"
     }
   }
@@ -128,6 +136,8 @@ import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 import { formatFilters } from '@/utils/utils'
 import { formatDate } from '@/utils/dates'
 import { formatCurrency } from '@/utils/currency'
+import LangFlag from '@/components/lang/LangFlag.vue'
+import { Language } from '@heseya/store-core'
 
 export default defineComponent({
   metaInfo(this: any) {
@@ -137,11 +147,16 @@ export default defineComponent({
     OrderFilter,
     PaginatedList,
     CmsTableRow,
+    LangFlag,
   },
   data: () => ({
     filters: { ...EMPTY_ORDER_FILTERS } as OrderFilersType,
   }),
   computed: {
+    languages(): Language[] {
+      return this.$accessor.languages.data.filter((lang) => !lang.hidden)
+    },
+
     tableConfig(): TableConfig<Order> {
       return {
         rowUrlBuilder: (order) => `/orders/${order.id}`,
@@ -152,7 +167,7 @@ export default defineComponent({
             key: 'summary',
             label: this.$t('form.summary') as string,
             sortable: true,
-            render: (v) => this.formatCurrency(v),
+            render: (v, order) => this.formatCurrency(v, order.currency),
           },
           { key: 'paid', label: this.$t('form.paid') as string, width: '0.8fr' },
           { key: 'status', label: this.$t('form.status') as string, width: '0.8fr' },
@@ -163,6 +178,16 @@ export default defineComponent({
               [r.shipping_method?.name, r.digital_shipping_method?.name]
                 .filter(Boolean)
                 .join(', ') || '-',
+          },
+          {
+            key: 'sales_channel',
+            label: this.$t('form.sales_channel') as string,
+            render: (_, r) => r.sales_channel?.name || '-',
+          },
+          {
+            key: 'language',
+            label: this.$t('form.language') as string,
+            render: (iso) => this.languages.find((l) => l.iso === iso)?.name || iso,
           },
           {
             key: 'created_at',
@@ -209,6 +234,15 @@ export default defineComponent({
             format: (v: ShippingMethod) => v?.name || '-',
           },
           {
+            key: 'sales_channel',
+            label: this.$t('form.sales_channel') as string,
+            format: (_, o) => o.sales_channel?.name || '-',
+          },
+          {
+            key: 'language',
+            label: this.$t('form.language') as string,
+          },
+          {
             key: 'created_at',
             label: this.$t('form.date') as string,
           },
@@ -235,14 +269,14 @@ export default defineComponent({
 
       this.$router.push({
         path: 'orders',
-        query: { page: undefined, ...queryFilters },
+        query: { ...queryFilters, page: undefined },
       })
     },
     clearFilters() {
       this.makeSearch({ ...EMPTY_ORDER_FILTERS })
     },
-    formatCurrency(value: number) {
-      return formatCurrency(value, this.$accessor.config.currency)
+    formatCurrency(value: number | string, currency: string) {
+      return formatCurrency(value, currency)
     },
     async copyToClipboard(value: string) {
       await navigator.clipboard.writeText(value)

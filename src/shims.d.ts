@@ -7,6 +7,7 @@ import { AccessorType } from './store'
 declare global {
   interface Window {
     updateSW: (reloadPage?: boolean) => void
+    apiUrl?: string
   }
 }
 

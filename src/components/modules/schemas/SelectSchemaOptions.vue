@@ -16,16 +16,16 @@
         <div v-for="(option, i) in options" :key="i" class="select-schema-options__option">
           <i class="bx bx-grid-vertical drag-icon" :class="{ 'drag-icon--disabled': disabled }"></i>
           <validated-input
-            v-model="option.name"
+            :value="option.translations[editedLang]?.name || ''"
             :disabled="disabled"
             rules="required"
             :label="$t('common.form.name')"
+            @input="setOptionName(i, $event)"
           />
-          <app-input
-            v-model="option.price"
+          <CurrencyPriceForm
+            v-model="option.prices"
             :disabled="disabled"
-            type="number"
-            :label="$t('form.price')"
+            :label="$t('form.price').toString()"
           />
           <Autocomplete
             v-model="options[i].items"
@@ -96,8 +96,9 @@ import { SchemaOptionDto } from '@heseya/store-core'
 import Zone from '@/components/layout/Zone.vue'
 import Autocomplete from '@/components/Autocomplete.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
+import CurrencyPriceForm from '@/components/CurrencyPriceForm.vue'
 
-import { CLEAR_OPTION } from '@/consts/schemaConsts'
+import { CLEAR_SCHEMA_OPTION, CLEAR_SCHEMA_OPTION_TRANSLATION } from '@/consts/schemaConsts'
 
 export default defineComponent({
   name: 'SelectSchemaOptions',
@@ -106,11 +107,16 @@ export default defineComponent({
     Autocomplete,
     SwitchInput,
     Draggable,
+    CurrencyPriceForm,
   },
   props: {
     defaultOption: {
       type: [Number, String],
       default: null,
+    },
+    editedLang: {
+      type: String,
+      required: true,
     },
     value: {
       type: Array as PropType<SchemaOptionDto[]>,
@@ -133,13 +139,27 @@ export default defineComponent({
       this.$emit('set-default', v)
     },
     addOption() {
-      this.options.push(cloneDeep(CLEAR_OPTION))
+      this.options.push(
+        cloneDeep({
+          ...CLEAR_SCHEMA_OPTION,
+          translations: { [this.editedLang]: { ...CLEAR_SCHEMA_OPTION_TRANSLATION } },
+          prices: this.$accessor.config.currencies.map((c) => ({ value: '0', currency: c.code })),
+        }),
+      )
     },
     removeOption(index: number) {
       this.options = this.options.filter((_, i) => i !== index)
     },
     onRadioClick(index: number) {
       this.setDefault(this.defaultOption === index ? null : index)
+    },
+    setOptionName(index: number, name: string) {
+      if (!this.options[index].translations[this.editedLang])
+        this.options[index].translations = {
+          [this.editedLang]: { ...CLEAR_SCHEMA_OPTION_TRANSLATION },
+        }
+
+      this.options[index].translations[this.editedLang].name = name
     },
   },
 })
@@ -161,7 +181,7 @@ export default defineComponent({
       '. items items items'
       '. onoff radio radio'
       '. delete delete delete';
-    align-items: center;
+    align-items: start;
     justify-items: center;
     margin-bottom: 8px;
 

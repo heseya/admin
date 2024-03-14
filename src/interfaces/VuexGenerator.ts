@@ -10,6 +10,7 @@ export interface VuexBaseItem {
 
 export interface VuexDefaultCrudParams {
   get?: DefaultParams
+  getOne?: DefaultParams
   add?: DefaultParams
   edit?: DefaultParams
   update?: DefaultParams

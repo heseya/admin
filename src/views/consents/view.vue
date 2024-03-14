@@ -17,7 +17,8 @@
         </icon-button>
       </pop-confirm>
     </top-nav>
-    <ConsentsForm v-model="form" :disabled="isDisabled" @submit="save"> </ConsentsForm>
+    <ConsentsForm v-model="form" :edited-lang="editedLang" :disabled="isDisabled" @submit="save" />
+    <AbsoluteContentLangSwitch :value="editedLang" @input="setEditedLang" />
   </div>
 </template>
 
@@ -50,13 +51,20 @@ import { Consent, ConsentCreateDto } from '@heseya/store-core'
 import TopNav from '@/components/layout/TopNav.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ConsentsForm from '@/components/modules/consents/Form.vue'
+import AbsoluteContentLangSwitch from '@/components/lang/AbsoluteContentLangSwitch.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
+import { TranslationsFromDto } from '@/interfaces/Translations'
 
-const CLEAN_FORM: ConsentCreateDto = {
+const CLEAN_TRANSLATION_FORM: TranslationsFromDto<ConsentCreateDto> = {
   name: '',
   description_html: '',
+}
+
+const CLEAN_FORM: ConsentCreateDto = {
   required: true,
+  translations: {},
+  published: [],
 }
 
 export default defineComponent({
@@ -70,8 +78,10 @@ export default defineComponent({
     TopNav,
     PopConfirm,
     ConsentsForm,
+    AbsoluteContentLangSwitch,
   },
   data: () => ({
+    editedLang: '',
     form: cloneDeep(CLEAN_FORM),
   }),
   computed: {
@@ -97,7 +107,12 @@ export default defineComponent({
   watch: {
     consent(consent: Consent) {
       if (!this.isNew) {
-        this.form = cloneDeep(consent)
+        this.form = {
+          ...cloneDeep(consent),
+          translations: {
+            ...cloneDeep(consent.translations),
+          },
+        }
       }
     },
     error(error: any) {
@@ -109,17 +124,19 @@ export default defineComponent({
   async created() {
     if (!this.isNew) {
       this.$accessor.startLoading()
-      const selectedConsent = await this.$accessor.consents.get(this.id)
-      if (selectedConsent) {
-        // eslint-disable-next-line camelcase
-        const { name, description_html, required } = selectedConsent
-        // eslint-disable-next-line camelcase
-        this.form = cloneDeep({ name, description_html, required })
-      }
+      await this.$accessor.consents.get(this.id)
       this.$accessor.stopLoading()
     }
+
+    this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
   },
   methods: {
+    setEditedLang(langId: string) {
+      this.editedLang = langId
+      if (!this.form.translations[langId])
+        this.$set(this.form.translations, langId, { ...CLEAN_TRANSLATION_FORM })
+    },
+
     async save() {
       this.$accessor.startLoading()
       const successMessage = this.isNew

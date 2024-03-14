@@ -16,6 +16,9 @@
       v-model="items"
       class="cms-table__content"
       handle=".reorder-handle"
+      :force-fallback="true"
+      :scroll-sensitivity="200"
+      @change="handleReorder"
     >
       <template v-if="shouldRenderList">
         <div v-for="item in items" :key="item.id" class="cms-table__item">
@@ -50,6 +53,33 @@ import CmsTableRow from '@/components/cms/CmsTableRow.vue'
 
 export default defineComponent({
   components: { CmsTableHeader, Draggable, CmsTableRow },
+
+  provide() {
+    const parent = this
+
+    const handleDragTo = (item: VuexBaseItem, newIndex: number) => {
+      if (newIndex < 0) newIndex = 0
+      if (newIndex >= parent.items.length) newIndex = parent.items.length - 1
+
+      parent.handleReorder({
+        moved: { element: item, newIndex, oldIndex: parent.items.indexOf(item) },
+      })
+
+      const items = [...parent.items]
+      items.splice(items.indexOf(item), 1)
+      items.splice(newIndex, 0, item)
+      parent.items = items
+    }
+
+    return {
+      handleDragTo,
+      handleDragBy(item: VuexBaseItem, by: number) {
+        const newIndex = parent.items.indexOf(item) + by
+        handleDragTo(item, newIndex)
+      },
+    }
+  },
+
   props: {
     value: {
       type: Array as PropType<VuexBaseItem[]>,
@@ -95,6 +125,13 @@ export default defineComponent({
   methods: {
     click() {
       this.$emit('click')
+    },
+    handleReorder({
+      moved,
+    }: {
+      moved: { element: VuexBaseItem; newIndex: number; oldIndex: number }
+    }) {
+      this.$emit('reorder', moved)
     },
   },
 })

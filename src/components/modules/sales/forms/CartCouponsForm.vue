@@ -4,7 +4,7 @@
       v-model="form.min_value"
       :name="`${formId}.min_value`"
       type="number"
-      :rules="`not-negative|less-than:@${formId}.max_value`"
+      :rules="`not-negative|less-or-equal-than:@${formId}.max_value`"
       :disabled="disabled"
       :label="$t(`form.min_${formType}_value`).toString()"
     />

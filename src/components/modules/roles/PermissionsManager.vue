@@ -39,7 +39,6 @@
       "analytics": "Statystyka",
       "apps": "Zarządzanie aplikacjami",
       "app": "Aplikacje zewnętrzne",
-      "audits": "Historia zmian",
       "auth": "Autoryzacja użytkowników",
       "banners": "Bannery",
       "product_sets": "Kolekcje",
@@ -55,7 +54,6 @@
       "schemas": "Schematy",
       "cart": "Koszyk",
       "orders": "Zamówienia ",
-      "packages": "Szablony przesyłek",
       "pages": "Strony",
       "profile": "Profil użytkownika",
       "payments": "Płatności",
@@ -69,7 +67,9 @@
       "webhooks": "Webhooki",
       "events": "Wydarzenia aktywujące Webhooki",
       "seo": "SEO",
-      "attributes": "Cechy"
+      "attributes": "Atrybuty",
+      "languages": "Języki",
+      "sales_channels": "Kanały sprzedaży"
     }
   },
   "en": {
@@ -79,7 +79,6 @@
       "analytics": "Analytics",
       "apps": "Apps management",
       "app": "External apps",
-      "audits": "Audits",
       "auth": "Auth",
       "banners": "Banners",
       "product_sets": "Product sets",
@@ -95,7 +94,6 @@
       "schemas": "Schemas",
       "cart": "Cart",
       "orders": "Orders",
-      "packages": "Packages",
       "pages": "Pages",
       "profile": "User profile",
       "payments": "Payments",
@@ -109,7 +107,9 @@
       "webhooks": "Webhooks",
       "events": "Webhooks events",
       "seo": "SEO",
-      "attributes": "Attributes"
+      "attributes": "Attributes",
+      "languages": "Languages",
+      "sales_channels": "Sales channels"
     }
   }
 }

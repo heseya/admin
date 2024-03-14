@@ -4,7 +4,10 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { findAppByHost, installApp, uninstallApp } from 'bout'
+import { findAppByHost, installApp, onMounted, openCommunicationChannel, uninstallApp } from 'bout'
+import { Language } from '@heseya/store-core'
+import { getApiURL } from '@/utils/api'
+import { trimSlash } from '@/utils/trimSlash'
 
 export default defineComponent({
   name: 'MicroFrontend',
@@ -13,16 +16,29 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    serviceUrl: {
+      type: String,
+      required: true,
+    },
   },
 
   data: () => ({
+    wasMounted: false,
     container: null as null | string | Element,
     isInitialized: false,
   }),
 
   computed: {
     standardHost(): string {
+      // Enforce trailing slash
       return this.host.endsWith('/') ? this.host : `${this.host}/`
+    },
+
+    mainChannel() {
+      return openCommunicationChannel('Main')
+    },
+    tokenChannel() {
+      return openCommunicationChannel('Token')
     },
   },
 
@@ -32,6 +48,41 @@ export default defineComponent({
         this.initialize()
       }
     },
+    '$accessor.auth.getIdentityToken'(token: string) {
+      this.tokenChannel.emit('set', token)
+    },
+
+    '$i18n.locale'(locale: string) {
+      this.mainChannel.emit('uiLanguage:set', locale)
+    },
+    '$accessor.config.apiLanguage'(lang: Language) {
+      this.mainChannel.emit('apiLanguage:set', lang)
+    },
+  },
+
+  created() {
+    onMounted(() => {
+      if (!this.wasMounted) {
+        const data = {
+          coreUrl: trimSlash(getApiURL()),
+          // TODO: this will be injected into any microfrontend, not only this one!
+          serviceUrl: trimSlash(this.serviceUrl),
+          token: this.$accessor.auth.getIdentityToken,
+          user: this.$accessor.auth.user,
+          uiLanguage: this.$i18n.locale,
+          apiLanguage: this.$accessor.config.apiLanguage,
+        }
+
+        this.mainChannel.emit('init', data)
+
+        this.wasMounted = true
+      }
+    })
+
+    this.tokenChannel.on<undefined>('refresh', async () => {
+      const { identityToken } = await this.$accessor.auth.refreshToken()
+      return identityToken
+    })
   },
 
   async mounted() {

@@ -142,7 +142,7 @@ export default defineComponent({
 
       this.$router.push({
         path: 'collections',
-        query: { page: undefined, ...queryFilters },
+        query: { ...queryFilters, page: undefined },
       })
     },
     showSetProducts(set: ProductSet) {

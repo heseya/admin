@@ -4,11 +4,16 @@
     :to="to"
     class="cms-table-row"
     :class="{ 'cms-table-row--no-hover': noHover, 'cms-table-row--draggable': draggable }"
-    @click.stop="click"
+    @click.prevent="click"
   >
-    <icon-button class="cms-table-row__reorder reorder-handle" size="small" type="transparent">
-      <template #icon> <i class="bx bx-menu"></i> </template>
-    </icon-button>
+    <DraggableHandle
+      v-if="draggable"
+      btn-class="cms-table-row__reorder reorder-handle"
+      @move-to-top="onDragBy(-Infinity)"
+      @move-one-up="onDragBy(-1)"
+      @move-one-down="onDragBy(1)"
+      @move-to-bottom="onDragBy(Infinity)"
+    />
 
     <div
       v-for="{ key, label, value, rawValue, wordBreak } in values"
@@ -37,8 +42,11 @@
 import { defineComponent, PropType } from 'vue'
 import get from 'lodash/get'
 import { TableHeader, TableValue } from '@/interfaces/CmsTable'
+import DraggableHandle from './DraggableHandle.vue'
 
 export default defineComponent({
+  components: { DraggableHandle },
+  inject: ['handleDragBy'],
   props: {
     to: {
       type: String,
@@ -65,6 +73,7 @@ export default defineComponent({
       required: true,
     },
   },
+  emits: ['click'],
   computed: {
     component(): any {
       if (this.to) return 'router-link'
@@ -86,6 +95,12 @@ export default defineComponent({
   methods: {
     click() {
       this.$emit('click')
+    },
+    onDragBy(diff: number) {
+      // @ts-expect-error This is injected
+      if (this.handleDragBy) this.handleDragBy?.(this.item, diff)
+      // eslint-disable-next-line no-console
+      else console.warn('handleDragBy is not injected')
     },
   },
 })

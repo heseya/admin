@@ -1,7 +1,7 @@
 <template>
   <div class="responsive-media-form">
     <div class="responsive-media-form__header">
-      <span class="responsive-media-form__title">{{ $t('title') }}</span>
+      <span class="responsive-media-form__title"> {{ $t('title') }} </span>
 
       <icon-button v-if="!disabled" @click="addGroup">
         <template #icon>
@@ -14,11 +14,22 @@
     <div class="responsive-media-form__content">
       <Empty v-if="media.length === 0">{{ $t('emptyMedia') }}</Empty>
 
-      <draggable v-model="media" :disabled="disabled">
-        <div v-for="(item, i) in media" :key="i" class="responsive-media-form__row">
-          <BannerMediaComponent ref="mediaForm" v-model="media[i]" @delete="removeGroup(i)" />
+      <Draggable
+        v-model="media"
+        :disabled="disabled"
+        :force-fallback="true"
+        :scroll-sensitivity="200"
+        handle=".reorder-handle"
+      >
+        <div v-for="(_item, i) in media" :key="i" class="responsive-media-form__row">
+          <BannerMediaComponent
+            ref="mediaForm"
+            v-model="media[i]"
+            :edited-lang="editedLang"
+            @delete="removeGroup(i)"
+          />
         </div>
-      </draggable>
+      </Draggable>
     </div>
   </div>
 </template>
@@ -41,16 +52,20 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import Draggable from 'vuedraggable'
-import { BannerMedia } from '@heseya/store-core'
 
 import Empty from '@/components/layout/Empty.vue'
 import BannerMediaComponent from './BannerMedia.vue'
+import { BannerMediaComponentForm } from '@/interfaces/Banner'
 
 export default defineComponent({
   components: { Draggable, Empty, BannerMediaComponent },
   props: {
     value: {
-      type: Array as PropType<BannerMedia[]>,
+      type: Array as PropType<BannerMediaComponentForm[]>,
+      required: true,
+    },
+    editedLang: {
+      type: String,
       required: true,
     },
     disabled: {
@@ -60,10 +75,10 @@ export default defineComponent({
   },
   computed: {
     media: {
-      get(): BannerMedia[] {
+      get(): BannerMediaComponentForm[] {
         return this.value
       },
-      set(v: BannerMedia[]) {
+      set(v: BannerMediaComponentForm[]) {
         this.$emit('input', v)
       },
     },
@@ -74,10 +89,15 @@ export default defineComponent({
       this.media.push({
         id: '',
         order: 0,
-        title: '',
-        subtitle: '',
         url: '',
         media: [],
+        published: [],
+        translations: {
+          [this.editedLang]: {
+            title: '',
+            subtitle: '',
+          },
+        },
       })
     },
     removeGroup(i: number) {

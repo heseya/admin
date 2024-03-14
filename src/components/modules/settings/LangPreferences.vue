@@ -1,6 +1,6 @@
 <template>
   <div class="user-preferences">
-    <lang-switch />
+    <ui-lang-switch />
 
     <hr />
 
@@ -11,10 +11,12 @@
 </template>
 
 <script lang="ts">
-import LangSwitch from '@/components/LangSwitch.vue'
 import { defineComponent } from 'vue'
+
+import UiLangSwitch from '@/components/lang/UiLangSwitch.vue'
+
 export default defineComponent({
-  components: { LangSwitch },
+  components: { UiLangSwitch },
 })
 </script>
 

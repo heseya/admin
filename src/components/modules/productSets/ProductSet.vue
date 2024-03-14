@@ -36,11 +36,11 @@
           <div class="product-set__visibility">
             <span v-if="set.public" class="product-set__public product-set__public--visible">
               <i class="bx bx-show-alt"></i>
-              <span class="product-set__public_text">{{ $t('visible') }}</span>
+              <span class="product-set__public_text">{{ $t('common.visible') }}</span>
             </span>
             <span v-else class="product-set__public">
               <i class="bx bx-low-vision"></i>
-              <span class="product-set__public_text">{{ $t('hidden') }}</span>
+              <span class="product-set__public_text">{{ $t('common.hidden') }}</span>
             </span>
           </div>
           <a-dropdown
@@ -62,6 +62,11 @@
                 </a-menu-item>
                 <a-menu-item v-can="$p.ProductSets.ShowDetails" @click="showSetProducts">
                   <i class="bx bx-customize"></i> &nbsp; {{ $t('menu.showProducts') }}
+                </a-menu-item>
+                <a-menu-item v-can="$p.ProductSets.ShowDetails">
+                  <router-link :to="`/collections/${set.id}/products`">
+                    <i class="bx bx-customize"></i> &nbsp; {{ $t('menu.showAllProducts') }}
+                  </router-link>
                 </a-menu-item>
                 <a-menu-item v-can="$p.ProductSets.ShowDetails">
                   <router-link :to="`/collections/${set.id}`">
@@ -89,7 +94,13 @@
       </div>
 
       <div v-show="areChildrenVisible">
-        <Draggable v-model="children" handle=".reorder-handle" @change="onDrop">
+        <Draggable
+          v-model="children"
+          handle=".reorder-handle"
+          :force-fallback="true"
+          :scroll-sensitivity="200"
+          @change="onDrop"
+        >
           <product-set
             v-for="child in uniqueChildren"
             :key="child.id"
@@ -128,14 +139,13 @@
       "edit": "Edytuj kolekcję",
       "editParent": "Zmień nadrzędną kolekcję",
       "delete": "Usuń kolekcję",
-      "showProducts": "Zobacz produkty w kolekcji"
+      "showProducts": "Zobacz produkty powiązane bezpośrednio z kolekcją",
+      "showAllProducts": "Zobacz wszystkie produkty w kolekcji"
     },
     "collection": "Kolekcja",
     "deleteText": "Czy na pewno chcesz usunąć tę kolekcję? Wraz z nią usuniesz wszystkie jej subkolekcje!",
     "deleteSuccess": "Kolekcja została usunięta",
-    "fetchMore": "Wczytaj więcej",
-    "visible": "Widoczna",
-    "hidden": "Ukryta"
+    "fetchMore": "Wczytaj więcej"
   },
   "en": {
     "menu": {
@@ -143,7 +153,8 @@
       "edit": "Edit collection",
       "editParent": "Change parent collection",
       "delete": "Delete collection",
-      "showProducts": "Show products in collection"
+      "showProducts": "See products directly related to the collection",
+      "showAllProducts": "See all products in the collection"
     },
     "search": {
       "placeholder": "Search (min. 3 letters)",
@@ -156,9 +167,7 @@
     "collection": "Collection",
     "deleteText": "Are you sure you want to delete this collection? All subcollections will be deleted as well!",
     "deleteSuccess": "Collection has been deleted",
-    "fetchMore": "Fetch more",
-    "visible": "Visible",
-    "hidden": "Hidden"
+    "fetchMore": "Fetch more"
   }
 }
 </i18n>
@@ -167,7 +176,7 @@
 import { defineComponent, PropType } from 'vue'
 import Draggable from 'vuedraggable'
 import { cloneDeep } from 'lodash'
-import { ProductSet, ProductSetUpdateDto, ProductSetList } from '@heseya/store-core'
+import { ProductSetUpdateDto, ProductSetList } from '@heseya/store-core'
 import { sdk } from '@/api'
 
 import Loading from '@/components/layout/Loading.vue'
@@ -184,7 +193,7 @@ export default defineComponent({
   components: { Draggable, PopConfirm, SetProductsList, ChangeParentForm, Loading },
   props: {
     set: {
-      type: Object as PropType<ProductSet>,
+      type: Object as PropType<ProductSetList>,
       required: true,
     },
     searchable: {
@@ -204,8 +213,8 @@ export default defineComponent({
     limit: 50,
     children: [] as ProductSetList[],
     searchedChildren: [] as ProductSetList[],
-    selectedSet: null as null | ProductSet,
-    selectedChildren: null as null | ProductSet,
+    selectedSet: null as null | ProductSetList,
+    selectedChildren: null as null | ProductSetList,
     editedItem: cloneDeep(CLEAR_PRODUCT_SET_FORM) as ProductSetUpdateDto,
     editedItemSlugPrefix: '' as string,
     areChildrenVisible: false,

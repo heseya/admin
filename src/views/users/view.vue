@@ -202,6 +202,8 @@ export default defineComponent({
               ...this.editedUser,
               // @ts-ignore
               password: undefined,
+              phone_country: undefined,
+              phone_number: undefined,
             },
           })
 

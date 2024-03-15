@@ -1,11 +1,11 @@
 /*
     Article Editor JS
-    Version 2.4.5
-    Updated: January 19, 2023
+    Version 2.4.10
+    Updated: February 1, 2024
 
     http://imperavi.com/article/
 
-    Copyright (c) 2009-2023, Imperavi Ltd.
+    Copyright (c) 2009-2024, Imperavi Ltd.
     License: http://imperavi.com/article/license/
 */
 if (typeof CodeMirror === 'undefined') { var CodeMirror; }
@@ -459,7 +459,13 @@ Dom.prototype = {
     },
     hasClass: function(value) {
         var node = this.get();
-        return (node.classList) ? node.classList.contains(value) : false;
+        if (value) {
+            var classes = value.split(' ');
+            return (node.classList) ? node.matches('.' + classes.join('.')) : false;
+        }
+        else {
+            return false;
+        }
     },
 
     // html & text
@@ -1109,7 +1115,7 @@ $ARX.ajax = Ajax;
 $ARX.instances = [];
 $ARX.namespace = 'article-editor';
 $ARX.prefix = 'arx';
-$ARX.version = '2.4.5';
+$ARX.version = '2.4.10';
 $ARX.settings = {};
 $ARX.lang = {};
 $ARX._mixins = {};
@@ -1274,7 +1280,7 @@ ArticleEditor.opts = {
         scrollTarget: window,
         direction: 'ltr',
         spellcheck: true,
-        grammarly: false,
+        grammarly: true,
         notranslate: false,
         reloadmarker: true,
         minHeight: '100px', // string, '500px'
@@ -1292,6 +1298,7 @@ ArticleEditor.opts = {
         upload: false,
         url: true,
         select: false,
+        selectMethod: 'get',
         name: 'file',
         data: false,
         drop: true,
@@ -2685,7 +2692,18 @@ ArticleEditor.add('mixin', 'block', {
 
         // list to list
         if (p.instance.getType() === 'list' && this.getType() === 'list') {
-            this.app.insertion.insertListToList($block, this.$block, p.caret);
+            if (p.type === 'duplicate') {
+                p.position = p.position || 'after';
+                this.$block[p.position]($block);
+
+                // set caret
+                if (p.caret) {
+                    this.app.block.set(p.instance, p.caret);
+                }
+            }
+            else {
+                this.app.insertion.insertListToList($block, this.$block, p.caret);
+            }
         }
         else {
             // variable to variable
@@ -3479,6 +3497,82 @@ ArticleEditor.add('module', 'utils', {
         else data[name] = value;
 
         return data;
+    },
+
+    // css
+    cssToObject: function(str) {
+        let regex = /([\w-]*)\s*:\s*([^;]*)/g,
+            match,
+            props = {};
+
+        do {
+            match = regex.exec(str);
+            if (match != null) {
+                props[match[1]] = this._normalizeValue(match[1], match[2].trim());
+            }
+        }
+        while (match);
+
+        return props;
+    },
+    _normalizeValue: function(key, val) {
+        val = (typeof val === 'string') ? val.replace(/'/g, '"') : val;
+        val = val.trim().replace(/;$/, '');
+        if (key.search(/color|background/) !== -1) {
+            val = this.convertRgb2hex(val);
+            val = val.toLowerCase();
+        }
+        if (key.search(/family/) !== -1) {
+            val = val.replace(/"/g, '');
+        }
+
+        return val;
+    },
+
+    // color
+    getInvertedColor: function(hex) {
+        hex = (hex === '' || hex === null || typeof hex === 'undefined') ? '#ffffff' : hex;
+        hex = this.normalizeColor(hex);
+        hex = this._removeHexDiese(hex);
+
+        var r = parseInt(hex.slice(0, 2), 16),
+            g = parseInt(hex.slice(2, 4), 16),
+            b = parseInt(hex.slice(4, 6), 16);
+
+        return ((r * 0.299 + g * 0.587 + b * 0.114) > 186) ? 'black' : 'white';
+    },
+    normalizeColor: function(color) {
+        color = (color) ? this.convertRgb2hex(color) : color;
+        color = (color) ? this.convertShorthex2long(color) : color;
+
+        return color;
+    },
+    convertRgb2hex: function(color) {
+        if (color.search(/^rgb/i) === -1) {
+            return color;
+        }
+
+        var arr = color.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+
+        return (arr && arr.length === 4) ? "#" +
+        ("0" + parseInt(arr[1],10).toString(16)).slice(-2) +
+        ("0" + parseInt(arr[2],10).toString(16)).slice(-2) +
+        ("0" + parseInt(arr[3],10).toString(16)).slice(-2) : '';
+    },
+    convertShorthex2long: function(hex) {
+        hex = this._removeHexDiese(hex);
+        return (hex.length === 3) ? '#' + hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2] : '#' + hex;
+    },
+    replaceRgbToHex: function(html) {
+        return html.replace(/rgb\((.*?)\)/g, function (match, capture) {
+            let a = capture.split(',');
+            let b = a.map(function(x) {
+                x = parseInt(x).toString(16);
+                return (x.length === 1) ? '0' + x : x;
+            });
+
+            return '#' + b.join("");
+        });
     }
 });
 ArticleEditor.add('module', 'paragraphizer', {
@@ -3747,6 +3841,70 @@ ArticleEditor.add('module', 'element', {
         }.bind(this));
     },
 
+    // compare
+    compareStyle: function(el, obj) {
+        let len = Object.keys(obj).length,
+            $el = this.dom(el),
+            css = this.app.utils.cssToObject($el.attr('style')),
+            cssSize = Object.keys(css).length,
+            size = 0;
+
+        if (cssSize !== len) {
+            return false;
+        }
+        else {
+            for (let [key, val] of Object.entries(css)) {
+                if (obj[key]) {
+                    let value = obj[key];
+                    value = this._normalizeValue(key, value);
+                    val = this._normalizeValue(key, val);
+
+                    if (value === val) {
+                        size++;
+                    }
+                }
+            }
+        }
+
+        return (cssSize === size);
+    },
+
+    // has
+    hasAttrs: function(el, obj) {
+        let len = Object.keys(obj).length,
+            $el = this.dom(el),
+            size = 0;
+
+        for (let [key, val] of Object.entries(obj)) {
+            let value = $el.attr(key);
+
+            if (value === val) {
+                size++;
+            }
+        }
+
+        return (len === size);
+    },
+    hasStyle: function(el, obj) {
+        if (!obj) return false;
+
+        let $el = this.dom(el),
+            len = Object.keys(obj).length,
+            size = 0;
+
+        for (let [key, val] of Object.entries(obj)) {
+            let value = $el.css(key);
+            value = this._normalizeValue(key, value);
+            val = this._normalizeValue(key, val);
+
+            if (value === val) {
+                size++;
+            }
+        }
+
+        return (len === size);
+    },
+
     // split
     split: function(el) {
         var $el = this.dom(el);
@@ -3890,6 +4048,19 @@ ArticleEditor.add('module', 'element', {
     },
     _isNumber: function(str) {
         return !isNaN(str) && !isNaN(parseFloat(str));
+    },
+    _normalizeValue: function(key, val) {
+        val = (typeof val === 'string') ? val.replace(/'/g, '"') : val;
+        val = val.trim().replace(/;$/, '');
+        if (key.search(/color|background/) !== -1) {
+            val = this.app.utils.convertRgb2hex(val);
+            val = val.toLowerCase();
+        }
+        if (key.search(/family/) !== -1) {
+            val = val.replace(/"/g, '');
+        }
+
+        return val;
     }
 });
 ArticleEditor.add('module', 'scroll', {
@@ -5661,11 +5832,22 @@ ArticleEditor.add('module', 'cleaner', {
         return html;
     },
     _cleanGDocs: function(html) {
+        if (html.search(/docs-internal-guid/i) !== -1) {
+            html = this.app.utils.wrap(html, function($w) {
+                var $elms = $w.find('h1, h2, h3, h4, h5, h6');
+                $elms.each(function($node) {
+                    $node.find('span').unwrap();
+                })
+            });
+            html = html.replace(/ dir="[^>]*"/gi, '');
+        }
+
         html = html.replace(/<b\sid="internal-source-marker(.*?)">([\w\W]*?)<\/b>/gi, "$2");
         html = html.replace(/<b(.*?)id="docs-internal-guid(.*?)">([\w\W]*?)<\/b>/gi, "$3");
         html = html.replace(/<span[^>]*(font-style:\s?italic;\s?font-weight:\s?(bold|600|700)|font-weight:\s?(bold|600|700);\s?font-style:\s?italic)[^>]*>([\w\W]*?)<\/span>/gi, '<b><i>$4</i></b>');
         html = html.replace(/<span[^>]*font-style:\s?italic[^>]*>([\w\W]*?)<\/span>/gi, '<i>$1</i>');
         html = html.replace(/<span[^>]*font-weight:\s?(bold|600|700)[^>]*>([\w\W]*?)<\/span>/gi, '<b>$2</b>');
+
 
         return html;
     },
@@ -6206,6 +6388,24 @@ ArticleEditor.add('module', 'content', {
         return this.app.utils.wrap(html, function($w) {
             $w.find('[data-' + this.prefix + '-style-cache]').each(this._recacheStyle.bind(this));
         }.bind(this));
+    },
+    cacheElementStyle: function($el) {
+        let name = 'data-' + this.prefix + '-style-cache',
+            style = $el.attr('style');
+
+        if (style) {
+            style = style.replace(/"/g, '');
+            $el.attr(name, style);
+        }
+        else if (!style || style === '') {
+            $el.removeAttr(name);
+        }
+    },
+    recacheElementStyle: function($el) {
+        let name = 'data-' + this.prefix + '-style-cache',
+            style = $el.attr(name);
+
+        $el.attr('style', style).removeAttr(name);
     },
 
     // fix
@@ -7041,13 +7241,20 @@ ArticleEditor.add('module', 'selection', {
 
         return html;
     },
-    getPosition: function() {
+    getPosition: function(type) {
         var range = this.getRange();
         var pos = { top: 0, left: 0, width: 0, height: 0 };
         if (this.app.editor.getWinNode().getSelection && range.getBoundingClientRect) {
             range = range.cloneRange();
-            var offset = (range.startOffset-1);
-            range.setStart(range.startContainer, (offset < 0) ? 0 : offset);
+
+            if (type == 'end') {
+                range.setStart(range.endContainer, range.endOffset);
+            }
+            else {
+                var offset = (range.startOffset-1);
+                range.setStart(range.startContainer, (offset < 0) ? 0 : offset);
+            }
+
             var rect = range.getBoundingClientRect();
             pos = { top: rect.top, bottom: rect.bottom, left: rect.left, width: (rect.right - rect.left) , height: (rect.bottom - rect.top) };
         }
@@ -7440,243 +7647,424 @@ ArticleEditor.add('module', 'selection', {
     }
 });
 ArticleEditor.add('module', 'inline', {
-    removeFormat: function() {
+    set(params) {
+        let $nodes = this.dom([]);
+
+        // close
         this.app.popup.close();
-        var instance = this.app.block.get();
-        var $block = instance.getBlock();
+
+        // params
+        this.params = params || {};
+
+        // normalize style
+        if (this.params.style) {
+            let obj = {};
+            for (let [key, val] of Object.entries(this.params.style)) {
+                let str = key.replace( /([A-Z])/g, " $1" );
+                str = str.split(' ').join('-').toLowerCase();
+                obj[str] = val;
+            }
+
+            this.params.style = obj;
+        }
+
+        if (!this.app.selection.getRange()) return;
+
+        if (this.app.selection.isCollapsed()) {
+            $nodes = this._formatCollapsed();
+        }
+        else {
+            $nodes = this._formatUncollapsed();
+        }
+
+        this.app.broadcast('inline.set', { $nodes: $nodes });
+        this.app.sync.trigger();
+        this.app.editor.observeUI();
+        if (this.app.context) {
+            this.app.context.updatePosition();
+        }
+
+        return $nodes;
+    },
+    remove(params) {
+        let inlines = this.app.selection.getNodes({ type: 'inline' }),
+            inline = this.app.selection.getTopInline();
+
+        // make split
+        if (this.app.selection.isCollapsed() && inline) {
+            let tag = inline.tagName.toLowerCase(),
+                $target = this._insertSplit(inline, tag);
+
+            this.app.caret.set($target, 'before');
+            return;
+        }
+
+        // remove
+        this.app.selection.save();
+        if (params.style) {
+            let arr = (Array.isArray(params.style)) ? params.style : [params.style];
+            for (let i = 0; i < inlines.length; i++) {
+                let $el = this.dom(inlines[i]);
+                $el.removeAttr('data-' + this.prefix + '-style-cache');
+                for (let z = 0; z < arr.length; z++) {
+                    $el.css(arr[z], '');
+                }
+                if ($el.attr('style') === '') {
+                    $el.removeAttr('style');
+                }
+                this.app.content.cacheElementStyle($el);
+            }
+        }
+        else if (params.classname) {
+            for (let i = 0; i < inlines.length; i++) {
+                let $el = this.dom(inlines[i]);
+                $el.removeClass(params.classname);
+                if ($el.attr('class') === '') {
+                    $el.removeAttr('class');
+                }
+            }
+        }
+        this.app.selection.restore();
+        if (this.app.context) {
+            this.app.context.updatePosition();
+        }
+    },
+    removeFormat() {
+        this.app.popup.close();
+
+        // instance
+        let instance = this.app.block.get(),
+            $block,
+            nodes,
+            i = 0,
+            $node;
+
+        if (!instance) return;
+
+        // save selection
+        $block = instance.getBlock();
         this.app.selection.save($block);
 
-        var nodes = this.app.selection.getNodes({ type: 'inline' });
-        for (var i = 0; i < nodes.length; i++) {
-            var $node = this.dom(nodes[i]);
-            if (!$node.attr('data-' + this.prefix + '-type')) {
+        nodes = this.app.selection.getNodes({ type: 'inline' });
+        for (i; i < nodes.length; i++) {
+            $node = this.dom(nodes[i]);
+            if (!$node.attr('data' + this.prefix + '-type')) {
                 $node.unwrap();
             }
         }
 
+        // restore selection
         this.app.selection.restore();
         this.app.editor.observeUI();
+        if (this.app.context) {
+            this.app.context.updatePosition();
+        }
     },
-    set: function(params) {
-        // popup
-        if (this.app.popup.isOpen()) {
-            this.app.popup.close();
-        }
+    _formatCollapsed() {
+        let node,
+            inline = this.app.selection.getInline(),
+            $inline = this.dom(inline),
+            tags = this._getTags(),
+            hasSameTag = this._isSameTag(inline, tags),
+            point = (this.params && this.params.caret) ? this.params.caret : false;
 
-        // params
-        this.params = params;
-
-        var nodes = [];
-        var sel = this.app.selection.get();
-        if (sel.collapsed) {
-            nodes = this.formatCollapsed();
-        }
-        else {
-            nodes = this.formatUncollapsed();
-        }
-
-        this.app.editor.observeUI();
-        this.app.broadcast('inline.format', { nodes: nodes });
-        this.app.sync.trigger();
-
-        return nodes;
-    },
-    formatCollapsed: function() {
-        var node;
-        var inline = this.app.selection.getInline();
-        var $inline = this.dom(inline);
-        var tags = this._getParamsTags();
-        var hasSameTag = this._isSameTag(inline, tags);
-        var caret = (this.params && this.params.caret) ? this.params.caret : false;
+        // save
+        this.app.selection.save();
 
         // 1) not inline
         if (!inline) {
-            node = this._insertInline(this.params.tag, caret);
+            node = this._insertInline(this.params.tag, point);
+            node = this._setParams(node);
         }
-        else {
-            // 2) inline is empty
-            if (this.app.content.isEmptyHtml(inline.innerHTML)) {
-                // 2.1) has same tag
-                if (hasSameTag) {
-                    this.app.caret.set(inline, (caret) ? caret : 'after');
+        // 2) inline is empty
+        else if (inline && this.app.utils.isEmptyHtml(inline.innerHTML)) {
+            // 2.1) has same tag
+            if (hasSameTag) {
+                // 2.2.1) params
+                if (this._isParams()) {
+                    // all the same
+                    if (this._hasAllSameParams(inline)) {
+                        this.app.caret.set(inline, (point) ? point : 'after');
+                        $inline.remove();
+                    }
+                    else if (this._hasSameClassname(inline)) {
+                        this.app.selection.restore();
+                        node = this._setStyle(inline);
+                    }
+                    else if (this._hasSameStyle(inline)) {
+                        this.app.selection.restore();
+                        node = this._setClassname(inline);
+                    }
+                    // not the same
+                    else {
+                        this.app.selection.restore();
+                        node = this._setParams(inline);
+                    }
+                }
+                // 2.2.2) no params
+                else {
+                    this.app.caret.set(inline, (point) ? point : 'after');
                     $inline.remove();
                 }
-                // 2.2) has a different tag
-                else {
-                    var $el = this.app.element.replaceToTag(inline, this.params.tag);
-                    this.app.caret.set($el, (caret) ? caret : 'start');
-                }
             }
-            // 3) inline isn't empty
+            // 2.2) has a different tag
             else {
-                // 3.1) has same tag
-                if (hasSameTag) {
-                    var isEnd = this.app.caret.is(inline, 'end');
-                    var $target = inline;
-                    if (isEnd) {
-                        caret = 'after';
+                node = this._insertInline(this.params.tag, point);
+                node = this._setParams(node);
+            }
+        }
+        // 3) inline isn't empty
+        else if (inline) {
+            // 3.1) has same tag
+            if (hasSameTag) {
+                // 3.1.1) params
+                if (this._isParams()) {
+                    // all the same
+                    if (this._hasAllSameParams(inline)) {
+                        this._makeSplit(inline, point);
                     }
+                    else if (this._hasSameClassname(inline)) {
+                        node = this._insertInline(this.params.tag, point);
+                        node = this._setStyle(node);
+                    }
+                    else if (this._hasSameStyle(inline)) {
+                        node = this._insertInline(this.params.tag, point);
+                        node = this._setClassname(node);
+                    }
+                    // not the same
                     else {
-                        var extractedContent = this.app.content.extractHtmlFromCaret(inline);
-                        var $secondPart = this.dom('<' + this.params.tag + ' />');
-                        $secondPart = this.app.element.cloneAttrs(inline, $secondPart);
-                        $inline.after($secondPart.append(extractedContent));
-                        $target = $secondPart;
+                        node = this._insertInline(this.params.tag, point);
+                        node = this._setParams(node);
                     }
-
-                    this.app.caret.set($target, (caret) ? caret : 'before');
                 }
-                // 3.2) has a different tag
+                // 3.1.2) no params
                 else {
-                    node = this._insertInline(this.params.tag, caret);
+                    this._makeSplit(inline, point);
                 }
+            }
+            // 3.2) has a different tag
+            else {
+                node = this._insertInline(this.params.tag, point);
+                node = this._setParams(node);
             }
         }
 
-        // apply attr
-        if (node && this.params && typeof this.params.attr !== 'undefined') {
-            var $node = this.dom(node);
-            Object.keys(this.params.attr).forEach(function(key) {
-                $node.attr(key, this.params.attr[key]);
-            }.bind(this));
-        }
-
-        return (node) ? node : [];
+        return this.dom(node);
     },
-    formatUncollapsed: function() {
+    _formatUncollapsed() {
+        let $nodes = false,
+            selectedAll = this.app.editor.isAllSelected(),
+            $blocks = this.dom(this.app.selection.getNodes({ type: 'blocks', partial: true }));
 
-        var instance = this.app.block.get();
+        let inlines = this.app.selection.getNodes({ type: 'inline' });
+
+
+        // convert tags
         this.app.selection.save();
-
-        // convert del / u
-        this._convertTags('u', instance);
-        this._convertTags('del', instance);
-
+        this._convertTags($blocks, inlines);
         this.app.selection.restore();
 
-        // convert target tags
-        var inlines = this.app.selection.getNodes({ type: 'inline' });
-
+        // convert strike
         this.app.selection.save();
         this._convertToStrike(inlines);
         this.app.selection.restore();
 
-        // save selection
-        this.app.selection.save();
-
         // apply strike
         this.app.editor.getDocNode().execCommand('strikethrough');
 
-        // revert to inlines
-        var nodes = this._revertToInlines(instance);
-
-        // restore selection
+        // revert strike
+        this.app.selection.save();
+        $nodes = this._revertToInlines($blocks);
         this.app.selection.restore();
 
-        // filter if node is not selected
-        var finalNodes = [];
-        var selected = this.app.selection.getText();
-        for (var i = 0; i < nodes.length; i++) {
-            if (this._isInSelection(nodes[i], selected)) {
-                finalNodes.push(nodes[i]);
-            }
-        }
-
-        // clear and normalize
+        // clean up
         this._clearEmptyStyle();
 
-        // apply attr
-        if (this.params && typeof this.params.attr !== 'undefined') {
-            for (var z = 0; z < finalNodes.length; z++) {
-                this._applyAttrs(finalNodes[z]);
-            }
-        }
-
-        //$block.get().normalize();
+        // apply params
         this.app.selection.save();
+        $nodes.each(this._applyParams.bind(this));
+        this.app.selection.restore();
 
-        this._revertTags('u', instance);
-        this._revertTags('del', instance);
+        // normalize
+        $blocks.each(function($node) {
+            $node.get().normalize();
+        });
+
+        // revert tags
+        this.app.selection.save();
+        this._revertTags($blocks);
         this.app.selection.restore();
 
         // caret
-        if (this.params && this.params.caret) {
-            var len = finalNodes.length;
-            var last = finalNodes[len-1];
-            this.app.caret.set(last, this.params.caret);
+        if (this.params.caret) {
+            let $last = $nodes.last();
+            this.app.caret.set($last, this.params.caret);
         }
 
-        return finalNodes;
+        // all selected
+        if (selectedAll) {
+            this.app.editor.selectAll();
+        }
+
+        return $nodes;
     },
 
-    // private
-    _applyAttrs: function(node) {
-        Object.keys(this.params.attr).forEach(function(key) {
-            node.setAttribute(key, this.params.attr[key]);
-        }.bind(this));
+    // params
+    _isParams() {
+        return (this.params.style || this.params.classname);
     },
-    _clearEmptyStyle: function() {
-        var inlines = this.app.selection.getNodes({ type: 'inline' });
-        for (var i = 0; i < inlines.length; i++) {
-            this._clearEmptyStyleAttr(inlines[i]);
+    _applyParams($node) {
+        let tag = $node.get().tagName.toLowerCase(),
+            tags = this._getTags(),
+            $parent = $node.parent(),
+            hasSameTag = ($parent.length !== 0) ? this._isSameTag($parent.get(), tags) : false;
 
-            var childNodes = inlines[i].childNodes;
-            if (childNodes) {
-                for (var z = 0; z < childNodes.length; z++) {
-                    this._clearEmptyStyleAttr(childNodes[z]);
+        if (hasSameTag && $parent.text() === $node.text()) {
+            // parent has same params keys
+            if (this.params.style) {
+                let obj = this.params.style,
+                    parentObj = this.app.utils.cssToObject($parent.attr('style')),
+                    len = Object.keys(obj).length,
+                    size = 0;
+
+                for (let key of Object.keys(obj)) {
+                    if (parentObj[key]) {
+                        size++;
+                    }
+                }
+
+                if (size === len) {
+                    $parent.unwrap();
+                }
+                else {
+                    $node.unwrap();
+                    this._applyParamsToNode($parent, tag)
                 }
             }
         }
+
+        this._applyParamsToNode($node, tag);
     },
-    _clearEmptyStyleAttr: function(node) {
-        if (node.nodeType !== 3 && node.getAttribute('style') === '') {
-            node.removeAttribute('style');
+    _applyParamsToNode($node, tag) {
+        $node.removeAttr('data-' + this.prefix + '-style-cache');
+        if ($node.attr('class') === '') $node.removeAttr('class');
+        if ($node.get().attributes.length === 0) {
+            if (this._isParams() && this.params.tag === 'span') {
+                this._setParams($node);
+                this._clearSpanInside($node);
+            }
+            else if (tag === 'span') {
+                $node.unwrap();
+            }
+        }
+        else if (this._isParams()) {
+            this._setParams($node);
+            this._clearSpanInside($node);
         }
     },
-    _isSameTag: function(inline, tags) {
+    _setParams(el) {
+        el = this._setClassname(el);
+        el = this._setStyle(el);
+
+        return el;
+    },
+    _setClassname(el) {
+        let $node = this.dom(el);
+
+        if (this.params.classname) {
+            // remove group classes
+            if (this.params.group) {
+                let optName = 'inlineGroups.' + this.params.group;
+                let classes = (this.opts.is(optName)) ? this.opts.get(optName) : false;
+                if (classes) {
+                    $node.removeClass(classes.join(' '));
+                }
+            }
+            // remove class
+            else {
+                $node.removeAttr('class');
+            }
+
+            // add class
+            $node.addClass(this.params.classname);
+        }
+
+        return $node.get();
+    },
+    _setStyle(el) {
+        let $node = this.dom(el);
+
+        if (this.params.style) {
+            $node.css(this.params.style);
+            this.app.content.cacheElementStyle($node);
+        }
+
+        return $node.get();
+    },
+    _hasAllSameParams(el) {
+        return (this._hasSameClassname(el) && this._hasSameStyle(el));
+    },
+    _hasSameClassname(el) {
+        let $el = this.dom(el);
+
+        if (this.params.classname) {
+            return $el.hasClass(this.params.classname);
+        }
+
+        return true;
+    },
+    _hasSameStyle(el) {
+        let $el = this.dom(el);
+
+        if (this.params.style) {
+            return this.app.element.compareStyle($el, this.params.style);
+        }
+
+        return true;
+    },
+
+    // insert
+    _makeSplit(inline, point) {
+        let caret = this.app.create('caret'),
+            isEnd = caret.is(inline, 'end'),
+            target = inline;
+
+        if (isEnd) {
+            point = 'after';
+        }
+        else {
+            target = this._insertSplit(inline);
+        }
+
+        caret.set(target, (point) ? point : 'before');
+    },
+    _insertSplit(inline, tag) {
+        let $inline = this.dom(inline),
+            extractedContent = this.app.content.extractHtmlFromCaret(inline),
+            $secondPart = this.dom('<' + (tag || this.params.tag) + ' />'),
+            div = document.createElement("div");
+
+        div.appendChild(extractedContent);
+
+        $secondPart = this.app.element.cloneAttrs(inline, $secondPart);
+        $secondPart.append(div.innerHTML);
+
+        $inline.after($secondPart);
+
+        return $secondPart;
+    },
+    _insertInline(tag, point) {
+        let insertion = this.app.create('insertion');
+
+        return insertion.insertNode(document.createElement(tag), (point) ? point : 'start');
+    },
+
+    // tag
+    _isSameTag(inline, tags) {
         return (inline && tags.indexOf(inline.tagName.toLowerCase()) !== -1);
     },
-    _isInSelection: function(node, selected) {
-        var text = this.app.utils.removeInvisibleChars(node.textContent);
-        return (selected.search(new RegExp(this.app.utils.escapeRegExp(text))) !== -1);
-    },
-    _insertInline: function(tag, caret) {
-        return this.app.insertion.insertNode(document.createElement(tag), (caret) ? caret : 'start');
-    },
-    _convertTags: function(tag, instance) {
-        if (this.params.tag !== tag) {
-            var $block = this._getBlock(instance);
-            $block.find(tag).each(function(node) {
-                var $el = this.app.element.replaceToTag(node, 'span');
-                $el.addClass(this.prefix + '-convertable-' + tag);
-            }.bind(this));
-        }
-    },
-    _revertTags: function(tag, instance) {
-        var $block = this._getBlock(instance);
-        $block.find('span.' + this.prefix + '-convertable-' + tag).each(function(node) {
-            var $el = this.app.element.replaceToTag(node, tag);
-            $el.removeClass(this.prefix + '-convertable-' + tag);
-            if (this.app.element.removeEmptyAttrs($el, ['class'])) {
-                $el.removeAttr('class');
-            }
-
-        }.bind(this));
-    },
-    _convertToStrike: function(inlines) {
-        var tags = this._getParamsTags();
-        for (var i = 0; i < inlines.length; i++) {
-            var inline = inlines[i];
-            var $inline = this.dom(inline);
-            var tag = inlines[i].tagName.toLowerCase();
-
-            if (tags.indexOf(tag) !== -1) {
-                this._replaceToStrike($inline);
-            }
-        }
-    },
-    _getParamsTags: function() {
-        var tags = [this.params.tag];
+    _getTags() {
+        let tags = [this.params.tag];
         if (this.params.tag === 'b' || this.params.tag === 'strong') {
             tags = ['b', 'strong'];
         }
@@ -7686,26 +8074,202 @@ ArticleEditor.add('module', 'inline', {
 
         return tags;
     },
-    _replaceToStrike: function($el) {
+
+    // convert
+    _convertToStrike(inlines) {
+        let selected = this.app.selection.getText().replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"),
+            tags = this._getTags(),
+            inline,
+            $inline,
+            tag,
+            hasSameArgs,
+            convertable = false;
+
+        for (let i = 0 ; i < inlines.length; i++) {
+            inline = inlines[i];
+            $inline = this.dom(inline);
+            tag = inlines[i].tagName.toLowerCase();
+            hasSameArgs  = this._hasAllSameParams(inline);
+
+            if (tags.indexOf(tag) !== -1) {
+
+                if (this.params.tag === 'span' && this._isFullySelected(inline, selected)) {
+                    $inline.addClass('rx-inline-convertable');
+                    $inline.removeAttr('data-' + this.prefix + '-style-cache');
+                }
+                else if (hasSameArgs && this.params.tag !== 'a') {
+                    this._replaceToStrike($inline);
+                }
+                else if (this.params.tag === 'span') {
+                    if (this.params.style && this._hasSameStyle($inline)) {
+                        convertable = true;
+                    }
+                    if (this.params.classname && this._hasSameClassname($inline)) {
+                        convertable = true;
+                    }
+
+                    if (convertable) {
+                        $inline.addClass('rx-inline-convertable');
+                        $inline.removeAttr('data-' + this.prefix + '-style-cache');
+                    }
+                    else {
+                        $inline.addClass('rx-inline-unconvertable');
+                    }
+                }
+                else if (!hasSameArgs) {
+                    $inline.addClass('rx-inline-convertable');
+                    $inline.removeAttr('data-' + this.prefix + '-style-cache');
+                }
+            }
+        }
+    },
+    _convertInlineBlocks($blocks) {
+         $blocks.find('[data-' + this.prefix + '-inline]').each(function($node) {
+            if ($node.attr('contenteditable') === true) {
+                $node.addClass('rx-inlineblock-editable').attr('contenteditable', false);
+            }
+        });
+    },
+    _convertTag(tag, $blocks) {
+        if (this.params.tag !== tag) {
+            $blocks.find(tag).each(function($node) {
+                let $el = this.app.element.replaceToTag($node, 'span');
+                $el.addClass('rx-convertable-' + tag);
+            }.bind(this));
+        }
+        else if (this.params.tag === 'del') {
+            $blocks.find(tag).each(function($node) {
+                this.app.element.replaceToTag($node, 'strike');
+            }.bind(this));
+        }
+    },
+    _convertTags($blocks, inlines) {
+        this._convertTag('del', $blocks);
+        this._convertTag('u', $blocks);
+        this._convertInlineBlocks($blocks);
+    },
+    _replaceToStrike($el) {
         $el.replaceWith(function() {
-            return this.dom('<strike>').append($el.html());
+            return this.dom('<strike>').append($el.contents());
         }.bind(this));
     },
-    _revertToInlines: function(instance) {
-        var nodes = [];
-        var $block = this._getBlock(instance);
+    _revertInlineBlocks($blocks) {
+        $blocks.find('.rx-inlineblock-editable').removeClass('rx-inlineblock-editable').attr('contenteditable', true);
+    },
+    _revertTag(tag, $blocks) {
+        $blocks.find('span.rx-convertable-' + tag).each(function(node) {
+            let $el = this.app.element.replaceToTag(node, tag);
+            $el.removeAttr('class');
+        }.bind(this));
+    },
+    _revertTags($blocks) {
+        this._revertTag('u', $blocks);
+        this._revertTag('del', $blocks);
+        this._revertInlineBlocks($blocks);
+    },
+    _revertToInlines($blocks) {
+        let $el,
+            $nodes = this.dom([]);
+
+        if (this.params.tag !== 'u') {
+            $blocks.find('u').unwrap();
+        }
+
+        // styled
+        $blocks.each(function($node) {
+           $node.find('*').each(function(node) {
+               if (node.get().style.textDecorationLine) {
+                   node.css('text-decoration-line', '');
+                   node.wrap('<u>');
+                   if (node.attr('style') === '') {
+                       node.removeAttr('style');
+                   }
+               }
+           });
+        });
+
+        // span convertable
+        $blocks.find('.rx-inline-convertable').each(function($node) {
+            $node.find('strike').each(function($strike) {
+                if ($node.text() === $strike.text()) {
+                    $strike.unwrap();
+                }
+            });
+            $node.removeClass('rx-inline-convertable');
+            this.app.element.removeEmptyAttrs($node, ['class']);
+
+            if (this._hasAllSameParams($node)) {
+                $node.unwrap();
+            }
+            else {
+                $nodes.add($node);
+            }
+
+        }.bind(this));
+
+        // span unconvertable
+        $blocks.find('span.rx-inline-unconvertable').each(function($node) {
+            $node.removeClass('rx-inline-unconvertable');
+            this.app.element.removeEmptyAttrs($node, ['class']);
+
+        }.bind(this));
 
         // strike
-        $block.find('strike').each(function(node) {
-            var $node = this.app.element.replaceToTag(node, this.params.tag);
-            nodes.push($node.get());
-
+        $blocks.find('strike').each(function($node) {
+            $node = this.app.element.replaceToTag($node, this.params.tag);
+            $nodes.add($node);
         }.bind(this));
 
-        return nodes;
+        return $nodes;
+
     },
-    _getBlock: function(instance) {
-        return (this.app.editor.isBlocksSelection()) ? this.dom(this.app.blocks.getSelectedBlocks()) : instance.getBlock();
+    _clearEmptyStyle() {
+        let inlines = this.app.selection.getNodes({ type: 'inline' }),
+            i = 0,
+            max = inlines.length,
+            childNodes,
+            z = 0;
+
+        for (i; i < max; i++) {
+            this._clearEmptyStyleAttr(inlines[i]);
+
+            childNodes = inlines[i].childNodes;
+            if (childNodes) {
+                for (z; z < childNodes.length; z++) {
+                    this._clearEmptyStyleAttr(childNodes[z]);
+                }
+            }
+        }
+    },
+    _clearEmptyStyleAttr(node) {
+        if (node.nodeType !== 3 && node.getAttribute('style') === '') {
+            node.removeAttribute('style');
+        }
+    },
+    _clearSpanInside($node) {
+        $node.find('span').each(function($el) {
+            if (this.params.classname) {
+                $el.removeAttr('class');
+            }
+            if (this.params.styles) {
+                for (let key of Object.keys(this.params.styles)) {
+                    $el.css(key, '');
+                }
+            }
+
+            if ($el.attr('class') === '') $el.removeAttr('class');
+            if ($el.attr('style') === '') $el.removeAttr('style');
+
+            if ($el.get().attributes.length === 0) {
+                $el.unwrap();
+            }
+
+        }.bind(this));
+    },
+    _isFullySelected(node, selected) {
+        let text = this.app.utils.removeInvisibleChars(node.textContent);
+
+        return (selected === text || selected.search(new RegExp('^' + this.app.utils.escapeRegExp(text) + '$')) !== -1);
     }
 });
 ArticleEditor.add('module', 'popup', {
@@ -7959,7 +8523,7 @@ ArticleEditor.add('module', 'popup', {
         }
 
         var cropHeight = targetHeight - top - tolerance;
-        //this.$popup.css('max-height', cropHeight + 'px');
+        this.$popup.css('max-height', cropHeight + 'px');
     },
     _buildPosition: function() {
         var topFix = 1;
@@ -8419,6 +8983,7 @@ ArticleEditor.add('class', 'popup.stack', {
         collapse: false,
         form: false,
         items: false,
+        html: false,
         focus: false,
         footer: false
     },
@@ -8612,7 +9177,12 @@ ArticleEditor.add('class', 'popup.stack', {
     // render
     render: function() {
         this._renderType();
-        this._renderItems();
+        if (this.params.html) {
+            this._renderHtml();
+        }
+        else {
+            this._renderItems();
+        }
         this._renderForm();
         this._renderFooter();
         this._renderEnv();
@@ -8696,6 +9266,17 @@ ArticleEditor.add('class', 'popup.stack', {
         if (type) {
             this.$stack.addClass(this.prefix + '-popup-type-' + type);
         }
+    },
+    _renderHtml: function() {
+        if (this.$items) {
+            this.$items.html('');
+        }
+        else {
+            this.$items = this.dom('<div>').addClass(this.prefix + '-popup-html');
+            this.$body.append(this.$items);
+        }
+
+        this.$items.append(this.params.html);
     },
     _renderItems: function() {
         if (!this.items) return;
@@ -9317,7 +9898,6 @@ ArticleEditor.add('module', 'editor', {
         // overlay
         this.$overlay = this.dom('<div>').addClass(this.prefix + '-editor-overlay');
         this.app.container.get('editor').append(this.$overlay);
-
     },
     _buildDisabled: function() {
         this.opts.disableMode = (this.opts.editor.disabled || this.app.$element.attr('disabled') !== null);
@@ -9363,8 +9943,9 @@ ArticleEditor.add('module', 'editor', {
     },
     _buildLayout: function() {
         var $body = this.getBody();
+        var classes = this.opts.editor.classname.split(' ').join('.');
 
-        this.$layout = $body.find('.' + this.opts.editor.classname).first();
+        this.$layout = $body.find('.' + classes).first();
         this.$layout.attr('dir', this.opts.editor.direction);
 
         if (this.opts.editor.padding === false) {
@@ -9420,7 +10001,7 @@ ArticleEditor.add('module', 'editor', {
     },
     _buildCssLink: function(href) {
         var obj = (typeof href === 'object') ? href : { href: href };
-        var isMark = href.search(/\?/g);
+        var isMark = (typeof href === 'string') ? href.search(/\?/g) : href.href.search(/\?/g);
         var mark = (isMark === -1) ? '?' : '&';
         var tstamp = (this.opts.editor.csscache) ? '' : mark + new Date().getTime();
         obj.href = obj.href + tstamp;
@@ -9793,6 +10374,10 @@ ArticleEditor.add('module', 'parser', {
 
         // remove empty attrs again
         html = this.app.content.removeEmptyAttrs(html, ['style', 'class', 'rel', 'alt', 'title']);
+
+        // replace quot
+        html = html.replace(/&quot;(.*?)&quot;/gi, "'$1'");
+        html = this.app.utils.replaceRgbToHex(html);
 
         // add predefined classes
         if (this.opts.classes) {
@@ -12379,6 +12964,8 @@ ArticleEditor.add('module', 'toolbar', {
             if (buttons.hasOwnProperty(name)) {
                 if (instance && !instance.isAllowedButton(name, buttons[name])) continue;
                 if (this._isHidden(name)) continue;
+                if (name === 'add' && this.opts.addbar === false) continue;
+                if (name === 'format' && this.opts.format === false) continue;
 
                 this.app.create('button', name, buttons[name], this.$toolbar, 'toolbar');
             }
@@ -14682,7 +15269,7 @@ ArticleEditor.add('module', 'image', {
         else {
             var getdata = (this.opts.editor.reloadmarker) ? { d: new Date().getTime() } : {};
 
-            this.ajax.get({
+            this.ajax.request(this.opts.image.selectMethod, {
                 url: select,
                 data: getdata,
                 success: function(data) {
@@ -15583,6 +16170,9 @@ ArticleEditor.add('block', 'block.paragraph', {
                     var cloned;
                     var inlines = this.app.element.getAllInlines(inline);
                     for (var i = 0; i < inlines.length; i++) {
+                        if (inlines[i].tagName === 'A') {
+                            continue;
+                        }
                         if (i === 0) {
                             cloned = inlines[i].cloneNode();
                             cloned.removeAttribute('id');
@@ -15597,7 +16187,9 @@ ArticleEditor.add('block', 'block.paragraph', {
 
                     }
 
-                    clone = this.app.block.create(cloned.outerHTML);
+                    if (cloned) {
+                        clone = this.app.block.create(cloned.outerHTML);
+                    }
                 }
             }
 
@@ -16023,7 +16615,8 @@ ArticleEditor.add('block', 'block.embed', {
     parser: {
         unparse: function($node) {
             var code = decodeURI($node.attr('data-embed-code'));
-            var $responsive = $node.find('.' + this.opts.embed.responsive);
+            var classes = this.opts.embed.responsive.split(' ').join('.');
+            var $responsive = $node.find('.' + classes);
             var $el = $node.find('figcaption');
             var $figcaption;
             if ($el.length !== 0) {
@@ -16042,7 +16635,10 @@ ArticleEditor.add('block', 'block.embed', {
                 $node.append($figcaption);
             }
 
-            $node.removeAttr('data-embed-code');
+            $node.removeAttr('data-embed-code data-arx-type');
+            if ($node.get().attributes.length === 0 && $node.find('figcaption').length === 0 && $node.find('div').length === 0) {
+                $node.unwrap();
+            }
         }
     },
     toolbar: {

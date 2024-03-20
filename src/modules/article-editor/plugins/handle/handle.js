@@ -145,14 +145,17 @@ ArticleEditor.add('plugin', 'handle', {
     _emit: function() {
         var re = new RegExp('^' + this.opts.handle.trigger);
         this.handleStr = this.app.selection.getText('before', this.handleLen);
+        this.handleStr2 = this.app.selection.getText('before', this.handleLen+1);
 
         // detect
         if (re.test(this.handleStr)) {
-            this.handleStr = this.handleStr.replace(this.opts.handle.trigger, '');
-            this.handleLen++;
+            if (this.handleStr2 && this.handleStr2[0] === ' ' || this.handleStr2[0] === '') {
+                this.handleStr = this.handleStr.replace(this.opts.handle.trigger, '');
+                this.handleLen++;
 
-            if ((this.handleLen-1) > this.opts.handle.start) {
-                this._load();
+                if ((this.handleLen-1) > this.opts.handle.start) {
+                    this._load();
+                }
             }
         }
     },

@@ -120,9 +120,9 @@ ArticleEditor.add('plugin', 'imageresize', {
         }
 
         $el.attr({ width: width, height: height });
-        $el.width(width);
-        $el.css('max-width', width + 'px');
-        $el.height(height);
+        //$el.width(width);
+        //$el.css('max-width', width + 'px');
+        //$el.height(height);
 
         this._setResizerPosition();
         this.app.broadcast('image.resize.move', { e: e, block: this.$block, image: this.$image });

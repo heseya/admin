@@ -3,7 +3,11 @@ import * as Sentry from '@sentry/vue'
 import { Integrations } from '@sentry/tracing'
 
 const { VITE_SENTRY_URL, VITE_SENTRY_DISABLED, VITE_SENTRY_ENVIORNMENT } = import.meta.env
-const { sentryUrl, sentryDisabled, sentryEnviornment } = window
+const {
+  url: sentryUrl,
+  disabled: sentryDisabled,
+  enviornment: sentryEnviornment,
+} = window.runtimeConfig.sentry
 
 const ENVIRONMENT =
   sentryEnviornment !== 'REPLACE_ME_SENTRY_ENVIORNMENT'

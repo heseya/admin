@@ -11,10 +11,14 @@ declare global {
     /**
      * Runtime envs
      */
-    apiUrl: string
-    sentryUrl: string
-    sentryDisabled: string
-    sentryEnviornment: string
+    runtimeConfig: {
+      apiUrl: string
+      sentry: {
+        url: string
+        disabled: string
+        enviornment: string
+      }
+    }
   }
 }
 

@@ -3,6 +3,7 @@ import VueRouter, { Route } from 'vue-router'
 import { PermissionsTree } from '@/consts/permissions'
 import { hasUserAccess, alertIfNoAccess } from './plugins/permissions'
 import { AccessorType } from './store'
+import { RuntimeConfig } from './interfaces/RuntimeConfig'
 
 declare global {
   interface Window {
@@ -11,19 +12,7 @@ declare global {
     /**
      * Runtime envs
      */
-    runtimeConfig: {
-      apiUrl: string
-      baseUrl: string
-      i18n: {
-        locale: string
-        fallbackLocale: string
-      }
-      sentry: {
-        url: string
-        disabled: string
-        enviornment: string
-      }
-    }
+    runtimeConfig: RuntimeConfig
   }
 }
 

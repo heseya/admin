@@ -6,7 +6,7 @@ interface ImportMetaEnv {
   readonly VITE_API_URL: string
 
   readonly VITE_SENTRY_URL: string
-  readonly VITE_SENTRY_DISABLED: 0 | 1
+  readonly VITE_SENTRY_DISABLED: string
   readonly VITE_SENTRY_ENVIORNMENT: string
 }
 

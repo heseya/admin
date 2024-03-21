@@ -51,11 +51,9 @@ import { TwoFactorAuthMethod } from '@/enums/twoFactorAuth'
 import { LoginState } from '@/enums/login'
 import Zone from '@/components/layout/Zone.vue'
 
-const SHOW_DEFAULT_CREDENTIALS = import.meta.env.DEV
-
 const CLEAR_LOGIN_FORM = {
-  email: SHOW_DEFAULT_CREDENTIALS ? '***REMOVED***' : '',
-  password: SHOW_DEFAULT_CREDENTIALS ? '***REMOVED***' : '',
+  email: '',
+  password: '',
 }
 
 export default defineComponent({

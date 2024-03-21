@@ -1,5 +1,5 @@
 export const getApiURL = () => {
-  if (window.apiUrl !== 'REPLACE_ME_API_URL') return window.apiUrl!
+  if (window.runtimeConfig.apiUrl) return window.runtimeConfig.apiUrl!
 
   switch (window.location.host) {
     // Production clients
@@ -55,6 +55,6 @@ export const getApiURL = () => {
     case '***REMOVED***':
       return '***REMOVED***'
     default:
-      return import.meta.env.VITE_API_URL || '***REMOVED***'
+      return '***REMOVED***'
   }
 }

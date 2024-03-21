@@ -4,8 +4,8 @@ WORKDIR /app
 COPY / /app
 
 ENV VITE_API_URL=https://api.example.com
-ENV VITE_SENTRY_URL=https://sentry.example.com
-ENV VITE_SENTRY_DISABLED=0
+ENV VITE_SENTRY_URL=
+ENV VITE_SENTRY_DISABLED=1
 ENV VITE_SENTRY_ENVIORNMENT=production
 
 RUN yarn install

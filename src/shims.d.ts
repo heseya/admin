@@ -7,13 +7,14 @@ import { AccessorType } from './store'
 declare global {
   interface Window {
     updateSW: (reloadPage?: boolean) => void
+
     /**
      * Runtime envs
      */
-    apiUrl?: string
-    sentryUrl?: string
-    sentryDisabled?: string
-    sentryEnviorment?: string
+    apiUrl: string
+    sentryUrl: string
+    sentryDisabled: string
+    sentryEnviornment: string
   }
 }
 

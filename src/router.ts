@@ -13,7 +13,7 @@ Vue.use(VueMeta)
 
 const router = new VueRouter({
   mode: 'history',
-  base: import.meta.env.BASE_URL,
+  base: import.meta.env.VITE_BASE_URL,
   routes: [
     {
       path: '/login',

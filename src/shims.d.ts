@@ -13,6 +13,11 @@ declare global {
      */
     runtimeConfig: {
       apiUrl: string
+      baseUrl: string
+      i18n: {
+        locale: string
+        fallbackLocale: string
+      }
       sentry: {
         url: string
         disabled: string

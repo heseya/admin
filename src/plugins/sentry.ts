@@ -6,10 +6,10 @@ const { VUE_APP_SENTRY_URL, VUE_APP_SENTRY_DISABLED, VUE_APP_SENTRY_ENVIORNMENT 
 
 const ENVIRONMENT = VUE_APP_SENTRY_ENVIORNMENT || window.location.hostname
 
-if (!VUE_APP_SENTRY_DISABLED) {
+if (!VUE_APP_SENTRY_DISABLED && VUE_APP_SENTRY_URL) {
   Sentry.init({
     Vue,
-    dsn: VUE_APP_SENTRY_URL || '***REMOVED***',
+    dsn: VUE_APP_SENTRY_URL || '',
     integrations: [new Integrations.BrowserTracing()],
     environment: ENVIRONMENT,
 

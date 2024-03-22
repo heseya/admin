@@ -178,6 +178,7 @@ export default Vue.extend({
 
       const deposit = await this.$accessor.items.createDeposit({
         id: this.itemId,
+        // @ts-ignore
         deposit: this.form,
       })
 

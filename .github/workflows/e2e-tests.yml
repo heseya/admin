@@ -1,0 +1,20 @@
+name: Run E2E tests
+
+on: workflow_dispatch
+
+jobs:
+  run:
+    runs-on: cypress/browsers:node16.5.0-chrome97-ff96
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Node 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: yarn install
+      - name: Install Cypress
+        run: yarn cypress install --force
+      - name: Run tests and collect coverage
+        run: yarn test:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }}

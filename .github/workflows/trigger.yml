@@ -1,0 +1,25 @@
+name: Trigger external actions
+on:
+  push:
+    branches:
+      - ${{ secrets.TRIGGER_BRANCH }}
+    tags:
+      - '*'
+jobs:
+  run:
+    runs-on: docker:latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup variables
+        run: |
+          export TARGET_BRANCH=${{ github.ref_name }};
+          if [ "${{ github.ref_name }}" != "${{ secrets.TRIGGER_BRANCH }}" ]; then
+          export IMAGE_NAME=${{ github.ref_name }};
+          else
+          export IMAGE_NAME={{ secrets.IMAGE_NAME }};
+          fi
+      - name: Install curl
+        run: apt update -y && apt install -y curl
+      - name: Send a request
+        run: curl -X POST -F token={{ secrets.TRIGGER_TOKEN }} -F ref=main -F variables[IMAGE_NAME]=$IMAGE_NAME -F variables[CI_BRANCH]=$TARGET_BRANCH "${{ secrets.TRIGGER_URL }}"

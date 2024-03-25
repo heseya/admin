@@ -10,7 +10,7 @@ on:
       - release/*
 jobs:
   run:
-    runs-on: docker-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3

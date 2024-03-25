@@ -1,7 +1,7 @@
 export const getApiURL = () => {
   if (!window.runtimeConfig.apiUrl) {
     // eslint-disable-next-line no-console
-    console.error('API URL is not defined!')
+    alert('API URL is not defined!')
     throw new Error('API URL is not defined')
   }
 

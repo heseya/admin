@@ -103,11 +103,7 @@
             </template>
 
             <small class="label">{{ $t('common.form.description') }}</small>
-            <rich-editor
-              v-if="isEditorActive"
-              v-model="formDescriptionHtml"
-              :disabled="!canModify"
-            />
+            <RichEditor v-if="!isLoading" v-model="formDescriptionHtml" :disabled="!canModify" />
             <br />
 
             <SeoForm
@@ -258,7 +254,6 @@ export default defineComponent({
   data: () => ({
     editedLang: '',
     form: cloneDeep(CLEAR_PRODUCT_SET_FORM) as CombinedSetDto,
-    isEditorActive: true,
     parent: null as ProductSet | null,
   }),
   computed: {
@@ -358,11 +353,6 @@ export default defineComponent({
         ...EMPTY_PRODUCT_SET_TRANSLATIONS,
         ...this.form?.translations?.[langId],
       })
-    },
-
-    activateEditor(active = true) {
-      // ? Workaround for a bugged ArticleEditor, which doesn't render correctly in the first time
-      this.$nextTick(() => (this.isEditorActive = active))
     },
 
     editSlug() {

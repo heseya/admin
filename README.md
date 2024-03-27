@@ -61,3 +61,7 @@ We try to stick to the practices described in [Cypress documentation](https://do
 | --------------------------------------------- | ------------------------------------------------------------------------------------------------ |
 | `cy.dataCy(value: string)`                    | The equivalent of `cy.get()`, which automatically finds an element using its attribute `data-cy` |
 | `cy.login(email?: string, password?: string)` | Automatically carries out the user login procedure.                                              |
+
+## License
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fheseya%2Fadmin.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fheseya%2Fadmin?ref=badge_large)

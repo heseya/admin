@@ -10,8 +10,8 @@ import pl from '@/locales/pl.json'
 Vue.use(VueI18n)
 
 export default new VueI18n({
-  locale: import.meta.env.VITE_I18N_LOCALE || accessor.config.uiLanguage || getDefaultUiLanguage(),
-  fallbackLocale: (import.meta.env.VITE_I18N_FALLBACK_LOCALE as string) || 'pl', // TODO: change to 'en' when all translations are done
+  locale: window.runtimeConfig.i18n.locale || accessor.config.uiLanguage || getDefaultUiLanguage(),
+  fallbackLocale: window.runtimeConfig.i18n.fallbackLocale,
   messages: {
     pl,
     en,

@@ -176,7 +176,6 @@ export default defineComponent({
 
     @media ($viewport-6) {
       max-width: 185px;
-      // margin-top: -20px;
     }
   }
 }

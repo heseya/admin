@@ -1,5 +1,5 @@
 <template>
-  <ListItem no-hover class="product-attribute-list-item">
+  <ListItem no-hover>
     <div class="product-attribute">
       <a-tooltip>
         <div class="product-attribute__title">
@@ -112,6 +112,7 @@ export default defineComponent({
       const hasValue = this.attribute.selected_options.some(
         (v) => !isNil(v?.value_date) || !isNil(v?.value_number),
       )
+      // Global value can be removed only if it has value (value is removed, not the attribute itself)
       return !this.attribute.global || hasValue
     },
   },
@@ -162,10 +163,6 @@ export default defineComponent({
     color: var(--gray-color-300);
     font-size: 1.3em;
   }
-}
-
-.product-attribute-list-item {
-  // padding: 16px 12px 16px;
 }
 
 .product-attribute {

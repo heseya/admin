@@ -5,24 +5,25 @@
         v-model="selectedOption[0].value_date"
         class="date-input__input"
         type="date"
-        name="value_date"
+        :name="`${attribute.id}_value_date`"
       />
     </div>
     <div v-else-if="type === AttributeType.Number" class="number-input">
       <app-input
         :value="getOptionName(selectedOption[0])"
         class="number-input__input"
-        name="name"
+        :name="`${attribute.id}_name`"
         :label="$t('displayName').toString()"
         :placeholder="$t('namePlaceholder').toString()"
         @input="setOptionName(selectedOption[0], $event)"
       />
-      <app-input
+      <validated-input
         v-model="selectedOption[0].value_number"
         class="number-input__input"
         type="number"
-        step="0.00001"
-        name="value_number"
+        step="0.0001"
+        :name="`${attribute.id}_value_number`"
+        :rules="isRequired ? 'required' : null"
         :label="$t('value').toString()"
         :placeholder="$t('valuePlaceholder').toString()"
       />
@@ -94,6 +95,10 @@ export default defineComponent({
       set(option: AttributeOptionDto[]) {
         this.$emit('input', option)
       },
+    },
+
+    isRequired(): boolean {
+      return !!this.getOptionName(this.selectedOption[0])
     },
 
     AttributeType(): typeof AttributeType {
@@ -171,7 +176,7 @@ export default defineComponent({
 
     @media ($viewport-6) {
       max-width: 185px;
-      margin-top: -20px;
+      // margin-top: -20px;
     }
   }
 }

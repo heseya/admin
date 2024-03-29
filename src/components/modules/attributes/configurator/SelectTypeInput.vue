@@ -10,6 +10,7 @@
       allow-clear
       :loading="isLoading"
       :placeholder="$t('placeholder').toString()"
+      :name="`${attribute.id}_value`"
       @search="onSearch"
       @input-keydown="onInputKeydown"
       @change="setValue"

@@ -141,7 +141,12 @@ export default defineComponent({
     },
 
     deleteAttribute(id: UUID) {
-      this.attributes = this.attributes.filter((a) => a.id !== id)
+      const removedAttribute = this.attributes.find((a) => a.id === id)
+      if (removedAttribute?.global) {
+        removedAttribute.selected_options = [undefined as any]
+      } else {
+        this.attributes = this.attributes.filter((a) => a.id !== id)
+      }
     },
   },
 })

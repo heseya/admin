@@ -1,5 +1,6 @@
 <template>
   <div :key="$route.params.id" class="product-page-wrapper">
+    <Loading :active="isLoading" />
     <AbsoluteContentLangSwitch :value="editedLang" @input="setEditedLang" />
 
     <TopNav>
@@ -46,7 +47,7 @@
       </PopConfirm>
     </TopNav>
 
-    <ValidationObserver v-slot="{ handleSubmit }">
+    <ValidationObserver ref="form">
       <form class="product-page" @submit.stop.prevent="handleSubmit(saveProduct)">
         <Card class="product-page__main">
           <h2 class="product-page__subtitle">{{ $t('baseFormTitle') }}</h2>
@@ -175,6 +176,7 @@
       "removed": "Produkt został usunięty.",
       "created": "Produkt został utworzony.",
       "updated": "Produkt został zaktualizowany.",
+      "validationError": "Formularz zawiera błędy. Uzupełnij brakujące pola.",
       "error": "Wystąpił błąd podczas zapisywania produktu.",
       "highlightedAttributeCopySuccess": "Wartość atrybutu została skopiowana!"
     },
@@ -193,6 +195,7 @@
       "removed": "Product has been removed.",
       "created": "Product has been created.",
       "updated": "Product has been updated.",
+      "validationError": "The form contains errors. Fill in the missing fields.",
       "error": "An error occurred while saving the product.",
       "highlightedAttributeCopySuccess": "Highlighted attribute value has been copied!"
     },
@@ -227,6 +230,7 @@ import ProductAttachments from '@/components/modules/products/attachments/List.v
 import ProductRelatedSets from '@/components/modules/products/related/List.vue'
 import DescriptionAccordion from '@/components/DescriptionAccordion.vue'
 import ProductBannerForm from '@/components/modules/products/BannerForm.vue'
+import Loading from '@/components/layout/Loading.vue'
 
 // import preventLeavingPage from '@/mixins/preventLeavingPage'
 
@@ -274,6 +278,7 @@ const EMPTY_FORM: ProductComponentForm = {
 
 export default defineComponent({
   components: {
+    Loading,
     TopNav,
     Gallery,
     Card,
@@ -304,15 +309,13 @@ export default defineComponent({
     }
   },
   data: () => ({
+    isLoading: false,
     editedLang: '',
     form: cloneDeep(EMPTY_FORM),
   }),
   computed: {
     id(): UUID {
       return this.$route.params.id
-    },
-    isLoading(): boolean {
-      return this.$accessor.products.isLoading
     },
     isNew(): boolean {
       return this.id === 'create'
@@ -383,6 +386,16 @@ export default defineComponent({
     this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
   },
   methods: {
+    handleSubmit(callback: Function) {
+      ;(this.$refs.form as any).validate().then((success: boolean) => {
+        if (!success) {
+          this.$toast.error(this.$t('messages.validationError') as string)
+          return
+        }
+        callback()
+      })
+    },
+
     setEditedLang(langId: string) {
       this.editedLang = langId
 
@@ -395,26 +408,26 @@ export default defineComponent({
     async fetch() {
       this.form = cloneDeep(EMPTY_FORM)
       if (this.isNew) return
-      this.$accessor.startLoading()
+      this.isLoading = true
       await this.$accessor.products.get(this.$route.params.id)
 
       // isFormPrefilled should be set to true after form was prefilled
       // this.isFormPrefilled = true
 
-      this.$accessor.stopLoading()
+      this.isLoading = false
     },
     async deleteProduct() {
-      this.$accessor.startLoading()
+      this.isLoading = true
       const success = await this.$accessor.products.remove(this.id)
       if (success) {
         this.$toast.success(this.$t('messages.removed') as string)
         this.$router.push('/products')
       }
-      this.$accessor.stopLoading()
+      this.isLoading = false
     },
 
     async saveProduct() {
-      this.$accessor.startLoading()
+      this.isLoading = true
       try {
         const attributes = await updateProductAttributeOptions(
           this.form.attributes.filter((v) => v.selected_options),
@@ -479,7 +492,7 @@ export default defineComponent({
         this.$toast.error(this.$t('messages.error') as string)
       }
 
-      this.$accessor.stopLoading()
+      this.isLoading = false
     },
 
     async saveMetadata(id: string) {

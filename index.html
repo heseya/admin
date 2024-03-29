@@ -24,7 +24,19 @@
     <meta name="msapplication-TileImage" content="/img/mstile-150x150.png" />
     <meta name="msapplication-TileColor" content="#8f022c" />
     <script>
-      window.apiUrl = 'REPLACE_ME_API_URL'
+      window.runtimeConfig = {
+        apiUrl: 'REPLACE_ME_API_URL',
+        baseUrl: 'REPLACE_ME_BASE_URL',
+        i18n: {
+          locale: 'REPLACE_ME_I18N_LOCALE',
+          fallbackLocale: 'REPLACE_ME_I18N_FALLBACK_LOCALE',
+        },
+        sentry: {
+          url: 'REPLACE_ME_SENTRY_URL',
+          disabled: 'REPLACE_ME_SENTRY_DISABLED',
+          enviornment: 'REPLACE_ME_SENTRY_ENVIORNMENT',
+        },
+      }
     </script>
   </head>
   <body>

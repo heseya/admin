@@ -166,7 +166,7 @@ export const EMPTY_PRODUCT_FILTERS: ProductFilers = {
   available: ALL_FILTER_VALUE,
   /**
    * this forces to show only public products by default
-   * TODO: maybe we should do this conditionally? (***REMOVED*** needs it)
+   * TODO: maybe we should do this conditionally?
    */
   public: '1',
   has_cover: ALL_FILTER_VALUE,

@@ -1,0 +1,9 @@
+version: '3'
+services:
+  heseya-admin:
+    image: heseya/admin:latest
+    restart: unless-stopped
+    ports:
+      - '127.0.0.1:3000:80'
+    env_file:
+      - ./.env

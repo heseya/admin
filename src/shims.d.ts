@@ -3,11 +3,16 @@ import VueRouter, { Route } from 'vue-router'
 import { PermissionsTree } from '@/consts/permissions'
 import { hasUserAccess, alertIfNoAccess } from './plugins/permissions'
 import { AccessorType } from './store'
+import { RuntimeConfig } from './interfaces/RuntimeConfig'
 
 declare global {
   interface Window {
     updateSW: (reloadPage?: boolean) => void
-    apiUrl?: string
+
+    /**
+     * Runtime envs
+     */
+    runtimeConfig: RuntimeConfig
   }
 }
 

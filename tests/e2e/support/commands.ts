@@ -28,7 +28,7 @@ const dataCyCommand = (value: string) => {
   return cy.get(`[data-cy=${value}]`)
 }
 
-const loginCommand = (email = '***REMOVED***', password = '***REMOVED***') => {
+const loginCommand = (email = '', password = '') => {
   cy.intercept('POST', '/login').as('login')
 
   cy.visit('/login')

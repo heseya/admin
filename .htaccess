@@ -1,11 +1,5 @@
-Options +FollowSymLinks +ExecCGI
-Options -MultiViews
-RewriteEngine on
-
-RewriteRule sitemap.xml sitemap.xml [L]
-RewriteRule robots.txt robots.txt [L]
-RewriteRule manifest.json manifest.json [L]
-RewriteRule manifest.webmanifest manifest.webmanifest [L]
-
-RewriteCond %{REQUEST_URI} !(\.svg|\.png|\.jpg|\.gif|\.jpeg|\.bmp|\.ico|\.css|\.js|\.txt|\.mp4|\.map|\.woff2|\.woff|\.ttf|\.eot)$
-RewriteRule (.*) index.html [QSA]
+RewriteEngine On
+RewriteBase /
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule (.*) /index.html [QSA,L]

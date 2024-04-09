@@ -3,9 +3,9 @@
     <PaginatedList
       :title="$t('title').toString()"
       :filters="filters"
-      store-key="products"
       :table="listView ? tableConfig : undefined"
       :xlsx-file-config="fileConfig"
+      store-key="products"
       @search="makeSearch"
       @clear-filters="clearFilters"
     >
@@ -217,6 +217,7 @@ export default defineComponent({
 
   created() {
     Object.entries(this.$route.query).forEach(([key, value]) => {
+      if (key === 'page') return
       this.filters[key] = value as any
     })
 
@@ -244,6 +245,7 @@ export default defineComponent({
   },
   methods: {
     makeSearch(filters: ProductFilers) {
+      console.log('🚀 ~ makeSearch ~ filters:', filters)
       this.filters = filters
 
       const queryFilters = formatFilters(filters)

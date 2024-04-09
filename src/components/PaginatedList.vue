@@ -206,10 +206,10 @@ export default defineComponent({
 
       const queryFilters = formatFilters(this.filters)
       await this.$accessor[this.storeKey].fetch({
-        page: this.page,
-        limit: this.itemsPerPage,
         ...queryFilters,
         ...this.params,
+        page: this.page,
+        limit: this.itemsPerPage,
       })
 
       this.isLoading = false

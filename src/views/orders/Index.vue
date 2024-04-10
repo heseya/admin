@@ -259,6 +259,8 @@ export default defineComponent({
         (this.$route.query.digital_shipping_method_id as string) || ALL_FILTER_VALUE,
       paid: (this.$route.query.paid as string) || ALL_FILTER_VALUE,
       sort: (this.$route.query.sort as string) || '',
+      sales_channel_id: (this.$route.query.sales_channel_id as string) || ALL_FILTER_VALUE,
+      payment_method_id: (this.$route.query.payment_method_id as string) || ALL_FILTER_VALUE,
     }
   },
   methods: {

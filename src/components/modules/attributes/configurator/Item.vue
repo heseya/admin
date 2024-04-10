@@ -1,5 +1,5 @@
 <template>
-  <list-item no-hover>
+  <ListItem no-hover>
     <div class="product-attribute">
       <a-tooltip>
         <div class="product-attribute__title">
@@ -31,7 +31,8 @@
         </icon-button>
 
         <icon-button
-          v-if="!disabled && !attribute.global"
+          v-if="isRemovable"
+          :disabled="disabled"
           size="small"
           type="danger"
           @click="deleteAttribute(attribute.id)"
@@ -42,7 +43,7 @@
         </icon-button>
       </div>
     </template>
-  </list-item>
+  </ListItem>
 </template>
 
 <i18n lang="json">
@@ -61,6 +62,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import { AttributeType, Attribute, ProductAttribute } from '@heseya/store-core'
+import isNil from 'lodash/isNil'
 
 import Empty from '@/components/layout/Empty.vue'
 import List from '@/components/layout/List.vue'
@@ -104,6 +106,14 @@ export default defineComponent({
       set(val: ProductAttribute) {
         this.$emit('input', val)
       },
+    },
+
+    isRemovable(): boolean {
+      const hasValue = this.attribute.selected_options.some(
+        (v) => !isNil(v?.value_date) || !isNil(v?.value_number),
+      )
+      // Global value can be removed only if it has value (value is removed, not the attribute itself)
+      return !this.attribute.global || hasValue
     },
   },
   methods: {

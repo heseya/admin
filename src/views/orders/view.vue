@@ -37,8 +37,15 @@
       <card class="order-page__address">
         <CustomerDetails :order="order" />
       </card>
+      <card v-if="order.id && order.shipping_method" class="order-page__shipping">
+        <ShippingNumberForm
+          :order-id="order.id"
+          :shipping-number="order.shipping_number || undefined"
+          @set="onShippingNumberChange"
+        />
+      </card>
       <card class="order-page__documents">
-        <order-documents v-if="order.id" :order-id="order.id" :documents="order.documents" />
+        <OrderDocuments v-if="order.id" :order-id="order.id" :documents="order.documents" />
       </card>
     </main>
   </div>
@@ -64,6 +71,7 @@ import { Order } from '@heseya/store-core'
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import NextPrevButtons from '@/components/modules/orders/NextPrevButtons.vue'
+import ShippingNumberForm from '@/components/modules/orders/ShippingNumberForm.vue'
 import OrderSummary from '@/components/modules/orders/Summary.vue'
 import StatusInput from '@/components/modules/orders/StatusInput.vue'
 
@@ -83,6 +91,7 @@ export default defineComponent({
     TopNav,
     Card,
     NextPrevButtons,
+    ShippingNumberForm,
     OrderSummary,
     StatusInput,
     CustomerDetails,
@@ -123,6 +132,11 @@ export default defineComponent({
       this.$accessor.statuses.fetch(),
     ])
     this.isLoading = false
+  },
+  methods: {
+    onShippingNumberChange(shippingNumber: string) {
+      this.order.shipping_number = shippingNumber
+    },
   },
 })
 </script>

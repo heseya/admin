@@ -23,16 +23,15 @@
           draggable
           @click="openModal(method.id)"
         >
+          <template #logo="{ item }">
+            <Avatar color="#eee">
+              <MediaElement v-if="item.logo" :media="item.logo" :size="44" />
+              <i v-else class="bx bx-image"></i>
+            </Avatar>
+          </template>
+
           <template #name="{ item }">
-            <div class="shipping-method-name">
-              <img
-                v-if="item.logo"
-                :src="item.logo.url"
-                :alt="item.name"
-                class="shipping-method-name__logo"
-              />
-              <span>{{ item.name }}</span>
-            </div>
+            <b>{{ item.name }}</b>
           </template>
 
           <template #countries="{ value }">
@@ -180,11 +179,13 @@ import PaginatedList from '@/components/PaginatedList.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ShippingMethodsForm from '@/components/modules/shippingMethods/Form.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
+import CmsTableRow from '@/components/cms/CmsTableRow.vue'
+import CmsTableCellList from '@/components/cms/CmsTableCellList.vue'
+import MediaElement from '@/components/MediaElement.vue'
+import Avatar from '@/components/layout/Avatar.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import { TableConfig } from '@/interfaces/CmsTable'
-import CmsTableRow from '@/components/cms/CmsTableRow.vue'
-import CmsTableCellList from '@/components/cms/CmsTableCellList.vue'
 import { formatPrice } from '@/utils/currency'
 
 export default defineComponent({
@@ -199,6 +200,8 @@ export default defineComponent({
     MetadataForm,
     CmsTableRow,
     CmsTableCellList,
+    MediaElement,
+    Avatar,
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {
@@ -223,6 +226,11 @@ export default defineComponent({
     tableConfig(): TableConfig<ShippingMethod> {
       return {
         headers: [
+          {
+            key: 'logo',
+            label: '',
+            width: '60px',
+          },
           {
             key: 'name',
             label: this.$t('common.form.name') as string,
@@ -385,19 +393,5 @@ export default defineComponent({
 .row {
   display: flex;
   justify-content: space-between;
-}
-
-.shipping-method-name {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-
-  &__logo {
-    width: 32px;
-    height: 32px;
-    object-fit: contain;
-    flex-shrink: 0;
-  }
 }
 </style>

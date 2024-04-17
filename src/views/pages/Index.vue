@@ -95,7 +95,7 @@ export default defineComponent({
 
   created() {
     const { search } = this.$route.query
-    this.filters.search = search.toString() || ''
+    this.filters.search = search?.toString() || ''
   },
 
   methods: {

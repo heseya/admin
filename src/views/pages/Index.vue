@@ -1,6 +1,18 @@
 <template>
   <div class="narrower-page">
-    <PaginatedList :title="$t('title').toString()" store-key="pages" draggable :table="tableConfig">
+    <PaginatedList
+      :title="$t('title').toString()"
+      store-key="pages"
+      draggable
+      :table="tableConfig"
+      :filters="filters"
+      @search="makeSearch"
+      @clear-filters="clearFilters"
+    >
+      <template #filters>
+        <PagesFilters :filters="filters" @search="makeSearch" />
+      </template>
+
       <template #nav>
         <icon-button v-can="$p.Pages.Add" to="/pages/create">
           <template #icon>
@@ -11,7 +23,7 @@
       </template>
 
       <template #default="{ item: page }">
-        <cms-table-row
+        <CmsTableRow
           :key="page.id"
           :item="page"
           :headers="tableConfig.headers"
@@ -21,7 +33,7 @@
           <template #slug="{ value }">
             <code>{{ value }}</code>
           </template>
-        </cms-table-row>
+        </CmsTableRow>
       </template>
     </PaginatedList>
   </div>
@@ -42,10 +54,16 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { Page } from '@heseya/store-core'
+
 import PaginatedList from '@/components/PaginatedList.vue'
 import { TableConfig } from '@/interfaces/CmsTable'
-import { Page } from '@heseya/store-core'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
+import PagesFilters, {
+  PagesFiltersType,
+  EMPTY_MEDIA_FILTERS,
+} from '@/components/modules/pages/Filters.vue'
+import { formatFilters } from '@/utils/utils'
 
 export default defineComponent({
   metaInfo(this: any) {
@@ -54,7 +72,15 @@ export default defineComponent({
   components: {
     CmsTableRow,
     PaginatedList,
+    PagesFilters,
   },
+
+  data: () => ({
+    filters: {
+      ...EMPTY_MEDIA_FILTERS,
+    } as PagesFiltersType,
+  }),
+
   computed: {
     tableConfig(): TableConfig<Page> {
       return {
@@ -64,6 +90,26 @@ export default defineComponent({
           { key: 'public', label: this.$t('common.form.visibility') as string, width: '1fr' },
         ],
       }
+    },
+  },
+
+  created() {
+    const { search } = this.$route.query
+    this.filters.search = search.toString() || ''
+  },
+
+  methods: {
+    makeSearch(filters: PagesFiltersType) {
+      this.filters = filters
+      const queryFilters = formatFilters(filters)
+
+      this.$router.push({
+        path: 'pages',
+        query: { ...queryFilters, page: undefined },
+      })
+    },
+    clearFilters(): void {
+      this.makeSearch({ ...EMPTY_MEDIA_FILTERS })
     },
   },
 })

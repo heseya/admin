@@ -8,6 +8,7 @@ on:
       - develop
       - hotfix/*
       - release/*
+      - feature/v*
 jobs:
   run:
     runs-on: ubuntu-latest

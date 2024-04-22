@@ -21,12 +21,15 @@
     <div class="coupon-view__form">
       <validation-observer v-slot="{ handleSubmit }">
         <card>
-          <validated-input
-            v-model="form.code"
-            rules="required|coupon-code"
-            :label="$t('formCode')"
-            :disabled="!canModify"
-          />
+          <div class="coupon-view__code">
+            <validated-input
+              v-model="form.code"
+              rules="required|coupon-code"
+              :label="$t('formCode')"
+              :disabled="!canModify"
+            />
+            <CouponCodeGenerate :disabled="!canModify" @generate="(code) => (form.code = code)" />
+          </div>
 
           <hr />
           <SaleForm v-model="form" :disabled="!canModify" />
@@ -94,6 +97,7 @@ import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
 import SaleForm from '@/components/modules/sales/Form.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
+import CouponCodeGenerate from '@/components/modules/sales/CouponCodeGenerate.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { UUID } from '@/interfaces/UUID'
@@ -122,7 +126,15 @@ const EMPTY_COUPON_FORM: CouponFormDto = {
 }
 
 export default defineComponent({
-  components: { ValidationObserver, TopNav, Card, PopConfirm, SaleForm, MetadataForm },
+  components: {
+    ValidationObserver,
+    TopNav,
+    Card,
+    PopConfirm,
+    SaleForm,
+    MetadataForm,
+    CouponCodeGenerate,
+  },
   metaInfo(this: any): any {
     return {
       title:
@@ -223,8 +235,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-// .coupon-view {
-//   &__form {
-//   }
-// }
+.coupon-view {
+  &__code {
+    display: flex;
+  }
+}
 </style>

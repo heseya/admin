@@ -31,6 +31,18 @@
         </template>
       </switch-input>
 
+      <switch-input
+        v-if="form.include_in_text_search"
+        v-model="form.match_any"
+        :disabled="disabled"
+        horizontal
+      >
+        <template #title>
+          {{ $t('form.matchAny') }}
+          <info-tooltip> {{ $t('form.matchAnyTooltip') }}</info-tooltip>
+        </template>
+      </switch-input>
+
       <switch-input v-model="form.global" :disabled="disabled" horizontal>
         <template #title>
           {{ $t('form.global') }}
@@ -108,6 +120,8 @@
       "slug": "Skrócona nazwa",
       "includeInSearch": "Uwzględnij w wyszukiwarce",
       "includeInSearchTooltip": "Uwzględnij atrybut w wyszukiwarce produktów. Dzięki temu łatwo znajdziej produkty dla których atrybut ma daną wartość.",
+      "matchAny": "Dopasuj dowolne",
+      "matchAnyTooltip": "Dopasuj dowolne oznacza, że jeśli w polu wyszukiwania zostanie podana wiele wartości atrybutów, to znalezione zostaną produkty które posiadają przynajmniej atrybut o przynajmniej jednej z podanych wartości.",
       "global": "Globalna atrybut",
       "globalTooltip": "Globalna atrybut oznacza, że po danej cesze można filtrować produkty niezależnie od kolekcji w której się one znajdują.",
       "sortable": "Sortowalny atrybut",
@@ -123,6 +137,8 @@
       "slug": "Short name",
       "includeInSearch": "Include in search",
       "includeInSearchTooltip": "Include attribute in product search. This allows you to easily find products for which the attribute has a given value.",
+      "matchAny": "Match any",
+      "matchAnyTooltip": "Match any means that if multiple attribute values are entered in the search field, products that have at least one attribute with at least one of the entered values will be found.",
       "global": "Global attribute",
       "globalTooltip": "Global attribute means that you can filter products independently from the collection in which they are located.",
       "sortable": "Sortable attribute",
@@ -163,6 +179,7 @@ const CLEAR_FORM: AttributeCreateDto = {
   sortable: false,
   global: false,
   include_in_text_search: false,
+  match_any: false,
   translations: {},
   published: [],
   metadata: {},

@@ -23,7 +23,14 @@
       <template #item="{ item: url }">
         <cms-table-row :key="url.id" :item="url" no-hover :headers="tableConfig.headers">
           <template #url>
-            <a :href="url.url" target="_blank" class="order-product-urls__url">{{ url.url }}</a>
+            <a
+              :href="url.url"
+              target="_blank"
+              class="order-product-urls__url"
+              @click="openUrl(url.url)"
+            >
+              {{ url.url }}
+            </a>
           </template>
 
           <template #action>
@@ -212,6 +219,10 @@ export default defineComponent({
 
       if (success) this.$toast.success(this.$t('delete.messageSuccess') as string)
       else this.$toast.error(this.$t('delete.messageError') as string)
+    },
+
+    openUrl(url: string) {
+      window.open(url, '_blank')
     },
   },
 })

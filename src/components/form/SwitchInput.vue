@@ -75,6 +75,7 @@ export default defineComponent({
     margin-bottom: 3px;
     display: flex;
     align-items: center;
+    text-align: right;
 
     & > i {
       margin-left: 4px;

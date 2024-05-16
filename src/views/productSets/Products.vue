@@ -192,8 +192,7 @@ export default defineComponent({
       try {
         const response = await sdk.ProductSets.getAllProducts(this.id, {
           page: this.pagination.currentPage + 1,
-          // TODO: lazy load after scroll
-          limit: 500,
+          limit: 100,
           public: this.showOnlyPublic ? true : undefined,
         })
         this.products = [...this.products, ...response.data]

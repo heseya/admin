@@ -101,10 +101,11 @@ export default defineComponent({
     }
   },
   created() {
-    const { search, public: isPublic } = this.$route.query
+    const { search, public: isPublic, root } = this.$route.query
 
     this.filters.public = (isPublic as string) || ALL_FILTER_VALUE
     this.filters.search = (search as string) || ''
+    this.filters.root = (root as string) === 'true'
   },
   methods: {
     editProductSet(set: ProductSet | string) {

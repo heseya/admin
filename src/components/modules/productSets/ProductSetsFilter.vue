@@ -45,6 +45,7 @@ export interface ProductSetFilters extends Record<string, string | boolean | und
 
 export const EMPTY_PRODUCT_SET_FILTERS: ProductSetFilters = {
   search: '',
+  root: true,
   public: ALL_FILTER_VALUE,
 }
 

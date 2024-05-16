@@ -181,7 +181,7 @@ export default defineComponent({
           this.products.push(...products)
           page++
           lastPage = pagination.lastPage
-        } while (page < lastPage)
+        } while (page <= lastPage)
       } catch (e: any) {
         this.$toast.error(formatApiNotificationError(e))
       }

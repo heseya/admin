@@ -245,7 +245,6 @@ export default defineComponent({
   },
   methods: {
     makeSearch(filters: ProductFilers) {
-      console.log('🚀 ~ makeSearch ~ filters:', filters)
       this.filters = filters
 
       const queryFilters = formatFilters(filters)

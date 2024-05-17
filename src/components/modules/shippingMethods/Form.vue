@@ -1,56 +1,71 @@
 <template>
   <div class="shipping-methods-form">
     <modal-form>
-      <div class="center">
-        <app-select
-          v-model="form.shipping_type"
+      <div class="shipping-methods-form__header">
+        <MediaUploadInput
           :disabled="disabled"
-          option-filter-prop="label"
-          :label="$t('form.shippingType').toString()"
-        >
-          <a-select-option
-            v-for="shippingType in Object.values(ShippingType)"
-            :key="shippingType"
-            :label="$t(`shippingTypes.${shippingType}`)"
-          >
-            {{ $t(`shippingTypes.${shippingType}`) }}
-          </a-select-option>
-        </app-select>
-      </div>
-      <validated-input
-        v-model="form.name"
-        :disabled="disabled"
-        rules="required"
-        :label="$t('common.form.name')"
-      />
+          :media="form.logo || undefined"
+          :file-name="$t('form.logo').toString()"
+          @upload="changeMedia"
+        />
 
-      <div class="center">
-        <flex-input>
-          <label class="title">{{ $t('form.paymentBeforeDelivery') }}</label>
-          <a-switch v-model="form.payment_on_delivery" :disabled="disabled" />
-          <label class="title">{{ $t('form.paymentOnDelivery') }}</label>
-        </flex-input>
-      </div>
+        <div>
+          <div class="center">
+            <app-select
+              v-model="form.shipping_type"
+              :disabled="disabled"
+              option-filter-prop="label"
+              :label="$t('form.shippingType').toString()"
+            >
+              <a-select-option
+                v-for="shippingType in Object.values(ShippingType)"
+                :key="shippingType"
+                :label="$t(`shippingTypes.${shippingType}`)"
+              >
+                {{ $t(`shippingTypes.${shippingType}`) }}
+              </a-select-option>
+            </app-select>
+          </div>
+          <validated-input
+            v-model="form.name"
+            :disabled="disabled"
+            rules="required"
+            :label="$t('common.form.name')"
+          />
 
-      <div v-show="!form.payment_on_delivery" class="center">
-        <app-select
-          v-model="form.payment_methods"
-          :disabled="disabled"
-          mode="multiple"
-          option-filter-prop="label"
-          :label="$t('form.paymentMethods')"
-        >
-          <a-select-option v-for="method in paymentMethods" :key="method.id" :label="method.name">
-            {{ method.name }}
-          </a-select-option>
-        </app-select>
-      </div>
+          <div class="center">
+            <flex-input>
+              <label class="title">{{ $t('form.paymentBeforeDelivery') }}</label>
+              <a-switch v-model="form.payment_on_delivery" :disabled="disabled" />
+              <label class="title">{{ $t('form.paymentOnDelivery') }}</label>
+            </flex-input>
+          </div>
 
-      <div class="center">
-        <flex-input>
-          <label class="title">{{ $t('form.public') }}</label>
-          <switch-input v-model="form.public" :disabled="disabled"> </switch-input>
-        </flex-input>
+          <div v-show="!form.payment_on_delivery" class="center">
+            <app-select
+              v-model="form.payment_methods"
+              :disabled="disabled"
+              mode="multiple"
+              option-filter-prop="label"
+              :label="$t('form.paymentMethods')"
+            >
+              <a-select-option
+                v-for="method in paymentMethods"
+                :key="method.id"
+                :label="method.name"
+              >
+                {{ method.name }}
+              </a-select-option>
+            </app-select>
+          </div>
+
+          <div class="center">
+            <flex-input>
+              <label class="title">{{ $t('form.public') }}</label>
+              <switch-input v-model="form.public" :disabled="disabled"> </switch-input>
+            </flex-input>
+          </div>
+        </div>
       </div>
 
       <hr />
@@ -193,6 +208,7 @@
 {
   "pl": {
     "form": {
+      "logo": "logo metody dostawy",
       "shippingType": "Typ dostawy",
       "paymentMethods": "Dostępne metody płatności",
       "public": "Widoczność metody dostawy",
@@ -216,6 +232,7 @@
   },
   "en": {
     "form": {
+      "logo": "shipping method logo",
       "shippingType": "Shipping type",
       "paymentMethods": "Available payment methods",
       "public": "Shipping method visibility",
@@ -249,12 +266,14 @@ import {
   ShippingMethodCreateDto,
   AddressDto,
   ShippingType,
+  CdnMedia,
 } from '@heseya/store-core'
 
 import ModalForm from '@/components/form/ModalForm.vue'
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import FlexInput from '@/components/layout/FlexInput.vue'
 import AutocompleteInput from '@/components/AutocompleteInput.vue'
+import MediaUploadInput from '@/components/modules/media/MediaUploadInput.vue'
 
 import PriceRangesForm from './PriceRangesForm.vue'
 import ShippingPointForm from './ShippingPoint.vue'
@@ -262,6 +281,8 @@ import ShippingPointsGrid from './ShippingPointsGrid.vue'
 
 import { DEFAULT_ADDRESS_FORM } from '@/consts/addressConsts'
 import CountriesSelect from '@/components/CountriesSelect.vue'
+
+type ShippingMethodForm = ShippingMethodCreateDto & { logo?: CdnMedia | null }
 
 export default defineComponent({
   name: 'ShippingMethodsForm',
@@ -275,10 +296,11 @@ export default defineComponent({
     ShippingPointForm,
     ShippingPointsGrid,
     CountriesSelect,
+    MediaUploadInput,
   },
   props: {
     value: {
-      type: Object as PropType<ShippingMethodCreateDto>,
+      type: Object as PropType<ShippingMethodForm>,
       required: true,
     },
     countries: {
@@ -299,10 +321,10 @@ export default defineComponent({
   }),
   computed: {
     form: {
-      get(): ShippingMethodCreateDto {
+      get(): ShippingMethodForm {
         return this.value
       },
-      set(value: ShippingMethodCreateDto) {
+      set(value: ShippingMethodForm) {
         this.$emit('input', value)
       },
     },
@@ -349,12 +371,26 @@ export default defineComponent({
     removePoint(index: number) {
       this.form.shipping_points?.splice(index, 1)
     },
+    changeMedia(media: CdnMedia | null) {
+      this.form.logo = media ?? undefined
+      this.form.logo_id = media?.id || null
+    },
   },
 })
 </script>
 
 <style lang="scss">
 .shipping-methods-form {
+  &__header {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+
+    @media ($viewport-8) {
+      grid-template-columns: 0.5fr 1fr;
+    }
+  }
+
   .switch-input {
     margin-top: 0;
   }

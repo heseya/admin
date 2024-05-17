@@ -16,13 +16,24 @@
       </template>
 
       <template #default="{ item: method }">
-        <cms-table-row
+        <CmsTableRow
           :key="method.id"
           :item="method"
           :headers="tableConfig.headers"
           draggable
           @click="openModal(method.id)"
         >
+          <template #logo="{ item }">
+            <Avatar color="#eee">
+              <MediaElement v-if="item.logo" :media="item.logo" :size="44" />
+              <i v-else class="bx bx-image"></i>
+            </Avatar>
+          </template>
+
+          <template #name="{ item }">
+            <b>{{ item.name }}</b>
+          </template>
+
           <template #countries="{ value }">
             <CmsTableCellList :items="value">
               <template #title>
@@ -38,14 +49,14 @@
               </template>
             </CmsTableCellList>
           </template>
-        </cms-table-row>
+        </CmsTableRow>
       </template>
     </PaginatedList>
 
-    <validation-observer v-slot="{ handleSubmit }">
+    <ValidationObserver v-slot="{ handleSubmit }">
       <a-modal
         v-model="isModalActive"
-        width="660px"
+        width="860px"
         :title="editedItem.id ? $t('editTitle') : $t('newTitle')"
       >
         <ShippingMethodsForm
@@ -77,7 +88,7 @@
             <app-button v-if="canModify" @click="handleSubmit(saveModal)">
               {{ $t('common.save') }}
             </app-button>
-            <pop-confirm
+            <PopConfirm
               v-can="$p.ShippingMethods.Remove"
               :title="$t('deleteText').toString()"
               :ok-text="$t('common.delete').toString()"
@@ -85,11 +96,11 @@
               @confirm="deleteItem"
             >
               <app-button v-if="editedItem.id" type="danger">{{ $t('common.delete') }}</app-button>
-            </pop-confirm>
+            </PopConfirm>
           </div>
         </template>
       </a-modal>
-    </validation-observer>
+    </ValidationObserver>
   </div>
 </template>
 
@@ -159,18 +170,22 @@ import {
   ShippingType,
   ShippingMethodUpdateDto,
   ShippingCountry,
+  CdnMedia,
 } from '@heseya/store-core'
+
 import { sdk } from '../../api'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 import ShippingMethodsForm from '@/components/modules/shippingMethods/Form.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
+import CmsTableRow from '@/components/cms/CmsTableRow.vue'
+import CmsTableCellList from '@/components/cms/CmsTableCellList.vue'
+import MediaElement from '@/components/MediaElement.vue'
+import Avatar from '@/components/layout/Avatar.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import { TableConfig } from '@/interfaces/CmsTable'
-import CmsTableRow from '@/components/cms/CmsTableRow.vue'
-import CmsTableCellList from '@/components/cms/CmsTableCellList.vue'
 import { formatPrice } from '@/utils/currency'
 
 export default defineComponent({
@@ -185,6 +200,8 @@ export default defineComponent({
     MetadataForm,
     CmsTableRow,
     CmsTableCellList,
+    MediaElement,
+    Avatar,
   },
   beforeRouteLeave(to, from, next) {
     if (this.isModalActive) {
@@ -196,7 +213,7 @@ export default defineComponent({
   },
   data: () => ({
     isModalActive: false,
-    editedItem: {} as ShippingMethodUpdateDto & { id?: UUID },
+    editedItem: {} as ShippingMethodUpdateDto & { id?: UUID; logo?: CdnMedia | null },
     selectedItem: null as ShippingMethod | null,
     countries: [] as ShippingCountry[],
   }),
@@ -209,6 +226,11 @@ export default defineComponent({
     tableConfig(): TableConfig<ShippingMethod> {
       return {
         headers: [
+          {
+            key: 'logo',
+            label: '',
+            width: '60px',
+          },
           {
             key: 'name',
             label: this.$t('common.form.name') as string,
@@ -274,6 +296,8 @@ export default defineComponent({
         this.selectedItem = item
         this.editedItem = {
           ...item,
+          logo_id: item.logo?.id || null,
+          logo: item.logo || null,
           payment_methods: item.payment_methods.map(({ id }) => id),
           countries: item.countries.map(({ code }) => code),
           price_ranges: item.price_ranges.map(({ start, value }) => ({
@@ -287,6 +311,8 @@ export default defineComponent({
         this.selectedItem = null
         this.editedItem = {
           name: '',
+          logo: null,
+          logo_id: null,
           shipping_type: ShippingType.Address,
           payment_methods: [],
           is_block_list_countries: false,

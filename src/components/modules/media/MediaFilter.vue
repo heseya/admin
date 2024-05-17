@@ -63,7 +63,7 @@ import { ALL_FILTER_VALUE } from '@/consts/filters'
 export type MediaFiltersType = {
   search: string
   type: CdnMediaType | typeof ALL_FILTER_VALUE
-  has_relationships: boolean | typeof ALL_FILTER_VALUE
+  has_relationships: string | typeof ALL_FILTER_VALUE
 }
 
 export const EMPTY_MEDIA_FILTERS: MediaFiltersType = {

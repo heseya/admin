@@ -8,7 +8,7 @@
       @clear-filters="clearFilters"
     >
       <template #filters>
-        <media-filter :filters="filters" @search="makeSearch" />
+        <MediaFilter :filters="filters" @search="makeSearch" />
       </template>
 
       <template #default="{ item: singleMedia }">
@@ -61,6 +61,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { CdnMediaType } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import MediaEditForm from '@/components/modules/media/MediaEditForm.vue'
@@ -87,6 +88,15 @@ export default defineComponent({
       ...EMPTY_MEDIA_FILTERS,
     } as MediaFiltersType,
   }),
+
+  created() {
+    const { search, type, has_relationships: hasRelationships } = this.$route.query
+    this.filters.search = search?.toString() || EMPTY_MEDIA_FILTERS.search
+    this.filters.type = (type as CdnMediaType) || EMPTY_MEDIA_FILTERS.type
+    this.filters.has_relationships = hasRelationships
+      ? hasRelationships.toString()
+      : EMPTY_MEDIA_FILTERS.has_relationships
+  },
 
   methods: {
     makeSearch(filters: MediaFiltersType) {

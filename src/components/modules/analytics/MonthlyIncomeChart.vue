@@ -17,15 +17,12 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { AnalyticsPaymentsSummary } from '@heseya/store-core'
-
+import { AnalyticsPaymentsSummary, AnalyticsPayment } from '@heseya/store-core'
+import { Bar } from 'vue-chartjs/legacy'
+import ChartJS from 'chart.js'
 import sub from 'date-fns/sub'
 import format from 'date-fns/format'
 import startOfMonth from 'date-fns/startOfMonth'
-
-import { Bar } from 'vue-chartjs/legacy'
-import ChartJS from 'chart.js'
-import { AnalyticsPayment } from '@heseya/store-core'
 
 export default defineComponent({
   components: { Bar },

@@ -176,7 +176,7 @@
 import { defineComponent, PropType } from 'vue'
 import Draggable from 'vuedraggable'
 import { cloneDeep } from 'lodash'
-import { ProductSetUpdateDto, ProductSetList } from '@heseya/store-core'
+import { ProductSetUpdateDto, ProductSetListed } from '@heseya/store-core'
 import { sdk } from '@/api'
 
 import Loading from '@/components/layout/Loading.vue'
@@ -194,7 +194,7 @@ export default defineComponent({
   components: { Draggable, PopConfirm, SetProductsList, ChangeParentForm, Loading },
   props: {
     set: {
-      type: Object as PropType<ProductSetList>,
+      type: Object as PropType<ProductSetListed>,
       required: true,
     },
     searchable: {
@@ -212,10 +212,10 @@ export default defineComponent({
     childrenQuantity: 0,
     page: 1,
     limit: 50,
-    children: [] as ProductSetList[],
-    searchedChildren: [] as ProductSetList[],
-    selectedSet: null as null | ProductSetList,
-    selectedChildren: null as null | ProductSetList,
+    children: [] as ProductSetListed[],
+    searchedChildren: [] as ProductSetListed[],
+    selectedSet: null as null | ProductSetListed,
+    selectedChildren: null as null | ProductSetListed,
     editedItem: cloneDeep(CLEAR_PRODUCT_SET_FORM) as ProductSetUpdateDto,
     editedItemSlugPrefix: '' as string,
     areChildrenVisible: false,
@@ -238,7 +238,7 @@ export default defineComponent({
       return this.children.length < this.childrenQuantity
     },
     uniqueChildren: {
-      get(): ProductSetList[] {
+      get(): ProductSetListed[] {
         if (!this.searchedChildren.length) {
           return this.children
         }
@@ -256,7 +256,7 @@ export default defineComponent({
       this.$emit('delete-child', setId)
     },
 
-    updateChild(set: ProductSetList) {
+    updateChild(set: ProductSetListed) {
       const updatedIndex = this.children.findIndex((child) => child.id === set.id)
       this.children.splice(updatedIndex, 1, { ...set, children_ids: [] })
     },
@@ -273,7 +273,7 @@ export default defineComponent({
             this.limit,
             this.page - 1,
           )
-          this.children.push(subcollections.pop() as ProductSetList)
+          this.children.push(subcollections.pop() as ProductSetListed)
         } catch (error: any) {}
         this.$accessor.stopLoading()
       }

@@ -119,11 +119,15 @@
 /* eslint-disable camelcase */
 import { defineComponent, PropType } from 'vue'
 import { debounce } from 'lodash'
-import { OrderStatus, ShippingMethod, ShippingType } from '@heseya/store-core'
+import {
+  OrderStatus,
+  ShippingMethod,
+  ShippingType,
+  SalesChannel,
+  PaymentMethod,
+} from '@heseya/store-core'
 
 import { ALL_FILTER_VALUE } from '@/consts/filters'
-import { SalesChannel } from '@heseya/store-core'
-import { PaymentMethod } from '@heseya/store-core'
 
 export type OrderFilersType = {
   search: string

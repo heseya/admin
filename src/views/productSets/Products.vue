@@ -69,7 +69,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { ProductSet, ProductList } from '@heseya/store-core'
+import { ProductSet, ProductListed, HeseyaPaginationMeta } from '@heseya/store-core'
 
 import { UUID } from '@/interfaces/UUID'
 
@@ -84,7 +84,6 @@ import CmsTable from '@/components/cms/CmsTable.vue'
 import { TableConfig } from '@/interfaces/CmsTable'
 import ProductListItem from '@/components/modules/products/ProductListItem.vue'
 import Card from '@/components/layout/Card.vue'
-import { HeseyaPaginationMeta } from '@heseya/store-core'
 import AppButton from '@/components/layout/AppButton.vue'
 
 export default defineComponent({
@@ -103,7 +102,7 @@ export default defineComponent({
     }
   },
   data: () => ({
-    products: [] as ProductList[],
+    products: [] as ProductListed[],
     pagination: { currentPage: 0, lastPage: Infinity } as HeseyaPaginationMeta,
     isLoading: false,
     showOnlyPublic: true,
@@ -140,7 +139,7 @@ export default defineComponent({
         .toLowerCase()}`
     },
 
-    tableConfig(): TableConfig<ProductList> {
+    tableConfig(): TableConfig<ProductListed> {
       return {
         headers: [
           { key: 'cover', label: '', width: '60px' },
@@ -203,7 +202,7 @@ export default defineComponent({
       this.isLoading = false
     },
 
-    async handleReorder(moved: { element: ProductList; newIndex: number; oldIndex: number }) {
+    async handleReorder(moved: { element: ProductListed; newIndex: number; oldIndex: number }) {
       if (!this.productSet) return
       this.isLoading = true
       try {

@@ -1,5 +1,10 @@
 <template>
-  <img :src="flagURL" role="presentation" @error="handleFlagError" />
+  <img
+    :src="flagURL"
+    :style="{ width: `${width}px`, height: `${height}px` }"
+    role="presentation"
+    @error="handleFlagError"
+  />
 </template>
 
 <script lang="ts">
@@ -18,6 +23,13 @@ export default defineComponent({
   },
 
   computed: {
+    height(): string {
+      return this.size.split('x')[1]
+    },
+    width(): string {
+      return this.size.split('x')[0]
+    },
+
     flagURL(): string {
       return `https://flagcdn.com/${this.size}/${this.getFlagName(this.lang)}.png`
     },

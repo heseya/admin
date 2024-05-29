@@ -6,7 +6,9 @@
     <TopNav>
       <template #title>
         <template v-if="!isNew">
-          <span class="gray-text">{{ $t('title') }}&nbsp;</span>{{ product.name }}
+          <div>
+            <span class="gray-text">{{ $t('title') }}&nbsp;</span>{{ product.name }}
+          </div>
         </template>
         <template v-else>
           {{ $t('titleNew') }}
@@ -545,9 +547,13 @@ export default defineComponent({
   }
 
   &__subtitle {
-    font-size: 1.1em;
+    font-size: 1em;
     margin: 0;
     font-weight: 600;
+
+    @media ($viewport-10) {
+      font-size: 1.1em;
+    }
   }
 
   &__seo-form .seo-form {

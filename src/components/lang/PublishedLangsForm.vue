@@ -139,8 +139,20 @@ export default defineComponent({
       grid-template-columns: repeat(3, 1fr);
     }
 
+    @media ($viewport-6) {
+      grid-template-columns: repeat(5, 1fr);
+    }
     @media ($viewport-7) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    @media ($viewport-8) {
+      grid-template-columns: repeat(5, 1fr);
+    }
+    @media ($viewport-9) {
       grid-template-columns: repeat(6, 1fr);
+    }
+    @media ($viewport-10) {
+      grid-template-columns: repeat(7, 1fr);
     }
   }
 

@@ -48,7 +48,7 @@ export default defineComponent({
       default: null,
     },
     xlsxFileConfig: {
-      type: Object as PropType<XlsxFileConfig>,
+      type: Object as PropType<XlsxFileConfig<any>>,
       default: null,
     },
   },
@@ -58,6 +58,7 @@ export default defineComponent({
         return this.xlsxFileConfig.headers.reduce((acc, { key, label, format }) => {
           return {
             ...acc,
+            // @ts-expect-error
             [label]: format ? format(item[key], item) : item[key],
           }
         }, {})

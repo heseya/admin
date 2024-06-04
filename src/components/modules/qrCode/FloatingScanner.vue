@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import { EXPERIMENTAL_FLAGS } from '@/consts/featureFlags'
-import { QrCodeObject, QrCodePayload } from '@/interfaces/QrCode'
+import { QrCodePayload } from '@/interfaces/QrCode'
 import { defineComponent } from 'vue'
 import Scanner from './Scanner.vue'
 export default defineComponent({
@@ -30,7 +30,7 @@ export default defineComponent({
 
   methods: {
     handleScan(data: QrCodePayload) {
-      if (data.typ === QrCodeObject.Order) {
+      if (data.typ === 'Order') {
         this.$router.push({ name: 'OrdersView', params: { id: data.body.id } })
         this.isOpen = false
       }

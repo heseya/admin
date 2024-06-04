@@ -1,5 +1,5 @@
 import { accessor } from '@/store'
-import { AttributeOption, ProductAttribute } from '@heseya/store-core'
+import { AttributeOption, AttributeOptionDto, ProductAttribute } from '@heseya/store-core'
 import { groupBy } from 'lodash'
 
 type SuccessfulOptionResult = { success: true; option: AttributeOption }
@@ -27,11 +27,11 @@ export const updateProductAttributeOptions = async (rawAttributes: ProductAttrib
           ? await accessor.attributes.updateOption({
               attributeId: attribute.id,
               optionId: attribute.option.id,
-              option: attribute.option,
+              option: attribute.option as AttributeOptionDto,
             })
           : await accessor.attributes.addOption({
               attributeId: attribute.id,
-              option: attribute.option,
+              option: attribute.option as AttributeOptionDto,
             }),
       }),
     )

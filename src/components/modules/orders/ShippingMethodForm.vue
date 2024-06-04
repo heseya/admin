@@ -172,6 +172,7 @@ export default defineComponent({
           : this.order.shipping_place,
     }
     this.shippingType = method?.shipping_type
+    // TODO: maybe we should fetch shipping points from the API
     this.shippingPoints = (method?.shipping_points as AddressDto[]) || []
   },
   methods: {

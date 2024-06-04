@@ -121,7 +121,7 @@ export default defineComponent({
       default: () => ({}),
     },
     table: {
-      type: Object as PropType<TableConfig>,
+      type: Object as PropType<TableConfig<any>>,
       default: null,
     },
     params: {
@@ -129,7 +129,7 @@ export default defineComponent({
       default: () => ({}),
     },
     xlsxFileConfig: {
-      type: Object as PropType<XlsxFileConfig>,
+      type: Object as PropType<XlsxFileConfig<any>>,
       default: null,
     },
   },

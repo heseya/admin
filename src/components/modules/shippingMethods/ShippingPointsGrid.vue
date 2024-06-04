@@ -35,13 +35,13 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { AddressDto } from '@heseya/store-core'
+import { Address } from '@heseya/store-core'
 
 export default defineComponent({
   name: 'AddressForm',
   props: {
     shippingPoints: {
-      type: Array as PropType<AddressDto[]>,
+      type: Array as PropType<Address[]>,
       required: true,
     },
   },

@@ -107,7 +107,7 @@ import { User, UserCreateDto, UserUpdateDto } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
-import UserForm from '@/components/modules/users/Form.vue'
+import UserForm, { UserDTO } from '@/components/modules/users/Form.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
 import { UUID } from '@/interfaces/UUID'
@@ -121,9 +121,7 @@ const CLEAR_USER: UserCreateDto = {
   roles: [],
 }
 
-type UserForm = UserCreateDto | (UserUpdateDto & { id: UUID })
-
-const mapUserToEditableUser = (user: User): UserForm => ({
+const mapUserToEditableUser = (user: User): UserDTO => ({
   ...user,
   roles: user.roles?.map(({ id }) => id) || [],
   birthday_date: user.birthday_date ?? undefined,
@@ -145,7 +143,7 @@ export default defineComponent({
   },
 
   data: () => ({
-    editedUser: clone(CLEAR_USER) as UserForm,
+    editedUser: clone(CLEAR_USER) as UserDTO,
     selectedUser: null as User | null,
   }),
 

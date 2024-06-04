@@ -23,7 +23,7 @@
     <empty v-if="group.conditions.length === 0" small> {{ $t('empty') }} </empty>
 
     <div class="condition-group__content">
-      <condition-form
+      <ConditionForm
         v-for="(condition, i) in group.conditions"
         :key="i"
         v-model="group.conditions[i]"

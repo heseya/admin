@@ -2,6 +2,7 @@
   <div class="autocomplete-input">
     <ValidationProvider ref="provider" v-slot="{ errors }" :rules="rules">
       <app-select
+        ref="select"
         :value="inputValue"
         :label="label"
         :mode="mode"
@@ -53,7 +54,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { ComponentPublicInstance, defineComponent, PropType } from 'vue'
 import debounce from 'lodash/debounce'
 import uniqBy from 'lodash/uniqBy'
 import isEmpty from 'lodash/isEmpty'
@@ -97,7 +98,9 @@ export default defineComponent({
     bannedSetIds: { type: Array, default: () => [] },
   },
   data: () => ({
+    observer: null as IntersectionObserver | null,
     isLoading: false,
+    isInitiallyFetched: false,
     searchedOptions: [] as AutocompleteBaseItem[],
   }),
   computed: {
@@ -162,7 +165,24 @@ export default defineComponent({
     },
   },
   mounted() {
-    this.fetchItems()
+    this.observer = new IntersectionObserver(
+      ([entry]) => {
+        const isVisible = entry.isIntersecting
+
+        if (isVisible && !this.isInitiallyFetched) {
+          this.fetchItems()
+        }
+      },
+      {
+        rootMargin: '0px',
+        threshold: 1,
+      },
+    )
+
+    this.observer.observe((this.$refs.select as ComponentPublicInstance)?.$el)
+  },
+  destroyed() {
+    this.observer?.disconnect()
   },
   methods: {
     onSearch: debounce(function (this: any, search: string) {
@@ -198,7 +218,7 @@ export default defineComponent({
       } = await api.get<{ data: AutocompleteBaseItem[] }>(`/${this.modelUrl}${query}`)
 
       this.searchedOptions = data
-
+      this.isInitiallyFetched = true
       this.isLoading = false
     },
   },

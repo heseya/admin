@@ -149,11 +149,12 @@ export default defineComponent({
     width: 100%;
     height: 100%;
     background-color: var(--white-color);
-    padding: 80px 32px 16px;
+    padding: 80px 32px 80px;
     z-index: $mobile-filters-z-index;
     transition: 0.3s;
     opacity: 0;
     visibility: hidden;
+    overflow: auto;
 
     &--open {
       top: 0;

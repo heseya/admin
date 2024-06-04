@@ -125,12 +125,13 @@ import { formatApiNotificationError } from '@/utils/errors'
 
 import { FEATURE_FLAGS } from '@/consts/featureFlags'
 import BooleanTag from '@/components/layout/BooleanTag.vue'
+import { ProductSetListed } from '@heseya/store-core'
 
 export default defineComponent({
   components: { Selector, Empty, Avatar, ProductPrice, BooleanTag },
   props: {
     set: {
-      type: Object as PropType<ProductSet | null>,
+      type: Object as PropType<ProductSetListed | null>,
       default: null,
     },
     isOpen: {

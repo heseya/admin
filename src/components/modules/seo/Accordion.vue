@@ -22,6 +22,7 @@ import { SeoMetadata } from '@heseya/store-core'
 import SeoForm from './Form.vue'
 import LayoutAccordion from '@/components/layout/Accordion.vue'
 import { UUID } from '@/interfaces/UUID'
+import { SeoCheckModelType } from '@heseya/store-core'
 
 export default defineComponent({
   components: {
@@ -42,7 +43,7 @@ export default defineComponent({
       default: false,
     },
     current: {
-      type: Object as PropType<{ id: UUID; model: string }>,
+      type: Object as PropType<{ id: UUID; model: SeoCheckModelType }>,
       default: null,
     },
   },

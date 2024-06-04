@@ -24,10 +24,6 @@ export const CLEAR_SCHEMA: SchemaCreateDto = {
   options: [],
   published: [],
   translations: {},
-
-  // TODO remove
-  shipping_date: '',
-  shipping_time: 0,
 }
 
 export const CLEAR_SCHEMA_TRANSLATION: TranslationsFromDto<SchemaCreateDto> = {

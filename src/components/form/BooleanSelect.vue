@@ -3,8 +3,8 @@
     :value="value"
     :add-all="addAll"
     option-filter-prop="label"
-    @input="(e) => $emit('input', e)"
-    @change="(e) => $emit('change', e)"
+    @input="onInput"
+    @change="onChange"
   >
     <template #label>
       <slot name="label"> {{ label }} </slot>
@@ -30,6 +30,15 @@ export default defineComponent({
     trueValue: { type: [String, Number], default: '1' },
     falseValue: { type: [String, Number], default: '0' },
     addAll: { type: Boolean, default: true },
+  },
+
+  methods: {
+    onInput(value: string) {
+      this.$emit('input', value)
+    },
+    onChange(value: string) {
+      this.$emit('change', value)
+    },
   },
 })
 </script>

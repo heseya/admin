@@ -186,7 +186,6 @@ import ChangeParentForm from '@/components/modules/productSets/ParentForm.vue'
 import { CLEAR_PRODUCT_SET_FORM } from '@/views/productSets/View.vue'
 
 import { UUID } from '@/interfaces/UUID'
-import { GLOBAL_QUERY_PARAMS } from '@/store/generator'
 import { formatApiNotificationError } from '@/utils/errors'
 
 export default defineComponent({
@@ -312,7 +311,7 @@ export default defineComponent({
     },
     async fetchByParentId(parentId: UUID, limit: number, page: number) {
       const list = await sdk.ProductSets.get({
-        ...GLOBAL_QUERY_PARAMS,
+        lang_fallback: 'any',
         parent_id: parentId,
         page,
         limit,
@@ -325,7 +324,7 @@ export default defineComponent({
       try {
         this.searchedPhrase = this.searchPhrase
         const { data, pagination } = await sdk.ProductSets.get({
-          ...GLOBAL_QUERY_PARAMS,
+          lang_fallback: 'any',
           parent_id: parentId,
           search,
         })

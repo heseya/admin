@@ -10,7 +10,11 @@
       <slot name="nav"></slot>
     </AppTopNav>
 
-    <AppCmsFilters v-if="$slots.filters" :filters="filters" @clear-filters="$emit('clear-filters')">
+    <AppCmsFilters
+      v-show="$slots.filters"
+      :filters="filters"
+      @clear-filters="$emit('clear-filters')"
+    >
       <slot name="filters"></slot>
     </AppCmsFilters>
 

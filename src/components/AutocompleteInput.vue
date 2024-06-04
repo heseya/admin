@@ -65,9 +65,10 @@ import { UUID } from '@/interfaces/UUID'
 import { SelectType } from '@/enums/select'
 import { stringifyQueryParams } from '@/utils/stringifyQuery'
 
-interface BaseItem {
+export interface AutocompleteBaseItem {
   id: UUID
   name?: string
+  slug?: string
   code?: string
 }
 
@@ -77,13 +78,15 @@ export default defineComponent({
   components: { Empty, ValidationProvider },
   props: {
     value: {
-      type: [String, Object, Array] as PropType<UUID | BaseItem | UUID[] | BaseItem[]>,
+      type: [String, Object, Array] as PropType<
+        UUID | AutocompleteBaseItem | UUID[] | AutocompleteBaseItem[]
+      >,
       default: () => [],
     },
     modelUrl: { type: String, required: true },
     disabled: { type: Boolean, default: false },
     propMode: {
-      type: String as PropType<keyof BaseItem>,
+      type: String as PropType<keyof AutocompleteBaseItem>,
       default: undefined,
     },
     label: { type: String, default: '' },
@@ -95,34 +98,34 @@ export default defineComponent({
   },
   data: () => ({
     isLoading: false,
-    searchedOptions: [] as BaseItem[],
+    searchedOptions: [] as AutocompleteBaseItem[],
   }),
   computed: {
     SelectType(): typeof SelectType {
       return SelectType
     },
     singleOptionId: {
-      get(): BaseItem | undefined {
+      get(): AutocompleteBaseItem | undefined {
         if (isEmpty(this.value)) return undefined
         if (this.propMode)
           return this.searchedOptions.find(
             (option) => option[this.propMode] === (this.value as string),
           )
-        return (this.value as BaseItem[])?.[0] || this.value
+        return (this.value as AutocompleteBaseItem[])?.[0] || this.value
       },
-      set(v: BaseItem) {
+      set(v: AutocompleteBaseItem) {
         this.$emit('input', this.propMode ? v[this.propMode] : v)
       },
     },
     multiOptionsIds: {
-      get(): BaseItem[] {
+      get(): AutocompleteBaseItem[] {
         if (this.propMode)
           return this.searchedOptions.filter((option) =>
             (this.value as string[]).includes(String(option[this.propMode])),
           )
-        return this.value as BaseItem[]
+        return this.value as AutocompleteBaseItem[]
       },
-      set(v: BaseItem[]) {
+      set(v: AutocompleteBaseItem[]) {
         this.$emit('input', this.propMode ? v.map((e) => e[this.propMode]) : v)
       },
     },
@@ -143,7 +146,7 @@ export default defineComponent({
         else return undefined
       }
     },
-    options(): BaseItem[] {
+    options(): AutocompleteBaseItem[] {
       if (this.mode === this.SelectType.Multiple)
         return (
           uniqBy([...this.multiOptionsIds, ...this.searchedOptions], this.propMode || 'id').filter(
@@ -192,7 +195,7 @@ export default defineComponent({
       const query = stringifyQueryParams({ search, limit: this.limit, lang_fallback: 'any' })
       const {
         data: { data: data },
-      } = await api.get<{ data: BaseItem[] }>(`/${this.modelUrl}${query}`)
+      } = await api.get<{ data: AutocompleteBaseItem[] }>(`/${this.modelUrl}${query}`)
 
       this.searchedOptions = data
 

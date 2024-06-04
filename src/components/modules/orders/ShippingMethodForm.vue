@@ -128,8 +128,12 @@ export default defineComponent({
         const prevMethod = this.shippingMethods.find((method) => method.id === prevMethodId)
         const newMethod = this.shippingMethods.find((method) => method.id === newMethodId)
 
-        // Dont clear form if shipping type is the same
-        if (newMethod?.shipping_type === prevMethod?.shipping_type) return
+        // Dont clear form if shipping type is the same and it is not a point
+        if (
+          newMethod?.shipping_type === prevMethod?.shipping_type &&
+          newMethod?.shipping_type !== ShippingType.Point
+        )
+          return
 
         if (newMethod?.shipping_type) {
           switch (newMethod?.shipping_type) {
@@ -160,8 +164,8 @@ export default defineComponent({
     },
   },
 
-  created() {
-    this.$accessor.shippingMethods.fetch()
+  async created() {
+    await this.$accessor.shippingMethods.fetch()
     const method = this.digital ? this.order.digital_shipping_method! : this.order.shipping_method!
 
     this.form = {
@@ -172,8 +176,11 @@ export default defineComponent({
           : this.order.shipping_place,
     }
     this.shippingType = method?.shipping_type
-    // TODO: maybe we should fetch shipping points from the API
-    this.shippingPoints = (method?.shipping_points as AddressDto[]) || []
+
+    this.shippingPoints =
+      this.$accessor.shippingMethods.data.find(
+        (method) => method.id === this.form.shipping_method_id,
+      )?.shipping_points ?? []
   },
   methods: {
     isShippingMethodDisabled(method: ShippingMethod) {

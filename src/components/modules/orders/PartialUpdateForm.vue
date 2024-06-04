@@ -80,7 +80,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import { ValidationObserver } from 'vee-validate'
-import { Order, Address, ShippingMethod, ShippingType } from '@heseya/store-core'
+import { Order, Address, OrderShippingMethod, ShippingType } from '@heseya/store-core'
 
 import AddressForm from './AddressForm.vue'
 
@@ -93,7 +93,7 @@ export default defineComponent({
       required: true,
     },
     shippingMethod: {
-      type: Object as PropType<ShippingMethod | undefined>,
+      type: Object as PropType<OrderShippingMethod | undefined>,
       default: () => {},
     },
   },
@@ -116,6 +116,7 @@ export default defineComponent({
       return this.shippingMethod?.shipping_type
     },
     shippingPoints(): Address[] {
+      // TODO: maybe we should fetch shipping points from the API
       return this.shippingMethod?.shipping_points || []
     },
   },

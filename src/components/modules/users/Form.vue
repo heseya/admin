@@ -92,8 +92,7 @@ import { Role, UserCreateDto, UserUpdateDto } from '@heseya/store-core'
 import ModalForm from '@/components/form/ModalForm.vue'
 import Disable2FA from './Disable2FA.vue'
 
-// eslint-disable-next-line camelcase
-type UserDTO = UserCreateDto | (UserUpdateDto & { is_tfa_active: boolean })
+export type UserDTO = UserCreateDto | (UserUpdateDto & { is_tfa_active: boolean; id: string })
 
 export default defineComponent({
   components: {

@@ -67,7 +67,7 @@
       :title="`${$t('common.edit')} ${modalFormTitle.toLowerCase()}`"
     >
       <modal-form>
-        <partial-update-form
+        <PartialUpdateForm
           v-model="form"
           :shipping-method="order.shipping_method || undefined"
           @save="saveForm"

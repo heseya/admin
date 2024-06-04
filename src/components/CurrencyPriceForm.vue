@@ -23,7 +23,7 @@ import { Currency, PriceDto, parsePriceDtos } from '@heseya/store-core'
 export default defineComponent({
   props: {
     value: {
-      type: Array as PropType<PriceDto[]>,
+      type: Array as PropType<PriceDto[] | null>,
       default: () => [],
     },
     disabled: {
@@ -62,7 +62,7 @@ export default defineComponent({
 
     form: {
       get(): PriceDto[] {
-        return this.value
+        return this.value ?? []
       },
       set(value: PriceDto[]) {
         this.$emit('input', value)
@@ -73,7 +73,7 @@ export default defineComponent({
   watch: {
     value: {
       handler() {
-        if (this.value.length !== this.currencies.length) {
+        if (this.value?.length !== this.currencies.length) {
           this.form = this.currencies.map((currency) => ({
             currency: currency.code,
             value: '0',

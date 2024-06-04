@@ -1,12 +1,12 @@
 <template>
-  <range-input
+  <RangeInput
     v-if="attribute.type === AttributeType.Number"
     :label="attribute.name"
     :value="value"
     @input="updateValue"
   />
 
-  <range-input
+  <RangeInput
     v-else-if="attribute.type === AttributeType.Date"
     :label="attribute.name"
     class="span-2"
@@ -15,7 +15,7 @@
     @input="updateValue"
   />
 
-  <autocomplete-input
+  <AutocompleteInput
     v-else
     mode="default"
     :value="value"

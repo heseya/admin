@@ -9,7 +9,7 @@
       @input="debouncedSearch"
     />
 
-    <autocomplete-input
+    <AutocompleteInput
       v-model="local.sets"
       prop-mode="slug"
       model-url="product-sets"
@@ -19,9 +19,9 @@
       <template #option="set">
         {{ set.name }}&nbsp;<small>(/{{ set.slug }})</small>
       </template>
-    </autocomplete-input>
+    </AutocompleteInput>
 
-    <autocomplete-input
+    <AutocompleteInput
       v-model="local.tags"
       prop-mode="id"
       model-url="tags"
@@ -34,40 +34,40 @@
           {{ name }}
         </div>
       </template>
-    </autocomplete-input>
+    </AutocompleteInput>
 
-    <boolean-select
+    <BooleanSelect
       v-model="local.public"
       :label="$t('public').toString()"
       @change="debouncedSearch"
     />
-    <boolean-select
+    <BooleanSelect
       v-model="local.available"
       :label="$t('available').toString()"
       @change="debouncedSearch"
     />
-    <boolean-select
+    <BooleanSelect
       v-model="local.has_cover"
       :label="$t('has_cover').toString()"
       @change="debouncedSearch"
     />
-    <boolean-select
+    <BooleanSelect
       v-model="local.has_items"
       :label="$t('has_items').toString()"
       @change="debouncedSearch"
     />
-    <boolean-select
+    <BooleanSelect
       v-model="local.has_schemas"
       :label="$t('has_schemas').toString()"
       @change="debouncedSearch"
     />
-    <boolean-select
+    <BooleanSelect
       v-model="local.shipping_digital"
       :label="$t('shipping_digital').toString()"
       @change="debouncedSearch"
     />
 
-    <range-input
+    <RangeInput
       :value="{
         min: local['price.min'] || '',
         max: local['price.max'] || '',
@@ -78,7 +78,7 @@
       @input="(v) => updatePriceRangeValue(v)"
     />
 
-    <attribute-filter-input
+    <AttributeFilterInput
       v-for="attr in customFilters"
       :key="attr.id"
       :value="
@@ -216,8 +216,6 @@ export default defineComponent({
   },
   created() {
     this.fetchCustomFilters()
-  },
-  mounted() {
     this.local = { ...this.local, ...this.filters }
   },
   methods: {

@@ -33,7 +33,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { AuthProviderKey, AuthProviderList } from '@heseya/store-core'
+import { AuthProviderKey, AuthProviderListed } from '@heseya/store-core'
 
 import { sdk } from '@/api'
 import { formatApiNotificationError } from '@/utils/errors'
@@ -41,7 +41,7 @@ import { OAUTH_PROVIDER_KEY, OAUTH_NEXT_URL_KEY } from '@/consts/oauthKeys'
 
 export default defineComponent({
   data: () => ({
-    providers: [] as AuthProviderList[],
+    providers: [] as AuthProviderListed[],
   }),
   computed: {
     AuthProviderKey(): typeof AuthProviderKey {

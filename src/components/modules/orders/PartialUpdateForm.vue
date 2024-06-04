@@ -116,9 +116,14 @@ export default defineComponent({
       return this.shippingMethod?.shipping_type
     },
     shippingPoints(): Address[] {
-      // TODO: maybe we should fetch shipping points from the API
-      return this.shippingMethod?.shipping_points || []
+      return (
+        this.$accessor.shippingMethods.data.find((method) => method.id === this.shippingMethod?.id)
+          ?.shipping_points ?? []
+      )
     },
+  },
+  created() {
+    this.$accessor.shippingMethods.fetch()
   },
   methods: {
     save() {

@@ -51,7 +51,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { cloneDeep, isString } from 'lodash'
+import { cloneDeep, isNil, isString } from 'lodash'
 import { CdnMedia, ProductSet, ProductSetUpdateDto } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
@@ -105,7 +105,7 @@ export default defineComponent({
 
     this.filters.public = (isPublic as string) || ALL_FILTER_VALUE
     this.filters.search = (search as string) || ''
-    this.filters.root = (root as string) === 'true'
+    this.filters.root = !isNil(root) ? (root as string) === 'true' : true
   },
   methods: {
     editProductSet(set: ProductSet | string) {

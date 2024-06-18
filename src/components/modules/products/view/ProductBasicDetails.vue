@@ -23,7 +23,7 @@
       <CurrencyPriceForm v-model="form.prices_base" :disabled="disabled" />
     </div>
 
-    <TagsSelect v-model="form.tags" :disabled="disabled" />
+    <TagsSelect v-model="form.tags" :disabled="disabled" :edited-lang="editedLang" />
 
     <AppTextarea
       v-if="!loading"

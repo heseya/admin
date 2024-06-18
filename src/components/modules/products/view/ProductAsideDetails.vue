@@ -27,8 +27,8 @@
       <h2 class="product-page__subtitle">
         {{ $t('promoTitle') }}
       </h2>
-      <div v-if="product.sales && product.sales.length" class="product-aside-details__sales">
-        <a v-for="sale in product.sales" :key="sale.id" :href="`/sales/${sale.id}`" target="_blank">
+      <div v-if="sales.length" class="product-aside-details__sales">
+        <a v-for="sale in sales" :key="sale.id" :href="`/sales/${sale.id}`" target="_blank">
           <tag type="primary" small>
             {{ sale.name }} (-{{
               sale.percentage !== null
@@ -78,6 +78,8 @@ import { ProductComponentForm } from '@/interfaces/Product'
 import ProductVisibilitySwitch from './ProductVisibilitySwitch.vue'
 import ProductPrice from '../ProductPrice.vue'
 import { formatCurrency } from '@/utils/currency'
+import { ProductSale } from '@heseya/store-core'
+import { sdk } from '@/api'
 
 export default defineComponent({
   components: { ProductVisibilitySwitch, ProductPrice },
@@ -90,6 +92,10 @@ export default defineComponent({
     },
   },
 
+  data: () => ({
+    sales: [] as ProductSale[],
+  }),
+
   computed: {
     form: {
       get(): ProductComponentForm {
@@ -101,10 +107,29 @@ export default defineComponent({
     },
   },
 
+  watch: {
+    product: {
+      immediate: true,
+      handler() {
+        this.fetchSales()
+      },
+    },
+  },
+
   methods: {
     formatPrice(prices: Price[]) {
       const amount = parsePrices(prices, this.$accessor.config.currency)
       return formatCurrency(amount, this.$accessor.config.currency)
+    },
+
+    async fetchSales() {
+      try {
+        const sales = await sdk.Products.getProductSales(this.product.id)
+        this.sales = sales
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error(e)
+      }
     },
   },
 })

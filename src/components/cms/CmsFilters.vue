@@ -7,7 +7,7 @@
         @clear-filters="$emit('clear-filters')"
       />
       <div ref="filters" class="cms-filters__content">
-        <slot></slot>
+        <slot v-if="!isMobileView"></slot>
       </div>
 
       <div
@@ -19,7 +19,7 @@
         </button>
         <cms-filters-header :filters="filters" @clear-filters="$emit('clear-filters')" />
         <div class="cms-filters__mobile-content">
-          <slot></slot>
+          <slot v-if="isMobileView"></slot>
         </div>
       </div>
     </div>
@@ -51,6 +51,7 @@ export default defineComponent({
     isExpanded: false,
     isModalOpen: false,
     isExpandable: false,
+    isMobileView: false,
   }),
   watch: {
     isExpandable() {
@@ -85,6 +86,9 @@ export default defineComponent({
       if (this.$refs.filters.scrollHeight > this.$refs.filters.offsetHeight + 5)
         this.isExpandable = true
       else this.isExpandable = false
+
+      if (window.innerWidth < 1024) this.isMobileView = true
+      else this.isMobileView = false
     },
   },
 })
@@ -113,9 +117,10 @@ export default defineComponent({
     max-height: 68px;
     overflow: hidden;
     transition: 0.3s linear;
+    display: none;
 
-    @media ($max-viewport-10) {
-      display: none;
+    @media ($viewport-10) {
+      display: block;
     }
 
     & > :deep(*:first-child) {
@@ -144,11 +149,12 @@ export default defineComponent({
     width: 100%;
     height: 100%;
     background-color: var(--white-color);
-    padding: 80px 32px 16px;
+    padding: 80px 32px 80px;
     z-index: $mobile-filters-z-index;
     transition: 0.3s;
     opacity: 0;
     visibility: hidden;
+    overflow: auto;
 
     &--open {
       top: 0;

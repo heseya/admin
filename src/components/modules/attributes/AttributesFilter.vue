@@ -60,6 +60,7 @@ export const EMPTY_ATTRIBUTES_FILTERS: AttributesFilersType = {
 }
 
 export default defineComponent({
+  components: { BooleanSelect },
   props: {
     filters: {
       type: Object as PropType<AttributesFilersType>,
@@ -92,6 +93,5 @@ export default defineComponent({
       })
     }, 300),
   },
-  components: { BooleanSelect },
 })
 </script>

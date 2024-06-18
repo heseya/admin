@@ -36,4 +36,9 @@ export const SETTINGS_KEYS = {
    * In order summary, it will be shown in the product list, next to the product name.
    */
   HighlightedProductAttribute: 'highlighted_product_attribute_slug',
+
+  /**
+   * If set, only currencies with codes from this list will be shown in the analytics chart on homepage
+   */
+  AnalyticsChartCurrencies: 'analytics_chart_currencies',
 }

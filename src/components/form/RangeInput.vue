@@ -11,7 +11,7 @@
         :max="max"
         class="range-input__input range-input__input--min"
         :placeholder="$t('min').toString()"
-        @input="(e) => updateValue('min', e.target?.value)"
+        @input="updateValue('min', $event.target?.value)"
       />
       <a-input class="range-input__separator" placeholder="-" disabled />
       <a-input
@@ -21,7 +21,7 @@
         :max="max"
         class="range-input__input range-input__input--max"
         :placeholder="$t('max').toString()"
-        @input="(e) => updateValue('max', e.target?.value)"
+        @input="updateValue('max', $event.target?.value)"
       />
       <a-input v-if="addonAfter" class="range-input__addon" :placeholder="addonAfter" disabled />
     </a-input-group>

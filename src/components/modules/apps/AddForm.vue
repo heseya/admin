@@ -82,7 +82,7 @@
                   </template>
                   <switch-input
                     :value="isPermUnauthenticated(perm)"
-                    @input="(v) => changeIsPermUnauthenticated(perm, v)"
+                    @input="changeIsPermUnauthenticated(perm, $event)"
                   >
                     <template #unCheckedChildren> <i class="bx bxs-low-vision"></i> </template>
                     <template #checkedChildren> <i class="bx bx-show"></i> </template>

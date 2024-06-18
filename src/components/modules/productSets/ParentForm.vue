@@ -41,7 +41,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { ProductSet, ProductSetList } from '@heseya/store-core'
+import { ProductSet, ProductSetListed } from '@heseya/store-core'
 
 import AutocompleteInput from '../../AutocompleteInput.vue'
 
@@ -51,7 +51,7 @@ export default defineComponent({
   components: { AutocompleteInput },
   props: {
     set: {
-      type: Object as PropType<ProductSetList>,
+      type: Object as PropType<ProductSetListed>,
       required: true,
     },
     isOpen: {

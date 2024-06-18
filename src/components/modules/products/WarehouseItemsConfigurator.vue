@@ -138,6 +138,7 @@ export default defineComponent({
       this.items.push({
         id: item.id,
         name: item.name,
+        sku: item.sku,
         required_quantity: 1,
       })
       this.isModalActive = false

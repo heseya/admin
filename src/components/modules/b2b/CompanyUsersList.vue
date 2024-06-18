@@ -84,7 +84,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { Role, UserList } from '@heseya/store-core'
+import { Role, UserListed } from '@heseya/store-core'
 
 import Card from '@/components/layout/Card.vue'
 import IconButton from '@/components/layout/IconButton.vue'
@@ -110,7 +110,7 @@ export default defineComponent({
   }),
 
   computed: {
-    users(): UserList[] {
+    users(): UserListed[] {
       return this.$accessor.users.getData
     },
   },
@@ -122,7 +122,7 @@ export default defineComponent({
   },
 
   methods: {
-    async removeUserFromCompany(user: UserList) {
+    async removeUserFromCompany(user: UserListed) {
       this.isLoading = true
       await this.$accessor.users.update({
         id: user.id,
@@ -131,7 +131,7 @@ export default defineComponent({
       this.$accessor.users.REMOVE_DATA({ key: 'id', value: user.id })
       this.isLoading = false
     },
-    async addUserToCompany(user: UserList) {
+    async addUserToCompany(user: UserListed) {
       this.isLoading = true
       await this.$accessor.users.update({
         id: user.id,

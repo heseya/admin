@@ -18,7 +18,7 @@
       />
       <div v-if="form.preferences" class="switches">
         <switch-input
-          v-for="preference in Object.keys(form.preferences)"
+          v-for="preference in PREFERENCE_KEYS"
           :key="preference"
           v-model="form.preferences[preference]"
           :label="$t(preference)"
@@ -81,6 +81,13 @@ import { User, UserProfileUpdateDto } from '@heseya/store-core'
 import { formatApiNotificationError } from '@/utils/errors'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 
+const PREFERENCE_KEYS = [
+  'successful_login_attempt_alert',
+  'failed_login_attempt_alert',
+  'new_localization_login_alert',
+  'recovery_code_changed_alert',
+] as const
+
 const UPDATE_USER_FORM: UserProfileUpdateDto = {
   name: '',
   birthday_date: '',
@@ -107,6 +114,7 @@ export default defineComponent({
   data: () => ({
     form: {} as UserProfileUpdateDto,
     isLoading: false,
+    PREFERENCE_KEYS,
   }),
   watch: {
     user(user: User) {

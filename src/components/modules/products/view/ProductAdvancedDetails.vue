@@ -1,7 +1,7 @@
 <template>
   <LayoutAccordion class="product-advanced-details" :title="$t('title').toString()">
     <div class="product-advanced-details__form">
-      <google-category-select v-model="form.google_product_category" :disabled="disabled" />
+      <GoogleCategorySelect v-model="form.google_product_category" :disabled="disabled" />
 
       <div class="product-advanced-details__row">
         <boolean-select v-model="form.shipping_digital" :add-all="false" :disabled="disabled">

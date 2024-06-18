@@ -71,10 +71,10 @@ export default defineComponent({
   },
   computed: {
     innerValue: {
-      get(): string | number | unknown[] {
+      get(): string | number | unknown[] | undefined {
         return this.value
       },
-      set(v: string | number | unknown[]) {
+      set(v: string | number | unknown[] | undefined) {
         this.$emit('input', v)
       },
     },

@@ -29,7 +29,7 @@
       </template>
 
       <template #filters>
-        <products-filter :filters="filters" @search="makeSearch" />
+        <ProductsFilter :filters="filters" @search="makeSearch" />
       </template>
 
       <template #default="{ item: product }">

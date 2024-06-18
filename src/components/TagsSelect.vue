@@ -52,6 +52,7 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    editedLang: { type: String, required: true },
   },
   computed: {
     tags: {
@@ -93,7 +94,12 @@ export default defineComponent({
       }
 
       // Create new tag
-      const newTag = await this.$accessor.tags.add({ name: rawTag.label })
+      const newTag = await this.$accessor.tags.add({
+        translations: {
+          [this.editedLang]: { name: rawTag.label },
+        },
+        published: [this.editedLang],
+      })
       if (newTag) this.tags = [...this.tags, newTag]
     },
   },

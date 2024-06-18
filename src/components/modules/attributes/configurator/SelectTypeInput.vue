@@ -21,7 +21,14 @@
         :value="option.id"
         :label="option.name"
       >
-        {{ option.name }}
+        {{ getOptionName(option) }}
+        <button
+          class="single-select-input__edit-btn"
+          :title="$t('editOption').toString()"
+          @click.prevent.stop="startOptionEdit(option)"
+        >
+          <i class="bx bx-pencil"></i>
+        </button>
       </a-select-option>
 
       <template #notFoundContent>
@@ -37,6 +44,15 @@
         <empty v-else> {{ $t('empty') }} </empty>
       </template>
     </app-select>
+
+    <OptionsEditForm
+      v-if="editedOption"
+      v-model="editedOption"
+      :attribute-id="attribute.id"
+      :type="attribute.type"
+      :disabled="disabled"
+      @update="updateAttributeOption"
+    />
   </div>
 </template>
 
@@ -46,12 +62,14 @@
     "placeholder": "Select or create an option",
     "createOption": "Create new option",
     "empty": "Start typing to create a new option",
+    "editOption": "Edit option, including other languages",
     "optionsFetchError": "Error fetching options"
   },
   "pl": {
     "placeholder": "Wybierz lub utwórz opcję",
     "createOption": "Utwórz nową opcję",
     "empty": "Zacznij pisać, aby utworzyć nową opcje",
+    "editOption": "Edytuj opcję, w tym inne języki",
     "optionsFetchError": "Błąd pobierania opcji"
   }
 }
@@ -60,15 +78,22 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import debounce from 'lodash/debounce'
-import { AttributeOption, AttributeType, ProductAttribute } from '@heseya/store-core'
+import cloneDeep from 'lodash/cloneDeep'
+import {
+  AttributeOption,
+  AttributeOptionDto,
+  AttributeType,
+  ProductAttribute,
+} from '@heseya/store-core'
 
 import Empty from '@/components/layout/Empty.vue'
 import { UUID } from '@/interfaces/UUID'
 import { ApiError, formatApiNotificationError } from '@/utils/errors'
 import { uniqueArray } from '@/utils/uniqueArray'
+import OptionsEditForm from '../OptionsEditForm.vue'
 
 export default defineComponent({
-  components: { Empty },
+  components: { Empty, OptionsEditForm },
   props: {
     editedLang: {
       type: String,
@@ -93,6 +118,7 @@ export default defineComponent({
     visibleOptions: [] as AttributeOption[],
     allOptions: [] as AttributeOption[],
     searchedValue: '',
+    editedOption: null as AttributeOptionDto | null,
   }),
   computed: {
     isMutipleMode(): boolean {
@@ -120,6 +146,23 @@ export default defineComponent({
     this.fetchOptions()
   },
   methods: {
+    startOptionEdit(option: AttributeOption) {
+      this.editedOption = {
+        ...cloneDeep(option),
+        translations: cloneDeep(option.translations || {}),
+      }
+    },
+
+    updateAttributeOption(option: AttributeOption) {
+      this.allOptions = this.allOptions.map((o) => (o.id === option.id ? option : o))
+      this.visibleOptions = this.visibleOptions.map((o) => (o.id === option.id ? option : o))
+      this.editedOption = null
+    },
+
+    getOptionName(option: AttributeOption): string {
+      return option.translations?.[this.editedLang]?.name ?? option.name
+    },
+
     setValue(v: UUID | UUID[] | undefined) {
       if (this.isMutipleMode) {
         const options = this.allOptions.filter((o) => (v as UUID[])?.includes(o.id))
@@ -228,6 +271,21 @@ export default defineComponent({
     width: 100%;
     max-width: 380px;
     margin-bottom: 0;
+  }
+
+  &__edit-btn {
+    all: unset;
+    cursor: pointer;
+    border: solid 1px $gray-color-400;
+    border-radius: 4px;
+    padding: 2px;
+    font-size: 0.8em;
+    display: inline-flex;
+    transition: 0.3s;
+
+    &:hover {
+      border-color: $primary-color-500;
+    }
   }
 }
 </style>

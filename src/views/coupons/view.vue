@@ -91,7 +91,7 @@
 import { defineComponent } from 'vue'
 import { cloneDeep } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
-import { Coupon, DiscountTargetType, CouponUpdateDto } from '@heseya/store-core'
+import { Coupon, DiscountTargetType } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Card from '@/components/layout/Card.vue'
@@ -171,7 +171,7 @@ export default defineComponent({
           ...EMPTY_COUPON_FORM,
           ...coupon,
           amounts: coupon.amounts ? mapPricesToDto(coupon.amounts) : null,
-        })
+        }) as CouponFormDto
       }
     },
     error(error) {
@@ -191,7 +191,7 @@ export default defineComponent({
   methods: {
     async save() {
       this.$accessor.startLoading()
-      const dto: CouponUpdateDto = mapCouponFormToCouponDto(this.form)
+      const dto = mapCouponFormToCouponDto(this.form)
 
       if (this.isNew) {
         const coupon = await this.$accessor.coupons.add(dto)

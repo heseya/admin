@@ -14,7 +14,7 @@
       </icon-button>
     </div>
 
-    <cms-table
+    <CmsTable
       v-if="product.urls.length"
       class="order-product-urls__table"
       :value="product.urls"
@@ -53,7 +53,7 @@
           </template>
         </cms-table-row>
       </template>
-    </cms-table>
+    </CmsTable>
 
     <empty v-if="!product.urls.length"> {{ $t('emptyMessage') }} </empty>
 

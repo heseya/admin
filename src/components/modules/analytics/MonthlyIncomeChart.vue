@@ -17,15 +17,13 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { AnalyticsPaymentsSummary } from '@heseya/store-core'
-
+import { AnalyticsPaymentsSummary, AnalyticsPayment } from '@heseya/store-core'
+import { Bar } from 'vue-chartjs/legacy'
+import ChartJS from 'chart.js'
 import sub from 'date-fns/sub'
 import format from 'date-fns/format'
 import startOfMonth from 'date-fns/startOfMonth'
-
-import { Bar } from 'vue-chartjs/legacy'
-import ChartJS from 'chart.js'
-import { AnalyticsPayment } from '@heseya/store-core'
+import { SETTINGS_KEYS } from '@/consts/featureFlags'
 
 export default defineComponent({
   components: { Bar },
@@ -57,6 +55,14 @@ export default defineComponent({
         },
       }
     },
+
+    enabledCurriencies(): string[] {
+      const allowedCurrencies = this.$accessor.config.env[SETTINGS_KEYS.AnalyticsChartCurrencies]
+      const currencies = this.$accessor.config.currencies.map((c) => c.code)
+      if (!allowedCurrencies) return currencies
+      return currencies.filter((c) => allowedCurrencies.includes(c))
+    },
+
     chartData(): ChartJS.ChartData {
       const monthsInThisYear = Array.from({ length: 12 }, (_, i) =>
         sub(startOfMonth(Date.now()), { months: i }),
@@ -69,15 +75,15 @@ export default defineComponent({
       return {
         labels,
         datasets: [
-          ...this.$accessor.config.currencies.map((currency) => ({
-            label: `${this.$t('income')} (${currency.code})`,
-            data: labels.map((l) => parseFloat(getByCurrency(this.data[l], currency.code).amount)),
+          ...this.enabledCurriencies.map((currency) => ({
+            label: `${this.$t('income')} (${currency})`,
+            data: labels.map((l) => parseFloat(getByCurrency(this.data[l], currency).amount)),
             yAxisID: `income`,
             backgroundColor: '#8f022c',
           })),
-          ...this.$accessor.config.currencies.map((currency) => ({
-            label: `${this.$t('orders')} (${currency.code})`,
-            data: labels.map((l) => getByCurrency(this.data[l], currency.code).count),
+          ...this.enabledCurriencies.map((currency) => ({
+            label: `${this.$t('orders')} (${currency})`,
+            data: labels.map((l) => getByCurrency(this.data[l], currency).count),
             yAxisID: 'count',
             backgroundColor: '#bd204f',
           })),

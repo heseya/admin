@@ -165,13 +165,16 @@ export default defineComponent({
             optionId: this.editedOption.id,
             option: this.editedOption,
           })
+
           if (!result.success) throw result.error
+          this.$emit('update', result.option)
         } else {
           const result = await this.$accessor.attributes.addOption({
             attributeId: this.attributeId,
             option: this.editedOption,
           })
           if (!result.success) throw result.error
+          this.$emit('update', result.option)
         }
         this.$toast.success(this.$t('formSuccess') as string)
         this.close()

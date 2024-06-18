@@ -88,7 +88,6 @@ import {
   DiscountTargetType,
   Role,
   Sale,
-  SaleCreateDto,
 } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
@@ -172,7 +171,7 @@ export default defineComponent({
           ...EMPTY_SALE_FORM,
           ...sale,
           amounts: sale.amounts ? mapPricesToDto(sale.amounts) : null,
-        })
+        }) as SaleFormDto
     },
     error(error) {
       if (error) {
@@ -204,7 +203,7 @@ export default defineComponent({
     async save() {
       this.$accessor.startLoading()
 
-      const dto: SaleCreateDto = mapSaleFormToSaleDto(this.form)
+      const dto = mapSaleFormToSaleDto(this.form)
       if (this.isNew && this.$route.query.company) {
         dto.metadata = { b2b_company: this.$route.query.company as UUID }
       }

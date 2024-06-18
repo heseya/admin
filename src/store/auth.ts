@@ -61,7 +61,7 @@ const getters = getterTree(state, {
 })
 
 const mutations = mutationTree(state, {
-  SET_USER(state, newUser) {
+  SET_USER(state, newUser: User | null) {
     state.user = newUser
   },
   SET_USER_PROFILE(state, newProfile) {

@@ -110,7 +110,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { ProductList, ProductSet } from '@heseya/store-core'
+import { ProductListed, ProductSet } from '@heseya/store-core'
 
 import Selector from '@/components/Selector.vue'
 import Empty from '@/components/layout/Empty.vue'
@@ -125,12 +125,13 @@ import { formatApiNotificationError } from '@/utils/errors'
 
 import { FEATURE_FLAGS } from '@/consts/featureFlags'
 import BooleanTag from '@/components/layout/BooleanTag.vue'
+import { ProductSetListed } from '@heseya/store-core'
 
 export default defineComponent({
   components: { Selector, Empty, Avatar, ProductPrice, BooleanTag },
   props: {
     set: {
-      type: Object as PropType<ProductSet | null>,
+      type: Object as PropType<ProductSetListed | null>,
       default: null,
     },
     isOpen: {
@@ -140,7 +141,7 @@ export default defineComponent({
   },
   data: () => ({
     isSelectorActive: false,
-    products: [] as (ProductList & { unsaved?: true })[],
+    products: [] as (ProductListed & { unsaved?: true })[],
   }),
   computed: {
     objectFit(): 'contain' | 'cover' {
@@ -156,7 +157,7 @@ export default defineComponent({
     formatCurrency(amount: number) {
       return formatCurrency(amount, this.$accessor.config.currency)
     },
-    addProduct(product: ProductList) {
+    addProduct(product: ProductListed) {
       this.products.push({ ...product, unsaved: true })
     },
     removeProduct(productId: UUID) {

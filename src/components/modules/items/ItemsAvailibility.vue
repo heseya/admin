@@ -59,12 +59,13 @@
       </a-tooltip>
     </div>
 
-    <deposit-form-modal
+    <DepositFormModal
+      v-if="item"
       :visible="isDepositModalOpen"
-      :default-time="defaultDepositDeliveryTime"
+      :default-time="defaultDepositDeliveryTime ?? undefined"
       :default-from-unlimited="defaultFromUnlimited"
       :disabled="!$can($p.Deposits.Add)"
-      :item-id="item && item.id"
+      :item-id="item.id"
       @close="closeDepositModal"
     />
   </div>

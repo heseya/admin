@@ -94,7 +94,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { Product, ProductSetList } from '@heseya/store-core'
+import { Product, ProductSetListed } from '@heseya/store-core'
 
 import LayoutAccordion from '@/components/layout/Accordion.vue'
 
@@ -108,7 +108,7 @@ export default defineComponent({
 
   props: {
     value: {
-      type: Array as PropType<ProductSetList[]>,
+      type: Array as PropType<ProductSetListed[]>,
       required: true,
     },
     product: {
@@ -123,33 +123,33 @@ export default defineComponent({
 
   data: () => ({
     isAddModalActive: false,
-    selectedSet: null as ProductSetList | null,
+    selectedSet: null as ProductSetListed | null,
   }),
 
   computed: {
     relatedSets: {
-      get(): ProductSetList[] {
+      get(): ProductSetListed[] {
         return this.value
       },
-      set(value: ProductSetList[]) {
+      set(value: ProductSetListed[]) {
         this.$emit('input', value)
       },
     },
   },
 
   methods: {
-    editCollection(page: ProductSetList) {
+    editCollection(page: ProductSetListed) {
       window.open(`/collections/${page.id}`, '_blank')?.focus()
     },
     onCreateNew() {
       window.open(`/collections/create`, '_blank')?.focus()
     },
 
-    onRemove(set: ProductSetList) {
+    onRemove(set: ProductSetListed) {
       this.relatedSets = this.relatedSets.filter((item) => item.id !== set.id)
     },
 
-    onAdd(set: ProductSetList) {
+    onAdd(set: ProductSetListed) {
       this.relatedSets = [...this.relatedSets, set]
       this.isAddModalActive = false
     },

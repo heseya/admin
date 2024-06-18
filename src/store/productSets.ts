@@ -1,10 +1,10 @@
 import { ProductSet, ProductSetCreateDto, ProductSetUpdateDto } from '@heseya/store-core'
-import { createVuexCRUD } from './generator'
+import { GLOBAL_QUERY_PARAMS, createVuexCRUD } from './generator'
 import { UUID } from '@/interfaces/UUID'
 import { DefaultVuexMutation } from '@/interfaces/VuexGenerator'
 import { reorderCollection } from '@/services/reorderCollection'
 
-const PARAM = { root: 1, tree: 0 }
+const PARAM = { ...GLOBAL_QUERY_PARAMS, root: 1, tree: 0 }
 
 const reorderSets = reorderCollection('product-sets', 'product_sets')
 
@@ -54,5 +54,5 @@ export const productSets = createVuexCRUD<ProductSet, ProductSetCreateDto, Produ
       },
     },
   },
-  { get: PARAM, edit: PARAM, update: PARAM, add: PARAM },
+  { get: { ...PARAM, with_translations: false }, edit: PARAM, update: PARAM, add: PARAM },
 )

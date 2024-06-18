@@ -263,16 +263,16 @@ export default defineComponent({
             }),
           ])
 
-        this.currentWeekIncome = currentWeek.amount
+        this.currentWeekIncome = parseFloat(currentWeek.amount)
         this.currentWeekOrdersCount = currentWeek.count
 
-        this.currentMonthIncome = currentMonth.amount
+        this.currentMonthIncome = parseFloat(currentMonth.amount)
         this.currentMonthOrdersCount = currentMonth.count
 
-        this.currentYearIncome = currentYear.amount
+        this.currentYearIncome = parseFloat(currentYear.amount)
         this.currentYearOrdersCount = currentYear.count
 
-        this.lastYearIncome = lastYear.amount
+        this.lastYearIncome = parseFloat(lastYear.amount)
         this.lastYearOrdersCount = lastYear.count
 
         this.monthlyStats = monthlyStats

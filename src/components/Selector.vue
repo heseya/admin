@@ -124,7 +124,7 @@ export default defineComponent({
 
       this.isLoading = true
       try {
-        const query = stringifyQueryParams({ search, lang_fallback: 'any' })
+        const query = stringifyQueryParams({ search, lang_fallback: 'any', has_product: 0 })
         const { data } = await api.get<{ data: Item[] }>(`/${this.type}${query}`)
         this.data = data.data
       } catch (error: any) {
@@ -139,8 +139,7 @@ export default defineComponent({
     getSubText(item: unknown) {
       if (this.type === 'schemas') {
         const schema = item as Schema
-        const schemaType = this.$t(`schemaTypes.${schema.type}`)
-        return schema.description ? `${schemaType} | ${schema.description}` : schemaType
+        return schema.description ? `${schema.description}` : ''
       }
       if (this.type === 'items') return `SKU: ${(item as WarehouseItem).sku}`
       if (this.type === 'attributes')

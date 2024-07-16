@@ -24,7 +24,7 @@
           />
           <CurrencyPriceForm
             v-model="option.prices"
-            :disabled="disabled"
+            :disabled="option.default || disabled"
             :label="$t('form.price').toString()"
           />
           <Autocomplete
@@ -34,9 +34,6 @@
             type="products"
             :label="$t('form.items').toString()"
           />
-          <SwitchInput v-model="option.disabled" :disabled="disabled">
-            <template #title>{{ $t('disabled') }}</template>
-          </SwitchInput>
           <a-radio
             :disabled="disabled"
             :value="i"
@@ -95,7 +92,6 @@ import { SchemaOptionDto } from '@heseya/store-core'
 
 import Zone from '@/components/layout/Zone.vue'
 import Autocomplete from '@/components/Autocomplete.vue'
-import SwitchInput from '@/components/form/SwitchInput.vue'
 import CurrencyPriceForm from '@/components/CurrencyPriceForm.vue'
 
 import { CLEAR_SCHEMA_OPTION, CLEAR_SCHEMA_OPTION_TRANSLATION } from '@/consts/schemaConsts'
@@ -105,7 +101,6 @@ export default defineComponent({
   components: {
     Zone,
     Autocomplete,
-    SwitchInput,
     Draggable,
     CurrencyPriceForm,
   },
@@ -134,6 +129,23 @@ export default defineComponent({
       },
     },
   },
+
+  watch: {
+    options: {
+      handler(nVal: SchemaOptionDto[], oVal: SchemaOptionDto[]) {
+        for (let i = 0; i < nVal.length; i++) {
+          if (nVal[i].default !== oVal[i].default && nVal[i].default === true) {
+            nVal[i].prices = this.$accessor.config.currencies.map((c) => ({
+              value: '0',
+              currency: c.code,
+            }))
+          }
+        }
+      },
+      deep: true,
+    },
+  },
+
   methods: {
     setDefault(v: number | null) {
       this.$emit('set-default', v)

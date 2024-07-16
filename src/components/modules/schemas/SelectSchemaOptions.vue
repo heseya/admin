@@ -12,7 +12,7 @@
       class="select-schema-options__content"
       @input="setDefault"
     >
-      <draggable v-model="options" :disabled="disabled" handle=".drag-icon">
+      <draggable :value="options" :disabled="disabled" handle=".drag-icon" @input="setOptionsOrder">
         <div v-for="(option, i) in options" :key="i" class="select-schema-options__option">
           <i class="bx bx-grid-vertical drag-icon" :class="{ 'drag-icon--disabled': disabled }"></i>
           <validated-input
@@ -37,8 +37,9 @@
           <a-radio
             :disabled="disabled"
             :value="i"
+            name="radio-option-default"
             class="radio-option-default"
-            @click="onRadioClick(i)"
+            @click="setDefault(i)"
           >
             {{ $t('default') }}
           </a-radio>
@@ -163,7 +164,7 @@ export default defineComponent({
       this.options = this.options.filter((_, i) => i !== index)
     },
     onRadioClick(index: number) {
-      this.setDefault(this.defaultOption === index ? null : index)
+      this.setDefault(index)
     },
     setOptionName(index: number, name: string) {
       if (!this.options[index].translations[this.editedLang])
@@ -172,6 +173,12 @@ export default defineComponent({
         }
 
       this.options[index].translations[this.editedLang].name = name
+    },
+
+    setOptionsOrder(newOptions: SchemaOptionDto[]) {
+      const defaultIndex = newOptions.findIndex((o) => o.default)
+      this.setDefault(defaultIndex)
+      this.options = newOptions
     },
   },
 })

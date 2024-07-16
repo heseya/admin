@@ -20,7 +20,7 @@
 
     <SelectSchemaOptions
       v-model="form.options"
-      :default-option="defaultOption || undefined"
+      :default-option="defaultOption ?? undefined"
       :disabled="disabled"
       :edited-lang="editedLang"
       @set-default="(v) => (defaultOption = v)"

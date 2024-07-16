@@ -119,7 +119,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Order, OrderStatus, ShippingMethod } from '@heseya/store-core'
+import { Order, OrderStatus, Price, ShippingMethod } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
@@ -167,7 +167,7 @@ export default defineComponent({
             key: 'summary',
             label: this.$t('form.summary') as string,
             sortable: true,
-            render: (v, order) => this.formatCurrency(v, order.currency),
+            render: (v: Price) => this.formatCurrency(v.gross, v.currency),
           },
           { key: 'paid', label: this.$t('form.paid') as string, width: '0.8fr' },
           { key: 'status', label: this.$t('form.status') as string, width: '0.8fr' },

@@ -22,7 +22,7 @@
         :value="meta.type"
         :label="$t('form.type').toString()"
         :disabled="isDeleted(meta)"
-        @input="(t) => changeMetaType(meta, t)"
+        @input="changeMetaType(meta, $event)"
       >
         <a-select-option
           v-for="valueType in Object.values(MetadataType)"
@@ -40,7 +40,7 @@
         :value="meta.value ? 1 : 0"
         :label="$t('form.value').toString()"
         :disabled="isDeleted(meta)"
-        @input="(v) => (meta.value = !!v)"
+        @input="meta.value = !!$event"
       >
         <a-select-option :value="1" :label="$t('common.true').toString()">
           {{ $t('common.true') }}

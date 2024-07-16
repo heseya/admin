@@ -90,7 +90,7 @@ export default defineComponent({
     },
   },
   methods: {
-    handleError(e: Error) {
+    handleError(e: Event) {
       // eslint-disable-next-line no-console
       console.error('[MediaElement Error]', e)
       this.$emit('error', e)

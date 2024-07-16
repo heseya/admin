@@ -135,7 +135,9 @@ import {
   TwitterCardType,
   CdnMedia,
   SeoCheckModelType,
+  TranslationsCreateDto,
 } from '@heseya/store-core'
+import { isEqual } from 'lodash'
 
 import ModalForm from '@/components/form/ModalForm.vue'
 import MediaUploadInput from '@/components/modules/media/MediaUploadInput.vue'
@@ -144,9 +146,8 @@ import ContentLangSwitch from '@/components/lang/ContentLangSwitch.vue'
 import TagsEditor from './TagsEditor.vue'
 
 import { UUID } from '@/interfaces/UUID'
-import { TranslationsCreateDto } from '@heseya/store-core'
+
 import { TranslationsFromDto } from '@/interfaces/Translations'
-import { isEqual } from 'lodash'
 
 type SeoMeta = Omit<SeoMetadata & SeoMetadataDto, 'translations'> &
   TranslationsCreateDto<TranslationsFromDto<SeoMetadataDto>>

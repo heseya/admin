@@ -83,15 +83,17 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { OrderValueDiscountCondition } from '@heseya/store-core'
+import {
+  OrderValueDiscountCondition,
+  OrderValueDiscountConditionDto,
+  Price,
+} from '@heseya/store-core'
+import { cloneDeep } from 'lodash'
 
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import CurrencyPriceForm from '@/components/CurrencyPriceForm.vue'
-import { OrderValueDiscountConditionDto } from '@heseya/store-core'
 import { mapPricesToDto } from '@/utils/currency'
-import { Price } from '@heseya/store-core'
 import AppSelect from '@/components/form/AppSelect.vue'
-import { cloneDeep } from 'lodash'
 
 type Condition = OrderValueDiscountCondition | OrderValueDiscountConditionDto
 

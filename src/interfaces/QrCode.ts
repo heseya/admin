@@ -1,8 +1,6 @@
 import { UUID } from './UUID'
 
-export enum QrCodeObject {
-  Order = 'Order',
-}
+export type QrCodeObject = 'Order'
 
 export interface QrCodePayload<
   ObjectType extends QrCodeObject = QrCodeObject,
@@ -14,7 +12,7 @@ export interface QrCodePayload<
 }
 
 export type OrderQrCode = QrCodePayload<
-  QrCodeObject.Order,
+  'Order',
   {
     id: UUID
   }

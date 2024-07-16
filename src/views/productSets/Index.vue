@@ -66,6 +66,7 @@ import { CLEAR_PRODUCT_SET_FORM } from './View.vue'
 import { UUID } from '@/interfaces/UUID'
 import { formatFilters } from '@/utils/utils'
 import { ALL_FILTER_VALUE } from '@/consts/filters'
+import { ProductSetListed } from '@heseya/store-core'
 
 export default defineComponent({
   metaInfo(this: any) {
@@ -87,7 +88,7 @@ export default defineComponent({
   },
   data: () => ({
     isFormModalActive: false,
-    selectedSet: null as null | ProductSet,
+    selectedSet: null as null | ProductSetListed,
     editedItem: cloneDeep(CLEAR_PRODUCT_SET_FORM) as ProductSetUpdateDto & {
       id?: UUID
       cover: CdnMedia | null
@@ -146,7 +147,7 @@ export default defineComponent({
         query: { ...queryFilters, page: undefined },
       })
     },
-    showSetProducts(set: ProductSet) {
+    showSetProducts(set: ProductSetListed) {
       this.selectedSet = set
     },
   },

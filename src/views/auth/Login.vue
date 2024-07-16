@@ -9,7 +9,7 @@
 
     <login-form v-if="!isTwoFactorAuth" v-model="form" @submit="login" />
     <two-factor-auth-code-form
-      v-else
+      v-else-if="twoFactorAuthMethod"
       v-model="securityCode"
       :method="twoFactorAuthMethod"
       @cancel="clearForm"

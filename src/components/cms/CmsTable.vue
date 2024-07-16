@@ -86,7 +86,7 @@ export default defineComponent({
       required: true,
     },
     config: {
-      type: Object as PropType<TableConfig>,
+      type: Object as PropType<TableConfig<any>>,
       required: true,
     },
     draggable: {

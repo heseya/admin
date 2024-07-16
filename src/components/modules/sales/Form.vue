@@ -280,7 +280,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import { ValidationProvider } from 'vee-validate'
-import { DiscountCondition, DiscountTargetType } from '@heseya/store-core'
+import { DiscountCondition, DiscountTargetType, SaleCreateDto } from '@heseya/store-core'
 import isNil from 'lodash/isNil'
 
 import FlexInput from '@/components/layout/FlexInput.vue'
@@ -293,7 +293,6 @@ import CurrencyPriceForm from '@/components/CurrencyPriceForm.vue'
 import PublishedLangsForm from '@/components/lang/PublishedLangsForm.vue'
 import AbsoluteContentLangSwitch from '@/components/lang/AbsoluteContentLangSwitch.vue'
 import { TranslationsFromDto } from '@/interfaces/Translations'
-import { SaleCreateDto } from '@heseya/store-core'
 
 type SaleForm = SaleFormDto & { id?: string }
 

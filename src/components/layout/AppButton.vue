@@ -14,7 +14,7 @@
     ]"
     :disabled="disabled"
     :data-cy="dataCy"
-    @click="(e) => !disabled && $emit('click', e)"
+    @click="onClick($event)"
   >
     <div class="app-button__text">
       <slot></slot>
@@ -69,6 +69,12 @@ export default defineComponent({
   computed: {
     component(): string {
       return this.to ? 'router-link' : this.el || 'button'
+    },
+  },
+
+  methods: {
+    onClick(event: Event) {
+      if (!this.disabled) this.$emit('click', event)
     },
   },
 })

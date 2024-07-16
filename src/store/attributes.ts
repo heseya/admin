@@ -110,4 +110,11 @@ export const attributes = createVuexCRUD<Attribute, AttributeCreateDto, Attribut
       },
     },
   },
+  {
+    get: GLOBAL_QUERY_PARAMS,
+    getOne: GLOBAL_QUERY_PARAMS,
+    add: GLOBAL_QUERY_PARAMS,
+    edit: GLOBAL_QUERY_PARAMS,
+    update: GLOBAL_QUERY_PARAMS,
+  },
 )

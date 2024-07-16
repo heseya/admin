@@ -50,7 +50,7 @@
 import { defineComponent, PropType } from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import isEqual from 'lodash/isEqual'
-import { DiscountCondition, DiscountConditionType } from '@heseya/store-core'
+import { DiscountCondition, DiscountConditionDto, DiscountConditionType } from '@heseya/store-core'
 
 import Empty from '@/components/layout/Empty.vue'
 import ConditionGroup from './ConditionGroup.vue'
@@ -58,6 +58,8 @@ import ConditionGroup from './ConditionGroup.vue'
 import { InnerConditionGroup } from '@/interfaces/SalesAndCoupons'
 
 import { EMPTY_PRODUCT_IN_FORM } from '@/consts/salesConditionsForms'
+
+type ForcedDiscountConditionDto = DiscountConditionDto & { forced: true }
 
 export default defineComponent({
   components: { Empty, ConditionGroup },
@@ -142,7 +144,9 @@ export default defineComponent({
           )
 
           if (forcedConditionIndex === -1) {
-            group.conditions.push(cloneDeep({ ...this.forcedCondition!, forced: true }))
+            group.conditions.push(
+              cloneDeep({ ...this.forcedCondition, forced: true } as ForcedDiscountConditionDto),
+            )
           } else {
             // Forces reactive update
             this.$set(group.conditions, forcedConditionIndex, {
@@ -156,10 +160,11 @@ export default defineComponent({
 
     addConditionGroup() {
       const addedCondition = this.forcedCondition
-        ? cloneDeep({ ...this.forcedCondition, forced: true })
+        ? cloneDeep({ ...this.forcedCondition, forced: true } as ForcedDiscountConditionDto)
         : cloneDeep(EMPTY_PRODUCT_IN_FORM)
 
       this.groups.push({
+        id: '',
         conditions: [addedCondition],
       })
     },

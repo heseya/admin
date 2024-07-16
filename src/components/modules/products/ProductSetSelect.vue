@@ -4,16 +4,25 @@
     :placeholder="$t('form.setsPlaceholder').toString()"
     mode="multiple"
     name="sets"
+    class="set-select"
     :label="$t('form.sets').toString()"
     option-filter-prop="label"
     :disabled="disabled"
     allow-search
     :loading="isLoading"
-    @search="(v) => (query = v)"
+    @search="handleSearch"
   >
-    <a-select-option v-for="set in productSets" :key="set.id" :label="set.name">
-      <i v-if="!set.public" class="bx bx-lock"></i>
-      {{ set.name }}&nbsp;<small>(/{{ set.slug }})</small>
+    <a-select-option
+      v-for="set in productSets"
+      :key="set.id"
+      :label="set.name"
+      :title="`URL: /${set.slug}`"
+    >
+      <div class="set-select__option">
+        <i v-if="!set.public" class="bx bx-lock"></i>
+        {{ set.name }}&nbsp;
+        <small class="set-select__slug"> (/{{ set.slug }}) </small>
+      </div>
     </a-select-option>
   </validated-select>
 </template>
@@ -91,6 +100,31 @@ export default defineComponent({
       }
       this.isLoading = false
     },
+
+    handleSearch(query: string) {
+      this.query = query
+    },
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.set-select {
+  &__option {
+    display: flex;
+    align-items: center;
+  }
+
+  &__slug {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 140px;
+
+    @media ($max-viewport-4) {
+      display: none;
+    }
+  }
+}
+</style>

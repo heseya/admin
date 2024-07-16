@@ -6,7 +6,7 @@
     show-search
     allow-clear
     :loading="isLoading"
-    @search="(v) => (searchQuery = v)"
+    @search="searchQuery = $event"
   >
     <template #label>
       {{ $t('name') }}
@@ -36,7 +36,7 @@
 </i18n>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { PropType, defineComponent } from 'vue'
 
 import InfoTooltip from '@/components/layout/InfoTooltip.vue'
 
@@ -53,7 +53,7 @@ export default defineComponent({
     value: {
       type: Number,
       default: null,
-    },
+    } as unknown as PropType<number | null>,
   },
 
   data: () => ({

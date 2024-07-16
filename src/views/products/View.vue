@@ -150,6 +150,8 @@
           </div>
         </Card>
 
+        <card-micro-widgets class="product-page__widgets-main" section="ProductMain" />
+
         <Card class="product-page__visibility">
           <ProductAsideDetails v-model="form" :product="product" :disabled="!canModify" />
         </Card>
@@ -158,6 +160,8 @@
           <h2 class="product-page__subtitle">{{ $t('galleryTitle') }}</h2>
           <Gallery ref="gallery" v-model="form.gallery" :disabled="!canModify" />
         </Card>
+
+        <card-micro-widgets class="product-page__widgets-aside" section="ProductAside" />
       </form>
     </ValidationObserver>
   </div>
@@ -227,6 +231,8 @@ import ProductBasicDetails from '@/components/modules/products/view/ProductBasic
 import PublishedLangsForm from '@/components/lang/PublishedLangsForm.vue'
 import ProductAdvancedDetails from '@/components/modules/products/view/ProductAdvancedDetails.vue'
 import ProductAsideDetails from '@/components/modules/products/view/ProductAsideDetails.vue'
+import ProductDescription from '@/components/modules/products/view/ProductDescription.vue'
+import CardMicroWidgets from '@/components/microfrontends/CardMicroWidgets.vue'
 import ProductAdditionalDescriptions from '@/components/modules/products/descriptions/List.vue'
 import ProductAttachments from '@/components/modules/products/attachments/List.vue'
 import ProductRelatedSets from '@/components/modules/products/related/List.vue'
@@ -301,6 +307,7 @@ export default defineComponent({
     ProductRelatedSets,
     PublishedLangsForm,
     AbsoluteContentLangSwitch,
+    CardMicroWidgets,
   },
 
   // mixins: [preventLeavingPage],
@@ -529,11 +536,11 @@ export default defineComponent({
   grid-gap: 14px;
   align-items: start;
   grid-template-columns: 1fr;
-  grid-template-areas: 'visibility' 'gallery' 'main';
+  grid-template-areas: 'visibility' 'gallery' 'aside-widgets' 'main' 'main-widgets';
 
   @media ($viewport-7) {
     grid-template-columns: 2.6fr 1fr;
-    grid-template-areas: 'main visibility' 'main gallery' 'main .';
+    grid-template-areas: 'main visibility' 'main gallery' 'main aside-widgets' 'main .' 'main-widgets .';
   }
 
   &__main {
@@ -541,6 +548,12 @@ export default defineComponent({
   }
   &__visibility {
     grid-area: visibility;
+  }
+  &__widgets-aside {
+    grid-area: aside-widgets;
+  }
+  &__widgets-main {
+    grid-area: main-widgets;
   }
   &__gallery {
     grid-area: gallery;

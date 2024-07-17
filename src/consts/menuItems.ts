@@ -243,7 +243,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     id: nextId(),
     type: MenuItemType.Link,
-    to: '/b2b/companies',
+    to: '/b2b/organizations',
     iconClass: 'bx bx-buildings',
     label: 'nav.b2b',
     can: PERMISSIONS_TREE.Roles.Show,

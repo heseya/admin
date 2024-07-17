@@ -52,7 +52,7 @@
     "seo": "Ustawienia SEO",
     "providers": "Zarządzanie logowaniem przez oAuth",
     "advanced": "Zaawansowane",
-    "b2b": "Lista firm B2B",
+    "b2b": "Organizacje B2B",
     "redirects": "Przekierowania"
   },
   "models": {

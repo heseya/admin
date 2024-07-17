@@ -52,7 +52,7 @@
     "seo": "SEO settings",
     "providers": "Manage oAuth login",
     "advanced": "Advanced settings",
-    "b2b": "List of B2B Companies",
+    "b2b": "B2B Organizations",
     "redirects": "Redirects"
   },
   "models": {

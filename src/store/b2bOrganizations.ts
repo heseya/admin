@@ -31,7 +31,7 @@ const mockOrganization = (): Organization => ({
     default_language: undefined as any,
     countries_block_list: false,
     countries: [],
-    id: '',
+    id: 'asdasdasdas',
     slug: 'org',
     name: 'Organizacja',
     published: [],

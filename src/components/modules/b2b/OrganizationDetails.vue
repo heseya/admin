@@ -45,7 +45,7 @@
 {
   "pl": {
     "details": {
-      "billing_address": "Adres firmy",
+      "billing_address": "Adres rozliczeniowy",
       "billing_email": "Email do faktur",
       "client_id": "ID klienta",
       "vat": "NIP"
@@ -53,7 +53,7 @@
   },
   "en": {
     "details": {
-      "billing_address": "organization address",
+      "billing_address": "Organization address",
       "billing_email": "Email for invoices",
       "client_id": "Client ID",
       "vat": "VAT ID"

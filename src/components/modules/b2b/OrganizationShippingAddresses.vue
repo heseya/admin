@@ -1,25 +1,19 @@
 <template>
-  <card class="org-sales-channels">
-    <top-nav tag="h2" :title="$t('title').toString()" class="org-sales-channels__nav">
-      <icon-button size="small" type="primary" @click="$emit('edit')">
-        <template #icon> <i class="bx bx-edit"></i> </template>
-        {{ $t('action') }}
-      </icon-button>
+  <card class="org-shipping-addresses">
+    <top-nav tag="h2" :title="$t('title').toString()" class="org-shipping-addresses__nav">
     </top-nav>
 
-    {{ organization.sales_channel }}
+    {{ 'TODO: Implement me!' }}
   </card>
 </template>
 
 <i18n lang="json">
 {
   "pl": {
-    "title": "Kanał sprzedaży",
-    "action": "Zmień"
+    "title": "Adresy dostawy"
   },
   "en": {
-    "title": "Sales channel",
-    "action": "Change"
+    "title": "Shipping Addresses"
   }
 }
 </i18n>
@@ -29,11 +23,10 @@ import { defineComponent, PropType } from 'vue'
 import { Organization } from '@heseya/store-core'
 
 import Card from '@/components/layout/Card.vue'
-import IconButton from '@/components/layout/IconButton.vue'
 import TopNav from '@/components/layout/TopNav.vue'
 
 export default defineComponent({
-  components: { TopNav, Card, IconButton },
+  components: { TopNav, Card },
   props: {
     organization: {
       type: Object as PropType<Organization>,
@@ -44,7 +37,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.org-sales-channels {
+.org-shipping-addresses {
   position: relative;
 
   &__nav {

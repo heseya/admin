@@ -28,7 +28,7 @@
       </template>
     </PaginatedList>
 
-    <company-form :visible="isCreateModalActive" @close="isCreateModalActive = false" />
+    <OrganizationEditForm :visible="isCreateModalActive" @close="isCreateModalActive = false" />
   </div>
 </template>
 
@@ -69,8 +69,8 @@ import { Organization } from '@heseya/store-core'
 import { debounce } from 'lodash'
 
 import PaginatedList from '@/components/PaginatedList.vue'
+import OrganizationEditForm from '@/components/modules/b2b/OrganizationEditForm.vue'
 import { TableConfig } from '@/interfaces/CmsTable'
-import CompanyForm from '@/components/modules/b2b/CompanyForm.vue'
 
 export default defineComponent({
   metaInfo(this: any) {
@@ -78,7 +78,7 @@ export default defineComponent({
   },
   components: {
     PaginatedList,
-    CompanyForm,
+    OrganizationEditForm,
   },
   data: () => ({
     isCreateModalActive: false,

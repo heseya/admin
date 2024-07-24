@@ -55,7 +55,7 @@
             :label="$t('common.default').toString()"
           />
           <hr />
-          <AddressForm :value="editedAddress?.address" hide-vat />
+          <AddressForm v-model="editedAddress.address" hide-vat />
         </ModalForm>
         <template #footer>
           <div class="row">

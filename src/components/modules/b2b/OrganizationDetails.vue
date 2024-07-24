@@ -41,9 +41,6 @@
     <Field v-if="organization">
       <template #label>
         {{ $t('details.consents') }}
-        <IconButton type="transparent" size="small" @click="editOrganization">
-          <template #icon> <i class="bx bx-edit-alt"></i> </template>
-        </IconButton>
       </template>
       {{
         organization.consents

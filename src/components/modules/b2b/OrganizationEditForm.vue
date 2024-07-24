@@ -18,6 +18,17 @@
           rules="required"
           :label="$t('form.billing_email').toString()"
         />
+        <hr />
+        <h4>{{ $t('form.billing_address') }}</h4>
+        <AddressForm v-model="form.billing_address" />
+        <hr />
+        <AutocompleteInput
+          v-model="form.sales_channel_id"
+          prop-mode="id"
+          mode="default"
+          model-url="sales-channels"
+          :label="$t('form.sales_channel_id').toString()"
+        />
       </modal-form>
       <template #footer>
         <div class="row">
@@ -75,6 +86,8 @@ import { Organization, OrganizationUpdateDto } from '@heseya/store-core'
 import { cloneDeep } from 'lodash'
 
 import ModalForm from '@/components/form/ModalForm.vue'
+import AddressForm from '@/components/modules/orders/AddressForm.vue'
+import AutocompleteInput from '@/components/AutocompleteInput.vue'
 
 const CLEAR_FORM: OrganizationUpdateDto = {
   client_id: '',
@@ -94,7 +107,7 @@ const CLEAR_FORM: OrganizationUpdateDto = {
 }
 
 export default defineComponent({
-  components: { ValidationObserver, ModalForm },
+  components: { ValidationObserver, ModalForm, AddressForm, AutocompleteInput },
   props: {
     initialValue: {
       type: Object as PropType<Organization>,

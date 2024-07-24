@@ -1,6 +1,10 @@
 <template>
   <card class="org-sales-channels">
-    <top-nav tag="h2" :title="$t('title').toString()" class="org-sales-channels__nav">
+    <top-nav
+      tag="h2"
+      :title="`${$t('title')}: ${organization.sales_channel.name}`"
+      class="org-sales-channels__nav"
+    >
       <icon-button size="small" type="primary" @click="$emit('edit')">
         <template #icon> <i class="bx bx-edit"></i> </template>
         {{ $t('action') }}

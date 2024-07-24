@@ -44,7 +44,7 @@
       name="phone"
       :label="$t('phone').toString()"
     />
-    <validated-input v-model="form.vat" name="vat" :label="$t('vat').toString()" />
+    <validated-input v-if="!hideVat" v-model="form.vat" name="vat" :label="$t('vat').toString()" />
   </div>
 </template>
 
@@ -87,6 +87,10 @@ export default defineComponent({
     value: {
       type: Object as PropType<Address>,
       required: true,
+    },
+    hideVat: {
+      type: Boolean,
+      default: false,
     },
   },
   data: () => ({

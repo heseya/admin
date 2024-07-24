@@ -38,6 +38,20 @@
       </template>
       {{ organization.billing_email }}
     </Field>
+    <Field v-if="organization">
+      <template #label>
+        {{ $t('details.consents') }}
+        <IconButton type="transparent" size="small" @click="editOrganization">
+          <template #icon> <i class="bx bx-edit-alt"></i> </template>
+        </IconButton>
+      </template>
+      {{
+        organization.consents
+          .filter((c) => c.value)
+          .map((c) => c.name)
+          .join(', ') || '-'
+      }}
+    </Field>
   </Card>
 </template>
 
@@ -48,7 +62,8 @@
       "billing_address": "Adres rozliczeniowy",
       "billing_email": "Email do faktur",
       "client_id": "ID klienta",
-      "vat": "NIP"
+      "vat": "NIP",
+      "consents": "Zaakceptowane zgody"
     }
   },
   "en": {
@@ -56,7 +71,8 @@
       "billing_address": "Organization address",
       "billing_email": "Email for invoices",
       "client_id": "Client ID",
-      "vat": "VAT ID"
+      "vat": "VAT ID",
+      "consents": "Accepted consents"
     }
   }
 }
@@ -98,7 +114,7 @@ export default defineComponent({
   }
 
   @media ($viewport-11) {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
   }
 }
 </style>

@@ -82,7 +82,7 @@ export default defineComponent({
         this.isLoading = true
         try {
           const { data: users } = await sdk.Organizations.Users.get(this.organization.id)
-          this.users = users as any as UserListed[]
+          this.users = users
         } catch (error) {
           // eslint-disable-next-line no-console
           console.error(error)

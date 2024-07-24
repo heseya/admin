@@ -157,17 +157,6 @@ export default defineComponent({
 
   &__details {
     grid-area: details;
-    display: grid;
-    grid-template-columns: 1fr;
-    align-items: start;
-
-    @media ($viewport-7) {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    @media ($viewport-11) {
-      grid-template-columns: repeat(4, 1fr);
-    }
   }
   &__users {
     grid-area: users;

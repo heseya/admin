@@ -1,7 +1,7 @@
 <template>
-  <card class="company-promos">
-    <top-nav class="company-promos__nav" tag="h2" :title="$t('title').toString()">
-      <icon-button size="small" type="primary" :to="`/sales/create?company=${company.id}`">
+  <card class="organization-promotions">
+    <top-nav class="organization-promotions__nav" tag="h2" :title="$t('title').toString()">
+      <icon-button size="small" type="primary" :to="`/sales/create?company=${organization.id}`">
         <template #icon> <i class="bx bx-plus"></i> </template>
         {{ $t('add') }}
       </icon-button>
@@ -12,7 +12,7 @@
     <empty v-if="!sales.length"> {{ $t('empty') }} </empty>
 
     <template v-else>
-      <div class="company-promos__list">
+      <div class="organization-promotions__list">
         <div v-for="sale in sales" :key="sale.id" class="sale-item">
           <icon-button type="transparent" class="sale-item__edit-btn" :to="`/sales/${sale.id}`">
             <template #icon> <i class="bx bx-edit-alt"></i> </template>
@@ -35,7 +35,7 @@
         </div>
       </div>
       <pagination
-        class="company-promos__pagination"
+        class="organization-promotions__pagination"
         :value="$accessor.sales.meta.current_page"
         :length="$accessor.sales.meta.last_page"
         @input="goToPage"
@@ -47,9 +47,9 @@
 <i18n lang="json">
 {
   "pl": {
-    "title": "Promocje dodane dla tego klienta",
+    "title": "Promocje dodane dla organizacji",
     "add": "Dodaj promocje",
-    "empty": "Brak promocji dla tego klienta",
+    "empty": "Brak promocji dla organizacji",
     "field": {
       "name": "Nazwa promocji",
       "target_type": "Typ celu promocji",
@@ -58,9 +58,9 @@
     }
   },
   "en": {
-    "title": "Promotions added for this company",
+    "title": "Promotions added for organization",
     "add": "Add promotion",
-    "empty": "No promotions for this company",
+    "empty": "No promotions for organization",
     "field": {
       "name": "Promotion name",
       "target_type": "Promotion target type",
@@ -73,7 +73,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { Price, parsePrices, Role, Sale } from '@heseya/store-core'
+import { Price, parsePrices, Organization, Sale } from '@heseya/store-core'
 
 import Card from '@/components/layout/Card.vue'
 import IconButton from '@/components/layout/IconButton.vue'
@@ -88,8 +88,8 @@ import Pagination from '@/components/cms/Pagination.vue'
 export default defineComponent({
   components: { TopNav, Card, IconButton, Loading, Field, Empty, Pagination },
   props: {
-    company: {
-      type: Object as PropType<Role>,
+    organization: {
+      type: Object as PropType<Organization>,
       required: true,
     },
   },
@@ -119,7 +119,8 @@ export default defineComponent({
       this.isLoading = true
       const page = this.$route.query.page || 1
       await this.$accessor.sales.fetch({
-        for_role: this.company.id,
+        // TODO: this does not work
+        for_organization: this.organization.id,
         page,
         limit: 32,
       })
@@ -135,7 +136,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.company-promos {
+.organization-promotions {
   position: relative;
 
   &__nav {

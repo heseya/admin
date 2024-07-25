@@ -484,7 +484,7 @@ const router = new VueRouter({
       },
     },
     {
-      path: '/b2b/companies',
+      path: '/b2b/organizations',
       name: 'CompaniesList',
       component: () => import('./views/b2b/index.vue'),
       meta: {
@@ -494,11 +494,11 @@ const router = new VueRouter({
       },
     },
     {
-      path: '/b2b/companies/:id',
+      path: '/b2b/organizations/:id',
       name: 'CompanyView',
       component: () => import('./views/b2b/view.vue'),
       meta: {
-        returnUrl: '/b2b/companies',
+        returnUrl: '/b2b/organizations',
         requiresAuth: true,
         permissions: [Permissions.Roles.ShowDetails],
         disabled: () => accessor.config.env[FEATURE_FLAGS.B2B] !== '1',

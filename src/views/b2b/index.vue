@@ -1,6 +1,6 @@
 <template>
-  <div class="narrower-page">
-    <PaginatedList store-key="b2bCompanies" :table="tableConfig" :filters="filters">
+  <div>
+    <PaginatedList store-key="b2bOrganizations" :table="tableConfig" :filters="filters">
       <template #title>
         <span class="gray-text">{{ $t('titlePrefix') }}</span> &nbsp; <span>{{ $t('title') }}</span>
       </template>
@@ -28,26 +28,36 @@
       </template>
     </PaginatedList>
 
-    <company-form :visible="isCreateModalActive" @close="isCreateModalActive = false" />
+    <OrganizationEditForm :visible="isCreateModalActive" @close="isCreateModalActive = false" />
   </div>
 </template>
 
 <i18n lang="json">
 {
   "pl": {
-    "title": "Lista firm",
+    "title": "Lista organizacji",
     "titlePrefix": "B2B",
-    "add": "Dodaj firmę",
+    "add": "Dodaj organizację",
     "table": {
-      "users_count": "Liczba użytkowników"
+      "company_name": "Nazwa firmy",
+      "billing_address": "Adres firmy",
+      "billing_email": "Email do faktur",
+      "client_id": "ID klienta",
+      "vat": "NIP",
+      "sales_channel": "Kanał sprzedaży"
     }
   },
   "en": {
-    "title": "List of companies",
+    "title": "List of organizations",
     "titlePrefix": "B2B",
-    "add": "Add company",
+    "add": "Add organization",
     "table": {
-      "users_count": "Number of users"
+      "company_name": "Company name",
+      "billing_address": "Company address",
+      "billing_email": "Email for invoices",
+      "client_id": "Client ID",
+      "vat": "VAT ID",
+      "sales_channel": "Sales channel"
     }
   }
 }
@@ -55,12 +65,12 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Role } from '@heseya/store-core'
+import { Organization } from '@heseya/store-core'
 import { debounce } from 'lodash'
 
 import PaginatedList from '@/components/PaginatedList.vue'
+import OrganizationEditForm from '@/components/modules/b2b/OrganizationEditForm.vue'
 import { TableConfig } from '@/interfaces/CmsTable'
-import CompanyForm from '@/components/modules/b2b/CompanyForm.vue'
 
 export default defineComponent({
   metaInfo(this: any) {
@@ -68,7 +78,7 @@ export default defineComponent({
   },
   components: {
     PaginatedList,
-    CompanyForm,
+    OrganizationEditForm,
   },
   data: () => ({
     isCreateModalActive: false,
@@ -78,17 +88,39 @@ export default defineComponent({
   }),
 
   computed: {
-    tableConfig(): TableConfig<Role> {
+    tableConfig(): TableConfig<Organization> {
       return {
-        rowUrlBuilder: (row) => `/b2b/companies/${row.id}`,
+        rowUrlBuilder: (row) => `/b2b/organizations/${row.id}`,
         headers: [
-          { key: 'name', label: this.$t('common.form.name') as string },
           {
-            key: 'description',
-            label: this.$t('common.form.description') as string,
-            render: (v) => v || '-',
+            key: 'client_id',
+            label: this.$t('table.client_id') as string,
+            render: (val) => val || '-',
           },
-          { key: 'users_count', label: this.$t('table.users_count') as string },
+          {
+            key: 'company_name',
+            label: this.$t('table.company_name') as string,
+            render: (_v, row) => row.billing_address.name,
+          },
+          {
+            key: 'billing_address',
+            label: this.$t('table.billing_address') as string,
+            render: (_v, row) => {
+              if (!row.billing_address) return '-'
+              return `${row.billing_address.address}, ${row.billing_address.zip} ${row.billing_address.city}, ${row.billing_address.country_name}`
+            },
+          },
+          {
+            key: 'vat',
+            label: this.$t('table.vat') as string,
+            render: (_v, row) => row.billing_address?.vat || '-',
+          },
+          { key: 'billing_email', label: this.$t('table.billing_email') as string },
+          {
+            key: 'sales_channel',
+            label: this.$t('table.sales_channel') as string,
+            render: (_v, row) => row.sales_channel?.name || '-',
+          },
         ],
       }
     },

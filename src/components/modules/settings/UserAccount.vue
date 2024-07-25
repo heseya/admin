@@ -23,6 +23,7 @@
           v-model="form.preferences[preference]"
           :label="$t(preference)"
           horizontal
+          :disabled="!$can(PREFERENCE_PERMISSIONS[preference])"
         />
       </div>
 
@@ -55,6 +56,7 @@
     "failed_login_attempt_alert": "Powiadomienie o nieudanym logowaniu",
     "new_localization_login_alert": "Powiadomienie o logowaniu z nowej lokalizacji",
     "recovery_code_changed_alert": "Powiadomienie o zmianie kodu przywracania",
+    "new_organization_alert": "Powiadomienie o rejestracji nowej organizacji",
     "savePreferences": "Zapisz zmiany",
     "successMessage": "Preferencje zostały zmienione"
   },
@@ -66,6 +68,7 @@
     "failed_login_attempt_alert": "Failed login attempt alert",
     "new_localization_login_alert": "New localization login alert",
     "recovery_code_changed_alert": "Recovery code changed alert",
+    "new_organization_alert": "New organization alert",
     "savePreferences": "Save preferences",
     "successMessage": "Preferences changed"
   }
@@ -76,7 +79,13 @@
 import { defineComponent, PropType } from 'vue'
 import { cloneDeep } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
-import { User, UserProfileUpdateDto } from '@heseya/store-core'
+import {
+  User,
+  UserProfileUpdateDto,
+  UserPreferences,
+  Permission,
+  PERMISSIONS_TREE,
+} from '@heseya/store-core'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
@@ -86,7 +95,16 @@ const PREFERENCE_KEYS = [
   'failed_login_attempt_alert',
   'new_localization_login_alert',
   'recovery_code_changed_alert',
+  'new_organization_alert',
 ] as const
+
+const PREFERENCE_PERMISSIONS: Record<keyof UserPreferences, Permission[]> = {
+  successful_login_attempt_alert: [],
+  failed_login_attempt_alert: [],
+  new_localization_login_alert: [],
+  recovery_code_changed_alert: [],
+  new_organization_alert: [PERMISSIONS_TREE.Organizations.Show],
+}
 
 const UPDATE_USER_FORM: UserProfileUpdateDto = {
   name: '',
@@ -97,6 +115,7 @@ const UPDATE_USER_FORM: UserProfileUpdateDto = {
     failed_login_attempt_alert: true,
     new_localization_login_alert: true,
     recovery_code_changed_alert: true,
+    new_organization_alert: true,
   },
 }
 
@@ -115,6 +134,7 @@ export default defineComponent({
     form: {} as UserProfileUpdateDto,
     isLoading: false,
     PREFERENCE_KEYS,
+    PREFERENCE_PERMISSIONS,
   }),
   watch: {
     user(user: User) {

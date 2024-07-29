@@ -146,25 +146,6 @@ export default defineComponent({
           this.$toast.error(this.$t('addressesFetchError') as string)
         }
 
-        // TODO: remove mock
-        if (!this.addresses.length)
-          this.addresses = [
-            {
-              id: 'asdas',
-              default: true,
-              name: 'Nazwa adresu',
-              address: {
-                address: 'Ulicowa 15',
-                city: 'Warszawa',
-                country: 'PL',
-                country_name: 'Polska',
-                name: 'Firma A',
-                phone: '222 333 444',
-                zip: '22-222',
-              },
-            },
-          ]
-
         this.isLoading = false
       },
     },

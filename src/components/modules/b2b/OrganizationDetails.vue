@@ -42,12 +42,7 @@
       <template #label>
         {{ $t('details.consents') }}
       </template>
-      {{
-        organization.consents
-          .filter((c) => c.value)
-          .map((c) => c.name)
-          .join(', ') || '-'
-      }}
+      {{ consents }}
     </Field>
   </Card>
 </template>
@@ -89,6 +84,17 @@ export default defineComponent({
     organization: {
       type: Object as PropType<Organization>,
       required: true,
+    },
+  },
+
+  computed: {
+    consents() {
+      return (
+        this.organization.consents
+          ?.filter((c) => c.value)
+          .map((c) => c.name)
+          .join(', ') || '-'
+      )
     },
   },
 

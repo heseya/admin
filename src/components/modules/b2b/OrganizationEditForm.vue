@@ -82,14 +82,14 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import { ValidationObserver } from 'vee-validate'
-import { Organization, OrganizationUpdateDto } from '@heseya/store-core'
+import { Organization, OrganizationUpdateDto, OrganizationCreateDto } from '@heseya/store-core'
 import { cloneDeep } from 'lodash'
 
 import ModalForm from '@/components/form/ModalForm.vue'
 import AddressForm from '@/components/modules/orders/AddressForm.vue'
 import AutocompleteInput from '@/components/AutocompleteInput.vue'
 
-const CLEAR_FORM: OrganizationUpdateDto = {
+const CLEAR_FORM: OrganizationUpdateDto & OrganizationCreateDto = {
   client_id: '',
   billing_email: '',
   billing_address: {
@@ -104,6 +104,7 @@ const CLEAR_FORM: OrganizationUpdateDto = {
   },
   sales_channel_id: '',
   consents: {},
+  shipping_addresses: [],
 }
 
 export default defineComponent({
@@ -111,13 +112,13 @@ export default defineComponent({
   props: {
     initialValue: {
       type: Object as PropType<Organization>,
-      required: true,
+      default: () => ({}),
     },
     visible: { type: Boolean, default: false },
   },
 
   data: () => ({
-    form: cloneDeep(CLEAR_FORM) as OrganizationUpdateDto,
+    form: cloneDeep(CLEAR_FORM) as OrganizationUpdateDto & OrganizationCreateDto,
   }),
 
   computed: {
@@ -134,11 +135,10 @@ export default defineComponent({
           this.form = {
             ...cloneDeep(CLEAR_FORM),
             ...cloneDeep(this.initialValue),
-            consents: this.initialValue.consents.reduce(
-              (acc, c) => ({ ...acc, [c.id]: c.value }),
+            consents:
+              this.initialValue?.consents?.reduce((acc, c) => ({ ...acc, [c.id]: c.value }), {}) ||
               {},
-            ),
-            sales_channel_id: this.initialValue.sales_channel?.id,
+            sales_channel_id: this.initialValue?.sales_channel?.id,
           }
         }
       },
@@ -152,10 +152,17 @@ export default defineComponent({
 
     async saveB2BCompany() {
       this.$accessor.startLoading()
-      const success = await this.$accessor.b2bOrganizations.update({
-        id: this.initialValue.id,
-        item: this.form,
-      })
+      const success = this.isNew
+        ? await this.$accessor.b2bOrganizations.add({
+            ...this.form,
+            shipping_addresses: [
+              { id: '', name: 'Default', address: this.form.billing_address, default: true },
+            ],
+          })
+        : await this.$accessor.b2bOrganizations.update({
+            id: this.initialValue.id,
+            item: this.form,
+          })
       this.$accessor.stopLoading()
 
       if (success) {

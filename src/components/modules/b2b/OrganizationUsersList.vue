@@ -89,26 +89,6 @@ export default defineComponent({
           this.$toast.error(this.$t('usersFetchError') as string)
         }
 
-        // TODO: remove mock
-        if (!this.users.length)
-          this.users = [
-            {
-              id: '1',
-              name: 'John Doe',
-              avatar:
-                'https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/d3/d359dddc8193fa098ab6c29bcb921193dfe30085.jpg',
-              email: '',
-              birthday_date: null,
-              phone: null,
-              phone_country: null,
-              phone_number: null,
-              is_tfa_active: false,
-              roles: [],
-              created_at: '',
-              metadata: {},
-            },
-          ]
-
         this.isLoading = false
       },
     },

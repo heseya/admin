@@ -86,7 +86,7 @@ import {
   DiscountCondition,
   DiscountConditionType,
   DiscountTargetType,
-  Role,
+  Organization,
   Sale,
 } from '@heseya/store-core'
 
@@ -102,10 +102,10 @@ import { formatApiNotificationError } from '@/utils/errors'
 import { mapSaleFormToSaleDto } from '@/utils/sales'
 import { mapPricesToDto } from '@/utils/currency'
 
-const createB2BCondition = (company: Role): DiscountCondition => ({
+const createB2BCondition = (company: Organization): DiscountCondition => ({
   id: '',
-  type: DiscountConditionType.UserInRole,
-  roles: [company],
+  type: DiscountConditionType.UserInOrganization,
+  organizations: [company],
   is_allow_list: true,
 })
 
@@ -137,7 +137,7 @@ export default defineComponent({
   },
   data: () => ({
     form: cloneDeep(EMPTY_SALE_FORM) as SaleFormDto,
-    b2bCompany: null as Role | null,
+    organization: null as Organization | null,
   }),
   computed: {
     id(): UUID {
@@ -153,15 +153,15 @@ export default defineComponent({
       return this.$accessor.sales.getError
     },
     isLoading(): boolean {
-      return this.$accessor.sales.isLoading || this.$accessor.b2bCompanies.isLoading
+      return this.$accessor.sales.isLoading || this.$accessor.b2bOrganizations.isLoading
     },
     canModify(): boolean {
       return this.$can(this.isNew ? this.$p.Sales.Add : this.$p.Sales.Edit)
     },
 
     forcedCondition(): DiscountCondition | null {
-      if (!this.b2bCompany) return null
-      return createB2BCondition(this.b2bCompany)
+      if (!this.organization) return null
+      return createB2BCondition(this.organization)
     },
   },
   watch: {
@@ -188,16 +188,16 @@ export default defineComponent({
 
     // Ensure B2B condition group will be enforced
     if (this.$route.query.company || (!this.isNew && this.sale?.metadata?.b2b_company)) {
-      await this.fetchB2BCompany(
+      await this.fetchorganization(
         (this.$route.query.company as string) || (this.sale?.metadata?.b2b_company as string),
       )
     }
   },
 
   methods: {
-    async fetchB2BCompany(companyId: UUID) {
-      const company = await this.$accessor.b2bCompanies.get(companyId)
-      if (company) this.b2bCompany = company
+    async fetchorganization(companyId: UUID) {
+      const company = await this.$accessor.b2bOrganizations.get(companyId)
+      if (company) this.organization = company
     },
 
     async save() {

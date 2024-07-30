@@ -51,11 +51,11 @@
         :organization="organization"
       />
 
-      <!-- <OrganizationsPromotionsList
+      <OrganizationsPromotionsList
         v-if="organization"
         class="b2b-organization-grid__promotions"
         :organization="organization"
-      /> -->
+      />
     </div>
 
     <OrganizationEditForm
@@ -87,7 +87,7 @@ import { Organization } from '@heseya/store-core'
 import TopNav from '@/components/layout/TopNav.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
 
-// import OrganizationsPromotionsList from '@/components/modules/b2b/OrganizationsPromotionsList.vue'
+import OrganizationsPromotionsList from '@/components/modules/b2b/OrganizationsPromotionsList.vue'
 import OrganizationDetails from '@/components/modules/b2b/OrganizationDetails.vue'
 import OrganizationSalesChannel from '@/components/modules/b2b/OrganizationSalesChannel.vue'
 import OrganizationUsersList from '@/components/modules/b2b/OrganizationUsersList.vue'
@@ -101,7 +101,7 @@ export default defineComponent({
     OrganizationDetails,
     OrganizationSalesChannel,
     OrganizationUsersList,
-    // OrganizationsPromotionsList,
+    OrganizationsPromotionsList,
     OrganizationShippingAddresses,
     OrganizationEditForm,
   },

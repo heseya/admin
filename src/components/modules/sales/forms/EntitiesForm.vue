@@ -21,6 +21,18 @@
       </template>
     </autocomplete-input>
     <autocomplete-input
+      v-else-if="type === DiscountConditionType.UserInOrganization"
+      v-model="form.organizations"
+      :label="$t('form.organizations').toString()"
+      model-url="organizations"
+      :disabled="disabled"
+      :rules="{ required: form.is_allow_list }"
+    >
+      <template #option="option">
+        {{ option.billing_address.name }}&nbsp;<small>[{{ 'ID: ' }}{{ option.client_id }}]</small>
+      </template>
+    </autocomplete-input>
+    <autocomplete-input
       v-else-if="type === DiscountConditionType.ProductIn"
       v-model="form.products"
       :label="$t('form.products').toString()"
@@ -63,6 +75,7 @@
       "roles": "User roles",
       "users": "Users",
       "products": "Products",
+      "organizations": "Organizations",
       "product_sets": "Product sets",
       "is_allow_list": "Is allow list"
     },
@@ -75,6 +88,7 @@
       "roles": "Role użytkowników",
       "users": "Użytkownicy",
       "products": "Produkty",
+      "organizations": "Organizacje",
       "product_sets": "Kolekcje",
       "is_allow_list": "Tylko wartości z listy"
     },
@@ -88,7 +102,14 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import { defineComponent, PropType } from 'vue'
-import { DiscountConditionType, Role, User, ProductSet, Product } from '@heseya/store-core'
+import {
+  DiscountConditionType,
+  Role,
+  User,
+  ProductSet,
+  Product,
+  Organization,
+} from '@heseya/store-core'
 
 import SwitchInput from '@/components/form/SwitchInput.vue'
 import AutocompleteInput from '@/components/AutocompleteInput.vue'
@@ -99,6 +120,7 @@ type EntitiesForm = {
   users: User[]
   product_sets: ProductSet[]
   products: Product[]
+  organizations: Organization[]
   is_allow_list: boolean
 }
 

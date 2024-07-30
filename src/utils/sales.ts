@@ -32,6 +32,8 @@ export const mapConditionGroupFormToConditionGroupDto = (
           return { ...condition, users: condition.users.map(({ id }) => id) }
         case DiscountConditionType.UserInRole:
           return { ...condition, roles: condition.roles.map(({ id }) => id) }
+        case DiscountConditionType.UserInOrganization:
+          return { ...condition, organizations: condition.organizations.map(({ id }) => id) }
         case DiscountConditionType.ProductInSet:
           return { ...condition, product_sets: condition.product_sets.map(({ id }) => id) }
         default:

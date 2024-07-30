@@ -60,7 +60,8 @@
       "max-uses-per-user": "Max uses per user",
       "weekday-in": "Weekday in",
       "cart-length": "Number of products in the cart",
-      "coupons-count": "Number of coupons in the cart"
+      "coupons-count": "Number of coupons in the cart",
+      "user-in-organization": "User belongs to organization"
     }
   },
   "pl": {
@@ -79,7 +80,8 @@
       "max-uses-per-user": "Maksymalna liczba użyć na użytkownika",
       "weekday-in": "Wybrane dni tygodnia",
       "cart-length": "Ilość produktów w koszyku",
-      "coupons-count": "Ilość kuponów w koszyku"
+      "coupons-count": "Ilość kuponów w koszyku",
+      "user-in-organization": "Użytkownik należy do organizacji"
     }
   }
 }
@@ -151,6 +153,7 @@ export default defineComponent({
           return 'WeekdayInForm'
         case DiscountConditionType.UserInRole:
         case DiscountConditionType.UserIn:
+        case DiscountConditionType.UserInOrganization:
         case DiscountConditionType.ProductInSet:
         case DiscountConditionType.ProductIn:
           return 'EntitiesForm'
@@ -185,6 +188,9 @@ export default defineComponent({
           break
         case DiscountConditionType.UserIn:
           this.condition = cloneDeep(SALES_FORMS.EMPTY_USER_IN_FORM)
+          break
+        case DiscountConditionType.UserInOrganization:
+          this.condition = cloneDeep(SALES_FORMS.EMPTY_USER_IN_ORGANIZATION_FORM)
           break
         case DiscountConditionType.ProductInSet:
           this.condition = cloneDeep(SALES_FORMS.EMPTY_PRODUCT_IN_SET_FORM)

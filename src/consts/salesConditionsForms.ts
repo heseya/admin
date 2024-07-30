@@ -12,6 +12,7 @@ import {
   UserInRoleDiscountConditionDto,
   WeekdayInDiscountConditionDto,
   CouponsCountDiscountConditionDto,
+  UserInOrganizationDiscountConditionDto,
 } from '@heseya/store-core'
 
 export const EMPTY_ORDER_VALUE_FORM: OrderValueDiscountConditionDto = {
@@ -31,6 +32,12 @@ export const EMPTY_USER_IN_ROLE_FORM: UserInRoleDiscountConditionDto = {
 export const EMPTY_USER_IN_FORM: UserInDiscountConditionDto = {
   type: DiscountConditionType.UserIn,
   users: [],
+  is_allow_list: true,
+}
+
+export const EMPTY_USER_IN_ORGANIZATION_FORM: UserInOrganizationDiscountConditionDto = {
+  type: DiscountConditionType.UserInOrganization,
+  organizations: [],
   is_allow_list: true,
 }
 

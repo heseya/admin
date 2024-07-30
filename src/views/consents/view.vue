@@ -46,7 +46,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { cloneDeep } from 'lodash'
-import { Consent, ConsentCreateDto } from '@heseya/store-core'
+import { Consent, ConsentCreateDto, ConsentType } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
@@ -63,6 +63,7 @@ const CLEAN_TRANSLATION_FORM: TranslationsFromDto<ConsentCreateDto> = {
 
 const CLEAN_FORM: ConsentCreateDto = {
   required: true,
+  type: ConsentType.User,
   translations: {},
   published: [],
 }

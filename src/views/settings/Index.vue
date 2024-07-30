@@ -113,7 +113,7 @@
       "users": "Users list",
       "roles": "User roles",
       "payment_methods": "Payment methods",
-      "consents": "Marketing consents",
+      "consents": "Registration consents",
       "seo": "SEO settings",
       "advanced": "Advanced settings",
       "lang_preferences": "Language preferences",
@@ -139,7 +139,7 @@
     "items": {
       "users": "Lista użytkowników",
       "roles": "Role użytkowników",
-      "consents": "Zgody marketingowe",
+      "consents": "Zgody przy rejestracji",
       "payment_methods": "Metody płatności",
       "seo": "Ustawienia SEO",
       "advanced": "Ustawienia zaawansowane",

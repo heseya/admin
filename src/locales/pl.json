@@ -48,7 +48,7 @@
     "users": "Lista użytkowników",
     "roles": "Role użytkowników",
     "apps": "Aplikacje",
-    "consents": "Zgody marketingowe",
+    "consents": "Zgody przy rejestracji",
     "webhooks": "Webhooki",
     "seo": "Ustawienia SEO",
     "providers": "Zarządzanie logowaniem przez oAuth",

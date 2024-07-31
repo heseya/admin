@@ -25,7 +25,8 @@
         </div>
 
         <div>
-          <span>{{ address.address.name }}</span> <br />
+          <span v-if="address.address.name">{{ address.address.name }}<br /></span>
+          <span v-if="address.address.company_name">{{ address.address.company_name }}<br /></span>
           <span>{{ address.address.address }}</span> <br />
           <span>{{ address.address.zip }} {{ address.address.city }}</span> <br />
           <span>{{ address.address.country_name }}</span> <br />
@@ -111,6 +112,7 @@ import Card from '@/components/layout/Card.vue'
 import TopNav from '@/components/layout/TopNav.vue'
 import AddressForm from '@/components/modules/orders/AddressForm.vue'
 import Loading from '@/components/layout/Loading.vue'
+import { DEFAULT_ADDRESS_FORM } from '@/consts/addressConsts'
 
 import { sdk } from '@/api'
 
@@ -159,15 +161,7 @@ export default defineComponent({
             id: '',
             name: '',
             default: false,
-            address: {
-              name: '',
-              address: '',
-              city: '',
-              zip: '',
-              country: '',
-              country_name: '',
-              phone: '',
-            },
+            address: { ...DEFAULT_ADDRESS_FORM },
           }
     },
 

@@ -8,7 +8,8 @@
           billing)
       "
     >
-      <span class="address__name">{{ address.name }}</span>
+      <span v-if="address.name" class="address__name">{{ address.name }}</span>
+      <span v-if="address.company_name" class="address__name">{{ address.company_name }}</span>
       <span class="address__field">{{ address.address }}</span>
       <span class="address__field"> {{ address.zip }} {{ address.city }} </span>
       <span class="address__field">

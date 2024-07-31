@@ -42,6 +42,7 @@
         <address-form
           v-else-if="(key === 'shipping_place' || key === 'billing_address') && form[key]"
           v-model="form[key]"
+          :hide-vat="key !== 'billing_address'"
         />
 
         <switch-input

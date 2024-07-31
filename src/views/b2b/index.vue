@@ -104,7 +104,7 @@ export default defineComponent({
           {
             key: 'company_name',
             label: this.$t('table.company_name') as string,
-            render: (_v, row) => row.billing_address.name,
+            render: (_v, row) => row.billing_address.company_name || row.billing_address.name,
           },
           {
             key: 'billing_address',

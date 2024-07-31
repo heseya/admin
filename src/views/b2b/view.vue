@@ -2,7 +2,7 @@
   <div class="b2b-organization-view">
     <top-nav>
       <template v-if="organization" #title>
-        {{ organization.billing_address.name }}
+        {{ organization.billing_address.company_name || organization.billing_address.name }}
         <icon-button type="transparent" @click="isEditModalActive = true">
           <template #icon> <i class="bx bx-edit-alt"></i> </template>
         </icon-button>

@@ -88,20 +88,12 @@ import { cloneDeep } from 'lodash'
 import ModalForm from '@/components/form/ModalForm.vue'
 import AddressForm from '@/components/modules/orders/AddressForm.vue'
 import AutocompleteInput from '@/components/AutocompleteInput.vue'
+import { DEFAULT_ADDRESS_FORM } from '@/consts/addressConsts'
 
 const CLEAR_FORM: OrganizationUpdateDto & OrganizationCreateDto = {
   client_id: '',
   billing_email: '',
-  billing_address: {
-    name: '',
-    address: '',
-    city: '',
-    zip: '',
-    country: '',
-    country_name: '',
-    phone: '',
-    vat: '',
-  },
+  billing_address: { ...DEFAULT_ADDRESS_FORM },
   sales_channel_id: '',
   consents: {},
   shipping_addresses: [],

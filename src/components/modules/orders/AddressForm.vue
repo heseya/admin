@@ -7,6 +7,12 @@
       :label="$t('name').toString()"
     />
     <validated-input
+      v-model="form.company_name"
+      rules="required"
+      name="company_name"
+      :label="$t('company_name').toString()"
+    />
+    <validated-input
       v-model="form.address"
       rules="required"
       name="address"
@@ -52,6 +58,7 @@
 {
   "pl": {
     "name": "Imię i nazwisko",
+    "company_name": "Nazwa firmy",
     "address": "Adres",
     "zip": "Kod pocztowy",
     "city": "Miasto",
@@ -61,6 +68,7 @@
   },
   "en": {
     "name": "Name",
+    "company_name": "Company name",
     "address": "Address",
     "zip": "Zip code",
     "city": "City",

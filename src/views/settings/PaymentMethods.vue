@@ -5,11 +5,16 @@
         <list-item :key="paymentMethod.id" @click="openModal(paymentMethod.id)">
           <template #avatar>
             <avatar color="#eee">
-              <img v-if="paymentMethod.icon" :src="paymentMethod.icon" />
+              <img
+                v-if="paymentMethod.icon"
+                :src="paymentMethod.icon"
+                style="object-fit: contain"
+              />
               <i v-else class="bx bx-image"></i>
             </avatar>
           </template>
           {{ paymentMethod.name }}
+          <small>{{ $t(`type.${paymentMethod.type}`) }}</small>
           <template #action>
             <boolean-tag
               :value="paymentMethod.public"
@@ -31,7 +36,11 @@
       <div class="payment-method-details">
         <field :label="$t('method.icon').toString()">
           <avatar color="#eee" class="payment-method-details__icon">
-            <img v-if="selectedMethod.icon" :src="selectedMethod.icon" />
+            <img
+              v-if="selectedMethod.icon"
+              style="object-fit: contain"
+              :src="selectedMethod.icon"
+            />
             <i v-else class="bx bx-image"></i>
           </avatar>
         </field>
@@ -40,8 +49,19 @@
           <span>{{ selectedMethod.name }}</span>
         </field>
 
+        <field :label="$t('common.form.type').toString()">
+          <span>{{ $t(`type.${selectedMethod.type}`) }}</span>
+        </field>
+
         <field :label="$t('method.public').toString()">
-          <boolean-tag :value="selectedMethod.public" class="payment-method-details__public" />
+          <boolean-tag :value="selectedMethod.public" class="payment-method-details__tag" />
+        </field>
+
+        <field :label="$t('method.creates_default_payment').toString()">
+          <boolean-tag
+            :value="selectedMethod.creates_default_payment"
+            class="payment-method-details__tag"
+          />
         </field>
       </div>
     </a-modal>
@@ -55,7 +75,12 @@
     "methodDetails": "Szczegóły metody płatności",
     "method": {
       "icon": "Ikona",
-      "public": "Publiczna"
+      "public": "Publiczna",
+      "type": {
+        "prepaid": "Przedpłacona",
+        "postpaid": "Opłacana po dostawie"
+      },
+      "creates_default_payment": "Tworzy płatność automatycznie po stworzeniu zamówienia"
     }
   },
   "en": {
@@ -63,7 +88,12 @@
     "methodDetails": "Payment method details",
     "method": {
       "icon": "Icon",
-      "public": "Public"
+      "public": "Public",
+      "type": {
+        "prepaid": "Prepaid",
+        "postpaid": "Postpaid"
+      },
+      "creates_default_payment": "Creates payment automatically after order creation"
     }
   }
 }
@@ -102,15 +132,15 @@ export default defineComponent({
 <style lang="scss" scoped>
 .payment-method-details {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: flex-start;
 
-  &__public,
+  &__tag,
   &__icon {
     margin-top: 6px;
   }
 
-  &__public {
+  &__tag {
     width: 65px;
   }
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="narrower-page">
+  <div>
     <PaginatedList :title="$t('title').toString()" store-key="salesChannels" :table="tableConfig">
       <template #nav>
         <icon-button v-can="$p.SalesChannels.Add" to="/settings/sales-channels/create">
@@ -22,13 +22,17 @@
       "slug": "Identyfikator",
       "status": {
         "title": "Status",
-        "active": "Aktywny",
-        "inactive": "Nieaktywny",
-        "hidden": "Ukryty"
+        "public": "Publiczny",
+        "private": "Prywatny"
       },
-      "default_currency": "Domyślna waluta",
-      "default_language": "Domyślny język",
-      "vat_rate": "Stawka VAT"
+      "activity": {
+        "title": "Aktywność",
+        "active": "Aktywny",
+        "inactive": "Nieaktywny"
+      },
+      "language": "Język",
+      "default": "Domyślny kanał",
+      "has_organization": "Posiada organizację"
     }
   },
   "en": {
@@ -42,9 +46,9 @@
         "inactive": "Inactive",
         "hidden": "Hidden"
       },
-      "default_currency": "Default currency",
-      "default_language": "Default language",
-      "vat_rate": "VAT rate"
+      "language": "Language",
+      "default": "Default channel",
+      "has_organization": "Has organization"
     }
   }
 }
@@ -79,16 +83,25 @@ export default defineComponent({
             label: this.$t('table.status.title').toString(),
             render: (key) => this.$t(`table.status.${key}`).toString(),
           },
-          { key: 'vat_rate', label: this.$t('table.vat_rate').toString(), render: (v) => `${v}%` },
           {
-            key: 'default_currency',
-            label: this.$t('table.default_currency').toString(),
-            render: (_, channel) => channel.default_currency.name,
+            key: 'activity',
+            label: this.$t('table.activity.title').toString(),
+            render: (key) => this.$t(`table.activity.${key}`).toString(),
           },
           {
-            key: 'default_language',
-            label: this.$t('table.default_language').toString(),
-            render: (_, channel) => channel.default_language.name,
+            key: 'language',
+            label: this.$t('table.language').toString(),
+            render: (_, channel) => channel.language?.name || '-',
+          },
+          {
+            key: 'default',
+            label: this.$t('table.default').toString(),
+            render: (_, channel) => !!channel.default,
+          },
+          {
+            key: 'has_organization',
+            label: this.$t('table.has_organization').toString(),
+            render: (_, channel) => channel.organization_count > 0,
           },
         ],
       }

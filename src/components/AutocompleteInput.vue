@@ -212,13 +212,17 @@ export default defineComponent({
 
     async fetchItems(search: string = '') {
       this.isLoading = true
-      const query = stringifyQueryParams({ search, limit: this.limit, lang_fallback: 'any' })
-      const {
-        data: { data: data },
-      } = await api.get<{ data: AutocompleteBaseItem[] }>(`/${this.modelUrl}${query}`)
+      try {
+        const query = stringifyQueryParams({ search, limit: this.limit, lang_fallback: 'any' })
+        const {
+          data: { data: data },
+        } = await api.get<{ data: AutocompleteBaseItem[] }>(`/${this.modelUrl}${query}`)
 
-      this.searchedOptions = data
-      this.isInitiallyFetched = true
+        this.searchedOptions = data
+        this.isInitiallyFetched = true
+      } catch (e: any) {
+        this.$toast.warning(`Failed to fetch model "${this.modelUrl}": ${e.message}`)
+      }
       this.isLoading = false
     },
   },

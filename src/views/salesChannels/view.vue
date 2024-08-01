@@ -46,7 +46,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { cloneDeep } from 'lodash'
-import { SalesChannel, SalesChannelCreateDto, SalesChannelStatus } from '@heseya/store-core'
+import {
+  SalesChannel,
+  SalesChannelCreateDto,
+  SalesChannelStatus,
+  SalesChannelActivity,
+} from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
@@ -57,12 +62,14 @@ import Card from '@/components/layout/Card.vue'
 
 const EMPTY_CHANNEL_FORM: SalesChannelCreateDto = {
   slug: '',
-  status: SalesChannelStatus.Active,
-  countries_block_list: false,
-  countries: [],
-  default_currency: '',
-  default_language_id: '',
+  status: SalesChannelStatus.Public,
+  activity: SalesChannelActivity.Active,
+  price_map_id: '',
+  language_id: '',
   vat_rate: '0',
+  shipping_method_ids: [],
+  payment_method_ids: [],
+  default: false,
   translations: {},
   published: [],
 }
@@ -111,8 +118,10 @@ export default defineComponent({
         this.form = cloneDeep({
           ...EMPTY_CHANNEL_FORM,
           ...salesChannel,
-          default_currency: salesChannel.default_currency?.code,
-          default_language_id: salesChannel.default_language?.id,
+          default_language_id: salesChannel.language?.id,
+          price_map_id: salesChannel.price_map?.id,
+          shipping_method_ids: salesChannel.shipping_methods?.map((m) => m.id) || [],
+          payment_methods_ids: salesChannel.payment_methods?.map((m) => m.id) || [],
           translations: salesChannel.translations || {},
         })
       }

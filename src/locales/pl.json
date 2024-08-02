@@ -25,6 +25,7 @@
     "reset": "Przywróć domyślne",
     "confirmLeave": "Czy na pewno chcesz wyjść? Masz niezapisane zmiany!",
     "price": "Cena",
+    "currency": "Waluta",
     "net": "Netto",
     "gross": "Brutto",
     "form": {
@@ -69,6 +70,7 @@
     "payment_methods": "Metody płatności",
     "shipping_methods": "Metody dostawy",
     "package_templates": "Szablony przesyłek",
+    "priceMaps": "Cenniki produktów",
     "users": "Użytkownicy",
     "roles": "Role",
     "apps": "Aplikacje",

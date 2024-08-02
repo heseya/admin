@@ -94,6 +94,14 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     id: nextId(),
     type: MenuItemType.Link,
+    to: '/settings/price-maps',
+    iconClass: 'bx bx-money',
+    label: 'models.priceMaps',
+    section: SettingsSection.Shop,
+  },
+  {
+    id: nextId(),
+    type: MenuItemType.Link,
     to: '/settings/sales-channels',
     iconClass: 'bx bxs-bank',
     label: 'models.salesChannels',

@@ -27,7 +27,7 @@
         v-if="form.price_map_id"
         size="small"
         type="primary"
-        :to="`/price-maps/${form.price_map_id}`"
+        :to="`/settings/price-maps/${form.price_map_id}`"
         target="_blank"
       >
         <template #icon> <i class="bx bx-link-external"></i> </template>
@@ -79,7 +79,7 @@
     "form": {
       "vat_rate": "Stawka VAT (%)",
       "language": "Język",
-      "price_map": "Mapa cen",
+      "price_map": "Cennik produktów",
       "shipping_methods": "Metody dostawy",
       "payment_methods": "Metody płatności"
     },

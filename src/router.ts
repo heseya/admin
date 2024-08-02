@@ -484,6 +484,25 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/settings/price-maps',
+      name: 'PriceMaps',
+      component: () => import('./views/priceMaps/index.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [],
+      },
+    },
+    {
+      path: '/settings/price-maps/:id',
+      name: 'PriceMapsView',
+      component: () => import('./views/priceMaps/view.vue'),
+      meta: {
+        returnUrl: '/settings/price-maps',
+        requiresAuth: true,
+        permissions: [],
+      },
+    },
+    {
       path: '/b2b/organizations',
       name: 'CompaniesList',
       component: () => import('./views/b2b/index.vue'),

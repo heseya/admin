@@ -138,7 +138,7 @@
       },
       "language": "Język",
       "default": "Domyślny kanał",
-      "price_map": "Mapa cen",
+      "price_map": "Cennik produktów",
       "shipping_methods": "Metody dostawy",
       "payment_methods": "Metody płatności"
     }
@@ -165,12 +165,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import { ValidationObserver } from 'vee-validate'
-import {
-  SalesChannelCreateDto,
-  SalesChannelStatus,
-  SalesChannelActivity,
-  Currency,
-} from '@heseya/store-core'
+import { SalesChannelCreateDto, SalesChannelStatus, SalesChannelActivity } from '@heseya/store-core'
 
 import { TranslationsFromDto } from '@/interfaces/Translations'
 import AbsoluteContentLangSwitch from '@/components/lang/AbsoluteContentLangSwitch.vue'
@@ -208,10 +203,6 @@ export default defineComponent({
   }),
 
   computed: {
-    currencies(): Currency[] {
-      return this.$accessor.config.currencies
-    },
-
     form: {
       get(): SalesChannelCreateDto {
         return this.value

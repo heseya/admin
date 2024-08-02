@@ -25,6 +25,7 @@
     "reset": "Reset",
     "confirmLeave": "Do you really want to leave? You have unsaved changes!",
     "price": "Price",
+    "currency": "Currency",
     "net": "Net",
     "gross": "Gross",
     "form": {
@@ -69,6 +70,7 @@
     "payment_methods": "Payment methods",
     "shipping_methods": "Shipping methods",
     "package_templates": "Package templates",
+    "priceMaps": "Price maps",
     "users": "Users",
     "roles": "Roles",
     "apps": "Apps",

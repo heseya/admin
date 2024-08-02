@@ -7,7 +7,7 @@
         :title="$t('deleteText').toString()"
         :ok-text="$t('common.delete').toString()"
         :cancel-text="$t('common.cancel').toString()"
-        @confirm="deleteBanner"
+        @confirm="deleteEntity"
       >
         <icon-button type="danger">
           <template #icon>
@@ -164,7 +164,7 @@ export default defineComponent({
       this.$accessor.stopLoading()
     },
 
-    async deleteBanner() {
+    async deleteEntity() {
       this.$accessor.startLoading()
       const success = await this.$accessor.salesChannels.remove(this.id)
       if (success) {

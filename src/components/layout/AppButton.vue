@@ -92,7 +92,7 @@ export default defineComponent({
 
   all: unset;
   appearance: none !important;
-  background-color: var(--font-color);
+  background-color: var(--gray-color-900);
   color: var(--white-color);
   cursor: pointer;
   padding: 8px 16px;
@@ -106,7 +106,7 @@ export default defineComponent({
   min-height: $default-icon-size;
 
   &:hover {
-    background-color: var(--gray-color-900);
+    background-color: var(--font-color);
     color: var(--white-color);
   }
 

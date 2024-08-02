@@ -43,6 +43,7 @@
         class="b2b-organization-grid__sales-channel"
         :organization="organization"
         @edit="isEditModalActive = true"
+        @updated="updateOrganizationSalesChannel"
       />
 
       <OrganizationShippingAddresses
@@ -82,7 +83,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Organization } from '@heseya/store-core'
+import { Organization, SalesChannel } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import PopConfirm from '@/components/layout/PopConfirm.vue'
@@ -133,6 +134,9 @@ export default defineComponent({
     updateOrganization(organization: Organization) {
       this.organization = organization
       this.isEditModalActive = false
+    },
+    updateOrganizationSalesChannel(salesChannel: SalesChannel) {
+      if (this.organization) this.organization.sales_channel = salesChannel
     },
   },
 })

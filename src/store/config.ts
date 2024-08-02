@@ -9,6 +9,7 @@ import { sdk } from '@/api'
 
 const state = () => ({
   currency: '',
+  salesChannel: null as null | SalesChannel,
   apiLanguage: null as null | string,
   uiLanguage: getDefaultUiLanguage(),
   // TODO: should be renamed to 'settings'
@@ -35,6 +36,9 @@ const mutations = mutationTree(state, {
   },
   SET_CURRENCY(state, currencyCode: string) {
     state.currency = currencyCode
+  },
+  SET_SALES_CHANNEL(state, salesChannel: SalesChannel) {
+    state.salesChannel = salesChannel
   },
   SET_CURRENCIES(state, currencies: Currency[]) {
     state.currencies = currencies
@@ -84,6 +88,20 @@ const actions = actionTree(
         // eslint-disable-next-line no-console
         console.error('Failed to fetch currencies', e)
       }
+    },
+
+    async initSalesChannel({ dispatch, state }) {
+      if (!state.salesChannel) {
+        const defaultChannel =
+          accessor.salesChannels.data.find((s) => s.default) || accessor.salesChannels.data[0]
+
+        dispatch('changeSalesChannel', defaultChannel)
+      }
+    },
+
+    changeSalesChannel({ commit }, channel: SalesChannel) {
+      commit('SET_SALES_CHANNEL', channel)
+      commit('SET_CURRENCY', channel?.price_map?.currency || 'PLN')
     },
   },
 )

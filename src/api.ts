@@ -41,6 +41,8 @@ export const createApiInstance = (baseURL: string, useAccessToken = true) => {
     config.headers['Cache-Control'] = 'no-cache, no-store'
     config.headers['X-Core-Url'] = trimSlash(CORE_API_URL)
     if (accessor.config.apiLanguage) config.headers['Accept-Language'] = accessor.config.apiLanguage
+    if (accessor.config.salesChannel)
+      config.headers['X-Sales-Channel'] = accessor.config.salesChannel.id
 
     return config
   })

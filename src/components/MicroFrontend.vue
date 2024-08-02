@@ -5,7 +5,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { findAppByHost, installApp, onMounted, openCommunicationChannel, uninstallApp } from 'bout'
-import { Language } from '@heseya/store-core'
+import { Language, SalesChannel } from '@heseya/store-core'
+
 import { getApiURL } from '@/utils/api'
 import { trimSlash } from '@/utils/trimSlash'
 
@@ -57,6 +58,9 @@ export default defineComponent({
     '$accessor.config.apiLanguage'(lang: Language) {
       this.mainChannel.emit('apiLanguage:set', lang)
     },
+    '$accessor.config.salesChannel'(salesChannel: SalesChannel) {
+      this.mainChannel.emit('salesChannel:set', salesChannel)
+    },
   },
 
   created() {
@@ -70,6 +74,7 @@ export default defineComponent({
           user: this.$accessor.auth.user,
           uiLanguage: this.$i18n.locale,
           apiLanguage: this.$accessor.config.apiLanguage,
+          salesChannel: this.$accessor.config.salesChannel,
         }
 
         this.mainChannel.emit('init', data)

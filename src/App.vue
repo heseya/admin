@@ -69,7 +69,7 @@ export default defineComponent({
   },
   computed: {
     viewKey(): string {
-      return `${this.$accessor.config.apiLanguage}:${this.$route.path}`
+      return `${this.$accessor.config.apiLanguage}:${this.$accessor.config.salesChannel?.id}:${this.$route.path}`
     },
     isLoading(): boolean {
       return this.$accessor.loading
@@ -94,7 +94,9 @@ export default defineComponent({
     initMicroApps()
     this.$accessor.config.fetchSettings()
     this.$accessor.config.fetchCurrencies()
-    this.$accessor.salesChannels.fetch()
+    this.$accessor.salesChannels.fetch().then(() => {
+      this.$accessor.config.initSalesChannel()
+    })
     this.$accessor.config.initLanguages()
     this.$accessor.menuItems.initMicrofrontendMenuItems()
     if (this.$accessor.auth.isLogged) this.$accessor.auth.fetchProfile()

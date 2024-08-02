@@ -503,6 +503,16 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/settings/price-maps/:id/prices',
+      name: 'PriceMapsPricesView',
+      component: () => import('./views/priceMaps/prices.vue'),
+      meta: {
+        returnUrl: '/settings/price-maps',
+        requiresAuth: true,
+        permissions: [],
+      },
+    },
+    {
       path: '/b2b/organizations',
       name: 'CompaniesList',
       component: () => import('./views/b2b/index.vue'),

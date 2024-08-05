@@ -143,7 +143,7 @@ import { formatApiNotificationError } from '@/utils/errors'
 import RangeInput from '@/components/form/RangeInput.vue'
 import AutocompleteInput from '@/components/AutocompleteInput.vue'
 
-export interface ProductFilers extends Record<string, string | string[] | undefined> {
+export interface ProductFilters extends Record<string, string | string[] | undefined> {
   search: string
   sets: string[]
   tags: string[]
@@ -159,7 +159,7 @@ export interface ProductFilers extends Record<string, string | string[] | undefi
   sort?: string
 }
 
-export const EMPTY_PRODUCT_FILTERS: ProductFilers = {
+export const EMPTY_PRODUCT_FILTERS: ProductFilters = {
   search: '',
   sets: [ALL_FILTER_VALUE],
   tags: [ALL_FILTER_VALUE],
@@ -183,7 +183,7 @@ export default defineComponent({
   components: { BooleanSelect, AttributeFilterInput, RangeInput, AutocompleteInput },
   props: {
     filters: {
-      type: Object as PropType<ProductFilers>,
+      type: Object as PropType<ProductFilters>,
       default: () => cloneDeep(EMPTY_PRODUCT_FILTERS),
     },
   },
@@ -201,7 +201,7 @@ export default defineComponent({
   },
   watch: {
     filters: {
-      handler(filters: ProductFilers) {
+      handler(filters: ProductFilters) {
         this.local = cloneDeep(filters)
       },
       deep: true,

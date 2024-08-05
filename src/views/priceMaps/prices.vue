@@ -38,16 +38,17 @@ import { Product, PriceMapListed } from '@heseya/store-core'
 import ProductPriceListItem from '@/components/modules/priceMaps/ProductPriceListItem.vue'
 import ProductsFilter, {
   EMPTY_PRODUCT_FILTERS,
-  ProductFilers,
+  ProductFilters,
 } from '@/components/modules/products/ProductsFilter.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 
 import { formatFilters } from '@/utils/utils'
+import { parseQueryToProductFilters } from '@/utils/parseQueryToProductFilters'
 import { TableConfig } from '@/interfaces/CmsTable'
 
 export default defineComponent({
   metaInfo(this: any) {
-    return { title: this.$t('title').toString() }
+    return { title: `${this.$t('title')} ${this.priceMap ? this.priceMap.name : ''}` }
   },
   components: {
     ProductsFilter,
@@ -82,43 +83,20 @@ export default defineComponent({
   },
 
   async created() {
-    Object.entries(this.$route.query).forEach(([key, value]) => {
-      if (key === 'page') return
-      this.filters[key] = value as any
-    })
-
-    const {
-      sets,
-      tags,
-      public: isPublic,
-      available,
-      has_cover: hasCover,
-      has_items: hasItems,
-      has_schemas: hasSchemas,
-      shipping_digital: shippingDigital,
-    } = this.$route.query
-    this.filters.sets = (Array.isArray(sets) ? (sets as string[]) : [sets]).filter(Boolean)
-    this.filters.tags = (Array.isArray(tags) ? (tags as string[]) : [tags]).filter(Boolean)
-    this.filters.public = (isPublic as string) || EMPTY_PRODUCT_FILTERS.public
-    this.filters.available = (available as string) || EMPTY_PRODUCT_FILTERS.available
-    this.filters.has_cover = (hasCover as string) || EMPTY_PRODUCT_FILTERS.has_cover
-    this.filters.has_items = (hasItems as string) || EMPTY_PRODUCT_FILTERS.has_items
-    this.filters.has_schemas = (hasSchemas as string) || EMPTY_PRODUCT_FILTERS.has_schemas
-    this.filters.shipping_digital =
-      (shippingDigital as string) || EMPTY_PRODUCT_FILTERS.shipping_digital
+    this.filters = parseQueryToProductFilters(this.$route.query)
 
     this.$accessor.startLoading()
     await this.$accessor.priceMaps.get(this.id)
     this.$accessor.stopLoading()
   },
   methods: {
-    makeSearch(filters: ProductFilers) {
+    makeSearch(filters: ProductFilters) {
       this.filters = filters
 
       const queryFilters = formatFilters(filters)
 
       this.$router.push({
-        path: 'products',
+        path: `/settings/price-maps/${this.id}/prices`,
         query: { ...queryFilters, page: undefined },
       })
     },

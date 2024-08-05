@@ -80,11 +80,12 @@ import ProductTile from '@/components/modules/products/ProductTile.vue'
 import ProductListItem from '@/components/modules/products/ProductListItem.vue'
 import ProductsFilter, {
   EMPTY_PRODUCT_FILTERS,
-  ProductFilers,
+  ProductFilters,
 } from '@/components/modules/products/ProductsFilter.vue'
 import PaginatedList from '@/components/PaginatedList.vue'
 
 import { formatFilters } from '@/utils/utils'
+import { parseQueryToProductFilters } from '@/utils/parseQueryToProductFilters'
 import { TableConfig } from '@/interfaces/CmsTable'
 import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 import UpdatePriceButton from '@/components/modules/products/UpdatePriceButton.vue'
@@ -216,35 +217,12 @@ export default defineComponent({
   },
 
   created() {
-    Object.entries(this.$route.query).forEach(([key, value]) => {
-      if (key === 'page') return
-      this.filters[key] = value as any
-    })
-
-    const {
-      sets,
-      tags,
-      public: isPublic,
-      available,
-      has_cover: hasCover,
-      has_items: hasItems,
-      has_schemas: hasSchemas,
-      shipping_digital: shippingDigital,
-    } = this.$route.query
-    this.filters.sets = (Array.isArray(sets) ? (sets as string[]) : [sets]).filter(Boolean)
-    this.filters.tags = (Array.isArray(tags) ? (tags as string[]) : [tags]).filter(Boolean)
-    this.filters.public = (isPublic as string) || EMPTY_PRODUCT_FILTERS.public
-    this.filters.available = (available as string) || EMPTY_PRODUCT_FILTERS.available
-    this.filters.has_cover = (hasCover as string) || EMPTY_PRODUCT_FILTERS.has_cover
-    this.filters.has_items = (hasItems as string) || EMPTY_PRODUCT_FILTERS.has_items
-    this.filters.has_schemas = (hasSchemas as string) || EMPTY_PRODUCT_FILTERS.has_schemas
-    this.filters.shipping_digital =
-      (shippingDigital as string) || EMPTY_PRODUCT_FILTERS.shipping_digital
+    this.filters = parseQueryToProductFilters(this.$route.query)
 
     this.listView = !!+(window.localStorage.getItem(LOCAL_STORAGE_KEY) || 0)
   },
   methods: {
-    makeSearch(filters: ProductFilers) {
+    makeSearch(filters: ProductFilters) {
       this.filters = filters
 
       const queryFilters = formatFilters(filters)

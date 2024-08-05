@@ -1,48 +1,58 @@
 <template>
-  <cms-table-row class="product-price-list-item" :item="product" :headers="table.headers" no-hover>
+  <cms-table-row
+    class="product-price-list-item"
+    :item="product"
+    :headers="table.headers"
+    no-hover
+    el="div"
+  >
     <template #name>
       <div class="product-price-list-item__name">
-        <avatar color="#eee">
-          <media-element v-if="product.cover" :media="product.cover" :size="100" />
-          <i v-else class="product-price-list-item__img-icon bx bx-image"></i>
-        </avatar>
-        <b>{{ product.name }}</b>
+        <b>{{ product.product_name }}</b>
+        <icon-button
+          size="small"
+          type="primary"
+          :to="`/products/${product.product_id}`"
+          target="_blank"
+        >
+          <template #icon> <i class="bx bx-link-external"></i> </template>
+        </icon-button>
       </div>
     </template>
 
     <template #price>
-      <ProductPriceForm :product="product" />
+      <ProductPriceForm
+        :product="product"
+        :price-map-id="priceMapId"
+        @update="$emit('update', $event)"
+      />
     </template>
   </cms-table-row>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { Product } from '@heseya/store-core'
+import { PriceMapPrice } from '@heseya/store-core'
 
-import Avatar from '@/components/layout/Avatar.vue'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
-import MediaElement from '@/components/MediaElement.vue'
 import ProductPriceForm from './ProductPriceForm.vue'
 
 import { TableConfig } from '@/interfaces/CmsTable'
-import { FEATURE_FLAGS } from '@/consts/featureFlags'
 
 export default defineComponent({
-  components: { Avatar, CmsTableRow, MediaElement, ProductPriceForm },
+  components: { CmsTableRow, ProductPriceForm },
   props: {
     product: {
-      type: Object as PropType<Product>,
+      type: Object as PropType<PriceMapPrice>,
+      required: true,
+    },
+    priceMapId: {
+      type: String,
       required: true,
     },
     table: {
-      type: Object as PropType<TableConfig<Product>>,
+      type: Object as PropType<TableConfig<PriceMapPrice>>,
       required: true,
-    },
-  },
-  computed: {
-    objectFit(): string {
-      return +this.$accessor.config.env[FEATURE_FLAGS.ProductContain] ? 'contain' : 'cover'
     },
   },
 })

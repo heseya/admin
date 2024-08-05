@@ -1,9 +1,10 @@
 <template>
   <div class="price-map-prices">
-    <PaginatedList
+    <ProductPricesList
       :title="`${$t('title')} ${priceMap ? priceMap.name : ''}`"
       :filters="filters"
       :table="tableConfig"
+      :price-map-id="id"
       store-key="products"
       @search="makeSearch"
       @clear-filters="clearFilters"
@@ -11,11 +12,7 @@
       <template #filters>
         <ProductsFilter :filters="filters" @search="makeSearch" />
       </template>
-
-      <template #default="{ item: product }">
-        <ProductPriceListItem :key="product.id" :product="product" :table="tableConfig" />
-      </template>
-    </PaginatedList>
+    </ProductPricesList>
   </div>
 </template>
 
@@ -35,12 +32,11 @@ import { defineComponent } from 'vue'
 import { cloneDeep } from 'lodash'
 import { Product, PriceMapListed } from '@heseya/store-core'
 
-import ProductPriceListItem from '@/components/modules/priceMaps/ProductPriceListItem.vue'
+import ProductPricesList from '@/components/modules/priceMaps/ProductPricesList.vue'
 import ProductsFilter, {
   EMPTY_PRODUCT_FILTERS,
   ProductFilters,
 } from '@/components/modules/products/ProductsFilter.vue'
-import PaginatedList from '@/components/PaginatedList.vue'
 
 import { formatFilters } from '@/utils/utils'
 import { parseQueryToProductFilters } from '@/utils/parseQueryToProductFilters'
@@ -52,8 +48,7 @@ export default defineComponent({
   },
   components: {
     ProductsFilter,
-    PaginatedList,
-    ProductPriceListItem,
+    ProductPricesList,
   },
 
   data: () => ({

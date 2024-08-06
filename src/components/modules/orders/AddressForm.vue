@@ -4,11 +4,11 @@
       v-model="form.name"
       rules="required"
       name="name"
-      :label="$t('name').toString()"
+      :label="$t(!hideVat ? 'billing_name' : 'delivery_name').toString()"
     />
     <validated-input
+      v-if="hideVat"
       v-model="form.company_name"
-      rules="required"
       name="company_name"
       :label="$t('company_name').toString()"
     />
@@ -57,7 +57,8 @@
 <i18n lang="json">
 {
   "pl": {
-    "name": "Imię i nazwisko",
+    "delivery_name": "Imię i nazwisko odbiorcy",
+    "billing_name": "Nazwa firmy / Imię i nazwisko",
     "company_name": "Nazwa firmy",
     "address": "Adres",
     "zip": "Kod pocztowy",
@@ -67,7 +68,8 @@
     "vat": "NIP"
   },
   "en": {
-    "name": "Name",
+    "delivery_name": "Recipient's name",
+    "billing_name": "Company name / Recipient's name",
     "company_name": "Company name",
     "address": "Address",
     "zip": "Zip code",

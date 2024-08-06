@@ -29,6 +29,9 @@
           model-url="sales-channels"
           :label="$t('form.sales_channel_id').toString()"
         />
+        <hr />
+        <h4>{{ $t('form.consents') }}</h4>
+        <OrganizationConsentsForm v-model="form.consents" />
       </modal-form>
       <template #footer>
         <div class="row">
@@ -87,6 +90,7 @@ import { cloneDeep } from 'lodash'
 
 import ModalForm from '@/components/form/ModalForm.vue'
 import AddressForm from '@/components/modules/orders/AddressForm.vue'
+import OrganizationConsentsForm from './OrganizationConsentsForm.vue'
 import AutocompleteInput from '@/components/AutocompleteInput.vue'
 import { DEFAULT_ADDRESS_FORM } from '@/consts/addressConsts'
 
@@ -100,7 +104,13 @@ const CLEAR_FORM: OrganizationUpdateDto & OrganizationCreateDto = {
 }
 
 export default defineComponent({
-  components: { ValidationObserver, ModalForm, AddressForm, AutocompleteInput },
+  components: {
+    ValidationObserver,
+    ModalForm,
+    AddressForm,
+    AutocompleteInput,
+    OrganizationConsentsForm,
+  },
   props: {
     initialValue: {
       type: Object as PropType<Organization>,

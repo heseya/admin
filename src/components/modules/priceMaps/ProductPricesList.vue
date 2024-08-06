@@ -34,7 +34,7 @@
         <div v-for="item in items" :key="item.id" class="product-prices-list__list-item">
           <ProductPriceListItem
             :key="item.id"
-            :product="item"
+            :product-price="item"
             :price-map-id="priceMapId"
             :table="table"
             @update="handlePriceUpdate"

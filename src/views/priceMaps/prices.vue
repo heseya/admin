@@ -72,6 +72,7 @@ export default defineComponent({
             label: this.$t('common.price').toString(),
             width: '2fr',
           },
+          { key: 'action', label: '', width: '64px' },
         ],
       }
     },

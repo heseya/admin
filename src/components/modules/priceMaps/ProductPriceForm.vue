@@ -54,7 +54,7 @@ import { sdk } from '@/api'
 
 export default defineComponent({
   props: {
-    product: {
+    productPrice: {
       type: Object as PropType<PriceMapPrice>,
       required: true,
     },
@@ -67,14 +67,14 @@ export default defineComponent({
   data() {
     return {
       isLoading: false,
-      base_price: this.product.product_price,
+      base_price: this.productPrice.product_price,
       schema_options: {} as Record<string, string>,
     }
   },
 
   computed: {
     schemas(): any {
-      return Object.values(groupBy(this.product.schema_options, 'schema_id')).map((items) => ({
+      return Object.values(groupBy(this.productPrice.schema_options, 'schema_id')).map((items) => ({
         schema_id: items[0].schema_id,
         schema_name: items[0].schema_name,
         options: items,
@@ -85,8 +85,8 @@ export default defineComponent({
   watch: {
     product: {
       handler() {
-        this.base_price = this.product.product_price
-        this.schema_options = this.product.schema_options.reduce(
+        this.base_price = this.productPrice.product_price
+        this.schema_options = this.productPrice.schema_options.reduce(
           (acc, option) => ({ ...acc, [option.schema_option_id]: option.schema_option_price }),
           {},
         )
@@ -114,7 +114,7 @@ export default defineComponent({
         const [updatedPrice] = await sdk.PriceMaps.updatePrices(this.priceMapId, {
           products: [
             {
-              id: this.product.product_id,
+              id: this.productPrice.product_id,
               value: this.base_price,
             },
           ],

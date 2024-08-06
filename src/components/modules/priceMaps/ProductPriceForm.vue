@@ -1,7 +1,7 @@
 <template>
   <div class="product-price-form">
     <div class="product-price-form__row">
-      <span class="product-price-form__label">{{ 'Cena bazowa' }}</span>
+      <span class="product-price-form__label">{{ $t('basePrice') }}</span>
       <app-input
         v-model="base_price"
         type="number"
@@ -11,7 +11,7 @@
     </div>
 
     <div v-for="schema in schemas" :key="schema.schema_id" class="product-price-form__row">
-      <span class="product-price-form__label">{{ 'Schemat 1' }}</span>
+      <span class="product-price-form__label">{{ schema.schema_name }}</span>
       <div
         v-for="option in schema.options"
         :key="option.schema_option_id"
@@ -34,10 +34,12 @@
 <i18n lang="json">
 {
   "pl": {
+    "basePrice": "Cena bazowa",
     "updateSuccess": "Cena została zaktualizowana",
     "updateError": "Nie udało się zaktualizować ceny"
   },
   "en": {
+    "basePrice": "Base price",
     "updateSuccess": "Price has been updated",
     "updateError": "Failed to update price"
   }
@@ -48,7 +50,7 @@
 import { defineComponent, PropType } from 'vue'
 import groupBy from 'lodash/groupBy'
 import debounce from 'lodash/debounce'
-import { PriceMapPrice } from '@heseya/store-core'
+import { PriceMapPrice, PriceMapProductSchemaPrice } from '@heseya/store-core'
 
 import { sdk } from '@/api'
 
@@ -73,7 +75,7 @@ export default defineComponent({
   },
 
   computed: {
-    schemas(): any {
+    schemas(): { schema_id: string; schema_name: string; options: PriceMapProductSchemaPrice[] }[] {
       return Object.values(groupBy(this.productPrice.schema_options, 'schema_id')).map((items) => ({
         schema_id: items[0].schema_id,
         schema_name: items[0].schema_name,

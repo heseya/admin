@@ -1,73 +1,79 @@
 <template>
-  <card class="org-sales-channels">
-    <top-nav
-      tag="h2"
-      :title="`${$t('title')}: ${organization.sales_channel.name}`"
-      class="org-sales-channels__nav"
-    >
-      <icon-button size="small" type="primary" @click="$emit('edit')">
-        <template #icon> <i class="bx bx-edit"></i> </template>
-        {{ $t('action') }}
-      </icon-button>
-    </top-nav>
+  <card>
+    <ValidationObserver v-slot="{ handleSubmit }">
+      <form class="org-sales-channels" @submit.prevent="handleSubmit(onSubmit)">
+        <top-nav
+          tag="h2"
+          :title="`${$t('title')}: ${organization.sales_channel.name}`"
+          class="org-sales-channels__nav"
+        >
+          <icon-button size="small" type="primary" @click="$emit('edit')">
+            <template #icon> <i class="bx bx-edit"></i> </template>
+            {{ $t('action') }}
+          </icon-button>
+        </top-nav>
 
-    <Loading :active="isLoading" />
+        <Loading :active="isLoading" />
 
-    <div class="org-sales-channels__row">
-      <AutocompleteInput
-        v-model="form.price_map_id"
-        mode="default"
-        prop-mode="id"
-        model-url="price-maps"
-        rules="required"
-        :label="$t('form.price_map').toString()"
-      />
+        <div class="org-sales-channels__row">
+          <AutocompleteInput
+            v-model="form.price_map_id"
+            mode="default"
+            prop-mode="id"
+            model-url="price-maps"
+            rules="required"
+            :label="$t('form.price_map').toString()"
+          />
 
-      <icon-button
-        v-if="form.price_map_id"
-        size="small"
-        type="primary"
-        :to="`/settings/price-maps/${form.price_map_id}`"
-        target="_blank"
-      >
-        <template #icon> <i class="bx bx-link-external"></i> </template>
-      </icon-button>
-    </div>
+          <icon-button
+            v-if="form.price_map_id"
+            size="small"
+            type="primary"
+            :to="`/settings/price-maps/${form.price_map_id}`"
+            target="_blank"
+          >
+            <template #icon> <i class="bx bx-link-external"></i> </template>
+          </icon-button>
+        </div>
 
-    <validated-input
-      v-model="form.vat_rate"
-      name="vat_rate"
-      rules="required|not-negative|less-or-equal-than:100"
-      :label="$t('form.vat_rate').toString()"
-    />
+        <validated-input
+          v-model="form.vat_rate"
+          name="vat_rate"
+          rules="required|not-negative|less-or-equal-than:100"
+          :label="$t('form.vat_rate').toString()"
+        />
 
-    <AutocompleteInput
-      v-model="form.shipping_method_ids"
-      mode="multiple"
-      prop-mode="id"
-      model-url="shipping-methods"
-      rules="required"
-      :label="$t('form.shipping_methods').toString()"
-    />
-    <AutocompleteInput
-      v-model="form.payment_method_ids"
-      mode="multiple"
-      prop-mode="id"
-      model-url="payment-methods"
-      rules="required"
-      :label="$t('form.payment_methods').toString()"
-    />
+        <AutocompleteInput
+          v-model="form.shipping_method_ids"
+          mode="multiple"
+          prop-mode="id"
+          model-url="shipping-methods"
+          rules="required"
+          :label="$t('form.shipping_methods').toString()"
+        />
+        <AutocompleteInput
+          v-model="form.payment_method_ids"
+          mode="multiple"
+          prop-mode="id"
+          model-url="payment-methods"
+          rules="required"
+          :label="$t('form.payment_methods').toString()"
+        />
 
-    <AutocompleteInput
-      v-model="form.language_id"
-      mode="default"
-      prop-mode="id"
-      model-url="languages"
-      rules="required"
-      :label="$t('form.language').toString()"
-    />
+        <AutocompleteInput
+          v-model="form.language_id"
+          mode="default"
+          prop-mode="id"
+          model-url="languages"
+          rules="required"
+          :label="$t('form.language').toString()"
+        />
 
-    <app-button size="small" @click="handleSubmit">{{ $t('common.save') }}</app-button>
+        <app-button size="small" html-type="submit">
+          {{ $t('common.save') }}
+        </app-button>
+      </form>
+    </ValidationObserver>
   </card>
 </template>
 
@@ -105,6 +111,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import { Organization, SalesChannelUpdateDto } from '@heseya/store-core'
+import { ValidationObserver } from 'vee-validate'
 
 import Card from '@/components/layout/Card.vue'
 import IconButton from '@/components/layout/IconButton.vue'
@@ -113,7 +120,7 @@ import AutocompleteInput from '@/components/AutocompleteInput.vue'
 import Loading from '@/components/layout/Loading.vue'
 
 export default defineComponent({
-  components: { TopNav, Card, IconButton, AutocompleteInput, Loading },
+  components: { ValidationObserver, TopNav, Card, IconButton, AutocompleteInput, Loading },
   props: {
     organization: {
       type: Object as PropType<Organization>,
@@ -139,13 +146,14 @@ export default defineComponent({
         this.form.language_id = org.sales_channel.language?.id ?? ''
         this.form.shipping_method_ids = org.sales_channel.shipping_methods?.map((sm) => sm.id) ?? []
         this.form.payment_method_ids = org.sales_channel.payment_methods?.map((pm) => pm.id) ?? []
+        this.form.default = org.sales_channel.default ?? false
       },
       immediate: true,
     },
   },
 
   methods: {
-    async handleSubmit() {
+    async onSubmit() {
       this.isLoading = true
       const result = await this.$accessor.salesChannels.update({
         id: this.organization.sales_channel.id,

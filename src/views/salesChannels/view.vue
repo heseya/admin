@@ -118,10 +118,10 @@ export default defineComponent({
         this.form = cloneDeep({
           ...EMPTY_CHANNEL_FORM,
           ...salesChannel,
-          default_language_id: salesChannel.language?.id,
+          language_id: salesChannel.language?.id,
           price_map_id: salesChannel.price_map?.id,
           shipping_method_ids: salesChannel.shipping_methods?.map((m) => m.id) || [],
-          payment_methods_ids: salesChannel.payment_methods?.map((m) => m.id) || [],
+          payment_method_ids: salesChannel.payment_methods?.map((m) => m.id) || [],
           translations: salesChannel.translations || {},
         })
       }

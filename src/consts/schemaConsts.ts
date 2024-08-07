@@ -17,13 +17,14 @@ export const CLEAR_SCHEMA_OPTION_TRANSLATION: TranslationsFromDto<SchemaOptionDt
 }
 
 export const CLEAR_SCHEMA: SchemaCreateDto = {
-  prices: [],
   required: true,
   default: '',
   used_schemas: [],
   options: [],
   published: [],
   translations: {},
+  product_id: '',
+  hidden: false,
 }
 
 export const CLEAR_SCHEMA_TRANSLATION: TranslationsFromDto<SchemaCreateDto> = {

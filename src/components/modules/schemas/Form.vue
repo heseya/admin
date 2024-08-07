@@ -188,9 +188,6 @@ export default defineComponent({
       // TODO: fix typing, in this component actually default is a custom field in SchemaOptionDto
       this.form.options[defaultOption].default = true
     },
-    'form.type'() {
-      this.form.options = [this.createEmptySchemaOption()]
-    },
     'form.used_schemas.0'(schema: Schema) {
       // ! This is buggy, and somehow works only on init
       const newName =
@@ -221,6 +218,7 @@ export default defineComponent({
     initSchemaForm(schema: Schema) {
       this.form = schema.id
         ? cloneDeep({
+            ...CLEAR_SCHEMA,
             ...schema,
             options: schema.options.map((o) => ({ ...o, prices: mapPricesToDto(o.prices) })),
           })
@@ -265,7 +263,7 @@ export default defineComponent({
 
           const success = await this.$accessor.schemas.update({
             id: this.form.id,
-            item: { ...this.form, options, metadata: undefined, metadata_private: undefined },
+            item: { ...this.form, options },
           })
           if (!success) throw new Error('Schema not updated')
 

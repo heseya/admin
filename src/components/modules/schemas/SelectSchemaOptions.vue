@@ -6,7 +6,6 @@
         <template #icon> <i class="bx bx-plus"></i> </template> {{ $t('common.add') }}
       </icon-button>
     </template>
-
     <a-radio-group
       :value="defaultOption"
       class="select-schema-options__content"

@@ -72,11 +72,7 @@
       <field class="order-cart__summary-total" :label="$t('summary.total').toString()" horizontal>
         {{ formatCurrency(order.summary) }}
       </field>
-      <boolean-tag
-        :value="order.paid"
-        :true-text="$t('orderPaid').toString()"
-        :false-text="$t('orderNotPaid').toString()"
-      />
+      <SummaryPayment :order="order" />
     </div>
 
     <a-modal
@@ -100,8 +96,6 @@
       "quantity": "Quantity",
       "total": "Total"
     },
-    "orderPaid": "Paid",
-    "orderNotPaid": "Not paid",
     "summary": {
       "cart": "Cart total",
       "baseShipping": "Base shipping price",
@@ -131,8 +125,6 @@
       "quantity": "Ilość",
       "total": "Wartość"
     },
-    "orderPaid": "Opłacono",
-    "orderNotPaid": "Nie opłacono",
     "summary": {
       "cart": "Wartość koszyka",
       "baseShipping": "Bazowa cena dostawy",
@@ -165,13 +157,21 @@ import CartItem from '@/components/layout/CartItem.vue'
 import Field from '../../Field.vue'
 import OrderDiscountSummary from './OrderDiscountSummary.vue'
 import OrderProductUrls from './OrderProductUrls.vue'
+import SummaryPayment from './SummaryPayment.vue'
 
 import { formatCurrency } from '@/utils/currency'
 import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 import XlsxDownloadButton from '@/components/XlsxDownloadButton.vue'
 
 export default defineComponent({
-  components: { CartItem, Field, OrderDiscountSummary, OrderProductUrls, XlsxDownloadButton },
+  components: {
+    CartItem,
+    Field,
+    OrderDiscountSummary,
+    OrderProductUrls,
+    XlsxDownloadButton,
+    SummaryPayment,
+  },
   props: {
     order: {
       type: Object as PropType<Order>,

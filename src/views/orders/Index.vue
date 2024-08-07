@@ -119,7 +119,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Order, OrderStatus, ShippingMethod } from '@heseya/store-core'
+import { Order, OrderStatus, ShippingMethod, PaymentMethodType } from '@heseya/store-core'
 
 import PaginatedList from '@/components/PaginatedList.vue'
 import CmsTableRow from '@/components/cms/CmsTableRow.vue'
@@ -215,7 +215,7 @@ export default defineComponent({
             label: this.$t('form.paid') as string,
             format: (isPaid: boolean, order) => {
               if (isPaid) return this.$t('payment.paid').toString()
-              return order?.shipping_method?.payment_on_delivery
+              return order?.payment_method_type === PaymentMethodType.Postpaid
                 ? this.$t('payment.postpaid').toString()
                 : this.$t('payment.notPaid').toString()
             },

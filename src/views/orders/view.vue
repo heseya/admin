@@ -18,7 +18,7 @@
     <main class="order-page">
       <Loading :active="isLoading" />
 
-      <OrderSummary class="order-page__summary" :order="order" />
+      <OrderSummary class="order-page__summary" :order="order" @payment-updated="reloadOrder" />
 
       <card class="order-page__status">
         <a-tooltip v-bind="!order?.status?.cancel ? { visible: false } : undefined">
@@ -41,7 +41,7 @@
         <ShippingNumberForm
           :order-id="order.id"
           :shipping-number="order.shipping_number || undefined"
-          @set="onShippingNumberChange"
+          @set="reloadOrder"
         />
       </card>
       <card class="order-page__documents">
@@ -134,8 +134,8 @@ export default defineComponent({
     this.isLoading = false
   },
   methods: {
-    onShippingNumberChange(shippingNumber: string) {
-      this.order.shipping_number = shippingNumber
+    reloadOrder() {
+      this.$accessor.orders.get(this.$route.params.id)
     },
   },
 })

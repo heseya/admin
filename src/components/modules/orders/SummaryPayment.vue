@@ -18,8 +18,8 @@
       {{ PAYMENT_METHODS[lastSuccessfullPayment.method] || lastSuccessfullPayment.method }}
     </span>
 
-    <tag v-if="!order.paid && order.shipping_method?.payment_on_delivery" type="warning">
-      <i class="bx bxs-package"></i> {{ $t('status.onDelivery') }}
+    <tag v-if="!order.paid && order?.payment_method_type === 'postpaid'" type="warning">
+      <i class="bx bxs-package"></i> {{ $t('status.postpaid') }}
     </tag>
     <boolean-tag
       v-else
@@ -27,58 +27,28 @@
       :true-text="$t('status.paid')"
       :false-text="$t('status.notPaid')"
     />
-
-    <pop-confirm
-      v-if="!order.paid"
-      :title="$t('offlinePayment.confirmText').toString()"
-      :ok-text="$t('offlinePayment.successText').toString()"
-      ok-color="success"
-      :cancel-text="$t('common.cancel').toString()"
-      @confirm="payOffline"
-    >
-      <icon-button size="small" reversed>
-        <template #icon>
-          <i class="bx bx-check"></i>
-        </template>
-        {{ $t('offlinePayment.buttonText') }}
-      </icon-button>
-    </pop-confirm>
   </div>
 </template>
 
 <i18n lang="json">
 {
   "en": {
-    "offlinePayment": {
-      "buttonText": "Mark paid",
-      "confirmText": "Are you sure you want to manually mark the order as paid? (E.g. by cash or bank transfer)",
-      "successText": "Pay",
-      "resultSuccess": "The order has been marked as paid",
-      "resultError": "An error occurred while marking the order as paid"
-    },
     "overpaidTitle": "Order was overpaid by",
     "overpaidMessage": "Client paid {paid} instead of {should}",
     "status": {
       "paid": "Paid",
       "notPaid": "Not paid",
-      "onDelivery": "On delivery"
+      "postpaid": "Payment on delivery"
     }
   },
   "pl": {
-    "offlinePayment": {
-      "buttonText": "Opłać",
-      "confirmText": "Czy na pewno chcesz ręcznie oznaczyć zamówienie jako opłacone? (Np. przelewem tradycyjnym lub gotówką)",
-      "successText": "Opłać",
-      "resultSuccess": "Zamówienie zostało opłacone",
-      "resultError": "Wystąpił błąd podczas opłacania zamówienia"
-    },
     "overpaidTitle": "Zamówienie zostało nadpłacone o",
     "overpaidMessage": "Klient zapłacił {paid} zamiast {should}",
     "changedSuccess": "Status zamówienia został zmieniony",
     "status": {
       "paid": "Opłacone",
       "notPaid": "Nieopłacone",
-      "onDelivery": "Za pobraniem"
+      "postpaid": "Płatność po dostawie"
     }
   }
 }
@@ -88,15 +58,13 @@
 import { defineComponent, PropType } from 'vue'
 import { Order, OrderPayment, PaymentStatus } from '@heseya/store-core'
 
-import PopConfirm from '@/components/layout/PopConfirm.vue'
 import InfoTooltip from '@/components/layout/InfoTooltip.vue'
 
-import { sdk } from '@/api'
 import { formatCurrency } from '@/utils/currency'
 import { PAYMENT_METHODS } from '@/consts/paymentMethods'
 
 export default defineComponent({
-  components: { PopConfirm, InfoTooltip },
+  components: { InfoTooltip },
   props: {
     order: {
       type: Object as PropType<Order>,
@@ -114,18 +82,6 @@ export default defineComponent({
   methods: {
     formatCurrency(amount: number | string) {
       return formatCurrency(amount, this.order.currency)
-    },
-    async payOffline() {
-      this.$accessor.startLoading()
-      try {
-        await sdk.Orders.markAsPaid(this.order.code)
-        await this.$accessor.orders.get(this.$route.params.id)
-        this.$toast.success(this.$t('offlinePayment.resultSuccess') as string)
-      } catch {
-        this.$toast.error(this.$t('offlinePayment.resultError') as string)
-      }
-
-      this.$accessor.stopLoading()
     },
   },
 })

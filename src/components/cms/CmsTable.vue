@@ -31,7 +31,11 @@
               :draggable="draggable"
               :el="rowEl"
               @click="config.rowOnClick || (() => {})"
-            />
+            >
+              <template v-for="header in config.headers" #[header.key]="data">
+                <slot :name="`row-${header.key}`" v-bind="data"></slot>
+              </template>
+            </cms-table-row>
           </slot>
         </div>
       </template>

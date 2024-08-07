@@ -80,12 +80,55 @@
 
     <a-modal
       :visible="isPaymentHistoryVisible"
-      width="750px"
+      width="900px"
       :footer="null"
-      :title="$t('labels.history')"
       @cancel="closePaymentHistory"
     >
-      <cms-table :value="order.payments" :config="paymentsTableConfig" no-hover />
+      <template #title>
+        <div class="order-summary-modal-header">
+          <h4>{{ $t('labels.history') }}</h4>
+          <pop-confirm
+            v-if="!order.paid"
+            :title="$t('offlinePayment.confirmText').toString()"
+            :ok-text="$t('offlinePayment.successText').toString()"
+            ok-color="success"
+            :cancel-text="$t('common.cancel').toString()"
+            @confirm="payOffline"
+          >
+            <icon-button size="small" reversed>
+              <template #icon>
+                <i class="bx bx-check"></i>
+              </template>
+              {{ $t('offlinePayment.buttonText') }}
+            </icon-button>
+          </pop-confirm>
+        </div>
+      </template>
+
+      <CmsTable :value="order.payments" :config="paymentsTableConfig" no-hover>
+        <template #row-action="{ item }">
+          <icon-button
+            size="small"
+            type="danger"
+            reversed
+            :disabled="item.status !== PaymentStatus.Pending"
+            @click="updatePayment(item.id, PaymentStatus.Failed)"
+          >
+            <template #icon><i class="bx bx-x-circle"></i></template>
+            {{ $t('rejectPayment') }}
+          </icon-button>
+          <icon-button
+            size="small"
+            type="success"
+            reversed
+            :disabled="item.status !== PaymentStatus.Pending"
+            @click="updatePayment(item.id, PaymentStatus.Successful)"
+          >
+            <template #icon><i class="bx bx-check-circle"></i></template>
+            {{ $t('acceptPayment') }}
+          </icon-button>
+        </template>
+      </CmsTable>
     </a-modal>
     <a-modal
       v-model="isShippingModalActive"
@@ -123,7 +166,18 @@
       "amount": "Amount",
       "status": "Status"
     },
-    "showList": "Show list"
+    "showList": "Show list",
+    "acceptPayment": "Accept payment",
+    "rejectPayment": "Reject payment",
+    "paymentStatusUpdated": "Payment status updated",
+
+    "offlinePayment": {
+      "buttonText": "Mark the order as paid",
+      "confirmText": "Are you sure you want to manually mark the order as paid? (E.g. by cash or bank transfer)",
+      "successText": "Pay",
+      "resultSuccess": "The order has been marked as paid",
+      "resultError": "An error occurred while marking the order as paid"
+    }
   },
   "pl": {
     "labels": {
@@ -143,14 +197,24 @@
       "amount": "Kwota",
       "status": "Status"
     },
-    "showList": "Pokaż listę"
+    "showList": "Pokaż listę",
+    "acceptPayment": "Zaakceptuj płatność",
+    "rejectPayment": "Odrzuć płatność",
+    "paymentStatusUpdated": "Zaktualizowano status płatności",
+    "offlinePayment": {
+      "buttonText": "Oznacz zamówienie jako opłacone",
+      "confirmText": "Czy na pewno chcesz ręcznie oznaczyć zamówienie jako opłacone? (Np. przelewem tradycyjnym lub gotówką)",
+      "successText": "Opłać",
+      "resultSuccess": "Zamówienie zostało opłacone",
+      "resultError": "Wystąpił błąd podczas opłacania zamówienia"
+    }
   }
 }
 </i18n>
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { Order } from '@heseya/store-core'
+import { Order, PaymentStatus } from '@heseya/store-core'
 
 import Card from '@/components/layout/Card.vue'
 import SummaryPayment from './SummaryPayment.vue'
@@ -162,6 +226,9 @@ import { formatDate } from '@/utils/dates'
 import { TableConfig } from '@/interfaces/CmsTable'
 import { PAYMENT_METHODS } from '@/consts/paymentMethods'
 import { formatCurrency } from '@/utils/currency'
+import { formatApiNotificationError } from '@/utils/errors'
+
+import { sdk } from '@/api'
 
 export default defineComponent({
   components: {
@@ -220,8 +287,16 @@ export default defineComponent({
             label: this.$t('table.status') as string,
             render: (v) => this.$t(`paymentStatus.${v}`) as string,
           },
+          {
+            key: 'action',
+            label: '',
+            width: '1.5fr',
+          },
         ],
       }
+    },
+    PaymentStatus(): typeof PaymentStatus {
+      return PaymentStatus
     },
   },
   created() {
@@ -246,6 +321,29 @@ export default defineComponent({
     editShippingMethod(isDigitalEdited: boolean) {
       this.isDigitalShippingMethodEdited = isDigitalEdited
       this.isShippingModalActive = true
+    },
+
+    async payOffline() {
+      this.$accessor.startLoading()
+      try {
+        await sdk.Orders.markAsPaid(this.order.code)
+        await this.$accessor.orders.get(this.$route.params.id)
+        this.$toast.success(this.$t('offlinePayment.resultSuccess') as string)
+      } catch {
+        this.$toast.error(this.$t('offlinePayment.resultError') as string)
+      }
+
+      this.$accessor.stopLoading()
+    },
+
+    async updatePayment(id: string, status: PaymentStatus) {
+      try {
+        const updated = await sdk.Payments.update(id, { status })
+        this.$emit('payment-updated', updated)
+        this.$toast.success(this.$t('paymentStatusUpdated') as string)
+      } catch (e: any) {
+        this.$toast.error(formatApiNotificationError(e))
+      }
     },
   },
 })
@@ -276,6 +374,16 @@ export default defineComponent({
 
   :deep(.field--horizontal .field__label) {
     width: 140px;
+  }
+}
+
+.order-summary-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h4 {
+    margin: 0;
   }
 }
 </style>

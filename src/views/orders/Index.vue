@@ -48,9 +48,9 @@
           <template #paid="{ rawValue, item }">
             <span v-if="rawValue" class="order-tag success-text">{{ $t('payment.paid') }}</span>
             <span
-              v-else-if="item?.shipping_method?.payment_on_delivery"
+              v-else-if="item?.payment_method_type === 'postpaid'"
               class="order-tag warning-text"
-              >{{ $t('payment.onDelivery') }}</span
+              >{{ $t('payment.postpaid') }}</span
             >
             <span v-else class="order-tag danger-text">{{ $t('payment.notPaid') }}</span>
           </template>
@@ -76,7 +76,7 @@
     "payment": {
       "paid": "Opłacone",
       "notPaid": "Nieopłacone",
-      "onDelivery": "Za pobraniem"
+      "postpaid": "Płatność po dostawie"
     },
     "copySuccess": "Skopiowiano do schowka",
     "form": {
@@ -98,7 +98,7 @@
     "payment": {
       "paid": "Paid",
       "notPaid": "Not paid",
-      "onDelivery": "On delivery"
+      "postpaid": "Payment on delivery"
     },
     "copySuccess": "Copied to clipboard",
     "form": {
@@ -169,7 +169,7 @@ export default defineComponent({
             sortable: true,
             render: (v, order) => this.formatCurrency(v, order.currency),
           },
-          { key: 'paid', label: this.$t('form.paid') as string, width: '0.8fr' },
+          { key: 'paid', label: this.$t('form.paid') as string, width: '1fr' },
           { key: 'status', label: this.$t('form.status') as string, width: '0.8fr' },
           {
             key: 'shipping_method',
@@ -187,12 +187,14 @@ export default defineComponent({
           {
             key: 'language',
             label: this.$t('form.language') as string,
+            width: '0.8fr',
             render: (iso) => this.languages.find((l) => l.iso === iso)?.name || iso,
           },
           {
             key: 'created_at',
             label: this.$t('form.date') as string,
             sortable: true,
+            width: '0.8fr',
             render: (v) => formatDate(v) || '?',
           },
         ],
@@ -214,7 +216,7 @@ export default defineComponent({
             format: (isPaid: boolean, order) => {
               if (isPaid) return this.$t('payment.paid').toString()
               return order?.shipping_method?.payment_on_delivery
-                ? this.$t('payment.onDelivery').toString()
+                ? this.$t('payment.postpaid').toString()
                 : this.$t('payment.notPaid').toString()
             },
           },

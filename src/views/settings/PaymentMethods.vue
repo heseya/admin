@@ -14,7 +14,7 @@
             </avatar>
           </template>
           {{ paymentMethod.name }}
-          <small>{{ $t(`type.${paymentMethod.type}`) }}</small>
+          <small>{{ $t(`method.type.${paymentMethod.type}`) }}</small>
           <template #action>
             <boolean-tag
               :value="paymentMethod.public"
@@ -50,7 +50,7 @@
         </field>
 
         <field :label="$t('common.form.type').toString()">
-          <span>{{ $t(`type.${selectedMethod.type}`) }}</span>
+          <span>{{ $t(`method.type.${selectedMethod.type}`) }}</span>
         </field>
 
         <field :label="$t('method.public').toString()">

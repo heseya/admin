@@ -9,7 +9,7 @@
       </icon-button>
       <PopConfirm
         v-if="!isNew"
-        v-can="$p.Products.Remove"
+        v-can="$p.PriceMaps.Remove"
         :title="$t('deleteText').toString()"
         :ok-text="$t('common.delete').toString()"
         :cancel-text="$t('common.cancel').toString()"
@@ -52,9 +52,6 @@
 </i18n>
 
 <script lang="ts">
-/**
- * TODO: replace permissions to PriceMap permissions
- */
 import { defineComponent } from 'vue'
 import { cloneDeep } from 'lodash'
 import { PriceMap, PriceMapCreateDto } from '@heseya/store-core'
@@ -105,7 +102,7 @@ export default defineComponent({
       return this.$accessor.priceMaps.isLoading
     },
     isDisabled(): boolean {
-      return this.isNew ? !this.$can(this.$p.Products.Add) : !this.$can(this.$p.Products.Edit)
+      return this.isNew ? !this.$can(this.$p.PriceMaps.Add) : !this.$can(this.$p.PriceMaps.Edit)
     },
   },
   watch: {

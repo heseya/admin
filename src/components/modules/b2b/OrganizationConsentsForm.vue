@@ -9,18 +9,21 @@
       :disabled="readonly"
       @change="() => change(consent.id)"
     >
-      {{ consent.name }}
+      {{ consent.name }} <span v-if="consent.required">*</span>
     </a-checkbox>
+    <small class="organization-consents__required-info">* - {{ $t('required') }}</small>
   </div>
 </template>
 
 <i18n lang="json">
 {
   "pl": {
-    "info": "Zgody organizacji nie mogą być edytowane przy aktualizacji organizacji"
+    "info": "Zgody organizacji nie mogą być edytowane przy aktualizacji organizacji",
+    "required": "zgody wymagane"
   },
   "en": {
-    "info": "Organization consents cannot be edited when updating the organization"
+    "info": "Organization consents cannot be edited when updating the organization",
+    "required": "required consents"
   }
 }
 </i18n>
@@ -85,6 +88,11 @@ export default defineComponent({
 
   &__info {
     margin-bottom: 16px;
+  }
+
+  &__required-info {
+    margin-top: 8px;
+    font-size: 0.8em;
   }
 }
 </style>

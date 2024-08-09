@@ -93,6 +93,7 @@ import AddressForm from '@/components/modules/orders/AddressForm.vue'
 import OrganizationConsentsForm from './OrganizationConsentsForm.vue'
 import AutocompleteInput from '@/components/AutocompleteInput.vue'
 import { DEFAULT_ADDRESS_FORM } from '@/consts/addressConsts'
+import { formatApiNotificationError } from '@/utils/errors'
 
 const CLEAR_FORM: OrganizationUpdateDto & OrganizationCreateDto = {
   client_id: '',
@@ -172,6 +173,8 @@ export default defineComponent({
         else this.$toast.success(this.$t('alerts.updated') as string)
         this.$emit('saved', success)
         this.close()
+      } else {
+        this.$toast.error(formatApiNotificationError(this.$accessor.b2bOrganizations.error!))
       }
     },
   },

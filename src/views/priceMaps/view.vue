@@ -126,7 +126,9 @@ export default defineComponent({
   async created() {
     if (!this.isNew) {
       this.$accessor.startLoading()
-      await this.$accessor.priceMaps.get(this.id)
+      // TODO: should be dedicated GET request
+      const data = await this.$accessor.priceMaps.fetch()
+      if (data) this.$accessor.priceMaps.SET_SELECTED(data.find((item) => item.id === this.id))
       this.$accessor.stopLoading()
     }
   },

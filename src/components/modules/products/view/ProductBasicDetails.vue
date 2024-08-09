@@ -19,10 +19,6 @@
       :disabled="disabled"
     />
 
-    <div class="product-basic-details__price-row">
-      <CurrencyPriceForm v-model="form.prices_base" :disabled="disabled" />
-    </div>
-
     <TagsSelect v-model="form.tags" :disabled="disabled" :edited-lang="editedLang" />
 
     <AppTextarea
@@ -59,12 +55,11 @@ import { ProductComponentForm } from '@/interfaces/Product'
 import ProductSetSelect from '../ProductSetSelect.vue'
 import Textarea from '@/components/form/Textarea.vue'
 import TagsSelect from '@/components/TagsSelect.vue'
-import CurrencyPriceForm from '@/components/CurrencyPriceForm.vue'
 
 import { generateSlug } from '@/utils/generateSlug'
 
 export default defineComponent({
-  components: { ProductSetSelect, AppTextarea: Textarea, TagsSelect, CurrencyPriceForm },
+  components: { ProductSetSelect, AppTextarea: Textarea, TagsSelect },
   props: {
     value: {
       type: Object as PropType<ProductComponentForm>,
@@ -121,21 +116,6 @@ export default defineComponent({
 
   @media ($viewport-14) {
     width: 75%;
-  }
-
-  &__price-row {
-    width: 100%;
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-gap: 0 16px;
-
-    @media ($viewport-4) {
-      grid-template-columns: 1.5fr 1fr;
-    }
-
-    @media ($viewport-12) {
-      width: 80%;
-    }
   }
 }
 </style>

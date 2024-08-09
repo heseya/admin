@@ -68,6 +68,12 @@
 
           <hr />
 
+          <ProductPrices
+            v-if="!isNew"
+            v-model="pricesForm"
+            :product="product"
+            :disabled="!canModify"
+          />
           <DescriptionAccordion
             v-model="formDescriptionHtml"
             :disabled="!canModify"
@@ -210,7 +216,7 @@
 import { defineComponent } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import cloneDeep from 'lodash/cloneDeep'
-import { Product, ProductCreateDto } from '@heseya/store-core'
+import { Product, ProductCreateDto, PriceMapProductPrice } from '@heseya/store-core'
 
 import TopNav from '@/components/layout/TopNav.vue'
 import Gallery from '@/components/modules/products/Gallery.vue'
@@ -224,6 +230,7 @@ import WarehouseItemsConfigurator from '@/components/modules/products/WarehouseI
 import AbsoluteContentLangSwitch from '@/components/lang/AbsoluteContentLangSwitch.vue'
 
 import ProductBasicDetails from '@/components/modules/products/view/ProductBasicDetails.vue'
+import ProductPrices from '@/components/modules/products/view/ProductPrices.vue'
 import PublishedLangsForm from '@/components/lang/PublishedLangsForm.vue'
 import ProductAdvancedDetails from '@/components/modules/products/view/ProductAdvancedDetails.vue'
 import ProductAsideDetails from '@/components/modules/products/view/ProductAsideDetails.vue'
@@ -238,6 +245,7 @@ import Loading from '@/components/layout/Loading.vue'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { updateProductAttributeOptions } from '@/services/updateProductAttributeOptions'
+import { sdk } from '@/api'
 
 import { UUID } from '@/interfaces/UUID'
 import { ProductComponentForm } from '@/interfaces/Product'
@@ -292,6 +300,7 @@ export default defineComponent({
     AttributesConfigurator,
     WarehouseItemsConfigurator,
     ProductBasicDetails,
+    ProductPrices,
     ProductAdvancedDetails,
     DescriptionAccordion,
     ProductAsideDetails,
@@ -314,6 +323,7 @@ export default defineComponent({
     isLoading: false,
     editedLang: '',
     form: cloneDeep(EMPTY_FORM),
+    pricesForm: [] as PriceMapProductPrice[],
   }),
   computed: {
     id(): UUID {
@@ -412,12 +422,27 @@ export default defineComponent({
       if (this.isNew) return
       this.isLoading = true
       await this.$accessor.products.get(this.$route.params.id)
+      await this.fetchPrices()
 
       // isFormPrefilled should be set to true after form was prefilled
       // this.isFormPrefilled = true
 
       this.isLoading = false
     },
+
+    async fetchPrices() {
+      try {
+        const prices = await sdk.Products.getPrices(this.$route.params.id)
+
+        // TODO: remove this fix, API returns price with currency
+        const fixedPrices = prices.map((p) => ({ ...p, price: p.price.split(' ').at(-1)! }))
+
+        this.pricesForm = fixedPrices
+      } catch (e: any) {
+        this.$toast.error(formatApiNotificationError(e))
+      }
+    },
+
     async deleteProduct() {
       this.isLoading = true
       const success = await this.$accessor.products.remove(this.id)
@@ -471,6 +496,9 @@ export default defineComponent({
         // Metadata can be saved only after product is created
         if (!this.isNew) await this.saveMetadata(this.id)
 
+        // Prices can be saved only after product is created
+        if (!this.isNew) await this.savePrices()
+
         const item = this.isNew
           ? await this.$accessor.products.add(apiPayload)
           : await this.$accessor.products.update({ id: this.id, item: apiPayload })
@@ -495,6 +523,20 @@ export default defineComponent({
       }
 
       this.isLoading = false
+    },
+
+    async savePrices() {
+      try {
+        const form = this.pricesForm.map((p) => ({ ...p, price: p.price.toString() }))
+        const prices = await sdk.Products.updatePrices(this.$route.params.id, form)
+
+        // TODO: remove this fix, API returns price with currency
+        const fixedPrices = prices.map((p) => ({ ...p, price: p.price.split(' ').at(-1)! }))
+
+        this.pricesForm = fixedPrices
+      } catch (e: any) {
+        this.$toast.error(formatApiNotificationError(e))
+      }
     },
 
     async saveMetadata(id: string) {

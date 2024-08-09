@@ -2,7 +2,7 @@
   <div>
     <PaginatedList :title="$t('title').toString()" store-key="priceMaps" :table="tableConfig">
       <template #nav>
-        <icon-button v-can="$p.Products.Add" to="/settings/price-maps/create">
+        <icon-button v-can="$p.PriceMaps.Add" to="/settings/price-maps/create">
           <template #icon>
             <i class="bx bx-plus"></i>
           </template>
@@ -27,9 +27,6 @@
 </i18n>
 
 <script lang="ts">
-/**
- * TODO: replace permissions to PriceMap permissions
- */
 import { defineComponent } from 'vue'
 import { PriceMap } from '@heseya/store-core'
 

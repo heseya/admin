@@ -117,12 +117,12 @@ export default defineComponent({
           products: [
             {
               id: this.productPrice.product_id,
-              value: this.base_price,
+              value: this.base_price.toString(),
             },
           ],
           schema_options: Object.entries(this.schema_options).map(([id, value]) => ({
             id,
-            value,
+            value: value.toString(),
           })),
         })
         this.$emit('update', updatedPrice)
@@ -146,6 +146,7 @@ export default defineComponent({
 .product-price-form {
   &__row {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 8px;
   }

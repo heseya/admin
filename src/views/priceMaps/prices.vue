@@ -69,7 +69,9 @@ export default defineComponent({
           { key: 'name', label: this.$t('common.form.name').toString(), width: '1fr' },
           {
             key: 'price',
-            label: this.$t('common.price').toString(),
+            label: `${this.$t('common.price')} - ${this.priceMap?.currency} (${this.$t(
+              this.priceMap?.is_net ? 'common.net' : 'common.gross',
+            )})`,
             width: '2fr',
           },
           { key: 'action', label: '', width: '64px' },
@@ -82,7 +84,9 @@ export default defineComponent({
     this.filters = parseQueryToProductFilters(this.$route.query)
 
     this.$accessor.startLoading()
-    await this.$accessor.priceMaps.get(this.id)
+    // TODO: should be dedicated GET request
+    const data = await this.$accessor.priceMaps.fetch()
+    if (data) this.$accessor.priceMaps.SET_SELECTED(data.find((item) => item.id === this.id))
     this.$accessor.stopLoading()
   },
   methods: {

@@ -12,36 +12,42 @@
       @input="setDefault"
     >
       <draggable :value="options" :disabled="disabled" handle=".drag-icon" @input="setOptionsOrder">
-        <div v-for="(option, i) in options" :key="i" class="select-schema-options__option">
+        <div v-for="(option, i) in options" :key="i" class="schema-option">
           <i class="bx bx-grid-vertical drag-icon" :class="{ 'drag-icon--disabled': disabled }"></i>
-          <validated-input
-            :value="option.translations[editedLang]?.name || ''"
-            :disabled="disabled"
-            rules="required"
-            :label="$t('common.form.name')"
-            @input="setOptionName(i, $event)"
-          />
-          <CurrencyPriceForm
-            v-model="option.prices"
-            :disabled="option.default || disabled"
-            :label="$t('form.price').toString()"
-          />
-          <Autocomplete
-            v-model="options[i].items"
-            :disabled="disabled"
-            class="input"
-            type="products"
-            :label="$t('form.items').toString()"
-          />
-          <a-radio
-            :disabled="disabled"
-            :value="i"
-            name="radio-option-default"
-            class="radio-option-default"
-            @click="setDefault(i)"
-          >
-            {{ $t('default') }}
-          </a-radio>
+          <div class="schema-option__content">
+            <div class="schema-option__row">
+              <validated-input
+                :value="option.translations[editedLang]?.name || ''"
+                :disabled="disabled"
+                rules="required"
+                :label="$t('common.form.name')"
+                @input="setOptionName(i, $event)"
+              />
+              <Autocomplete
+                v-model="options[i].items"
+                :disabled="disabled"
+                class="input"
+                type="products"
+                :label="$t('form.items').toString()"
+              />
+              <a-radio
+                :disabled="disabled"
+                :value="i"
+                name="radio-option-default"
+                @click="setDefault(i)"
+              >
+                {{ $t('default') }}
+              </a-radio>
+            </div>
+            <div>
+              <h5>{{ $t('form.prices') }}</h5>
+              <CurrencyPriceForm
+                v-model="option.prices"
+                class="schema-option__prices"
+                :disabled="option.default || disabled"
+              />
+            </div>
+          </div>
           <icon-button
             size="small"
             type="danger"
@@ -69,7 +75,7 @@
     "default": "Domyślny",
     "form": {
       "items": "Przedmioty z magazynu",
-      "price": "Cena"
+      "prices": "Ceny"
     }
   },
   "en": {
@@ -78,7 +84,7 @@
     "default": "Default",
     "form": {
       "items": "Items from warehouse",
-      "price": "Price"
+      "prices": "Prices"
     }
   }
 }
@@ -185,102 +191,13 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .select-schema-options {
+  background-color: $background-color-500;
+  border: none;
+  padding: 16px;
+
   &__content {
     width: 100%;
-  }
-
-  &__option {
-    display: grid;
-    grid-gap: 8px;
-    grid-template-columns: 20px 1fr 1fr 1fr;
-    grid-template-areas:
-      'drag name name name'
-      '. price price price'
-      '. items items items'
-      '. onoff radio radio'
-      '. delete delete delete';
-    align-items: start;
-    justify-items: center;
     margin-bottom: 8px;
-
-    @media ($viewport-6) {
-      grid-template-areas:
-        'drag name name name'
-        '. price price price'
-        '. items items items'
-        '. onoff radio delete';
-    }
-
-    @media ($viewport-7) {
-      grid-template-areas:
-        'drag name price items'
-        '. onoff radio delete';
-    }
-
-    :deep(.app-input) {
-      margin-bottom: 0;
-    }
-
-    > * {
-      width: 100%;
-    }
-
-    .ant-radio-wrapper {
-      grid-area: radio;
-      display: flex;
-      align-items: center;
-      flex-direction: column-reverse;
-      font-size: 0.8em;
-
-      &.radio-option-default {
-        flex-direction: row;
-        justify-content: center;
-        margin: 0;
-      }
-    }
-
-    .drag-icon {
-      grid-area: drag;
-    }
-
-    .input-wrapper {
-      grid-area: name;
-    }
-
-    .app-input {
-      grid-area: price;
-    }
-
-    .autocomplete {
-      grid-area: items;
-    }
-
-    .switch-input {
-      grid-area: onoff;
-    }
-
-    .icon-button {
-      grid-area: delete;
-
-      @media ($viewport-7) {
-        width: fit-content;
-        justify-self: end;
-      }
-
-      &:deep(.icon-button__icon) {
-        @media ($max-viewport-7) {
-          width: 100%;
-          border-radius: 4px;
-        }
-      }
-    }
-
-    .ant-radio-wrapper.radio-option-default,
-    .switch-input {
-      @media ($viewport-7) {
-        justify-content: flex-start;
-      }
-    }
   }
 
   .drag-icon {
@@ -290,6 +207,74 @@ export default defineComponent({
     &--disabled {
       color: var(--gray-color-300);
       cursor: not-allowed;
+    }
+  }
+}
+
+.schema-option {
+  display: grid;
+  grid-template-columns: 20px 1fr 24px;
+  grid-gap: 8px;
+  align-items: start;
+  justify-items: center;
+  background-color: #fff;
+  border: solid 1px $background-color-700;
+  padding: 12px;
+  border-radius: 5px;
+  margin-bottom: 8px;
+
+  :deep(.app-input) {
+    margin-bottom: 0;
+  }
+
+  &__content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  &__row {
+    width: 100%;
+    display: grid;
+    align-items: center;
+    grid-template-columns: 1fr;
+    gap: 8px;
+
+    @media ($viewport-4) {
+      grid-template-columns: 1fr 0.5fr;
+    }
+
+    > *:first-child {
+      @media ($viewport-4) {
+        grid-column: span 2;
+      }
+
+      @media ($viewport-9) {
+        grid-column: span 1;
+      }
+    }
+
+    @media ($viewport-9) {
+      grid-template-columns: 1fr 1fr 0.5fr;
+    }
+
+    > * {
+      width: 100%;
+    }
+  }
+
+  &__prices {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+
+    @media ($viewport-4) {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    @media ($viewport-9) {
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     }
   }
 }

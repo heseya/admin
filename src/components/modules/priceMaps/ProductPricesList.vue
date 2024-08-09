@@ -183,41 +183,6 @@ export default defineComponent({
         this.meta = data.pagination
       } catch (e: any) {
         this.error = e
-
-        // TODO: remove mock
-        if (!this.items.length)
-          this.items = Array.from(
-            { length: 10 },
-            (): PriceMapPrice => ({
-              id: Math.random().toString().replace('0.', ''),
-              product_id: Math.random().toString().replace('0.', ''),
-              product_name: 'Product Name',
-              product_price: '222',
-              schema_options: [
-                {
-                  schema_id: 'uuid1',
-                  schema_option_id: Math.random().toString().replace('0.', ''),
-                  schema_name: 'Schemat 1',
-                  schema_option_name: 'Opcja 1',
-                  schema_option_price: '223',
-                },
-                {
-                  schema_id: 'uuid1',
-                  schema_option_id: Math.random().toString().replace('0.', ''),
-                  schema_name: 'Schemat 1',
-                  schema_option_name: 'Opcja 2',
-                  schema_option_price: '3423',
-                },
-                {
-                  schema_id: 'uuid2',
-                  schema_option_id: Math.random().toString().replace('0.', ''),
-                  schema_name: 'Schemat 2',
-                  schema_option_name: 'Opcja 1',
-                  schema_option_price: '45',
-                },
-              ],
-            }),
-          )
       }
 
       this.isLoading = false

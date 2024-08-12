@@ -23,7 +23,9 @@
       :default-option="defaultOption ?? undefined"
       :disabled="disabled"
       :edited-lang="editedLang"
-      @set-default="(v) => (defaultOption = v)"
+      :prices="pricesForm"
+      @update:prices="pricesForm = $event"
+      @set-default="defaultOption = $event"
     />
 
     <br />
@@ -121,7 +123,13 @@
 import { defineComponent, PropType } from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import { ValidationObserver } from 'vee-validate'
-import { Schema, SchemaOptionDto, SchemaCreateDto } from '@heseya/store-core'
+import {
+  Schema,
+  SchemaOptionDto,
+  SchemaCreateDto,
+  SchemaUpdateDto,
+  PriceMapSchemaPrice,
+} from '@heseya/store-core'
 import isNil from 'lodash/isNil'
 
 import SelectSchemaOptions from '@/components/modules/schemas/SelectSchemaOptions.vue'
@@ -136,6 +144,9 @@ import {
   CLEAR_SCHEMA_TRANSLATION,
 } from '@/consts/schemaConsts'
 import { mapPricesToDto } from '@/utils/currency'
+import { formatApiNotificationError } from '@/utils/errors'
+
+import { sdk } from '@/api'
 
 export default defineComponent({
   components: {
@@ -158,7 +169,8 @@ export default defineComponent({
   },
   data: () => ({
     editedLang: 'pl',
-    form: cloneDeep(CLEAR_SCHEMA) as SchemaCreateDto & { id?: string },
+    form: cloneDeep(CLEAR_SCHEMA) as SchemaCreateDto & SchemaUpdateDto,
+    pricesForm: [] as PriceMapSchemaPrice[],
     defaultOption: null as number | null,
     isUsedSchemaModalActive: false,
     usedSchemaName: '',
@@ -180,28 +192,33 @@ export default defineComponent({
         this.form.translations[this.editedLang].name = value
       },
     },
+    defaultOptionId(): string | null {
+      // @ts-expect-error id of the option is not typed, as its not required in the update
+      return this.defaultOption !== null ? this.form.options[this.defaultOption]?.id : null
+    },
   },
   watch: {
     defaultOption(defaultOption: number | null) {
       if (isNil(defaultOption)) return
       this.form.options = this.form.options.map((v: any) => ({ ...v, default: false }))
-      // TODO: fix typing, in this component actually default is a custom field in SchemaOptionDto
       this.form.options[defaultOption].default = true
+
+      // set prices of the default option to 0
+      this.pricesForm = this.pricesForm.map((priceEntry) => ({
+        ...priceEntry,
+        options: priceEntry.options.map((option) => ({
+          ...option,
+          price: option.id === this.defaultOptionId ? '0' : option.price,
+        })),
+      }))
     },
-    'form.used_schemas.0'(schema: Schema) {
-      // ! This is buggy, and somehow works only on init
-      const newName =
-        [...this.currentProductSchemas, ...this.$store.state.schemas.data].find(
-          ({ id }) => id === schema,
-        )?.name || schema
-      this.usedSchemaName = newName
+    schema: {
+      handler(schema: Schema) {
+        this.initSchemaForm(schema)
+        this.fetchPrices()
+      },
+      immediate: true,
     },
-    schema(schema) {
-      this.initSchemaForm(schema)
-    },
-  },
-  created() {
-    this.initSchemaForm(this.schema)
   },
   methods: {
     setEditedLang(langId: string) {
@@ -244,6 +261,23 @@ export default defineComponent({
       })
     },
 
+    async fetchPrices() {
+      if (!this.schema.id) return
+      try {
+        this.pricesForm = await sdk.Schemas.getPrices(this.schema.id)
+      } catch (e: any) {
+        this.$toast.error(formatApiNotificationError(e))
+      }
+    },
+
+    async savePrices() {
+      try {
+        this.pricesForm = await sdk.Schemas.updatePrices(this.schema.id, this.pricesForm)
+      } catch (e: any) {
+        this.$toast.error(formatApiNotificationError(e))
+      }
+    },
+
     async submit() {
       this.$accessor.startLoading()
       try {
@@ -253,7 +287,7 @@ export default defineComponent({
 
         const options = this.form.options.map((opt: any) => ({
           ...opt,
-          items: opt.items.map((item: any) => item.id),
+          items: opt.items.map((item: any) => item?.id || item),
         }))
 
         if (!this.form?.id) {
@@ -267,6 +301,9 @@ export default defineComponent({
         } else {
           // Metadata can be saved only after product is created
           await this.saveMetadata(this.form.id)
+
+          // Prices can be saved only after product is created
+          await this.savePrices()
 
           const success = await this.$accessor.schemas.update({
             id: this.form.id,

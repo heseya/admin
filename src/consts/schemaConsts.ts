@@ -18,8 +18,6 @@ export const CLEAR_SCHEMA_OPTION_TRANSLATION: TranslationsFromDto<SchemaOptionDt
 
 export const CLEAR_SCHEMA: SchemaCreateDto = {
   required: true,
-  // TODO: this should not be here?
-  available: true,
   default: '',
   used_schemas: [],
   options: [],

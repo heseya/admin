@@ -250,7 +250,6 @@ import { sdk } from '@/api'
 import { UUID } from '@/interfaces/UUID'
 import { ProductComponentForm } from '@/interfaces/Product'
 import { TranslationsFromDto } from '@/interfaces/Translations'
-import { mapPricesToDto } from '@/utils/currency'
 import { SETTINGS_KEYS } from '@/consts/featureFlags'
 
 const EMPTY_PRODUCT_TRANSLATIONS: TranslationsFromDto<ProductCreateDto> = {
@@ -261,7 +260,6 @@ const EMPTY_PRODUCT_TRANSLATIONS: TranslationsFromDto<ProductCreateDto> = {
 
 const EMPTY_FORM: ProductComponentForm = {
   slug: '',
-  prices_base: [],
   name: '',
   description_html: '',
   description_short: '',
@@ -379,7 +377,6 @@ export default defineComponent({
           purchase_limit_per_user: product.purchase_limit_per_user || 0,
           seo: product.seo || {},
           translations: product.translations || {},
-          prices_base: mapPricesToDto(product.prices_base),
         }
         this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
       }

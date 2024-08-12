@@ -41,11 +41,13 @@
             </div>
             <div>
               <h5>{{ $t('form.prices') }}</h5>
-              <CurrencyPriceForm
-                v-model="option.prices"
+              <SchemaOptionPriceForm
+                v-if="option.id"
+                v-model="pricesForm[option.id]"
                 class="schema-option__prices"
                 :disabled="option.default || disabled"
               />
+              <small v-else>{{ $t('noPricesForNewOptionsInfo') }}</small>
             </div>
           </div>
           <icon-button
@@ -76,7 +78,8 @@
     "form": {
       "items": "Przedmioty z magazynu",
       "prices": "Ceny"
-    }
+    },
+    "noPricesForNewOptionsInfo": "Aby uzupełnić ceny dla nowych opcji, najpierw zapisz formularz"
   },
   "en": {
     "title": "Select options",
@@ -85,7 +88,8 @@
     "form": {
       "items": "Items from warehouse",
       "prices": "Prices"
-    }
+    },
+    "noPricesForNewOptionsInfo": "To fill in prices for new options, first save the form"
   }
 }
 </i18n>
@@ -94,13 +98,17 @@
 import { defineComponent, PropType } from 'vue'
 import Draggable from 'vuedraggable'
 import cloneDeep from 'lodash/cloneDeep'
-import { SchemaOptionDto } from '@heseya/store-core'
+import { SchemaOptionDto, PriceMapSchemaPrice } from '@heseya/store-core'
 
 import Zone from '@/components/layout/Zone.vue'
 import Autocomplete from '@/components/Autocomplete.vue'
-import CurrencyPriceForm from '@/components/CurrencyPriceForm.vue'
+import SchemaOptionPriceForm, { PriceMapSchemaOptionPrice } from './SchemaOptionPriceForm.vue'
 
 import { CLEAR_SCHEMA_OPTION, CLEAR_SCHEMA_OPTION_TRANSLATION } from '@/consts/schemaConsts'
+
+interface InnerSchemaOptionDto extends SchemaOptionDto {
+  id?: string
+}
 
 export default defineComponent({
   name: 'SelectSchemaOptions',
@@ -108,7 +116,7 @@ export default defineComponent({
     Zone,
     Autocomplete,
     Draggable,
-    CurrencyPriceForm,
+    SchemaOptionPriceForm,
   },
   props: {
     defaultOption: {
@@ -120,17 +128,26 @@ export default defineComponent({
       required: true,
     },
     value: {
-      type: Array as PropType<SchemaOptionDto[]>,
+      type: Array as PropType<InnerSchemaOptionDto[]>,
+      required: true,
+    },
+    prices: {
+      type: Array as PropType<PriceMapSchemaPrice[]>,
       required: true,
     },
     disabled: { type: Boolean, default: false },
   },
+
+  data: () => ({
+    pricesForm: {} as Record<string, PriceMapSchemaOptionPrice[]>,
+  }),
+
   computed: {
     options: {
-      get(): SchemaOptionDto[] {
+      get(): InnerSchemaOptionDto[] {
         return this.value
       },
-      set(v: SchemaOptionDto[]) {
+      set(v: InnerSchemaOptionDto[]) {
         this.$emit('input', v)
       },
     },
@@ -147,6 +164,60 @@ export default defineComponent({
             }))
           }
         }
+      },
+      deep: true,
+    },
+
+    prices: {
+      handler() {
+        this.pricesForm = this.options.reduce(
+          (acc, option): Record<string, PriceMapSchemaOptionPrice[]> => {
+            if (!option.id) return acc
+            const prices = this.prices.reduce((acc, price) => {
+              const optionPrice = price.options.find((o) => o.id === option.id)
+              return optionPrice
+                ? [
+                    ...acc,
+                    {
+                      ...price,
+                      options: undefined,
+                      price: optionPrice.price,
+                    },
+                  ]
+                : acc
+            }, [] as PriceMapSchemaOptionPrice[])
+            return {
+              ...acc,
+              [option.id]: prices,
+            }
+          },
+          {},
+        )
+      },
+      deep: true,
+      immediate: true,
+    },
+
+    pricesForm: {
+      handler() {
+        const schemaPrices: PriceMapSchemaPrice[] = this.prices.map((price) => ({
+          ...price,
+          options: Object.entries(this.pricesForm).reduce(
+            (acc, [optionId, mapPrices]) => [
+              ...acc,
+              {
+                id: optionId,
+                price:
+                  mapPrices.find((p) => p.price_map_id === price.price_map_id)?.price?.toString() ||
+                  '0',
+              },
+            ],
+            [] as { id: string; price: string }[],
+          ),
+        }))
+
+        if (JSON.stringify(schemaPrices) !== JSON.stringify(this.prices))
+          this.$emit('update:prices', schemaPrices)
       },
       deep: true,
     },

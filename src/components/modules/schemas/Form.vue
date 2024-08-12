@@ -220,7 +220,14 @@ export default defineComponent({
         ? cloneDeep({
             ...CLEAR_SCHEMA,
             ...schema,
-            options: schema.options.map((o) => ({ ...o, prices: mapPricesToDto(o.prices) })),
+            options: schema.options.map(
+              (o): SchemaOptionDto => ({
+                ...o,
+                prices: mapPricesToDto(o.prices),
+                items: o.items.map((i) => i.id),
+                translations: o.translations || {},
+              }),
+            ),
           })
         : cloneDeep({
             ...CLEAR_SCHEMA,

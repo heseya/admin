@@ -102,6 +102,7 @@ export default defineComponent({
     isLoading: false,
     isInitiallyFetched: false,
     searchedOptions: [] as AutocompleteBaseItem[],
+    initialValueOptions: [] as AutocompleteBaseItem[],
   }),
   computed: {
     SelectType(): typeof SelectType {
@@ -123,7 +124,7 @@ export default defineComponent({
     multiOptionsIds: {
       get(): AutocompleteBaseItem[] {
         if (this.propMode)
-          return this.searchedOptions.filter((option) =>
+          return [...this.initialValueOptions, ...this.searchedOptions].filter((option) =>
             (this.value as string[]).includes(String(option[this.propMode])),
           )
         return this.value as AutocompleteBaseItem[]
@@ -150,27 +151,32 @@ export default defineComponent({
       }
     },
     options(): AutocompleteBaseItem[] {
-      if (this.mode === this.SelectType.Multiple)
+      if (this.mode === this.SelectType.Multiple) {
         return (
-          uniqBy([...this.multiOptionsIds, ...this.searchedOptions], this.propMode || 'id').filter(
-            (item) => !this.bannedSetIds.includes(item.id),
-          ) || []
+          uniqBy(
+            [...this.initialValueOptions, ...this.multiOptionsIds, ...this.searchedOptions],
+            this.propMode || 'id',
+          ).filter((item) => !this.bannedSetIds.includes(item.id)) || []
         )
-      else
+      } else
         return (
-          uniqBy([...this.searchedOptions], this.propMode || 'id').filter(
-            (item) => !this.bannedSetIds.includes(item.id),
-          ) || []
+          uniqBy(
+            [...this.initialValueOptions, ...this.searchedOptions],
+            this.propMode || 'id',
+          ).filter((item) => !this.bannedSetIds.includes(item.id)) || []
         )
     },
   },
   mounted() {
     this.observer = new IntersectionObserver(
-      ([entry]) => {
+      async ([entry]) => {
         const isVisible = entry.isIntersecting
 
         if (isVisible && !this.isInitiallyFetched) {
-          this.fetchItems()
+          this.isLoading = true
+          this.isInitiallyFetched = true
+          await Promise.all([this.fetchInitialItems(), this.fetchItems()])
+          this.isLoading = false
         }
       },
       {
@@ -185,8 +191,10 @@ export default defineComponent({
     this.observer?.disconnect()
   },
   methods: {
-    onSearch: debounce(function (this: any, search: string) {
+    onSearch: debounce(async function (this: any, search: string) {
+      this.isLoading = true
       this.fetchItems(search)
+      this.isLoading = false
     }, 500),
 
     onInput(v: any) {
@@ -211,15 +219,37 @@ export default defineComponent({
     },
 
     async fetchItems(search: string = '') {
-      this.isLoading = true
-      const query = stringifyQueryParams({ search, limit: this.limit, lang_fallback: 'any' })
-      const {
-        data: { data: data },
-      } = await api.get<{ data: AutocompleteBaseItem[] }>(`/${this.modelUrl}${query}`)
+      try {
+        const query = stringifyQueryParams({ search, limit: this.limit, lang_fallback: 'any' })
+        const {
+          data: { data: data },
+        } = await api.get<{ data: AutocompleteBaseItem[] }>(`/${this.modelUrl}${query}`)
 
-      this.searchedOptions = data
-      this.isInitiallyFetched = true
-      this.isLoading = false
+        this.searchedOptions = data
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error(e)
+      }
+    },
+
+    async fetchInitialItems() {
+      try {
+        const query = stringifyQueryParams({
+          ids: this.value,
+          limit: 500,
+          lang_fallback: 'any',
+        })
+        const {
+          data: { data: data },
+        } = await api.get<{ data: AutocompleteBaseItem[] }>(`/${this.modelUrl}${query}`)
+
+        this.initialValueOptions = data
+
+        this.$forceUpdate()
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error(e)
+      }
     },
   },
 })

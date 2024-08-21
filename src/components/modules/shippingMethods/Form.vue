@@ -155,15 +155,17 @@
         prop-mode="id"
         model-url="products"
         :disabled="disabled"
-        :rules="{ required: !form.is_block_list_products }"
+        :rules="{ required: !form.is_block_list_products && !form.product_set_ids?.length }"
       />
+
       <AutocompleteInput
         v-model="form.product_set_ids"
         prop-mode="id"
         model-url="product-sets"
         :label="$t('form.productSets').toString()"
         :disabled="disabled"
-        :rules="{ required: !form.is_block_list_products }"
+        :limit="500"
+        :rules="{ required: !form.is_block_list_products && !form.product_ids?.length }"
       />
 
       <template v-if="form.shipping_type === ShippingType.Point">

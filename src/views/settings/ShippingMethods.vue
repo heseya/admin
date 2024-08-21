@@ -256,7 +256,7 @@ export default defineComponent({
             width: '1fr',
             render: (_, method) =>
               formatPrice(
-                method.prices.find((p) => p.currency === this.$accessor.config.currency) || {
+                method.prices?.find((p) => p.currency === this.$accessor.config.currency) || {
                   gross: '0',
                   net: '0',
                   currency: this.$accessor.config.currency,

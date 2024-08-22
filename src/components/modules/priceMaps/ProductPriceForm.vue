@@ -52,6 +52,8 @@ import groupBy from 'lodash/groupBy'
 import debounce from 'lodash/debounce'
 import { PriceMapPrice, PriceMapProductSchemaPrice } from '@heseya/store-core'
 
+import { formatApiNotificationError } from '@/utils/errors'
+
 import { sdk } from '@/api'
 
 export default defineComponent({
@@ -127,8 +129,10 @@ export default defineComponent({
         })
         this.$emit('update', updatedPrice)
         this.$toast.error(this.$t('updateSuccess').toString())
-      } catch (e) {
-        this.$toast.error(this.$t('updateError').toString())
+      } catch (e: any) {
+        // eslint-disable-next-line no-console
+        console.error(e)
+        this.$toast.error(`${this.$t('updateError')}: ${formatApiNotificationError(e)}`)
       }
       this.isLoading = false
     },

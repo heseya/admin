@@ -108,13 +108,14 @@ export default defineComponent({
     SelectType(): typeof SelectType {
       return SelectType
     },
+    allOptions(): AutocompleteBaseItem[] {
+      return uniqBy([...this.initialValueOptions, ...this.searchedOptions], this.propMode || 'id')
+    },
     singleOptionId: {
       get(): AutocompleteBaseItem | undefined {
         if (isEmpty(this.value)) return undefined
         if (this.propMode)
-          return this.searchedOptions.find(
-            (option) => option[this.propMode] === (this.value as string),
-          )
+          return this.allOptions.find((option) => option[this.propMode] === (this.value as string))
         return (this.value as AutocompleteBaseItem[])?.[0] || this.value
       },
       set(v: AutocompleteBaseItem) {
@@ -124,7 +125,7 @@ export default defineComponent({
     multiOptionsIds: {
       get(): AutocompleteBaseItem[] {
         if (this.propMode)
-          return [...this.initialValueOptions, ...this.searchedOptions].filter((option) =>
+          return this.allOptions.filter((option) =>
             (this.value as string[]).includes(String(option[this.propMode])),
           )
         return this.value as AutocompleteBaseItem[]
@@ -153,18 +154,11 @@ export default defineComponent({
     options(): AutocompleteBaseItem[] {
       if (this.mode === this.SelectType.Multiple) {
         return (
-          uniqBy(
-            [...this.initialValueOptions, ...this.multiOptionsIds, ...this.searchedOptions],
-            this.propMode || 'id',
-          ).filter((item) => !this.bannedSetIds.includes(item.id)) || []
+          uniqBy([...this.allOptions, ...this.multiOptionsIds], this.propMode || 'id').filter(
+            (item) => !this.bannedSetIds.includes(item.id),
+          ) || []
         )
-      } else
-        return (
-          uniqBy(
-            [...this.initialValueOptions, ...this.searchedOptions],
-            this.propMode || 'id',
-          ).filter((item) => !this.bannedSetIds.includes(item.id)) || []
-        )
+      } else return this.allOptions.filter((item) => !this.bannedSetIds.includes(item.id)) || []
     },
   },
   mounted() {
@@ -226,7 +220,7 @@ export default defineComponent({
         } = await api.get<{ data: AutocompleteBaseItem[] }>(`/${this.modelUrl}${query}`)
 
         this.searchedOptions = data
-      } catch (e) {
+      } catch (e: any) {
         this.$toast.warning(`Failed to fetch model "${this.modelUrl}": ${e.message}`)
       }
     },

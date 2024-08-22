@@ -39,9 +39,9 @@
       />
 
       <OrganizationSalesChannel
-        v-if="organization"
+        v-if="salesChannel"
         class="b2b-organization-grid__sales-channel"
-        :organization="organization"
+        :sales-channel="salesChannel"
         @edit="isEditModalActive = true"
         @updated="updateOrganizationSalesChannel"
       />
@@ -110,11 +110,15 @@ export default defineComponent({
   data: () => ({
     isEditModalActive: false,
     organization: null as Organization | null,
+    salesChannel: null as SalesChannel | null,
   }),
 
   async created() {
     await this.$accessor.b2bOrganizations.get(this.$route.params.id)
     this.organization = this.$accessor.b2bOrganizations.getSelected || ({} as Organization)
+
+    await this.$accessor.salesChannels.get(this.organization.sales_channel.id)
+    this.salesChannel = this.$accessor.salesChannels.getSelected || ({} as SalesChannel)
   },
 
   methods: {
@@ -136,7 +140,7 @@ export default defineComponent({
       this.isEditModalActive = false
     },
     updateOrganizationSalesChannel(salesChannel: SalesChannel) {
-      if (this.organization) this.organization.sales_channel = salesChannel
+      this.salesChannel = salesChannel
     },
   },
 })

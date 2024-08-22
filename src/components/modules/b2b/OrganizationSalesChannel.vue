@@ -4,7 +4,7 @@
       <form class="org-sales-channels" @submit.prevent="handleSubmit(onSubmit)">
         <top-nav
           tag="h2"
-          :title="`${$t('title')}: ${organization.sales_channel.name}`"
+          :title="`${$t('title')}: ${salesChannel.name}`"
           class="org-sales-channels__nav"
         >
           <icon-button size="small" type="primary" @click="$emit('edit')">
@@ -48,7 +48,6 @@
           mode="multiple"
           prop-mode="id"
           model-url="shipping-methods"
-          rules="required"
           :label="$t('form.shipping_methods').toString()"
         />
         <AutocompleteInput
@@ -56,7 +55,6 @@
           mode="multiple"
           prop-mode="id"
           model-url="payment-methods"
-          rules="required"
           :label="$t('form.payment_methods').toString()"
         />
 
@@ -110,7 +108,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { Organization, SalesChannelUpdateDto } from '@heseya/store-core'
+import { SalesChannel, SalesChannelUpdateDto } from '@heseya/store-core'
 import { ValidationObserver } from 'vee-validate'
 
 import Card from '@/components/layout/Card.vue'
@@ -122,8 +120,8 @@ import Loading from '@/components/layout/Loading.vue'
 export default defineComponent({
   components: { ValidationObserver, TopNav, Card, IconButton, AutocompleteInput, Loading },
   props: {
-    organization: {
-      type: Object as PropType<Organization>,
+    salesChannel: {
+      type: Object as PropType<SalesChannel>,
       required: true,
     },
   },
@@ -139,14 +137,16 @@ export default defineComponent({
   }),
 
   watch: {
-    organization: {
-      handler(org: Organization) {
-        this.form.price_map_id = org.sales_channel.price_map?.id ?? ''
-        this.form.vat_rate = org.sales_channel.vat_rate ?? ''
-        this.form.language_id = org.sales_channel.language?.id ?? ''
-        this.form.shipping_method_ids = org.sales_channel.shipping_methods?.map((sm) => sm.id) ?? []
-        this.form.payment_method_ids = org.sales_channel.payment_methods?.map((pm) => pm.id) ?? []
-        this.form.default = org.sales_channel.default ?? false
+    salesChannel: {
+      handler(salesChannel: SalesChannel) {
+        if (!salesChannel) return
+
+        this.form.price_map_id = salesChannel.price_map?.id ?? ''
+        this.form.vat_rate = salesChannel.vat_rate ?? ''
+        this.form.language_id = salesChannel.language?.id ?? ''
+        this.form.shipping_method_ids = salesChannel.shipping_methods?.map((sm) => sm.id) ?? []
+        this.form.payment_method_ids = salesChannel.payment_methods?.map((pm) => pm.id) ?? []
+        this.form.default = salesChannel.default ?? false
       },
       immediate: true,
     },
@@ -156,7 +156,7 @@ export default defineComponent({
     async onSubmit() {
       this.isLoading = true
       const result = await this.$accessor.salesChannels.update({
-        id: this.organization.sales_channel.id,
+        id: this.salesChannel.id,
         item: this.form,
       })
 

@@ -117,6 +117,7 @@ export default defineComponent({
   },
 
   methods: {
+    // TODO: WRONG TYPE! WRONG DATA! FIXME!
     formatPrice(prices: Price[]) {
       const amount = parsePrices(prices, this.$accessor.config.currency)
       return formatCurrency(amount, this.$accessor.config.currency)

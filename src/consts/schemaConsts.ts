@@ -1,24 +1,20 @@
-import { SchemaOptionDto, WarehouseItem, SchemaCreateDto } from '@heseya/store-core'
+import { WarehouseItem, SchemaCreateDto, SchemaOptionCreateDto } from '@heseya/store-core'
 import { TranslationsFromDto } from '@/interfaces/Translations'
 
-export const CLEAR_SCHEMA_OPTION: SchemaOptionDto & {
+export const CLEAR_SCHEMA_OPTION: SchemaOptionCreateDto & {
   items: WarehouseItem[]
-  default: boolean
 } = {
   default: false,
-  available: false,
-  prices: [],
   items: [],
   translations: {},
 }
 
-export const CLEAR_SCHEMA_OPTION_TRANSLATION: TranslationsFromDto<SchemaOptionDto> = {
+export const CLEAR_SCHEMA_OPTION_TRANSLATION: TranslationsFromDto<SchemaOptionCreateDto> = {
   name: '',
 }
 
 export const CLEAR_SCHEMA: SchemaCreateDto = {
   required: true,
-  default: '',
   used_schemas: [],
   options: [],
   published: [],

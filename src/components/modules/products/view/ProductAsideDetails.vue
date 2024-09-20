@@ -7,12 +7,12 @@
     <div class="product-aside-details__row">
       <h2 class="product-page__subtitle">
         {{ $t('availability.title') }}
-        <info-tooltip :text="$t('availability.tooltip').toString()" />
+        <info-tooltip :text="$t('availability.tooltip')" />
       </h2>
       <boolean-tag
         :value="product.available"
-        :true-text="$t('availability.available').toString()"
-        :false-text="$t('availability.unavailable').toString()"
+        :true-text="$t('availability.available')"
+        :false-text="$t('availability.unavailable')"
       />
     </div>
     <div class="product-aside-details__row">
@@ -33,7 +33,7 @@
             {{ sale.name }} (-{{
               sale.percentage !== null
                 ? `${parseFloat(sale.percentage)}%`
-                : formatPrice(sale.amounts)
+                : formatSaleAmount(sale.amounts)
             }})
           </tag>
         </a>
@@ -72,7 +72,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { Product, Price, parsePrices } from '@heseya/store-core'
+import { Product, parsePriceDtos } from '@heseya/store-core'
 
 import { ProductComponentForm } from '@/interfaces/Product'
 import ProductVisibilitySwitch from './ProductVisibilitySwitch.vue'
@@ -117,13 +117,14 @@ export default defineComponent({
   },
 
   methods: {
-    // TODO: WRONG TYPE! WRONG DATA! FIXME!
-    formatPrice(prices: Price[]) {
-      const amount = parsePrices(prices, this.$accessor.config.currency)
+    formatSaleAmount(saleAmounts: { currency: string; value: string }[]) {
+      const amount = parsePriceDtos(saleAmounts, this.$accessor.config.currency)
       return formatCurrency(amount, this.$accessor.config.currency)
     },
 
     async fetchSales() {
+      if (!this.product) return
+
       try {
         const sales = await sdk.Products.getProductSales(this.product.id)
         this.sales = sales

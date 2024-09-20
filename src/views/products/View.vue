@@ -7,7 +7,7 @@
       <template #title>
         <template v-if="!isNew">
           <div>
-            <span class="gray-text">{{ $t('title') }}&nbsp;</span>{{ product.name }}
+            <span class="gray-text">{{ $t('title') }}&nbsp;</span>{{ product?.name }}
           </div>
         </template>
         <template v-else>
@@ -16,7 +16,7 @@
       </template>
 
       <icon-button
-        v-if="highlightedAttributeSlug && product.attributes"
+        v-if="highlightedAttributeSlug && product?.attributes"
         @click="copyHighlightedAttribute"
       >
         <template #icon>
@@ -35,9 +35,9 @@
       <PopConfirm
         v-if="!isNew"
         v-can="$p.Products.Remove"
-        :title="$t('deleteConfirm').toString()"
-        :ok-text="$t('common.delete').toString()"
-        :cancel-text="$t('common.cancel').toString()"
+        :title="$t('deleteConfirm')"
+        :ok-text="$t('common.delete')"
+        :cancel-text="$t('common.cancel')"
         @confirm="deleteProduct"
       >
         <icon-button type="danger" data-cy="delete-btn">
@@ -331,7 +331,7 @@ export default defineComponent({
       return this.id === 'create'
     },
     product(): Product {
-      return this.$accessor.products.getSelected || ({} as any)
+      return this.$accessor.products.getSelected ?? {}
     },
     error(): any {
       return this.$accessor.products.getError
@@ -342,7 +342,7 @@ export default defineComponent({
 
     storefrontProductUrl(): string | null {
       const base = this.$accessor.config.env[SETTINGS_KEYS.StorefrontProductUrl]
-      if (!base || !this.product.slug) return null
+      if (!base || !this.product?.slug) return null
 
       return new URL(`/product/${this.product.slug}`, base).toString()
     },
@@ -352,7 +352,7 @@ export default defineComponent({
     },
     highlightedAttributeValue(): string {
       return (
-        this.product.attributes?.find(
+        this.product?.attributes?.find(
           (attribute) => attribute.slug === this.highlightedAttributeSlug,
         )?.selected_options[0]?.name || this.$i18n.t('common.none').toString()
       )
@@ -432,6 +432,7 @@ export default defineComponent({
         const prices = await sdk.Products.getPrices(this.$route.params.id)
 
         // TODO: remove this fix, API returns price with currency
+        // TODO: check it!
         const fixedPrices = prices.map((p) => ({ ...p, price: p.price.split(' ').at(-1)! }))
 
         this.pricesForm = fixedPrices
@@ -510,7 +511,7 @@ export default defineComponent({
         // After form submitting isDirty should be reset
         // this.isDirty = false
 
-        if (item.id !== this.product.id) {
+        if (item.id !== this.product?.id) {
           this.$router.push(`/products/${item.id}`)
         }
       } catch (error) {

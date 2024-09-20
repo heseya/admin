@@ -22,22 +22,22 @@
       class="order-cart__export-btn"
       :items="order.products"
       :xlsx-file-config="xlsxFileConfig"
-      :text="$t('export.btn').toString()"
+      :text="$t('export.btn')"
     />
 
     <div class="order-cart__summary">
-      <field :label="$t('summary.cart').toString()" horizontal>
-        {{ formatCurrency(order.cart_total_initial) }}
+      <field :label="$t('summary.cart')" horizontal>
+        {{ formatCurrency(order.cart_total_initial.net) }}
       </field>
-      <field :label="$t('summary.shipping').toString()" horizontal>
+      <field :label="$t('summary.shipping')" horizontal>
         <div class="discount-summary">
           <span class="discount-summary__total">
-            {{ formatCurrency(order.shipping_price) }}
+            {{ formatCurrency(order.shipping_price.net) }}
           </span>
-          <info-tooltip v-if="order.shipping_price !== order.shipping_price_initial">
+          <info-tooltip v-if="order.shipping_price.net !== order.shipping_price_initial.net">
             <b>
               {{ $t('summary.baseShipping') }}:
-              {{ formatCurrency(order.shipping_price_initial) }}
+              {{ formatCurrency(order.shipping_price_initial.net) }}
             </b>
             <OrderDiscountSummary
               :discounts="order.discounts"
@@ -49,7 +49,7 @@
       </field>
       <field
         v-if="order.discounts && totalDiscount > 0"
-        :label="$t('summary.discounts').toString()"
+        :label="$t('summary.discounts')"
         horizontal
       >
         <div class="discount-summary">
@@ -69,8 +69,8 @@
           </info-tooltip>
         </div>
       </field>
-      <field class="order-cart__summary-total" :label="$t('summary.total').toString()" horizontal>
-        {{ formatCurrency(order.summary) }}
+      <field class="order-cart__summary-total" :label="$t('summary.total')" horizontal>
+        {{ formatCurrency(order.summary.net) }}
       </field>
       <SummaryPayment :order="order" />
     </div>
@@ -219,10 +219,16 @@ export default defineComponent({
           {
             key: 'price_initial',
             label: this.$t('export.priceInitial') as string,
+            format(k) {
+              return k.net
+            },
           },
           {
             key: 'price',
             label: this.$t('export.price') as string,
+            format(k) {
+              return k.net
+            },
           },
           {
             key: 'quantity',
@@ -233,7 +239,7 @@ export default defineComponent({
             key: 'total',
             label: this.$t('export.total') as string,
             format(_k, item) {
-              return parseFloat(item.price) * item.quantity
+              return parseFloat(item.price.net) * item.quantity
             },
           },
           {

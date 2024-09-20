@@ -1,6 +1,6 @@
 <template>
   <div class="narrower-page">
-    <TopNav :title="!isNew ? priceMap.name : $t('newTitle').toString()">
+    <TopNav :title="!isNew ? priceMap.name : $t('newTitle')">
       <icon-button :disabled="isNew" :to="`/settings/price-maps/${priceMap.id}/prices`">
         <template #icon>
           <i class="bx bx-list-ul"></i>
@@ -10,9 +10,9 @@
       <PopConfirm
         v-if="!isNew"
         v-can="$p.PriceMaps.Remove"
-        :title="$t('deleteText').toString()"
-        :ok-text="$t('common.delete').toString()"
-        :cancel-text="$t('common.cancel').toString()"
+        :title="$t('deleteText')"
+        :ok-text="$t('common.delete')"
+        :cancel-text="$t('common.cancel')"
         @confirm="deleteEntity"
       >
         <icon-button type="danger">

@@ -28,7 +28,7 @@
                 :disabled="disabled"
                 class="input"
                 type="products"
-                :label="$t('form.items').toString()"
+                :label="$t('form.items')"
               />
               <a-radio
                 :disabled="disabled"
@@ -98,7 +98,7 @@
 import { defineComponent, PropType } from 'vue'
 import Draggable from 'vuedraggable'
 import cloneDeep from 'lodash/cloneDeep'
-import { SchemaOptionDto, PriceMapSchemaPrice } from '@heseya/store-core'
+import { PriceMapSchemaPrice, SchemaOptionCreateDto } from '@heseya/store-core'
 
 import Zone from '@/components/layout/Zone.vue'
 import Autocomplete from '@/components/Autocomplete.vue'
@@ -106,7 +106,7 @@ import SchemaOptionPriceForm, { PriceMapSchemaOptionPrice } from './SchemaOption
 
 import { CLEAR_SCHEMA_OPTION, CLEAR_SCHEMA_OPTION_TRANSLATION } from '@/consts/schemaConsts'
 
-interface InnerSchemaOptionDto extends SchemaOptionDto {
+interface InnerSchemaOptionDto extends SchemaOptionCreateDto {
   id?: string
 }
 
@@ -143,6 +143,9 @@ export default defineComponent({
   }),
 
   computed: {
+    /**
+     * This is external form.options (from parent component)
+     */
     options: {
       get(): InnerSchemaOptionDto[] {
         return this.value
@@ -155,50 +158,35 @@ export default defineComponent({
 
   watch: {
     options: {
-      handler(nVal: SchemaOptionDto[], oVal: SchemaOptionDto[]) {
-        for (let i = 0; i < nVal.length; i++) {
-          if (nVal[i].default !== oVal[i].default && nVal[i].default === true) {
-            nVal[i].prices = this.$accessor.config.currencies.map((c) => ({
-              value: '0',
-              currency: c.code,
-            }))
-          }
+      handler(nVal: InnerSchemaOptionDto[]) {
+        const optionIds = nVal.filter((o) => o.id).map((o) => o.id)
+        const priceFormIds = Object.keys(this.pricesForm)
+        if (priceFormIds.length !== optionIds.length) {
+          this.rebuildPricesForm()
         }
       },
       deep: true,
     },
 
     prices: {
+      /**
+       * `pricesForm` is internal form (for this component)
+       * this `prices` is external `pricesForm` (from parent component)
+       * In this place we copy external form to internal form
+       */
       handler() {
-        this.pricesForm = this.options.reduce(
-          (acc, option): Record<string, PriceMapSchemaOptionPrice[]> => {
-            if (!option.id) return acc
-            const prices = this.prices.reduce((acc, price) => {
-              const optionPrice = price.options.find((o) => o.id === option.id)
-              return optionPrice
-                ? [
-                    ...acc,
-                    {
-                      ...price,
-                      options: undefined,
-                      price: optionPrice.price,
-                    },
-                  ]
-                : acc
-            }, [] as PriceMapSchemaOptionPrice[])
-            return {
-              ...acc,
-              [option.id]: prices,
-            }
-          },
-          {},
-        )
+        this.rebuildPricesForm()
       },
       deep: true,
       immediate: true,
     },
 
     pricesForm: {
+      /**
+       * this `pricesForm` is internal form (for this component)
+       * `prices` is external `pricesForm` (from parent component)
+       * In this place we copy internal form to external form
+       */
       handler() {
         const schemaPrices: PriceMapSchemaPrice[] = this.prices.map((price) => ({
           ...price,
@@ -224,15 +212,48 @@ export default defineComponent({
   },
 
   methods: {
+    /**
+     * this `pricesForm` is internal form (for this component)
+     * rebuild pricesForm by options end external `pricesForm` (prices)
+     */
+    rebuildPricesForm() {
+      this.pricesForm = this.options.reduce(
+        (acc, option): Record<string, PriceMapSchemaOptionPrice[]> => {
+          if (!option.id) {
+            return acc
+          }
+          const prices = this.prices.reduce((acc, price) => {
+            const optionPrice = price.options.find((o) => o.id === option.id)
+            return optionPrice
+              ? [
+                  ...acc,
+                  {
+                    ...price,
+                    options: undefined,
+                    price: optionPrice.price,
+                  },
+                ]
+              : acc
+          }, [] as PriceMapSchemaOptionPrice[])
+          return {
+            ...acc,
+            [option.id]: prices,
+          }
+        },
+        {},
+      )
+    },
     setDefault(v: number | null) {
       this.$emit('set-default', v)
     },
     addOption() {
+      /**
+       * This invokes watcher (watch.options)
+       */
       this.options.push(
         cloneDeep({
           ...CLEAR_SCHEMA_OPTION,
           translations: { [this.editedLang]: { ...CLEAR_SCHEMA_OPTION_TRANSLATION } },
-          prices: this.$accessor.config.currencies.map((c) => ({ value: '0', currency: c.code })),
         }),
       )
     },
@@ -251,7 +272,7 @@ export default defineComponent({
       this.options[index].translations[this.editedLang].name = name
     },
 
-    setOptionsOrder(newOptions: SchemaOptionDto[]) {
+    setOptionsOrder(newOptions: SchemaOptionCreateDto[]) {
       const defaultIndex = newOptions.findIndex((o) => o.default)
       this.setDefault(defaultIndex)
       this.options = newOptions

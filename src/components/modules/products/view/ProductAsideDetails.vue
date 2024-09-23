@@ -123,7 +123,7 @@ export default defineComponent({
     },
 
     async fetchSales() {
-      if (!this.product) return
+      if (!this.product?.id) return
 
       try {
         const sales = await sdk.Products.getProductSales(this.product.id)

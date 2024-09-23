@@ -59,7 +59,6 @@
       <SchemaForm
         v-if="isFormModalActive"
         :schema="editedSchema"
-        :current-product-schemas="value"
         :disabled="disabled"
         @submit="updateSchema"
       />
@@ -69,14 +68,7 @@
       <template #title>
         <h4 class="flex schema-selector-title">
           <span>{{ $t('chooseExisting') }}</span>
-          <icon-button
-            reversed
-            size="small"
-            @click="
-              isModalActive = false
-              isFormModalActive = true
-            "
-          >
+          <icon-button reversed size="small" @click="showNewSchemaForm()">
             <template #icon> <i class="bx bx-plus"></i> </template> {{ $t('createNew') }}
           </icon-button>
         </h4>
@@ -143,6 +135,10 @@ export default defineComponent({
       type: Array as PropType<Schema[]>,
       required: true,
     },
+    productId: {
+      type: String as PropType<UUID>,
+      required: true,
+    },
     disabled: { type: Boolean, default: false },
   },
   data: () => ({
@@ -168,6 +164,14 @@ export default defineComponent({
     },
   },
   methods: {
+    showNewSchemaForm() {
+      this.isModalActive = false
+      this.isFormModalActive = true
+
+      this.editedSchema = {
+        product_id: this.productId,
+      } as Schema
+    },
     editSchema(schema: Schema) {
       this.editedSchema = schema
       this.isFormModalActive = true

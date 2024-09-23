@@ -7,6 +7,7 @@
       rules="required"
       :label="$t('common.form.name')"
     />
+
     <validated-input
       v-model="formDescription"
       :disabled="disabled"
@@ -160,10 +161,6 @@ export default defineComponent({
       type: Object as PropType<Schema>,
       required: true,
     },
-    currentProductSchemas: {
-      type: Array as PropType<Schema[]>,
-      default: () => [],
-    },
     disabled: { type: Boolean, default: false },
   },
   data: () => ({
@@ -192,8 +189,7 @@ export default defineComponent({
       },
     },
     defaultOptionId(): string | null {
-      // @ts-expect-error id of the option is not typed, as its not required in the update
-      return this.defaultOption !== null ? this.form.options[this.defaultOption]?.id : null
+      return this.defaultOption !== null ? this.form.options[this.defaultOption]?.id ?? null : null
     },
   },
   watch: {
@@ -232,6 +228,10 @@ export default defineComponent({
     },
 
     initSchemaForm(schema: Schema) {
+      if (!schema.product_id) {
+        throw new Error('[SchemaForm][initSchemaForm] schema.product_id not exist!')
+      }
+
       this.form = schema.id
         ? cloneDeep({
             ...CLEAR_SCHEMA,
@@ -246,6 +246,7 @@ export default defineComponent({
           })
         : cloneDeep({
             ...CLEAR_SCHEMA,
+            product_id: schema.product_id,
             options: [this.createEmptySchemaOption()],
           })
       this.defaultOption = this.getDefaultOptionIndexFromForm()
@@ -260,8 +261,6 @@ export default defineComponent({
     createEmptySchemaOption() {
       return cloneDeep({
         ...CLEAR_SCHEMA_OPTION,
-        // TODO: remove this line when backend will fix this
-        prices: this.$accessor.config.currencies.map((c) => ({ value: '0', currency: c.code })),
       })
     },
 
@@ -293,7 +292,6 @@ export default defineComponent({
         }))
 
         if (!this.form?.id) {
-          //@ts-ignore
           const schemaCreateDto = {
             required: this.form.required,
             used_schemas: this.form.used_schemas.map((p) => p),
@@ -302,24 +300,18 @@ export default defineComponent({
             published: this.form.published.map((p) => p),
             options: options.map((option) => {
               return {
-                // available: option.available,
                 default: option.default,
                 items: option.items.map((item: string) => item),
                 id: option.id,
                 translations: { ...option.translations },
                 metadata: option.metadata,
                 metadata_private: option.metadata_private,
-                // TODO: remove this line when backend will fix this
-                //@ts-ignore
-                prices: options.prices?.map((item) => item) || null, // TODO: w starej wersji tu szły nowe ceny
               }
             }),
             translations: { ...this.form.translations },
           }
 
-          // TODO: remove this line when backend will fix this
-          const schema = await this.$accessor.schemas.add({ ...this.form, options })
-          // const schema = await this.$accessor.schemas.add(schemaCreateDto)
+          const schema = await this.$accessor.schemas.add(schemaCreateDto)
 
           if (!schema) throw new Error('Schema not created')
 

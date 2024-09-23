@@ -106,8 +106,14 @@
             :edited-lang="editedLang"
             :disabled="!canModify"
           />
-          <hr />
-          <SchemaConfigurator v-model="form.schemas" :disabled="!canModify" />
+          <template v-if="product.id">
+            <hr />
+            <SchemaConfigurator
+              v-model="form.schemas"
+              :disabled="!canModify"
+              :product-id="product.id"
+            />
+          </template>
           <hr />
           <WarehouseItemsConfigurator v-model="form.items" :disabled="!canModify" />
 

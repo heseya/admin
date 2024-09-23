@@ -197,15 +197,6 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     id: nextId(),
     type: MenuItemType.Link,
-    to: '/schemas',
-    iconClass: 'bx bxs-customize',
-    label: 'models.schemas',
-    can: PERMISSIONS_TREE.Products.Show,
-    section: SettingsSection.Products,
-  },
-  {
-    id: nextId(),
-    type: MenuItemType.Link,
     to: '/settings/statuses',
     iconClass: 'bx bxs-check-circle',
     label: 'models.statuses',

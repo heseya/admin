@@ -95,6 +95,7 @@ const router = new VueRouter({
         returnUrl: '/items',
       },
     },
+    // TODO: REMOVE SCHEMAS PAGE
     {
       path: '/schemas',
       name: 'Schemas',

@@ -18,7 +18,7 @@
       </pop-confirm>
     </top-nav>
 
-    <div class="schema">
+    <div v-if="editedSchema.id" class="schema">
       <card>
         <SchemaForm
           :key="schema.id"
@@ -95,7 +95,7 @@ export default defineComponent({
       }
     },
     schema() {
-      if (!this.schema) return
+      if (!this.schema.id) return
       this.editedSchema = cloneDeep(this.schema)
     },
   },

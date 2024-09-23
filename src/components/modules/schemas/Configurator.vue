@@ -2,7 +2,7 @@
   <div class="configurator">
     <div class="configurator__head">
       <div class="configurator__title">{{ $t('title') }}</div>
-      <icon-button v-if="!disabled" @click="isModalActive = true">
+      <icon-button v-if="!disabled" @click="showNewSchemaForm()">
         <template #icon>
           <i class="bx bx-plus"></i>
         </template>
@@ -63,20 +63,6 @@
         @submit="updateSchema"
       />
     </a-modal>
-
-    <a-modal v-model="isModalActive" width="800px" :footer="null">
-      <template #title>
-        <h4 class="flex schema-selector-title">
-          <span>{{ $t('chooseExisting') }}</span>
-          <icon-button reversed size="small" @click="showNewSchemaForm()">
-            <template #icon> <i class="bx bx-plus"></i> </template> {{ $t('createNew') }}
-          </icon-button>
-        </h4>
-      </template>
-      <modal-form v-if="isModalActive">
-        <Selector type="schemas" :existing="value" @select="addSchema" />
-      </modal-form>
-    </a-modal>
   </div>
 </template>
 
@@ -113,9 +99,7 @@ import { Schema } from '@heseya/store-core'
 import List from '@/components/layout/List.vue'
 import ListItem from '@/components/layout/ListItem.vue'
 import Empty from '@/components/layout/Empty.vue'
-import ModalForm from '@/components/form/ModalForm.vue'
 import SchemaForm from '@/components/modules/schemas/Form.vue'
-import Selector from '@/components/Selector.vue'
 
 import { UUID } from '@/interfaces/UUID'
 
@@ -125,9 +109,7 @@ export default defineComponent({
     List,
     ListItem,
     Empty,
-    ModalForm,
     SchemaForm,
-    Selector,
     Draggable,
   },
   props: {
@@ -142,7 +124,6 @@ export default defineComponent({
     disabled: { type: Boolean, default: false },
   },
   data: () => ({
-    isModalActive: false,
     isFormModalActive: false,
     editedSchema: {} as Schema,
   }),
@@ -165,7 +146,6 @@ export default defineComponent({
   },
   methods: {
     showNewSchemaForm() {
-      this.isModalActive = false
       this.isFormModalActive = true
 
       this.editedSchema = {

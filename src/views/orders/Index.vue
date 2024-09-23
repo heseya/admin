@@ -1,7 +1,7 @@
 <template>
   <div>
     <PaginatedList
-      :title="$t('title').toString()"
+      :title="$t('title')"
       :filters="filters"
       :table="tableConfig"
       :xlsx-file-config="fileConfig"
@@ -167,7 +167,7 @@ export default defineComponent({
             key: 'summary',
             label: this.$t('form.summary') as string,
             sortable: true,
-            render: (v, order) => this.formatCurrency(v, order.currency),
+            render: (v, order) => this.formatCurrency(v.net, order.currency),
           },
           { key: 'paid', label: this.$t('form.paid') as string, width: '1fr' },
           { key: 'status', label: this.$t('form.status') as string, width: '0.8fr' },

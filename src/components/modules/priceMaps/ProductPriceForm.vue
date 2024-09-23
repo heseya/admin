@@ -71,6 +71,7 @@ export default defineComponent({
   data() {
     return {
       isLoading: false,
+      // TODO: check it! Type can be wrong!
       base_price: this.productPrice.product_price,
       schema_options: {} as Record<string, string>,
     }
@@ -91,6 +92,7 @@ export default defineComponent({
       handler() {
         this.base_price = this.productPrice.product_price
         this.schema_options = this.productPrice.schema_options.reduce(
+          // TODO: check it! Type can be wrong
           (acc, option) => ({ ...acc, [option.schema_option_id]: option.schema_option_price }),
           {},
         )
@@ -128,7 +130,7 @@ export default defineComponent({
           })),
         })
         this.$emit('update', updatedPrice)
-        this.$toast.error(this.$t('updateSuccess').toString())
+        this.$toast.success(this.$t('updateSuccess').toString())
       } catch (e: any) {
         // eslint-disable-next-line no-console
         console.error(e)

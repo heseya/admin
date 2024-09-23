@@ -1,9 +1,13 @@
 <template>
   <div>
-    <top-nav :title="$t('title').toString()">
-      <QrCodeModalButton type="Order" :body="{ id: order.id }" />
+    <top-nav :title="$t('title')">
+      <QrCodeModalButton v-if="order" type="Order" :body="{ id: order.id }" />
 
-      <a v-if="storefrontPaymentUrl" :href="`${storefrontPaymentUrl}${order.code}`" target="_blank">
+      <a
+        v-if="order && storefrontPaymentUrl"
+        :href="`${storefrontPaymentUrl}${order.code}`"
+        target="_blank"
+      >
         <icon-button>
           <template #icon>
             <i class="bx bxs-dollar-circle"></i>
@@ -15,9 +19,10 @@
       <next-prev-buttons />
     </top-nav>
 
-    <main class="order-page">
+    <main v-if="!order" class="order-page">
       <Loading :active="isLoading" />
-
+    </main>
+    <main v-else class="order-page">
       <OrderSummary class="order-page__summary" :order="order" @payment-updated="reloadOrder" />
 
       <card class="order-page__status">
@@ -37,7 +42,7 @@
       <card class="order-page__address">
         <CustomerDetails :order="order" />
       </card>
-      <card v-if="order.id && order.shipping_method" class="order-page__shipping">
+      <card v-if="order && order.id && order.shipping_method" class="order-page__shipping">
         <ShippingNumberForm
           :order-id="order.id"
           :shipping-number="order.shipping_number || undefined"
@@ -45,7 +50,11 @@
         />
       </card>
       <card class="order-page__documents">
-        <OrderDocuments v-if="order.id" :order-id="order.id" :documents="order.documents" />
+        <OrderDocuments
+          v-if="order && order.id"
+          :order-id="order.id"
+          :documents="order.documents"
+        />
       </card>
     </main>
   </div>
@@ -113,8 +122,8 @@ export default defineComponent({
     error(): any {
       return this.$accessor.orders.getError
     },
-    order(): Order {
-      return this.$accessor.orders.getSelected || ({ currency: 'PLN' } as any)
+    order(): Order | null {
+      return this.$accessor.orders.getSelected ?? null
     },
     storefrontPaymentUrl(): string | undefined {
       return this.$accessor.config.env.storefront_payment_url || undefined

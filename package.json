@@ -19,7 +19,7 @@
     "postinstall": "patch-package"
   },
   "dependencies": {
-    "@heseya/store-core": "8.0.0-beta.16",
+    "@heseya/store-core": "8.0.0-beta.17",
     "@sentry/tracing": "^7.6.0",
     "@sentry/vue": "^7.6.0",
     "ant-design-vue": "^1.7.8",

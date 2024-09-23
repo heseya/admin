@@ -61,15 +61,15 @@
       </div>
     </div>
 
-    <field :label="$t('header.perItem').toString()">
+    <field :label="$t('header.perItem')">
       <span class="cart-item__value">
-        {{ formatCurrency(item.price_initial) }}
+        {{ formatCurrency(item.price_initial.net) }}
       </span>
     </field>
 
-    <field :label="$t('header.discounted').toString()">
+    <field :label="$t('header.discounted')">
       <span class="cart-item__value">
-        {{ formatCurrency(item.price) }}
+        {{ formatCurrency(item.price.net) }}
 
         <info-tooltip v-if="item.discounts && item.discounts.length">
           <OrderDiscountSummary :discounts="item.discounts" :currency="currency" />
@@ -77,13 +77,13 @@
       </span>
     </field>
 
-    <field :label="$t('header.quantity').toString()">
+    <field :label="$t('header.quantity')">
       <span class="cart-item__value">
         {{ item.quantity }}
       </span>
     </field>
 
-    <field :label="$t('header.total').toString()">
+    <field :label="$t('header.total')">
       <span class="cart-item__value">
         {{ formatCurrency(totalPrice) }}
       </span>
@@ -161,7 +161,7 @@ export default defineComponent({
       return +this.$accessor.config.env[FEATURE_FLAGS.ProductContain] ? 'contain' : 'cover'
     },
     totalPrice(): number {
-      return parseFloat(this.item.price) * this.item.quantity
+      return parseFloat(this.item.price.net) * this.item.quantity
     },
     highlightedAttributeSlug(): string {
       return this.$accessor.config.env[SETTINGS_KEYS.HighlightedProductAttribute]

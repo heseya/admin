@@ -7,6 +7,7 @@
       rules="required"
       :label="$t('common.form.name')"
     />
+
     <validated-input
       v-model="formDescription"
       :disabled="disabled"
@@ -125,10 +126,10 @@ import cloneDeep from 'lodash/cloneDeep'
 import { ValidationObserver } from 'vee-validate'
 import {
   Schema,
-  SchemaOptionDto,
   SchemaCreateDto,
   SchemaUpdateDto,
   PriceMapSchemaPrice,
+  SchemaOptionCreateDto,
 } from '@heseya/store-core'
 import isNil from 'lodash/isNil'
 
@@ -143,7 +144,6 @@ import {
   CLEAR_SCHEMA_OPTION_TRANSLATION,
   CLEAR_SCHEMA_TRANSLATION,
 } from '@/consts/schemaConsts'
-import { mapPricesToDto } from '@/utils/currency'
 import { formatApiNotificationError } from '@/utils/errors'
 
 import { sdk } from '@/api'
@@ -160,10 +160,6 @@ export default defineComponent({
     schema: {
       type: Object as PropType<Schema>,
       required: true,
-    },
-    currentProductSchemas: {
-      type: Array as PropType<Schema[]>,
-      default: () => [],
     },
     disabled: { type: Boolean, default: false },
   },
@@ -193,8 +189,7 @@ export default defineComponent({
       },
     },
     defaultOptionId(): string | null {
-      // @ts-expect-error id of the option is not typed, as its not required in the update
-      return this.defaultOption !== null ? this.form.options[this.defaultOption]?.id : null
+      return this.defaultOption !== null ? this.form.options[this.defaultOption]?.id ?? null : null
     },
   },
   watch: {
@@ -226,21 +221,24 @@ export default defineComponent({
       if (!this.form?.translations?.[langId])
         this.$set(this.form.translations, langId, { ...CLEAR_SCHEMA_TRANSLATION })
 
-      this.form.options.forEach((option: SchemaOptionDto) => {
+      this.form.options.forEach((option: SchemaOptionCreateDto) => {
         if (!option.translations?.[langId])
           this.$set(option.translations, langId, { ...CLEAR_SCHEMA_OPTION_TRANSLATION })
       })
     },
 
     initSchemaForm(schema: Schema) {
+      if (!schema.product_id) {
+        throw new Error('[SchemaForm][initSchemaForm] schema.product_id not exist!')
+      }
+
       this.form = schema.id
         ? cloneDeep({
             ...CLEAR_SCHEMA,
             ...schema,
             options: schema.options.map(
-              (o): SchemaOptionDto => ({
+              (o): SchemaOptionCreateDto => ({
                 ...o,
-                prices: mapPricesToDto(o.prices),
                 items: o.items.map((i) => i.id),
                 translations: o.translations || {},
               }),
@@ -248,21 +246,26 @@ export default defineComponent({
           })
         : cloneDeep({
             ...CLEAR_SCHEMA,
+            product_id: schema.product_id,
             options: [this.createEmptySchemaOption()],
           })
-      this.defaultOption = isNil(this.form.default) ? null : Number(this.form.default)
+      this.defaultOption = this.getDefaultOptionIndexFromForm()
       this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
+    },
+
+    getDefaultOptionIndexFromForm() {
+      const index = this.form.options.findIndex((o) => o.default)
+      return index >= 0 ? index : null
     },
 
     createEmptySchemaOption() {
       return cloneDeep({
         ...CLEAR_SCHEMA_OPTION,
-        prices: this.$accessor.config.currencies.map((c) => ({ value: '0', currency: c.code })),
       })
     },
 
     async fetchPrices() {
-      if (!this.schema.id) return
+      if (!this.schema?.id) return
       try {
         this.pricesForm = await sdk.Schemas.getPrices(this.schema.id)
       } catch (e: any) {
@@ -283,15 +286,33 @@ export default defineComponent({
       try {
         let id = ''
 
-        this.form.default = this.defaultOption?.toString() || null
-
         const options = this.form.options.map((opt: any) => ({
           ...opt,
           items: opt.items.map((item: any) => item?.id || item),
         }))
 
         if (!this.form?.id) {
-          const schema = await this.$accessor.schemas.add({ ...this.form, options })
+          const schemaCreateDto = {
+            required: this.form.required,
+            used_schemas: this.form.used_schemas.map((p) => p),
+            product_id: this.form.product_id,
+            hidden: this.form.hidden,
+            published: this.form.published.map((p) => p),
+            options: options.map((option) => {
+              return {
+                default: option.default,
+                items: option.items.map((item: string) => item),
+                id: option.id,
+                translations: { ...option.translations },
+                metadata: option.metadata,
+                metadata_private: option.metadata_private,
+              }
+            }),
+            translations: { ...this.form.translations },
+          }
+
+          const schema = await this.$accessor.schemas.add(schemaCreateDto)
+
           if (!schema) throw new Error('Schema not created')
 
           if (schema && schema.id) {
@@ -305,10 +326,31 @@ export default defineComponent({
           // Prices can be saved only after product is created
           await this.savePrices()
 
-          const success = await this.$accessor.schemas.update({
+          const schemaUpdateDto = {
+            required: this.form.required,
+            used_schemas: this.form.used_schemas.map((p) => p),
+            product_id: this.form.product_id,
+            hidden: this.form.hidden,
+            published: this.form.published.map((p) => p),
+            options: options.map((option) => {
+              return {
+                default: option.default,
+                items: option.items.map((item: string) => item),
+                id: option.id,
+                translations: { ...option.translations },
+                metadata: option.metadata,
+                metadata_private: option.metadata_private,
+              }
+            }),
+            translations: { ...this.form.translations },
+          }
+
+          const updateDto = {
             id: this.form.id,
-            item: { ...this.form, options },
-          })
+            item: schemaUpdateDto,
+          }
+
+          const success = await this.$accessor.schemas.update(updateDto)
           if (!success) throw new Error('Schema not updated')
 
           id = this.form.id

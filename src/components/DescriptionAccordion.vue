@@ -1,6 +1,10 @@
 <template>
   <LayoutAccordion :title="$t('title').toString()">
-    <rich-editor v-if="!loading" v-model="form" :disabled="disabled" />
+    <rich-editor
+      v-if="!loading || (loading && (form === '' || !!form))"
+      v-model="form"
+      :disabled="disabled"
+    />
   </LayoutAccordion>
 </template>
 

@@ -41,13 +41,13 @@
         </validated-input>
 
         <template v-else-if="isShippingPlaceAddress(form[key], key)">
-          {{ /* eslint-disable-next-line vue/valid-v-model */ }}
-          <address-form v-if="!!form[key]" v-model="(form[key] as any)" :hide-vat="true" />
+          <!-- fix vue-tsc -->
+          <address-form v-if="!!form[key]" v-model="shippingPlaceAddress" :hide-vat="true" />
         </template>
 
-        <template v-else-if="isBillingAddressAddress(form[key], key)">
-          {{ /* eslint-disable-next-line vue/valid-v-model */ }}
-          <address-form v-if="!!form[key]" v-model="(form[key] as any)" :hide-vat="false" />
+        <template v-else-if="isBillingAddress(form[key], key)">
+          <!-- fix vue-tsc -->
+          <address-form v-if="!!form[key]" v-model="billingAddress" :hide-vat="false" />
         </template>
 
         <switch-input
@@ -113,6 +113,24 @@ export default defineComponent({
         this.$emit('input', v)
       },
     },
+    // only for vue-tsc error with types
+    shippingPlaceAddress: {
+      get(): Address {
+        return this.form['shipping_place'] as Address
+      },
+      set(v: Address) {
+        this.form['shipping_place'] = v
+      },
+    },
+    // only for vue-tsc error with types
+    billingAddress: {
+      get(): Address {
+        return this.form['billing_address'] as Address
+      },
+      set(v: Address) {
+        this.form['billing_address'] = v
+      },
+    },
     formKeys(): (keyof Partial<Order>)[] {
       return Object.keys(this.form) as (keyof Partial<Order>)[]
     },
@@ -136,7 +154,7 @@ export default defineComponent({
     isShippingPlaceAddress(obj: unknown, key: keyof Partial<Order>): obj is Address {
       return !!obj && !isString(obj) && key === 'shipping_place'
     },
-    isBillingAddressAddress(obj: unknown, key: keyof Partial<Order>): obj is Address {
+    isBillingAddress(obj: unknown, key: keyof Partial<Order>): obj is Address {
       return !!obj && !isString(obj) && key === 'billing_address'
     },
     save() {

@@ -150,7 +150,7 @@
           class="sale-configurator__autocomplete"
         >
           <template #option="product">
-            {{ product.name }}&nbsp;<small>(/{{ product.slug }})</small>
+            {{ product?.name ?? '' }}&nbsp;<small>(/{{ product?.slug ?? '' }})</small>
           </template>
         </autocomplete-input>
 
@@ -166,7 +166,7 @@
           class="sale-configurator__autocomplete"
         >
           <template #option="set">
-            {{ set.name }}&nbsp;<small>(/{{ set.slug }})</small>
+            {{ set?.name ?? '' }}&nbsp;<small>(/{{ set?.slug ?? '' }})</small>
           </template>
         </autocomplete-input>
       </template>
@@ -364,6 +364,7 @@ export default defineComponent({
         return this.form.translations?.[this.editedLang]?.name || ''
       },
       set(value: string) {
+        if (!this.form.translations) this.form.translations = {}
         this.form.translations[this.editedLang].name = value
       },
     },
@@ -372,6 +373,7 @@ export default defineComponent({
         return this.form.translations?.[this.editedLang]?.description || ''
       },
       set(value: string) {
+        if (!this.form.translations) this.form.translations = {}
         this.form.translations[this.editedLang].description = value
       },
     },
@@ -380,6 +382,7 @@ export default defineComponent({
         return this.form.translations?.[this.editedLang]?.description_html || ''
       },
       set(value: string) {
+        if (!this.form.translations) this.form.translations = {}
         this.form.translations[this.editedLang].description_html = value
       },
     },
@@ -397,7 +400,7 @@ export default defineComponent({
   methods: {
     setEditedLang(langId: string) {
       this.editedLang = langId
-      this.$set(this.form.translations, langId, {
+      this.$set(this.form.translations ?? {}, langId, {
         ...EMPTY_TRANSLATABLE,
         ...this.form.translations?.[langId],
       })

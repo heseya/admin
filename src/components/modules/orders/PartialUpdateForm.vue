@@ -40,14 +40,13 @@
           </template>
         </validated-input>
 
-        <!-- FIX for vue-tsc -->
         <template v-else-if="isShippingPlaceAddress(form[key], key)">
-          <!-- eslint-disable-next-line vue/valid-v-model -->
+          {{ /* eslint-disable-next-line vue/valid-v-model */ }}
           <address-form v-if="!!form[key]" v-model="(form[key] as any)" :hide-vat="true" />
         </template>
 
         <template v-else-if="isBillingAddressAddress(form[key], key)">
-          <!-- eslint-disable-next-line vue/valid-v-model -->
+          {{ /* eslint-disable-next-line vue/valid-v-model */ }}
           <address-form v-if="!!form[key]" v-model="(form[key] as any)" :hide-vat="false" />
         </template>
 

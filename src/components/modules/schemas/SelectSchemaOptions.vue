@@ -28,7 +28,7 @@
                 :disabled="disabled"
                 class="input"
                 type="products"
-                :label="$t('form.items')"
+                :label="$t('form.items').toString()"
               />
               <a-radio
                 :disabled="disabled"

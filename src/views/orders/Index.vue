@@ -29,10 +29,10 @@
               <span class="order-icon"> <i class="bx bxs-comment-detail"></i> </span>
             </a-tooltip>
 
-            <a-tooltip v-if="item.summary_paid > item.summary">
+            <a-tooltip v-if="item.summary_paid.net > item.summary.net">
               <template #title>
                 {{ $t('overpaid') }}
-                <b>{{ formatCurrency(item.summary_paid - item.summary, item.currency) }}</b>
+                <b>{{ formatCurrency(item.summary_paid.net - item.summary.net, item.currency) }}</b>
               </template>
               <span class="order-icon"> <i class="bx bxs-error"></i> </span>
             </a-tooltip>

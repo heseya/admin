@@ -159,7 +159,6 @@ export default defineComponent({
         return this.value
       },
       set(v: SchemaOptionViewModel[]) {
-        console.log('SelectSchemaOptions set v', v)
         this.$emit('input', v)
       },
     },

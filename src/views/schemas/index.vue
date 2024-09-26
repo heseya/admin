@@ -6,15 +6,6 @@
       store-key="schemas"
       @clear-filters="clearFilters"
     >
-      <template #nav>
-        <icon-button v-can="$p.ProductSets.Add" to="/schemas/create" data-cy="add-btn">
-          <template #icon>
-            <i class="bx bx-plus"></i>
-          </template>
-          {{ $t('add') }}
-        </icon-button>
-      </template>
-
       <template #filters>
         <schema-filter :filters="filters" @search="makeSearch" />
       </template>

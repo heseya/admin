@@ -1,5 +1,7 @@
 import { WarehouseItem, SchemaCreateDto, SchemaOptionCreateDto } from '@heseya/store-core'
 import { TranslationsFromDto } from '@/interfaces/Translations'
+import { SchemaOptionViewModel } from '@/components/modules/schemas/SchemaOptionsEditor.vue'
+import type { SchemaFormViewModel } from '@/components/modules/schemas/Form.vue'
 
 export const CLEAR_SCHEMA_OPTION: SchemaOptionCreateDto & {
   items: WarehouseItem[]
@@ -9,18 +11,22 @@ export const CLEAR_SCHEMA_OPTION: SchemaOptionCreateDto & {
   translations: {},
 }
 
+export const CLEAR_SCHEMA_OPTION_VIEW_MODEL: SchemaOptionViewModel = {
+  default: false,
+  items: [],
+  translations: {},
+}
+
 export const CLEAR_SCHEMA_OPTION_TRANSLATION: TranslationsFromDto<SchemaOptionCreateDto> = {
   name: '',
 }
 
-export const CLEAR_SCHEMA: SchemaCreateDto = {
+export const CLEAR_SCHEMA_FORM_VIEW_MODEL: SchemaFormViewModel = {
   required: true,
   used_schemas: [],
-  options: [],
+  hidden: false,
   published: [],
   translations: {},
-  product_id: '',
-  hidden: false,
 }
 
 export const CLEAR_SCHEMA_TRANSLATION: TranslationsFromDto<SchemaCreateDto> = {

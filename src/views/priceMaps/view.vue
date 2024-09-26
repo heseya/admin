@@ -1,6 +1,6 @@
 <template>
   <div class="narrower-page">
-    <TopNav :title="!isNew ? priceMap.name : $t('newTitle')">
+    <TopNav :title="!isNew ? priceMap.name : $t('newTitle').toString()">
       <icon-button :disabled="isNew" :to="`/settings/price-maps/${priceMap.id}/prices`">
         <template #icon>
           <i class="bx bx-list-ul"></i>

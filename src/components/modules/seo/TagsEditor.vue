@@ -17,7 +17,7 @@
           <select
             :value="tag.type"
             class="tag__type"
-            @input="updateTagType(tagIndex, $event.target.value)"
+            @input="updateTagTypeByEvent(tagIndex, $event)"
           >
             <option value="link">{{ 'link' }}</option>
             <option value="meta">{{ 'meta' }}</option>
@@ -34,7 +34,7 @@
               class="tag__input tag__input--name"
               :value="property"
               :size="property.length"
-              @input="updateProperty(tag, propIndex, 'name', $event.target.value)"
+              @input="updatePropertyByEvent(tag, propIndex, 'name', $event)"
             />
             ="
             <input
@@ -42,7 +42,7 @@
               class="tag__input"
               :value="propertyValue"
               :size="propertyValue.length"
-              @input="updateProperty(tag, propIndex, 'value', $event.target.value)"
+              @input="updatePropertyByEvent(tag, propIndex, 'value', $event)"
             />
             "
 
@@ -83,6 +83,7 @@ import { SeoMetadataTag } from '@heseya/store-core'
 import cloneDeep from 'lodash/cloneDeep'
 
 import Empty from '@/components/layout/Empty.vue'
+import isString from 'lodash/isString'
 
 interface TagProperty {
   name: string
@@ -154,17 +155,34 @@ export default defineComponent({
       )
     },
 
-    updateTagType(tagIndex: number, newType: SeoMetadataTag['type']) {
+    updateTagTypeByEvent(tagIndex: number, event: any) {
+      this.updateTagType(tagIndex, event?.type?.value)
+    },
+
+    updateTagType(tagIndex: number, newType: SeoMetadataTag['type'] | null | undefined) {
+      if (!isString(newType)) return
+
       // TODO: ugly code
       this.tags = this.tags.map((t, i) => (i === tagIndex ? { ...t, type: newType } : t))
+    },
+
+    updatePropertyByEvent(
+      tag: InnerSeoTag,
+      propIndex: number,
+      property: 'name' | 'value',
+      event: any,
+    ) {
+      this.updateProperty(tag, propIndex, property, event?.target?.value)
     },
 
     updateProperty(
       tag: InnerSeoTag,
       propIndex: number,
       property: 'name' | 'value',
-      newName: string,
+      newName: string | null,
     ) {
+      if (!isString(newName)) return
+
       // TODO: ugly code
       this.tags = this.tags.map((t) =>
         t === tag

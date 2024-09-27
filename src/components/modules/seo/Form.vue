@@ -136,6 +136,7 @@ import {
   CdnMedia,
   SeoCheckModelType,
   TranslationsCreateDto,
+  PartiallyOptional,
 } from '@heseya/store-core'
 import { isEqual } from 'lodash'
 
@@ -175,7 +176,7 @@ export default defineComponent({
   },
   props: {
     value: {
-      type: Object as PropType<SeoMeta | undefined>,
+      type: Object as PropType<PartiallyOptional<SeoMeta, 'translations'> | undefined>,
       default: () => undefined,
     },
     disabled: {
@@ -204,7 +205,15 @@ export default defineComponent({
   computed: {
     form: {
       get(): SeoMeta {
-        return this.value || { translations: {}, published: [] }
+        if (this.value) {
+          if (this.value.translations) return this.value as SeoMeta
+
+          return {
+            ...this.value,
+            translations: {},
+          }
+        }
+        return { translations: {}, published: [] }
       },
       set(v: SeoMeta) {
         this.$emit('input', v)

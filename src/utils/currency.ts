@@ -1,4 +1,4 @@
-import { Price, PriceDto } from '@heseya/store-core'
+import { DiscountAmount, Price, PriceDto } from '@heseya/store-core'
 import isString from 'lodash/isString'
 import isNumber from 'lodash/isNumber'
 
@@ -41,3 +41,9 @@ export const mapPricesToDto = (prices: Price[]): PriceDto[] => {
   }
   return prices.map(({ net, currency }) => ({ value: net, currency }))
 }
+
+export const mapDiscountAmountsToPriceDto = (amounts: DiscountAmount[]): PriceDto[] =>
+  amounts.map((a) => ({
+    value: a.value,
+    currency: a.currency,
+  }))

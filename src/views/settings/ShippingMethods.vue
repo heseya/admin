@@ -184,7 +184,7 @@ import Avatar from '@/components/layout/Avatar.vue'
 
 import { UUID } from '@/interfaces/UUID'
 import { TableConfig } from '@/interfaces/CmsTable'
-import { formatPrice } from '@/utils/currency'
+import { formatCurrency } from '@/utils/currency'
 
 export default defineComponent({
   metaInfo(this: any) {
@@ -250,16 +250,14 @@ export default defineComponent({
           },
           {
             key: 'prices',
-            label: this.$t('headers.basePrice') as string,
+            label: `${this.$t('headers.basePrice')} ${this.$t('common.net')}` as string,
             width: '1fr',
-            render: (_, method) =>
-              formatPrice(
-                method.prices?.find((p) => p.currency === this.$accessor.config.currency) || {
-                  gross: '0',
-                  net: '0',
-                  currency: this.$accessor.config.currency,
-                },
-              ),
+            render: (_, method) => {
+              const currency = this.$accessor.config.currency
+              const value = method.prices?.find((p) => p.currency === currency)?.net ?? '0'
+
+              return formatCurrency(value, currency)
+            },
           },
           {
             key: 'shipping_time_min',

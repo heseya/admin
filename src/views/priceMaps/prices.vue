@@ -86,7 +86,13 @@ export default defineComponent({
     this.$accessor.startLoading()
     // TODO: should be dedicated GET request
     const data = await this.$accessor.priceMaps.fetch()
-    if (data) this.$accessor.priceMaps.SET_SELECTED(data.find((item) => item.id === this.id))
+
+    if (data) {
+      const map = data.find((item) => item.id === this.id)
+      if (map) {
+        this.$accessor.priceMaps.SET_SELECTED(map)
+      }
+    }
     this.$accessor.stopLoading()
   },
   methods: {

@@ -1224,10 +1224,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@heseya/store-core@8.0.0-beta.19":
-  version "8.0.0-beta.19"
-  resolved "https://registry.yarnpkg.com/@heseya/store-core/-/store-core-8.0.0-beta.19.tgz#c013478f6e1f01358c633e136e9f9c1f84fc2629"
-  integrity sha512-BxID+DL1gBR+lQviqcBGmuCuz7cL/SwgbHn+pFSOgtI79glBMxuTuHuzKkFQDCxq5YnYy1IGhLgBLaXY8c8yuQ==
+"@heseya/store-core@8.0.0-beta.20":
+  version "8.0.0-beta.20"
+  resolved "https://registry.yarnpkg.com/@heseya/store-core/-/store-core-8.0.0-beta.20.tgz#f5a8b450d34646229ac0030f1391c70a6bb7eeae"
+  integrity sha512-KvugGuVo+X17XCL7Pf7F8UbGmOpWkH8ddB1UlQ/vpmLWOlf24wAWTXlyAgws7gwAY4yoyXYrnTGzb4gze3kthw==
   dependencies:
     flat "^5.0.2"
     form-data "^4.0.0"

@@ -297,8 +297,6 @@ export default defineComponent({
             currency: value.currency,
           })),
           shipping_points: item.shipping_points?.map((point) => omit(point, 'id')),
-          // TODO: temporary force payment_on_delivery to false, remove when backend removes this field
-          payment_on_delivery: false,
         }
       } else {
         this.selectedItem = null
@@ -322,8 +320,6 @@ export default defineComponent({
           })),
           public: true,
           shipping_points: [],
-          // TODO: temporary force payment_on_delivery to false, remove when backend removes this field
-          payment_on_delivery: false,
         }
       }
     },

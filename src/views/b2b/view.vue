@@ -60,6 +60,7 @@
     </div>
 
     <OrganizationEditForm
+      v-if="organization"
       :initial-value="organization"
       :visible="isEditModalActive"
       @saved="updateOrganization"

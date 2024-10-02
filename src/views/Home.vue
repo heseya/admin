@@ -85,7 +85,7 @@
 
           <small> {{ formatDate(order.created_at) }} </small>
           <template #action>
-            <div>{{ formatCurrency(order.summary, order.currency) }}</div>
+            <div>{{ formatCurrency(order.summary.net, order.currency) }}</div>
           </template>
         </list-item>
       </card>

@@ -236,15 +236,13 @@ export default defineComponent({
     areMoreChildren(): boolean {
       return this.children.length < this.childrenQuantity
     },
-    uniqueChildren: {
-      get(): ProductSetListed[] {
-        if (!this.searchedChildren.length) {
-          return this.children
-        }
-        return this.children.filter(
-          ({ id: childId }) => !this.searchedChildren.find(({ id }) => id === childId),
-        )
-      },
+    uniqueChildren(): ProductSetListed[] {
+      if (!this.searchedChildren.length) {
+        return this.children
+      }
+      return this.children.filter(
+        ({ id: childId }) => !this.searchedChildren.find(({ id }) => id === childId),
+      )
     },
   },
   created() {

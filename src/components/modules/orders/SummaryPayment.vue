@@ -1,15 +1,17 @@
 <template>
   <div class="order-summary-payment">
-    <info-tooltip v-if="order.summary_paid > order.summary" icon="bx bxs-error" color="red">
+    <info-tooltip v-if="order.summary_paid.net > order.summary.net" icon="bx bxs-error" color="red">
       {{ $t('overpaidTitle') }}
-      <b>{{ formatCurrency(parseFloat(order.summary_paid) - parseFloat(order.summary)) }}</b>
+      <b>{{
+        formatCurrency(parseFloat(order.summary_paid.net) - parseFloat(order.summary.net))
+      }}</b>
       !
       <br />
       <br />
       {{
         $t('overpaidMessage', {
-          paid: formatCurrency(order.summary_paid),
-          should: formatCurrency(order.summary),
+          paid: formatCurrency(order.summary_paid.net),
+          should: formatCurrency(order.summary.net),
         })
       }}
     </info-tooltip>

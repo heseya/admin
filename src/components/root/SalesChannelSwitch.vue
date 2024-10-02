@@ -38,7 +38,9 @@ export default defineComponent({
         return this.$accessor.config.salesChannel?.id
       },
       set(channelId: string) {
-        this.$accessor.config.changeSalesChannel(this.salesChannels.find((s) => s.id === channelId))
+        const channel = this.salesChannels.find((s) => s.id === channelId)
+        if (!channel) return
+        this.$accessor.config.changeSalesChannel(channel)
       },
     },
   },

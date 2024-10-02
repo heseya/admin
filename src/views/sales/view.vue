@@ -100,7 +100,7 @@ import { UUID } from '@/interfaces/UUID'
 import { SaleFormDto } from '@/interfaces/SalesAndCoupons'
 import { formatApiNotificationError } from '@/utils/errors'
 import { mapSaleFormToSaleDto } from '@/utils/sales'
-import { mapPricesToDto } from '@/utils/currency'
+import { mapDiscountAmountsToPriceDto } from '@/utils/currency'
 
 const createB2BCondition = (company: Organization): DiscountCondition => ({
   id: '',
@@ -166,12 +166,13 @@ export default defineComponent({
   },
   watch: {
     sale(sale: Sale) {
-      if (!this.isNew)
+      if (!this.isNew) {
         this.form = cloneDeep({
           ...EMPTY_SALE_FORM,
           ...sale,
-          amounts: sale.amounts ? mapPricesToDto(sale.amounts) : null,
+          amounts: sale.amounts ? mapDiscountAmountsToPriceDto(sale.amounts) : null,
         }) as SaleFormDto
+      }
     },
     error(error) {
       if (error) {
@@ -204,15 +205,16 @@ export default defineComponent({
       this.$accessor.startLoading()
 
       const dto = mapSaleFormToSaleDto(this.form)
+
       if (this.isNew && this.$route.query.company) {
         dto.metadata = { b2b_company: this.$route.query.company as UUID }
       }
 
       if (this.isNew) {
         const sale = await this.$accessor.sales.add(dto)
-        if (sale && sale.id) {
+        if (sale && (sale as Sale).id) {
           this.$toast.success(this.$t('alerts.created') as string)
-          this.$router.push(`/sales/${sale.id}`)
+          this.$router.push(`/sales/${(sale as Sale).id}`)
         }
       } else {
         // Metadata can be saved only after product is created

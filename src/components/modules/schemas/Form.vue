@@ -19,8 +19,8 @@
     <PublishedLangsForm v-model="form.published" />
     <br />
 
-    <SelectSchemaOptions
-      v-model="form.options"
+    <SchemaOptionsEditor
+      v-model="schemaOptions"
       :default-option="defaultOption ?? undefined"
       :disabled="disabled"
       :edited-lang="editedLang"
@@ -31,7 +31,7 @@
 
     <br />
 
-    <template v-if="form.id">
+    <template v-if="schema.id">
       <MetadataForm
         ref="publicMeta"
         :value="schema.metadata"
@@ -129,29 +129,41 @@ import {
   SchemaCreateDto,
   SchemaUpdateDto,
   PriceMapSchemaPrice,
-  SchemaOptionCreateDto,
+  SchemaOption,
+  TranslationsRecord,
+  SchemaTranslatable,
 } from '@heseya/store-core'
 import isNil from 'lodash/isNil'
 
-import SelectSchemaOptions from '@/components/modules/schemas/SelectSchemaOptions.vue'
+import SchemaOptionsEditor, {
+  SchemaOptionViewModel,
+} from '@/components/modules/schemas/SchemaOptionsEditor.vue'
 import MetadataForm, { MetadataRef } from '@/components/modules/metadata/Accordion.vue'
 import AbsoluteContentLangSwitch from '@/components/lang/AbsoluteContentLangSwitch.vue'
 import PublishedLangsForm from '@/components/lang/PublishedLangsForm.vue'
 
 import {
-  CLEAR_SCHEMA,
-  CLEAR_SCHEMA_OPTION,
+  CLEAR_SCHEMA_FORM_VIEW_MODEL,
   CLEAR_SCHEMA_OPTION_TRANSLATION,
+  CLEAR_SCHEMA_OPTION_VIEW_MODEL,
   CLEAR_SCHEMA_TRANSLATION,
 } from '@/consts/schemaConsts'
 import { formatApiNotificationError } from '@/utils/errors'
 
 import { sdk } from '@/api'
 
+export interface SchemaFormViewModel {
+  required: boolean // not used in form
+  used_schemas: string[] // not used in form
+  hidden: boolean // not used in form
+  published: string[]
+  translations: TranslationsRecord<SchemaTranslatable>
+}
+
 export default defineComponent({
   components: {
     ValidationObserver,
-    SelectSchemaOptions,
+    SchemaOptionsEditor,
     MetadataForm,
     AbsoluteContentLangSwitch,
     PublishedLangsForm,
@@ -165,11 +177,10 @@ export default defineComponent({
   },
   data: () => ({
     editedLang: 'pl',
-    form: cloneDeep(CLEAR_SCHEMA) as SchemaCreateDto & SchemaUpdateDto,
+    form: cloneDeep(CLEAR_SCHEMA_FORM_VIEW_MODEL) as SchemaFormViewModel,
+    schemaOptions: [] as SchemaOptionViewModel[],
     pricesForm: [] as PriceMapSchemaPrice[],
     defaultOption: null as number | null,
-    isUsedSchemaModalActive: false,
-    usedSchemaName: '',
   }),
   computed: {
     formDescription: {
@@ -189,14 +200,14 @@ export default defineComponent({
       },
     },
     defaultOptionId(): string | null {
-      return this.defaultOption !== null ? this.form.options[this.defaultOption]?.id ?? null : null
+      return this.defaultOption !== null ? this.schemaOptions[this.defaultOption]?.id ?? null : null
     },
   },
   watch: {
     defaultOption(defaultOption: number | null) {
       if (isNil(defaultOption)) return
-      this.form.options = this.form.options.map((v: any) => ({ ...v, default: false }))
-      this.form.options[defaultOption].default = true
+      this.schemaOptions = this.schemaOptions.map((v: any) => ({ ...v, default: false }))
+      this.schemaOptions[defaultOption].default = true
 
       // set prices of the default option to 0
       this.pricesForm = this.pricesForm.map((priceEntry) => ({
@@ -221,7 +232,7 @@ export default defineComponent({
       if (!this.form?.translations?.[langId])
         this.$set(this.form.translations, langId, { ...CLEAR_SCHEMA_TRANSLATION })
 
-      this.form.options.forEach((option: SchemaOptionCreateDto) => {
+      this.schemaOptions.forEach((option: SchemaOptionViewModel) => {
         if (!option.translations?.[langId])
           this.$set(option.translations, langId, { ...CLEAR_SCHEMA_OPTION_TRANSLATION })
       })
@@ -232,35 +243,41 @@ export default defineComponent({
         throw new Error('[SchemaForm][initSchemaForm] schema.product_id not exist!')
       }
 
+      this.schemaOptions = schema.id
+        ? (schema.options ?? []).map(
+            (o: SchemaOption): SchemaOptionViewModel => ({
+              id: o.id,
+              default: o.default,
+              items: o.items.map((i) => ({ id: i.id, name: i.name })),
+              translations: o.translations || {},
+            }),
+          )
+        : [this.createEmptySchemaOptionViewModel()]
+
       this.form = schema.id
         ? cloneDeep({
-            ...CLEAR_SCHEMA,
-            ...schema,
-            options: schema.options.map(
-              (o): SchemaOptionCreateDto => ({
-                ...o,
-                items: o.items.map((i) => i.id),
-                translations: o.translations || {},
-              }),
-            ),
+            required: schema.required,
+            used_schemas: schema.used_schemas,
+            published: schema.published,
+            translations: schema.translations ?? {},
+            hidden: schema.hidden,
           })
         : cloneDeep({
-            ...CLEAR_SCHEMA,
+            ...CLEAR_SCHEMA_FORM_VIEW_MODEL,
             product_id: schema.product_id,
-            options: [this.createEmptySchemaOption()],
           })
       this.defaultOption = this.getDefaultOptionIndexFromForm()
       this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
     },
 
     getDefaultOptionIndexFromForm() {
-      const index = this.form.options.findIndex((o) => o.default)
+      const index = this.schemaOptions.findIndex((o) => o.default)
       return index >= 0 ? index : null
     },
 
-    createEmptySchemaOption() {
+    createEmptySchemaOptionViewModel() {
       return cloneDeep({
-        ...CLEAR_SCHEMA_OPTION,
+        ...CLEAR_SCHEMA_OPTION_VIEW_MODEL,
       })
     },
 
@@ -286,26 +303,19 @@ export default defineComponent({
       try {
         let id = ''
 
-        const options = this.form.options.map((opt: any) => ({
-          ...opt,
-          items: opt.items.map((item: any) => item?.id || item),
-        }))
-
-        if (!this.form?.id) {
-          const schemaCreateDto = {
+        if (!this.schema.id) {
+          const schemaCreateDto: SchemaCreateDto = {
             required: this.form.required,
             used_schemas: this.form.used_schemas.map((p) => p),
-            product_id: this.form.product_id,
+            product_id: this.schema.product_id,
             hidden: this.form.hidden,
             published: this.form.published.map((p) => p),
-            options: options.map((option) => {
+            options: this.schemaOptions.map((option) => {
               return {
                 default: option.default,
-                items: option.items.map((item: string) => item),
+                items: option.items.map((item) => item.id),
                 id: option.id,
                 translations: { ...option.translations },
-                metadata: option.metadata,
-                metadata_private: option.metadata_private,
               }
             }),
             translations: { ...this.form.translations },
@@ -321,39 +331,37 @@ export default defineComponent({
           }
         } else {
           // Metadata can be saved only after product is created
-          await this.saveMetadata(this.form.id)
+          await this.saveMetadata(this.schema.id)
 
           // Prices can be saved only after product is created
           await this.savePrices()
 
-          const schemaUpdateDto = {
+          const schemaUpdateDto: SchemaUpdateDto = {
             required: this.form.required,
             used_schemas: this.form.used_schemas.map((p) => p),
-            product_id: this.form.product_id,
+            product_id: this.schema.product_id,
             hidden: this.form.hidden,
             published: this.form.published.map((p) => p),
-            options: options.map((option) => {
+            options: this.schemaOptions.map((option) => {
               return {
                 default: option.default,
-                items: option.items.map((item: string) => item),
+                items: option.items.map((item) => item.id),
                 id: option.id,
                 translations: { ...option.translations },
-                metadata: option.metadata,
-                metadata_private: option.metadata_private,
               }
             }),
             translations: { ...this.form.translations },
           }
 
           const updateDto = {
-            id: this.form.id,
+            id: this.schema.id,
             item: schemaUpdateDto,
           }
 
           const success = await this.$accessor.schemas.update(updateDto)
           if (!success) throw new Error('Schema not updated')
 
-          id = this.form.id
+          id = this.schema.id
           this.$toast.success(this.$t('alerts.updated') as string)
         }
         this.$emit('submit', this.$accessor.schemas.getFromListById(id))

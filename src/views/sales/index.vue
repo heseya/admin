@@ -149,7 +149,7 @@ export default defineComponent({
       this.filters.search = ''
       this.makeSearch()
     },
-    formatPrice(prices: Price[]) {
+    formatPrice(prices: Price[]): string {
       const amount = parsePrices(prices, this.$accessor.config.currency)
       return formatCurrency(amount, this.$accessor.config.currency)
     },

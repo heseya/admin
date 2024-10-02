@@ -61,13 +61,13 @@
       </div>
     </div>
 
-    <field :label="$t('header.perItem')">
+    <field :label="$t('header.perItem').toString()">
       <span class="cart-item__value">
         {{ formatCurrency(item.price_initial.net) }}
       </span>
     </field>
 
-    <field :label="$t('header.discounted')">
+    <field :label="$t('header.discounted').toString()">
       <span class="cart-item__value">
         {{ formatCurrency(item.price.net) }}
 
@@ -77,13 +77,13 @@
       </span>
     </field>
 
-    <field :label="$t('header.quantity')">
+    <field :label="$t('header.quantity').toString()">
       <span class="cart-item__value">
         {{ item.quantity }}
       </span>
     </field>
 
-    <field :label="$t('header.total')">
+    <field :label="$t('header.total').toString()">
       <span class="cart-item__value">
         {{ formatCurrency(totalPrice) }}
       </span>

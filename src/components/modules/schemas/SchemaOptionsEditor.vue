@@ -24,11 +24,11 @@
                 @input="setOptionName(i, $event)"
               />
               <Autocomplete
-                v-model="options[i].items"
+                v-model="option.items"
                 :disabled="disabled"
                 class="input"
                 type="products"
-                :label="$t('form.items')"
+                :label="$t('form.items').toString()"
               />
               <a-radio
                 :disabled="disabled"
@@ -98,20 +98,28 @@
 import { defineComponent, PropType } from 'vue'
 import Draggable from 'vuedraggable'
 import cloneDeep from 'lodash/cloneDeep'
-import { PriceMapSchemaPrice, SchemaOptionCreateDto } from '@heseya/store-core'
+import {
+  PriceMapSchemaPrice,
+  SchemaOptionTranslatable,
+  TranslationsRecord,
+} from '@heseya/store-core'
 
 import Zone from '@/components/layout/Zone.vue'
 import Autocomplete from '@/components/Autocomplete.vue'
 import SchemaOptionPriceForm, { PriceMapSchemaOptionPrice } from './SchemaOptionPriceForm.vue'
 
 import { CLEAR_SCHEMA_OPTION, CLEAR_SCHEMA_OPTION_TRANSLATION } from '@/consts/schemaConsts'
+import { UUID } from '@/interfaces/UUID'
 
-interface InnerSchemaOptionDto extends SchemaOptionCreateDto {
-  id?: string
+export interface SchemaOptionViewModel {
+  id?: UUID
+  default: boolean
+  items: { id: UUID; name: string }[]
+  translations: TranslationsRecord<SchemaOptionTranslatable>
 }
 
 export default defineComponent({
-  name: 'SelectSchemaOptions',
+  name: 'SchemaOptionsEditor',
   components: {
     Zone,
     Autocomplete,
@@ -128,7 +136,7 @@ export default defineComponent({
       required: true,
     },
     value: {
-      type: Array as PropType<InnerSchemaOptionDto[]>,
+      type: Array as PropType<SchemaOptionViewModel[]>,
       required: true,
     },
     prices: {
@@ -147,10 +155,10 @@ export default defineComponent({
      * This is external form.options (from parent component)
      */
     options: {
-      get(): InnerSchemaOptionDto[] {
+      get(): SchemaOptionViewModel[] {
         return this.value
       },
-      set(v: InnerSchemaOptionDto[]) {
+      set(v: SchemaOptionViewModel[]) {
         this.$emit('input', v)
       },
     },
@@ -158,7 +166,7 @@ export default defineComponent({
 
   watch: {
     options: {
-      handler(nVal: InnerSchemaOptionDto[]) {
+      handler(nVal: SchemaOptionViewModel[]) {
         const optionIds = nVal.filter((o) => o.id).map((o) => o.id)
         const priceFormIds = Object.keys(this.pricesForm)
         if (priceFormIds.length !== optionIds.length) {
@@ -272,7 +280,7 @@ export default defineComponent({
       this.options[index].translations[this.editedLang].name = name
     },
 
-    setOptionsOrder(newOptions: SchemaOptionCreateDto[]) {
+    setOptionsOrder(newOptions: SchemaOptionViewModel[]) {
       const defaultIndex = newOptions.findIndex((o) => o.default)
       this.setDefault(defaultIndex)
       this.options = newOptions

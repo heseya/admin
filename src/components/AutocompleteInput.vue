@@ -65,6 +65,7 @@ import Empty from '@/components/layout/Empty.vue'
 import { UUID } from '@/interfaces/UUID'
 import { SelectType } from '@/enums/select'
 import { stringifyQueryParams } from '@/utils/stringifyQuery'
+import { isArray, isObject } from 'lodash'
 
 export interface AutocompleteBaseItem {
   id: UUID
@@ -227,8 +228,12 @@ export default defineComponent({
 
     async fetchInitialItems() {
       try {
+        const ids = (isArray(this.value) ? this.value : [this.value]).map((v) =>
+          isObject(v) ? v.id : v,
+        )
+
         const query = stringifyQueryParams({
-          ids: this.value,
+          ids: ids,
           limit: 500,
           lang_fallback: 'any',
         })

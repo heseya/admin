@@ -39,11 +39,16 @@
             <info-tooltip> {{ $t('pointExternalInfo') }}</info-tooltip>
           </template>
         </validated-input>
-        <address-form
-          v-else-if="(key === 'shipping_place' || key === 'billing_address') && form[key]"
-          v-model="form[key]"
-          :hide-vat="key !== 'billing_address'"
-        />
+
+        <template v-else-if="isShippingPlaceAddress(form[key], key)">
+          <!-- fix vue-tsc -->
+          <address-form v-if="!!form[key]" v-model="shippingPlaceAddress" :hide-vat="true" />
+        </template>
+
+        <template v-else-if="isBillingAddress(form[key], key)">
+          <!-- fix vue-tsc -->
+          <address-form v-if="!!form[key]" v-model="billingAddress" :hide-vat="false" />
+        </template>
 
         <switch-input
           v-else-if="key === 'invoice_requested'"
@@ -84,6 +89,7 @@ import { ValidationObserver } from 'vee-validate'
 import { Order, Address, OrderShippingMethod, ShippingType } from '@heseya/store-core'
 
 import AddressForm from './AddressForm.vue'
+import isString from 'lodash/isString'
 
 export default defineComponent({
   name: 'PartialUpdateForm',
@@ -107,8 +113,26 @@ export default defineComponent({
         this.$emit('input', v)
       },
     },
-    formKeys(): string[] {
-      return Object.keys(this.form)
+    // only for vue-tsc error with types
+    shippingPlaceAddress: {
+      get(): Address {
+        return this.form['shipping_place'] as Address
+      },
+      set(v: Address) {
+        this.form['shipping_place'] = v
+      },
+    },
+    // only for vue-tsc error with types
+    billingAddress: {
+      get(): Address {
+        return this.form['billing_address'] as Address
+      },
+      set(v: Address) {
+        this.form['billing_address'] = v
+      },
+    },
+    formKeys(): (keyof Partial<Order>)[] {
+      return Object.keys(this.form) as (keyof Partial<Order>)[]
     },
     ShippingType(): typeof ShippingType {
       return ShippingType
@@ -127,6 +151,12 @@ export default defineComponent({
     this.$accessor.shippingMethods.fetch()
   },
   methods: {
+    isShippingPlaceAddress(obj: unknown, key: keyof Partial<Order>): obj is Address {
+      return !!obj && !isString(obj) && key === 'shipping_place'
+    },
+    isBillingAddress(obj: unknown, key: keyof Partial<Order>): obj is Address {
+      return !!obj && !isString(obj) && key === 'billing_address'
+    },
     save() {
       this.$emit('save', this.form)
     },

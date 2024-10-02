@@ -145,6 +145,7 @@ export default defineComponent({
 
           if (forcedConditionIndex === -1) {
             group.conditions.push(
+              // @ts-ignore TODO: fix types
               cloneDeep({ ...this.forcedCondition, forced: true } as ForcedDiscountConditionDto),
             )
           } else {
@@ -165,6 +166,7 @@ export default defineComponent({
 
       this.groups.push({
         id: '',
+        // @ts-ignore TODO: fix types
         conditions: [addedCondition],
       })
     },

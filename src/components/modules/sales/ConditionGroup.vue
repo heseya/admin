@@ -26,9 +26,10 @@
       <ConditionForm
         v-for="(condition, i) in group.conditions"
         :key="i"
-        v-model="group.conditions[i]"
+        :value="getTypedCondition(i)"
         :number="i + 1"
         :disabled="disabled || condition.forced"
+        @input="setTypedCondition($event.target.value, i)"
         @remove="removeCondition(i)"
       />
     </div>
@@ -61,13 +62,14 @@
 import { defineComponent, PropType } from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import { ValidationProvider } from 'vee-validate'
-import { DiscountConditionType } from '@heseya/store-core'
+import { DiscountConditionGroup, DiscountConditionType } from '@heseya/store-core'
 
 import Empty from '@/components/layout/Empty.vue'
 import ConditionForm from './ConditionForm.vue'
 
 import { EMPTY_PRODUCT_IN_FORM } from '@/consts/salesConditionsForms'
 import { InnerConditionGroup } from '@/interfaces/SalesAndCoupons'
+import { DiscountConditionDto } from '../../../../../sdk-core/src'
 
 export default defineComponent({
   components: { Empty, ConditionForm, ValidationProvider },
@@ -91,6 +93,7 @@ export default defineComponent({
   },
   methods: {
     addCondition() {
+      // @ts-ignore TODO: fix types
       this.group.conditions = [...this.group.conditions, cloneDeep(EMPTY_PRODUCT_IN_FORM)]
     },
     removeCondition(i: number) {
@@ -98,6 +101,12 @@ export default defineComponent({
     },
     removeSelf() {
       this.$emit('remove')
+    },
+    getTypedCondition(index: number): DiscountConditionDto {
+      return this.group.conditions[index] as DiscountConditionDto
+    },
+    setTypedCondition(value: DiscountConditionGroup['conditions'][number], index: number) {
+      this.group.conditions[index] = value
     },
   },
 })

@@ -1,6 +1,6 @@
 <template>
   <div class="narrower-page">
-    <TopNav :title="!isNew ? priceMap.name : $t('newTitle')">
+    <TopNav :title="!isNew ? priceMap.name : $t('newTitle').toString()">
       <icon-button :disabled="isNew" :to="`/settings/price-maps/${priceMap.id}/prices`">
         <template #icon>
           <i class="bx bx-list-ul"></i>
@@ -10,9 +10,9 @@
       <PopConfirm
         v-if="!isNew"
         v-can="$p.PriceMaps.Remove"
-        :title="$t('deleteText')"
-        :ok-text="$t('common.delete')"
-        :cancel-text="$t('common.cancel')"
+        :title="$t('deleteText').toString()"
+        :ok-text="$t('common.delete').toString()"
+        :cancel-text="$t('common.cancel').toString()"
         @confirm="deleteEntity"
       >
         <icon-button type="danger">
@@ -125,7 +125,14 @@ export default defineComponent({
       this.$accessor.startLoading()
       // TODO: should be dedicated GET request
       const data = await this.$accessor.priceMaps.fetch()
-      if (data) this.$accessor.priceMaps.SET_SELECTED(data.find((item) => item.id === this.id))
+
+      if (data) {
+        const map = data.find((item) => item.id === this.id)
+        if (map) {
+          this.$accessor.priceMaps.SET_SELECTED(map)
+        }
+      }
+
       this.$accessor.stopLoading()
     }
   },

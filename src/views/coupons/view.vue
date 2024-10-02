@@ -105,7 +105,7 @@ import { CouponFormDto } from '@/interfaces/SalesAndCoupons'
 
 import { formatApiNotificationError } from '@/utils/errors'
 import { mapCouponFormToCouponDto } from '@/utils/sales'
-import { mapPricesToDto } from '@/utils/currency'
+import { mapDiscountAmountsToPriceDto } from '@/utils/currency'
 
 const EMPTY_COUPON_FORM: CouponFormDto = {
   code: '',
@@ -170,7 +170,7 @@ export default defineComponent({
         this.form = cloneDeep({
           ...EMPTY_COUPON_FORM,
           ...coupon,
-          amounts: coupon.amounts ? mapPricesToDto(coupon.amounts) : null,
+          amounts: coupon.amounts ? mapDiscountAmountsToPriceDto(coupon.amounts) : null,
         }) as CouponFormDto
       }
     },

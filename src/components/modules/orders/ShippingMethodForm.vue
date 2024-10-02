@@ -20,7 +20,14 @@
         </a-select-option>
       </app-select>
 
-      <AddressForm v-if="shippingType === ShippingType.Address" v-model="form.shipping_place" />
+      <AddressForm
+        v-if="
+          shippingType === ShippingType.Address &&
+          typeof form.shipping_place !== 'string' &&
+          typeof form.shipping_place !== 'undefined'
+        "
+        v-model="form.shipping_place"
+      />
 
       <app-select
         v-if="shippingType === ShippingType.Point"

@@ -60,7 +60,8 @@
       "max-uses-per-user": "Max uses per user",
       "weekday-in": "Weekday in",
       "cart-length": "Number of products in the cart",
-      "coupons-count": "Number of coupons in the cart"
+      "coupons-count": "Number of coupons in the cart",
+      "on-sale": "Product price"
     }
   },
   "pl": {
@@ -79,7 +80,8 @@
       "max-uses-per-user": "Maksymalna liczba użyć na użytkownika",
       "weekday-in": "Wybrane dni tygodnia",
       "cart-length": "Ilość produktów w koszyku",
-      "coupons-count": "Ilość kuponów w koszyku"
+      "coupons-count": "Ilość kuponów w koszyku",
+      "on-sale": "Cena produktu"
     }
   }
 }
@@ -98,6 +100,7 @@ import DateBetweenForm from './forms/DateBetweenForm.vue'
 import TimeBetweenForm from './forms/TimeBetweenForm.vue'
 import WeekdayInForm from './forms/WeekdayInForm.vue'
 import EntitiesForm from './forms/EntitiesForm.vue'
+import OnSaleForm from './forms/OnSaleForm.vue'
 
 import * as SALES_FORMS from '@/consts/salesConditionsForms'
 
@@ -111,6 +114,7 @@ export default defineComponent({
     TimeBetweenForm,
     WeekdayInForm,
     EntitiesForm,
+    OnSaleForm,
   },
   props: {
     value: { type: Object as PropType<DiscountConditionDto>, required: true },
@@ -154,6 +158,8 @@ export default defineComponent({
         case DiscountConditionType.ProductInSet:
         case DiscountConditionType.ProductIn:
           return 'EntitiesForm'
+        case DiscountConditionType.OnSale:
+          return 'OnSaleForm'
         default:
           return 'div'
       }
@@ -212,6 +218,9 @@ export default defineComponent({
           break
         case DiscountConditionType.CouponsCount:
           this.condition = cloneDeep(SALES_FORMS.EMPTY_COUPONS_COUNT_FORM)
+          break
+        case DiscountConditionType.OnSale:
+          this.condition = cloneDeep(SALES_FORMS.EMPTY_ON_SALE_FORM)
           break
         default:
           throw new Error(`Unknown condition type: ${newType}`)

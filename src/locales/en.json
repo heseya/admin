@@ -224,7 +224,8 @@
       "VALIDATION_APP_UNIQUE_ID": "App with given url is already installed.",
       "VALIDATION_PHONE": "The field value must be a valid phone number.",
       "VALIDATION_EMAIL_TAKEN": "The email address is already in use.",
-      "INTERNAL_SERVER_ERROR": "Internal server error"
+      "INTERNAL_SERVER_ERROR": "Internal server error",
+      "VALIDATION_SALES_CHANNEL_ACTIVITY_ORGANIZATION": "Sales channel in organization cannot be deactivated."
     },
     "CLIENT_ERROR": {
       "ERR_NETWORK": "No internet access, or server connection error",

@@ -7,6 +7,7 @@
         type="number"
         class="product-price-form__input"
         :disabled="isLoading"
+        :min="0"
       />
     </div>
 
@@ -25,6 +26,7 @@
           type="number"
           class="product-price-form__input"
           :disabled="isLoading"
+          :min="0"
         />
       </div>
     </div>

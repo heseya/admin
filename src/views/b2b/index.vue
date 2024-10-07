@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="b2b-organization-list-view">
     <PaginatedList store-key="b2bOrganizations" :table="tableConfig" :filters="filters">
       <template #title>
         <span class="gray-text">{{ $t('titlePrefix') }}</span> &nbsp; <span>{{ $t('title') }}</span>
@@ -99,16 +99,19 @@ export default defineComponent({
           {
             key: 'client_id',
             label: this.$t('table.client_id') as string,
+            width: '10%', // Set width to evenly distribute columns
             render: (val) => val || '-',
           },
           {
             key: 'company_name',
             label: this.$t('table.company_name') as string,
+            width: '15%', // Set width to evenly distribute columns
             render: (_v, row) => row.billing_address.company_name || row.billing_address.name,
           },
           {
             key: 'billing_address',
             label: this.$t('table.billing_address') as string,
+            width: '35%', // Set width to evenly distribute columns
             render: (_v, row) => {
               if (!row.billing_address) return '-'
               return `${row.billing_address.address}, ${row.billing_address.zip} ${row.billing_address.city}, ${row.billing_address.country_name}`
@@ -117,12 +120,15 @@ export default defineComponent({
           {
             key: 'vat',
             label: this.$t('table.vat') as string,
+            label: this.$t('table.billing_address') as string,
+            width: '10%', // Set width to evenly distribute columns
             render: (_v, row) => row.billing_address?.vat || '-',
           },
-          { key: 'billing_email', label: this.$t('table.billing_email') as string },
+          { key: 'billing_email', label: this.$t('table.billing_email') as string, width: '20%' },
           {
             key: 'sales_channel',
             label: this.$t('table.sales_channel') as string,
+            width: '10%',
             render: (_v, row) => row.sales_channel?.name || '-',
           },
         ],
@@ -160,3 +166,12 @@ export default defineComponent({
   },
 })
 </script>
+<style lang="scss">
+.b2b-organization-list-view {
+  .cms-table-row__col {
+    .cms-table-row__col-value {
+      word-wrap: break-word;
+    }
+  }
+}
+</style>

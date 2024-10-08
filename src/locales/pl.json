@@ -224,7 +224,8 @@
       "VALIDATION_APP_UNIQUE_ID": "Aplikacja o podanym url jest już zainstalowana.",
       "VALIDATION_PHONE": "Wartość pola musi być poprawnym numerem telefonu",
       "VALIDATION_EMAIL_TAKEN": "Podany adres email jest już zajęty.",
-      "INTERNAL_SERVER_ERROR": "Wewnętrzny błąd serwera"
+      "INTERNAL_SERVER_ERROR": "Wewnętrzny błąd serwera",
+      "VALIDATION_SALES_CHANNEL_ACTIVITY_ORGANIZATION": "Kanału sprzedaży w organizacji nie można dezaktywować."
     },
     "CLIENT_ERROR": {
       "ERR_NETWORK": "No internet access, or connection error to the server",

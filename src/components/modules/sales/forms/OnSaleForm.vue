@@ -15,18 +15,18 @@
 {
   "en": {
     "form": {
-      "on_sale": "Only for non-priced products"
+      "on_sale": "Only for discounted products"
     },
     "tooltips": {
-      "on_sale": "If checked, this code will only apply to products that are not discounted"
+      "on_sale": "If checked, this code will only apply to discounted products"
     }
   },
   "pl": {
     "form": {
-      "on_sale": "Tylko dla produktów nieprzecenionych"
+      "on_sale": "Tylko dla produktów przecenionych"
     },
     "tooltips": {
-      "on_sale": "Jeżeli zaznaczone, kod ten będzie miał zastosowanie tylko dla produktów nieprzecenionych"
+      "on_sale": "Jeżeli zaznaczone, kod ten będzie miał zastosowanie tylko dla produktów przecenionych"
     }
   }
 }

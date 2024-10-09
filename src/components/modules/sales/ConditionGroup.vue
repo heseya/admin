@@ -62,14 +62,17 @@
 import { defineComponent, PropType } from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import { ValidationProvider } from 'vee-validate'
-import { DiscountConditionGroup, DiscountConditionType } from '@heseya/store-core'
+import {
+  DiscountConditionGroup,
+  DiscountConditionType,
+  DiscountConditionDto,
+} from '@heseya/store-core'
 
 import Empty from '@/components/layout/Empty.vue'
 import ConditionForm from './ConditionForm.vue'
 
 import { EMPTY_PRODUCT_IN_FORM } from '@/consts/salesConditionsForms'
 import { InnerConditionGroup } from '@/interfaces/SalesAndCoupons'
-import { DiscountConditionDto } from '../../../../../sdk-core/src'
 
 export default defineComponent({
   components: { Empty, ConditionForm, ValidationProvider },

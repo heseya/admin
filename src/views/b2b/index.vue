@@ -120,7 +120,6 @@ export default defineComponent({
           {
             key: 'vat',
             label: this.$t('table.vat') as string,
-            label: this.$t('table.billing_address') as string,
             width: '10%', // Set width to evenly distribute columns
             render: (_v, row) => row.billing_address?.vat || '-',
           },

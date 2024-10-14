@@ -72,7 +72,10 @@ export const mapSaleFormToSaleDto = (saleForm: SaleFormDto): SaleCreateDto => {
 }
 
 export const mapCouponFormToCouponDto = (couponForm: CouponFormDto): CouponCreateDto => {
-  return mapSaleFormToSaleDto(couponForm) as CouponCreateDto
+  return {
+    ...mapSaleFormToSaleDto(couponForm),
+    code: couponForm.code,
+  }
 }
 
 export const mapConditionGroupFormToConditionGroupDto = (
@@ -122,6 +125,8 @@ const mapSaleFormConditionGroupToDiscountConditionGroupDto = (
         type: condition.type,
         min_values: condition.min_values,
         max_values: condition.max_values,
+        include_taxes: condition.include_taxes, // TODO: backend required this flag but they don't know if it works
+        is_in_range: condition.is_in_range,
       } as OrderValueDiscountConditionDto
     case DiscountConditionType.DateBetween:
     case DiscountConditionType.TimeBetween:

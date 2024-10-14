@@ -136,8 +136,14 @@ export default defineComponent({
         this.$router.push('/b2b/organizations')
       }
     },
-    updateOrganization(organization: Organization) {
+    async updateOrganization(organization: Organization) {
       this.organization = organization
+
+      if (organization.sales_channel && organization.sales_channel.id !== this.salesChannel?.id) {
+        await this.$accessor.salesChannels.get(organization.sales_channel.id)
+        this.salesChannel = this.$accessor.salesChannels.getSelected || ({} as SalesChannel)
+      }
+
       this.isEditModalActive = false
     },
     updateOrganizationSalesChannel(salesChannel: SalesChannel) {

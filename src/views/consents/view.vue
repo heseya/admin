@@ -17,7 +17,13 @@
         </icon-button>
       </pop-confirm>
     </top-nav>
-    <ConsentsForm v-model="form" :edited-lang="editedLang" :disabled="isDisabled" @submit="save" />
+    <ConsentsForm
+      v-model="form"
+      :edited-lang="editedLang"
+      :disabled="isDisabled"
+      :is-new="isNew"
+      @submit="save"
+    />
     <AbsoluteContentLangSwitch :value="editedLang" @input="setEditedLang" />
   </div>
 </template>

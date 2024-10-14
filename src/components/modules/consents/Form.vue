@@ -9,7 +9,11 @@
           :disabled="disabled"
         />
         <div class="row">
-          <app-select v-model="form.type" :label="$t('common.form.type').toString()">
+          <app-select
+            v-model="form.type"
+            :label="$t('common.form.type').toString()"
+            :disabled="!isNew"
+          >
             <a-select-option
               :value="ConsentType.Organization"
               :label="$t(`consentType.${ConsentType.Organization}`).toString()"
@@ -80,6 +84,10 @@ export default defineComponent({
     PublishedLangsForm,
   },
   props: {
+    isNew: {
+      type: Boolean,
+      required: true,
+    },
     editedLang: {
       type: String,
       required: true,

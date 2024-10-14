@@ -73,7 +73,7 @@
         max: local['price.max'] || '',
       }"
       :label="$t('price').toString()"
-      :addon-after="$accessor.config.currency"
+      :addon-after="local['price.currency'] || $accessor.config.currency"
       :min="0"
       @input="(v) => updatePriceRangeValue(v)"
     />
@@ -222,9 +222,7 @@ export default defineComponent({
     updatePriceRangeValue(range: { min: string; max: string }) {
       this.local['price.min'] = range.min
       this.local['price.max'] = range.max
-      // Reset currency if no min/max is set
-      this.local['price.currency'] =
-        range.min || range.max ? this.$accessor.config.currency : undefined
+      this.local['price.currency'] = this.local['price.currency'] ?? this.$accessor.config.currency
 
       this.debouncedSearch()
     },

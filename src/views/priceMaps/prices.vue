@@ -30,7 +30,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { cloneDeep } from 'lodash'
-import { Product, PriceMapListed } from '@heseya/store-core'
+import { Product, PriceMapListed, PriceMap } from '@heseya/store-core'
 
 import ProductPricesList from '@/components/modules/priceMaps/ProductPricesList.vue'
 import ProductsFilter, {
@@ -41,6 +41,7 @@ import ProductsFilter, {
 import { formatFilters } from '@/utils/utils'
 import { parseQueryToProductFilters } from '@/utils/parseQueryToProductFilters'
 import { TableConfig } from '@/interfaces/CmsTable'
+import { formatApiNotificationError } from '@/utils/errors'
 
 export default defineComponent({
   metaInfo(this: any) {
@@ -79,9 +80,19 @@ export default defineComponent({
       }
     },
   },
-
+  watch: {
+    priceMap(priceMap: PriceMap | undefined) {
+      if (priceMap) {
+        this.filters['price.currency'] = priceMap.currency
+      }
+    },
+  },
   async created() {
     this.filters = parseQueryToProductFilters(this.$route.query)
+
+    if (!this.filters['price.currency'] && this.priceMap) {
+      this.filters['price.currency'] = this.priceMap.currency
+    }
 
     this.$accessor.startLoading()
     // TODO: should be dedicated GET request
@@ -89,6 +100,7 @@ export default defineComponent({
 
     if (data) {
       const map = data.find((item) => item.id === this.id)
+
       if (map) {
         this.$accessor.priceMaps.SET_SELECTED(map)
       }

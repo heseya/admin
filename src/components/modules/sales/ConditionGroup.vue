@@ -29,7 +29,7 @@
         :value="getTypedCondition(i)"
         :number="i + 1"
         :disabled="disabled || condition.forced"
-        @input="setTypedCondition($event.target.value, i)"
+        @input="setTypedCondition($event, i)"
         @remove="removeCondition(i)"
       />
     </div>
@@ -109,7 +109,10 @@ export default defineComponent({
       return this.group.conditions[index] as DiscountConditionDto
     },
     setTypedCondition(value: DiscountConditionGroup['conditions'][number], index: number) {
-      this.group.conditions[index] = value
+      this.$set(this.group.conditions, index, {
+        ...value,
+        id: this.group.conditions[index]?.id,
+      })
     },
   },
 })

@@ -71,8 +71,8 @@
       <span class="cart-item__value">
         {{ formatCurrency(item.price.net) }}
 
-        <info-tooltip v-if="item.discounts && item.discounts.length">
-          <OrderDiscountSummary :discounts="item.discounts" :currency="currency" />
+        <info-tooltip v-if="productDiscountsNet && productDiscountsNet.length">
+          <OrderDiscountSummary :discounts="productDiscountsNet" :currency="currency" />
         </info-tooltip>
       </span>
     </field>
@@ -126,7 +126,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { OrderProduct } from '@heseya/store-core'
+import { OrderDiscount, OrderProduct } from '@heseya/store-core'
 
 import { formatCurrency } from '@/utils/currency'
 import Field from '../Field.vue'
@@ -135,6 +135,7 @@ import OrderDiscountSummary from '../modules/orders/OrderDiscountSummary.vue'
 import IconButton from './IconButton.vue'
 
 import { FEATURE_FLAGS, SETTINGS_KEYS } from '@/consts/featureFlags'
+import { calcGrossDiscountsToNetDiscounts } from '@/utils/discounts'
 
 export default defineComponent({
   components: {
@@ -173,6 +174,12 @@ export default defineComponent({
           (attribute) => attribute.slug === this.highlightedAttributeSlug,
         )?.selected_options[0]?.name || this.$i18n.t('common.none').toString()
       )
+    },
+    vatRate(): number {
+      return +(this.item.price.vat_rate ?? '0')
+    },
+    productDiscountsNet(): OrderDiscount[] {
+      return calcGrossDiscountsToNetDiscounts(this.item.discounts, this.vatRate)
     },
   },
   methods: {

@@ -41,7 +41,6 @@ import ProductsFilter, {
 import { formatFilters } from '@/utils/utils'
 import { parseQueryToProductFilters } from '@/utils/parseQueryToProductFilters'
 import { TableConfig } from '@/interfaces/CmsTable'
-import { formatApiNotificationError } from '@/utils/errors'
 
 export default defineComponent({
   metaInfo(this: any) {

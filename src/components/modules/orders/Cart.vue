@@ -40,7 +40,7 @@
               {{ formatCurrency(order.shipping_price_initial.net) }}
             </b>
             <OrderDiscountSummary
-              :discounts="order.discounts"
+              :discounts="orderDiscountsNet"
               :types="[DiscountTargetType.ShippingPrice]"
               :currency="order.currency"
             />
@@ -48,17 +48,17 @@
         </div>
       </field>
       <field
-        v-if="order.discounts && totalDiscount > 0"
+        v-if="order.discounts && totalDiscountGross > 0"
         :label="$t('summary.discounts').toString()"
         horizontal
       >
         <div class="discount-summary">
           <span class="discount-summary__total">
-            {{ formatCurrency(-totalDiscount) }}
+            {{ formatCurrency(-totalDiscountNet) }}
           </span>
           <info-tooltip>
             <OrderDiscountSummary
-              :discounts="order.discounts"
+              :discounts="orderDiscountsNet"
               :types="[
                 DiscountTargetType.CheapestProduct,
                 DiscountTargetType.OrderValue,
@@ -69,8 +69,23 @@
           </info-tooltip>
         </div>
       </field>
-      <field class="order-cart__summary-total" :label="$t('summary.total').toString()" horizontal>
+      <field
+        class="order-cart__summary-total order-cart__summary-total--net"
+        :label="
+          $t('summary.total').toString() + ' (' + $t('common.net').toString().toLowerCase() + ')'
+        "
+        horizontal
+      >
         {{ formatCurrency(order.summary.net) }}
+      </field>
+      <field
+        class="order-cart__summary-total order-cart__summary-total--gross"
+        :label="
+          $t('summary.total').toString() + ' (' + $t('common.gross').toString().toLowerCase() + ')'
+        "
+        horizontal
+      >
+        {{ formatCurrency(order.summary.gross) }}
       </field>
       <SummaryPayment :order="order" />
     </div>
@@ -151,7 +166,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { Order, OrderProduct, DiscountTargetType } from '@heseya/store-core'
+import { Order, OrderProduct, DiscountTargetType, OrderDiscount } from '@heseya/store-core'
 
 import CartItem from '@/components/layout/CartItem.vue'
 import Field from '../../Field.vue'
@@ -162,6 +177,8 @@ import SummaryPayment from './SummaryPayment.vue'
 import { formatCurrency } from '@/utils/currency'
 import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 import XlsxDownloadButton from '@/components/XlsxDownloadButton.vue'
+import { calcGrossToNet } from '@/utils/prices'
+import { calcGrossDiscountsToNetDiscounts } from '@/utils/discounts'
 
 export default defineComponent({
   components: {
@@ -187,7 +204,7 @@ export default defineComponent({
       return DiscountTargetType
     },
 
-    totalDiscount(): number {
+    totalDiscountGross(): number {
       return (
         this.order.discounts
           // Ignore shipping price discounts, they are already included in shipping price
@@ -195,6 +212,18 @@ export default defineComponent({
           .map((d) => parseFloat(d.applied_discount))
           .reduce((sum, discount) => sum + discount, 0) || 0
       )
+    },
+
+    vatRate(): number {
+      return +(this.order.summary.vat_rate ?? '0')
+    },
+
+    totalDiscountNet(): number {
+      return calcGrossToNet(this.totalDiscountGross, this.vatRate)
+    },
+
+    orderDiscountsNet(): OrderDiscount[] {
+      return calcGrossDiscountsToNetDiscounts(this.order.discounts, this.vatRate)
     },
 
     selectedProduct(): OrderProduct | null {
@@ -298,12 +327,23 @@ export default defineComponent({
   }
 
   &__summary-total {
-    margin-top: 16px;
-  }
+    &--net {
+      margin-top: 16px;
+      padding-bottom: 0;
 
-  &__summary-total :deep(.field__value) {
-    font-size: 1.4em;
-    font-weight: 600;
+      :deep(.field__value) {
+        font-size: 1.4em;
+        font-weight: 600;
+      }
+    }
+
+    &--gross {
+      padding-top: 0;
+
+      :deep(.field__value) {
+        font-size: 0.9em;
+      }
+    }
   }
 
   &__header-title {

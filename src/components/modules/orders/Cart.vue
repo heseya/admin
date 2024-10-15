@@ -177,6 +177,8 @@ import SummaryPayment from './SummaryPayment.vue'
 import { formatCurrency } from '@/utils/currency'
 import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 import XlsxDownloadButton from '@/components/XlsxDownloadButton.vue'
+import { calcGrossToNet } from '@/utils/prices'
+import { calcGrossDiscountsToNetDiscounts } from '@/utils/discounts'
 
 export default defineComponent({
   components: {
@@ -217,18 +219,11 @@ export default defineComponent({
     },
 
     totalDiscountNet(): number {
-      return this.calcGrossToNet(this.totalDiscountGross)
+      return calcGrossToNet(this.totalDiscountGross, this.vatRate)
     },
 
     orderDiscountsNet(): OrderDiscount[] {
-      return (this.order.discounts || []).map((discount) => ({
-        ...discount,
-        amount: discount.amount ? this.calcGrossToNet(+discount.amount).toString() : null,
-        applied_discount:
-          discount.applied_discount !== ''
-            ? this.calcGrossToNet(+discount.applied_discount).toString()
-            : '',
-      }))
+      return calcGrossDiscountsToNetDiscounts(this.order.discounts, this.vatRate)
     },
 
     selectedProduct(): OrderProduct | null {
@@ -306,9 +301,6 @@ export default defineComponent({
     },
   },
   methods: {
-    calcGrossToNet(grossAmount: number): number {
-      return Math.round(((grossAmount * 100) / ((1 + this.vatRate) * 100)) * 100) / 100
-    },
     formatCurrency(amount: number | string) {
       return formatCurrency(amount, this.order.currency)
     },

@@ -135,6 +135,7 @@ import OrderDiscountSummary from '../modules/orders/OrderDiscountSummary.vue'
 import IconButton from './IconButton.vue'
 
 import { FEATURE_FLAGS, SETTINGS_KEYS } from '@/consts/featureFlags'
+import { calcGrossDiscountsToNetDiscounts } from '@/utils/discounts'
 
 export default defineComponent({
   components: {
@@ -178,14 +179,7 @@ export default defineComponent({
       return +(this.item.price.vat_rate ?? '0')
     },
     productDiscountsNet(): OrderDiscount[] {
-      return (this.item.discounts || []).map((discount) => ({
-        ...discount,
-        amount: discount.amount ? this.calcGrossToNet(+discount.amount).toString() : null,
-        applied_discount:
-          discount.applied_discount !== ''
-            ? this.calcGrossToNet(+discount.applied_discount).toString()
-            : '',
-      }))
+      return calcGrossDiscountsToNetDiscounts(this.item.discounts, this.vatRate)
     },
   },
   methods: {
@@ -194,9 +188,6 @@ export default defineComponent({
     },
     showProductUrls() {
       this.$emit('show-urls')
-    },
-    calcGrossToNet(grossAmount: number): number {
-      return Math.round(((grossAmount * 100) / ((1 + this.vatRate) * 100)) * 100) / 100
     },
   },
 })

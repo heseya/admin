@@ -71,8 +71,8 @@
       <span class="cart-item__value">
         {{ formatCurrency(item.price.net) }}
 
-        <info-tooltip v-if="item.discounts && item.discounts.length">
-          <OrderDiscountSummary :discounts="item.discounts" :currency="currency" />
+        <info-tooltip v-if="productDiscountsNet && productDiscountsNet.length">
+          <OrderDiscountSummary :discounts="productDiscountsNet" :currency="currency" />
         </info-tooltip>
       </span>
     </field>
@@ -126,7 +126,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { OrderProduct } from '@heseya/store-core'
+import { OrderDiscount, OrderProduct } from '@heseya/store-core'
 
 import { formatCurrency } from '@/utils/currency'
 import Field from '../Field.vue'
@@ -174,6 +174,19 @@ export default defineComponent({
         )?.selected_options[0]?.name || this.$i18n.t('common.none').toString()
       )
     },
+    vatRate(): number {
+      return +(this.item.price.vat_rate ?? '0')
+    },
+    productDiscountsNet(): OrderDiscount[] {
+      return (this.item.discounts || []).map((discount) => ({
+        ...discount,
+        amount: discount.amount ? this.calcGrossToNet(+discount.amount).toString() : null,
+        applied_discount:
+          discount.applied_discount !== ''
+            ? this.calcGrossToNet(+discount.applied_discount).toString()
+            : '',
+      }))
+    },
   },
   methods: {
     formatCurrency(amount: number | string) {
@@ -181,6 +194,9 @@ export default defineComponent({
     },
     showProductUrls() {
       this.$emit('show-urls')
+    },
+    calcGrossToNet(grossAmount: number): number {
+      return Math.round(((grossAmount * 100) / ((1 + this.vatRate) * 100)) * 100) / 100
     },
   },
 })

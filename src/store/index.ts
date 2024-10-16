@@ -40,6 +40,7 @@ Vue.use(Vuex)
 
 const state = () => ({
   loading: false,
+  isMicrofrontendInstalation: false,
 })
 
 export type RootState = ReturnType<typeof state>
@@ -49,6 +50,9 @@ const getters = getterTree(state, {})
 const mutations = mutationTree(state, {
   SET_LOADING(state, loading: boolean) {
     state.loading = loading
+  },
+  SET_IS_MICROFRONTEND_INSTALATION(state, isMicrofrontendInstalation: boolean) {
+    state.isMicrofrontendInstalation = isMicrofrontendInstalation
   },
 })
 

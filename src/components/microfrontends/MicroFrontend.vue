@@ -1,5 +1,5 @@
 <template>
-  <div class="micro-frontend" />
+  <div class="micro-frontend" :data-host="host" />
 </template>
 
 <script lang="ts">
@@ -12,10 +12,6 @@ import { trimSlash } from '@/utils/trimSlash'
 export default defineComponent({
   name: 'MicroFrontend',
   props: {
-    appKey: {
-      type: String,
-      required: true,
-    },
     host: {
       type: String,
       required: true,
@@ -25,14 +21,14 @@ export default defineComponent({
       required: true,
     },
   },
+
   data: () => ({
     wasMounted: false,
     container: null as null | string | Element,
+    isInitialized: false,
   }),
+
   computed: {
-    containerId(): string {
-      return `${this.appKey}-container`
-    },
     standardHost(): string {
       // Enforce trailing slash
       return this.host.endsWith('/') ? this.host : `${this.host}/`
@@ -47,6 +43,11 @@ export default defineComponent({
   },
 
   watch: {
+    '$accessor.isMicrofrontendInstalation'(isMicrofrontendInstalation: boolean) {
+      if (!isMicrofrontendInstalation && !this.isInitialized) {
+        this.initialize()
+      }
+    },
     '$accessor.auth.getIdentityToken'(token: string) {
       this.tokenChannel.emit('set', token)
     },
@@ -85,22 +86,32 @@ export default defineComponent({
   },
 
   async mounted() {
-    const { head, body } = this.initShadowDom()
-    this.container = body
-
-    try {
-      await installApp(this.standardHost, head)
-      this.mountApp(body)
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error('Installation failed: ', e)
-    }
+    if (!this.$accessor.isMicrofrontendInstalation) this.initialize()
+    this.$el
   },
+
   beforeDestroy() {
     this.unmountApp()
     uninstallApp(this.standardHost)
   },
+
   methods: {
+    async initialize(): Promise<void> {
+      this.$accessor.SET_IS_MICROFRONTEND_INSTALATION(true)
+      const { head, body } = this.initShadowDom()
+      this.container = body
+
+      try {
+        await installApp(this.standardHost, head)
+        this.mountApp(body)
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('Installation failed: ', e)
+      }
+      this.$accessor.SET_IS_MICROFRONTEND_INSTALATION(false)
+      this.isInitialized = true
+    },
+
     initShadowDom() {
       const shadowRoot = this.$el.attachShadow({ mode: 'open' })
 
@@ -122,6 +133,7 @@ export default defineComponent({
       // eslint-disable-next-line no-console
       else console.warn('App not found', this.standardHost)
     },
+
     unmountApp() {
       const app = findAppByHost(this.standardHost)
       if (app) app.unmount()

@@ -12,6 +12,7 @@ import {
   UserInRoleDiscountConditionDto,
   WeekdayInDiscountConditionDto,
   CouponsCountDiscountConditionDto,
+  OnSaleDiscountConditionDto,
 } from '@heseya/store-core'
 
 export const EMPTY_ORDER_VALUE_FORM: OrderValueDiscountConditionDto = {
@@ -85,4 +86,9 @@ export const EMPTY_COUPONS_COUNT_FORM: CouponsCountDiscountConditionDto = {
   type: DiscountConditionType.CouponsCount,
   min_value: 0,
   max_value: 0,
+}
+
+export const EMPTY_ON_SALE_FORM: OnSaleDiscountConditionDto = {
+  type: DiscountConditionType.OnSale,
+  on_sale: true,
 }

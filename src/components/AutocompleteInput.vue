@@ -232,6 +232,11 @@ export default defineComponent({
           isObject(v) ? v.id : v,
         )
 
+        if (ids.length === 0) {
+          this.initialValueOptions = []
+          return Promise.resolve()
+        }
+
         const query = stringifyQueryParams({
           ids: ids,
           limit: 500,

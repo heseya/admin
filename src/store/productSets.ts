@@ -54,5 +54,5 @@ export const productSets = createVuexCRUD<ProductSet, ProductSetCreateDto, Produ
       },
     },
   },
-  { get: { ...PARAM, with_translations: false }, edit: PARAM, update: PARAM, add: PARAM },
+  { get: PARAM, edit: PARAM, update: PARAM, add: PARAM },
 )

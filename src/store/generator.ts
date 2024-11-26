@@ -196,7 +196,9 @@ export const createVuexCRUD =
           commit(DefaultVuexMutation.SetError, null)
           commit(DefaultVuexMutation.SetLoading, true)
           try {
-            const stringQuery = stringifyQuery(assign({}, queryParams.getOne || {}))
+            const stringQuery = stringifyQuery(
+              assign({}, queryParams.getOne || {}, queryParams.get || {}),
+            )
             const { data } = await api.get<{ data: Item }>(`/${endpoint}/id:${id}${stringQuery}`)
             // @ts-ignore type is correct, but TS is screaming
             commit(DefaultVuexMutation.SetSelected, data.data)

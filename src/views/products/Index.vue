@@ -74,7 +74,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { cloneDeep } from 'lodash'
-import { Product, Tag } from '@heseya/store-core'
+import { parsePrices, Price, Product, Tag } from '@heseya/store-core'
 
 import ProductTile from '@/components/modules/products/ProductTile.vue'
 import ProductListItem from '@/components/modules/products/ProductListItem.vue'
@@ -88,6 +88,7 @@ import { formatFilters } from '@/utils/utils'
 import { TableConfig } from '@/interfaces/CmsTable'
 import { XlsxFileConfig } from '@/interfaces/XlsxFileConfig'
 import UpdatePriceButton from '@/components/modules/products/UpdatePriceButton.vue'
+import { extractAdditionalColumnsConfig, generateColumns } from '@/utils/xlsxColumns'
 
 const LOCAL_STORAGE_KEY = 'products-list-view'
 
@@ -120,6 +121,10 @@ export default defineComponent({
   }),
 
   computed: {
+    currency(): string {
+      return this.$accessor.config.currency
+    },
+
     /**
      * If all sales channels have a VAT rate equal to 0, we can surlly assume that all prices are gross.
      */
@@ -165,12 +170,39 @@ export default defineComponent({
       }
     },
     fileConfig(): XlsxFileConfig<Product> {
-      return {
+      const products = this.$accessor.products.getData
+
+      const withVariants = products
+        .map(
+          (product) =>
+            parsePrices(product.prices_max, this.currency) -
+            parsePrices(product.prices_min, this.currency),
+        )
+        .some((diff: number) => diff !== 0)
+
+      const ADDITIONAL_COLUMNS = extractAdditionalColumnsConfig(
+        this.$accessor.config.env['products_xlsx_additional_columns'],
+      )
+
+      const xlsxConfig = {
         name: this.$t('title').toString(),
         headers: [
           { key: 'id', label: 'ID' },
           { key: 'name', label: this.$t('common.form.name').toString() },
-          { key: 'price' as any, label: this.priceLabel },
+          {
+            key: 'prices_min',
+            label: `${this.priceLabel}${withVariants ? ' (min)' : ''}`,
+            format: (pricesMin: Price[]) => parsePrices(pricesMin, this.currency),
+          },
+          ...(withVariants
+            ? [
+                {
+                  key: 'prices_max' as keyof Product,
+                  label: `${this.priceLabel} (max)`,
+                  format: (pricesMax: Price[]) => parsePrices(pricesMax, this.currency),
+                },
+              ]
+            : []),
           {
             key: 'tags',
             label: this.$t('form.tags').toString(),
@@ -192,6 +224,15 @@ export default defineComponent({
             label: this.$t('form.shippingDigital').toString(),
             format: (v: boolean) => (v ? this.$t('common.yes') : this.$t('common.no')).toString(),
           },
+        ],
+      }
+
+      return {
+        ...xlsxConfig,
+        // @ts-ignore
+        headers: [
+          ...xlsxConfig.headers,
+          ...(ADDITIONAL_COLUMNS?.length ? generateColumns(ADDITIONAL_COLUMNS) : []),
         ],
       }
     },

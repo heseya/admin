@@ -21,6 +21,8 @@ export const FEATURE_FLAGS = {
    * If true, product images on every list will be shown as object-fit: contain, otherwise they will be shown as object-fit: cover
    */
   ProductContain: 'dashboard_products_contain',
+
+  manufacturers: 'Manufacturers_enabled',
 }
 
 export const SETTINGS_KEYS = {

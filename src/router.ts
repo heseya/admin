@@ -210,6 +210,25 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/manufacturers',
+      name: 'Manufacturers',
+      component: () => import('./views/manufacturers/index.vue'),
+      meta: {
+        requiresAuth: true,
+        permissions: [Permissions.Manufacturers.Show],
+      },
+    },
+    {
+      path: '/manufacturers/:id',
+      name: 'ManufacturersView',
+      component: () => import('./views/manufacturers/view.vue'),
+      meta: {
+        returnUrl: '/manufacturers',
+        requiresAuth: true,
+        permissions: [Permissions.Manufacturers.ShowDetails],
+      },
+    },
+    {
       path: '/settings/banners',
       name: 'Banners',
       component: () => import('./views/banners/index.vue'),

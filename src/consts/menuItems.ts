@@ -78,6 +78,16 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     id: nextId(),
     type: MenuItemType.Link,
+    to: '/manufacturers',
+    iconClass: 'bx bxs-bot',
+    label: 'models.manufacturers',
+    can: PERMISSIONS_TREE.Webhooks.Show,
+    hidden: () => accessor.config.env[FEATURE_FLAGS.manufacturers] !== '1',
+    section: SettingsSection.Shop,
+  },
+  {
+    id: nextId(),
+    type: MenuItemType.Link,
     to: '/settings/languages',
     iconClass: 'bx bx-text',
     label: 'models.languages',

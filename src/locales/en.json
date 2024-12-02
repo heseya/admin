@@ -77,7 +77,8 @@
     "attributes": "Attributes",
     "media": "Media",
     "currencies": "Currencies",
-    "salesChannels": "Sales channels"
+    "salesChannels": "Sales channels",
+    "manufacturers": "Manufacturers"
   },
   "attributeTypes": {
     "single-option": "Text single choice",

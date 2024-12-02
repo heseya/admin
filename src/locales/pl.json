@@ -77,7 +77,8 @@
     "attributes": "Atrybuty",
     "media": "Media",
     "currencies": "Waluty",
-    "salesChannels": "Kanały sprzedaży"
+    "salesChannels": "Kanały sprzedaży",
+    "manufacturers": "Producenci"
   },
   "attributeTypes": {
     "single-option": "Tekstowy jednokrotnego wyboru",

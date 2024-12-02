@@ -31,6 +31,27 @@
       :label="$t('form.shortDescription').toString()"
       :disabled="disabled"
     />
+    <AppTextarea
+      v-if="!loading"
+      v-model="form.safety_information"
+      :label="$t('form.safetyInformation').toString()"
+      :disabled="disabled"
+    />
+    <autocomplete-input
+      key="product_ids"
+      v-model="form.manufacturer_id"
+      :label="`${$t('form.manufacturer')}`"
+      model-url="manufacturers"
+      prop-mode="id"
+      mode="single"
+      :disabled="disabled"
+      :rules="{ required: form.manufacturer_id }"
+      class="sale-configurator__autocomplete"
+    >
+      <template #option="manufacturer">
+        {{ manufacturer.name }}&nbsp;<small>({{ manufacturer.email }})</small>
+      </template>
+    </autocomplete-input>
   </div>
 </template>
 
@@ -39,13 +60,17 @@
   "pl": {
     "form": {
       "vatRate": "Stawka VAT (%)",
-      "shortDescription": "Krótki opis"
+      "shortDescription": "Krótki opis",
+      "safetyInformation": "informacje dotyczące bezpieczeństwa",
+      "manufacturer": "Producent"
     }
   },
   "en": {
     "form": {
       "vatRate": "VAT rate (%)",
-      "shortDescription": "Short description"
+      "shortDescription": "Short description",
+      "safetyInformation": "Safety information",
+      "manufacturer": "Manufacturer"
     }
   }
 }
@@ -60,11 +85,18 @@ import ProductSetSelect from '../ProductSetSelect.vue'
 import Textarea from '@/components/form/Textarea.vue'
 import TagsSelect from '@/components/TagsSelect.vue'
 import CurrencyPriceForm from '@/components/CurrencyPriceForm.vue'
+import AutocompleteInput from '@/components/AutocompleteInput.vue'
 
 import { generateSlug } from '@/utils/generateSlug'
 
 export default defineComponent({
-  components: { ProductSetSelect, AppTextarea: Textarea, TagsSelect, CurrencyPriceForm },
+  components: {
+    ProductSetSelect,
+    AppTextarea: Textarea,
+    TagsSelect,
+    CurrencyPriceForm,
+    AutocompleteInput,
+  },
   props: {
     value: {
       type: Object as PropType<ProductComponentForm>,

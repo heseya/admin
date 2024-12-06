@@ -32,7 +32,7 @@
     <div>
       <h2 class="manufacturers__title">{{ $t('relatedProducts') }}</h2>
       <autocomplete-input
-        key="product_ids"
+        :key="form.product_ids?.length || 0"
         v-model="form.product_ids"
         :label="`${$t('products')}`"
         model-url="products"
@@ -101,7 +101,6 @@ export default defineComponent({
   computed: {
     form: {
       get(): ManufacturerDto {
-        console.log('form', this.value)
         return this.value
       },
       set(v: ManufacturerDto) {

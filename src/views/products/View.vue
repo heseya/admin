@@ -158,6 +158,10 @@
           <h2 class="product-page__subtitle">{{ $t('galleryTitle') }}</h2>
           <Gallery ref="gallery" v-model="form.gallery" :disabled="!canModify" />
         </Card>
+        <Card class="product-page__rewards">
+          <h2 class="product-page__subtitle">{{ $t('rewardImagesTitle') }}</h2>
+          <Gallery ref="gallery" v-model="form.reward_images" :disabled="!canModify" />
+        </Card>
       </form>
     </ValidationObserver>
   </div>
@@ -170,6 +174,7 @@
     "titleNew": "Nowy produkt",
     "baseFormTitle": "Informacje podstawowe",
     "galleryTitle": "Zdjęcia i wideo produktu",
+    "rewardImagesTitle": "Wyróżnienia produktu",
     "deleteConfirm": "Czy na pewno chcesz usunąć ten produkt?",
     "nav": {
       "goTo": "Przejdź do produktu"
@@ -266,6 +271,7 @@ const EMPTY_FORM: ProductComponentForm = {
   order: null,
   schemas: [],
   gallery: [],
+  reward_images: [],
   tags: [],
   seo: undefined,
   attributes: [],
@@ -276,6 +282,8 @@ const EMPTY_FORM: ProductComponentForm = {
   published: [],
   translations: {},
   banner: null,
+  safety_information: undefined,
+  manufacturer_id: undefined,
 }
 
 export default defineComponent({
@@ -439,6 +447,7 @@ export default defineComponent({
           ...this.form,
           order: this.form.order || 0,
           media: this.form.gallery.map(({ id }) => id),
+          reward_images: this.form.reward_images.map(({ id }) => id),
           tags: this.form.tags.map(({ id }) => id),
           schemas: this.form.schemas.map(({ id }) => id),
           related_sets: this.form.related_sets.map(({ id }) => id),
@@ -525,15 +534,15 @@ export default defineComponent({
 
 .product-page {
   display: grid;
-  grid-template-rows: auto;
+  grid-template-rows: auto max-content;
   grid-gap: 14px;
   align-items: start;
   grid-template-columns: 1fr;
-  grid-template-areas: 'visibility' 'gallery' 'main';
+  grid-template-areas: 'visibility' 'gallery' 'rewards' 'main';
 
   @media ($viewport-7) {
     grid-template-columns: 2.6fr 1fr;
-    grid-template-areas: 'main visibility' 'main gallery' 'main .';
+    grid-template-areas: 'main visibility' 'main gallery' 'main rewards' 'main .';
   }
 
   &__main {
@@ -544,6 +553,9 @@ export default defineComponent({
   }
   &__gallery {
     grid-area: gallery;
+  }
+  &__rewards {
+    grid-area: rewards;
   }
 
   &__subtitle {

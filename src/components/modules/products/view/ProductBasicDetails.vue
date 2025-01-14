@@ -33,7 +33,7 @@
     />
     <AppTextarea
       v-if="!loading"
-      v-model="form.safety_information"
+      v-model="formSafetyInformation"
       :label="$t('form.safetyInformation').toString()"
       :disabled="disabled"
     />
@@ -45,7 +45,6 @@
       prop-mode="id"
       mode="single"
       :disabled="disabled"
-      :rules="{ required: form.manufacturer_id }"
       class="sale-configurator__autocomplete"
     >
       <template #option="manufacturer">
@@ -135,6 +134,14 @@ export default defineComponent({
       },
       set(value: string) {
         this.form.translations[this.editedLang].description_short = value
+      },
+    },
+    formSafetyInformation: {
+      get() {
+        return this.form.safety_information || undefined
+      },
+      set(value: string) {
+        this.form.safety_information = value
       },
     },
   },

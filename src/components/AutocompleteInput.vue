@@ -81,7 +81,7 @@ export default defineComponent({
   props: {
     value: {
       type: [String, Object, Array] as PropType<
-        UUID | AutocompleteBaseItem | UUID[] | AutocompleteBaseItem[]
+        UUID | AutocompleteBaseItem | UUID[] | AutocompleteBaseItem[] | null
       >,
       default: () => [],
     },

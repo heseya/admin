@@ -160,7 +160,7 @@
         </Card>
         <Card class="product-page__rewards">
           <h2 class="product-page__subtitle">{{ $t('rewardImagesTitle') }}</h2>
-          <Gallery ref="gallery" v-model="form.reward_images" :disabled="!canModify" />
+          <Gallery ref="rewards" v-model="form.reward_images" :disabled="!canModify" />
         </Card>
       </form>
     </ValidationObserver>
@@ -395,6 +395,7 @@ export default defineComponent({
     await this.fetch()
     this.setEditedLang(this.$accessor.languages.apiLanguage?.id || '')
   },
+
   methods: {
     handleSubmit(callback: Function) {
       ;(this.$refs.form as any).validate().then((success: boolean) => {
@@ -485,6 +486,7 @@ export default defineComponent({
           : await this.$accessor.products.update({ id: this.id, item: apiPayload })
 
         ;(this.$refs.gallery as any).clearMediaToDelete()
+        ;(this.$refs.rewards as any).clearMediaToDelete()
         ;(this.$refs.banner as any)?.clearMediaToDelete?.()
 
         if (!item) throw new Error('Product was not saved')
